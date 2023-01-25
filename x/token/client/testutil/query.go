@@ -258,7 +258,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdApproved() {
+func (s *IntegrationTestSuite) TestNewQueryCmdIsOperatorFor() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -277,8 +277,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproved() {
 				s.customer.String(),
 			},
 			true,
-			&token.QueryApprovedResponse{
-				Approved: true,
+			&token.QueryIsOperatorForResponse{
+				Authorized: true,
 			},
 		},
 		"extra args": {
@@ -305,7 +305,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproved() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdApproved()
+			cmd := cli.NewQueryCmdIsOperatorFor()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -313,14 +313,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproved() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryApprovedResponse
+			var actual token.QueryIsOperatorForResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdApprovers() {
+func (s *IntegrationTestSuite) TestNewQueryCmdHoldersByOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -338,8 +338,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprovers() {
 				s.vendor.String(),
 			},
 			true,
-			&token.QueryApproversResponse{
-				Approvers:  []string{s.customer.String()},
+			&token.QueryHoldersByOperatorResponse{
+				Holders:    []string{s.customer.String()},
 				Pagination: &query.PageResponse{},
 			},
 		},
@@ -365,7 +365,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprovers() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdApprovers()
+			cmd := cli.NewQueryCmdHoldersByOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -373,7 +373,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprovers() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryApproversResponse
+			var actual token.QueryHoldersByOperatorResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})

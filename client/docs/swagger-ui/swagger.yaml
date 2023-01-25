@@ -24927,204 +24927,6 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers':
-    get:
-      summary: |-
-        Approvers queries approvers on a given proxy.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `proxy` is of invalid format.
-      operationId: TokenApprovers
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              approvers:
-                type: array
-                items:
-                  type: string
-                description: all the authorizations on the proxy.
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            title: >-
-              QueryApproversResponse is the response type for the
-              Query/Approvers RPC method
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: address
-          description: address of the proxy which the authorization is granted to.
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Query
-  '/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}':
-    get:
-      summary: |-
-        Approved queries authorization on a given proxy approver pair.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `proxy` is of invalid format.
-          - `approver` is of invalid format.
-      operationId: TokenApproved
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              approved:
-                type: boolean
-                format: boolean
-            title: >-
-              QueryApprovedResponse is the response type for the Query/Approved
-              RPC method
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: approver
-          description: approver is the address of the approver of the authorization.
-          in: path
-          required: true
-          type: string
-        - name: proxy
-          description: address of the proxy which the authorization is granted to.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   '/lbm/token/v1/token_classes/{contract_id}/balances/{address}':
     get:
       summary: >-
@@ -51958,44 +51760,6 @@ definitions:
        - PERMISSION_MODIFY: PERMISSION_MODIFY defines a permission to modify a contract.
        - PERMISSION_MINT: PERMISSION_MINT defines a permission to mint tokens of a contract.
        - PERMISSION_BURN: PERMISSION_BURN defines a permission to burn tokens of a contract.
-  lbm.token.v1.QueryApprovedResponse:
-    type: object
-    properties:
-      approved:
-        type: boolean
-        format: boolean
-    title: >-
-      QueryApprovedResponse is the response type for the Query/Approved RPC
-      method
-  lbm.token.v1.QueryApproversResponse:
-    type: object
-    properties:
-      approvers:
-        type: array
-        items:
-          type: string
-        description: all the authorizations on the proxy.
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-    title: >-
-      QueryApproversResponse is the response type for the Query/Approvers RPC
-      method
   lbm.token.v1.QueryBalanceResponse:
     type: object
     properties:
@@ -52154,6 +51918,44 @@ definitions:
     title: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method
+  lbm.token.v1.QueryHoldersByOperatorResponse:
+    type: object
+    properties:
+      holders:
+        type: array
+        items:
+          type: string
+        title: holder addresses
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: >-
+      QueryHoldersByOperatorResponse is the response type for the
+      Query/HoldersByOperator RPC method
+  lbm.token.v1.QueryIsOperatorForResponse:
+    type: object
+    properties:
+      authorized:
+        type: boolean
+        format: boolean
+    title: >-
+      QueryIsOperatorForResponse is the response type for the
+      Query/IsOperatorFor RPC method
   lbm.token.v1.QueryMintedResponse:
     type: object
     properties:

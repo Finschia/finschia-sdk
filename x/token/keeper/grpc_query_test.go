@@ -306,49 +306,49 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryApproved() {
+func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 	// empty request
-	_, err := s.queryServer.Approved(s.goCtx, nil)
+	_, err := s.queryServer.IsOperatorFor(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		contractID string
-		address    sdk.AccAddress
-		approver   sdk.AccAddress
+		operator   sdk.AccAddress
+		holder     sdk.AccAddress
 		valid      bool
-		postTest   func(res *token.QueryApprovedResponse)
+		postTest   func(res *token.QueryIsOperatorForResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			address:    s.operator,
-			approver:   s.customer,
+			operator:   s.operator,
+			holder:     s.customer,
 			valid:      true,
-			postTest: func(res *token.QueryApprovedResponse) {
-				s.Require().NotNil(res.Approved)
+			postTest: func(res *token.QueryIsOperatorForResponse) {
+				s.Require().True(res.Authorized)
 			},
 		},
 		"invalid contract id": {
-			address:  s.operator,
-			approver: s.customer,
+			operator: s.operator,
+			holder:   s.customer,
 		},
-		"invalid address": {
+		"invalid operator": {
 			contractID: s.contractID,
-			approver:   s.customer,
+			holder:     s.customer,
 		},
-		"invalid approver": {
+		"invalid holder": {
 			contractID: s.contractID,
-			address:    s.operator,
+			operator:   s.operator,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &token.QueryApprovedRequest{
+			req := &token.QueryIsOperatorForRequest{
 				ContractId: tc.contractID,
-				Proxy:      tc.address.String(),
-				Approver:   tc.approver.String(),
+				Operator:   tc.operator.String(),
+				Holder:     tc.holder.String(),
 			}
-			res, err := s.queryServer.Approved(s.goCtx, req)
+			res, err := s.queryServer.IsOperatorFor(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -360,9 +360,9 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryApprovers() {
+func (s *KeeperTestSuite) TestQueryHoldersByOperator() {
 	// empty request
-	_, err := s.queryServer.Approvers(s.goCtx, nil)
+	_, err := s.queryServer.HoldersByOperator(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
@@ -370,14 +370,14 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 		operator   sdk.AccAddress
 		valid      bool
 		count      uint64
-		postTest   func(res *token.QueryApproversResponse)
+		postTest   func(res *token.QueryHoldersByOperatorResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
 			valid:      true,
-			postTest: func(res *token.QueryApproversResponse) {
-				s.Require().Equal(2, len(res.Approvers))
+			postTest: func(res *token.QueryHoldersByOperatorResponse) {
+				s.Require().Equal(2, len(res.Holders))
 			},
 		},
 		"valid request with limit": {
@@ -385,8 +385,8 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 			operator:   s.operator,
 			valid:      true,
 			count:      1,
-			postTest: func(res *token.QueryApproversResponse) {
-				s.Require().Equal(1, len(res.Approvers))
+			postTest: func(res *token.QueryHoldersByOperatorResponse) {
+				s.Require().Equal(1, len(res.Holders))
 			},
 		},
 		"invalid contract id": {
@@ -403,12 +403,12 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 			if tc.count != 0 {
 				pageReq.Limit = tc.count
 			}
-			req := &token.QueryApproversRequest{
+			req := &token.QueryHoldersByOperatorRequest{
 				ContractId: tc.contractID,
-				Address:    tc.operator.String(),
+				Operator:   tc.operator.String(),
 				Pagination: pageReq,
 			}
-			res, err := s.queryServer.Approvers(s.goCtx, req)
+			res, err := s.queryServer.HoldersByOperator(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
