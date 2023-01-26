@@ -3,9 +3,9 @@ package staking_test
 import (
 	"testing"
 
-	abcitypes "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -17,7 +17,7 @@ func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	app.InitChain(
-		abcitypes.RequestInitChain{
+		abci.RequestInitChain{
 			AppStateBytes: []byte("{}"),
 			ChainId:       "test-chain-id",
 		},

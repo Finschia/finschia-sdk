@@ -3,9 +3,9 @@ package baseapp_test
 import (
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 )
@@ -34,13 +34,13 @@ func TestValidateEvidenceParams(t *testing.T) {
 		expectErr bool
 	}{
 		{nil, true},
-		{&ocproto.EvidenceParams{}, true},
-		{ocproto.EvidenceParams{}, true},
-		{ocproto.EvidenceParams{MaxAgeNumBlocks: -1, MaxAgeDuration: 18004000, MaxBytes: 5000000}, true},
-		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: -1, MaxBytes: 5000000}, true},
-		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: -1}, true},
-		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 5000000}, false},
-		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 0}, false},
+		{&tmproto.EvidenceParams{}, true},
+		{tmproto.EvidenceParams{}, true},
+		{tmproto.EvidenceParams{MaxAgeNumBlocks: -1, MaxAgeDuration: 18004000, MaxBytes: 5000000}, true},
+		{tmproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: -1, MaxBytes: 5000000}, true},
+		{tmproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: -1}, true},
+		{tmproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 5000000}, false},
+		{tmproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 0}, false},
 	}
 
 	for _, tc := range testCases {
@@ -54,11 +54,11 @@ func TestValidateValidatorParams(t *testing.T) {
 		expectErr bool
 	}{
 		{nil, true},
-		{&ocproto.ValidatorParams{}, true},
-		{ocproto.ValidatorParams{}, true},
-		{ocproto.ValidatorParams{PubKeyTypes: []string{}}, true},
-		{ocproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
-		{ocproto.ValidatorParams{PubKeyTypes: []string{"invalidPubKeyType"}}, true},
+		{&tmproto.ValidatorParams{}, true},
+		{tmproto.ValidatorParams{}, true},
+		{tmproto.ValidatorParams{PubKeyTypes: []string{}}, true},
+		{tmproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
+		{tmproto.ValidatorParams{PubKeyTypes: []string{"invalidPubKeyType"}}, true},
 	}
 
 	for _, tc := range testCases {

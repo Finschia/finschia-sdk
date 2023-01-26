@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -27,7 +28,7 @@ func TestImportExportQueues(t *testing.T) {
 	SortAddresses(addrs)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	ctx = app.BaseApp.NewContext(false, ocproto.Header{})
 
@@ -80,10 +81,10 @@ func TestImportExportQueues(t *testing.T) {
 	)
 
 	app2.Commit()
-	app2.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app2.LastBlockHeight() + 1}})
+	app2.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: app2.LastBlockHeight() + 1}})
 
 	header = ocproto.Header{Height: app2.LastBlockHeight() + 1}
-	app2.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app2.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	ctx2 := app2.BaseApp.NewContext(false, ocproto.Header{})
 
@@ -141,7 +142,7 @@ func TestEqualProposals(t *testing.T) {
 	SortAddresses(addrs)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	// Submit two proposals
 	proposal := TestProposal

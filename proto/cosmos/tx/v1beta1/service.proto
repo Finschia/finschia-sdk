@@ -8,6 +8,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "ostracon/types/block.proto";
 import "ostracon/types/types.proto";
+import "tendermint/types/types.proto";
 
 option (gogoproto.goproto_registration) = true;
 option go_package                       = "github.com/line/lbm-sdk/types/tx";
@@ -158,7 +159,7 @@ message GetBlockWithTxsRequest {
 message GetBlockWithTxsResponse {
   // txs are the transactions in the block.
   repeated cosmos.tx.v1beta1.Tx txs      = 1;
-  .ostracon.types.BlockID       block_id = 2;
+  .tendermint.types.BlockID       block_id = 2;
   .ostracon.types.Block         block    = 3;
   // pagination defines a pagination for the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 4;

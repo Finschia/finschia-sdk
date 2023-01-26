@@ -5,15 +5,14 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/require"
-
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/gov"
 	"github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/staking"
+	ocabci "github.com/line/ostracon/abci/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTickExpiredDepositPeriod(t *testing.T) {
@@ -22,7 +21,7 @@ func TestTickExpiredDepositPeriod(t *testing.T) {
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -74,7 +73,7 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -151,7 +150,7 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -210,7 +209,7 @@ func TestTickPassedVotingPeriod(t *testing.T) {
 	SortAddresses(addrs)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -281,7 +280,7 @@ func TestProposalPassedEndblocker(t *testing.T) {
 	stakingHandler := staking.NewHandler(app.StakingKeeper)
 
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	valAddr := sdk.ValAddress(addrs[0])
 
@@ -330,7 +329,7 @@ func TestEndBlockerProposalHandlerFailed(t *testing.T) {
 
 	stakingHandler := staking.NewHandler(app.StakingKeeper)
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	valAddr := sdk.ValAddress(addrs[0])
 

@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/evidence/types"

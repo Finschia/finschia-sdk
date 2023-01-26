@@ -3,11 +3,13 @@ package lbm.base.ostracon.v1;
 
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
-import "ostracon/p2p/types.proto";
 import "ostracon/types/block.proto";
 import "ostracon/types/types.proto";
 import "ostracon/abci/types.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "tendermint/p2p/types.proto";
+import "tendermint/types/types.proto";
+import "tendermint/abci/types.proto";
 
 option go_package = "github.com/line/lbm-sdk/client/grpc/tmservice";
 
@@ -92,7 +94,7 @@ message GetBlockByHeightRequest {
 
 // GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC method.
 message GetBlockByHeightResponse {
-  .ostracon.types.BlockID block_id = 1;
+  .tendermint.types.BlockID block_id = 1;
   .ostracon.types.Block   block    = 2;
 }
 
@@ -103,7 +105,7 @@ message GetBlockByHashRequest {
 
 // GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC method.
 message GetBlockByHashResponse {
-  .ostracon.types.BlockID block_id = 1;
+  .tendermint.types.BlockID block_id = 1;
   .ostracon.types.Block   block    = 2;
 }
 
@@ -115,9 +117,9 @@ message GetBlockResultsByHeightRequest {
 // GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResultsByHeight RPC method.
 message GetBlockResultsByHeightResponse {
   int64                                     height          = 1;
-  repeated .ostracon.abci.ResponseDeliverTx txs_results     = 2;
-  .ostracon.abci.ResponseBeginBlock         res_begin_block = 3;
-  .ostracon.abci.ResponseEndBlock           res_end_block   = 4;
+  repeated .tendermint.abci.ResponseDeliverTx txs_results     = 2;
+  .tendermint.abci.ResponseBeginBlock         res_begin_block = 3;
+  .tendermint.abci.ResponseEndBlock           res_end_block   = 4;
 }
 
 // GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC method.
@@ -125,7 +127,7 @@ message GetLatestBlockRequest {}
 
 // GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC method.
 message GetLatestBlockResponse {
-  .ostracon.types.BlockID block_id = 1;
+  .tendermint.types.BlockID block_id = 1;
   .ostracon.types.Block   block    = 2;
 }
 
@@ -142,7 +144,7 @@ message GetNodeInfoRequest {}
 
 // GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
 message GetNodeInfoResponse {
-  .ostracon.p2p.DefaultNodeInfo default_node_info   = 1;
+  .tendermint.p2p.DefaultNodeInfo default_node_info   = 1;
   VersionInfo                   application_version = 2;
 }
 

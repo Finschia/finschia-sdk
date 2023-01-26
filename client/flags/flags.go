@@ -2,11 +2,10 @@ package flags
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"strconv"
 
 	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/privval"
-	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/crypto/keyring"
 )
@@ -73,14 +72,12 @@ const (
 	FlagCountTotal       = "count-total"
 	FlagTimeoutHeight    = "timeout-height"
 	FlagKeyAlgorithm     = "algo"
-	FlagPrivKeyType      = "priv_key_type"
 	FlagFeeAccount       = "fee-account"
 	FlagReverse          = "reverse"
 
 	// Tendermint logging flags
-	FlagLogLevel       = "log_level"
-	FlagLogFormat      = "log_format"
-	DefaultPrivKeyType = privval.PrivKeyTypeEd25519
+	FlagLogLevel  = "log_level"
+	FlagLogFormat = "log_format"
 )
 
 // LineBreak can be included in a command list to provide a blank line
@@ -117,8 +114,6 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagKeyringBackend, DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test|memory)")
 	cmd.Flags().String(FlagSignMode, "", "Choose sign mode (direct|amino-json), this is an advanced feature")
 	cmd.Flags().Uint64(FlagTimeoutHeight, 0, "Set a block timeout height to prevent the tx from being committed past a certain height")
-	cmd.Flags().String(FlagPrivKeyType, DefaultPrivKeyType, "specify validator's private key type (currently only ed25519 is supported).\n"+
-		"This option affects the priv_key.type setting in priv_validator_key.json")
 	cmd.Flags().String(FlagFeeAccount, "", "Fee account pays fees for the transaction instead of deducting from the signer")
 
 	// --gas can accept integers and "auto"

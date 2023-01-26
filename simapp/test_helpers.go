@@ -13,12 +13,15 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
+	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	dbm "github.com/tendermint/tm-db"
+
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	bam "github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
@@ -43,12 +46,12 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 		MaxBytes: 200000,
 		MaxGas:   2000000,
 	},
-	Evidence: &ocproto.EvidenceParams{
+	Evidence: &tmproto.EvidenceParams{
 		MaxAgeNumBlocks: 302400,
 		MaxAgeDuration:  504 * time.Hour, // 3 weeks is the max duration
 		MaxBytes:        10000,
 	},
-	Validator: &ocproto.ValidatorParams{
+	Validator: &tmproto.ValidatorParams{
 		PubKeyTypes: []string{
 			octypes.ABCIPubKeyTypeEd25519,
 		},
@@ -166,7 +169,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 
 	// commit genesis changes
 	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{
 		Height:             app.LastBlockHeight() + 1,
 		AppHash:            app.LastCommitID().Hash,
 		ValidatorsHash:     valSet.Hash(),
@@ -205,7 +208,7 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 	)
 
 	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	return app
 }
@@ -416,7 +419,7 @@ func SignCheckDeliver(
 	}
 
 	// Simulate a sending a transaction and committing a block and recheck
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {
@@ -430,8 +433,8 @@ func SignCheckDeliver(
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
 
-	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
-	app.EndRecheckTx(abci.RequestEndRecheckTx{})
+	app.BeginRecheckTx(ocabci.RequestBeginRecheckTx{Header: header})
+	app.EndRecheckTx(ocabci.RequestEndRecheckTx{})
 
 	return gInfo, res, err
 }
@@ -455,7 +458,7 @@ func SignAndDeliver(
 	require.NoError(t, err)
 
 	// Simulate a sending a transaction and committing a block
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/abci/types"
 	types2 "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	"github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/std"

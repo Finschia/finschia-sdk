@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto/tmhash"
 	ostbytes "github.com/line/ostracon/libs/bytes"
+	abci "github.com/tendermint/tendermint/abci/types"
 	"gopkg.in/yaml.v2"
 
 	sdk "github.com/line/lbm-sdk/types"

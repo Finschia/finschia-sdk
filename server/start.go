@@ -12,6 +12,9 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
+	//"github.com/tendermint/tendermint/p2p"
+	//pvm "github.com/tendermint/tendermint/privval"
+
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"
@@ -304,10 +307,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	} else {
 		ctx.Logger.Info("starting node with ABCI Ostracon in-process")
 
-		pv, err2 := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), cfg.PrivKeyType)
-		if err2 != nil {
-			return err2
-		}
+		pv := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
 
 		ocNode, err = node.NewNode(
 			cfg,
