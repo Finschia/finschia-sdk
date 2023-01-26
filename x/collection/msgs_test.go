@@ -9,8 +9,10 @@ import (
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/collection"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 func TestMsgTransferFT(t *testing.T) {
@@ -28,7 +30,7 @@ func TestMsgTransferFT(t *testing.T) {
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		amount     []collection.Coin
-		valid      bool
+		err        error
 		panic      bool
 	}{
 		"valid msg": {
@@ -36,22 +38,24 @@ func TestMsgTransferFT(t *testing.T) {
 			from:       addrs[0],
 			to:         addrs[1],
 			amount:     amount,
-			valid:      true,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			to:         addrs[1],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			from:   addrs[0],
 			to:     addrs[1],
 			amount: amount,
+			err:    class.ErrInvalidContractID,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"nil amount": {
 			contractID: "deadbeef",
@@ -70,6 +74,7 @@ func TestMsgTransferFT(t *testing.T) {
 				TokenId: collection.NewFTID("00bab10c"),
 				Amount:  sdk.ZeroInt(),
 			}},
+			err: collection.ErrInvalidAmount,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
@@ -78,29 +83,31 @@ func TestMsgTransferFT(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				Amount:     tc.amount,
+			}
 
-		if tc.panic {
-			require.Panics(t, func() { msg.ValidateBasic() }, name)
-			continue
-		}
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			if tc.panic {
+				require.Panics(t, func() { msg.ValidateBasic() })
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
+
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -120,7 +127,7 @@ func TestMsgTransferFTFrom(t *testing.T) {
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		amount     []collection.Coin
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
@@ -128,31 +135,34 @@ func TestMsgTransferFTFrom(t *testing.T) {
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     amount,
-			valid:      true,
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			proxy:  addrs[0],
 			from:   addrs[1],
 			to:     addrs[2],
 			amount: amount,
+			err:    class.ErrInvalidContractID,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			to:         addrs[1],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid amount": {
 			contractID: "deadbeef",
@@ -160,28 +170,40 @@ func TestMsgTransferFTFrom(t *testing.T) {
 			from:       addrs[1],
 			to:         addrs[2],
 			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
+		},
+		"invalid denom": {
+			contractID: "deadbeef",
+			proxy:      addrs[0],
+			from:       addrs[1],
+			to:         addrs[2],
+			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				Amount:     tc.amount,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
@@ -198,59 +220,63 @@ func TestMsgTransferNFT(t *testing.T) {
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		ids        []string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
 			ids:        ids,
-			valid:      true,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			to:         addrs[1],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			from: addrs[0],
 			to:   addrs[1],
 			ids:  ids,
+			err:  class.ErrInvalidContractID,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty token ids": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
+			err:        collection.ErrEmptyField,
 		},
 		"invalid token ids": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
 			ids:        []string{""},
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferNFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferNFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				TokenIds:   tc.ids,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -268,7 +294,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		ids        []string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
@@ -276,37 +302,41 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 			from:       addrs[1],
 			to:         addrs[2],
 			ids:        ids,
-			valid:      true,
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			to:         addrs[2],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			proxy: addrs[0],
 			from:  addrs[1],
 			to:    addrs[2],
 			ids:   ids,
+			err:   class.ErrInvalidContractID,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			to:         addrs[1],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty ids": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
+			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
@@ -314,26 +344,27 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 			from:       addrs[1],
 			to:         addrs[2],
 			ids:        []string{""},
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferNFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferNFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				TokenIds:   tc.ids,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
@@ -347,43 +378,45 @@ func TestMsgApprove(t *testing.T) {
 		contractID string
 		approver   sdk.AccAddress
 		proxy      sdk.AccAddress
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
 			proxy:      addrs[1],
-			valid:      true,
 		},
 		"invalid contract id": {
 			approver: addrs[0],
 			proxy:    addrs[1],
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
 			proxy:      addrs[1],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty proxy": {
+		"invalid proxy": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgApprove{
-			ContractId: tc.contractID,
-			Approver:   tc.approver.String(),
-			Proxy:      tc.proxy.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgApprove{
+				ContractId: tc.contractID,
+				Approver:   tc.approver.String(),
+				Proxy:      tc.proxy.String(),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+		})
 	}
 }
 
@@ -397,43 +430,45 @@ func TestMsgDisapprove(t *testing.T) {
 		contractID string
 		approver   sdk.AccAddress
 		proxy      sdk.AccAddress
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
 			proxy:      addrs[1],
-			valid:      true,
 		},
 		"invalid contract id": {
 			approver: addrs[0],
 			proxy:    addrs[1],
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
 			proxy:      addrs[1],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty proxy": {
+		"invalid proxy": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgDisapprove{
-			ContractId: tc.contractID,
-			Approver:   tc.approver.String(),
-			Proxy:      tc.proxy.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgDisapprove{
+				ContractId: tc.contractID,
+				Approver:   tc.approver.String(),
+				Proxy:      tc.proxy.String(),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+		})
 	}
 }
 
@@ -451,56 +486,59 @@ func TestMsgCreateContract(t *testing.T) {
 		name       string
 		baseImgURI string
 		meta       string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			owner:      addrs[0],
 			name:       name,
 			baseImgURI: uri,
 			meta:       meta,
-			valid:      true,
 		},
 		"invalid owner": {
 			name:       name,
 			baseImgURI: uri,
 			meta:       meta,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"long name": {
 			owner:      addrs[0],
 			name:       string(make([]rune, 21)),
 			baseImgURI: uri,
 			meta:       meta,
+			err:        collection.ErrInvalidNameLength,
 		},
 		"invalid base image uri": {
 			owner:      addrs[0],
 			name:       name,
 			baseImgURI: string(make([]rune, 1001)),
 			meta:       meta,
+			err:        collection.ErrInvalidBaseImgURILength,
 		},
 		"invalid meta": {
 			owner:      addrs[0],
 			name:       name,
 			baseImgURI: uri,
 			meta:       string(make([]rune, 1001)),
+			err:        collection.ErrInvalidMetaLength,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgCreateContract{
-			Owner:      tc.owner.String(),
-			Name:       tc.name,
-			BaseImgUri: tc.baseImgURI,
-			Meta:       tc.meta,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgCreateContract{
+				Owner:      tc.owner.String(),
+				Name:       tc.name,
+				BaseImgUri: tc.baseImgURI,
+				Meta:       tc.meta,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		})
 	}
 }
 
@@ -523,7 +561,7 @@ func TestMsgIssueFT(t *testing.T) {
 		decimals   int32
 		mintable   bool
 		amount     sdk.Int
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: contractID,
@@ -533,7 +571,6 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
-			valid:      true,
 		},
 		"invalid contract id": {
 			owner:    addrs[0],
@@ -542,6 +579,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:     meta,
 			decimals: decimals,
 			amount:   sdk.OneInt(),
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid owner": {
 			contractID: contractID,
@@ -550,14 +588,16 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty to": {
+		"invalid to": {
 			contractID: contractID,
 			owner:      addrs[0],
 			name:       name,
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty name": {
 			contractID: contractID,
@@ -566,6 +606,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
+			err:        collection.ErrInvalidTokenName,
 		},
 		"long name": {
 			contractID: contractID,
@@ -575,7 +616,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
-			valid:      false,
+			err:        collection.ErrInvalidNameLength,
 		},
 		"invalid meta": {
 			contractID: contractID,
@@ -585,6 +626,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       string(make([]rune, 1001)),
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
+			err:        collection.ErrInvalidMetaLength,
 		},
 		"invalid decimals": {
 			contractID: contractID,
@@ -594,6 +636,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   19,
 			amount:     sdk.OneInt(),
+			err:        collection.ErrInvalidTokenDecimals,
 		},
 		"daphne compat": {
 			contractID: contractID,
@@ -602,28 +645,29 @@ func TestMsgIssueFT(t *testing.T) {
 			name:       name,
 			meta:       meta,
 			amount:     sdk.OneInt(),
+			err:        collection.ErrInvalidIssueFT,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgIssueFT{
-			ContractId: tc.contractID,
-			Owner:      tc.owner.String(),
-			To:         tc.to.String(),
-			Name:       tc.name,
-			Meta:       tc.meta,
-			Decimals:   tc.decimals,
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgIssueFT{
+				ContractId: tc.contractID,
+				Owner:      tc.owner.String(),
+				To:         tc.to.String(),
+				Name:       tc.name,
+				Meta:       tc.meta,
+				Decimals:   tc.decimals,
+				Amount:     tc.amount,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		})
 	}
 }
 
@@ -641,55 +685,58 @@ func TestMsgIssueNFT(t *testing.T) {
 		operator   sdk.AccAddress
 		name       string
 		meta       string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: contractID,
 			operator:   addrs[0],
 			name:       name,
 			meta:       meta,
-			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
 			name:     name,
 			meta:     meta,
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid operator": {
 			contractID: contractID,
 			name:       name,
 			meta:       meta,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"long name": {
 			contractID: contractID,
 			operator:   addrs[0],
 			name:       string(make([]rune, 21)),
 			meta:       meta,
+			err:        collection.ErrInvalidNameLength,
 		},
 		"invalid meta": {
 			contractID: contractID,
 			operator:   addrs[0],
 			name:       name,
 			meta:       string(make([]rune, 1001)),
+			err:        collection.ErrInvalidMetaLength,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgIssueNFT{
-			ContractId: tc.contractID,
-			Owner:      tc.operator.String(),
-			Name:       tc.name,
-			Meta:       tc.meta,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgIssueNFT{
+				ContractId: tc.contractID,
+				Owner:      tc.operator.String(),
+				Name:       tc.name,
+				Meta:       tc.meta,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		})
 	}
 }
 
@@ -709,29 +756,41 @@ func TestMsgMintFT(t *testing.T) {
 		operator   sdk.AccAddress
 		to         sdk.AccAddress
 		amount     []collection.Coin
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: contractID,
 			operator:   addrs[0],
 			to:         addrs[1],
 			amount:     amount,
-			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
 			to:       addrs[1],
 			amount:   amount,
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid operator": {
 			contractID: contractID,
 			to:         addrs[1],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty to": {
+		"invalid to": {
 			contractID: contractID,
 			operator:   addrs[0],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid amount": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
+			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -740,25 +799,26 @@ func TestMsgMintFT(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgMintFT{
-			ContractId: tc.contractID,
-			From:       tc.operator.String(),
-			To:         tc.to.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgMintFT{
+				ContractId: tc.contractID,
+				From:       tc.operator.String(),
+				To:         tc.to.String(),
+				Amount:     tc.amount,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		})
 	}
 }
 
@@ -778,42 +838,57 @@ func TestMsgMintNFT(t *testing.T) {
 		operator   sdk.AccAddress
 		to         sdk.AccAddress
 		params     []collection.MintNFTParam
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
 			params:     params,
-			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
 			to:       addrs[1],
 			params:   params,
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
 			to:         addrs[1],
 			params:     params,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty to": {
+		"invalid to": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			params:     params,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty params": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
+			err:        collection.ErrEmptyField,
 		},
 		"param of invalid token type": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
-			params:     []collection.MintNFTParam{{}},
+			params: []collection.MintNFTParam{{
+				Name: "tibetian fox",
+			}},
+			err: collection.ErrInvalidTokenType,
 		},
-		"param of invalid name": {
+		"param of empty name": {
+			contractID: "deadbeef",
+			operator:   addrs[0],
+			to:         addrs[1],
+			params: []collection.MintNFTParam{{
+				TokenType: "deadbeef",
+			}},
+			err: collection.ErrInvalidTokenName,
+		},
+		"param of too long name": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
@@ -821,6 +896,7 @@ func TestMsgMintNFT(t *testing.T) {
 				TokenType: "deadbeef",
 				Name:      string(make([]rune, 21)),
 			}},
+			err: collection.ErrInvalidNameLength,
 		},
 		"param of invalid meta": {
 			contractID: "deadbeef",
@@ -828,27 +904,29 @@ func TestMsgMintNFT(t *testing.T) {
 			to:         addrs[1],
 			params: []collection.MintNFTParam{{
 				TokenType: "deadbeef",
+				Name:      "tibetian fox",
 				Meta:      string(make([]rune, 1001)),
 			}},
+			err: collection.ErrInvalidMetaLength,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgMintNFT{
-			ContractId: tc.contractID,
-			From:       tc.operator.String(),
-			To:         tc.to.String(),
-			Params:     tc.params,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgMintNFT{
+				ContractId: tc.contractID,
+				From:       tc.operator.String(),
+				To:         tc.to.String(),
+				Params:     tc.params,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		})
 	}
 }
 
@@ -866,21 +944,22 @@ func TestMsgBurnFT(t *testing.T) {
 		contractID string
 		from       sdk.AccAddress
 		amount     []collection.Coin
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			amount:     amount,
-			valid:      true,
 		},
 		"invalid contract id": {
 			from:   addrs[0],
 			amount: amount,
+			err:    class.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
@@ -888,24 +967,34 @@ func TestMsgBurnFT(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
+			err: collection.ErrInvalidTokenID,
+		},
+		"invalid amount": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				Amount:     tc.amount,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -924,29 +1013,31 @@ func TestMsgBurnFTFrom(t *testing.T) {
 		grantee    sdk.AccAddress
 		from       sdk.AccAddress
 		amount     []collection.Coin
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			from:       addrs[1],
 			amount:     amount,
-			valid:      true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
 			from:    addrs[1],
 			amount:  amount,
+			err:     class.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			amount:     amount,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
@@ -955,25 +1046,36 @@ func TestMsgBurnFTFrom(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
+			err: collection.ErrInvalidTokenID,
+		},
+		"invalid amount": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			from:       addrs[1],
+			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.grantee.String(),
-			From:       tc.from.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.grantee.String(),
+				From:       tc.from.String(),
+				Amount:     tc.amount,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		})
 	}
 }
 
@@ -989,48 +1091,51 @@ func TestMsgBurnNFT(t *testing.T) {
 		contractID string
 		from       sdk.AccAddress
 		ids        []string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			ids:        ids,
-			valid:      true,
 		},
 		"invalid contract id": {
 			from: addrs[0],
 			ids:  ids,
+			err:  class.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty ids": {
 			contractID: "deadbeef",
 			from:       addrs[0],
+			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			ids:        []string{""},
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnNFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnNFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				TokenIds:   tc.ids,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1047,59 +1152,63 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 		grantee    sdk.AccAddress
 		from       sdk.AccAddress
 		ids        []string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			from:       addrs[1],
 			ids:        ids,
-			valid:      true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
 			from:    addrs[1],
 			ids:     ids,
+			err:     class.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			ids:        ids,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty ids": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			from:       addrs[1],
+			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			from:       addrs[0],
 			ids:        []string{""},
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnNFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.grantee.String(),
-			From:       tc.from.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnNFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.grantee.String(),
+				From:       tc.from.String(),
+				TokenIds:   tc.ids,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1116,20 +1225,18 @@ func TestMsgModify(t *testing.T) {
 		tokenType  string
 		tokenIndex string
 		changes    []collection.Change
-		valid      bool
+		err        error
 	}{
 		"valid contract modification": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
 			changes:    changes,
-			valid:      true,
 		},
 		"valid token class modification": {
 			contractID: "deadbeef",
 			tokenType:  "deadbeef",
 			owner:      addrs[0],
 			changes:    changes,
-			valid:      true,
 		},
 		"valid nft modification": {
 			contractID: "deadbeef",
@@ -1137,59 +1244,65 @@ func TestMsgModify(t *testing.T) {
 			tokenIndex: "deadbeef",
 			owner:      addrs[0],
 			changes:    changes,
-			valid:      true,
 		},
 		"invalid contract id": {
 			owner:   addrs[0],
 			changes: changes,
+			err:     class.ErrInvalidContractID,
 		},
 		"invalid owner": {
 			contractID: "deadbeef",
 			changes:    changes,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid key of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()) , Value: "tt"}},
+			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
+			err:        collection.ErrInvalidChangesField,
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: "symbol"}},
+			changes:    []collection.Change{{Field: collection.AttributeKeyName.String(), Value: string(make([]rune, 21))}},
+			err:        collection.ErrInvalidNameLength,
 		},
 		"empty changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
+			err:        collection.ErrEmptyChanges,
 		},
 		"too many changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
 			changes:    make([]collection.Change, 101),
+			err:        collection.ErrInvalidChangesFieldCount,
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
 			changes:    []collection.Change{changes[0], changes[0]},
+			err:        collection.ErrDuplicateChangesField,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgModify{
-			ContractId: tc.contractID,
-			TokenType:  tc.tokenType,
-			TokenIndex: tc.tokenIndex,
-			Owner:      tc.owner.String(),
-			Changes:    tc.changes,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgModify{
+				ContractId: tc.contractID,
+				TokenType:  tc.tokenType,
+				TokenIndex: tc.tokenIndex,
+				Owner:      tc.owner.String(),
+				Changes:    tc.changes,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1204,53 +1317,56 @@ func TestMsgGrantPermission(t *testing.T) {
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		permission string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
 			permission: collection.LegacyPermissionMint.String(),
-			valid:      true,
 		},
 		"invalid contract id": {
 			from:       addrs[0],
 			to:         addrs[1],
 			permission: collection.LegacyPermissionMint.String(),
+			err:        class.ErrInvalidContractID,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			to:         addrs[1],
 			permission: collection.LegacyPermissionMint.String(),
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			permission: collection.LegacyPermissionMint.String(),
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
+			err:        sdkerrors.ErrInvalidPermission,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgGrantPermission{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			Permission: tc.permission,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgGrantPermission{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				Permission: tc.permission,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1264,43 +1380,45 @@ func TestMsgRevokePermission(t *testing.T) {
 		contractID string
 		from       sdk.AccAddress
 		permission string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			permission: collection.LegacyPermissionMint.String(),
-			valid:      true,
 		},
 		"invalid contract id": {
 			from:       addrs[0],
 			permission: collection.LegacyPermissionMint.String(),
+			err:        class.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
 			permission: collection.LegacyPermissionMint.String(),
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
 			from:       addrs[0],
+			err:        sdkerrors.ErrInvalidPermission,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgRevokePermission{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			Permission: tc.permission,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgRevokePermission{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				Permission: tc.permission,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1321,59 +1439,63 @@ func TestMsgAttach(t *testing.T) {
 		from       sdk.AccAddress
 		tokenID    string
 		toTokenID  string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: contractID,
 			from:       addrs[0],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
-			valid:      true,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: contractID,
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			from:      addrs[0],
 			tokenID:   tokenIDs[0],
 			toTokenID: tokenIDs[1],
+			err:       class.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: contractID,
 			from:       addrs[0],
 			toTokenID:  tokenIDs[1],
+			err:        collection.ErrInvalidTokenID,
 		},
 		"invalid to id": {
 			contractID: contractID,
 			from:       addrs[0],
 			tokenID:    tokenIDs[0],
+			err:        collection.ErrInvalidTokenID,
 		},
 		"to itself": {
 			contractID: contractID,
 			from:       addrs[0],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[0],
+			err:        collection.ErrCannotAttachToItself,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgAttach{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-			ToTokenId:  tc.toTokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgAttach{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+				ToTokenId:  tc.toTokenID,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1390,43 +1512,45 @@ func TestMsgDetach(t *testing.T) {
 		contractID string
 		from       sdk.AccAddress
 		tokenID    string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: contractID,
 			from:       addrs[0],
 			tokenID:    tokenID,
-			valid:      true,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: contractID,
 			tokenID:    tokenID,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			from:    addrs[0],
 			tokenID: tokenID,
+			err:     class.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: contractID,
 			from:       addrs[0],
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgDetach{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgDetach{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1447,7 +1571,7 @@ func TestMsgAttachFrom(t *testing.T) {
 		from       sdk.AccAddress
 		tokenID    string
 		toTokenID  string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
@@ -1455,37 +1579,41 @@ func TestMsgAttachFrom(t *testing.T) {
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
-			valid:      true,
 		},
-		"empty proxy": {
+		"invalid proxy": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			proxy:     addrs[0],
 			from:      addrs[1],
 			tokenID:   tokenIDs[0],
 			toTokenID: tokenIDs[1],
+			err:       class.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
 			toTokenID:  tokenIDs[1],
+			err:        collection.ErrInvalidTokenID,
 		},
 		"invalid to id": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
+			err:        collection.ErrInvalidTokenID,
 		},
 		"to itself": {
 			contractID: "deadbeef",
@@ -1493,26 +1621,27 @@ func TestMsgAttachFrom(t *testing.T) {
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[0],
+			err:        collection.ErrCannotAttachToItself,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgAttachFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-			ToTokenId:  tc.toTokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgAttachFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+				ToTokenId:  tc.toTokenID,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1529,53 +1658,56 @@ func TestMsgDetachFrom(t *testing.T) {
 		proxy      sdk.AccAddress
 		from       sdk.AccAddress
 		tokenID    string
-		valid      bool
+		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
 			tokenID:    tokenID,
-			valid:      true,
 		},
-		"empty proxy": {
+		"invalid proxy": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			tokenID:    tokenID,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"empty from": {
+		"invalid from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			tokenID:    tokenID,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			proxy:   addrs[0],
 			from:    addrs[1],
 			tokenID: tokenID,
+			err:     class.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgDetachFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgDetachFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			return
-		}
-		require.NoError(t, err, name)
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 

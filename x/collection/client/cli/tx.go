@@ -505,6 +505,7 @@ func NewTxCmdMintNFT() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(FlagName, "", "set name")
 	cmd.Flags().String(FlagMeta, "", "set meta")
+	cmd.MarkFlagRequired(FlagName)
 
 	return cmd
 }

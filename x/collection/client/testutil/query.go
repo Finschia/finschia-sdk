@@ -731,6 +731,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
 		ContractId: s.contractID,
 		TokenId:    tokenID,
+		Name:       "arctic fox",
 		Owner:      s.customer.String(),
 	})
 	s.Require().NoError(err)
@@ -811,6 +812,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokensWithTokenType() {
 			token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
 				ContractId: s.contractID,
 				TokenId:    collection.NewNFTID(s.nftClassID, len(tokens)+1),
+				Name:       "arctic fox",
 				Owner:      owner.String(),
 			})
 			s.Require().NoError(err)
@@ -899,6 +901,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 			token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
 				ContractId: s.contractID,
 				TokenId:    collection.NewNFTID(s.nftClassID, len(tokens)),
+				Name:       "arctic fox",
 				Owner:      owner.String(),
 			})
 			s.Require().NoError(err)
@@ -981,7 +984,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdRoot() {
 			true,
 			&collection.QueryRootResponse{
 				Root: collection.NFT{
-					Id: collection.NewNFTID(s.nftClassID, 1),
+					Id:   collection.NewNFTID(s.nftClassID, 1),
+					Name: "arctic fox",
 				},
 			},
 		},
@@ -1052,7 +1056,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParent() {
 			true,
 			&collection.QueryParentResponse{
 				Parent: collection.NFT{
-					Id: collection.NewNFTID(s.nftClassID, 1),
+					Id:   collection.NewNFTID(s.nftClassID, 1),
+					Name: "arctic fox",
 				},
 			},
 		},
@@ -1123,7 +1128,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 			true,
 			&collection.QueryChildrenResponse{
 				Children: []collection.NFT{{
-					Id: collection.NewNFTID(s.nftClassID, 2),
+					Id:   collection.NewNFTID(s.nftClassID, 2),
+					Name: "arctic fox",
 				}},
 				Pagination: &query.PageResponse{},
 			},

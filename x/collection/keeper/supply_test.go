@@ -32,20 +32,15 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 	testCases := map[string]struct {
 		contractID string
 		class      collection.TokenClass
-		valid      bool
+		err        error
 	}{
 		"valid fungible token class": {
 			contractID: s.contractID,
 			class:      &collection.FTClass{},
-			valid:      true,
 		},
 		"valid non-fungible token class": {
 			contractID: s.contractID,
 			class:      &collection.NFTClass{},
-			valid:      true,
-		},
-		"invalid contract id": {
-			class: &collection.FTClass{},
 		},
 	}
 
@@ -54,12 +49,11 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 			ctx, _ := s.ctx.CacheContext()
 
 			id, err := s.keeper.CreateTokenClass(ctx, tc.contractID, tc.class)
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				s.Require().Nil(id)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(id)
 
 			class, err := s.keeper.GetTokenClass(ctx, tc.contractID, *id)
@@ -73,24 +67,26 @@ func (s *KeeperTestSuite) TestMintFT() {
 	testCases := map[string]struct {
 		contractID string
 		amount     collection.Coin
-		valid      bool
+		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
-			valid:      true,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
 			amount:     collection.NewNFTCoin(s.ftClassID, 1),
+			err:        collection.ErrTokenNotExist,
 		},
 		"class not found": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			err:        collection.ErrTokenNotExist,
 		},
 		"not a class id of ft": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin(s.nftClassID, sdk.OneInt()),
+			err:        collection.ErrTokenNotMintable,
 		},
 	}
 
@@ -99,11 +95,10 @@ func (s *KeeperTestSuite) TestMintFT() {
 			ctx, _ := s.ctx.CacheContext()
 
 			err := s.keeper.MintFT(ctx, tc.contractID, s.stranger, collection.NewCoins(tc.amount))
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				return
 			}
-			s.Require().NoError(err)
 		})
 	}
 }
@@ -112,20 +107,21 @@ func (s *KeeperTestSuite) TestMintNFT() {
 	testCases := map[string]struct {
 		contractID string
 		params     []collection.MintNFTParam
-		valid      bool
+		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			params:     []collection.MintNFTParam{{TokenType: s.nftClassID}},
-			valid:      true,
 		},
 		"class not found": {
 			contractID: s.contractID,
 			params:     []collection.MintNFTParam{{TokenType: "deadbeef"}},
+			err:        collection.ErrTokenTypeNotExist,
 		},
 		"not a class id of nft": {
 			contractID: s.contractID,
 			params:     []collection.MintNFTParam{{TokenType: s.ftClassID}},
+			err:        collection.ErrTokenTypeNotExist,
 		},
 	}
 
@@ -134,11 +130,10 @@ func (s *KeeperTestSuite) TestMintNFT() {
 			ctx, _ := s.ctx.CacheContext()
 
 			_, err := s.keeper.MintNFT(ctx, tc.contractID, s.stranger, tc.params)
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				return
 			}
-			s.Require().NoError(err)
 		})
 	}
 }
@@ -147,24 +142,16 @@ func (s *KeeperTestSuite) TestBurnCoins() {
 	testCases := map[string]struct {
 		contractID string
 		amount     collection.Coin
-		valid      bool
+		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
-			valid:      true,
 		},
-		"invalid token id": {
-			contractID: s.contractID,
-			amount:     collection.NewNFTCoin(s.ftClassID, 1),
-		},
-		"class not found": {
+		"insufficient tokens": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin("00bab10c", sdk.OneInt()),
-		},
-		"not a class id of ft": {
-			contractID: s.contractID,
-			amount:     collection.NewFTCoin(s.nftClassID, sdk.OneInt()),
+			err:        collection.ErrInsufficientToken,
 		},
 	}
 
@@ -173,11 +160,10 @@ func (s *KeeperTestSuite) TestBurnCoins() {
 			ctx, _ := s.ctx.CacheContext()
 
 			_, err := s.keeper.BurnCoins(ctx, tc.contractID, s.vendor, collection.NewCoins(tc.amount))
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				return
 			}
-			s.Require().NoError(err)
 		})
 	}
 }
@@ -198,12 +184,15 @@ func (s *KeeperTestSuite) TestModifyContract() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
+			call := func() {
+				s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
+			}
+
 			if contractID != s.contractID {
-				s.Require().Error(err)
+				s.Require().Panics(call)
 				return
 			}
-			s.Require().NoError(err)
+			call()
 
 			contract, err := s.keeper.GetContract(ctx, contractID)
 			s.Require().NoError(err)
@@ -216,10 +205,6 @@ func (s *KeeperTestSuite) TestModifyContract() {
 }
 
 func (s *KeeperTestSuite) TestModifyTokenClass() {
-	contractDescriptions := map[string]string{
-		s.contractID: "valid",
-		"deadbeef":   "not-exist",
-	}
 	classDescriptions := map[string]string{
 		s.nftClassID: "valid",
 		"deadbeef":   "not-exist",
@@ -229,37 +214,31 @@ func (s *KeeperTestSuite) TestModifyTokenClass() {
 		{Key: collection.AttributeKeyMeta.String(), Value: "Arctic Fox"},
 	}
 
-	for contractID, contractDesc := range contractDescriptions {
-		for classID, classDesc := range classDescriptions {
-			name := fmt.Sprintf("Contract: %s, Class: %s", contractDesc, classDesc)
-			s.Run(name, func() {
-				ctx, _ := s.ctx.CacheContext()
+	for classID, classDesc := range classDescriptions {
+		name := fmt.Sprintf("Class: %s", classDesc)
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
 
-				err := s.keeper.ModifyTokenClass(ctx, contractID, classID, s.vendor, changes)
-				if contractID != s.contractID || classID != s.nftClassID {
-					s.Require().Error(err)
-					return
-				}
-				s.Require().NoError(err)
+			err := s.keeper.ModifyTokenClass(ctx, s.contractID, classID, s.vendor, changes)
+			if classID != s.nftClassID {
+				s.Require().ErrorIs(err, collection.ErrTokenTypeNotExist)
+				return
+			}
+			s.Require().NoError(err)
 
-				class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
-				s.Require().NoError(err)
+			class, err := s.keeper.GetTokenClass(ctx, s.contractID, classID)
+			s.Require().NoError(err)
 
-				nftClass, ok := class.(*collection.NFTClass)
-				s.Require().True(ok)
+			nftClass, ok := class.(*collection.NFTClass)
+			s.Require().True(ok)
 
-				s.Require().Equal(changes[0].Value, nftClass.Name)
-				s.Require().Equal(changes[1].Value, nftClass.Meta)
-			})
-		}
+			s.Require().Equal(changes[0].Value, nftClass.Name)
+			s.Require().Equal(changes[1].Value, nftClass.Meta)
+		})
 	}
 }
 
 func (s *KeeperTestSuite) TestModifyNFT() {
-	contractDescriptions := map[string]string{
-		s.contractID: "valid",
-		"deadbeef":   "not-exist",
-	}
 	validTokenID := collection.NewNFTID(s.nftClassID, 1)
 	tokenDescriptions := map[string]string{
 		validTokenID:                       "valid",
@@ -270,25 +249,23 @@ func (s *KeeperTestSuite) TestModifyNFT() {
 		{Key: collection.AttributeKeyMeta.String(), Value: "Fennec Fox 1"},
 	}
 
-	for contractID, contractDesc := range contractDescriptions {
-		for tokenID, tokenDesc := range tokenDescriptions {
-			name := fmt.Sprintf("Contract: %s, Token: %s", contractDesc, tokenDesc)
-			s.Run(name, func() {
-				ctx, _ := s.ctx.CacheContext()
+	for tokenID, tokenDesc := range tokenDescriptions {
+		name := fmt.Sprintf("Token: %s", tokenDesc)
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
 
-				err := s.keeper.ModifyNFT(ctx, contractID, tokenID, s.vendor, changes)
-				if contractID != s.contractID || tokenID != validTokenID {
-					s.Require().Error(err)
-					return
-				}
-				s.Require().NoError(err)
+			err := s.keeper.ModifyNFT(ctx, s.contractID, tokenID, s.vendor, changes)
+			if tokenID != validTokenID {
+				s.Require().ErrorIs(err, collection.ErrTokenNotExist)
+				return
+			}
+			s.Require().NoError(err)
 
-				nft, err := s.keeper.GetNFT(ctx, contractID, tokenID)
-				s.Require().NoError(err)
+			nft, err := s.keeper.GetNFT(ctx, s.contractID, tokenID)
+			s.Require().NoError(err)
 
-				s.Require().Equal(changes[0].Value, nft.Name)
-				s.Require().Equal(changes[1].Value, nft.Meta)
-			})
-		}
+			s.Require().Equal(changes[0].Value, nft.Name)
+			s.Require().Equal(changes[1].Value, nft.Meta)
+		})
 	}
 }
