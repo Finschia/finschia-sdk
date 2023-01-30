@@ -39,7 +39,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		NewTxCmdSend(),
 		NewTxCmdOperatorSend(),
-		NewTxCmdApprove(),
+		NewTxCmdAuthorizeOperator(),
 		NewTxCmdRevokeOperator(),
 		NewTxCmdIssue(),
 		NewTxCmdGrantPermission(),
@@ -91,11 +91,11 @@ func NewTxCmdSend() *cobra.Command {
 
 func NewTxCmdOperatorSend() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-from [contract-id] [operator] [from] [to] [amount]",
+		Use:   "operator-send [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
 		Short: "send tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s transfer-from <contract-id> <operator> <from> <to> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s operator-send <contract-id> <operator> <from> <to> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -126,13 +126,13 @@ func NewTxCmdOperatorSend() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdApprove() *cobra.Command {
+func NewTxCmdAuthorizeOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approve [contract-id] [holder] [operator]",
+		Use:   "authorize-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
 		Short: "authorize operator to send tokens to a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s approve <contract-id> <holder> <operator>`, version.AppName, token.ModuleName),
+			$ %s tx %s authorize-operator <contract-id> <holder> <operator>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -393,11 +393,11 @@ func NewTxCmdBurn() *cobra.Command {
 
 func NewTxCmdOperatorBurn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-from [contract-id] [grantee] [from] [amount]",
+		Use:   "operator-burn [contract-id] [grantee] [from] [amount]",
 		Args:  cobra.ExactArgs(4),
 		Short: "burn tokens by a given grantee",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s burn-from <contract-id> <grantee> <from> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s operator-burn <contract-id> <grantee> <from> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
