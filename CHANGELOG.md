@@ -64,5 +64,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Build, CI
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process
+* (build) [\#872](https://github.com/line/lbm-sdk/pull/872) Retract v1.0.0
 
 ### Document Updates
