@@ -60,6 +60,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
 
+* (codec) [#833](https://github.com/line/lbm-sdk/pull/833) Fix foundation amino codec
+
 ### Build, CI
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process
 
