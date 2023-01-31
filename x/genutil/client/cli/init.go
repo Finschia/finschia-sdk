@@ -4,16 +4,18 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/cosmos/go-bip39"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+
 	cfg "github.com/line/ostracon/config"
 	"github.com/line/ostracon/libs/cli"
 	ostos "github.com/line/ostracon/libs/os"
 	ostrand "github.com/line/ostracon/libs/rand"
 	"github.com/line/ostracon/types"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"

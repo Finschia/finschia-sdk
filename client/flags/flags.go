@@ -2,8 +2,9 @@ package flags
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"strconv"
+
+	"github.com/spf13/cobra"
 
 	ostcli "github.com/line/ostracon/libs/cli"
 
