@@ -117,6 +117,11 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetBlockByHashResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+	blockId := blockInfoRes.GetBlockId()
+	s.Require().Equal(blkhash, bytes.HexBytes(blockId.Hash))
+
+	block := blockInfoRes.GetBlock()
+	s.Require().Equal(val.ClientCtx.ChainID, block.Header.ChainID)
 }
 
 func (s IntegrationTestSuite) TestQueryBlockByHeight() {
@@ -128,6 +133,9 @@ func (s IntegrationTestSuite) TestQueryBlockByHeight() {
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetBlockByHeightResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+
+	block := blockInfoRes.GetBlock()
+	s.Require().Equal(int64(1), block.Header.Height)
 }
 
 func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
@@ -139,6 +147,15 @@ func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	s.Require().NoError(err)
 	var blockResultsRes tmservice.GetBlockResultsByHeightResponse
 	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(restRes, &blockResultsRes))
+
+	txResult := blockResultsRes.GetTxsResults()
+	s.Require().Equal(0, len(txResult))
+
+	beginBlock := blockResultsRes.GetResBeginBlock()
+	s.Require().Equal(11, len(beginBlock.Events)) // coinbase event (6) + transfer mintModule to feeCollectorName(5)
+
+	endBlock := blockResultsRes.GetResEndBlock()
+	s.Require().Equal(0, len(endBlock.Events))
 }
 
 func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {
