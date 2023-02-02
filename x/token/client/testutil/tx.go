@@ -154,7 +154,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
+func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -197,7 +197,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdApprove()
+			cmd := cli.NewTxCmdAuthorizeOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)

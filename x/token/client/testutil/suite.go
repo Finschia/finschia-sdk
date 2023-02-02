@@ -145,7 +145,7 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, holder),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
