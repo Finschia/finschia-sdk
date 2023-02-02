@@ -9,7 +9,7 @@ set -e
 
 [ -n "$CHAIN_ID" ]
 
-UPGRADE_HEIGHT=5
+UPGRADE_HEIGHT=20
 
 assert_begin() {
 	info=$($DAEMON_NAME q block 2>/dev/null)
