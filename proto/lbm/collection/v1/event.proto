@@ -159,6 +159,7 @@ message EventCreatedNFTClass {
   // address which triggered the create.
   string operator = 2;
   // token type associated with the token class.
+  // Refer: TokenType
   string token_type = 3;
   // name of the token class.
   string name = 4;
@@ -258,6 +259,7 @@ message EventModifiedTokenClass {
   // address which triggered the modify.
   string operator = 2;
   // token type associated with the token class.
+  // Refer: TokenType
   string token_type = 3;
   // changes of the attributes applied.
   // possible attribute keys are same as those of MsgModify.
