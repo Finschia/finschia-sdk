@@ -9,10 +9,10 @@ set -e
 
 [ -n "$CHAIN_ID" ]
 
-UPGRADE_HEIGHT=20
+UPGRADE_HEIGHT=5
 
 assert_begin() {
-	info=$($DAEMON_NAME q block 2>/dev/null)
+	info=$($DAEMON_NAME q block --log_level info 2>/dev/null)
 	if [ -z "$info" ]
 	then
 		return 1
