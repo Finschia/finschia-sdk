@@ -48,8 +48,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
-* (x/foundation) [#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
+* (x/foundation) [\#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
 * (x/collection,token) [\#849](https://github.com/line/lbm-sdk/pull/849) Introduce codespace into x/collection,token
+* (x/token,collection) [\#863](https://github.com/line/lbm-sdk/pull/863) Update x/collection,token proto
 * (x/collection,token) [\#866](https://github.com/line/lbm-sdk/pull/866) Do not create account on x/token,collection
 
 ### Removed
@@ -59,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
+* (codec) [\#833](https://github.com/line/lbm-sdk/pull/833) Fix foundation amino codec
 
 ### Build, CI
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process

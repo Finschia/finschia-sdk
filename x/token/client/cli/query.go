@@ -27,11 +27,11 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdSupply(),
 		NewQueryCmdMinted(),
 		NewQueryCmdBurnt(),
-		NewQueryCmdTokenClass(),
-		NewQueryCmdTokenClasses(),
+		NewQueryCmdContract(),
+		NewQueryCmdContracts(),
 		NewQueryCmdGranteeGrants(),
-		NewQueryCmdApproved(),
-		NewQueryCmdApprovers(),
+		NewQueryCmdIsOperatorFor(),
+		NewQueryCmdHoldersByOperator(),
 	)
 
 	return queryCmd
@@ -142,7 +142,7 @@ func NewQueryCmdBurnt() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokenClass() *cobra.Command {
+func NewQueryCmdContract() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "token [contract-id]",
 		Args:    cobra.ExactArgs(1),
@@ -154,7 +154,7 @@ func NewQueryCmdTokenClass() *cobra.Command {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.TokenClass(cmd.Context(), &token.QueryTokenClassRequest{
+			res, err := queryClient.Contract(cmd.Context(), &token.QueryContractRequest{
 				ContractId: args[0],
 			})
 			if err != nil {
@@ -168,7 +168,7 @@ func NewQueryCmdTokenClass() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokenClasses() *cobra.Command {
+func NewQueryCmdContracts() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "tokens",
 		Args:    cobra.NoArgs,
@@ -184,7 +184,7 @@ func NewQueryCmdTokenClasses() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.TokenClasses(cmd.Context(), &token.QueryTokenClassesRequest{
+			res, err := queryClient.Contracts(cmd.Context(), &token.QueryContractsRequest{
 				Pagination: pageReq,
 			})
 			if err != nil {
@@ -226,22 +226,22 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdApproved() *cobra.Command {
+func NewQueryCmdIsOperatorFor() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "approved [class-id] [operator] [holder]",
+		Use:     "is-operator-for [class-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
 		Short:   "query authorization on its operator and the token holder",
-		Example: fmt.Sprintf(`$ %s query %s approved <class-id> <operator> <holder>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s is-operator-for <class-id> <operator> <holder>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Approved(cmd.Context(), &token.QueryApprovedRequest{
+			res, err := queryClient.IsOperatorFor(cmd.Context(), &token.QueryIsOperatorForRequest{
 				ContractId: args[0],
-				Proxy:      args[1],
-				Approver:   args[2],
+				Operator:   args[1],
+				Holder:     args[2],
 			})
 			if err != nil {
 				return err
@@ -254,12 +254,12 @@ func NewQueryCmdApproved() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdApprovers() *cobra.Command {
+func NewQueryCmdHoldersByOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "approvers [class-id] [address]",
+		Use:     "holders-by-operator [class-id] [operator]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query all authorizations on a given operator",
-		Example: fmt.Sprintf(`$ %s query %s approvers <class-id> <address>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s holders-by-operator <class-id> <operator>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -270,9 +270,9 @@ func NewQueryCmdApprovers() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.Approvers(cmd.Context(), &token.QueryApproversRequest{
+			res, err := queryClient.HoldersByOperator(cmd.Context(), &token.QueryHoldersByOperatorRequest{
 				ContractId: args[0],
-				Address:    args[1],
+				Operator:   args[1],
 				Pagination: pageReq,
 			})
 			if err != nil {

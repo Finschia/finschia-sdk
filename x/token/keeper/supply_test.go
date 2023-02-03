@@ -9,7 +9,7 @@ func (s *KeeperTestSuite) TestIssue() {
 	ctx, _ := s.ctx.CacheContext()
 
 	// create a not mintable class
-	class := token.TokenClass{
+	class := token.Contract{
 		Name:     "NOT Mintable",
 		Symbol:   "NO",
 		Mintable: false,
@@ -134,10 +134,10 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 }
 
 func (s *KeeperTestSuite) TestModify() {
-	changes := []token.Pair{
-		{Field: token.AttributeKeyName.String(), Value: "new name"},
-		{Field: token.AttributeKeyImageURI.String(), Value: "new uri"},
-		{Field: token.AttributeKeyMeta.String(), Value: "new meta"},
+	changes := []token.Attribute{
+		{Key: token.AttributeKeyName.String(), Value: "new name"},
+		{Key: token.AttributeKeyImageURI.String(), Value: "new uri"},
+		{Key: token.AttributeKeyMeta.String(), Value: "new meta"},
 	}
 
 	ctx, _ := s.ctx.CacheContext()
@@ -149,6 +149,6 @@ func (s *KeeperTestSuite) TestModify() {
 	s.Require().NoError(err)
 
 	s.Require().Equal(changes[0].Value, class.Name)
-	s.Require().Equal(changes[1].Value, class.ImageUri)
+	s.Require().Equal(changes[1].Value, class.Uri)
 	s.Require().Equal(changes[2].Value, class.Meta)
 }

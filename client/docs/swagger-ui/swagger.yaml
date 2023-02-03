@@ -24693,42 +24693,38 @@ paths:
         - Query
   /lbm/token/v1/token_classes:
     get:
-      summary: TokenClasses queries all token metadata.
-      operationId: TokenClasses
+      summary: Contracts queries all token metadata.
+      operationId: Contracts
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              classes:
+              contracts:
                 type: array
                 items:
                   type: object
                   properties:
-                    contract_id:
+                    id:
                       type: string
-                      description: >-
-                        contract_id defines the unique identifier of the token
-                        class.
+                      description: id defines the unique identifier of the contract.
                     name:
                       type: string
                       description: >-
-                        name defines the human-readable name of the token class.
+                        name defines the human-readable name of the contract.
                         mandatory (not ERC20 compliant).
                     symbol:
                       type: string
                       description: >-
-                        symbol is an abbreviated name for token class. mandatory
+                        symbol is an abbreviated name for contract. mandatory
                         (not ERC20 compliant).
-                    image_uri:
+                    uri:
                       type: string
-                      description: >-
-                        image_uri is an uri for the image of the token class
-                        stored off chain.
+                      description: an uri for the image of the contract stored off chain.
                     meta:
                       type: string
-                      description: meta is a brief description of token class.
+                      description: meta is a brief description of contract.
                     decimals:
                       type: integer
                       format: int32
@@ -24741,8 +24737,8 @@ paths:
                       description: >-
                         mintable represents whether the token is allowed to mint
                         or burn.
-                  description: TokenClass defines token information.
-                description: information of the token classes.
+                  description: Contract defines token information.
+                description: information of the contracts.
               pagination:
                 description: pagination defines the pagination in the response.
                 type: object
@@ -24762,8 +24758,8 @@ paths:
 
                       was set, its value is undefined otherwise
             title: >-
-              QueryTokenClassesResponse is the response type for the
-              Query/TokenClasses RPC method
+              QueryContractsResponse is the response type for the
+              Query/Contracts RPC method
         default:
           description: An unexpected error response
           schema:
@@ -24849,40 +24845,36 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}':
     get:
-      summary: TokenClass queries an token metadata based on its contract id.
-      operationId: TokenClass
+      summary: Contract queries an token metadata based on its contract id.
+      operationId: TokenContract
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              class:
+              contract:
                 type: object
                 properties:
-                  contract_id:
+                  id:
                     type: string
-                    description: >-
-                      contract_id defines the unique identifier of the token
-                      class.
+                    description: id defines the unique identifier of the contract.
                   name:
                     type: string
                     description: >-
-                      name defines the human-readable name of the token class.
+                      name defines the human-readable name of the contract.
                       mandatory (not ERC20 compliant).
                   symbol:
                     type: string
                     description: >-
-                      symbol is an abbreviated name for token class. mandatory
-                      (not ERC20 compliant).
-                  image_uri:
+                      symbol is an abbreviated name for contract. mandatory (not
+                      ERC20 compliant).
+                  uri:
                     type: string
-                    description: >-
-                      image_uri is an uri for the image of the token class
-                      stored off chain.
+                    description: an uri for the image of the contract stored off chain.
                   meta:
                     type: string
-                    description: meta is a brief description of token class.
+                    description: meta is a brief description of contract.
                   decimals:
                     type: integer
                     format: int32
@@ -24895,184 +24887,9 @@ paths:
                     description: >-
                       mintable represents whether the token is allowed to mint
                       or burn.
-                description: TokenClass defines token information.
+                description: Contract defines token information.
             title: >-
-              QueryTokenClassResponse is the response type for the
-              Query/TokenClass RPC method
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: contract_id
-          description: contract id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers':
-    get:
-      summary: Approvers queries approvers on a given proxy.
-      operationId: TokenApprovers
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              approvers:
-                type: array
-                items:
-                  type: string
-                description: all the authorizations on the proxy.
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            title: >-
-              QueryApproversResponse is the response type for the
-              Query/Approvers RPC method
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: contract_id
-          description: contract id associated with the token class.
-          in: path
-          required: true
-          type: string
-        - name: address
-          description: address of the proxy which the authorization is granted to.
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Query
-  '/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}':
-    get:
-      summary: Approved queries authorization on a given proxy approver pair.
-      operationId: TokenApproved
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              approved:
-                type: boolean
-                format: boolean
-            title: >-
-              QueryApprovedResponse is the response type for the Query/Approved
+              QueryContractResponse is the response type for the Query/Contract
               RPC method
         default:
           description: An unexpected error response
@@ -25098,17 +24915,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
-          in: path
-          required: true
-          type: string
-        - name: approver
-          description: approver is the address of the approver of the authorization.
-          in: path
-          required: true
-          type: string
-        - name: proxy
-          description: address of the proxy which the authorization is granted to.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25156,7 +24963,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25207,7 +25014,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25232,7 +25039,7 @@ paths:
                       type: string
                       description: address of the grantee.
                     permission:
-                      description: permission on the token class.
+                      description: permission on the contract.
                       type: string
                       enum:
                         - PERMISSION_UNSPECIFIED
@@ -25287,12 +25094,12 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
         - name: grantee
-          description: grantee which has permissions on the token class.
+          description: grantee which has permissions on the contract.
           in: path
           required: true
           type: string
@@ -25396,7 +25203,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25442,7 +25249,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25451,7 +25258,7 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}':
     get:
       summary: Contract queries a contract metadata based on its contract id.
-      operationId: Contract
+      operationId: CollectionContract
       responses:
         '200':
           description: A successful response.
@@ -25462,7 +25269,7 @@ paths:
                 description: contract is the information of the contract.
                 type: object
                 properties:
-                  contract_id:
+                  id:
                     type: string
                     description: contract_id defines the unique identifier of the contract.
                   name:
@@ -25471,11 +25278,9 @@ paths:
                   meta:
                     type: string
                     description: meta is a brief description of the contract.
-                  base_img_uri:
+                  uri:
                     type: string
-                    description: >-
-                      base img uri is an uri for the contract image stored off
-                      chain.
+                    description: uri for the contract image stored off chain.
             description: >-
               QueryContractResponse is the response type for the Query/Contract
               RPC method.
@@ -25671,524 +25476,6 @@ paths:
       parameters:
         - name: contract_id
           description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers':
-    get:
-      summary: Approvers queries approvers of a given proxy.
-      operationId: CollectionApprovers
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              approvers:
-                type: array
-                items:
-                  type: string
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            description: >-
-              QueryApproversResponse is the response type for the
-              Query/Approvers RPC method.
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: address
-          description: address of the proxy.
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}':
-    get:
-      summary: Approved queries whether the proxy is approved by the approver.
-      operationId: CollectionApproved
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              approved:
-                type: boolean
-                format: boolean
-            description: >-
-              QueryApprovedResponse is the response type for the Query/Approved
-              RPC method.
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: address
-          description: the address of the proxy.
-          in: path
-          required: true
-          type: string
-        - name: approver
-          description: the address of the token approver.
           in: path
           required: true
           type: string
@@ -27720,9 +27007,9 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
+                    token_id:
                       type: string
-                      description: id defines the unique identifier of the token.
+                      description: token id defines the unique identifier of the token.
                     name:
                       type: string
                       description: name defines the human-readable name of the token.
@@ -28028,9 +27315,9 @@ paths:
               parent:
                 type: object
                 properties:
-                  id:
+                  token_id:
                     type: string
-                    description: id defines the unique identifier of the token.
+                    description: token id defines the unique identifier of the token.
                   name:
                     type: string
                     description: name defines the human-readable name of the token.
@@ -28259,9 +27546,9 @@ paths:
               root:
                 type: object
                 properties:
-                  id:
+                  token_id:
                     type: string
-                    description: id defines the unique identifier of the token.
+                    description: token id defines the unique identifier of the token.
                   name:
                     type: string
                     description: name defines the human-readable name of the token.
@@ -51704,6 +50991,39 @@ definitions:
        - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
        - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+  lbm.token.v1.Contract:
+    type: object
+    properties:
+      id:
+        type: string
+        description: id defines the unique identifier of the contract.
+      name:
+        type: string
+        description: >-
+          name defines the human-readable name of the contract. mandatory (not
+          ERC20 compliant).
+      symbol:
+        type: string
+        description: >-
+          symbol is an abbreviated name for contract. mandatory (not ERC20
+          compliant).
+      uri:
+        type: string
+        description: an uri for the image of the contract stored off chain.
+      meta:
+        type: string
+        description: meta is a brief description of contract.
+      decimals:
+        type: integer
+        format: int32
+        description: >-
+          decimals is the number of decimals which one must divide the amount by
+          to get its user representation.
+      mintable:
+        type: boolean
+        format: boolean
+        description: mintable represents whether the token is allowed to mint or burn.
+    description: Contract defines token information.
   lbm.token.v1.Grant:
     type: object
     properties:
@@ -51711,7 +51031,7 @@ definitions:
         type: string
         description: address of the grantee.
       permission:
-        description: permission on the token class.
+        description: permission on the contract.
         type: string
         enum:
           - PERMISSION_UNSPECIFIED
@@ -51729,29 +51049,106 @@ definitions:
       - PERMISSION_BURN
     default: PERMISSION_UNSPECIFIED
     description: |-
-      Permission enumerates the valid permissions on a token class.
+      Permission enumerates the valid permissions on a contract.
 
        - PERMISSION_UNSPECIFIED: unspecified defines the default permission which is invalid.
        - PERMISSION_MODIFY: PERMISSION_MODIFY defines a permission to modify a contract.
        - PERMISSION_MINT: PERMISSION_MINT defines a permission to mint tokens of a contract.
        - PERMISSION_BURN: PERMISSION_BURN defines a permission to burn tokens of a contract.
-  lbm.token.v1.QueryApprovedResponse:
+  lbm.token.v1.QueryBalanceResponse:
     type: object
     properties:
-      approved:
-        type: boolean
-        format: boolean
+      amount:
+        type: string
+        description: the balance of the tokens.
+    title: QueryBalanceResponse is the response type for the Query/Balance RPC method
+  lbm.token.v1.QueryBurntResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+        description: the amount of the burnt tokens.
+    title: QueryBurntResponse is the response type for the Query/Burnt RPC method
+  lbm.token.v1.QueryContractResponse:
+    type: object
+    properties:
+      contract:
+        type: object
+        properties:
+          id:
+            type: string
+            description: id defines the unique identifier of the contract.
+          name:
+            type: string
+            description: >-
+              name defines the human-readable name of the contract. mandatory
+              (not ERC20 compliant).
+          symbol:
+            type: string
+            description: >-
+              symbol is an abbreviated name for contract. mandatory (not ERC20
+              compliant).
+          uri:
+            type: string
+            description: an uri for the image of the contract stored off chain.
+          meta:
+            type: string
+            description: meta is a brief description of contract.
+          decimals:
+            type: integer
+            format: int32
+            description: >-
+              decimals is the number of decimals which one must divide the
+              amount by to get its user representation.
+          mintable:
+            type: boolean
+            format: boolean
+            description: mintable represents whether the token is allowed to mint or burn.
+        description: Contract defines token information.
     title: >-
-      QueryApprovedResponse is the response type for the Query/Approved RPC
+      QueryContractResponse is the response type for the Query/Contract RPC
       method
-  lbm.token.v1.QueryApproversResponse:
+  lbm.token.v1.QueryContractsResponse:
     type: object
     properties:
-      approvers:
+      contracts:
         type: array
         items:
-          type: string
-        description: all the authorizations on the proxy.
+          type: object
+          properties:
+            id:
+              type: string
+              description: id defines the unique identifier of the contract.
+            name:
+              type: string
+              description: >-
+                name defines the human-readable name of the contract. mandatory
+                (not ERC20 compliant).
+            symbol:
+              type: string
+              description: >-
+                symbol is an abbreviated name for contract. mandatory (not ERC20
+                compliant).
+            uri:
+              type: string
+              description: an uri for the image of the contract stored off chain.
+            meta:
+              type: string
+              description: meta is a brief description of contract.
+            decimals:
+              type: integer
+              format: int32
+              description: >-
+                decimals is the number of decimals which one must divide the
+                amount by to get its user representation.
+            mintable:
+              type: boolean
+              format: boolean
+              description: >-
+                mintable represents whether the token is allowed to mint or
+                burn.
+          description: Contract defines token information.
+        description: information of the contracts.
       pagination:
         description: pagination defines the pagination in the response.
         type: object
@@ -51771,22 +51168,8 @@ definitions:
 
               was set, its value is undefined otherwise
     title: >-
-      QueryApproversResponse is the response type for the Query/Approvers RPC
+      QueryContractsResponse is the response type for the Query/Contracts RPC
       method
-  lbm.token.v1.QueryBalanceResponse:
-    type: object
-    properties:
-      amount:
-        type: string
-        description: the balance of the tokens.
-    title: QueryBalanceResponse is the response type for the Query/Balance RPC method
-  lbm.token.v1.QueryBurntResponse:
-    type: object
-    properties:
-      amount:
-        type: string
-        description: the amount of the burnt tokens.
-    title: QueryBurntResponse is the response type for the Query/Burnt RPC method
   lbm.token.v1.QueryGranteeGrantsResponse:
     type: object
     properties:
@@ -51799,7 +51182,7 @@ definitions:
               type: string
               description: address of the grantee.
             permission:
-              description: permission on the token class.
+              description: permission on the contract.
               type: string
               enum:
                 - PERMISSION_UNSPECIFIED
@@ -51830,104 +51213,14 @@ definitions:
     title: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method
-  lbm.token.v1.QueryMintedResponse:
+  lbm.token.v1.QueryHoldersByOperatorResponse:
     type: object
     properties:
-      amount:
-        type: string
-        description: the amount of the minted tokens.
-    title: QueryMintedResponse is the response type for the Query/Minted RPC method
-  lbm.token.v1.QuerySupplyResponse:
-    type: object
-    properties:
-      amount:
-        type: string
-        description: the supply of the tokens.
-    title: QuerySupplyResponse is the response type for the Query/Supply RPC method
-  lbm.token.v1.QueryTokenClassResponse:
-    type: object
-    properties:
-      class:
-        type: object
-        properties:
-          contract_id:
-            type: string
-            description: contract_id defines the unique identifier of the token class.
-          name:
-            type: string
-            description: >-
-              name defines the human-readable name of the token class. mandatory
-              (not ERC20 compliant).
-          symbol:
-            type: string
-            description: >-
-              symbol is an abbreviated name for token class. mandatory (not
-              ERC20 compliant).
-          image_uri:
-            type: string
-            description: >-
-              image_uri is an uri for the image of the token class stored off
-              chain.
-          meta:
-            type: string
-            description: meta is a brief description of token class.
-          decimals:
-            type: integer
-            format: int32
-            description: >-
-              decimals is the number of decimals which one must divide the
-              amount by to get its user representation.
-          mintable:
-            type: boolean
-            format: boolean
-            description: mintable represents whether the token is allowed to mint or burn.
-        description: TokenClass defines token information.
-    title: >-
-      QueryTokenClassResponse is the response type for the Query/TokenClass RPC
-      method
-  lbm.token.v1.QueryTokenClassesResponse:
-    type: object
-    properties:
-      classes:
+      holders:
         type: array
         items:
-          type: object
-          properties:
-            contract_id:
-              type: string
-              description: contract_id defines the unique identifier of the token class.
-            name:
-              type: string
-              description: >-
-                name defines the human-readable name of the token class.
-                mandatory (not ERC20 compliant).
-            symbol:
-              type: string
-              description: >-
-                symbol is an abbreviated name for token class. mandatory (not
-                ERC20 compliant).
-            image_uri:
-              type: string
-              description: >-
-                image_uri is an uri for the image of the token class stored off
-                chain.
-            meta:
-              type: string
-              description: meta is a brief description of token class.
-            decimals:
-              type: integer
-              format: int32
-              description: >-
-                decimals is the number of decimals which one must divide the
-                amount by to get its user representation.
-            mintable:
-              type: boolean
-              format: boolean
-              description: >-
-                mintable represents whether the token is allowed to mint or
-                burn.
-          description: TokenClass defines token information.
-        description: information of the token classes.
+          type: string
+        title: holder addresses
       pagination:
         description: pagination defines the pagination in the response.
         type: object
@@ -51947,41 +51240,31 @@ definitions:
 
               was set, its value is undefined otherwise
     title: >-
-      QueryTokenClassesResponse is the response type for the Query/TokenClasses
-      RPC method
-  lbm.token.v1.TokenClass:
+      QueryHoldersByOperatorResponse is the response type for the
+      Query/HoldersByOperator RPC method
+  lbm.token.v1.QueryIsOperatorForResponse:
     type: object
     properties:
-      contract_id:
-        type: string
-        description: contract_id defines the unique identifier of the token class.
-      name:
-        type: string
-        description: >-
-          name defines the human-readable name of the token class. mandatory
-          (not ERC20 compliant).
-      symbol:
-        type: string
-        description: >-
-          symbol is an abbreviated name for token class. mandatory (not ERC20
-          compliant).
-      image_uri:
-        type: string
-        description: image_uri is an uri for the image of the token class stored off chain.
-      meta:
-        type: string
-        description: meta is a brief description of token class.
-      decimals:
-        type: integer
-        format: int32
-        description: >-
-          decimals is the number of decimals which one must divide the amount by
-          to get its user representation.
-      mintable:
+      authorized:
         type: boolean
         format: boolean
-        description: mintable represents whether the token is allowed to mint or burn.
-    description: TokenClass defines token information.
+    title: >-
+      QueryIsOperatorForResponse is the response type for the
+      Query/IsOperatorFor RPC method
+  lbm.token.v1.QueryMintedResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+        description: the amount of the minted tokens.
+    title: QueryMintedResponse is the response type for the Query/Minted RPC method
+  lbm.token.v1.QuerySupplyResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+        description: the supply of the tokens.
+    title: QuerySupplyResponse is the response type for the Query/Supply RPC method
   lbm.collection.v1.Coin:
     type: object
     properties:
@@ -51995,7 +51278,7 @@ definitions:
   lbm.collection.v1.Contract:
     type: object
     properties:
-      contract_id:
+      id:
         type: string
         description: contract_id defines the unique identifier of the contract.
       name:
@@ -52004,9 +51287,9 @@ definitions:
       meta:
         type: string
         description: meta is a brief description of the contract.
-      base_img_uri:
+      uri:
         type: string
-        description: base img uri is an uri for the contract image stored off chain.
+        description: uri for the contract image stored off chain.
     description: Contract defines the information of the contract for the collection.
   lbm.collection.v1.Grant:
     type: object
@@ -52031,9 +51314,9 @@ definitions:
   lbm.collection.v1.NFT:
     type: object
     properties:
-      id:
+      token_id:
         type: string
-        description: id defines the unique identifier of the token.
+        description: token id defines the unique identifier of the token.
       name:
         type: string
         description: name defines the human-readable name of the token.
@@ -52098,43 +51381,6 @@ definitions:
     description: >-
       QueryAllBalancesResponse is the response type for the Query/AllBalances
       RPC method.
-  lbm.collection.v1.QueryApprovedResponse:
-    type: object
-    properties:
-      approved:
-        type: boolean
-        format: boolean
-    description: >-
-      QueryApprovedResponse is the response type for the Query/Approved RPC
-      method.
-  lbm.collection.v1.QueryApproversResponse:
-    type: object
-    properties:
-      approvers:
-        type: array
-        items:
-          type: string
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-    description: >-
-      QueryApproversResponse is the response type for the Query/Approvers RPC
-      method.
   lbm.collection.v1.QueryBalanceResponse:
     type: object
     properties:
@@ -52159,9 +51405,9 @@ definitions:
         items:
           type: object
           properties:
-            id:
+            token_id:
               type: string
-              description: id defines the unique identifier of the token.
+              description: token id defines the unique identifier of the token.
             name:
               type: string
               description: name defines the human-readable name of the token.
@@ -52201,7 +51447,7 @@ definitions:
         description: contract is the information of the contract.
         type: object
         properties:
-          contract_id:
+          id:
             type: string
             description: contract_id defines the unique identifier of the contract.
           name:
@@ -52210,9 +51456,9 @@ definitions:
           meta:
             type: string
             description: meta is a brief description of the contract.
-          base_img_uri:
+          uri:
             type: string
-            description: base img uri is an uri for the contract image stored off chain.
+            description: uri for the contract image stored off chain.
     description: >-
       QueryContractResponse is the response type for the Query/Contract RPC
       method.
@@ -52289,6 +51535,43 @@ definitions:
     description: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method.
+  lbm.collection.v1.QueryHoldersByOperatorResponse:
+    type: object
+    properties:
+      holders:
+        type: array
+        items:
+          type: string
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    description: >-
+      QueryHoldersByOperatorResponse is the response type for the
+      Query/HoldersByOperator RPC method.
+  lbm.collection.v1.QueryIsOperatorForResponse:
+    type: object
+    properties:
+      authorized:
+        type: boolean
+        format: boolean
+    description: >-
+      QueryIsOperatorForResponse is the response type for the
+      Query/IsOperatorFor RPC method.
   lbm.collection.v1.QueryNFTBurntResponse:
     type: object
     properties:
@@ -52322,9 +51605,9 @@ definitions:
       parent:
         type: object
         properties:
-          id:
+          token_id:
             type: string
-            description: id defines the unique identifier of the token.
+            description: token id defines the unique identifier of the token.
           name:
             type: string
             description: name defines the human-readable name of the token.
@@ -52342,9 +51625,9 @@ definitions:
       root:
         type: object
         properties:
-          id:
+          token_id:
             type: string
-            description: id defines the unique identifier of the token.
+            description: token id defines the unique identifier of the token.
           name:
             type: string
             description: name defines the human-readable name of the token.

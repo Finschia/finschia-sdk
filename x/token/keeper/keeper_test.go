@@ -74,7 +74,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	class := token.TokenClass{
+	class := token.Contract{
 		Name:     "Mintable",
 		Symbol:   "OK",
 		Mintable: true,

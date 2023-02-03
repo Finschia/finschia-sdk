@@ -14,7 +14,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		ContractId: contractID,
 		Name:       contract.Name,
 		Meta:       contract.Meta,
-		BaseImgUri: contract.BaseImgUri,
+		Uri:        contract.Uri,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -42,7 +42,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 
 func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) string {
 	contractID := k.classKeeper.NewID(ctx)
-	contract.ContractId = contractID
+	contract.Id = contractID
 	k.setContract(ctx, contract)
 
 	// set the next class ids
@@ -69,7 +69,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 
 func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 	store := ctx.KVStore(k.storeKey)
-	key := contractKey(contract.ContractId)
+	key := contractKey(contract.Id)
 
 	bz, err := contract.Marshal()
 	if err != nil {
@@ -227,9 +227,9 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		k.setOwner(ctx, contractID, tokenID, to)
 
 		token := collection.NFT{
-			Id:   tokenID,
-			Name: param.Name,
-			Meta: param.Meta,
+			TokenId: tokenID,
+			Name:    param.Name,
+			Meta:    param.Meta,
 		}
 		k.setNFT(ctx, contractID, token)
 
@@ -326,7 +326,7 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 			contract.Name = name
 		},
 		collection.AttributeKeyBaseImgURI: func(uri string) {
-			contract.BaseImgUri = uri
+			contract.Uri = uri
 		},
 		collection.AttributeKeyMeta: func(meta string) {
 			contract.Meta = meta
@@ -382,7 +382,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 
 	event := collection.EventModifiedTokenClass{
 		ContractId: contractID,
-		ClassId:    class.GetId(),
+		TokenType:  class.GetId(),
 		Operator:   operator.String(),
 		Changes:    changes,
 	}

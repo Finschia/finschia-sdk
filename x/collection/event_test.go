@@ -59,7 +59,7 @@ func TestNewEventCreateCollection(t *testing.T) {
 		ContractId: str(),
 		Name:       str(),
 		Meta:       str(),
-		BaseImgUri: str(),
+		Uri:        str(),
 	}
 	legacy := collection.NewEventCreateCollection(event)
 
@@ -69,7 +69,7 @@ func TestNewEventCreateCollection(t *testing.T) {
 		collection.AttributeKeyContractID: event.ContractId,
 		collection.AttributeKeyName:       event.Name,
 		collection.AttributeKeyMeta:       event.Meta,
-		collection.AttributeKeyBaseImgURI: event.BaseImgUri,
+		collection.AttributeKeyBaseImgURI: event.Uri,
 		collection.AttributeKeyOwner:      event.Creator,
 	}
 	for key, value := range attributes {
@@ -84,7 +84,7 @@ func TestNewEventIssueFT(t *testing.T) {
 	event := collection.EventCreatedFTClass{
 		ContractId: str(),
 		Operator:   str(),
-		ClassId:    str(),
+		TokenId:    str(),
 		Name:       str(),
 		Meta:       str(),
 		Decimals:   0,
@@ -98,7 +98,7 @@ func TestNewEventIssueFT(t *testing.T) {
 
 	attributes := map[collection.AttributeKey]string{
 		collection.AttributeKeyContractID: event.ContractId,
-		collection.AttributeKeyTokenID:    collection.NewFTID(event.ClassId),
+		collection.AttributeKeyTokenID:    event.TokenId,
 		collection.AttributeKeyName:       event.Name,
 		collection.AttributeKeyMeta:       event.Meta,
 		collection.AttributeKeyMintable:   fmt.Sprintf("%v", event.Mintable),
@@ -118,7 +118,7 @@ func TestNewEventIssueNFT(t *testing.T) {
 
 	event := collection.EventCreatedNFTClass{
 		ContractId: str(),
-		ClassId:    str(),
+		TokenType:  str(),
 		Name:       str(),
 		Meta:       str(),
 	}
@@ -128,7 +128,7 @@ func TestNewEventIssueNFT(t *testing.T) {
 
 	attributes := map[collection.AttributeKey]string{
 		collection.AttributeKeyContractID: event.ContractId,
-		collection.AttributeKeyTokenType:  event.ClassId,
+		collection.AttributeKeyTokenType:  event.TokenType,
 		collection.AttributeKeyName:       event.Name,
 		collection.AttributeKeyMeta:       event.Meta,
 	}
@@ -171,9 +171,9 @@ func TestNewEventMintNFT(t *testing.T) {
 		Operator:   str(),
 		To:         str(),
 		Tokens: []collection.NFT{{
-			Id:   str(),
-			Name: str(),
-			Meta: str(),
+			TokenId: str(),
+			Name:    str(),
+			Meta:    str(),
 		}},
 	}
 	legacies := collection.NewEventMintNFT(event)
@@ -185,7 +185,7 @@ func TestNewEventMintNFT(t *testing.T) {
 			collection.AttributeKeyContractID: event.ContractId,
 			collection.AttributeKeyFrom:       event.Operator,
 			collection.AttributeKeyTo:         event.To,
-			collection.AttributeKeyTokenID:    event.Tokens[i].Id,
+			collection.AttributeKeyTokenID:    event.Tokens[i].TokenId,
 			collection.AttributeKeyName:       event.Tokens[i].Name,
 			collection.AttributeKeyMeta:       event.Tokens[i].Meta,
 		}
@@ -379,7 +379,7 @@ func TestNewEventModifyTokenType(t *testing.T) {
 	event := collection.EventModifiedTokenClass{
 		ContractId: str(),
 		Operator:   str(),
-		ClassId:    str(),
+		TokenType:  str(),
 		Changes: []collection.Attribute{{
 			Key:   collection.AttributeKeyName.String(),
 			Value: str(),
@@ -391,7 +391,7 @@ func TestNewEventModifyTokenType(t *testing.T) {
 	require.Equal(t, collection.EventTypeModifyTokenType.String(), legacies[0].Type)
 	attributes := map[collection.AttributeKey]string{
 		collection.AttributeKeyContractID: event.ContractId,
-		collection.AttributeKeyTokenType:  event.ClassId,
+		collection.AttributeKeyTokenType:  event.TokenType,
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacies[0], key.String(), value), key)
@@ -416,7 +416,7 @@ func TestNewEventModifyTokenOfFTClass(t *testing.T) {
 	event := collection.EventModifiedTokenClass{
 		ContractId: str(),
 		Operator:   str(),
-		ClassId:    str(),
+		TokenType:  str(),
 		Changes: []collection.Attribute{{
 			Key:   collection.AttributeKeyName.String(),
 			Value: str(),
@@ -428,7 +428,7 @@ func TestNewEventModifyTokenOfFTClass(t *testing.T) {
 	require.Equal(t, collection.EventTypeModifyToken.String(), legacies[0].Type)
 	attributes := map[collection.AttributeKey]string{
 		collection.AttributeKeyContractID: event.ContractId,
-		collection.AttributeKeyTokenID:    collection.NewFTID(event.ClassId),
+		collection.AttributeKeyTokenID:    collection.NewFTID(event.TokenType),
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacies[0], key.String(), value), key)

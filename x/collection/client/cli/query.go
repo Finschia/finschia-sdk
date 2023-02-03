@@ -45,8 +45,8 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdParent(),
 		NewQueryCmdChildren(),
 		NewQueryCmdGranteeGrants(),
-		NewQueryCmdApproved(),
-		NewQueryCmdApprovers(),
+		NewQueryCmdIsOperatorFor(),
+		NewQueryCmdHoldersByOperator(),
 	)
 
 	return queryCmd
@@ -752,7 +752,7 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdApproved() *cobra.Command {
+func NewQueryCmdIsOperatorFor() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "approved [contract-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
@@ -780,12 +780,12 @@ func NewQueryCmdApproved() *cobra.Command {
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryApprovedRequest{
+			req := &collection.QueryIsOperatorForRequest{
 				ContractId: contractID,
-				Address:    operator,
-				Approver:   holder,
+				Operator:   operator,
+				Holder:     holder,
 			}
-			res, err := queryClient.Approved(cmd.Context(), req)
+			res, err := queryClient.IsOperatorFor(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -797,7 +797,7 @@ func NewQueryCmdApproved() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdApprovers() *cobra.Command {
+func NewQueryCmdHoldersByOperator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "approvers [contract-id] [operator]",
 		Args:    cobra.ExactArgs(2),
@@ -824,12 +824,12 @@ func NewQueryCmdApprovers() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			req := &collection.QueryApproversRequest{
+			req := &collection.QueryHoldersByOperatorRequest{
 				ContractId: contractID,
-				Address:    operator,
+				Operator:   operator,
 				Pagination: pageReq,
 			}
-			res, err := queryClient.Approvers(cmd.Context(), req)
+			res, err := queryClient.HoldersByOperator(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
