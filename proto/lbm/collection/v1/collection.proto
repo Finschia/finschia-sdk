@@ -117,10 +117,14 @@ message FT {
 // Deprecated: use TokenClass
 //
 // TokenType defines the information of token type.
+// It represents a NFTClass whose class_id is token_type.
+//
+// Note: There is no TokenType instance for FTClass.
 message TokenType {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type defines the unique identifier of the token type.
+  // the format of the value is identical to that of class_id.
   string token_type = 2;
   // name defines the human-readable name of the token type.
   string name = 3;
