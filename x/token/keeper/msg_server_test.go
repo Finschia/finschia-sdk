@@ -49,37 +49,37 @@ func (s *KeeperTestSuite) TestMsgSend() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgTransferFrom() {
+func (s *KeeperTestSuite) TestMsgOperatorSend() {
 	testCases := map[string]struct {
 		contractID string
-		proxy      sdk.AccAddress
+		operator   sdk.AccAddress
 		from       sdk.AccAddress
 		amount     sdk.Int
 		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			proxy:      s.operator,
+			operator:   s.operator,
 			from:       s.customer,
 			amount:     s.balance,
 		},
 		"contract not found": {
 			contractID: "fee1dead",
-			proxy:      s.operator,
+			operator:   s.operator,
 			from:       s.customer,
 			amount:     s.balance,
 			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
-			proxy:      s.vendor,
+			operator:   s.vendor,
 			from:       s.customer,
 			amount:     s.balance,
 			err:        token.ErrTokenNotApproved,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			proxy:      s.operator,
+			operator:   s.operator,
 			from:       s.customer,
 			amount:     s.balance.Add(sdk.OneInt()),
 			err:        token.ErrInsufficientBalance,
@@ -90,14 +90,14 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgTransferFrom{
+			req := &token.MsgOperatorSend{
 				ContractId: tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				To:         s.vendor.String(),
 				Amount:     tc.amount,
 			}
-			res, err := s.msgServer.TransferFrom(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
 			s.Require().ErrorIs(err, tc.err)
 			if tc.err != nil {
 				return
@@ -154,28 +154,28 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgApprove() {
+func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 	testCases := map[string]struct {
 		contractID string
-		approver   sdk.AccAddress
-		proxy      sdk.AccAddress
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
 		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			approver:   s.customer,
-			proxy:      s.vendor,
+			holder:     s.customer,
+			operator:   s.vendor,
 		},
 		"contract not found": {
 			contractID: "fee1dead",
-			approver:   s.customer,
-			proxy:      s.vendor,
+			holder:     s.customer,
+			operator:   s.vendor,
 			err:        class.ErrContractNotExist,
 		},
 		"already approved": {
 			contractID: s.contractID,
-			approver:   s.customer,
-			proxy:      s.operator,
+			holder:     s.customer,
+			operator:   s.operator,
 			err:        token.ErrTokenAlreadyApproved,
 		},
 	}
@@ -184,12 +184,12 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgApprove{
+			req := &token.MsgAuthorizeOperator{
 				ContractId: tc.contractID,
-				Approver:   tc.approver.String(),
-				Proxy:      tc.proxy.String(),
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
 			}
-			res, err := s.msgServer.Approve(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
 			s.Require().ErrorIs(err, tc.err)
 			if tc.err != nil {
 				return
@@ -414,27 +414,27 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgBurnFrom() {
+func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 	testCases := map[string]struct {
 		contractID string
-		proxy      sdk.AccAddress
+		operator   sdk.AccAddress
 		from       sdk.AccAddress
 		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			proxy:      s.operator,
+			operator:   s.operator,
 			from:       s.customer,
 		},
 		"contract not found": {
 			contractID: "fee1dead",
-			proxy:      s.operator,
+			operator:   s.operator,
 			from:       s.customer,
 			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
-			proxy:      s.vendor,
+			operator:   s.vendor,
 			from:       s.customer,
 			err:        token.ErrTokenNotApproved,
 		},
@@ -444,13 +444,13 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgBurnFrom{
+			req := &token.MsgOperatorBurn{
 				ContractId: tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				Amount:     s.balance,
 			}
-			res, err := s.msgServer.BurnFrom(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), req)
 			s.Require().ErrorIs(err, tc.err)
 			if tc.err != nil {
 				return
@@ -490,7 +490,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			req := &token.MsgModify{
 				ContractId: tc.contractID,
 				Owner:      tc.grantee.String(),
-				Changes:    []token.Pair{{Field: token.AttributeKeyImageURI.String(), Value: "uri"}},
+				Changes:    []token.Attribute{{Key: token.AttributeKeyImageURI.String(), Value: "uri"}},
 			}
 			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), req)
 			s.Require().ErrorIs(err, tc.err)

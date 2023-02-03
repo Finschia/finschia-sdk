@@ -361,10 +361,10 @@ func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string
 			return nil, err
 		}
 
-		owner := s.keeper.GetRootOwner(ctx, contractID, token.Id)
+		owner := s.keeper.GetRootOwner(ctx, contractID, token.TokenId)
 		return &collection.OwnerNFT{
 			ContractId: contractID,
-			TokenId:    token.Id,
+			TokenId:    token.TokenId,
 			Name:       token.Name,
 			Meta:       token.Meta,
 			Owner:      owner.String(),
@@ -624,7 +624,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 	return &collection.QueryGranteeGrantsResponse{Grants: grants, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRequest) (*collection.QueryApprovedResponse, error) {
+func (s queryServer) IsOperatorFor(c context.Context, req *collection.QueryIsOperatorForRequest) (*collection.QueryIsOperatorForResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -633,23 +633,23 @@ func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRe
 		return nil, err
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
 		return nil, err
 	}
-	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
+	holder, err := sdk.AccAddressFromBech32(req.Holder)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, approverAddr, addr)
-	approved := (err == nil)
+	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, holder, operator)
+	authorized := (err == nil)
 
-	return &collection.QueryApprovedResponse{Approved: approved}, nil
+	return &collection.QueryIsOperatorForResponse{Authorized: authorized}, nil
 }
 
-func (s queryServer) Approvers(c context.Context, req *collection.QueryApproversRequest) (*collection.QueryApproversResponse, error) {
+func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryHoldersByOperatorRequest) (*collection.QueryHoldersByOperatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -658,23 +658,23 @@ func (s queryServer) Approvers(c context.Context, req *collection.QueryApprovers
 		return nil, err
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address address: %s", req.Address)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, addr))
-	var approvers []string
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
+	var holders []string
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
 		holder := sdk.AccAddress(key)
-		approvers = append(approvers, holder.String())
+		holders = append(holders, holder.String())
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &collection.QueryApproversResponse{Approvers: approvers, Pagination: pageRes}, nil
+	return &collection.QueryHoldersByOperatorResponse{Holders: holders, Pagination: pageRes}, nil
 }

@@ -87,7 +87,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid id of class": {
 			&token.GenesisState{
-				Classes: []token.TokenClass{{
+				Classes: []token.Contract{{
 					Name:   "test",
 					Symbol: "TT",
 				}},
@@ -96,53 +96,53 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid name of class": {
 			&token.GenesisState{
-				Classes: []token.TokenClass{{
-					ContractId: "deadbeef",
-					Name:       string(make([]rune, 21)),
-					Symbol:     "TT",
+				Classes: []token.Contract{{
+					Id:     "deadbeef",
+					Name:   string(make([]rune, 21)),
+					Symbol: "TT",
 				}},
 			},
 			false,
 		},
 		"invalid symbol of class": {
 			&token.GenesisState{
-				Classes: []token.TokenClass{{
-					ContractId: "deadbeef",
-					Name:       "test",
-					Symbol:     "tt",
+				Classes: []token.Contract{{
+					Id:     "deadbeef",
+					Name:   "test",
+					Symbol: "tt",
 				}},
 			},
 			false,
 		},
 		"invalid image uri of class": {
 			&token.GenesisState{
-				Classes: []token.TokenClass{{
-					ContractId: "deadbeef",
-					Name:       "test",
-					Symbol:     "TT",
-					ImageUri:   string(make([]rune, 1001)),
+				Classes: []token.Contract{{
+					Id:     "deadbeef",
+					Name:   "test",
+					Symbol: "TT",
+					Uri:    string(make([]rune, 1001)),
 				}},
 			},
 			false,
 		},
 		"invalid meta of class": {
 			&token.GenesisState{
-				Classes: []token.TokenClass{{
-					ContractId: "deadbeef",
-					Name:       "test",
-					Symbol:     "TT",
-					Meta:       string(make([]rune, 1001)),
+				Classes: []token.Contract{{
+					Id:     "deadbeef",
+					Name:   "test",
+					Symbol: "TT",
+					Meta:   string(make([]rune, 1001)),
 				}},
 			},
 			false,
 		},
 		"invalid decimals of class": {
 			&token.GenesisState{
-				Classes: []token.TokenClass{{
-					ContractId: "deadbeef",
-					Name:       "test",
-					Symbol:     "TT",
-					Decimals:   -1,
+				Classes: []token.Contract{{
+					Id:       "deadbeef",
+					Name:     "test",
+					Symbol:   "TT",
+					Decimals: -1,
 				}},
 			},
 			false,

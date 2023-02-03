@@ -38,14 +38,14 @@ func (k Keeper) iterateBalancesImpl(ctx sdk.Context, prefix []byte, fn func(cont
 }
 
 // iterate through the classes and perform the provided function
-func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.TokenClass) (stop bool)) {
+func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.Contract) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, classKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var class token.TokenClass
+		var class token.Contract
 		k.cdc.MustUnmarshal(iterator.Value(), &class)
 
 		stop := fn(class)

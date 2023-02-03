@@ -40,7 +40,7 @@ func NewEventCreateCollection(event EventCreatedContract) sdk.Event {
 		AttributeKeyContractID: event.ContractId,
 		AttributeKeyName:       event.Name,
 		AttributeKeyMeta:       event.Meta,
-		AttributeKeyBaseImgURI: event.BaseImgUri,
+		AttributeKeyBaseImgURI: event.Uri,
 
 		AttributeKeyOwner: event.Creator,
 	}
@@ -58,7 +58,7 @@ func NewEventIssueFT(event EventCreatedFTClass, to sdk.AccAddress, amount sdk.In
 	eventType := EventTypeIssueFT.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
-		AttributeKeyTokenID:    NewFTID(event.ClassId),
+		AttributeKeyTokenID:    event.TokenId,
 		AttributeKeyName:       event.Name,
 		AttributeKeyMeta:       event.Meta,
 		AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
@@ -82,7 +82,7 @@ func NewEventIssueNFT(event EventCreatedNFTClass) sdk.Event {
 	eventType := EventTypeIssueNFT.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
-		AttributeKeyTokenType:  event.ClassId,
+		AttributeKeyTokenType:  event.TokenType,
 		AttributeKeyName:       event.Name,
 		AttributeKeyMeta:       event.Meta,
 	}
@@ -125,7 +125,7 @@ func NewEventMintNFT(event EventMintedNFT) sdk.Events {
 			AttributeKeyFrom:       event.Operator,
 			AttributeKeyTo:         event.To,
 
-			AttributeKeyTokenID: token.Id,
+			AttributeKeyTokenID: token.TokenId,
 			AttributeKeyName:    token.Name,
 			AttributeKeyMeta:    token.Meta,
 		}
@@ -300,7 +300,7 @@ func NewEventModifyTokenType(event EventModifiedTokenClass) sdk.Events {
 
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
-		AttributeKeyTokenType:  event.ClassId,
+		AttributeKeyTokenType:  event.TokenType,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
@@ -322,7 +322,7 @@ func NewEventModifyTokenOfFTClass(event EventModifiedTokenClass) sdk.Events {
 	eventType := EventTypeModifyToken.String()
 	res := make(sdk.Events, 0, 1+len(event.Changes))
 
-	tokenID := NewFTID(event.ClassId)
+	tokenID := NewFTID(event.TokenType)
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
 		AttributeKeyTokenID:    tokenID,

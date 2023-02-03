@@ -110,15 +110,11 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}";
   }
 
-  // Approved queries whether the proxy is approved by the approver.
-  rpc Approved(QueryApprovedRequest) returns (QueryApprovedResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}";
-  }
+  // IsOperatorFor queries whether the operator is authorized by the holder.
+  rpc IsOperatorFor(QueryIsOperatorForRequest) returns (QueryIsOperatorForResponse) {}
 
-  // Approvers queries approvers of a given proxy.
-  rpc Approvers(QueryApproversRequest) returns (QueryApproversResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers";
-  }
+  // HoldersByOperator queries holders of a given operator.
+  rpc HoldersByOperator(QueryHoldersByOperatorRequest) returns (QueryHoldersByOperatorResponse) {}
 }
 
 // QueryBalanceRequest is the request type for the Query/Balance RPC method.
@@ -204,6 +200,7 @@ message QueryNFTSupplyRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -218,6 +215,7 @@ message QueryNFTMintedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -232,6 +230,7 @@ message QueryNFTBurntRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -276,6 +275,7 @@ message QueryTokenTypeRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -322,6 +322,7 @@ message QueryTokensWithTokenTypeRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
+  // refer to TokenType for the definition.
   string token_type = 2;
 
   // pagination defines an optional pagination for the request.
@@ -424,35 +425,35 @@ message QueryGranteeGrantsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// QueryApprovedRequest is the request type for the Query/Approved RPC method.
-message QueryApprovedRequest {
+// QueryIsOperatorForRequest is the request type for the Query/IsOperatorFor RPC method.
+message QueryIsOperatorForRequest {
   // contract id associated with the contract.
   string contract_id = 1;
-  // the address of the proxy.
-  string address = 2;
-  // the address of the token approver.
-  string approver = 3;
+  // the address of the operator.
+  string operator = 2;
+  // the address of the token holder.
+  string holder = 3;
 }
 
-// QueryApprovedResponse is the response type for the Query/Approved RPC method.
-message QueryApprovedResponse {
-  bool approved = 1;
+// QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method.
+message QueryIsOperatorForResponse {
+  bool authorized = 1;
 }
 
-// QueryApproversRequest is the request type for the Query/Approvers RPC method.
-message QueryApproversRequest {
+// QueryHoldersByOperatorRequest is the request type for the Query/HoldersByOperator RPC method.
+message QueryHoldersByOperatorRequest {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the proxy.
-  string address = 2;
+  // address of the operator.
+  string operator = 2;
 
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
-// QueryApproversResponse is the response type for the Query/Approvers RPC method.
-message QueryApproversResponse {
-  repeated string approvers = 1;
+// QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method.
+message QueryHoldersByOperatorResponse {
+  repeated string holders = 1;
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
