@@ -200,7 +200,7 @@ message QueryNFTSupplyRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
-  // Refer: TokenType
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -215,7 +215,7 @@ message QueryNFTMintedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
-  // Refer: TokenType
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -230,7 +230,7 @@ message QueryNFTBurntRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
-  // Refer: TokenType
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -275,7 +275,7 @@ message QueryTokenTypeRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
-  // Refer: TokenType
+  // refer to TokenType for the definition.
   string token_type = 2;
 }
 
@@ -322,7 +322,7 @@ message QueryTokensWithTokenTypeRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type associated with the token type.
-  // Refer: TokenType
+  // refer to TokenType for the definition.
   string token_type = 2;
 
   // pagination defines an optional pagination for the request.
