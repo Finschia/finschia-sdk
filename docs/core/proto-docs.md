@@ -9246,12 +9246,15 @@ Params defines the parameters for the collection module.
 Deprecated: use TokenClass
 
 TokenType defines the information of token type.
+It represents a NFTClass whose class_id is token_type.
+
+Note: There is no TokenType instance for FTClass.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. |
+| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. the format of the value is identical to that of class_id. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token type. |
 | `meta` | [string](#string) |  | meta is a brief description of the token type. |
 
@@ -9424,7 +9427,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `token_type` | [string](#string) |  | token type associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 
@@ -9567,7 +9570,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `token_type` | [string](#string) |  | token type associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 | `type_name` | [string](#string) |  | type name of the token class. |
 
@@ -10344,7 +10347,7 @@ QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10375,7 +10378,7 @@ QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10406,7 +10409,7 @@ QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10565,7 +10568,7 @@ QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10660,7 +10663,7 @@ QueryTokensWithTokenTypeRequest is the request type for the Query/TokensWithToke
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -10740,7 +10743,7 @@ MintNFTParam defines a parameter for minting nft.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. |
+| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). Note: it has an app-specific limit in length. |
 | `meta` | [string](#string) |  | meta is a brief description of the nft. Note: it has an app-specific limit in length. |
 
@@ -11019,7 +11022,7 @@ MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | id of the new token type. |
+| `token_type` | [string](#string) |  | id of the new token type. refer to TokenType for the definition. |
 
 
 
@@ -11101,7 +11104,7 @@ MsgModify is the Msg/Modify request type.
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `token_type` | [string](#string) |  | token type of the token. |
+| `token_type` | [string](#string) |  | token type of the token. refer to TokenType for the definition. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
 

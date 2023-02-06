@@ -488,10 +488,14 @@ var xxx_messageInfo_FT proto.InternalMessageInfo
 // Deprecated: use TokenClass
 //
 // TokenType defines the information of token type.
+// It represents a NFTClass whose class_id is token_type.
+//
+// Note: There is no TokenType instance for FTClass.
 type TokenType struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// token type defines the unique identifier of the token type.
+	// the format of the value is identical to that of class_id.
 	TokenType string `protobuf:"bytes,2,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 	// name defines the human-readable name of the token type.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
