@@ -35,6 +35,7 @@ func (r Result) GetEvents() Events {
 }
 
 // ABCIMessageLogs represents a slice of ABCIMessageLog.
+//easyjson:json
 type ABCIMessageLogs []ABCIMessageLog
 
 func NewABCIMessageLog(i uint32, log string, events Events) ABCIMessageLog {

@@ -12,9 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
-	//"github.com/tendermint/tendermint/p2p"
-	//pvm "github.com/tendermint/tendermint/privval"
-
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"

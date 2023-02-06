@@ -27,7 +27,7 @@ require (
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.12.1-0.20220721211354-060cc04fc18b
-	github.com/line/ostracon v1.0.7
+	github.com/line/ostracon v1.0.9-0.20230201073738-9d17c239e729
 	github.com/magiconair/properties v1.8.7
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.17
@@ -36,7 +36,7 @@ require (
 	github.com/prometheus/common v0.39.0
 	github.com/rakyll/statik v0.1.7
 	github.com/regen-network/cosmos-proto v0.3.1
-	github.com/rs/zerolog v1.28.0
+	github.com/rs/zerolog v1.29.0
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
@@ -50,7 +50,7 @@ require (
 	golang.org/x/crypto v0.5.0
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef
-	google.golang.org/grpc v1.52.0
+	google.golang.org/grpc v1.52.3
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -132,6 +132,5 @@ replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/jhump/protoreflect => github.com/jhump/protoreflect v1.10.3
-	github.com/line/ostracon => github.com/zemyblue/ostracon v1.0.5-0.20230125091954-c545fd0e92ad
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
