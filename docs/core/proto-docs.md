@@ -703,12 +703,6 @@
     - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
     - [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse)
-    - [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest)
-    - [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse)
-    - [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest)
-    - [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse)
-    - [QueryTokensWithTokenTypeRequest](#lbm.collection.v1.QueryTokensWithTokenTypeRequest)
-    - [QueryTokensWithTokenTypeResponse](#lbm.collection.v1.QueryTokensWithTokenTypeResponse)
   
     - [Query](#lbm.collection.v1.Query)
   
@@ -899,8 +893,6 @@
     - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
     - [QueryContractRequest](#lbm.token.v1.QueryContractRequest)
     - [QueryContractResponse](#lbm.token.v1.QueryContractResponse)
-    - [QueryContractsRequest](#lbm.token.v1.QueryContractsRequest)
-    - [QueryContractsResponse](#lbm.token.v1.QueryContractsResponse)
     - [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse)
     - [QueryHoldersByOperatorRequest](#lbm.token.v1.QueryHoldersByOperatorRequest)
@@ -9246,12 +9238,15 @@ Params defines the parameters for the collection module.
 Deprecated: use TokenClass
 
 TokenType defines the information of token type.
+It represents a NFTClass whose class_id is token_type.
+
+Note: There is no TokenType instance for FTClass.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. |
+| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. the format of the value is identical to that of class_id. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token type. |
 | `meta` | [string](#string) |  | meta is a brief description of the token type. |
 
@@ -9424,7 +9419,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `token_type` | [string](#string) |  | token type associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 
@@ -9567,7 +9562,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `token_type` | [string](#string) |  | token type associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 | `type_name` | [string](#string) |  | type name of the token class. |
 
@@ -10344,7 +10339,7 @@ QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10375,7 +10370,7 @@ QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10406,7 +10401,7 @@ QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10565,7 +10560,7 @@ QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10581,103 +10576,6 @@ QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `token_type` | [TokenType](#lbm.collection.v1.TokenType) |  | token type is the information of the token type. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenTypesRequest"></a>
-
-### QueryTokenTypesRequest
-QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenTypesResponse"></a>
-
-### QueryTokenTypesResponse
-QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `token_types` | [TokenType](#lbm.collection.v1.TokenType) | repeated | token types is the informations of all the token types. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensRequest"></a>
-
-### QueryTokensRequest
-QueryTokensRequest is the request type for the Query/Tokens RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensResponse"></a>
-
-### QueryTokensResponse
-QueryTokensResponse is the response type for the Query/Tokens RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tokens` | [google.protobuf.Any](#google.protobuf.Any) | repeated | informations of all the tokens. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensWithTokenTypeRequest"></a>
-
-### QueryTokensWithTokenTypeRequest
-QueryTokensWithTokenTypeRequest is the request type for the Query/TokensWithTokenType RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensWithTokenTypeResponse"></a>
-
-### QueryTokensWithTokenTypeResponse
-QueryTokensWithTokenTypeResponse is the response type for the Query/TokensWithTokenType RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tokens` | [google.protobuf.Any](#google.protobuf.Any) | repeated | informations of all the tokens. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -10710,10 +10608,7 @@ Query defines the gRPC querier service.
 
 Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
-| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
-| `TokensWithTokenType` | [QueryTokensWithTokenTypeRequest](#lbm.collection.v1.QueryTokensWithTokenTypeRequest) | [QueryTokensWithTokenTypeResponse](#lbm.collection.v1.QueryTokensWithTokenTypeResponse) | TokensWithTokenType queries all token metadata with token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
@@ -10740,7 +10635,7 @@ MintNFTParam defines a parameter for minting nft.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. |
+| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). Note: it has an app-specific limit in length. |
 | `meta` | [string](#string) |  | meta is a brief description of the nft. Note: it has an app-specific limit in length. |
 
@@ -11019,7 +10914,7 @@ MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | id of the new token type. |
+| `token_type` | [string](#string) |  | id of the new token type. refer to TokenType for the definition. |
 
 
 
@@ -11101,7 +10996,7 @@ MsgModify is the Msg/Modify request type.
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `token_type` | [string](#string) |  | token type of the token. |
+| `token_type` | [string](#string) |  | token type of the token. refer to TokenType for the definition. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
 
@@ -13383,37 +13278,6 @@ QueryContractResponse is the response type for the Query/Contract RPC method
 
 
 
-<a name="lbm.token.v1.QueryContractsRequest"></a>
-
-### QueryContractsRequest
-QueryContractsRequest is the request type for the Query/Contracts RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryContractsResponse"></a>
-
-### QueryContractsResponse
-QueryContractsResponse is the response type for the Query/Contracts RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contracts` | [Contract](#lbm.token.v1.Contract) | repeated | information of the contracts. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.token.v1.QueryGranteeGrantsRequest"></a>
 
 ### QueryGranteeGrantsRequest
@@ -13590,7 +13454,6 @@ Query defines the gRPC querier service.
 | `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.token.v1.QueryContractRequest) | [QueryContractResponse](#lbm.token.v1.QueryContractResponse) | Contract queries an token metadata based on its contract id. | GET|/lbm/token/v1/token_classes/{contract_id}|
-| `Contracts` | [QueryContractsRequest](#lbm.token.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.token.v1.QueryContractsResponse) | Contracts queries all token metadata. | GET|/lbm/token/v1/token_classes|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
 | `IsOperatorFor` | [QueryIsOperatorForRequest](#lbm.token.v1.QueryIsOperatorForRequest) | [QueryIsOperatorForResponse](#lbm.token.v1.QueryIsOperatorForResponse) | IsOperatorFor queries authorization on a given operator holder pair. | |
 | `HoldersByOperator` | [QueryHoldersByOperatorRequest](#lbm.token.v1.QueryHoldersByOperatorRequest) | [QueryHoldersByOperatorResponse](#lbm.token.v1.QueryHoldersByOperatorResponse) | HoldersByOperator queries holders on a given operator. | |
