@@ -617,6 +617,7 @@ type EventCreatedNFTClass struct {
 	// address which triggered the create.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
 	// token type associated with the token class.
+	// refer to TokenType for the definition.
 	TokenType string `protobuf:"bytes,3,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 	// name of the token class.
 	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
@@ -1136,6 +1137,7 @@ type EventModifiedTokenClass struct {
 	// address which triggered the modify.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
 	// token type associated with the token class.
+	// refer to TokenType for the definition.
 	TokenType string `protobuf:"bytes,3,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 	// changes of the attributes applied.
 	// possible attribute keys are same as those of MsgModify.

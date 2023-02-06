@@ -15,7 +15,7 @@ import (
 	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/collection"
 	"github.com/line/lbm-sdk/x/collection/client/cli"
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type IntegrationTestSuite struct {

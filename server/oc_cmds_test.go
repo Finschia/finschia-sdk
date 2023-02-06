@@ -142,18 +142,13 @@ func initFilesWithConfig(config *cfg.Config) error {
 	// private validator
 	privValKeyFile := config.PrivValidatorKeyFile()
 	privValStateFile := config.PrivValidatorStateFile()
-	privKeyType := config.PrivValidatorKeyType()
 	var pv *privval.FilePV
 	if tmos.FileExists(privValKeyFile) {
 		pv = privval.LoadFilePV(privValKeyFile, privValStateFile)
 		logger.Info("Found private validator", "keyFile", privValKeyFile,
 			"stateFile", privValStateFile)
 	} else {
-		var err error
-		pv, err = privval.GenFilePV(privValKeyFile, privValStateFile, privKeyType)
-		if err != nil {
-			return err
-		}
+		pv = privval.GenFilePV(privValKeyFile, privValStateFile)
 		if pv != nil {
 			pv.Save()
 		}
@@ -180,7 +175,6 @@ func initFilesWithConfig(config *cfg.Config) error {
 			ChainID:         fmt.Sprintf("test-chain-%v", tmrand.Str(6)),
 			GenesisTime:     tmtime.Now(),
 			ConsensusParams: types.DefaultConsensusParams(),
-			VoterParams:     types.DefaultVoterParams(),
 		}
 		pubKey, err := pv.GetPubKey()
 		if err != nil {

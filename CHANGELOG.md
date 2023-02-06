@@ -61,8 +61,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
 * (codec) [\#833](https://github.com/line/lbm-sdk/pull/833) Fix foundation amino codec
+* (ostracon) [\#869](https://github.com/line/lbm-sdk/pull/869) apply changes to replace Ostracon proto message with Tendermint
 * (x/bank) [\#876](https://github.com/line/lbm-sdk/pull/876) Add `MultiSend` deactivation
-
 
 ### Build, CI
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process

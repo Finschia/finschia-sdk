@@ -1042,6 +1042,7 @@ func (m *MsgIssueNFT) GetOwner() string {
 // MsgIssueNFTResponse is the Msg/IssueNFT response type.
 type MsgIssueNFTResponse struct {
 	// id of the new token type.
+	// refer to TokenType for the definition.
 	TokenType string `protobuf:"bytes,1,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 }
 
@@ -1323,6 +1324,7 @@ func (m *MsgMintNFTResponse) GetTokenIds() []string {
 type MintNFTParam struct {
 	// token type or class id of the nft.
 	// Note: it cannot start with zero.
+	// refer to TokenType for the definition.
 	TokenType string `protobuf:"bytes,1,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 	// name defines the human-readable name of the nft (mandatory).
 	// Note: it has an app-specific limit in length.
@@ -1825,6 +1827,7 @@ type MsgModify struct {
 	// the address of the grantee which must have modify permission.
 	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
 	// token type of the token.
+	// refer to TokenType for the definition.
 	TokenType string `protobuf:"bytes,3,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 	// token index of the token.
 	// if index is empty, it would modify the corresponding token type.

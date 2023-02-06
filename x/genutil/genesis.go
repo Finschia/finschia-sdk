@@ -1,7 +1,7 @@
 package genutil
 
 import (
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"

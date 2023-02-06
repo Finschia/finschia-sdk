@@ -6,10 +6,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	abci "github.com/line/ostracon/abci/types"
 	ocbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/store/gaskv"
 	stypes "github.com/line/lbm-sdk/store/types"

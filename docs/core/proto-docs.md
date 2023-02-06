@@ -1629,7 +1629,7 @@ Result is the union of ResponseFormat and ResponseCheckTx.
 | ----- | ---- | ----- | ----------- |
 | `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
 | `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
+| `events` | [tendermint.abci.Event](#tendermint.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
 
 
 
@@ -1727,7 +1727,7 @@ tags are stringified and the log is JSON decoded.
 | `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
 | `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
 | `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+| `events` | [tendermint.abci.Event](#tendermint.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
 
 Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 | `index` | [uint32](#uint32) |  | The transaction index within block |
@@ -8079,7 +8079,7 @@ Since: cosmos-sdk 0.45.2
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `txs` | [Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
 
@@ -8730,7 +8730,7 @@ GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC met
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -8761,7 +8761,7 @@ GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -8793,9 +8793,9 @@ GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResul
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `height` | [int64](#int64) |  |  |
-| `txs_results` | [ostracon.abci.ResponseDeliverTx](#ostracon.abci.ResponseDeliverTx) | repeated |  |
-| `res_begin_block` | [ostracon.abci.ResponseBeginBlock](#ostracon.abci.ResponseBeginBlock) |  |  |
-| `res_end_block` | [ostracon.abci.ResponseEndBlock](#ostracon.abci.ResponseEndBlock) |  |  |
+| `txs_results` | [tendermint.abci.ResponseDeliverTx](#tendermint.abci.ResponseDeliverTx) | repeated |  |
+| `res_begin_block` | [tendermint.abci.ResponseBeginBlock](#tendermint.abci.ResponseBeginBlock) |  |  |
+| `res_end_block` | [tendermint.abci.ResponseEndBlock](#tendermint.abci.ResponseEndBlock) |  |  |
 
 
 
@@ -8820,7 +8820,7 @@ GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC met
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -8878,7 +8878,7 @@ GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `default_node_info` | [ostracon.p2p.DefaultNodeInfo](#ostracon.p2p.DefaultNodeInfo) |  |  |
+| `default_node_info` | [tendermint.p2p.DefaultNodeInfo](#tendermint.p2p.DefaultNodeInfo) |  |  |
 | `application_version` | [VersionInfo](#lbm.base.ostracon.v1.VersionInfo) |  |  |
 
 
@@ -9246,12 +9246,15 @@ Params defines the parameters for the collection module.
 Deprecated: use TokenClass
 
 TokenType defines the information of token type.
+It represents a NFTClass whose class_id is token_type.
+
+Note: There is no TokenType instance for FTClass.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. |
+| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. the format of the value is identical to that of class_id. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token type. |
 | `meta` | [string](#string) |  | meta is a brief description of the token type. |
 
@@ -9424,7 +9427,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `token_type` | [string](#string) |  | token type associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 
@@ -9567,7 +9570,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `token_type` | [string](#string) |  | token type associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 | `type_name` | [string](#string) |  | type name of the token class. |
 
@@ -10344,7 +10347,7 @@ QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10375,7 +10378,7 @@ QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10406,7 +10409,7 @@ QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10565,7 +10568,7 @@ QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -10660,7 +10663,7 @@ QueryTokensWithTokenTypeRequest is the request type for the Query/TokensWithToke
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -10740,7 +10743,7 @@ MintNFTParam defines a parameter for minting nft.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. |
+| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). Note: it has an app-specific limit in length. |
 | `meta` | [string](#string) |  | meta is a brief description of the nft. Note: it has an app-specific limit in length. |
 
@@ -11019,7 +11022,7 @@ MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | id of the new token type. |
+| `token_type` | [string](#string) |  | id of the new token type. refer to TokenType for the definition. |
 
 
 
@@ -11101,7 +11104,7 @@ MsgModify is the Msg/Modify request type.
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `token_type` | [string](#string) |  | token type of the token. |
+| `token_type` | [string](#string) |  | token type of the token. refer to TokenType for the definition. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
 

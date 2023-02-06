@@ -15,9 +15,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	abcitypes "github.com/line/ostracon/abci/types"
 	ocrpc "github.com/line/ostracon/rpc/client"
 	"github.com/line/ostracon/rpc/client/http"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
 	crgtypes "github.com/line/lbm-sdk/server/rosetta/lib/types"
@@ -369,7 +369,7 @@ func (c *Client) PostTx(txBytes []byte) (*rosettatypes.TransactionIdentifier, ma
 		return nil, nil, crgerrs.WrapError(crgerrs.ErrUnknown, err.Error())
 	}
 	// check if tx was broadcast successfully
-	if res.Code != abcitypes.CodeTypeOK {
+	if res.Code != abci.CodeTypeOK {
 		return nil, nil, crgerrs.WrapError(
 			crgerrs.ErrUnknown,
 			fmt.Sprintf("transaction broadcast failure: (%d) %s ", res.Code, res.Log),
