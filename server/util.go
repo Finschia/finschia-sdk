@@ -145,9 +145,14 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command, customAppConfigTemplate s
 		isLogPlain = true
 	}
 
+	logLevel := serverCtx.Viper.GetString(flags.FlagLogLevel)
+	if logLevel == "" {
+		logLevel = ostcfg.DefaultPackageLogLevels()
+	}
+
 	zerologCfg := ostlog.NewZeroLogConfig(
 		isLogPlain,
-		serverCtx.Viper.GetString(flags.FlagLogLevel),
+		logLevel,
 		serverCtx.Viper.GetString(flags.FlagLogPath),
 		serverCtx.Viper.GetInt(flags.FlagLogMaxAge),
 		serverCtx.Viper.GetInt(flags.FlagLogMaxSize),
