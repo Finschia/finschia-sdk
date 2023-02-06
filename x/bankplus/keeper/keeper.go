@@ -138,7 +138,7 @@ func (keeper BaseKeeper) IsInactiveAddr(address sdk.AccAddress) bool {
 
 func (keeper BaseKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) error {
 	if keeper.deactMultiSend {
-		panic("you can't use MultiSend")
+		return sdkerrors.ErrNotSupported.Wrap("MultiSend was deactivated")
 	}
 
 	for _, out := range outputs {
