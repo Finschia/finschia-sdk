@@ -30,10 +30,6 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 
 	k.setAuthorization(ctx, contractID, holder, operator)
 
-	if !k.accountKeeper.HasAccount(ctx, operator) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, operator))
-	}
-
 	return nil
 }
 
@@ -87,10 +83,6 @@ func (k Keeper) addToken(ctx sdk.Context, contractID string, addr sdk.AccAddress
 	newBalance := balance.Add(amount)
 
 	k.setBalance(ctx, contractID, addr, newBalance)
-
-	if !k.accountKeeper.HasAccount(ctx, addr) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, addr))
-	}
 }
 
 func (k Keeper) GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress) sdk.Int {

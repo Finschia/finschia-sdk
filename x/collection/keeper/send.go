@@ -43,9 +43,6 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 			k.setOwner(ctx, contractID, coin.TokenId, address)
 		}
 	}
-
-	// create account if recipient does not exist.
-	k.createAccountOnAbsence(ctx, address)
 }
 
 func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
@@ -105,9 +102,6 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
-
-	// create account if operator does not exist.
-	k.createAccountOnAbsence(ctx, operator)
 
 	return nil
 }

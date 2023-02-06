@@ -48,7 +48,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 
 func (k Keeper) setNFT(ctx sdk.Context, contractID string, token collection.NFT) {
 	store := ctx.KVStore(k.storeKey)
-	key := nftKey(contractID, token.Id)
+	key := nftKey(contractID, token.TokenId)
 
 	bz, err := token.Marshal()
 	if err != nil {

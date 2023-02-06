@@ -15,7 +15,7 @@ import (
 	"github.com/line/lbm-sdk/x/token/class"
 )
 
-func TestMsgTransferFT(t *testing.T) {
+func TestMsgSendFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -89,7 +89,7 @@ func TestMsgTransferFT(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgTransferFT{
+			msg := collection.MsgSendFT{
 				ContractId: tc.contractID,
 				From:       tc.from.String(),
 				To:         tc.to.String(),
@@ -111,7 +111,7 @@ func TestMsgTransferFT(t *testing.T) {
 	}
 }
 
-func TestMsgTransferFTFrom(t *testing.T) {
+func TestMsgOperatorSendFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -123,7 +123,7 @@ func TestMsgTransferFTFrom(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		proxy      sdk.AccAddress
+		operator   sdk.AccAddress
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		amount     []collection.Coin
@@ -131,12 +131,12 @@ func TestMsgTransferFTFrom(t *testing.T) {
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     amount,
 		},
-		"invalid proxy": {
+		"invalid operator": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			to:         addrs[2],
@@ -144,29 +144,29 @@ func TestMsgTransferFTFrom(t *testing.T) {
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
-			proxy:  addrs[0],
-			from:   addrs[1],
-			to:     addrs[2],
-			amount: amount,
-			err:    class.ErrInvalidContractID,
+			operator: addrs[0],
+			from:     addrs[1],
+			to:       addrs[2],
+			amount:   amount,
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			to:         addrs[1],
 			amount:     amount,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			amount:     amount,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid amount": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
 			amount: []collection.Coin{{
@@ -177,7 +177,7 @@ func TestMsgTransferFTFrom(t *testing.T) {
 		},
 		"invalid denom": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
 			amount: []collection.Coin{{
@@ -189,9 +189,9 @@ func TestMsgTransferFTFrom(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgTransferFTFrom{
+			msg := collection.MsgOperatorSendFT{
 				ContractId: tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				To:         tc.to.String(),
 				Amount:     tc.amount,
@@ -202,12 +202,12 @@ func TestMsgTransferFTFrom(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
 
-func TestMsgTransferNFT(t *testing.T) {
+func TestMsgSendNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -263,7 +263,7 @@ func TestMsgTransferNFT(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgTransferNFT{
+			msg := collection.MsgSendNFT{
 				ContractId: tc.contractID,
 				From:       tc.from.String(),
 				To:         tc.to.String(),
@@ -280,7 +280,7 @@ func TestMsgTransferNFT(t *testing.T) {
 	}
 }
 
-func TestMsgTransferNFTFrom(t *testing.T) {
+func TestMsgOperatorSendNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -290,7 +290,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		proxy      sdk.AccAddress
+		operator   sdk.AccAddress
 		from       sdk.AccAddress
 		to         sdk.AccAddress
 		ids        []string
@@ -298,12 +298,12 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
 			ids:        ids,
 		},
-		"invalid proxy": {
+		"invalid operator": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			to:         addrs[2],
@@ -311,36 +311,36 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
-			proxy: addrs[0],
-			from:  addrs[1],
-			to:    addrs[2],
-			ids:   ids,
-			err:   class.ErrInvalidContractID,
+			operator: addrs[0],
+			from:     addrs[1],
+			to:       addrs[2],
+			ids:      ids,
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			to:         addrs[1],
 			ids:        ids,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			ids:        ids,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty ids": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
 			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
 			ids:        []string{""},
@@ -350,9 +350,9 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgTransferNFTFrom{
+			msg := collection.MsgOperatorSendNFT{
 				ContractId: tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				To:         tc.to.String(),
 				TokenIds:   tc.ids,
@@ -363,12 +363,12 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
 
-func TestMsgApprove(t *testing.T) {
+func TestMsgAuthorizeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -376,38 +376,38 @@ func TestMsgApprove(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		approver   sdk.AccAddress
-		proxy      sdk.AccAddress
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
 		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			approver:   addrs[0],
-			proxy:      addrs[1],
+			holder:     addrs[0],
+			operator:   addrs[1],
 		},
 		"invalid contract id": {
-			approver: addrs[0],
-			proxy:    addrs[1],
+			holder:   addrs[0],
+			operator: addrs[1],
 			err:      class.ErrInvalidContractID,
 		},
-		"invalid approver": {
+		"invalid holder": {
 			contractID: "deadbeef",
-			proxy:      addrs[1],
+			operator:   addrs[1],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"invalid proxy": {
+		"empty operator": {
 			contractID: "deadbeef",
-			approver:   addrs[0],
+			holder:     addrs[0],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 	}
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgApprove{
+			msg := collection.MsgAuthorizeOperator{
 				ContractId: tc.contractID,
-				Approver:   tc.approver.String(),
-				Proxy:      tc.proxy.String(),
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
 			}
 
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
@@ -415,12 +415,12 @@ func TestMsgApprove(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
 		})
 	}
 }
 
-func TestMsgDisapprove(t *testing.T) {
+func TestMsgRevokeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -428,38 +428,38 @@ func TestMsgDisapprove(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		approver   sdk.AccAddress
-		proxy      sdk.AccAddress
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
 		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			approver:   addrs[0],
-			proxy:      addrs[1],
+			holder:     addrs[0],
+			operator:   addrs[1],
 		},
 		"invalid contract id": {
-			approver: addrs[0],
-			proxy:    addrs[1],
+			holder:   addrs[0],
+			operator: addrs[1],
 			err:      class.ErrInvalidContractID,
 		},
-		"invalid approver": {
+		"invalid holder": {
 			contractID: "deadbeef",
-			proxy:      addrs[1],
+			operator:   addrs[1],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"invalid proxy": {
+		"empty operator": {
 			contractID: "deadbeef",
-			approver:   addrs[0],
+			holder:     addrs[0],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 	}
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgDisapprove{
+			msg := collection.MsgRevokeOperator{
 				ContractId: tc.contractID,
-				Approver:   tc.approver.String(),
-				Proxy:      tc.proxy.String(),
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
 			}
 
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
@@ -467,7 +467,7 @@ func TestMsgDisapprove(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
 		})
 	}
 }
@@ -526,10 +526,10 @@ func TestMsgCreateContract(t *testing.T) {
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			msg := collection.MsgCreateContract{
-				Owner:      tc.owner.String(),
-				Name:       tc.name,
-				BaseImgUri: tc.baseImgURI,
-				Meta:       tc.meta,
+				Owner: tc.owner.String(),
+				Name:  tc.name,
+				Uri:   tc.baseImgURI,
+				Meta:  tc.meta,
 			}
 
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
@@ -998,7 +998,7 @@ func TestMsgBurnFT(t *testing.T) {
 	}
 }
 
-func TestMsgBurnFTFrom(t *testing.T) {
+func TestMsgOperatorBurnFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -1062,9 +1062,9 @@ func TestMsgBurnFTFrom(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgBurnFTFrom{
+			msg := collection.MsgOperatorBurnFT{
 				ContractId: tc.contractID,
-				Proxy:      tc.grantee.String(),
+				Operator:   tc.grantee.String(),
 				From:       tc.from.String(),
 				Amount:     tc.amount,
 			}
@@ -1139,7 +1139,7 @@ func TestMsgBurnNFT(t *testing.T) {
 	}
 }
 
-func TestMsgBurnNFTFrom(t *testing.T) {
+func TestMsgOperatorBurnNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -1195,9 +1195,9 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgBurnNFTFrom{
+			msg := collection.MsgOperatorBurnNFT{
 				ContractId: tc.contractID,
-				Proxy:      tc.grantee.String(),
+				Operator:   tc.grantee.String(),
 				From:       tc.from.String(),
 				TokenIds:   tc.ids,
 			}
@@ -1218,13 +1218,13 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	changes := []collection.Change{{Field: collection.AttributeKeyName.String(), Value: "New test"}}
+	changes := []collection.Attribute{{Key: collection.AttributeKeyName.String(), Value: "New test"}}
 	testCases := map[string]struct {
 		contractID string
 		owner      sdk.AccAddress
 		tokenType  string
 		tokenIndex string
-		changes    []collection.Change
+		changes    []collection.Attribute
 		err        error
 	}{
 		"valid contract modification": {
@@ -1258,13 +1258,13 @@ func TestMsgModify(t *testing.T) {
 		"invalid key of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
+			changes:    []collection.Attribute{{Key: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
 			err:        collection.ErrInvalidChangesField,
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: collection.AttributeKeyName.String(), Value: string(make([]rune, 21))}},
+			changes:    []collection.Attribute{{Key: collection.AttributeKeyName.String(), Value: string(make([]rune, 21))}},
 			err:        collection.ErrInvalidNameLength,
 		},
 		"empty changes": {
@@ -1275,13 +1275,13 @@ func TestMsgModify(t *testing.T) {
 		"too many changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    make([]collection.Change, 101),
+			changes:    make([]collection.Attribute, 101),
 			err:        collection.ErrInvalidChangesFieldCount,
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{changes[0], changes[0]},
+			changes:    []collection.Attribute{changes[0], changes[0]},
 			err:        collection.ErrDuplicateChangesField,
 		},
 	}
@@ -1554,7 +1554,7 @@ func TestMsgDetach(t *testing.T) {
 	}
 }
 
-func TestMsgAttachFrom(t *testing.T) {
+func TestMsgOperatorAttach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -1567,7 +1567,7 @@ func TestMsgAttachFrom(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		proxy      sdk.AccAddress
+		operator   sdk.AccAddress
 		from       sdk.AccAddress
 		tokenID    string
 		toTokenID  string
@@ -1575,12 +1575,12 @@ func TestMsgAttachFrom(t *testing.T) {
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
 		},
-		"invalid proxy": {
+		"empty operator": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
@@ -1589,13 +1589,13 @@ func TestMsgAttachFrom(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
-			proxy:     addrs[0],
+			operator:  addrs[0],
 			from:      addrs[1],
 			tokenID:   tokenIDs[0],
 			toTokenID: tokenIDs[1],
@@ -1603,21 +1603,21 @@ func TestMsgAttachFrom(t *testing.T) {
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			toTokenID:  tokenIDs[1],
 			err:        collection.ErrInvalidTokenID,
 		},
 		"invalid to id": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			err:        collection.ErrInvalidTokenID,
 		},
 		"to itself": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[0],
@@ -1627,9 +1627,9 @@ func TestMsgAttachFrom(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgAttachFrom{
+			msg := collection.MsgOperatorAttach{
 				ContractId: tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				TokenId:    tc.tokenID,
 				ToTokenId:  tc.toTokenID,
@@ -1640,12 +1640,12 @@ func TestMsgAttachFrom(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
 
-func TestMsgDetachFrom(t *testing.T) {
+func TestMsgOperatorDetach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -1655,18 +1655,18 @@ func TestMsgDetachFrom(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		proxy      sdk.AccAddress
+		operator   sdk.AccAddress
 		from       sdk.AccAddress
 		tokenID    string
 		err        error
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			tokenID:    tokenID,
 		},
-		"invalid proxy": {
+		"empty operator": {
 			contractID: "deadbeef",
 			from:       addrs[1],
 			tokenID:    tokenID,
@@ -1674,19 +1674,19 @@ func TestMsgDetachFrom(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			tokenID:    tokenID,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
-			proxy:   addrs[0],
-			from:    addrs[1],
-			tokenID: tokenID,
-			err:     class.ErrInvalidContractID,
+			operator: addrs[0],
+			from:     addrs[1],
+			tokenID:  tokenID,
+			err:      class.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
-			proxy:      addrs[0],
+			operator:   addrs[0],
 			from:       addrs[1],
 			err:        collection.ErrInvalidTokenID,
 		},
@@ -1694,9 +1694,9 @@ func TestMsgDetachFrom(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgDetachFrom{
+			msg := collection.MsgOperatorDetach{
 				ContractId: tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				TokenId:    tc.tokenID,
 			}
@@ -1706,7 +1706,7 @@ func TestMsgDetachFrom(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
@@ -1734,75 +1734,75 @@ func TestAminoJSON(t *testing.T) {
 		expectedType string
 		expected     string
 	}{
-		"MsgTransferFT": {
-			&collection.MsgTransferFT{
+		"MsgSendFT": {
+			&collection.MsgSendFT{
 				ContractId: contractId,
 				From:       addrs[0].String(),
 				To:         addrs[1].String(),
 				Amount:     ftAmount,
 			},
-			"/lbm.collection.v1.MsgTransferFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			"/lbm.collection.v1.MsgSendFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSendFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
-		"MsgTransferFTFrom": {
-			&collection.MsgTransferFTFrom{
+		"MsgOperatorSendFT": {
+			&collection.MsgOperatorSendFT{
 				ContractId: contractId,
-				Proxy:      addrs[0].String(),
+				Operator:   addrs[0].String(),
 				From:       addrs[1].String(),
 				To:         addrs[2].String(),
 				Amount:     ftAmount,
 			},
-			"/lbm.collection.v1.MsgTransferFTFrom",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFTFrom\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
+			"/lbm.collection.v1.MsgOperatorSendFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorSendFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
 		},
-		"MsgTransferNFT": {
-			&collection.MsgTransferNFT{
+		"MsgSendNFT": {
+			&collection.MsgSendNFT{
 				ContractId: contractId,
 				From:       addrs[0].String(),
 				To:         addrs[1].String(),
 				TokenIds:   tokenIds,
 			},
-			"/lbm.collection.v1.MsgTransferNFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			"/lbm.collection.v1.MsgSendNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSendNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
-		"MsgTransferNFTFrom": {
-			&collection.MsgTransferNFTFrom{
+		"MsgOperatorSendNFT": {
+			&collection.MsgOperatorSendNFT{
 				ContractId: contractId,
-				Proxy:      addrs[0].String(),
+				Operator:   addrs[0].String(),
 				From:       addrs[1].String(),
 				To:         addrs[2].String(),
 				TokenIds:   tokenIds,
 			},
-			"/lbm.collection.v1.MsgTransferNFTFrom",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferNFTFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
+			"/lbm.collection.v1.MsgOperatorSendNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorSendNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
 		},
-		"MsgApprove": {
-			&collection.MsgApprove{
+		"MsgAuthorizeOperator": {
+			&collection.MsgAuthorizeOperator{
 				ContractId: contractId,
-				Approver:   addrs[0].String(),
-				Proxy:      addrs[1].String(),
+				Holder:     addrs[0].String(),
+				Operator:   addrs[1].String(),
 			},
-			"/lbm.collection.v1.MsgApprove",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			"/lbm.collection.v1.MsgAuthorizeOperator",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgAuthorizeOperator\",\"value\":{\"contract_id\":\"deadbeef\",\"holder\":\"%s\",\"operator\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
-		"MsgDisapprove": {
-			&collection.MsgDisapprove{
+		"MsgRevokeOperator": {
+			&collection.MsgRevokeOperator{
 				ContractId: contractId,
-				Approver:   addrs[0].String(),
-				Proxy:      addrs[1].String(),
+				Holder:     addrs[0].String(),
+				Operator:   addrs[1].String(),
 			},
-			"/lbm.collection.v1.MsgDisapprove",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDisapprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			"/lbm.collection.v1.MsgRevokeOperator",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgRevokeOperator\",\"value\":{\"contract_id\":\"deadbeef\",\"holder\":\"%s\",\"operator\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgCreateContract": {
 			&collection.MsgCreateContract{
-				Owner:      addrs[0].String(),
-				Name:       "Test Contract",
-				BaseImgUri: "http://image.url",
-				Meta:       "This is test",
+				Owner: addrs[0].String(),
+				Name:  "Test Contract",
+				Uri:   "http://image.url",
+				Meta:  "This is test",
 			},
 			"/lbm.collection.v1.MsgCreateContract",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"base_img_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\",\"uri\":\"http://image.url\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgIssueFT": {
 			&collection.MsgIssueFT{
@@ -1857,15 +1857,15 @@ func TestAminoJSON(t *testing.T) {
 			"/lbm.collection.v1.MsgBurnFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
-		"MsgBurnFTFrom": {
-			&collection.MsgBurnFTFrom{
+		"MsgOperatorBurnFT": {
+			&collection.MsgOperatorBurnFT{
 				ContractId: contractId,
-				Proxy:      addrs[0].String(),
+				Operator:   addrs[0].String(),
 				From:       addrs[1].String(),
 				Amount:     ftAmount,
 			},
-			"/lbm.collection.v1.MsgBurnFTFrom",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFTFrom\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+			"/lbm.collection.v1.MsgOperatorBurnFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorBurnFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgBurnNFT": {
 			&collection.MsgBurnNFT{
@@ -1876,15 +1876,15 @@ func TestAminoJSON(t *testing.T) {
 			"/lbm.collection.v1.MsgBurnNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
-		"MsgBurnNFTFrom": {
-			&collection.MsgBurnNFTFrom{
+		"MsgOperatorBurnNFT": {
+			&collection.MsgOperatorBurnNFT{
 				ContractId: contractId,
-				Proxy:      addrs[0].String(),
+				Operator:   addrs[0].String(),
 				From:       addrs[1].String(),
 				TokenIds:   tokenIds,
 			},
-			"/lbm.collection.v1.MsgBurnNFTFrom",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnNFTFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+			"/lbm.collection.v1.MsgOperatorBurnNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorBurnNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgModify": {
 			&collection.MsgModify{
@@ -1892,10 +1892,10 @@ func TestAminoJSON(t *testing.T) {
 				Owner:      addrs[0].String(),
 				TokenType:  "NewType",
 				TokenIndex: "deadbeef",
-				Changes:    []collection.Change{{Field: "name", Value: "New test"}},
+				Changes:    []collection.Attribute{{Key: "name", Value: "New test"}},
 			},
 			"/lbm.collection.v1.MsgModify",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgModify\",\"value\":{\"changes\":[{\"key\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgGrantPermission": {
 			&collection.MsgGrantPermission{
@@ -1935,26 +1935,26 @@ func TestAminoJSON(t *testing.T) {
 			"/lbm.collection.v1.MsgDetach",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDetach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
-		"MsgAttachFrom": {
-			&collection.MsgAttachFrom{
+		"MsgOperatorAttach": {
+			&collection.MsgOperatorAttach{
 				ContractId: contractId,
-				Proxy:      addrs[0].String(),
+				Operator:   addrs[0].String(),
 				From:       addrs[1].String(),
 				TokenId:    collection.NewNFTID("deadbeef", 1),
 				ToTokenId:  collection.NewNFTID("fee1dead", 1),
 			},
-			"/lbm.collection.v1.MsgAttachFrom",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgAttachFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to_token_id\":\"fee1dead00000001\",\"token_id\":\"deadbeef00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+			"/lbm.collection.v1.MsgOperatorAttach",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorAttach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\",\"to_token_id\":\"fee1dead00000001\",\"token_id\":\"deadbeef00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
-		"MsgDetachFrom": {
-			&collection.MsgDetachFrom{
+		"MsgOperatorDetach": {
+			&collection.MsgOperatorDetach{
 				ContractId: contractId,
-				Proxy:      addrs[0].String(),
+				Operator:   addrs[0].String(),
 				From:       addrs[1].String(),
 				TokenId:    collection.NewNFTID("fee1dead", 1),
 			},
-			"/lbm.collection.v1.MsgDetachFrom",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDetachFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+			"/lbm.collection.v1.MsgOperatorDetach",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorDetach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 	}
 

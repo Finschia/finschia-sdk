@@ -115,7 +115,7 @@ func NewEventModifyToken(event EventModified) []sdk.Event {
 	}
 
 	for _, pair := range event.Changes {
-		attribute := sdk.NewAttribute(pair.Field, pair.Value)
+		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
 		res = append(res, event)
 	}
