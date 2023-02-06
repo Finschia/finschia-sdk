@@ -36,7 +36,7 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 	accountKeeper := accountkeeper.NewAccountKeeper(cdc, accountStoreKey, accountSubspace, accounttypes.ProtoBaseAccount, nil)
 
 	bankSubspace := paramtypes.NewSubspace(cdc, amino, storeKey, testTransientStoreKey, banktypes.StoreKey)
-	return NewBaseKeeper(cdc, storeKey, accountKeeper, bankSubspace, nil)
+	return NewBaseKeeper(cdc, storeKey, accountKeeper, bankSubspace, nil, false)
 }
 
 func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {

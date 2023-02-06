@@ -63,7 +63,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	)
 	keeper := bankpluskeeper.NewBaseKeeper(
 		appCodec, app.GetKey(types.StoreKey), authKeeper,
-		app.GetSubspace(types.ModuleName), make(map[string]bool),
+		app.GetSubspace(types.ModuleName), make(map[string]bool), false,
 	)
 
 	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
@@ -134,7 +134,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 
 	keeper := bankpluskeeper.NewBaseKeeper(
 		appCodec, app.GetKey(types.StoreKey), authKeeper,
-		app.GetSubspace(types.ModuleName), make(map[string]bool),
+		app.GetSubspace(types.ModuleName), make(map[string]bool), false,
 	)
 
 	// set initial balances
@@ -186,7 +186,7 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 	{
 		keeper := bankpluskeeper.NewBaseKeeper(
 			appCodec, app.GetKey(types.StoreKey), authKeeper,
-			app.GetSubspace(types.ModuleName), make(map[string]bool),
+			app.GetSubspace(types.ModuleName), make(map[string]bool), false,
 		)
 
 		// add blocked address
@@ -197,7 +197,7 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 	{
 		keeper := bankpluskeeper.NewBaseKeeper(
 			appCodec, app.GetKey(types.StoreKey), authKeeper,
-			app.GetSubspace(types.ModuleName), make(map[string]bool),
+			app.GetSubspace(types.ModuleName), make(map[string]bool), false,
 		)
 		keeper.InitializeBankPlus(ctx)
 		suite.Require().True(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
@@ -223,12 +223,86 @@ func (suite *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() 
 	)
 	keeper := bankpluskeeper.NewBaseKeeper(
 		appCodec, app.GetKey(types.StoreKey), authKeeper,
-		app.GetSubspace(types.ModuleName), map[string]bool{addr1.String(): true})
+		app.GetSubspace(types.ModuleName), map[string]bool{addr1.String(): true}, false)
 
 	suite.Require().NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
 	suite.Require().Error(keeper.SendCoinsFromModuleToAccount(
 		ctx, minttypes.ModuleName, addr1, initCoins,
 	))
+}
+
+func (suite *IntegrationTestSuite) TestInputOutputCoins() {
+	app := simapp.Setup(false)
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	appCodec := app.AppCodec()
+
+	// add module accounts to supply keeper
+	maccPerms := simapp.GetMaccPerms()
+	maccPerms[holder] = nil
+	maccPerms[authtypes.Burner] = []string{authtypes.Burner}
+	maccPerms[authtypes.Minter] = []string{authtypes.Minter}
+
+	authKeeper := authkeeper.NewAccountKeeper(
+		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(types.ModuleName),
+		authtypes.ProtoBaseAccount, maccPerms,
+	)
+	keeper := bankpluskeeper.NewBaseKeeper(
+		appCodec, app.GetKey(types.StoreKey), authKeeper,
+		app.GetSubspace(types.ModuleName), make(map[string]bool), false,
+	)
+
+	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
+	authKeeper.SetModuleAccount(ctx, holderAcc)
+	authKeeper.SetModuleAccount(ctx, burnerAcc)
+	authKeeper.SetAccount(ctx, baseAcc)
+
+	// set initial balances
+	suite.
+		Require().
+		NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+	suite.
+		Require().
+		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, baseAcc.GetAddress(), initCoins))
+	suite.
+		Require().
+		NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+	suite.
+		Require().
+		NoError(keeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, holderAcc.GetName(), initCoins))
+
+	input := []types.Input{types.NewInput(baseAcc.GetAddress(), initCoins), types.NewInput(holderAcc.GetAddress(), initCoins)}
+	output := []types.Output{types.NewOutput(burnerAcc.GetAddress(), initCoins), types.NewOutput(burnerAcc.GetAddress(), initCoins)}
+
+	targetKeeper := func(isDeact bool) bankpluskeeper.BaseKeeper {
+		return bankpluskeeper.NewBaseKeeper(
+			appCodec, app.GetKey(types.StoreKey), authKeeper,
+			app.GetSubspace(types.ModuleName), make(map[string]bool), isDeact,
+		)
+	}
+	tcs := map[string]struct {
+		deactMultiSend bool
+	}{
+		"MultiSend Off": {
+			true,
+		},
+		"MultiSend On": {
+			false,
+		},
+	}
+
+	for name, tc := range tcs {
+		tc := tc
+		suite.T().Run(name, func(t *testing.T) {
+			if tc.deactMultiSend {
+				suite.Panics(func() {
+					_ = targetKeeper(tc.deactMultiSend).InputOutputCoins(ctx, input, output)
+				})
+			} else {
+				err := targetKeeper(tc.deactMultiSend).InputOutputCoins(ctx, input, output)
+				suite.Assert().NoError(err)
+			}
+		})
+	}
 }
 
 func TestKeeperTestSuite(t *testing.T) {
