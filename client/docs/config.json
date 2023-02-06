@@ -135,7 +135,8 @@
           "Approvers": "TokenApprovers",
           "Supply": "TokenSupply",
           "Minted": "TokenMinted",
-          "Burnt": "TokenBurnt"
+          "Burnt": "TokenBurnt",
+          "Contract": "TokenContract"
         }
       }
     },
@@ -148,7 +149,8 @@
           "AllBalances": "CollectionAllBalances",
           "GranteeGrants": "CollectionGranteeGrants",
           "Approved": "CollectionApproved",
-          "Approvers": "CollectionApprovers"
+          "Approvers": "CollectionApprovers",
+          "Contract": "CollectionContract"
         }
       }
     },

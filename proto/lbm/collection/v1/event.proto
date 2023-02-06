@@ -127,7 +127,7 @@ message EventCreatedContract {
   // metadata of the contract.
   string meta = 4;
   // uri for the contract image stored off chain.
-  string base_img_uri = 5;
+  string uri = 5;
 }
 
 // EventCreatedFTClass is emitted when a new fungible token class is created.
@@ -138,8 +138,8 @@ message EventCreatedFTClass {
   string contract_id = 1;
   // address which triggered the create.
   string operator = 2;
-  // class id associated with the token class.
-  string class_id = 3;
+  // token id associated with the token class.
+  string token_id = 3;
   // name of the token class.
   string name = 4;
   // metadata of the token class.
@@ -158,8 +158,9 @@ message EventCreatedNFTClass {
   string contract_id = 1;
   // address which triggered the create.
   string operator = 2;
-  // class id associated with the token class.
-  string class_id = 3;
+  // token type associated with the token class.
+  // refer to TokenType for the definition.
+  string token_type = 3;
   // name of the token class.
   string name = 4;
   // metadata of the token class.
@@ -245,6 +246,7 @@ message EventModifiedContract {
   // address which triggered the modify.
   string operator = 2;
   // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
   repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }
 
@@ -256,9 +258,11 @@ message EventModifiedTokenClass {
   string contract_id = 1;
   // address which triggered the modify.
   string operator = 2;
-  // class id associated with the token class.
-  string class_id = 3;
+  // token type associated with the token class.
+  // refer to TokenType for the definition.
+  string token_type = 3;
   // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
   // type name of the token class.
   string type_name = 5;
@@ -275,6 +279,7 @@ message EventModifiedNFT {
   // token id associated with the non-fungible token.
   string token_id = 3;
   // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
 }
 

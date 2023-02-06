@@ -44,10 +44,10 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewTxCmdTransferFT(),
-		NewTxCmdTransferFTFrom(),
-		NewTxCmdTransferNFT(),
-		NewTxCmdTransferNFTFrom(),
+		NewTxCmdSendFT(),
+		NewTxCmdOperatorSendFT(),
+		NewTxCmdSendNFT(),
+		NewTxCmdOperatorSendNFT(),
 		NewTxCmdCreateContract(),
 		NewTxCmdIssueFT(),
 		NewTxCmdIssueNFT(),
@@ -55,24 +55,24 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdMintNFT(),
 		NewTxCmdAttach(),
 		NewTxCmdDetach(),
-		NewTxCmdAttachFrom(),
-		NewTxCmdDetachFrom(),
+		NewTxCmdOperatorAttach(),
+		NewTxCmdOperatorDetach(),
 		NewTxCmdGrantPermission(),
 		NewTxCmdRevokePermission(),
-		NewTxCmdApprove(),
-		NewTxCmdDisapprove(),
+		NewTxCmdAuthorizeOperator(),
+		NewTxCmdRevokeOperator(),
 	)
 
 	return txCmd
 }
 
-func NewTxCmdTransferFT() *cobra.Command {
+func NewTxCmdSendFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-ft [contract-id] [from] [to] [amount]",
+		Use:   "send-ft [contract-id] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(4),
 		Short: "send fungible tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s transfer-ft [contract-id] [from] [to] [amount]`, version.AppName, collection.ModuleName),
+			$ %s tx %s send-ft [contract-id] [from] [to] [amount]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			from := args[1]
@@ -91,7 +91,7 @@ func NewTxCmdTransferFT() *cobra.Command {
 				return err
 			}
 
-			msg := &collection.MsgTransferFT{
+			msg := &collection.MsgSendFT{
 				ContractId: args[0],
 				From:       from,
 				To:         args[2],
@@ -108,13 +108,13 @@ func NewTxCmdTransferFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdTransferFTFrom() *cobra.Command {
+func NewTxCmdOperatorSendFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-ft-from [contract-id] [operator] [from] [to] [amount]",
+		Use:   "operator-send-ft [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
 		Short: "send tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s operator-send [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-send-ft [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -133,9 +133,9 @@ func NewTxCmdTransferFTFrom() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgTransferFTFrom{
+			msg := collection.MsgOperatorSendFT{
 				ContractId: args[0],
-				Proxy:      operator,
+				Operator:   operator,
 				From:       args[2],
 				To:         args[3],
 				Amount:     amount,
@@ -151,13 +151,13 @@ func NewTxCmdTransferFTFrom() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdTransferNFT() *cobra.Command {
+func NewTxCmdSendNFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-nft [contract-id] [from] [to] [token-id]",
+		Use:   "send-nft [contract-id] [from] [to] [token-id]",
 		Args:  cobra.ExactArgs(4),
 		Short: "send non-fungible tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s transfer-nft [contract-id] [from] [to] [token-id]`, version.AppName, collection.ModuleName),
+			$ %s tx %s send-nft [contract-id] [from] [to] [token-id]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			from := args[1]
@@ -170,7 +170,7 @@ func NewTxCmdTransferNFT() *cobra.Command {
 				return err
 			}
 
-			msg := &collection.MsgTransferNFT{
+			msg := &collection.MsgSendNFT{
 				ContractId: args[0],
 				From:       from,
 				To:         args[2],
@@ -187,13 +187,13 @@ func NewTxCmdTransferNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdTransferNFTFrom() *cobra.Command {
+func NewTxCmdOperatorSendNFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-nft-from [contract-id] [operator] [from] [to] [amount]",
+		Use:   "operator-send-nft [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
 		Short: "send tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s transfer-nft-from [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-send-nft [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -206,9 +206,9 @@ func NewTxCmdTransferNFTFrom() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgTransferNFTFrom{
+			msg := collection.MsgOperatorSendNFT{
 				ContractId: args[0],
-				Proxy:      operator,
+				Operator:   operator,
 				From:       args[2],
 				To:         args[3],
 				TokenIds:   []string{args[4]},
@@ -259,10 +259,10 @@ func NewTxCmdCreateContract() *cobra.Command {
 			}
 
 			msg := collection.MsgCreateContract{
-				Owner:      creator,
-				Name:       name,
-				BaseImgUri: baseImgURI,
-				Meta:       meta,
+				Owner: creator,
+				Name:  name,
+				Uri:   baseImgURI,
+				Meta:  meta,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -551,13 +551,13 @@ func NewTxCmdBurnFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdBurnFTFrom() *cobra.Command {
+func NewTxCmdOperatorBurnFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-ft-from [contract-id] [operator] [from] [amount]",
+		Use:   "operator-burn-ft [contract-id] [operator] [from] [amount]",
 		Args:  cobra.ExactArgs(4),
 		Short: "burn tokens by a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s burn-ft-from [contract-id] [operator] [from] [amount]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-burn-ft [contract-id] [operator] [from] [amount]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -576,9 +576,9 @@ func NewTxCmdBurnFTFrom() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgBurnFTFrom{
+			msg := collection.MsgOperatorBurnFT{
 				ContractId: args[0],
-				Proxy:      operator,
+				Operator:   operator,
 				From:       args[2],
 				Amount:     amount,
 			}
@@ -628,13 +628,13 @@ func NewTxCmdBurnNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdBurnNFTFrom() *cobra.Command {
+func NewTxCmdOperatorBurnNFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-nft-from [contract-id] [operator] [from] [token-id]",
+		Use:   "operator-burn-nft [contract-id] [operator] [from] [token-id]",
 		Args:  cobra.ExactArgs(4),
 		Short: "burn tokens by a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s burn-nft-from [contract-id] [operator] [from] [token-id]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-burn-nft [contract-id] [operator] [from] [token-id]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -647,9 +647,9 @@ func NewTxCmdBurnNFTFrom() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgBurnNFTFrom{
+			msg := collection.MsgOperatorBurnNFT{
 				ContractId: args[0],
-				Proxy:      operator,
+				Operator:   operator,
 				From:       args[2],
 				TokenIds:   []string{args[3]},
 			}
@@ -683,8 +683,8 @@ func NewTxCmdModify() *cobra.Command {
 				return err
 			}
 
-			changes := []collection.Change{{
-				Field: args[4],
+			changes := []collection.Attribute{{
+				Key:   args[4],
 				Value: args[5],
 			}}
 			msg := collection.MsgModify{
@@ -776,13 +776,13 @@ func NewTxCmdDetach() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdAttachFrom() *cobra.Command {
+func NewTxCmdOperatorAttach() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "attach-from [contract-id] [operator] [holder] [subject] [target]",
+		Use:   "operator-attach [contract-id] [operator] [holder] [subject] [target]",
 		Args:  cobra.ExactArgs(5),
 		Short: "attach a token to another by the operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s attach-from [contract-id] [operator] [holder] [subject] [target]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-attach [contract-id] [operator] [holder] [subject] [target]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -795,9 +795,9 @@ func NewTxCmdAttachFrom() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgAttachFrom{
+			msg := collection.MsgOperatorAttach{
 				ContractId: args[0],
-				Proxy:      operator,
+				Operator:   operator,
 				From:       args[2],
 				TokenId:    args[3],
 				ToTokenId:  args[4],
@@ -813,13 +813,13 @@ func NewTxCmdAttachFrom() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdDetachFrom() *cobra.Command {
+func NewTxCmdOperatorDetach() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "detach-from [contract-id] [operator] [holder] [subject]",
+		Use:   "operator-detach [contract-id] [operator] [holder] [subject]",
 		Args:  cobra.ExactArgs(4),
 		Short: "detach a token from its parent by the operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s detach-from [contract-id] [operator] [holder] [subject]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-detach [contract-id] [operator] [holder] [subject]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -832,9 +832,9 @@ func NewTxCmdDetachFrom() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgDetachFrom{
+			msg := collection.MsgOperatorDetach{
 				ContractId: args[0],
-				Proxy:      operator,
+				Operator:   operator,
 				From:       args[2],
 				TokenId:    args[3],
 			}
@@ -920,13 +920,13 @@ func NewTxCmdRevokePermission() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdApprove() *cobra.Command {
+func NewTxCmdAuthorizeOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approve [contract-id] [holder] [operator]",
+		Use:   "authorize-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
 		Short: "authorize operator to manipulate tokens of holder",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s approve [contract-id] [holder] [operator]`, version.AppName, collection.ModuleName),
+			$ %s tx %s authorize-operator [contract-id] [holder] [operator]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			holder := args[1]
@@ -939,10 +939,10 @@ func NewTxCmdApprove() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgApprove{
+			msg := collection.MsgAuthorizeOperator{
 				ContractId: args[0],
-				Approver:   holder,
-				Proxy:      args[2],
+				Holder:     holder,
+				Operator:   args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -955,13 +955,13 @@ func NewTxCmdApprove() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdDisapprove() *cobra.Command {
+func NewTxCmdRevokeOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disapprove [contract-id] [holder] [operator]",
+		Use:   "revoke-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
 		Short: "revoke operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s disapprove [contract-id] [holder] [operator]`, version.AppName, collection.ModuleName),
+			$ %s tx %s revoke-operator [contract-id] [holder] [operator]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			holder := args[1]
@@ -974,10 +974,10 @@ func NewTxCmdDisapprove() *cobra.Command {
 				return err
 			}
 
-			msg := collection.MsgDisapprove{
+			msg := collection.MsgRevokeOperator{
 				ContractId: args[0],
-				Approver:   holder,
-				Proxy:      args[2],
+				Holder:     holder,
+				Operator:   args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -30,7 +30,7 @@ type IntegrationTestSuite struct {
 	vendor   sdk.AccAddress
 	customer sdk.AccAddress
 
-	classes []token.TokenClass
+	classes []token.Contract
 
 	balance sdk.Int
 }
@@ -55,7 +55,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.vendor = s.createAccount("vendor")
 	s.customer = s.createAccount("customer")
 
-	s.classes = []token.TokenClass{
+	s.classes = []token.Contract{
 		{
 			Name:     "test",
 			Symbol:   "ZERO",
@@ -73,12 +73,12 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.balance = sdk.NewInt(1000)
 
 	// vendor creates 2 tokens
-	s.classes[1].ContractId = s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
-	s.classes[0].ContractId = s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
+	s.classes[1].Id = s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
+	s.classes[0].Id = s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
 
 	// customer approves vendor to manipulate its tokens of the both classes, so vendor can do OperatorXXX (Send or Burn) later.
 	for _, class := range s.classes {
-		s.authorizeOperator(class.ContractId, s.customer, s.vendor)
+		s.authorizeOperator(class.Id, s.customer, s.vendor)
 	}
 
 	s.setupHeight, err = s.network.LatestHeight()
@@ -145,7 +145,7 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, holder),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse

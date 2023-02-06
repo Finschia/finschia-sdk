@@ -24,22 +24,24 @@ type Keeper interface {
 type BaseKeeper struct {
 	bankkeeper.BaseKeeper
 
-	ak            types.AccountKeeper
-	cdc           codec.Codec
-	storeKey      sdk.StoreKey
-	inactiveAddrs map[string]bool
+	ak             types.AccountKeeper
+	cdc            codec.Codec
+	storeKey       sdk.StoreKey
+	inactiveAddrs  map[string]bool
+	deactMultiSend bool
 }
 
 func NewBaseKeeper(
 	cdc codec.Codec, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace paramtypes.Subspace,
-	blockedAddr map[string]bool,
+	blockedAddr map[string]bool, deactMultiSend bool,
 ) BaseKeeper {
 	return BaseKeeper{
-		BaseKeeper:    bankkeeper.NewBaseKeeper(cdc, storeKey, ak, paramSpace, blockedAddr),
-		ak:            ak,
-		cdc:           cdc,
-		storeKey:      storeKey,
-		inactiveAddrs: map[string]bool{},
+		BaseKeeper:     bankkeeper.NewBaseKeeper(cdc, storeKey, ak, paramSpace, blockedAddr),
+		ak:             ak,
+		cdc:            cdc,
+		storeKey:       storeKey,
+		inactiveAddrs:  map[string]bool{},
+		deactMultiSend: deactMultiSend,
 	}
 }
 
@@ -132,4 +134,18 @@ func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.Acc
 // IsInactiveAddr returns if the address is added in inactiveAddr.
 func (keeper BaseKeeper) IsInactiveAddr(address sdk.AccAddress) bool {
 	return keeper.inactiveAddrs[address.String()]
+}
+
+func (keeper BaseKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) error {
+	if keeper.deactMultiSend {
+		return sdkerrors.ErrNotSupported.Wrap("MultiSend was deactivated")
+	}
+
+	for _, out := range outputs {
+		if keeper.inactiveAddrs[out.Address] {
+			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", out.Address)
+		}
+	}
+
+	return keeper.BaseSendKeeper.InputOutputCoins(ctx, inputs, outputs)
 }
