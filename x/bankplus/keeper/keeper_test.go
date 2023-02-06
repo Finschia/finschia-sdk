@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -281,22 +282,23 @@ func (suite *IntegrationTestSuite) TestInputOutputCoins() {
 	}
 	tcs := map[string]struct {
 		deactMultiSend bool
+		err            error
 	}{
 		"MultiSend Off": {
 			true,
+			sdkerrors.ErrNotSupported.Wrap("MultiSend was deactivated"),
 		},
 		"MultiSend On": {
 			false,
+			nil,
 		},
 	}
 
 	for name, tc := range tcs {
 		tc := tc
 		suite.T().Run(name, func(t *testing.T) {
-			if tc.deactMultiSend {
-				suite.Panics(func() {
-					_ = targetKeeper(tc.deactMultiSend).InputOutputCoins(ctx, input, output)
-				})
+			if tc.err != nil {
+				suite.EqualError(targetKeeper(tc.deactMultiSend).InputOutputCoins(ctx, input, output), tc.err.Error())
 			} else {
 				err := targetKeeper(tc.deactMultiSend).InputOutputCoins(ctx, input, output)
 				suite.Assert().NoError(err)
