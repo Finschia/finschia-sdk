@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
@@ -124,7 +124,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			for i := int64(2); i <= upgradeHeight-1; i++ {
-				origapp.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: i}})
+				origapp.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: i}})
 				res := origapp.Commit()
 				require.NotNil(t, res.Data)
 			}
@@ -140,7 +140,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			// "execute" one block
-			app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: upgradeHeight}})
+			app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: upgradeHeight}})
 			res := app.Commit()
 			require.NotNil(t, res.Data)
 

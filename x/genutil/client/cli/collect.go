@@ -65,8 +65,6 @@ func CollectGenTxsCmd(genBalIterator types.GenesisBalancesIterator, defaultNodeH
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
 	cmd.Flags().String(flagGenTxDir, "", "override default \"gentx\" directory from which collect and execute genesis transactions; default [--home]/config/gentx/")
-	cmd.Flags().String(flags.FlagPrivKeyType, flags.DefaultPrivKeyType, "specify validator's private key type (currently only ed25519 is supported).\n"+
-		"This option affects the priv_key.type setting in priv_validator_key.json")
 
 	return cmd
 }

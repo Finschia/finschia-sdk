@@ -4,10 +4,6 @@ import (
 	"math/rand"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
@@ -16,6 +12,9 @@ import (
 	"github.com/line/lbm-sdk/x/distribution/types"
 	distrtypes "github.com/line/lbm-sdk/x/distribution/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	ocabci "github.com/line/ostracon/abci/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 )
 
 // TestWeightedOperations tests the weights of the operations.
@@ -63,7 +62,7 @@ func (suite *SimTestSuite) TestSimulateMsgSetWithdrawAddress() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgSetWithdrawAddress(suite.app.AccountKeeper, suite.app.BankKeeper, suite.app.DistrKeeper)
@@ -104,7 +103,7 @@ func (suite *SimTestSuite) TestSimulateMsgWithdrawDelegatorReward() {
 	suite.setupValidatorRewards(validator0.GetOperator())
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgWithdrawDelegatorReward(suite.app.AccountKeeper, suite.app.BankKeeper, suite.app.DistrKeeper, suite.app.StakingKeeper)
@@ -160,7 +159,7 @@ func (suite *SimTestSuite) testSimulateMsgWithdrawValidatorCommission(tokenName 
 	suite.app.DistrKeeper.SetValidatorAccumulatedCommission(suite.ctx, validator0.GetOperator(), types.ValidatorAccumulatedCommission{Commission: valCommission})
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgWithdrawValidatorCommission(suite.app.AccountKeeper, suite.app.BankKeeper, suite.app.DistrKeeper, suite.app.StakingKeeper)
@@ -186,7 +185,7 @@ func (suite *SimTestSuite) TestSimulateMsgFundCommunityPool() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgFundCommunityPool(suite.app.AccountKeeper, suite.app.BankKeeper, suite.app.DistrKeeper, suite.app.StakingKeeper)

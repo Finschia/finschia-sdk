@@ -3,7 +3,8 @@ package module
 import (
 	"encoding/json"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/types/module"
@@ -117,7 +118,7 @@ func (am AppModule) ConsensusVersion() uint64 {
 }
 
 // BeginBlock returns the begin blocker for the stakingplus module.
-func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(ctx sdk.Context, req ocabci.RequestBeginBlock) {
 	am.impl.BeginBlock(ctx, req)
 }
 

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
@@ -75,7 +75,7 @@ func TestSlashingMsgs(t *testing.T) {
 	simapp.CheckBalance(t, app, addr1, sdk.Coins{genCoin.Sub(bondCoin)})
 
 	header = ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	validator := checkValidator(t, app, addr1, true)
 	require.Equal(t, sdk.ValAddress(addr1).String(), validator.OperatorAddress)

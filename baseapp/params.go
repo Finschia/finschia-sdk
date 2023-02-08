@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	octypes "github.com/line/ostracon/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -51,7 +51,7 @@ func ValidateBlockParams(i interface{}) error {
 // ValidateEvidenceParams defines a stateless validation on EvidenceParams. This
 // function is called whenever the parameters are updated or stored.
 func ValidateEvidenceParams(i interface{}) error {
-	v, ok := i.(ocproto.EvidenceParams)
+	v, ok := i.(tmproto.EvidenceParams)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -74,7 +74,7 @@ func ValidateEvidenceParams(i interface{}) error {
 // ValidateValidatorParams defines a stateless validation on ValidatorParams. This
 // function is called whenever the parameters are updated or stored.
 func ValidateValidatorParams(i interface{}) error {
-	v, ok := i.(ocproto.ValidatorParams)
+	v, ok := i.(tmproto.ValidatorParams)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -85,7 +85,7 @@ func ValidateValidatorParams(i interface{}) error {
 
 	for _, pubKeyType := range v.PubKeyTypes {
 		switch pubKeyType {
-		case octypes.ABCIPubKeyTypeBls12WithEd25519, octypes.ABCIPubKeyTypeEd25519, octypes.ABCIPubKeyTypeSecp256k1, octypes.ABCIPubKeyTypeBls12:
+		case tmtypes.ABCIPubKeyTypeEd25519, tmtypes.ABCIPubKeyTypeSecp256k1:
 			continue
 		default:
 			return fmt.Errorf("not-allowed pubkey type: %s", pubKeyType)

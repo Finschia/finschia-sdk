@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
@@ -21,7 +21,7 @@ func TestLogger(t *testing.T) {
 func TestInvariants(t *testing.T) {
 	app := simapp.Setup(false)
 	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	require.Equal(t, app.CrisisKeeper.InvCheckPeriod(), uint(5))
 
@@ -34,7 +34,7 @@ func TestInvariants(t *testing.T) {
 func TestAssertInvariants(t *testing.T) {
 	app := simapp.Setup(false)
 	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	ctx := app.NewContext(true, ocproto.Header{})
 

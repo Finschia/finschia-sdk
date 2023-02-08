@@ -15,7 +15,9 @@ import (
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+
+	ocabci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/codec"
@@ -124,7 +126,7 @@ func (app *BaseApp) SetOption(req abci.RequestSetOption) (res abci.ResponseSetOp
 }
 
 // BeginBlock implements the ABCI application interface.
-func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeginBlock) {
+func (app *BaseApp) BeginBlock(req ocabci.RequestBeginBlock) (res abci.ResponseBeginBlock) {
 	defer telemetry.MeasureSince(time.Now(), "abci", "begin_block")
 
 	if app.cms.TracingEnabled() {
@@ -228,7 +230,7 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // internal CheckTx state if the AnteHandler passes. Otherwise, the ResponseCheckTx
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
-func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
+func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) ocabci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
@@ -251,13 +253,13 @@ func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
 		// return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace) // TODO(dudong2): need to fix to use ResponseCheckTxWithEvents
 	}
 
-	return abci.ResponseCheckTx{
+	return ocabci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	}
 }
 
-func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback abci.CheckTxCallback) {
+func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback ocabci.CheckTxCallback) {
 	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
 		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
 	}
@@ -274,15 +276,15 @@ func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback abci.CheckTxC
 }
 
 // BeginRecheckTx implements the ABCI interface and set the check state based on the given header
-func (app *BaseApp) BeginRecheckTx(req abci.RequestBeginRecheckTx) abci.ResponseBeginRecheckTx {
+func (app *BaseApp) BeginRecheckTx(req ocabci.RequestBeginRecheckTx) ocabci.ResponseBeginRecheckTx {
 	// NOTE: This is safe because Ostracon holds a lock on the mempool for Rechecking.
 	app.setCheckState(req.Header)
-	return abci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
+	return ocabci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
 }
 
 // EndRecheckTx implements the ABCI interface.
-func (app *BaseApp) EndRecheckTx(req abci.RequestEndRecheckTx) abci.ResponseEndRecheckTx {
-	return abci.ResponseEndRecheckTx{Code: abci.CodeTypeOK}
+func (app *BaseApp) EndRecheckTx(req ocabci.RequestEndRecheckTx) ocabci.ResponseEndRecheckTx {
+	return ocabci.ResponseEndRecheckTx{Code: abci.CodeTypeOK}
 }
 
 // DeliverTx implements the ABCI interface and executes a tx in DeliverTx mode.

@@ -1,6 +1,8 @@
 package tmservice_test
 
 import (
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
@@ -14,7 +16,7 @@ func (s IntegrationTestSuite) TestGetProtoBlock() {
 
 	height := int64(-1)
 	blockID, block, err := tmservice.GetProtoBlock(ctx.Context(), val.ClientCtx, &height)
-	s.Require().Equal(ocproto.BlockID{}, blockID)
+	s.Require().Equal(tmproto.BlockID{}, blockID)
 	s.Require().Nil(block)
 	s.Require().Error(err)
 

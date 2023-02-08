@@ -9,8 +9,9 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	abci "github.com/tendermint/tendermint/abci/types"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/bytes"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
@@ -214,7 +215,7 @@ func (s *resultTestSuite) TestResponseFormatBroadcastTxCommit() {
 	checkTxResult := &ctypes.ResultBroadcastTxCommit{
 		Height: 10,
 		Hash:   bytes.HexBytes([]byte("test")),
-		CheckTx: abci.ResponseCheckTx{
+		CheckTx: ocabci.ResponseCheckTx{
 			Code:      90,
 			Data:      nil,
 			Log:       `[]`,

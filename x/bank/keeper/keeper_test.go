@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	abci "github.com/line/ostracon/abci/types"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	osttime "github.com/line/ostracon/types/time"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"

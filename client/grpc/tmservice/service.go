@@ -6,9 +6,10 @@ import (
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/rpc"

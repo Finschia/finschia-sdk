@@ -6,11 +6,12 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	abci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
@@ -170,7 +171,7 @@ func TestInvalidPubKeyTypeMsgCreateValidator(t *testing.T) {
 	initPower := int64(1000)
 	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	ctx = ctx.WithConsensusParams(&abci.ConsensusParams{
-		Validator: &ocproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519}},
+		Validator: &tmproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519}},
 	})
 
 	addr := valAddrs[0]
@@ -184,7 +185,7 @@ func TestInvalidPubKeyTypeMsgCreateValidator(t *testing.T) {
 func TestBothPubKeyTypesMsgCreateValidator(t *testing.T) {
 	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, 1000, 2, sdk.NewInt(1000))
 	ctx = ctx.WithConsensusParams(&abci.ConsensusParams{
-		Validator: &ocproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519, octypes.ABCIPubKeyTypeSecp256k1}},
+		Validator: &tmproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519, octypes.ABCIPubKeyTypeSecp256k1}},
 	})
 
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)

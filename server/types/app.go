@@ -9,9 +9,10 @@ import (
 	"github.com/spf13/cobra"
 	dbm "github.com/tendermint/tm-db"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	octypes "github.com/line/ostracon/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/server/api"
@@ -39,7 +40,7 @@ type (
 	// The interface defines the necessary contracts to be implemented in order
 	// to fully bootstrap and start an application.
 	Application interface {
-		abci.Application
+		ocabci.Application
 
 		RegisterAPIRoutes(*api.Server, config.APIConfig)
 

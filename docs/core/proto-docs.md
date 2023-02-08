@@ -1621,7 +1621,7 @@ Result is the union of ResponseFormat and ResponseCheckTx.
 | ----- | ---- | ----- | ----------- |
 | `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
 | `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
+| `events` | [tendermint.abci.Event](#tendermint.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
 
 
 
@@ -1719,7 +1719,7 @@ tags are stringified and the log is JSON decoded.
 | `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
 | `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
 | `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+| `events` | [tendermint.abci.Event](#tendermint.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
 
 Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 | `index` | [uint32](#uint32) |  | The transaction index within block |
@@ -8071,7 +8071,7 @@ Since: cosmos-sdk 0.45.2
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `txs` | [Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
 
@@ -8722,7 +8722,7 @@ GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC met
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -8753,7 +8753,7 @@ GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -8785,9 +8785,9 @@ GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResul
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `height` | [int64](#int64) |  |  |
-| `txs_results` | [ostracon.abci.ResponseDeliverTx](#ostracon.abci.ResponseDeliverTx) | repeated |  |
-| `res_begin_block` | [ostracon.abci.ResponseBeginBlock](#ostracon.abci.ResponseBeginBlock) |  |  |
-| `res_end_block` | [ostracon.abci.ResponseEndBlock](#ostracon.abci.ResponseEndBlock) |  |  |
+| `txs_results` | [tendermint.abci.ResponseDeliverTx](#tendermint.abci.ResponseDeliverTx) | repeated |  |
+| `res_begin_block` | [tendermint.abci.ResponseBeginBlock](#tendermint.abci.ResponseBeginBlock) |  |  |
+| `res_end_block` | [tendermint.abci.ResponseEndBlock](#tendermint.abci.ResponseEndBlock) |  |  |
 
 
 
@@ -8812,7 +8812,7 @@ GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC met
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -8870,7 +8870,7 @@ GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `default_node_info` | [ostracon.p2p.DefaultNodeInfo](#ostracon.p2p.DefaultNodeInfo) |  |  |
+| `default_node_info` | [tendermint.p2p.DefaultNodeInfo](#tendermint.p2p.DefaultNodeInfo) |  |  |
 | `application_version` | [VersionInfo](#lbm.base.ostracon.v1.VersionInfo) |  |  |
 
 

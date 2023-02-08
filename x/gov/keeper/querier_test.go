@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"

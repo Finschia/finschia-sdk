@@ -9,7 +9,8 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	"github.com/line/ostracon/crypto"
 	ostcoretypes "github.com/line/ostracon/rpc/core/types"
 	octypes "github.com/line/ostracon/types"

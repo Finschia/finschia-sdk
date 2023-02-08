@@ -2464,7 +2464,14 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                    description: Header defines the structure of a Tendermint block header.
+                      round:
+                        type: integer
+                        format: int32
+                        title: vrf info
+                      proof:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of an Ostracon block header.
                   data:
                     type: object
                     properties:
@@ -2618,10 +2625,6 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
-                                voting_weight:
-                                  type: string
-                                  format: int64
-                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -2713,9 +2716,16 @@ paths:
                                             proposer_address:
                                               type: string
                                               format: byte
+                                            round:
+                                              type: integer
+                                              format: int32
+                                              title: vrf info
+                                            proof:
+                                              type: string
+                                              format: byte
                                           description: >-
-                                            Header defines the structure of a
-                                            Tendermint block header.
+                                            Header defines the structure of an
+                                            Ostracon block header.
                                         commit:
                                           type: object
                                           properties:
@@ -2796,17 +2806,13 @@ paths:
                                                     format: byte
                                                 title: >-
                                                   PublicKey defines the keys available for
-                                                  use with Ostracon Validators
+                                                  use with Tendermint Validators
                                               voting_power:
                                                 type: string
                                                 format: int64
                                               proposer_priority:
                                                 type: string
                                                 format: int64
-                                              voting_weight:
-                                                type: string
-                                                format: int64
-                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -2824,17 +2830,13 @@ paths:
                                                   format: byte
                                               title: >-
                                                 PublicKey defines the keys available for
-                                                use with Ostracon Validators
+                                                use with Tendermint Validators
                                             voting_power:
                                               type: string
                                               format: int64
                                             proposer_priority:
                                               type: string
                                               format: int64
-                                            voting_weight:
-                                              type: string
-                                              format: int64
-                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -2860,17 +2862,13 @@ paths:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -3260,7 +3258,7 @@ paths:
                               format: byte
                           title: >-
                             PublicKey defines the keys available for use with
-                            Ostracon Validators
+                            Tendermint Validators
                         power:
                           type: string
                           format: int64
@@ -3680,7 +3678,14 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                    description: Header defines the structure of a Tendermint block header.
+                      round:
+                        type: integer
+                        format: int32
+                        title: vrf info
+                      proof:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of an Ostracon block header.
                   data:
                     type: object
                     properties:
@@ -3834,10 +3839,6 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
-                                voting_weight:
-                                  type: string
-                                  format: int64
-                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -3929,9 +3930,16 @@ paths:
                                             proposer_address:
                                               type: string
                                               format: byte
+                                            round:
+                                              type: integer
+                                              format: int32
+                                              title: vrf info
+                                            proof:
+                                              type: string
+                                              format: byte
                                           description: >-
-                                            Header defines the structure of a
-                                            Tendermint block header.
+                                            Header defines the structure of an
+                                            Ostracon block header.
                                         commit:
                                           type: object
                                           properties:
@@ -4012,17 +4020,13 @@ paths:
                                                     format: byte
                                                 title: >-
                                                   PublicKey defines the keys available for
-                                                  use with Ostracon Validators
+                                                  use with Tendermint Validators
                                               voting_power:
                                                 type: string
                                                 format: int64
                                               proposer_priority:
                                                 type: string
                                                 format: int64
-                                              voting_weight:
-                                                type: string
-                                                format: int64
-                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -4040,17 +4044,13 @@ paths:
                                                   format: byte
                                               title: >-
                                                 PublicKey defines the keys available for
-                                                use with Ostracon Validators
+                                                use with Tendermint Validators
                                             voting_power:
                                               type: string
                                               format: int64
                                             proposer_priority:
                                               type: string
                                               format: int64
-                                            voting_weight:
-                                              type: string
-                                              format: int64
-                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -4076,17 +4076,13 @@ paths:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -4454,7 +4450,14 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                    description: Header defines the structure of a Tendermint block header.
+                      round:
+                        type: integer
+                        format: int32
+                        title: vrf info
+                      proof:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of an Ostracon block header.
                   data:
                     type: object
                     properties:
@@ -4608,10 +4611,6 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
-                                voting_weight:
-                                  type: string
-                                  format: int64
-                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -4703,9 +4702,16 @@ paths:
                                             proposer_address:
                                               type: string
                                               format: byte
+                                            round:
+                                              type: integer
+                                              format: int32
+                                              title: vrf info
+                                            proof:
+                                              type: string
+                                              format: byte
                                           description: >-
-                                            Header defines the structure of a
-                                            Tendermint block header.
+                                            Header defines the structure of an
+                                            Ostracon block header.
                                         commit:
                                           type: object
                                           properties:
@@ -4786,17 +4792,13 @@ paths:
                                                     format: byte
                                                 title: >-
                                                   PublicKey defines the keys available for
-                                                  use with Ostracon Validators
+                                                  use with Tendermint Validators
                                               voting_power:
                                                 type: string
                                                 format: int64
                                               proposer_priority:
                                                 type: string
                                                 format: int64
-                                              voting_weight:
-                                                type: string
-                                                format: int64
-                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -4814,17 +4816,13 @@ paths:
                                                   format: byte
                                               title: >-
                                                 PublicKey defines the keys available for
-                                                use with Ostracon Validators
+                                                use with Tendermint Validators
                                             voting_power:
                                               type: string
                                               format: int64
                                             proposer_priority:
                                               type: string
                                               format: int64
-                                            voting_weight:
-                                              type: string
-                                              format: int64
-                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -4850,17 +4848,13 @@ paths:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -13653,7 +13647,14 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                    description: Header defines the structure of a Tendermint block header.
+                      round:
+                        type: integer
+                        format: int32
+                        title: vrf info
+                      proof:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of an Ostracon block header.
                   valset:
                     type: array
                     items:
@@ -31790,7 +31791,14 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-            description: Header defines the structure of a Tendermint block header.
+              round:
+                type: integer
+                format: int32
+                title: vrf info
+              proof:
+                type: string
+                format: byte
+            description: Header defines the structure of an Ostracon block header.
           data:
             type: object
             properties:
@@ -31941,10 +31949,6 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
-                        voting_weight:
-                          type: string
-                          format: int64
-                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -32036,8 +32040,15 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
+                                    round:
+                                      type: integer
+                                      format: int32
+                                      title: vrf info
+                                    proof:
+                                      type: string
+                                      format: byte
                                   description: >-
-                                    Header defines the structure of a Tendermint
+                                    Header defines the structure of an Ostracon
                                     block header.
                                 commit:
                                   type: object
@@ -32118,17 +32129,13 @@ definitions:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -32146,17 +32153,13 @@ definitions:
                                           format: byte
                                       title: >-
                                         PublicKey defines the keys available for
-                                        use with Ostracon Validators
+                                        use with Tendermint Validators
                                     voting_power:
                                       type: string
                                       format: int64
                                     proposer_priority:
                                       type: string
                                       format: int64
-                                    voting_weight:
-                                      type: string
-                                      format: int64
-                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -32182,17 +32185,13 @@ definitions:
                                     format: byte
                                 title: >-
                                   PublicKey defines the keys available for use
-                                  with Ostracon Validators
+                                  with Tendermint Validators
                               voting_power:
                                 type: string
                                 format: int64
                               proposer_priority:
                                 type: string
                                 format: int64
-                              voting_weight:
-                                type: string
-                                format: int64
-                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -32357,7 +32356,14 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-            description: Header defines the structure of a Tendermint block header.
+              round:
+                type: integer
+                format: int32
+                title: vrf info
+              proof:
+                type: string
+                format: byte
+            description: Header defines the structure of an Ostracon block header.
           data:
             type: object
             properties:
@@ -32508,10 +32514,6 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
-                        voting_weight:
-                          type: string
-                          format: int64
-                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -32603,8 +32605,15 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
+                                    round:
+                                      type: integer
+                                      format: int32
+                                      title: vrf info
+                                    proof:
+                                      type: string
+                                      format: byte
                                   description: >-
-                                    Header defines the structure of a Tendermint
+                                    Header defines the structure of an Ostracon
                                     block header.
                                 commit:
                                   type: object
@@ -32685,17 +32694,13 @@ definitions:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -32713,17 +32718,13 @@ definitions:
                                           format: byte
                                       title: >-
                                         PublicKey defines the keys available for
-                                        use with Ostracon Validators
+                                        use with Tendermint Validators
                                     voting_power:
                                       type: string
                                       format: int64
                                     proposer_priority:
                                       type: string
                                       format: int64
-                                    voting_weight:
-                                      type: string
-                                      format: int64
-                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -32749,17 +32750,13 @@ definitions:
                                     format: byte
                                 title: >-
                                   PublicKey defines the keys available for use
-                                  with Ostracon Validators
+                                  with Tendermint Validators
                               voting_power:
                                 type: string
                                 format: int64
                               proposer_priority:
                                 type: string
                                 format: int64
-                              voting_weight:
-                                type: string
-                                format: int64
-                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -32939,7 +32936,7 @@ definitions:
                       type: string
                       format: byte
                   title: >-
-                    PublicKey defines the keys available for use with Ostracon
+                    PublicKey defines the keys available for use with Tendermint
                     Validators
                 power:
                   type: string
@@ -33155,7 +33152,14 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-            description: Header defines the structure of a Tendermint block header.
+              round:
+                type: integer
+                format: int32
+                title: vrf info
+              proof:
+                type: string
+                format: byte
+            description: Header defines the structure of an Ostracon block header.
           data:
             type: object
             properties:
@@ -33306,10 +33310,6 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
-                        voting_weight:
-                          type: string
-                          format: int64
-                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -33401,8 +33401,15 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
+                                    round:
+                                      type: integer
+                                      format: int32
+                                      title: vrf info
+                                    proof:
+                                      type: string
+                                      format: byte
                                   description: >-
-                                    Header defines the structure of a Tendermint
+                                    Header defines the structure of an Ostracon
                                     block header.
                                 commit:
                                   type: object
@@ -33483,17 +33490,13 @@ definitions:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -33511,17 +33514,13 @@ definitions:
                                           format: byte
                                       title: >-
                                         PublicKey defines the keys available for
-                                        use with Ostracon Validators
+                                        use with Tendermint Validators
                                     voting_power:
                                       type: string
                                       format: int64
                                     proposer_priority:
                                       type: string
                                       format: int64
-                                    voting_weight:
-                                      type: string
-                                      format: int64
-                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -33547,17 +33546,13 @@ definitions:
                                     format: byte
                                 title: >-
                                   PublicKey defines the keys available for use
-                                  with Ostracon Validators
+                                  with Tendermint Validators
                               voting_power:
                                 type: string
                                 format: int64
                               proposer_priority:
                                 type: string
                                 format: int64
-                              voting_weight:
-                                type: string
-                                format: int64
-                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -34345,427 +34340,6 @@ definitions:
         type: string
         title: 'Since: cosmos-sdk 0.43'
     description: VersionInfo is the type for the GetNodeInfoResponse message.
-  ostracon.abci.BlockParams:
-    type: object
-    properties:
-      max_bytes:
-        type: string
-        format: int64
-        title: 'Note: must be greater than 0'
-      max_gas:
-        type: string
-        format: int64
-        title: 'Note: must be greater or equal to -1'
-    description: BlockParams contains limits on the block size.
-  ostracon.abci.ConsensusParams:
-    type: object
-    properties:
-      block:
-        type: object
-        properties:
-          max_bytes:
-            type: string
-            format: int64
-            title: 'Note: must be greater than 0'
-          max_gas:
-            type: string
-            format: int64
-            title: 'Note: must be greater or equal to -1'
-        description: BlockParams contains limits on the block size.
-      evidence:
-        type: object
-        properties:
-          max_age_num_blocks:
-            type: string
-            format: int64
-            description: >-
-              Max age of evidence, in blocks.
-
-
-              The basic formula for calculating this is: MaxAgeDuration /
-              {average block
-
-              time}.
-          max_age_duration:
-            type: string
-            description: >-
-              Max age of evidence, in time.
-
-
-              It should correspond with an app's "unbonding period" or other
-              similar
-
-              mechanism for handling [Nothing-At-Stake
-
-              attacks](https://github.com/ethereum/wiki/wiki/Proof-of-Stake-FAQ#what-is-the-nothing-at-stake-problem-and-how-can-it-be-fixed).
-          max_bytes:
-            type: string
-            format: int64
-            title: >-
-              This sets the maximum size of total evidence in bytes that can be
-              committed in a single block.
-
-              and should fall comfortably under the max block bytes.
-
-              Default is 1048576 or 1MB
-        description: EvidenceParams determine how we handle evidence of malfeasance.
-      validator:
-        type: object
-        properties:
-          pub_key_types:
-            type: array
-            items:
-              type: string
-        description: |-
-          ValidatorParams restrict the public key types validators can use.
-          NOTE: uses ABCI pubkey naming, not Amino names.
-      version:
-        type: object
-        properties:
-          app_version:
-            type: string
-            format: uint64
-        description: VersionParams contains the ABCI application version.
-    title: |-
-      ConsensusParams contains all consensus-relevant parameters
-      that can be adjusted by the abci app
-  ostracon.abci.Event:
-    type: object
-    properties:
-      type:
-        type: string
-      attributes:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-              format: byte
-            value:
-              type: string
-              format: byte
-            index:
-              type: boolean
-              format: boolean
-          description: 'EventAttribute is a single key-value pair, associated with an event.'
-    description: >-
-      Event allows application developers to attach additional information to
-
-      ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
-      ResponseDeliverTx.
-
-      Later, transactions may be queried using these events.
-  ostracon.abci.EventAttribute:
-    type: object
-    properties:
-      key:
-        type: string
-        format: byte
-      value:
-        type: string
-        format: byte
-      index:
-        type: boolean
-        format: boolean
-    description: 'EventAttribute is a single key-value pair, associated with an event.'
-  ostracon.abci.ResponseBeginBlock:
-    type: object
-    properties:
-      events:
-        type: array
-        items:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    format: byte
-                  value:
-                    type: string
-                    format: byte
-                  index:
-                    type: boolean
-                    format: boolean
-                description: >-
-                  EventAttribute is a single key-value pair, associated with an
-                  event.
-          description: >-
-            Event allows application developers to attach additional information
-            to
-
-            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
-            ResponseDeliverTx.
-
-            Later, transactions may be queried using these events.
-  ostracon.abci.ResponseDeliverTx:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int64
-      data:
-        type: string
-        format: byte
-      log:
-        type: string
-      info:
-        type: string
-      gas_wanted:
-        type: string
-        format: int64
-      gas_used:
-        type: string
-        format: int64
-      events:
-        type: array
-        items:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    format: byte
-                  value:
-                    type: string
-                    format: byte
-                  index:
-                    type: boolean
-                    format: boolean
-                description: >-
-                  EventAttribute is a single key-value pair, associated with an
-                  event.
-          description: >-
-            Event allows application developers to attach additional information
-            to
-
-            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
-            ResponseDeliverTx.
-
-            Later, transactions may be queried using these events.
-      codespace:
-        type: string
-  ostracon.abci.ResponseEndBlock:
-    type: object
-    properties:
-      validator_updates:
-        type: array
-        items:
-          type: object
-          properties:
-            pub_key:
-              type: object
-              properties:
-                ed25519:
-                  type: string
-                  format: byte
-                secp256k1:
-                  type: string
-                  format: byte
-              title: >-
-                PublicKey defines the keys available for use with Ostracon
-                Validators
-            power:
-              type: string
-              format: int64
-          title: ValidatorUpdate
-      consensus_param_updates:
-        type: object
-        properties:
-          block:
-            type: object
-            properties:
-              max_bytes:
-                type: string
-                format: int64
-                title: 'Note: must be greater than 0'
-              max_gas:
-                type: string
-                format: int64
-                title: 'Note: must be greater or equal to -1'
-            description: BlockParams contains limits on the block size.
-          evidence:
-            type: object
-            properties:
-              max_age_num_blocks:
-                type: string
-                format: int64
-                description: >-
-                  Max age of evidence, in blocks.
-
-
-                  The basic formula for calculating this is: MaxAgeDuration /
-                  {average block
-
-                  time}.
-              max_age_duration:
-                type: string
-                description: >-
-                  Max age of evidence, in time.
-
-
-                  It should correspond with an app's "unbonding period" or other
-                  similar
-
-                  mechanism for handling [Nothing-At-Stake
-
-                  attacks](https://github.com/ethereum/wiki/wiki/Proof-of-Stake-FAQ#what-is-the-nothing-at-stake-problem-and-how-can-it-be-fixed).
-              max_bytes:
-                type: string
-                format: int64
-                title: >-
-                  This sets the maximum size of total evidence in bytes that can
-                  be committed in a single block.
-
-                  and should fall comfortably under the max block bytes.
-
-                  Default is 1048576 or 1MB
-            description: EvidenceParams determine how we handle evidence of malfeasance.
-          validator:
-            type: object
-            properties:
-              pub_key_types:
-                type: array
-                items:
-                  type: string
-            description: |-
-              ValidatorParams restrict the public key types validators can use.
-              NOTE: uses ABCI pubkey naming, not Amino names.
-          version:
-            type: object
-            properties:
-              app_version:
-                type: string
-                format: uint64
-            description: VersionParams contains the ABCI application version.
-        title: |-
-          ConsensusParams contains all consensus-relevant parameters
-          that can be adjusted by the abci app
-      events:
-        type: array
-        items:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    format: byte
-                  value:
-                    type: string
-                    format: byte
-                  index:
-                    type: boolean
-                    format: boolean
-                description: >-
-                  EventAttribute is a single key-value pair, associated with an
-                  event.
-          description: >-
-            Event allows application developers to attach additional information
-            to
-
-            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
-            ResponseDeliverTx.
-
-            Later, transactions may be queried using these events.
-  ostracon.abci.ValidatorUpdate:
-    type: object
-    properties:
-      pub_key:
-        type: object
-        properties:
-          ed25519:
-            type: string
-            format: byte
-          secp256k1:
-            type: string
-            format: byte
-        title: PublicKey defines the keys available for use with Ostracon Validators
-      power:
-        type: string
-        format: int64
-    title: ValidatorUpdate
-  ostracon.crypto.PublicKey:
-    type: object
-    properties:
-      ed25519:
-        type: string
-        format: byte
-      secp256k1:
-        type: string
-        format: byte
-    title: PublicKey defines the keys available for use with Ostracon Validators
-  ostracon.p2p.DefaultNodeInfo:
-    type: object
-    properties:
-      protocol_version:
-        type: object
-        properties:
-          p2p:
-            type: string
-            format: uint64
-          block:
-            type: string
-            format: uint64
-          app:
-            type: string
-            format: uint64
-      default_node_id:
-        type: string
-      listen_addr:
-        type: string
-      network:
-        type: string
-      version:
-        type: string
-      channels:
-        type: string
-        format: byte
-      moniker:
-        type: string
-      other:
-        type: object
-        properties:
-          tx_index:
-            type: string
-          rpc_address:
-            type: string
-  ostracon.p2p.DefaultNodeInfoOther:
-    type: object
-    properties:
-      tx_index:
-        type: string
-      rpc_address:
-        type: string
-  ostracon.p2p.ProtocolVersion:
-    type: object
-    properties:
-      p2p:
-        type: string
-        format: uint64
-      block:
-        type: string
-        format: uint64
-      app:
-        type: string
-        format: uint64
   ostracon.types.Block:
     type: object
     properties:
@@ -34845,7 +34419,14 @@ definitions:
           proposer_address:
             type: string
             format: byte
-        description: Header defines the structure of a Tendermint block header.
+          round:
+            type: integer
+            format: int32
+            title: vrf info
+          proof:
+            type: string
+            format: byte
+        description: Header defines the structure of an Ostracon block header.
       data:
         type: object
         properties:
@@ -34996,10 +34577,6 @@ definitions:
                     timestamp:
                       type: string
                       format: date-time
-                    voting_weight:
-                      type: string
-                      format: int64
-                      title: '*** Ostracon Extended Fields ***'
                   description: >-
                     DuplicateVoteEvidence contains evidence of a validator
                     signed two conflicting votes.
@@ -35090,8 +34667,15 @@ definitions:
                                 proposer_address:
                                   type: string
                                   format: byte
+                                round:
+                                  type: integer
+                                  format: int32
+                                  title: vrf info
+                                proof:
+                                  type: string
+                                  format: byte
                               description: >-
-                                Header defines the structure of a Tendermint
+                                Header defines the structure of an Ostracon
                                 block header.
                             commit:
                               type: object
@@ -35172,17 +34756,13 @@ definitions:
                                         format: byte
                                     title: >-
                                       PublicKey defines the keys available for
-                                      use with Ostracon Validators
+                                      use with Tendermint Validators
                                   voting_power:
                                     type: string
                                     format: int64
                                   proposer_priority:
                                     type: string
                                     format: int64
-                                  voting_weight:
-                                    type: string
-                                    format: int64
-                                    title: '*** Ostracon Extended Fields ***'
                             proposer:
                               type: object
                               properties:
@@ -35200,17 +34780,13 @@ definitions:
                                       format: byte
                                   title: >-
                                     PublicKey defines the keys available for use
-                                    with Ostracon Validators
+                                    with Tendermint Validators
                                 voting_power:
                                   type: string
                                   format: int64
                                 proposer_priority:
                                   type: string
                                   format: int64
-                                voting_weight:
-                                  type: string
-                                  format: int64
-                                  title: '*** Ostracon Extended Fields ***'
                             total_voting_power:
                               type: string
                               format: int64
@@ -35236,17 +34812,13 @@ definitions:
                                 format: byte
                             title: >-
                               PublicKey defines the keys available for use with
-                              Ostracon Validators
+                              Tendermint Validators
                           voting_power:
                             type: string
                             format: int64
                           proposer_priority:
                             type: string
                             format: int64
-                          voting_weight:
-                            type: string
-                            format: int64
-                            title: '*** Ostracon Extended Fields ***'
                     total_voting_power:
                       type: string
                       format: int64
@@ -35309,123 +34881,6 @@ definitions:
         description: >-
           Commit contains the evidence that a block was committed by a set of
           validators.
-  ostracon.types.BlockID:
-    type: object
-    properties:
-      hash:
-        type: string
-        format: byte
-      part_set_header:
-        type: object
-        properties:
-          total:
-            type: integer
-            format: int64
-          hash:
-            type: string
-            format: byte
-        title: PartsetHeader
-    title: BlockID
-  ostracon.types.BlockIDFlag:
-    type: string
-    enum:
-      - BLOCK_ID_FLAG_UNKNOWN
-      - BLOCK_ID_FLAG_ABSENT
-      - BLOCK_ID_FLAG_COMMIT
-      - BLOCK_ID_FLAG_NIL
-    default: BLOCK_ID_FLAG_UNKNOWN
-    title: BlockIdFlag indicates which BlcokID the signature is for
-  ostracon.types.Commit:
-    type: object
-    properties:
-      height:
-        type: string
-        format: int64
-      round:
-        type: integer
-        format: int32
-      block_id:
-        type: object
-        properties:
-          hash:
-            type: string
-            format: byte
-          part_set_header:
-            type: object
-            properties:
-              total:
-                type: integer
-                format: int64
-              hash:
-                type: string
-                format: byte
-            title: PartsetHeader
-        title: BlockID
-      signatures:
-        type: array
-        items:
-          type: object
-          properties:
-            block_id_flag:
-              type: string
-              enum:
-                - BLOCK_ID_FLAG_UNKNOWN
-                - BLOCK_ID_FLAG_ABSENT
-                - BLOCK_ID_FLAG_COMMIT
-                - BLOCK_ID_FLAG_NIL
-              default: BLOCK_ID_FLAG_UNKNOWN
-              title: BlockIdFlag indicates which BlcokID the signature is for
-            validator_address:
-              type: string
-              format: byte
-            timestamp:
-              type: string
-              format: date-time
-            signature:
-              type: string
-              format: byte
-          description: CommitSig is a part of the Vote included in a Commit.
-    description: >-
-      Commit contains the evidence that a block was committed by a set of
-      validators.
-  ostracon.types.CommitSig:
-    type: object
-    properties:
-      block_id_flag:
-        type: string
-        enum:
-          - BLOCK_ID_FLAG_UNKNOWN
-          - BLOCK_ID_FLAG_ABSENT
-          - BLOCK_ID_FLAG_COMMIT
-          - BLOCK_ID_FLAG_NIL
-        default: BLOCK_ID_FLAG_UNKNOWN
-        title: BlockIdFlag indicates which BlcokID the signature is for
-      validator_address:
-        type: string
-        format: byte
-      timestamp:
-        type: string
-        format: date-time
-      signature:
-        type: string
-        format: byte
-    description: CommitSig is a part of the Vote included in a Commit.
-  ostracon.types.Data:
-    type: object
-    properties:
-      txs:
-        type: array
-        items:
-          type: string
-          format: byte
-        description: >-
-          Txs that will be applied by state @ block.Height+1.
-
-          NOTE: not all txs here are valid.  We're just agreeing on the order
-          first.
-
-          This means that block.AppHash does not include these txs.
-    title: Data contains the set of transactions included in the block
   ostracon.types.DuplicateVoteEvidence:
     type: object
     properties:
@@ -35550,10 +35005,6 @@ definitions:
       timestamp:
         type: string
         format: date-time
-      voting_weight:
-        type: string
-        format: int64
-        title: '*** Ostracon Extended Fields ***'
     description: >-
       DuplicateVoteEvidence contains evidence of a validator signed two
       conflicting votes.
@@ -35684,10 +35135,6 @@ definitions:
           timestamp:
             type: string
             format: date-time
-          voting_weight:
-            type: string
-            format: int64
-            title: '*** Ostracon Extended Fields ***'
         description: >-
           DuplicateVoteEvidence contains evidence of a validator signed two
           conflicting votes.
@@ -35776,7 +35223,14 @@ definitions:
                       proposer_address:
                         type: string
                         format: byte
-                    description: Header defines the structure of a Tendermint block header.
+                      round:
+                        type: integer
+                        format: int32
+                        title: vrf info
+                      proof:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of an Ostracon block header.
                   commit:
                     type: object
                     properties:
@@ -35856,17 +35310,13 @@ definitions:
                               format: byte
                           title: >-
                             PublicKey defines the keys available for use with
-                            Ostracon Validators
+                            Tendermint Validators
                         voting_power:
                           type: string
                           format: int64
                         proposer_priority:
                           type: string
                           format: int64
-                        voting_weight:
-                          type: string
-                          format: int64
-                          title: '*** Ostracon Extended Fields ***'
                   proposer:
                     type: object
                     properties:
@@ -35884,17 +35334,13 @@ definitions:
                             format: byte
                         title: >-
                           PublicKey defines the keys available for use with
-                          Ostracon Validators
+                          Tendermint Validators
                       voting_power:
                         type: string
                         format: int64
                       proposer_priority:
                         type: string
                         format: int64
-                      voting_weight:
-                        type: string
-                        format: int64
-                        title: '*** Ostracon Extended Fields ***'
                   total_voting_power:
                     type: string
                     format: int64
@@ -35919,7 +35365,7 @@ definitions:
                       type: string
                       format: byte
                   title: >-
-                    PublicKey defines the keys available for use with Ostracon
+                    PublicKey defines the keys available for use with Tendermint
                     Validators
                 voting_power:
                   type: string
@@ -35927,10 +35373,6 @@ definitions:
                 proposer_priority:
                   type: string
                   format: int64
-                voting_weight:
-                  type: string
-                  format: int64
-                  title: '*** Ostracon Extended Fields ***'
           total_voting_power:
             type: string
             format: int64
@@ -36074,10 +35516,6 @@ definitions:
                 timestamp:
                   type: string
                   format: date-time
-                voting_weight:
-                  type: string
-                  format: int64
-                  title: '*** Ostracon Extended Fields ***'
               description: >-
                 DuplicateVoteEvidence contains evidence of a validator signed
                 two conflicting votes.
@@ -36166,8 +35604,15 @@ definitions:
                             proposer_address:
                               type: string
                               format: byte
+                            round:
+                              type: integer
+                              format: int32
+                              title: vrf info
+                            proof:
+                              type: string
+                              format: byte
                           description: >-
-                            Header defines the structure of a Tendermint block
+                            Header defines the structure of an Ostracon block
                             header.
                         commit:
                           type: object
@@ -36248,17 +35693,13 @@ definitions:
                                     format: byte
                                 title: >-
                                   PublicKey defines the keys available for use
-                                  with Ostracon Validators
+                                  with Tendermint Validators
                               voting_power:
                                 type: string
                                 format: int64
                               proposer_priority:
                                 type: string
                                 format: int64
-                              voting_weight:
-                                type: string
-                                format: int64
-                                title: '*** Ostracon Extended Fields ***'
                         proposer:
                           type: object
                           properties:
@@ -36276,17 +35717,13 @@ definitions:
                                   format: byte
                               title: >-
                                 PublicKey defines the keys available for use
-                                with Ostracon Validators
+                                with Tendermint Validators
                             voting_power:
                               type: string
                               format: int64
                             proposer_priority:
                               type: string
                               format: int64
-                            voting_weight:
-                              type: string
-                              format: int64
-                              title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -36312,17 +35749,13 @@ definitions:
                             format: byte
                         title: >-
                           PublicKey defines the keys available for use with
-                          Ostracon Validators
+                          Tendermint Validators
                       voting_power:
                         type: string
                         format: int64
                       proposer_priority:
                         type: string
                         format: int64
-                      voting_weight:
-                        type: string
-                        format: int64
-                        title: '*** Ostracon Extended Fields ***'
                 total_voting_power:
                   type: string
                   format: int64
@@ -36332,42 +35765,6 @@ definitions:
               description: >-
                 LightClientAttackEvidence contains evidence of a set of
                 validators attempting to mislead a light client.
-  ostracon.types.EvidenceParams:
-    type: object
-    properties:
-      max_age_num_blocks:
-        type: string
-        format: int64
-        description: >-
-          Max age of evidence, in blocks.
-
-
-          The basic formula for calculating this is: MaxAgeDuration / {average
-          block
-
-          time}.
-      max_age_duration:
-        type: string
-        description: >-
-          Max age of evidence, in time.
-
-
-          It should correspond with an app's "unbonding period" or other similar
-
-          mechanism for handling [Nothing-At-Stake
-
-          attacks](https://github.com/ethereum/wiki/wiki/Proof-of-Stake-FAQ#what-is-the-nothing-at-stake-problem-and-how-can-it-be-fixed).
-      max_bytes:
-        type: string
-        format: int64
-        title: >-
-          This sets the maximum size of total evidence in bytes that can be
-          committed in a single block.
-
-          and should fall comfortably under the max block bytes.
-
-          Default is 1048576 or 1MB
-    description: EvidenceParams determine how we handle evidence of malfeasance.
   ostracon.types.Header:
     type: object
     properties:
@@ -36444,7 +35841,14 @@ definitions:
       proposer_address:
         type: string
         format: byte
-    description: Header defines the structure of a Tendermint block header.
+      round:
+        type: integer
+        format: int32
+        title: vrf info
+      proof:
+        type: string
+        format: byte
+    description: Header defines the structure of an Ostracon block header.
   ostracon.types.LightBlock:
     type: object
     properties:
@@ -36527,7 +35931,14 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-            description: Header defines the structure of a Tendermint block header.
+              round:
+                type: integer
+                format: int32
+                title: vrf info
+              proof:
+                type: string
+                format: byte
+            description: Header defines the structure of an Ostracon block header.
           commit:
             type: object
             properties:
@@ -36602,7 +36013,7 @@ definitions:
                       type: string
                       format: byte
                   title: >-
-                    PublicKey defines the keys available for use with Ostracon
+                    PublicKey defines the keys available for use with Tendermint
                     Validators
                 voting_power:
                   type: string
@@ -36610,10 +36021,6 @@ definitions:
                 proposer_priority:
                   type: string
                   format: int64
-                voting_weight:
-                  type: string
-                  format: int64
-                  title: '*** Ostracon Extended Fields ***'
           proposer:
             type: object
             properties:
@@ -36630,7 +36037,7 @@ definitions:
                     type: string
                     format: byte
                 title: >-
-                  PublicKey defines the keys available for use with Ostracon
+                  PublicKey defines the keys available for use with Tendermint
                   Validators
               voting_power:
                 type: string
@@ -36638,10 +36045,6 @@ definitions:
               proposer_priority:
                 type: string
                 format: int64
-              voting_weight:
-                type: string
-                format: int64
-                title: '*** Ostracon Extended Fields ***'
           total_voting_power:
             type: string
             format: int64
@@ -36730,7 +36133,14 @@ definitions:
                   proposer_address:
                     type: string
                     format: byte
-                description: Header defines the structure of a Tendermint block header.
+                  round:
+                    type: integer
+                    format: int32
+                    title: vrf info
+                  proof:
+                    type: string
+                    format: byte
+                description: Header defines the structure of an Ostracon block header.
               commit:
                 type: object
                 properties:
@@ -36808,17 +36218,13 @@ definitions:
                           format: byte
                       title: >-
                         PublicKey defines the keys available for use with
-                        Ostracon Validators
+                        Tendermint Validators
                     voting_power:
                       type: string
                       format: int64
                     proposer_priority:
                       type: string
                       format: int64
-                    voting_weight:
-                      type: string
-                      format: int64
-                      title: '*** Ostracon Extended Fields ***'
               proposer:
                 type: object
                 properties:
@@ -36835,18 +36241,14 @@ definitions:
                         type: string
                         format: byte
                     title: >-
-                      PublicKey defines the keys available for use with Ostracon
-                      Validators
+                      PublicKey defines the keys available for use with
+                      Tendermint Validators
                   voting_power:
                     type: string
                     format: int64
                   proposer_priority:
                     type: string
                     format: int64
-                  voting_weight:
-                    type: string
-                    format: int64
-                    title: '*** Ostracon Extended Fields ***'
               total_voting_power:
                 type: string
                 format: int64
@@ -36871,7 +36273,7 @@ definitions:
                   type: string
                   format: byte
               title: >-
-                PublicKey defines the keys available for use with Ostracon
+                PublicKey defines the keys available for use with Tendermint
                 Validators
             voting_power:
               type: string
@@ -36879,10 +36281,6 @@ definitions:
             proposer_priority:
               type: string
               format: int64
-            voting_weight:
-              type: string
-              format: int64
-              title: '*** Ostracon Extended Fields ***'
       total_voting_power:
         type: string
         format: int64
@@ -36892,16 +36290,6 @@ definitions:
     description: >-
       LightClientAttackEvidence contains evidence of a set of validators
       attempting to mislead a light client.
-  ostracon.types.PartSetHeader:
-    type: object
-    properties:
-      total:
-        type: integer
-        format: int64
-      hash:
-        type: string
-        format: byte
-    title: PartsetHeader
   ostracon.types.SignedHeader:
     type: object
     properties:
@@ -36981,7 +36369,14 @@ definitions:
           proposer_address:
             type: string
             format: byte
-        description: Header defines the structure of a Tendermint block header.
+          round:
+            type: integer
+            format: int32
+            title: vrf info
+          proof:
+            type: string
+            format: byte
+        description: Header defines the structure of an Ostracon block header.
       commit:
         type: object
         properties:
@@ -37035,7 +36430,593 @@ definitions:
         description: >-
           Commit contains the evidence that a block was committed by a set of
           validators.
-  ostracon.types.SignedMsgType:
+  tendermint.abci.BlockParams:
+    type: object
+    properties:
+      max_bytes:
+        type: string
+        format: int64
+        title: 'Note: must be greater than 0'
+      max_gas:
+        type: string
+        format: int64
+        title: 'Note: must be greater or equal to -1'
+    description: BlockParams contains limits on the block size.
+  tendermint.abci.ConsensusParams:
+    type: object
+    properties:
+      block:
+        type: object
+        properties:
+          max_bytes:
+            type: string
+            format: int64
+            title: 'Note: must be greater than 0'
+          max_gas:
+            type: string
+            format: int64
+            title: 'Note: must be greater or equal to -1'
+        description: BlockParams contains limits on the block size.
+      evidence:
+        type: object
+        properties:
+          max_age_num_blocks:
+            type: string
+            format: int64
+            description: >-
+              Max age of evidence, in blocks.
+
+
+              The basic formula for calculating this is: MaxAgeDuration /
+              {average block
+
+              time}.
+          max_age_duration:
+            type: string
+            description: >-
+              Max age of evidence, in time.
+
+
+              It should correspond with an app's "unbonding period" or other
+              similar
+
+              mechanism for handling [Nothing-At-Stake
+
+              attacks](https://github.com/ethereum/wiki/wiki/Proof-of-Stake-FAQ#what-is-the-nothing-at-stake-problem-and-how-can-it-be-fixed).
+          max_bytes:
+            type: string
+            format: int64
+            title: >-
+              This sets the maximum size of total evidence in bytes that can be
+              committed in a single block.
+
+              and should fall comfortably under the max block bytes.
+
+              Default is 1048576 or 1MB
+        description: EvidenceParams determine how we handle evidence of malfeasance.
+      validator:
+        type: object
+        properties:
+          pub_key_types:
+            type: array
+            items:
+              type: string
+        description: |-
+          ValidatorParams restrict the public key types validators can use.
+          NOTE: uses ABCI pubkey naming, not Amino names.
+      version:
+        type: object
+        properties:
+          app_version:
+            type: string
+            format: uint64
+        description: VersionParams contains the ABCI application version.
+    title: |-
+      ConsensusParams contains all consensus-relevant parameters
+      that can be adjusted by the abci app
+  tendermint.abci.Event:
+    type: object
+    properties:
+      type:
+        type: string
+      attributes:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+              format: byte
+            value:
+              type: string
+              format: byte
+            index:
+              type: boolean
+              format: boolean
+          description: 'EventAttribute is a single key-value pair, associated with an event.'
+    description: >-
+      Event allows application developers to attach additional information to
+
+      ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+      ResponseDeliverTx.
+
+      Later, transactions may be queried using these events.
+  tendermint.abci.EventAttribute:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
+      value:
+        type: string
+        format: byte
+      index:
+        type: boolean
+        format: boolean
+    description: 'EventAttribute is a single key-value pair, associated with an event.'
+  tendermint.abci.ResponseBeginBlock:
+    type: object
+    properties:
+      events:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    format: byte
+                  value:
+                    type: string
+                    format: byte
+                  index:
+                    type: boolean
+                    format: boolean
+                description: >-
+                  EventAttribute is a single key-value pair, associated with an
+                  event.
+          description: >-
+            Event allows application developers to attach additional information
+            to
+
+            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+            ResponseDeliverTx.
+
+            Later, transactions may be queried using these events.
+  tendermint.abci.ResponseDeliverTx:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int64
+      data:
+        type: string
+        format: byte
+      log:
+        type: string
+      info:
+        type: string
+      gas_wanted:
+        type: string
+        format: int64
+      gas_used:
+        type: string
+        format: int64
+      events:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    format: byte
+                  value:
+                    type: string
+                    format: byte
+                  index:
+                    type: boolean
+                    format: boolean
+                description: >-
+                  EventAttribute is a single key-value pair, associated with an
+                  event.
+          description: >-
+            Event allows application developers to attach additional information
+            to
+
+            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+            ResponseDeliverTx.
+
+            Later, transactions may be queried using these events.
+      codespace:
+        type: string
+  tendermint.abci.ResponseEndBlock:
+    type: object
+    properties:
+      validator_updates:
+        type: array
+        items:
+          type: object
+          properties:
+            pub_key:
+              type: object
+              properties:
+                ed25519:
+                  type: string
+                  format: byte
+                secp256k1:
+                  type: string
+                  format: byte
+              title: >-
+                PublicKey defines the keys available for use with Tendermint
+                Validators
+            power:
+              type: string
+              format: int64
+          title: ValidatorUpdate
+      consensus_param_updates:
+        type: object
+        properties:
+          block:
+            type: object
+            properties:
+              max_bytes:
+                type: string
+                format: int64
+                title: 'Note: must be greater than 0'
+              max_gas:
+                type: string
+                format: int64
+                title: 'Note: must be greater or equal to -1'
+            description: BlockParams contains limits on the block size.
+          evidence:
+            type: object
+            properties:
+              max_age_num_blocks:
+                type: string
+                format: int64
+                description: >-
+                  Max age of evidence, in blocks.
+
+
+                  The basic formula for calculating this is: MaxAgeDuration /
+                  {average block
+
+                  time}.
+              max_age_duration:
+                type: string
+                description: >-
+                  Max age of evidence, in time.
+
+
+                  It should correspond with an app's "unbonding period" or other
+                  similar
+
+                  mechanism for handling [Nothing-At-Stake
+
+                  attacks](https://github.com/ethereum/wiki/wiki/Proof-of-Stake-FAQ#what-is-the-nothing-at-stake-problem-and-how-can-it-be-fixed).
+              max_bytes:
+                type: string
+                format: int64
+                title: >-
+                  This sets the maximum size of total evidence in bytes that can
+                  be committed in a single block.
+
+                  and should fall comfortably under the max block bytes.
+
+                  Default is 1048576 or 1MB
+            description: EvidenceParams determine how we handle evidence of malfeasance.
+          validator:
+            type: object
+            properties:
+              pub_key_types:
+                type: array
+                items:
+                  type: string
+            description: |-
+              ValidatorParams restrict the public key types validators can use.
+              NOTE: uses ABCI pubkey naming, not Amino names.
+          version:
+            type: object
+            properties:
+              app_version:
+                type: string
+                format: uint64
+            description: VersionParams contains the ABCI application version.
+        title: |-
+          ConsensusParams contains all consensus-relevant parameters
+          that can be adjusted by the abci app
+      events:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    format: byte
+                  value:
+                    type: string
+                    format: byte
+                  index:
+                    type: boolean
+                    format: boolean
+                description: >-
+                  EventAttribute is a single key-value pair, associated with an
+                  event.
+          description: >-
+            Event allows application developers to attach additional information
+            to
+
+            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+            ResponseDeliverTx.
+
+            Later, transactions may be queried using these events.
+  tendermint.abci.ValidatorUpdate:
+    type: object
+    properties:
+      pub_key:
+        type: object
+        properties:
+          ed25519:
+            type: string
+            format: byte
+          secp256k1:
+            type: string
+            format: byte
+        title: >-
+          PublicKey defines the keys available for use with Tendermint
+          Validators
+      power:
+        type: string
+        format: int64
+    title: ValidatorUpdate
+  tendermint.crypto.PublicKey:
+    type: object
+    properties:
+      ed25519:
+        type: string
+        format: byte
+      secp256k1:
+        type: string
+        format: byte
+    title: PublicKey defines the keys available for use with Tendermint Validators
+  tendermint.p2p.DefaultNodeInfo:
+    type: object
+    properties:
+      protocol_version:
+        type: object
+        properties:
+          p2p:
+            type: string
+            format: uint64
+          block:
+            type: string
+            format: uint64
+          app:
+            type: string
+            format: uint64
+      default_node_id:
+        type: string
+      listen_addr:
+        type: string
+      network:
+        type: string
+      version:
+        type: string
+      channels:
+        type: string
+        format: byte
+      moniker:
+        type: string
+      other:
+        type: object
+        properties:
+          tx_index:
+            type: string
+          rpc_address:
+            type: string
+  tendermint.p2p.DefaultNodeInfoOther:
+    type: object
+    properties:
+      tx_index:
+        type: string
+      rpc_address:
+        type: string
+  tendermint.p2p.ProtocolVersion:
+    type: object
+    properties:
+      p2p:
+        type: string
+        format: uint64
+      block:
+        type: string
+        format: uint64
+      app:
+        type: string
+        format: uint64
+  tendermint.types.BlockID:
+    type: object
+    properties:
+      hash:
+        type: string
+        format: byte
+      part_set_header:
+        type: object
+        properties:
+          total:
+            type: integer
+            format: int64
+          hash:
+            type: string
+            format: byte
+        title: PartsetHeader
+    title: BlockID
+  tendermint.types.BlockIDFlag:
+    type: string
+    enum:
+      - BLOCK_ID_FLAG_UNKNOWN
+      - BLOCK_ID_FLAG_ABSENT
+      - BLOCK_ID_FLAG_COMMIT
+      - BLOCK_ID_FLAG_NIL
+    default: BLOCK_ID_FLAG_UNKNOWN
+    title: BlockIdFlag indicates which BlcokID the signature is for
+  tendermint.types.Commit:
+    type: object
+    properties:
+      height:
+        type: string
+        format: int64
+      round:
+        type: integer
+        format: int32
+      block_id:
+        type: object
+        properties:
+          hash:
+            type: string
+            format: byte
+          part_set_header:
+            type: object
+            properties:
+              total:
+                type: integer
+                format: int64
+              hash:
+                type: string
+                format: byte
+            title: PartsetHeader
+        title: BlockID
+      signatures:
+        type: array
+        items:
+          type: object
+          properties:
+            block_id_flag:
+              type: string
+              enum:
+                - BLOCK_ID_FLAG_UNKNOWN
+                - BLOCK_ID_FLAG_ABSENT
+                - BLOCK_ID_FLAG_COMMIT
+                - BLOCK_ID_FLAG_NIL
+              default: BLOCK_ID_FLAG_UNKNOWN
+              title: BlockIdFlag indicates which BlcokID the signature is for
+            validator_address:
+              type: string
+              format: byte
+            timestamp:
+              type: string
+              format: date-time
+            signature:
+              type: string
+              format: byte
+          description: CommitSig is a part of the Vote included in a Commit.
+    description: >-
+      Commit contains the evidence that a block was committed by a set of
+      validators.
+  tendermint.types.CommitSig:
+    type: object
+    properties:
+      block_id_flag:
+        type: string
+        enum:
+          - BLOCK_ID_FLAG_UNKNOWN
+          - BLOCK_ID_FLAG_ABSENT
+          - BLOCK_ID_FLAG_COMMIT
+          - BLOCK_ID_FLAG_NIL
+        default: BLOCK_ID_FLAG_UNKNOWN
+        title: BlockIdFlag indicates which BlcokID the signature is for
+      validator_address:
+        type: string
+        format: byte
+      timestamp:
+        type: string
+        format: date-time
+      signature:
+        type: string
+        format: byte
+    description: CommitSig is a part of the Vote included in a Commit.
+  tendermint.types.Data:
+    type: object
+    properties:
+      txs:
+        type: array
+        items:
+          type: string
+          format: byte
+        description: >-
+          Txs that will be applied by state @ block.Height+1.
+
+          NOTE: not all txs here are valid.  We're just agreeing on the order
+          first.
+
+          This means that block.AppHash does not include these txs.
+    title: Data contains the set of transactions included in the block
+  tendermint.types.EvidenceParams:
+    type: object
+    properties:
+      max_age_num_blocks:
+        type: string
+        format: int64
+        description: >-
+          Max age of evidence, in blocks.
+
+
+          The basic formula for calculating this is: MaxAgeDuration / {average
+          block
+
+          time}.
+      max_age_duration:
+        type: string
+        description: >-
+          Max age of evidence, in time.
+
+
+          It should correspond with an app's "unbonding period" or other similar
+
+          mechanism for handling [Nothing-At-Stake
+
+          attacks](https://github.com/ethereum/wiki/wiki/Proof-of-Stake-FAQ#what-is-the-nothing-at-stake-problem-and-how-can-it-be-fixed).
+      max_bytes:
+        type: string
+        format: int64
+        title: >-
+          This sets the maximum size of total evidence in bytes that can be
+          committed in a single block.
+
+          and should fall comfortably under the max block bytes.
+
+          Default is 1048576 or 1MB
+    description: EvidenceParams determine how we handle evidence of malfeasance.
+  tendermint.types.PartSetHeader:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+      hash:
+        type: string
+        format: byte
+    title: PartsetHeader
+  tendermint.types.SignedMsgType:
     type: string
     enum:
       - SIGNED_MSG_TYPE_UNKNOWN
@@ -37048,7 +37029,7 @@ definitions:
 
        - SIGNED_MSG_TYPE_PREVOTE: Votes
        - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-  ostracon.types.Validator:
+  tendermint.types.Validator:
     type: object
     properties:
       address:
@@ -37063,18 +37044,16 @@ definitions:
           secp256k1:
             type: string
             format: byte
-        title: PublicKey defines the keys available for use with Ostracon Validators
+        title: >-
+          PublicKey defines the keys available for use with Tendermint
+          Validators
       voting_power:
         type: string
         format: int64
       proposer_priority:
         type: string
         format: int64
-      voting_weight:
-        type: string
-        format: int64
-        title: '*** Ostracon Extended Fields ***'
-  ostracon.types.ValidatorParams:
+  tendermint.types.ValidatorParams:
     type: object
     properties:
       pub_key_types:
@@ -37084,7 +37063,7 @@ definitions:
     description: |-
       ValidatorParams restrict the public key types validators can use.
       NOTE: uses ABCI pubkey naming, not Amino names.
-  ostracon.types.ValidatorSet:
+  tendermint.types.ValidatorSet:
     type: object
     properties:
       validators:
@@ -37105,7 +37084,7 @@ definitions:
                   type: string
                   format: byte
               title: >-
-                PublicKey defines the keys available for use with Ostracon
+                PublicKey defines the keys available for use with Tendermint
                 Validators
             voting_power:
               type: string
@@ -37113,10 +37092,6 @@ definitions:
             proposer_priority:
               type: string
               format: int64
-            voting_weight:
-              type: string
-              format: int64
-              title: '*** Ostracon Extended Fields ***'
       proposer:
         type: object
         properties:
@@ -37133,7 +37108,7 @@ definitions:
                 type: string
                 format: byte
             title: >-
-              PublicKey defines the keys available for use with Ostracon
+              PublicKey defines the keys available for use with Tendermint
               Validators
           voting_power:
             type: string
@@ -37141,21 +37116,17 @@ definitions:
           proposer_priority:
             type: string
             format: int64
-          voting_weight:
-            type: string
-            format: int64
-            title: '*** Ostracon Extended Fields ***'
       total_voting_power:
         type: string
         format: int64
-  ostracon.types.VersionParams:
+  tendermint.types.VersionParams:
     type: object
     properties:
       app_version:
         type: string
         format: uint64
     description: VersionParams contains the ABCI application version.
-  ostracon.types.Vote:
+  tendermint.types.Vote:
     type: object
     properties:
       type:
@@ -37209,7 +37180,7 @@ definitions:
     description: |-
       Vote represents a prevote, precommit, or commit vote from validators for
       consensus.
-  ostracon.version.Consensus:
+  tendermint.version.Consensus:
     type: object
     properties:
       block:
@@ -39723,7 +39694,14 @@ definitions:
           proposer_address:
             type: string
             format: byte
-        description: Header defines the structure of a Tendermint block header.
+          round:
+            type: integer
+            format: int32
+            title: vrf info
+          proof:
+            type: string
+            format: byte
+        description: Header defines the structure of an Ostracon block header.
       valset:
         type: array
         items:
@@ -40956,7 +40934,14 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-            description: Header defines the structure of a Tendermint block header.
+              round:
+                type: integer
+                format: int32
+                title: vrf info
+              proof:
+                type: string
+                format: byte
+            description: Header defines the structure of an Ostracon block header.
           valset:
             type: array
             items:
@@ -43883,7 +43868,14 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-            description: Header defines the structure of a Tendermint block header.
+              round:
+                type: integer
+                format: int32
+                title: vrf info
+              proof:
+                type: string
+                format: byte
+            description: Header defines the structure of an Ostracon block header.
           data:
             type: object
             properties:
@@ -44034,10 +44026,6 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
-                        voting_weight:
-                          type: string
-                          format: int64
-                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -44129,8 +44117,15 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
+                                    round:
+                                      type: integer
+                                      format: int32
+                                      title: vrf info
+                                    proof:
+                                      type: string
+                                      format: byte
                                   description: >-
-                                    Header defines the structure of a Tendermint
+                                    Header defines the structure of an Ostracon
                                     block header.
                                 commit:
                                   type: object
@@ -44211,17 +44206,13 @@ definitions:
                                             format: byte
                                         title: >-
                                           PublicKey defines the keys available for
-                                          use with Ostracon Validators
+                                          use with Tendermint Validators
                                       voting_power:
                                         type: string
                                         format: int64
                                       proposer_priority:
                                         type: string
                                         format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -44239,17 +44230,13 @@ definitions:
                                           format: byte
                                       title: >-
                                         PublicKey defines the keys available for
-                                        use with Ostracon Validators
+                                        use with Tendermint Validators
                                     voting_power:
                                       type: string
                                       format: int64
                                     proposer_priority:
                                       type: string
                                       format: int64
-                                    voting_weight:
-                                      type: string
-                                      format: int64
-                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -44275,17 +44262,13 @@ definitions:
                                     format: byte
                                 title: >-
                                   PublicKey defines the keys available for use
-                                  with Ostracon Validators
+                                  with Tendermint Validators
                               voting_power:
                                 type: string
                                 format: int64
                               proposer_priority:
                                 type: string
                                 format: int64
-                              voting_weight:
-                                type: string
-                                format: int64
-                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64

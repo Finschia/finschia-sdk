@@ -3,10 +3,12 @@ package mock
 import (
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
+	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+
+	ocabci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/ostracon/types"
-	"github.com/stretchr/testify/require"
 )
 
 // TestInitApp makes sure we can initialize this thing without an error
@@ -60,7 +62,7 @@ func TestDeliverTx(t *testing.T) {
 		AppHash: []byte("apphash"),
 		Height:  1,
 	}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 	dres := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 	require.Equal(t, uint32(0), dres.Code, dres.Log)
 	app.EndBlock(abci.RequestEndBlock{})

@@ -304,10 +304,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	} else {
 		ctx.Logger.Info("starting node with ABCI Ostracon in-process")
 
-		pv, err2 := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), cfg.PrivKeyType)
-		if err2 != nil {
-			return err2
-		}
+		pv := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
 
 		ocNode, err = node.NewNode(
 			cfg,
