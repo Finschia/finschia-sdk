@@ -32,7 +32,7 @@ func Execute(rootCmd *cobra.Command, defaultHome string) error {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
 	ctx = context.WithValue(ctx, server.ServerContextKey, srvCtx)
 
-	rootCmd.PersistentFlags().String(flags.FlagLogLevel, ostcfg.DefaultPackageLogLevels(), "The logging level by modules (default. main:info,state:info,statesync:info,*:info)")
+	rootCmd.PersistentFlags().String(flags.FlagLogLevel, ostcfg.DefaultPackageLogLevels(), "The logging level by modules (debug|info|error|none)")
 	rootCmd.PersistentFlags().String(flags.FlagLogFormat, ostcfg.LogFormatPlain, "The logging format (json|plain)")
 
 	executor := ostcli.PrepareBaseCmd(rootCmd, envPrefix, defaultHome)
