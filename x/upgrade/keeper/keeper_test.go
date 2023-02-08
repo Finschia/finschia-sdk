@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	store "github.com/line/lbm-sdk/store/types"
@@ -33,7 +33,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.T().Log("home dir:", homeDir)
 	s.homeDir = homeDir
 	s.app = app
-	s.ctx = app.BaseApp.NewContext(false, ocproto.Header{
+	s.ctx = app.BaseApp.NewContext(false, tmproto.Header{
 		Time:   time.Now(),
 		Height: 10,
 	})

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octime "github.com/line/ostracon/types/time"
 
 	"github.com/line/lbm-sdk/baseapp"
@@ -29,9 +29,9 @@ type TestSuite struct {
 
 func (s *TestSuite) SetupTest() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	now := octime.Now()
-	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(tmproto.Header{Time: now})
 	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
 	authz.RegisterQueryServer(queryHelper, app.AuthzKeeper)
 	queryClient := authz.NewQueryClient(queryHelper)

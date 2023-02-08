@@ -10,13 +10,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	dbm "github.com/tendermint/tm-db"
 
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	abci "github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
@@ -512,7 +512,7 @@ func NewSimApp(
 			ostos.Exit(err.Error())
 		}
 
-		ctx := app.BaseApp.NewUncachedContext(true, ocproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 		app.BankKeeper.(bankpluskeeper.Keeper).InitializeBankPlus(ctx)
 	}
 

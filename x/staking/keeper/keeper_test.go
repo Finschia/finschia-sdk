@@ -5,8 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"
@@ -27,7 +26,7 @@ type KeeperTestSuite struct {
 
 func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	querier := keeper.Querier{Keeper: app.StakingKeeper}
 
@@ -36,7 +35,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	queryClient := types.NewQueryClient(queryHelper)
 
 	addrs, _, validators := createValidators(suite.T(), ctx, app, []int64{9, 8, 7})
-	header := ocproto.Header{
+	header := tmproto.Header{
 		ChainID: "HelloChain",
 		Height:  5,
 	}
@@ -53,7 +52,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func TestParams(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	expParams := types.DefaultParams()
 

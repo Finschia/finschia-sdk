@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -63,11 +63,11 @@ func TestTrackHistoricalInfo(t *testing.T) {
 
 	// set historical info at 5, 4 which should be pruned
 	// and check that it has been stored
-	h4 := ocproto.Header{
+	h4 := tmproto.Header{
 		ChainID: "HelloChain",
 		Height:  4,
 	}
-	h5 := ocproto.Header{
+	h5 := tmproto.Header{
 		ChainID: "HelloChain",
 		Height:  5,
 	}
@@ -102,7 +102,7 @@ func TestTrackHistoricalInfo(t *testing.T) {
 	IsValSetSorted(vals, app.StakingKeeper.PowerReduction(ctx))
 
 	// Set Header for BeginBlock context
-	header := ocproto.Header{
+	header := tmproto.Header{
 		ChainID: "HelloChain",
 		Height:  10,
 	}
@@ -139,9 +139,9 @@ func TestGetAllHistoricalInfo(t *testing.T) {
 		teststaking.NewValidator(t, addrVals[1], PKs[1]),
 	}
 
-	header1 := ocproto.Header{ChainID: "HelloChain", Height: 10}
-	header2 := ocproto.Header{ChainID: "HelloChain", Height: 11}
-	header3 := ocproto.Header{ChainID: "HelloChain", Height: 12}
+	header1 := tmproto.Header{ChainID: "HelloChain", Height: 10}
+	header2 := tmproto.Header{ChainID: "HelloChain", Height: 11}
+	header3 := tmproto.Header{ChainID: "HelloChain", Height: 12}
 
 	hist1 := types.HistoricalInfo{Header: header1, Valset: valSet}
 	hist2 := types.HistoricalInfo{Header: header2, Valset: valSet}
