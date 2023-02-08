@@ -52,6 +52,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection,token) [\#849](https://github.com/line/lbm-sdk/pull/849) Introduce codespace into x/collection,token
 * (x/token,collection) [\#863](https://github.com/line/lbm-sdk/pull/863) Update x/collection,token proto
 * (x/collection,token) [\#866](https://github.com/line/lbm-sdk/pull/866) Do not create account on x/token,collection
+* (x/collection,token) [\#881](https://github.com/line/lbm-sdk/pull/881) Remove some x/token,collection queries on listable collections
 
 ### Removed
 * [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
