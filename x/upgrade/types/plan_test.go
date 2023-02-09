@@ -70,11 +70,6 @@ func TestPlanValid(t *testing.T) {
 				Height: 123450000,
 			},
 		},
-		"time-base upgrade": {
-			p: types.Plan{
-				Time: time.Now(),
-			},
-		},
 		"IBC upgrade": {
 			p: types.Plan{
 				Height:              123450000,
@@ -115,34 +110,6 @@ func TestShouldExecute(t *testing.T) {
 		ctxHeight int64
 		expected  bool
 	}{
-		"past time": {
-			p: types.Plan{
-				Name: "do-good",
-				Info: "some text here",
-				Time: mustParseTime("2019-07-08T11:33:55Z"),
-			},
-			ctxTime:   mustParseTime("2019-07-08T11:32:00Z"),
-			ctxHeight: 100000,
-			expected:  false,
-		},
-		"on time": {
-			p: types.Plan{
-				Name: "do-good",
-				Time: mustParseTime("2019-07-08T11:33:55Z"),
-			},
-			ctxTime:   mustParseTime("2019-07-08T11:33:55Z"),
-			ctxHeight: 100000,
-			expected:  true,
-		},
-		"future time": {
-			p: types.Plan{
-				Name: "do-good",
-				Time: mustParseTime("2019-07-08T11:33:55Z"),
-			},
-			ctxTime:   mustParseTime("2019-07-08T11:33:57Z"),
-			ctxHeight: 100000,
-			expected:  true,
-		},
 		"past height": {
 			p: types.Plan{
 				Name:   "do-good",

@@ -96,7 +96,7 @@ func TestCanOverwriteScheduleUpgrade(t *testing.T) {
 }
 
 func VerifyDoUpgrade(t *testing.T) {
-	t.Log("Verify that a panic happens at the upgrade time/height")
+	t.Log("Verify that a panic happens at the upgrade height")
 	newCtx := s.ctx.WithBlockHeight(s.ctx.BlockHeight() + 1).WithBlockTime(time.Now())
 
 	req := ocabci.RequestBeginBlock{Header: newCtx.BlockHeader()}
@@ -116,7 +116,7 @@ func VerifyDoUpgrade(t *testing.T) {
 }
 
 func VerifyDoUpgradeWithCtx(t *testing.T, newCtx sdk.Context, proposalName string) {
-	t.Log("Verify that a panic happens at the upgrade time/height")
+	t.Log("Verify that a panic happens at the upgrade height")
 	req := ocabci.RequestBeginBlock{Header: newCtx.BlockHeader()}
 	require.Panics(t, func() {
 		s.module.BeginBlock(newCtx, req)
