@@ -44,6 +44,7 @@ func CreateContextWithErrorAndMode(err error, mode string) Context {
 func TestBroadcastError(t *testing.T) {
 	errors := map[error]uint32{
 		mempool.ErrTxInCache:       sdkerrors.ErrTxInMempoolCache.ABCICode(),
+		mempool.ErrTxInMap:         sdkerrors.ErrTxInMempoolCache.ABCICode(),
 		mempool.ErrTxTooLarge{}:    sdkerrors.ErrTxTooLarge.ABCICode(),
 		mempool.ErrMempoolIsFull{}: sdkerrors.ErrMempoolIsFull.ABCICode(),
 	}

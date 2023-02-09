@@ -77,6 +77,13 @@ func CheckTendermintError(err error, tx octypes.Tx) *sdk.TxResponse {
 			TxHash:    txHash,
 		}
 
+	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInMap.Error())):
+		return &sdk.TxResponse{
+			Code:      sdkerrors.ErrTxInMempoolCache.ABCICode(),
+			Codespace: sdkerrors.ErrTxInMempoolCache.Codespace(),
+			TxHash:    txHash,
+		}
+
 	default:
 		return nil
 	}
