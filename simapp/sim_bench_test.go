@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/simulation"
@@ -110,7 +110,7 @@ func BenchmarkInvariants(b *testing.B) {
 		PrintStats(db)
 	}
 
-	ctx := app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight() + 1})
+	ctx := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight() + 1})
 
 	// 3. Benchmark each invariant separately
 	//

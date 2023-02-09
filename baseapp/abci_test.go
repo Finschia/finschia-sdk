@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	ocabci "github.com/line/ostracon/abci/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -142,10 +142,10 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 	app := NewBaseApp(name, logger, db, nil)
 	app.init()
 
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 	app.Commit()
 
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: 2}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
 	app.Commit()
 
 	testCases := []struct {
@@ -193,7 +193,7 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	app.init()
 
 	// set block params
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 	ctx := app.deliverState.ctx
 	maxGas := int64(123456789)
 	app.paramStore.Set(ctx, ParamStoreKeyBlockParams,
@@ -203,7 +203,7 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	app.Commit()
 
 	// confirm consensus params updated into the context
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: 2}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
 	newCtx := app.getContextForTx(app.checkState, []byte{})
 	require.Equal(t, maxGas, newCtx.ConsensusParams().Block.MaxGas)
 }

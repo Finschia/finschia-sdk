@@ -7,13 +7,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
@@ -79,7 +78,7 @@ func TestBaseApp_BlockGas(t *testing.T) {
 				AppStateBytes:   stateBytes,
 			})
 
-			ctx := app.NewContext(false, ocproto.Header{})
+			ctx := app.NewContext(false, tmproto.Header{})
 
 			// tx fee
 			feeCoin := sdk.NewCoin("atom", sdk.NewInt(150))
@@ -107,7 +106,7 @@ func TestBaseApp_BlockGas(t *testing.T) {
 			_, txBytes, err := createTestTx(encCfg.TxConfig, txBuilder, privs, accNums, accSeqs, ctx.ChainID())
 			require.NoError(t, err)
 
-			app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: 1}})
+			app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 			rsp := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 
 			// check result

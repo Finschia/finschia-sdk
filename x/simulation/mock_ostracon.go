@@ -7,11 +7,12 @@ import (
 	"testing"
 	"time"
 
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	ocabci "github.com/line/ostracon/abci/types"
 	cryptoenc "github.com/line/ostracon/crypto/encoding"
 	ostbytes "github.com/line/ostracon/libs/bytes"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type mockValidator struct {
@@ -118,7 +119,7 @@ func updateValidators(
 func RandomRequestBeginBlock(r *rand.Rand, params Params,
 	validators mockValidators, pastTimes []time.Time,
 	pastVoteInfos [][]abci.VoteInfo,
-	event func(route, op, evResult string), header ocproto.Header,
+	event func(route, op, evResult string), header tmproto.Header,
 ) ocabci.RequestBeginBlock {
 	if len(validators) == 0 {
 		return ocabci.RequestBeginBlock{

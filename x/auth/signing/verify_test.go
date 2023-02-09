@@ -3,8 +3,8 @@ package signing_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/codec"
 	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
@@ -98,7 +98,7 @@ func TestVerifySignature(t *testing.T) {
 // returns context and app with params set on account keeper
 func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
 	app := simapp.Setup(isCheckTx)
-	ctx := app.BaseApp.NewContext(isCheckTx, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	app.AccountKeeper.SetParams(ctx, types.DefaultParams())
 
 	return app, ctx

@@ -6,8 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -541,7 +540,7 @@ func TestMigrateVestingAccounts(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			app := simapp.Setup(false)
-			ctx := app.BaseApp.NewContext(false, ocproto.Header{
+			ctx := app.BaseApp.NewContext(false, tmproto.Header{
 				Time: time.Now(),
 			})
 

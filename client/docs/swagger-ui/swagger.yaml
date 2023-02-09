@@ -2464,14 +2464,7 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                      round:
-                        type: integer
-                        format: int32
-                        title: vrf info
-                      proof:
-                        type: string
-                        format: byte
-                    description: Header defines the structure of an Ostracon block header.
+                    description: Header defines the structure of a Tendermint block header.
                   data:
                     type: object
                     properties:
@@ -2716,16 +2709,9 @@ paths:
                                             proposer_address:
                                               type: string
                                               format: byte
-                                            round:
-                                              type: integer
-                                              format: int32
-                                              title: vrf info
-                                            proof:
-                                              type: string
-                                              format: byte
                                           description: >-
-                                            Header defines the structure of an
-                                            Ostracon block header.
+                                            Header defines the structure of a
+                                            Tendermint block header.
                                         commit:
                                           type: object
                                           properties:
@@ -2936,6 +2922,16 @@ paths:
                     description: >-
                       Commit contains the evidence that a block was committed by
                       a set of validators.
+                  entropy:
+                    title: '*** Ostracon Extended Fields ***'
+                    type: object
+                    properties:
+                      round:
+                        type: integer
+                        format: int32
+                      proof:
+                        type: string
+                        format: byte
             description: >-
               GetBlockByHashResponse is the response type for the
               Query/GetBlockByHash RPC method.
@@ -3678,14 +3674,7 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                      round:
-                        type: integer
-                        format: int32
-                        title: vrf info
-                      proof:
-                        type: string
-                        format: byte
-                    description: Header defines the structure of an Ostracon block header.
+                    description: Header defines the structure of a Tendermint block header.
                   data:
                     type: object
                     properties:
@@ -3930,16 +3919,9 @@ paths:
                                             proposer_address:
                                               type: string
                                               format: byte
-                                            round:
-                                              type: integer
-                                              format: int32
-                                              title: vrf info
-                                            proof:
-                                              type: string
-                                              format: byte
                                           description: >-
-                                            Header defines the structure of an
-                                            Ostracon block header.
+                                            Header defines the structure of a
+                                            Tendermint block header.
                                         commit:
                                           type: object
                                           properties:
@@ -4150,6 +4132,16 @@ paths:
                     description: >-
                       Commit contains the evidence that a block was committed by
                       a set of validators.
+                  entropy:
+                    title: '*** Ostracon Extended Fields ***'
+                    type: object
+                    properties:
+                      round:
+                        type: integer
+                        format: int32
+                      proof:
+                        type: string
+                        format: byte
             description: >-
               GetLatestBlockResponse is the response type for the
               Query/GetLatestBlock RPC method.
@@ -4450,14 +4442,7 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                      round:
-                        type: integer
-                        format: int32
-                        title: vrf info
-                      proof:
-                        type: string
-                        format: byte
-                    description: Header defines the structure of an Ostracon block header.
+                    description: Header defines the structure of a Tendermint block header.
                   data:
                     type: object
                     properties:
@@ -4702,16 +4687,9 @@ paths:
                                             proposer_address:
                                               type: string
                                               format: byte
-                                            round:
-                                              type: integer
-                                              format: int32
-                                              title: vrf info
-                                            proof:
-                                              type: string
-                                              format: byte
                                           description: >-
-                                            Header defines the structure of an
-                                            Ostracon block header.
+                                            Header defines the structure of a
+                                            Tendermint block header.
                                         commit:
                                           type: object
                                           properties:
@@ -4922,6 +4900,16 @@ paths:
                     description: >-
                       Commit contains the evidence that a block was committed by
                       a set of validators.
+                  entropy:
+                    title: '*** Ostracon Extended Fields ***'
+                    type: object
+                    properties:
+                      round:
+                        type: integer
+                        format: int32
+                      proof:
+                        type: string
+                        format: byte
             description: >-
               GetBlockByHeightResponse is the response type for the
               Query/GetBlockByHeight RPC method.
@@ -13647,14 +13635,7 @@ paths:
                       proposer_address:
                         type: string
                         format: byte
-                      round:
-                        type: integer
-                        format: int32
-                        title: vrf info
-                      proof:
-                        type: string
-                        format: byte
-                    description: Header defines the structure of an Ostracon block header.
+                    description: Header defines the structure of a Tendermint block header.
                   valset:
                     type: array
                     items:
@@ -31791,14 +31772,7 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-              round:
-                type: integer
-                format: int32
-                title: vrf info
-              proof:
-                type: string
-                format: byte
-            description: Header defines the structure of an Ostracon block header.
+            description: Header defines the structure of a Tendermint block header.
           data:
             type: object
             properties:
@@ -32040,15 +32014,8 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
-                                    round:
-                                      type: integer
-                                      format: int32
-                                      title: vrf info
-                                    proof:
-                                      type: string
-                                      format: byte
                                   description: >-
-                                    Header defines the structure of an Ostracon
+                                    Header defines the structure of a Tendermint
                                     block header.
                                 commit:
                                   type: object
@@ -32254,6 +32221,16 @@ definitions:
             description: >-
               Commit contains the evidence that a block was committed by a set
               of validators.
+          entropy:
+            title: '*** Ostracon Extended Fields ***'
+            type: object
+            properties:
+              round:
+                type: integer
+                format: int32
+              proof:
+                type: string
+                format: byte
     description: >-
       GetBlockByHashResponse is the response type for the Query/GetBlockByHash
       RPC method.
@@ -32356,14 +32333,7 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-              round:
-                type: integer
-                format: int32
-                title: vrf info
-              proof:
-                type: string
-                format: byte
-            description: Header defines the structure of an Ostracon block header.
+            description: Header defines the structure of a Tendermint block header.
           data:
             type: object
             properties:
@@ -32605,15 +32575,8 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
-                                    round:
-                                      type: integer
-                                      format: int32
-                                      title: vrf info
-                                    proof:
-                                      type: string
-                                      format: byte
                                   description: >-
-                                    Header defines the structure of an Ostracon
+                                    Header defines the structure of a Tendermint
                                     block header.
                                 commit:
                                   type: object
@@ -32819,6 +32782,16 @@ definitions:
             description: >-
               Commit contains the evidence that a block was committed by a set
               of validators.
+          entropy:
+            title: '*** Ostracon Extended Fields ***'
+            type: object
+            properties:
+              round:
+                type: integer
+                format: int32
+              proof:
+                type: string
+                format: byte
     description: >-
       GetBlockByHeightResponse is the response type for the
       Query/GetBlockByHeight RPC method.
@@ -33152,14 +33125,7 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-              round:
-                type: integer
-                format: int32
-                title: vrf info
-              proof:
-                type: string
-                format: byte
-            description: Header defines the structure of an Ostracon block header.
+            description: Header defines the structure of a Tendermint block header.
           data:
             type: object
             properties:
@@ -33401,15 +33367,8 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
-                                    round:
-                                      type: integer
-                                      format: int32
-                                      title: vrf info
-                                    proof:
-                                      type: string
-                                      format: byte
                                   description: >-
-                                    Header defines the structure of an Ostracon
+                                    Header defines the structure of a Tendermint
                                     block header.
                                 commit:
                                   type: object
@@ -33615,6 +33574,16 @@ definitions:
             description: >-
               Commit contains the evidence that a block was committed by a set
               of validators.
+          entropy:
+            title: '*** Ostracon Extended Fields ***'
+            type: object
+            properties:
+              round:
+                type: integer
+                format: int32
+              proof:
+                type: string
+                format: byte
     description: >-
       GetLatestBlockResponse is the response type for the Query/GetLatestBlock
       RPC method.
@@ -34419,14 +34388,7 @@ definitions:
           proposer_address:
             type: string
             format: byte
-          round:
-            type: integer
-            format: int32
-            title: vrf info
-          proof:
-            type: string
-            format: byte
-        description: Header defines the structure of an Ostracon block header.
+        description: Header defines the structure of a Tendermint block header.
       data:
         type: object
         properties:
@@ -34667,15 +34629,8 @@ definitions:
                                 proposer_address:
                                   type: string
                                   format: byte
-                                round:
-                                  type: integer
-                                  format: int32
-                                  title: vrf info
-                                proof:
-                                  type: string
-                                  format: byte
                               description: >-
-                                Header defines the structure of an Ostracon
+                                Header defines the structure of a Tendermint
                                 block header.
                             commit:
                               type: object
@@ -34881,1555 +34836,33 @@ definitions:
         description: >-
           Commit contains the evidence that a block was committed by a set of
           validators.
-  ostracon.types.DuplicateVoteEvidence:
-    type: object
-    properties:
-      vote_a:
+      entropy:
+        title: '*** Ostracon Extended Fields ***'
         type: object
         properties:
-          type:
-            type: string
-            enum:
-              - SIGNED_MSG_TYPE_UNKNOWN
-              - SIGNED_MSG_TYPE_PREVOTE
-              - SIGNED_MSG_TYPE_PRECOMMIT
-              - SIGNED_MSG_TYPE_PROPOSAL
-            default: SIGNED_MSG_TYPE_UNKNOWN
-            description: |-
-              SignedMsgType is a type of signed message in the consensus.
-
-               - SIGNED_MSG_TYPE_PREVOTE: Votes
-               - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-          height:
-            type: string
-            format: int64
           round:
             type: integer
             format: int32
-          block_id:
-            type: object
-            properties:
-              hash:
-                type: string
-                format: byte
-              part_set_header:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                    format: int64
-                  hash:
-                    type: string
-                    format: byte
-                title: PartsetHeader
-            title: BlockID
-          timestamp:
-            type: string
-            format: date-time
-          validator_address:
-            type: string
-            format: byte
-          validator_index:
-            type: integer
-            format: int32
-          signature:
-            type: string
-            format: byte
-        description: >-
-          Vote represents a prevote, precommit, or commit vote from validators
-          for
-
-          consensus.
-      vote_b:
-        type: object
-        properties:
-          type:
-            type: string
-            enum:
-              - SIGNED_MSG_TYPE_UNKNOWN
-              - SIGNED_MSG_TYPE_PREVOTE
-              - SIGNED_MSG_TYPE_PRECOMMIT
-              - SIGNED_MSG_TYPE_PROPOSAL
-            default: SIGNED_MSG_TYPE_UNKNOWN
-            description: |-
-              SignedMsgType is a type of signed message in the consensus.
-
-               - SIGNED_MSG_TYPE_PREVOTE: Votes
-               - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-          height:
-            type: string
-            format: int64
-          round:
-            type: integer
-            format: int32
-          block_id:
-            type: object
-            properties:
-              hash:
-                type: string
-                format: byte
-              part_set_header:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                    format: int64
-                  hash:
-                    type: string
-                    format: byte
-                title: PartsetHeader
-            title: BlockID
-          timestamp:
-            type: string
-            format: date-time
-          validator_address:
-            type: string
-            format: byte
-          validator_index:
-            type: integer
-            format: int32
-          signature:
-            type: string
-            format: byte
-        description: >-
-          Vote represents a prevote, precommit, or commit vote from validators
-          for
-
-          consensus.
-      total_voting_power:
-        type: string
-        format: int64
-      validator_power:
-        type: string
-        format: int64
-      timestamp:
-        type: string
-        format: date-time
-    description: >-
-      DuplicateVoteEvidence contains evidence of a validator signed two
-      conflicting votes.
-  ostracon.types.Evidence:
-    type: object
-    properties:
-      duplicate_vote_evidence:
-        type: object
-        properties:
-          vote_a:
-            type: object
-            properties:
-              type:
-                type: string
-                enum:
-                  - SIGNED_MSG_TYPE_UNKNOWN
-                  - SIGNED_MSG_TYPE_PREVOTE
-                  - SIGNED_MSG_TYPE_PRECOMMIT
-                  - SIGNED_MSG_TYPE_PROPOSAL
-                default: SIGNED_MSG_TYPE_UNKNOWN
-                description: |-
-                  SignedMsgType is a type of signed message in the consensus.
-
-                   - SIGNED_MSG_TYPE_PREVOTE: Votes
-                   - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-              height:
-                type: string
-                format: int64
-              round:
-                type: integer
-                format: int32
-              block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    format: byte
-                  part_set_header:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                        format: int64
-                      hash:
-                        type: string
-                        format: byte
-                    title: PartsetHeader
-                title: BlockID
-              timestamp:
-                type: string
-                format: date-time
-              validator_address:
-                type: string
-                format: byte
-              validator_index:
-                type: integer
-                format: int32
-              signature:
-                type: string
-                format: byte
-            description: >-
-              Vote represents a prevote, precommit, or commit vote from
-              validators for
-
-              consensus.
-          vote_b:
-            type: object
-            properties:
-              type:
-                type: string
-                enum:
-                  - SIGNED_MSG_TYPE_UNKNOWN
-                  - SIGNED_MSG_TYPE_PREVOTE
-                  - SIGNED_MSG_TYPE_PRECOMMIT
-                  - SIGNED_MSG_TYPE_PROPOSAL
-                default: SIGNED_MSG_TYPE_UNKNOWN
-                description: |-
-                  SignedMsgType is a type of signed message in the consensus.
-
-                   - SIGNED_MSG_TYPE_PREVOTE: Votes
-                   - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-              height:
-                type: string
-                format: int64
-              round:
-                type: integer
-                format: int32
-              block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    format: byte
-                  part_set_header:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                        format: int64
-                      hash:
-                        type: string
-                        format: byte
-                    title: PartsetHeader
-                title: BlockID
-              timestamp:
-                type: string
-                format: date-time
-              validator_address:
-                type: string
-                format: byte
-              validator_index:
-                type: integer
-                format: int32
-              signature:
-                type: string
-                format: byte
-            description: >-
-              Vote represents a prevote, precommit, or commit vote from
-              validators for
-
-              consensus.
-          total_voting_power:
-            type: string
-            format: int64
-          validator_power:
-            type: string
-            format: int64
-          timestamp:
-            type: string
-            format: date-time
-        description: >-
-          DuplicateVoteEvidence contains evidence of a validator signed two
-          conflicting votes.
-      light_client_attack_evidence:
-        type: object
-        properties:
-          conflicting_block:
-            type: object
-            properties:
-              signed_header:
-                type: object
-                properties:
-                  header:
-                    type: object
-                    properties:
-                      version:
-                        title: basic block info
-                        type: object
-                        properties:
-                          block:
-                            type: string
-                            format: uint64
-                          app:
-                            type: string
-                            format: uint64
-                        description: >-
-                          Consensus captures the consensus rules for processing
-                          a block in the blockchain,
-
-                          including all blockchain data structures and the rules
-                          of the application's
-
-                          state transition machine.
-                      chain_id:
-                        type: string
-                      height:
-                        type: string
-                        format: int64
-                      time:
-                        type: string
-                        format: date-time
-                      last_block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            format: byte
-                          part_set_header:
-                            type: object
-                            properties:
-                              total:
-                                type: integer
-                                format: int64
-                              hash:
-                                type: string
-                                format: byte
-                            title: PartsetHeader
-                        title: BlockID
-                      last_commit_hash:
-                        type: string
-                        format: byte
-                        title: hashes of block data
-                      data_hash:
-                        type: string
-                        format: byte
-                      validators_hash:
-                        type: string
-                        format: byte
-                        title: hashes from the app output from the prev block
-                      next_validators_hash:
-                        type: string
-                        format: byte
-                      consensus_hash:
-                        type: string
-                        format: byte
-                      app_hash:
-                        type: string
-                        format: byte
-                      last_results_hash:
-                        type: string
-                        format: byte
-                      evidence_hash:
-                        type: string
-                        format: byte
-                        title: consensus info
-                      proposer_address:
-                        type: string
-                        format: byte
-                      round:
-                        type: integer
-                        format: int32
-                        title: vrf info
-                      proof:
-                        type: string
-                        format: byte
-                    description: Header defines the structure of an Ostracon block header.
-                  commit:
-                    type: object
-                    properties:
-                      height:
-                        type: string
-                        format: int64
-                      round:
-                        type: integer
-                        format: int32
-                      block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            format: byte
-                          part_set_header:
-                            type: object
-                            properties:
-                              total:
-                                type: integer
-                                format: int64
-                              hash:
-                                type: string
-                                format: byte
-                            title: PartsetHeader
-                        title: BlockID
-                      signatures:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            block_id_flag:
-                              type: string
-                              enum:
-                                - BLOCK_ID_FLAG_UNKNOWN
-                                - BLOCK_ID_FLAG_ABSENT
-                                - BLOCK_ID_FLAG_COMMIT
-                                - BLOCK_ID_FLAG_NIL
-                              default: BLOCK_ID_FLAG_UNKNOWN
-                              title: >-
-                                BlockIdFlag indicates which BlcokID the
-                                signature is for
-                            validator_address:
-                              type: string
-                              format: byte
-                            timestamp:
-                              type: string
-                              format: date-time
-                            signature:
-                              type: string
-                              format: byte
-                          description: >-
-                            CommitSig is a part of the Vote included in a
-                            Commit.
-                    description: >-
-                      Commit contains the evidence that a block was committed by
-                      a set of validators.
-              validator_set:
-                type: object
-                properties:
-                  validators:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address:
-                          type: string
-                          format: byte
-                        pub_key:
-                          type: object
-                          properties:
-                            ed25519:
-                              type: string
-                              format: byte
-                            secp256k1:
-                              type: string
-                              format: byte
-                          title: >-
-                            PublicKey defines the keys available for use with
-                            Tendermint Validators
-                        voting_power:
-                          type: string
-                          format: int64
-                        proposer_priority:
-                          type: string
-                          format: int64
-                  proposer:
-                    type: object
-                    properties:
-                      address:
-                        type: string
-                        format: byte
-                      pub_key:
-                        type: object
-                        properties:
-                          ed25519:
-                            type: string
-                            format: byte
-                          secp256k1:
-                            type: string
-                            format: byte
-                        title: >-
-                          PublicKey defines the keys available for use with
-                          Tendermint Validators
-                      voting_power:
-                        type: string
-                        format: int64
-                      proposer_priority:
-                        type: string
-                        format: int64
-                  total_voting_power:
-                    type: string
-                    format: int64
-          common_height:
-            type: string
-            format: int64
-          byzantine_validators:
-            type: array
-            items:
-              type: object
-              properties:
-                address:
-                  type: string
-                  format: byte
-                pub_key:
-                  type: object
-                  properties:
-                    ed25519:
-                      type: string
-                      format: byte
-                    secp256k1:
-                      type: string
-                      format: byte
-                  title: >-
-                    PublicKey defines the keys available for use with Tendermint
-                    Validators
-                voting_power:
-                  type: string
-                  format: int64
-                proposer_priority:
-                  type: string
-                  format: int64
-          total_voting_power:
-            type: string
-            format: int64
-          timestamp:
-            type: string
-            format: date-time
-        description: >-
-          LightClientAttackEvidence contains evidence of a set of validators
-          attempting to mislead a light client.
-  ostracon.types.EvidenceList:
-    type: object
-    properties:
-      evidence:
-        type: array
-        items:
-          type: object
-          properties:
-            duplicate_vote_evidence:
-              type: object
-              properties:
-                vote_a:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      enum:
-                        - SIGNED_MSG_TYPE_UNKNOWN
-                        - SIGNED_MSG_TYPE_PREVOTE
-                        - SIGNED_MSG_TYPE_PRECOMMIT
-                        - SIGNED_MSG_TYPE_PROPOSAL
-                      default: SIGNED_MSG_TYPE_UNKNOWN
-                      description: >-
-                        SignedMsgType is a type of signed message in the
-                        consensus.
-
-                         - SIGNED_MSG_TYPE_PREVOTE: Votes
-                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-                    height:
-                      type: string
-                      format: int64
-                    round:
-                      type: integer
-                      format: int32
-                    block_id:
-                      type: object
-                      properties:
-                        hash:
-                          type: string
-                          format: byte
-                        part_set_header:
-                          type: object
-                          properties:
-                            total:
-                              type: integer
-                              format: int64
-                            hash:
-                              type: string
-                              format: byte
-                          title: PartsetHeader
-                      title: BlockID
-                    timestamp:
-                      type: string
-                      format: date-time
-                    validator_address:
-                      type: string
-                      format: byte
-                    validator_index:
-                      type: integer
-                      format: int32
-                    signature:
-                      type: string
-                      format: byte
-                  description: >-
-                    Vote represents a prevote, precommit, or commit vote from
-                    validators for
-
-                    consensus.
-                vote_b:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      enum:
-                        - SIGNED_MSG_TYPE_UNKNOWN
-                        - SIGNED_MSG_TYPE_PREVOTE
-                        - SIGNED_MSG_TYPE_PRECOMMIT
-                        - SIGNED_MSG_TYPE_PROPOSAL
-                      default: SIGNED_MSG_TYPE_UNKNOWN
-                      description: >-
-                        SignedMsgType is a type of signed message in the
-                        consensus.
-
-                         - SIGNED_MSG_TYPE_PREVOTE: Votes
-                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-                    height:
-                      type: string
-                      format: int64
-                    round:
-                      type: integer
-                      format: int32
-                    block_id:
-                      type: object
-                      properties:
-                        hash:
-                          type: string
-                          format: byte
-                        part_set_header:
-                          type: object
-                          properties:
-                            total:
-                              type: integer
-                              format: int64
-                            hash:
-                              type: string
-                              format: byte
-                          title: PartsetHeader
-                      title: BlockID
-                    timestamp:
-                      type: string
-                      format: date-time
-                    validator_address:
-                      type: string
-                      format: byte
-                    validator_index:
-                      type: integer
-                      format: int32
-                    signature:
-                      type: string
-                      format: byte
-                  description: >-
-                    Vote represents a prevote, precommit, or commit vote from
-                    validators for
-
-                    consensus.
-                total_voting_power:
-                  type: string
-                  format: int64
-                validator_power:
-                  type: string
-                  format: int64
-                timestamp:
-                  type: string
-                  format: date-time
-              description: >-
-                DuplicateVoteEvidence contains evidence of a validator signed
-                two conflicting votes.
-            light_client_attack_evidence:
-              type: object
-              properties:
-                conflicting_block:
-                  type: object
-                  properties:
-                    signed_header:
-                      type: object
-                      properties:
-                        header:
-                          type: object
-                          properties:
-                            version:
-                              title: basic block info
-                              type: object
-                              properties:
-                                block:
-                                  type: string
-                                  format: uint64
-                                app:
-                                  type: string
-                                  format: uint64
-                              description: >-
-                                Consensus captures the consensus rules for
-                                processing a block in the blockchain,
-
-                                including all blockchain data structures and the
-                                rules of the application's
-
-                                state transition machine.
-                            chain_id:
-                              type: string
-                            height:
-                              type: string
-                              format: int64
-                            time:
-                              type: string
-                              format: date-time
-                            last_block_id:
-                              type: object
-                              properties:
-                                hash:
-                                  type: string
-                                  format: byte
-                                part_set_header:
-                                  type: object
-                                  properties:
-                                    total:
-                                      type: integer
-                                      format: int64
-                                    hash:
-                                      type: string
-                                      format: byte
-                                  title: PartsetHeader
-                              title: BlockID
-                            last_commit_hash:
-                              type: string
-                              format: byte
-                              title: hashes of block data
-                            data_hash:
-                              type: string
-                              format: byte
-                            validators_hash:
-                              type: string
-                              format: byte
-                              title: hashes from the app output from the prev block
-                            next_validators_hash:
-                              type: string
-                              format: byte
-                            consensus_hash:
-                              type: string
-                              format: byte
-                            app_hash:
-                              type: string
-                              format: byte
-                            last_results_hash:
-                              type: string
-                              format: byte
-                            evidence_hash:
-                              type: string
-                              format: byte
-                              title: consensus info
-                            proposer_address:
-                              type: string
-                              format: byte
-                            round:
-                              type: integer
-                              format: int32
-                              title: vrf info
-                            proof:
-                              type: string
-                              format: byte
-                          description: >-
-                            Header defines the structure of an Ostracon block
-                            header.
-                        commit:
-                          type: object
-                          properties:
-                            height:
-                              type: string
-                              format: int64
-                            round:
-                              type: integer
-                              format: int32
-                            block_id:
-                              type: object
-                              properties:
-                                hash:
-                                  type: string
-                                  format: byte
-                                part_set_header:
-                                  type: object
-                                  properties:
-                                    total:
-                                      type: integer
-                                      format: int64
-                                    hash:
-                                      type: string
-                                      format: byte
-                                  title: PartsetHeader
-                              title: BlockID
-                            signatures:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  block_id_flag:
-                                    type: string
-                                    enum:
-                                      - BLOCK_ID_FLAG_UNKNOWN
-                                      - BLOCK_ID_FLAG_ABSENT
-                                      - BLOCK_ID_FLAG_COMMIT
-                                      - BLOCK_ID_FLAG_NIL
-                                    default: BLOCK_ID_FLAG_UNKNOWN
-                                    title: >-
-                                      BlockIdFlag indicates which BlcokID the
-                                      signature is for
-                                  validator_address:
-                                    type: string
-                                    format: byte
-                                  timestamp:
-                                    type: string
-                                    format: date-time
-                                  signature:
-                                    type: string
-                                    format: byte
-                                description: >-
-                                  CommitSig is a part of the Vote included in a
-                                  Commit.
-                          description: >-
-                            Commit contains the evidence that a block was
-                            committed by a set of validators.
-                    validator_set:
-                      type: object
-                      properties:
-                        validators:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              address:
-                                type: string
-                                format: byte
-                              pub_key:
-                                type: object
-                                properties:
-                                  ed25519:
-                                    type: string
-                                    format: byte
-                                  secp256k1:
-                                    type: string
-                                    format: byte
-                                title: >-
-                                  PublicKey defines the keys available for use
-                                  with Tendermint Validators
-                              voting_power:
-                                type: string
-                                format: int64
-                              proposer_priority:
-                                type: string
-                                format: int64
-                        proposer:
-                          type: object
-                          properties:
-                            address:
-                              type: string
-                              format: byte
-                            pub_key:
-                              type: object
-                              properties:
-                                ed25519:
-                                  type: string
-                                  format: byte
-                                secp256k1:
-                                  type: string
-                                  format: byte
-                              title: >-
-                                PublicKey defines the keys available for use
-                                with Tendermint Validators
-                            voting_power:
-                              type: string
-                              format: int64
-                            proposer_priority:
-                              type: string
-                              format: int64
-                        total_voting_power:
-                          type: string
-                          format: int64
-                common_height:
-                  type: string
-                  format: int64
-                byzantine_validators:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      address:
-                        type: string
-                        format: byte
-                      pub_key:
-                        type: object
-                        properties:
-                          ed25519:
-                            type: string
-                            format: byte
-                          secp256k1:
-                            type: string
-                            format: byte
-                        title: >-
-                          PublicKey defines the keys available for use with
-                          Tendermint Validators
-                      voting_power:
-                        type: string
-                        format: int64
-                      proposer_priority:
-                        type: string
-                        format: int64
-                total_voting_power:
-                  type: string
-                  format: int64
-                timestamp:
-                  type: string
-                  format: date-time
-              description: >-
-                LightClientAttackEvidence contains evidence of a set of
-                validators attempting to mislead a light client.
-  ostracon.types.Header:
-    type: object
-    properties:
-      version:
-        title: basic block info
-        type: object
-        properties:
-          block:
-            type: string
-            format: uint64
-          app:
-            type: string
-            format: uint64
-        description: >-
-          Consensus captures the consensus rules for processing a block in the
-          blockchain,
-
-          including all blockchain data structures and the rules of the
-          application's
-
-          state transition machine.
-      chain_id:
-        type: string
-      height:
-        type: string
-        format: int64
-      time:
-        type: string
-        format: date-time
-      last_block_id:
-        type: object
-        properties:
-          hash:
-            type: string
-            format: byte
-          part_set_header:
-            type: object
-            properties:
-              total:
-                type: integer
-                format: int64
-              hash:
-                type: string
-                format: byte
-            title: PartsetHeader
-        title: BlockID
-      last_commit_hash:
-        type: string
-        format: byte
-        title: hashes of block data
-      data_hash:
-        type: string
-        format: byte
-      validators_hash:
-        type: string
-        format: byte
-        title: hashes from the app output from the prev block
-      next_validators_hash:
-        type: string
-        format: byte
-      consensus_hash:
-        type: string
-        format: byte
-      app_hash:
-        type: string
-        format: byte
-      last_results_hash:
-        type: string
-        format: byte
-      evidence_hash:
-        type: string
-        format: byte
-        title: consensus info
-      proposer_address:
-        type: string
-        format: byte
-      round:
-        type: integer
-        format: int32
-        title: vrf info
-      proof:
-        type: string
-        format: byte
-    description: Header defines the structure of an Ostracon block header.
-  ostracon.types.LightBlock:
-    type: object
-    properties:
-      signed_header:
-        type: object
-        properties:
-          header:
-            type: object
-            properties:
-              version:
-                title: basic block info
-                type: object
-                properties:
-                  block:
-                    type: string
-                    format: uint64
-                  app:
-                    type: string
-                    format: uint64
-                description: >-
-                  Consensus captures the consensus rules for processing a block
-                  in the blockchain,
-
-                  including all blockchain data structures and the rules of the
-                  application's
-
-                  state transition machine.
-              chain_id:
-                type: string
-              height:
-                type: string
-                format: int64
-              time:
-                type: string
-                format: date-time
-              last_block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    format: byte
-                  part_set_header:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                        format: int64
-                      hash:
-                        type: string
-                        format: byte
-                    title: PartsetHeader
-                title: BlockID
-              last_commit_hash:
-                type: string
-                format: byte
-                title: hashes of block data
-              data_hash:
-                type: string
-                format: byte
-              validators_hash:
-                type: string
-                format: byte
-                title: hashes from the app output from the prev block
-              next_validators_hash:
-                type: string
-                format: byte
-              consensus_hash:
-                type: string
-                format: byte
-              app_hash:
-                type: string
-                format: byte
-              last_results_hash:
-                type: string
-                format: byte
-              evidence_hash:
-                type: string
-                format: byte
-                title: consensus info
-              proposer_address:
-                type: string
-                format: byte
-              round:
-                type: integer
-                format: int32
-                title: vrf info
-              proof:
-                type: string
-                format: byte
-            description: Header defines the structure of an Ostracon block header.
-          commit:
-            type: object
-            properties:
-              height:
-                type: string
-                format: int64
-              round:
-                type: integer
-                format: int32
-              block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    format: byte
-                  part_set_header:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                        format: int64
-                      hash:
-                        type: string
-                        format: byte
-                    title: PartsetHeader
-                title: BlockID
-              signatures:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    block_id_flag:
-                      type: string
-                      enum:
-                        - BLOCK_ID_FLAG_UNKNOWN
-                        - BLOCK_ID_FLAG_ABSENT
-                        - BLOCK_ID_FLAG_COMMIT
-                        - BLOCK_ID_FLAG_NIL
-                      default: BLOCK_ID_FLAG_UNKNOWN
-                      title: BlockIdFlag indicates which BlcokID the signature is for
-                    validator_address:
-                      type: string
-                      format: byte
-                    timestamp:
-                      type: string
-                      format: date-time
-                    signature:
-                      type: string
-                      format: byte
-                  description: CommitSig is a part of the Vote included in a Commit.
-            description: >-
-              Commit contains the evidence that a block was committed by a set
-              of validators.
-      validator_set:
-        type: object
-        properties:
-          validators:
-            type: array
-            items:
-              type: object
-              properties:
-                address:
-                  type: string
-                  format: byte
-                pub_key:
-                  type: object
-                  properties:
-                    ed25519:
-                      type: string
-                      format: byte
-                    secp256k1:
-                      type: string
-                      format: byte
-                  title: >-
-                    PublicKey defines the keys available for use with Tendermint
-                    Validators
-                voting_power:
-                  type: string
-                  format: int64
-                proposer_priority:
-                  type: string
-                  format: int64
-          proposer:
-            type: object
-            properties:
-              address:
-                type: string
-                format: byte
-              pub_key:
-                type: object
-                properties:
-                  ed25519:
-                    type: string
-                    format: byte
-                  secp256k1:
-                    type: string
-                    format: byte
-                title: >-
-                  PublicKey defines the keys available for use with Tendermint
-                  Validators
-              voting_power:
-                type: string
-                format: int64
-              proposer_priority:
-                type: string
-                format: int64
-          total_voting_power:
-            type: string
-            format: int64
-  ostracon.types.LightClientAttackEvidence:
-    type: object
-    properties:
-      conflicting_block:
-        type: object
-        properties:
-          signed_header:
-            type: object
-            properties:
-              header:
-                type: object
-                properties:
-                  version:
-                    title: basic block info
-                    type: object
-                    properties:
-                      block:
-                        type: string
-                        format: uint64
-                      app:
-                        type: string
-                        format: uint64
-                    description: >-
-                      Consensus captures the consensus rules for processing a
-                      block in the blockchain,
-
-                      including all blockchain data structures and the rules of
-                      the application's
-
-                      state transition machine.
-                  chain_id:
-                    type: string
-                  height:
-                    type: string
-                    format: int64
-                  time:
-                    type: string
-                    format: date-time
-                  last_block_id:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                        format: byte
-                      part_set_header:
-                        type: object
-                        properties:
-                          total:
-                            type: integer
-                            format: int64
-                          hash:
-                            type: string
-                            format: byte
-                        title: PartsetHeader
-                    title: BlockID
-                  last_commit_hash:
-                    type: string
-                    format: byte
-                    title: hashes of block data
-                  data_hash:
-                    type: string
-                    format: byte
-                  validators_hash:
-                    type: string
-                    format: byte
-                    title: hashes from the app output from the prev block
-                  next_validators_hash:
-                    type: string
-                    format: byte
-                  consensus_hash:
-                    type: string
-                    format: byte
-                  app_hash:
-                    type: string
-                    format: byte
-                  last_results_hash:
-                    type: string
-                    format: byte
-                  evidence_hash:
-                    type: string
-                    format: byte
-                    title: consensus info
-                  proposer_address:
-                    type: string
-                    format: byte
-                  round:
-                    type: integer
-                    format: int32
-                    title: vrf info
-                  proof:
-                    type: string
-                    format: byte
-                description: Header defines the structure of an Ostracon block header.
-              commit:
-                type: object
-                properties:
-                  height:
-                    type: string
-                    format: int64
-                  round:
-                    type: integer
-                    format: int32
-                  block_id:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                        format: byte
-                      part_set_header:
-                        type: object
-                        properties:
-                          total:
-                            type: integer
-                            format: int64
-                          hash:
-                            type: string
-                            format: byte
-                        title: PartsetHeader
-                    title: BlockID
-                  signatures:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        block_id_flag:
-                          type: string
-                          enum:
-                            - BLOCK_ID_FLAG_UNKNOWN
-                            - BLOCK_ID_FLAG_ABSENT
-                            - BLOCK_ID_FLAG_COMMIT
-                            - BLOCK_ID_FLAG_NIL
-                          default: BLOCK_ID_FLAG_UNKNOWN
-                          title: >-
-                            BlockIdFlag indicates which BlcokID the signature is
-                            for
-                        validator_address:
-                          type: string
-                          format: byte
-                        timestamp:
-                          type: string
-                          format: date-time
-                        signature:
-                          type: string
-                          format: byte
-                      description: CommitSig is a part of the Vote included in a Commit.
-                description: >-
-                  Commit contains the evidence that a block was committed by a
-                  set of validators.
-          validator_set:
-            type: object
-            properties:
-              validators:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    address:
-                      type: string
-                      format: byte
-                    pub_key:
-                      type: object
-                      properties:
-                        ed25519:
-                          type: string
-                          format: byte
-                        secp256k1:
-                          type: string
-                          format: byte
-                      title: >-
-                        PublicKey defines the keys available for use with
-                        Tendermint Validators
-                    voting_power:
-                      type: string
-                      format: int64
-                    proposer_priority:
-                      type: string
-                      format: int64
-              proposer:
-                type: object
-                properties:
-                  address:
-                    type: string
-                    format: byte
-                  pub_key:
-                    type: object
-                    properties:
-                      ed25519:
-                        type: string
-                        format: byte
-                      secp256k1:
-                        type: string
-                        format: byte
-                    title: >-
-                      PublicKey defines the keys available for use with
-                      Tendermint Validators
-                  voting_power:
-                    type: string
-                    format: int64
-                  proposer_priority:
-                    type: string
-                    format: int64
-              total_voting_power:
-                type: string
-                format: int64
-      common_height:
-        type: string
-        format: int64
-      byzantine_validators:
-        type: array
-        items:
-          type: object
-          properties:
-            address:
-              type: string
-              format: byte
-            pub_key:
-              type: object
-              properties:
-                ed25519:
-                  type: string
-                  format: byte
-                secp256k1:
-                  type: string
-                  format: byte
-              title: >-
-                PublicKey defines the keys available for use with Tendermint
-                Validators
-            voting_power:
-              type: string
-              format: int64
-            proposer_priority:
-              type: string
-              format: int64
-      total_voting_power:
-        type: string
-        format: int64
-      timestamp:
-        type: string
-        format: date-time
-    description: >-
-      LightClientAttackEvidence contains evidence of a set of validators
-      attempting to mislead a light client.
-  ostracon.types.SignedHeader:
-    type: object
-    properties:
-      header:
-        type: object
-        properties:
-          version:
-            title: basic block info
-            type: object
-            properties:
-              block:
-                type: string
-                format: uint64
-              app:
-                type: string
-                format: uint64
-            description: >-
-              Consensus captures the consensus rules for processing a block in
-              the blockchain,
-
-              including all blockchain data structures and the rules of the
-              application's
-
-              state transition machine.
-          chain_id:
-            type: string
-          height:
-            type: string
-            format: int64
-          time:
-            type: string
-            format: date-time
-          last_block_id:
-            type: object
-            properties:
-              hash:
-                type: string
-                format: byte
-              part_set_header:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                    format: int64
-                  hash:
-                    type: string
-                    format: byte
-                title: PartsetHeader
-            title: BlockID
-          last_commit_hash:
-            type: string
-            format: byte
-            title: hashes of block data
-          data_hash:
-            type: string
-            format: byte
-          validators_hash:
-            type: string
-            format: byte
-            title: hashes from the app output from the prev block
-          next_validators_hash:
-            type: string
-            format: byte
-          consensus_hash:
-            type: string
-            format: byte
-          app_hash:
-            type: string
-            format: byte
-          last_results_hash:
-            type: string
-            format: byte
-          evidence_hash:
-            type: string
-            format: byte
-            title: consensus info
-          proposer_address:
-            type: string
-            format: byte
-          round:
-            type: integer
-            format: int32
-            title: vrf info
           proof:
             type: string
             format: byte
-        description: Header defines the structure of an Ostracon block header.
-      commit:
-        type: object
-        properties:
-          height:
-            type: string
-            format: int64
-          round:
-            type: integer
-            format: int32
-          block_id:
-            type: object
-            properties:
-              hash:
-                type: string
-                format: byte
-              part_set_header:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                    format: int64
-                  hash:
-                    type: string
-                    format: byte
-                title: PartsetHeader
-            title: BlockID
-          signatures:
-            type: array
-            items:
-              type: object
-              properties:
-                block_id_flag:
-                  type: string
-                  enum:
-                    - BLOCK_ID_FLAG_UNKNOWN
-                    - BLOCK_ID_FLAG_ABSENT
-                    - BLOCK_ID_FLAG_COMMIT
-                    - BLOCK_ID_FLAG_NIL
-                  default: BLOCK_ID_FLAG_UNKNOWN
-                  title: BlockIdFlag indicates which BlcokID the signature is for
-                validator_address:
-                  type: string
-                  format: byte
-                timestamp:
-                  type: string
-                  format: date-time
-                signature:
-                  type: string
-                  format: byte
-              description: CommitSig is a part of the Vote included in a Commit.
-        description: >-
-          Commit contains the evidence that a block was committed by a set of
-          validators.
+  ostracon.types.Entropy:
+    type: object
+    properties:
+      round:
+        type: integer
+        format: int32
+      proof:
+        type: string
+        format: byte
+    title: >-
+      Entropy represents height-specific complexity and used in
+      proposer-election.
+
+      Entropy contains vrf proof and generated round. The relationship of each
+      field is as follows.
+
+      Entropy.proof = VRFProof(last_proof_hash, current_height, Entropy.round)
   tendermint.abci.BlockParams:
     type: object
     properties:
@@ -36970,6 +35403,876 @@ definitions:
 
           This means that block.AppHash does not include these txs.
     title: Data contains the set of transactions included in the block
+  tendermint.types.DuplicateVoteEvidence:
+    type: object
+    properties:
+      vote_a:
+        type: object
+        properties:
+          type:
+            type: string
+            enum:
+              - SIGNED_MSG_TYPE_UNKNOWN
+              - SIGNED_MSG_TYPE_PREVOTE
+              - SIGNED_MSG_TYPE_PRECOMMIT
+              - SIGNED_MSG_TYPE_PROPOSAL
+            default: SIGNED_MSG_TYPE_UNKNOWN
+            description: |-
+              SignedMsgType is a type of signed message in the consensus.
+
+               - SIGNED_MSG_TYPE_PREVOTE: Votes
+               - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+          height:
+            type: string
+            format: int64
+          round:
+            type: integer
+            format: int32
+          block_id:
+            type: object
+            properties:
+              hash:
+                type: string
+                format: byte
+              part_set_header:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                  hash:
+                    type: string
+                    format: byte
+                title: PartsetHeader
+            title: BlockID
+          timestamp:
+            type: string
+            format: date-time
+          validator_address:
+            type: string
+            format: byte
+          validator_index:
+            type: integer
+            format: int32
+          signature:
+            type: string
+            format: byte
+        description: >-
+          Vote represents a prevote, precommit, or commit vote from validators
+          for
+
+          consensus.
+      vote_b:
+        type: object
+        properties:
+          type:
+            type: string
+            enum:
+              - SIGNED_MSG_TYPE_UNKNOWN
+              - SIGNED_MSG_TYPE_PREVOTE
+              - SIGNED_MSG_TYPE_PRECOMMIT
+              - SIGNED_MSG_TYPE_PROPOSAL
+            default: SIGNED_MSG_TYPE_UNKNOWN
+            description: |-
+              SignedMsgType is a type of signed message in the consensus.
+
+               - SIGNED_MSG_TYPE_PREVOTE: Votes
+               - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+          height:
+            type: string
+            format: int64
+          round:
+            type: integer
+            format: int32
+          block_id:
+            type: object
+            properties:
+              hash:
+                type: string
+                format: byte
+              part_set_header:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                  hash:
+                    type: string
+                    format: byte
+                title: PartsetHeader
+            title: BlockID
+          timestamp:
+            type: string
+            format: date-time
+          validator_address:
+            type: string
+            format: byte
+          validator_index:
+            type: integer
+            format: int32
+          signature:
+            type: string
+            format: byte
+        description: >-
+          Vote represents a prevote, precommit, or commit vote from validators
+          for
+
+          consensus.
+      total_voting_power:
+        type: string
+        format: int64
+      validator_power:
+        type: string
+        format: int64
+      timestamp:
+        type: string
+        format: date-time
+    description: >-
+      DuplicateVoteEvidence contains evidence of a validator signed two
+      conflicting votes.
+  tendermint.types.Evidence:
+    type: object
+    properties:
+      duplicate_vote_evidence:
+        type: object
+        properties:
+          vote_a:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                  - SIGNED_MSG_TYPE_UNKNOWN
+                  - SIGNED_MSG_TYPE_PREVOTE
+                  - SIGNED_MSG_TYPE_PRECOMMIT
+                  - SIGNED_MSG_TYPE_PROPOSAL
+                default: SIGNED_MSG_TYPE_UNKNOWN
+                description: |-
+                  SignedMsgType is a type of signed message in the consensus.
+
+                   - SIGNED_MSG_TYPE_PREVOTE: Votes
+                   - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+              height:
+                type: string
+                format: int64
+              round:
+                type: integer
+                format: int32
+              block_id:
+                type: object
+                properties:
+                  hash:
+                    type: string
+                    format: byte
+                  part_set_header:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        format: int64
+                      hash:
+                        type: string
+                        format: byte
+                    title: PartsetHeader
+                title: BlockID
+              timestamp:
+                type: string
+                format: date-time
+              validator_address:
+                type: string
+                format: byte
+              validator_index:
+                type: integer
+                format: int32
+              signature:
+                type: string
+                format: byte
+            description: >-
+              Vote represents a prevote, precommit, or commit vote from
+              validators for
+
+              consensus.
+          vote_b:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                  - SIGNED_MSG_TYPE_UNKNOWN
+                  - SIGNED_MSG_TYPE_PREVOTE
+                  - SIGNED_MSG_TYPE_PRECOMMIT
+                  - SIGNED_MSG_TYPE_PROPOSAL
+                default: SIGNED_MSG_TYPE_UNKNOWN
+                description: |-
+                  SignedMsgType is a type of signed message in the consensus.
+
+                   - SIGNED_MSG_TYPE_PREVOTE: Votes
+                   - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+              height:
+                type: string
+                format: int64
+              round:
+                type: integer
+                format: int32
+              block_id:
+                type: object
+                properties:
+                  hash:
+                    type: string
+                    format: byte
+                  part_set_header:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        format: int64
+                      hash:
+                        type: string
+                        format: byte
+                    title: PartsetHeader
+                title: BlockID
+              timestamp:
+                type: string
+                format: date-time
+              validator_address:
+                type: string
+                format: byte
+              validator_index:
+                type: integer
+                format: int32
+              signature:
+                type: string
+                format: byte
+            description: >-
+              Vote represents a prevote, precommit, or commit vote from
+              validators for
+
+              consensus.
+          total_voting_power:
+            type: string
+            format: int64
+          validator_power:
+            type: string
+            format: int64
+          timestamp:
+            type: string
+            format: date-time
+        description: >-
+          DuplicateVoteEvidence contains evidence of a validator signed two
+          conflicting votes.
+      light_client_attack_evidence:
+        type: object
+        properties:
+          conflicting_block:
+            type: object
+            properties:
+              signed_header:
+                type: object
+                properties:
+                  header:
+                    type: object
+                    properties:
+                      version:
+                        title: basic block info
+                        type: object
+                        properties:
+                          block:
+                            type: string
+                            format: uint64
+                          app:
+                            type: string
+                            format: uint64
+                        description: >-
+                          Consensus captures the consensus rules for processing
+                          a block in the blockchain,
+
+                          including all blockchain data structures and the rules
+                          of the application's
+
+                          state transition machine.
+                      chain_id:
+                        type: string
+                      height:
+                        type: string
+                        format: int64
+                      time:
+                        type: string
+                        format: date-time
+                      last_block_id:
+                        type: object
+                        properties:
+                          hash:
+                            type: string
+                            format: byte
+                          part_set_header:
+                            type: object
+                            properties:
+                              total:
+                                type: integer
+                                format: int64
+                              hash:
+                                type: string
+                                format: byte
+                            title: PartsetHeader
+                        title: BlockID
+                      last_commit_hash:
+                        type: string
+                        format: byte
+                        title: hashes of block data
+                      data_hash:
+                        type: string
+                        format: byte
+                      validators_hash:
+                        type: string
+                        format: byte
+                        title: hashes from the app output from the prev block
+                      next_validators_hash:
+                        type: string
+                        format: byte
+                      consensus_hash:
+                        type: string
+                        format: byte
+                      app_hash:
+                        type: string
+                        format: byte
+                      last_results_hash:
+                        type: string
+                        format: byte
+                      evidence_hash:
+                        type: string
+                        format: byte
+                        title: consensus info
+                      proposer_address:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of a Tendermint block header.
+                  commit:
+                    type: object
+                    properties:
+                      height:
+                        type: string
+                        format: int64
+                      round:
+                        type: integer
+                        format: int32
+                      block_id:
+                        type: object
+                        properties:
+                          hash:
+                            type: string
+                            format: byte
+                          part_set_header:
+                            type: object
+                            properties:
+                              total:
+                                type: integer
+                                format: int64
+                              hash:
+                                type: string
+                                format: byte
+                            title: PartsetHeader
+                        title: BlockID
+                      signatures:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            block_id_flag:
+                              type: string
+                              enum:
+                                - BLOCK_ID_FLAG_UNKNOWN
+                                - BLOCK_ID_FLAG_ABSENT
+                                - BLOCK_ID_FLAG_COMMIT
+                                - BLOCK_ID_FLAG_NIL
+                              default: BLOCK_ID_FLAG_UNKNOWN
+                              title: >-
+                                BlockIdFlag indicates which BlcokID the
+                                signature is for
+                            validator_address:
+                              type: string
+                              format: byte
+                            timestamp:
+                              type: string
+                              format: date-time
+                            signature:
+                              type: string
+                              format: byte
+                          description: >-
+                            CommitSig is a part of the Vote included in a
+                            Commit.
+                    description: >-
+                      Commit contains the evidence that a block was committed by
+                      a set of validators.
+              validator_set:
+                type: object
+                properties:
+                  validators:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                          format: byte
+                        pub_key:
+                          type: object
+                          properties:
+                            ed25519:
+                              type: string
+                              format: byte
+                            secp256k1:
+                              type: string
+                              format: byte
+                          title: >-
+                            PublicKey defines the keys available for use with
+                            Tendermint Validators
+                        voting_power:
+                          type: string
+                          format: int64
+                        proposer_priority:
+                          type: string
+                          format: int64
+                  proposer:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                        format: byte
+                      pub_key:
+                        type: object
+                        properties:
+                          ed25519:
+                            type: string
+                            format: byte
+                          secp256k1:
+                            type: string
+                            format: byte
+                        title: >-
+                          PublicKey defines the keys available for use with
+                          Tendermint Validators
+                      voting_power:
+                        type: string
+                        format: int64
+                      proposer_priority:
+                        type: string
+                        format: int64
+                  total_voting_power:
+                    type: string
+                    format: int64
+          common_height:
+            type: string
+            format: int64
+          byzantine_validators:
+            type: array
+            items:
+              type: object
+              properties:
+                address:
+                  type: string
+                  format: byte
+                pub_key:
+                  type: object
+                  properties:
+                    ed25519:
+                      type: string
+                      format: byte
+                    secp256k1:
+                      type: string
+                      format: byte
+                  title: >-
+                    PublicKey defines the keys available for use with Tendermint
+                    Validators
+                voting_power:
+                  type: string
+                  format: int64
+                proposer_priority:
+                  type: string
+                  format: int64
+          total_voting_power:
+            type: string
+            format: int64
+          timestamp:
+            type: string
+            format: date-time
+        description: >-
+          LightClientAttackEvidence contains evidence of a set of validators
+          attempting to mislead a light client.
+  tendermint.types.EvidenceList:
+    type: object
+    properties:
+      evidence:
+        type: array
+        items:
+          type: object
+          properties:
+            duplicate_vote_evidence:
+              type: object
+              properties:
+                vote_a:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - SIGNED_MSG_TYPE_UNKNOWN
+                        - SIGNED_MSG_TYPE_PREVOTE
+                        - SIGNED_MSG_TYPE_PRECOMMIT
+                        - SIGNED_MSG_TYPE_PROPOSAL
+                      default: SIGNED_MSG_TYPE_UNKNOWN
+                      description: >-
+                        SignedMsgType is a type of signed message in the
+                        consensus.
+
+                         - SIGNED_MSG_TYPE_PREVOTE: Votes
+                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+                    height:
+                      type: string
+                      format: int64
+                    round:
+                      type: integer
+                      format: int32
+                    block_id:
+                      type: object
+                      properties:
+                        hash:
+                          type: string
+                          format: byte
+                        part_set_header:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              format: int64
+                            hash:
+                              type: string
+                              format: byte
+                          title: PartsetHeader
+                      title: BlockID
+                    timestamp:
+                      type: string
+                      format: date-time
+                    validator_address:
+                      type: string
+                      format: byte
+                    validator_index:
+                      type: integer
+                      format: int32
+                    signature:
+                      type: string
+                      format: byte
+                  description: >-
+                    Vote represents a prevote, precommit, or commit vote from
+                    validators for
+
+                    consensus.
+                vote_b:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - SIGNED_MSG_TYPE_UNKNOWN
+                        - SIGNED_MSG_TYPE_PREVOTE
+                        - SIGNED_MSG_TYPE_PRECOMMIT
+                        - SIGNED_MSG_TYPE_PROPOSAL
+                      default: SIGNED_MSG_TYPE_UNKNOWN
+                      description: >-
+                        SignedMsgType is a type of signed message in the
+                        consensus.
+
+                         - SIGNED_MSG_TYPE_PREVOTE: Votes
+                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+                    height:
+                      type: string
+                      format: int64
+                    round:
+                      type: integer
+                      format: int32
+                    block_id:
+                      type: object
+                      properties:
+                        hash:
+                          type: string
+                          format: byte
+                        part_set_header:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              format: int64
+                            hash:
+                              type: string
+                              format: byte
+                          title: PartsetHeader
+                      title: BlockID
+                    timestamp:
+                      type: string
+                      format: date-time
+                    validator_address:
+                      type: string
+                      format: byte
+                    validator_index:
+                      type: integer
+                      format: int32
+                    signature:
+                      type: string
+                      format: byte
+                  description: >-
+                    Vote represents a prevote, precommit, or commit vote from
+                    validators for
+
+                    consensus.
+                total_voting_power:
+                  type: string
+                  format: int64
+                validator_power:
+                  type: string
+                  format: int64
+                timestamp:
+                  type: string
+                  format: date-time
+              description: >-
+                DuplicateVoteEvidence contains evidence of a validator signed
+                two conflicting votes.
+            light_client_attack_evidence:
+              type: object
+              properties:
+                conflicting_block:
+                  type: object
+                  properties:
+                    signed_header:
+                      type: object
+                      properties:
+                        header:
+                          type: object
+                          properties:
+                            version:
+                              title: basic block info
+                              type: object
+                              properties:
+                                block:
+                                  type: string
+                                  format: uint64
+                                app:
+                                  type: string
+                                  format: uint64
+                              description: >-
+                                Consensus captures the consensus rules for
+                                processing a block in the blockchain,
+
+                                including all blockchain data structures and the
+                                rules of the application's
+
+                                state transition machine.
+                            chain_id:
+                              type: string
+                            height:
+                              type: string
+                              format: int64
+                            time:
+                              type: string
+                              format: date-time
+                            last_block_id:
+                              type: object
+                              properties:
+                                hash:
+                                  type: string
+                                  format: byte
+                                part_set_header:
+                                  type: object
+                                  properties:
+                                    total:
+                                      type: integer
+                                      format: int64
+                                    hash:
+                                      type: string
+                                      format: byte
+                                  title: PartsetHeader
+                              title: BlockID
+                            last_commit_hash:
+                              type: string
+                              format: byte
+                              title: hashes of block data
+                            data_hash:
+                              type: string
+                              format: byte
+                            validators_hash:
+                              type: string
+                              format: byte
+                              title: hashes from the app output from the prev block
+                            next_validators_hash:
+                              type: string
+                              format: byte
+                            consensus_hash:
+                              type: string
+                              format: byte
+                            app_hash:
+                              type: string
+                              format: byte
+                            last_results_hash:
+                              type: string
+                              format: byte
+                            evidence_hash:
+                              type: string
+                              format: byte
+                              title: consensus info
+                            proposer_address:
+                              type: string
+                              format: byte
+                          description: >-
+                            Header defines the structure of a Tendermint block
+                            header.
+                        commit:
+                          type: object
+                          properties:
+                            height:
+                              type: string
+                              format: int64
+                            round:
+                              type: integer
+                              format: int32
+                            block_id:
+                              type: object
+                              properties:
+                                hash:
+                                  type: string
+                                  format: byte
+                                part_set_header:
+                                  type: object
+                                  properties:
+                                    total:
+                                      type: integer
+                                      format: int64
+                                    hash:
+                                      type: string
+                                      format: byte
+                                  title: PartsetHeader
+                              title: BlockID
+                            signatures:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  block_id_flag:
+                                    type: string
+                                    enum:
+                                      - BLOCK_ID_FLAG_UNKNOWN
+                                      - BLOCK_ID_FLAG_ABSENT
+                                      - BLOCK_ID_FLAG_COMMIT
+                                      - BLOCK_ID_FLAG_NIL
+                                    default: BLOCK_ID_FLAG_UNKNOWN
+                                    title: >-
+                                      BlockIdFlag indicates which BlcokID the
+                                      signature is for
+                                  validator_address:
+                                    type: string
+                                    format: byte
+                                  timestamp:
+                                    type: string
+                                    format: date-time
+                                  signature:
+                                    type: string
+                                    format: byte
+                                description: >-
+                                  CommitSig is a part of the Vote included in a
+                                  Commit.
+                          description: >-
+                            Commit contains the evidence that a block was
+                            committed by a set of validators.
+                    validator_set:
+                      type: object
+                      properties:
+                        validators:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              address:
+                                type: string
+                                format: byte
+                              pub_key:
+                                type: object
+                                properties:
+                                  ed25519:
+                                    type: string
+                                    format: byte
+                                  secp256k1:
+                                    type: string
+                                    format: byte
+                                title: >-
+                                  PublicKey defines the keys available for use
+                                  with Tendermint Validators
+                              voting_power:
+                                type: string
+                                format: int64
+                              proposer_priority:
+                                type: string
+                                format: int64
+                        proposer:
+                          type: object
+                          properties:
+                            address:
+                              type: string
+                              format: byte
+                            pub_key:
+                              type: object
+                              properties:
+                                ed25519:
+                                  type: string
+                                  format: byte
+                                secp256k1:
+                                  type: string
+                                  format: byte
+                              title: >-
+                                PublicKey defines the keys available for use
+                                with Tendermint Validators
+                            voting_power:
+                              type: string
+                              format: int64
+                            proposer_priority:
+                              type: string
+                              format: int64
+                        total_voting_power:
+                          type: string
+                          format: int64
+                common_height:
+                  type: string
+                  format: int64
+                byzantine_validators:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                        format: byte
+                      pub_key:
+                        type: object
+                        properties:
+                          ed25519:
+                            type: string
+                            format: byte
+                          secp256k1:
+                            type: string
+                            format: byte
+                        title: >-
+                          PublicKey defines the keys available for use with
+                          Tendermint Validators
+                      voting_power:
+                        type: string
+                        format: int64
+                      proposer_priority:
+                        type: string
+                        format: int64
+                total_voting_power:
+                  type: string
+                  format: int64
+                timestamp:
+                  type: string
+                  format: date-time
+              description: >-
+                LightClientAttackEvidence contains evidence of a set of
+                validators attempting to mislead a light client.
   tendermint.types.EvidenceParams:
     type: object
     properties:
@@ -37006,6 +36309,510 @@ definitions:
 
           Default is 1048576 or 1MB
     description: EvidenceParams determine how we handle evidence of malfeasance.
+  tendermint.types.Header:
+    type: object
+    properties:
+      version:
+        title: basic block info
+        type: object
+        properties:
+          block:
+            type: string
+            format: uint64
+          app:
+            type: string
+            format: uint64
+        description: >-
+          Consensus captures the consensus rules for processing a block in the
+          blockchain,
+
+          including all blockchain data structures and the rules of the
+          application's
+
+          state transition machine.
+      chain_id:
+        type: string
+      height:
+        type: string
+        format: int64
+      time:
+        type: string
+        format: date-time
+      last_block_id:
+        type: object
+        properties:
+          hash:
+            type: string
+            format: byte
+          part_set_header:
+            type: object
+            properties:
+              total:
+                type: integer
+                format: int64
+              hash:
+                type: string
+                format: byte
+            title: PartsetHeader
+        title: BlockID
+      last_commit_hash:
+        type: string
+        format: byte
+        title: hashes of block data
+      data_hash:
+        type: string
+        format: byte
+      validators_hash:
+        type: string
+        format: byte
+        title: hashes from the app output from the prev block
+      next_validators_hash:
+        type: string
+        format: byte
+      consensus_hash:
+        type: string
+        format: byte
+      app_hash:
+        type: string
+        format: byte
+      last_results_hash:
+        type: string
+        format: byte
+      evidence_hash:
+        type: string
+        format: byte
+        title: consensus info
+      proposer_address:
+        type: string
+        format: byte
+    description: Header defines the structure of a Tendermint block header.
+  tendermint.types.LightBlock:
+    type: object
+    properties:
+      signed_header:
+        type: object
+        properties:
+          header:
+            type: object
+            properties:
+              version:
+                title: basic block info
+                type: object
+                properties:
+                  block:
+                    type: string
+                    format: uint64
+                  app:
+                    type: string
+                    format: uint64
+                description: >-
+                  Consensus captures the consensus rules for processing a block
+                  in the blockchain,
+
+                  including all blockchain data structures and the rules of the
+                  application's
+
+                  state transition machine.
+              chain_id:
+                type: string
+              height:
+                type: string
+                format: int64
+              time:
+                type: string
+                format: date-time
+              last_block_id:
+                type: object
+                properties:
+                  hash:
+                    type: string
+                    format: byte
+                  part_set_header:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        format: int64
+                      hash:
+                        type: string
+                        format: byte
+                    title: PartsetHeader
+                title: BlockID
+              last_commit_hash:
+                type: string
+                format: byte
+                title: hashes of block data
+              data_hash:
+                type: string
+                format: byte
+              validators_hash:
+                type: string
+                format: byte
+                title: hashes from the app output from the prev block
+              next_validators_hash:
+                type: string
+                format: byte
+              consensus_hash:
+                type: string
+                format: byte
+              app_hash:
+                type: string
+                format: byte
+              last_results_hash:
+                type: string
+                format: byte
+              evidence_hash:
+                type: string
+                format: byte
+                title: consensus info
+              proposer_address:
+                type: string
+                format: byte
+            description: Header defines the structure of a Tendermint block header.
+          commit:
+            type: object
+            properties:
+              height:
+                type: string
+                format: int64
+              round:
+                type: integer
+                format: int32
+              block_id:
+                type: object
+                properties:
+                  hash:
+                    type: string
+                    format: byte
+                  part_set_header:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        format: int64
+                      hash:
+                        type: string
+                        format: byte
+                    title: PartsetHeader
+                title: BlockID
+              signatures:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    block_id_flag:
+                      type: string
+                      enum:
+                        - BLOCK_ID_FLAG_UNKNOWN
+                        - BLOCK_ID_FLAG_ABSENT
+                        - BLOCK_ID_FLAG_COMMIT
+                        - BLOCK_ID_FLAG_NIL
+                      default: BLOCK_ID_FLAG_UNKNOWN
+                      title: BlockIdFlag indicates which BlcokID the signature is for
+                    validator_address:
+                      type: string
+                      format: byte
+                    timestamp:
+                      type: string
+                      format: date-time
+                    signature:
+                      type: string
+                      format: byte
+                  description: CommitSig is a part of the Vote included in a Commit.
+            description: >-
+              Commit contains the evidence that a block was committed by a set
+              of validators.
+      validator_set:
+        type: object
+        properties:
+          validators:
+            type: array
+            items:
+              type: object
+              properties:
+                address:
+                  type: string
+                  format: byte
+                pub_key:
+                  type: object
+                  properties:
+                    ed25519:
+                      type: string
+                      format: byte
+                    secp256k1:
+                      type: string
+                      format: byte
+                  title: >-
+                    PublicKey defines the keys available for use with Tendermint
+                    Validators
+                voting_power:
+                  type: string
+                  format: int64
+                proposer_priority:
+                  type: string
+                  format: int64
+          proposer:
+            type: object
+            properties:
+              address:
+                type: string
+                format: byte
+              pub_key:
+                type: object
+                properties:
+                  ed25519:
+                    type: string
+                    format: byte
+                  secp256k1:
+                    type: string
+                    format: byte
+                title: >-
+                  PublicKey defines the keys available for use with Tendermint
+                  Validators
+              voting_power:
+                type: string
+                format: int64
+              proposer_priority:
+                type: string
+                format: int64
+          total_voting_power:
+            type: string
+            format: int64
+  tendermint.types.LightClientAttackEvidence:
+    type: object
+    properties:
+      conflicting_block:
+        type: object
+        properties:
+          signed_header:
+            type: object
+            properties:
+              header:
+                type: object
+                properties:
+                  version:
+                    title: basic block info
+                    type: object
+                    properties:
+                      block:
+                        type: string
+                        format: uint64
+                      app:
+                        type: string
+                        format: uint64
+                    description: >-
+                      Consensus captures the consensus rules for processing a
+                      block in the blockchain,
+
+                      including all blockchain data structures and the rules of
+                      the application's
+
+                      state transition machine.
+                  chain_id:
+                    type: string
+                  height:
+                    type: string
+                    format: int64
+                  time:
+                    type: string
+                    format: date-time
+                  last_block_id:
+                    type: object
+                    properties:
+                      hash:
+                        type: string
+                        format: byte
+                      part_set_header:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            format: int64
+                          hash:
+                            type: string
+                            format: byte
+                        title: PartsetHeader
+                    title: BlockID
+                  last_commit_hash:
+                    type: string
+                    format: byte
+                    title: hashes of block data
+                  data_hash:
+                    type: string
+                    format: byte
+                  validators_hash:
+                    type: string
+                    format: byte
+                    title: hashes from the app output from the prev block
+                  next_validators_hash:
+                    type: string
+                    format: byte
+                  consensus_hash:
+                    type: string
+                    format: byte
+                  app_hash:
+                    type: string
+                    format: byte
+                  last_results_hash:
+                    type: string
+                    format: byte
+                  evidence_hash:
+                    type: string
+                    format: byte
+                    title: consensus info
+                  proposer_address:
+                    type: string
+                    format: byte
+                description: Header defines the structure of a Tendermint block header.
+              commit:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    format: int64
+                  round:
+                    type: integer
+                    format: int32
+                  block_id:
+                    type: object
+                    properties:
+                      hash:
+                        type: string
+                        format: byte
+                      part_set_header:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            format: int64
+                          hash:
+                            type: string
+                            format: byte
+                        title: PartsetHeader
+                    title: BlockID
+                  signatures:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        block_id_flag:
+                          type: string
+                          enum:
+                            - BLOCK_ID_FLAG_UNKNOWN
+                            - BLOCK_ID_FLAG_ABSENT
+                            - BLOCK_ID_FLAG_COMMIT
+                            - BLOCK_ID_FLAG_NIL
+                          default: BLOCK_ID_FLAG_UNKNOWN
+                          title: >-
+                            BlockIdFlag indicates which BlcokID the signature is
+                            for
+                        validator_address:
+                          type: string
+                          format: byte
+                        timestamp:
+                          type: string
+                          format: date-time
+                        signature:
+                          type: string
+                          format: byte
+                      description: CommitSig is a part of the Vote included in a Commit.
+                description: >-
+                  Commit contains the evidence that a block was committed by a
+                  set of validators.
+          validator_set:
+            type: object
+            properties:
+              validators:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                      format: byte
+                    pub_key:
+                      type: object
+                      properties:
+                        ed25519:
+                          type: string
+                          format: byte
+                        secp256k1:
+                          type: string
+                          format: byte
+                      title: >-
+                        PublicKey defines the keys available for use with
+                        Tendermint Validators
+                    voting_power:
+                      type: string
+                      format: int64
+                    proposer_priority:
+                      type: string
+                      format: int64
+              proposer:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    format: byte
+                  pub_key:
+                    type: object
+                    properties:
+                      ed25519:
+                        type: string
+                        format: byte
+                      secp256k1:
+                        type: string
+                        format: byte
+                    title: >-
+                      PublicKey defines the keys available for use with
+                      Tendermint Validators
+                  voting_power:
+                    type: string
+                    format: int64
+                  proposer_priority:
+                    type: string
+                    format: int64
+              total_voting_power:
+                type: string
+                format: int64
+      common_height:
+        type: string
+        format: int64
+      byzantine_validators:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+              format: byte
+            pub_key:
+              type: object
+              properties:
+                ed25519:
+                  type: string
+                  format: byte
+                secp256k1:
+                  type: string
+                  format: byte
+              title: >-
+                PublicKey defines the keys available for use with Tendermint
+                Validators
+            voting_power:
+              type: string
+              format: int64
+            proposer_priority:
+              type: string
+              format: int64
+      total_voting_power:
+        type: string
+        format: int64
+      timestamp:
+        type: string
+        format: date-time
+    description: >-
+      LightClientAttackEvidence contains evidence of a set of validators
+      attempting to mislead a light client.
   tendermint.types.PartSetHeader:
     type: object
     properties:
@@ -37016,6 +36823,139 @@ definitions:
         type: string
         format: byte
     title: PartsetHeader
+  tendermint.types.SignedHeader:
+    type: object
+    properties:
+      header:
+        type: object
+        properties:
+          version:
+            title: basic block info
+            type: object
+            properties:
+              block:
+                type: string
+                format: uint64
+              app:
+                type: string
+                format: uint64
+            description: >-
+              Consensus captures the consensus rules for processing a block in
+              the blockchain,
+
+              including all blockchain data structures and the rules of the
+              application's
+
+              state transition machine.
+          chain_id:
+            type: string
+          height:
+            type: string
+            format: int64
+          time:
+            type: string
+            format: date-time
+          last_block_id:
+            type: object
+            properties:
+              hash:
+                type: string
+                format: byte
+              part_set_header:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                  hash:
+                    type: string
+                    format: byte
+                title: PartsetHeader
+            title: BlockID
+          last_commit_hash:
+            type: string
+            format: byte
+            title: hashes of block data
+          data_hash:
+            type: string
+            format: byte
+          validators_hash:
+            type: string
+            format: byte
+            title: hashes from the app output from the prev block
+          next_validators_hash:
+            type: string
+            format: byte
+          consensus_hash:
+            type: string
+            format: byte
+          app_hash:
+            type: string
+            format: byte
+          last_results_hash:
+            type: string
+            format: byte
+          evidence_hash:
+            type: string
+            format: byte
+            title: consensus info
+          proposer_address:
+            type: string
+            format: byte
+        description: Header defines the structure of a Tendermint block header.
+      commit:
+        type: object
+        properties:
+          height:
+            type: string
+            format: int64
+          round:
+            type: integer
+            format: int32
+          block_id:
+            type: object
+            properties:
+              hash:
+                type: string
+                format: byte
+              part_set_header:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                  hash:
+                    type: string
+                    format: byte
+                title: PartsetHeader
+            title: BlockID
+          signatures:
+            type: array
+            items:
+              type: object
+              properties:
+                block_id_flag:
+                  type: string
+                  enum:
+                    - BLOCK_ID_FLAG_UNKNOWN
+                    - BLOCK_ID_FLAG_ABSENT
+                    - BLOCK_ID_FLAG_COMMIT
+                    - BLOCK_ID_FLAG_NIL
+                  default: BLOCK_ID_FLAG_UNKNOWN
+                  title: BlockIdFlag indicates which BlcokID the signature is for
+                validator_address:
+                  type: string
+                  format: byte
+                timestamp:
+                  type: string
+                  format: date-time
+                signature:
+                  type: string
+                  format: byte
+              description: CommitSig is a part of the Vote included in a Commit.
+        description: >-
+          Commit contains the evidence that a block was committed by a set of
+          validators.
   tendermint.types.SignedMsgType:
     type: string
     enum:
@@ -39694,14 +39634,7 @@ definitions:
           proposer_address:
             type: string
             format: byte
-          round:
-            type: integer
-            format: int32
-            title: vrf info
-          proof:
-            type: string
-            format: byte
-        description: Header defines the structure of an Ostracon block header.
+        description: Header defines the structure of a Tendermint block header.
       valset:
         type: array
         items:
@@ -40934,14 +40867,7 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-              round:
-                type: integer
-                format: int32
-                title: vrf info
-              proof:
-                type: string
-                format: byte
-            description: Header defines the structure of an Ostracon block header.
+            description: Header defines the structure of a Tendermint block header.
           valset:
             type: array
             items:
@@ -43868,14 +43794,7 @@ definitions:
               proposer_address:
                 type: string
                 format: byte
-              round:
-                type: integer
-                format: int32
-                title: vrf info
-              proof:
-                type: string
-                format: byte
-            description: Header defines the structure of an Ostracon block header.
+            description: Header defines the structure of a Tendermint block header.
           data:
             type: object
             properties:
@@ -44117,15 +44036,8 @@ definitions:
                                     proposer_address:
                                       type: string
                                       format: byte
-                                    round:
-                                      type: integer
-                                      format: int32
-                                      title: vrf info
-                                    proof:
-                                      type: string
-                                      format: byte
                                   description: >-
-                                    Header defines the structure of an Ostracon
+                                    Header defines the structure of a Tendermint
                                     block header.
                                 commit:
                                   type: object
@@ -44331,6 +44243,16 @@ definitions:
             description: >-
               Commit contains the evidence that a block was committed by a set
               of validators.
+          entropy:
+            title: '*** Ostracon Extended Fields ***'
+            type: object
+            properties:
+              round:
+                type: integer
+                format: int32
+              proof:
+                type: string
+                format: byte
       pagination:
         description: pagination defines a pagination for the response.
         type: object

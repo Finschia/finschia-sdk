@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"
@@ -25,7 +25,7 @@ type FoundationTestSuite struct {
 
 func (suite *FoundationTestSuite) SetupTest() {
 	suite.app = simapp.Setup(false)
-	suite.ctx = suite.app.BaseApp.NewContext(false, ocproto.Header{})
+	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{})
 
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, suite.app.InterfaceRegistry())
 	foundation.RegisterQueryServer(queryHelper, keeper.NewQueryServer(suite.app.FoundationKeeper))

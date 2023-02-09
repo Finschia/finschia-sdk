@@ -4,9 +4,8 @@ import (
 	"context"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -59,7 +58,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
-	s.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.CollectionKeeper
 

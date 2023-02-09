@@ -2,7 +2,6 @@ syntax = "proto3";
 package cosmos.base.abci.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "ostracon/abci/types.proto";
 import "tendermint/abci/types.proto";
 import "google/protobuf/any.proto";
 

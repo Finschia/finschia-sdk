@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
@@ -39,7 +39,7 @@ func TestNewWeightedProposalContent(t *testing.T) {
 	require.Equal(t, key, pContent.AppParamsKey())
 	require.Equal(t, weight, pContent.DefaultWeight())
 
-	ctx := sdk.NewContext(nil, ocproto.Header{}, true, nil)
+	ctx := sdk.NewContext(nil, tmproto.Header{}, true, nil)
 	require.Equal(t, content, pContent.ContentSimulatorFn()(nil, ctx, nil))
 }
 
