@@ -605,12 +605,12 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 		expErrMsg string
 	}{
 		{"nil request", nil, true, "request cannot be nil"},
-		{"empty request", &tx.GetBlockWithTxsRequest{}, true, "height must not be less than 1 or greater than the current height"},
-		{"bad height", &tx.GetBlockWithTxsRequest{Height: 99999999}, true, "height must not be less than 1 or greater than the current height"},
-		{"bad pagination", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 1000, Limit: 100}}, true, "out of range"},
-		{"good request", &tx.GetBlockWithTxsRequest{Height: s.txHeight}, false, ""},
-		{"with pagination request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 1}}, false, ""},
-		{"page all request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 100}}, false, ""},
+		{"empty request", &tx.GetBlockWithTxsRequest{}, true, "services not supported"},
+		{"bad height", &tx.GetBlockWithTxsRequest{Height: 99999999}, true, "services not supported"},
+		{"bad pagination", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 1000, Limit: 100}}, true, "services not supported"},
+		{"good request", &tx.GetBlockWithTxsRequest{Height: s.txHeight}, true, "services not supported"},
+		{"with pagination request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 1}}, true, "services not supported"},
+		{"page all request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 100}}, true, "services not supported"},
 	}
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {

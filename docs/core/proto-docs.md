@@ -932,6 +932,12 @@
   
     - [Msg](#lbm.token.v1.Msg)
   
+- [lbm/tx/v1beta1/service.proto](#lbm/tx/v1beta1/service.proto)
+    - [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest)
+    - [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse)
+  
+    - [Service](#lbm.tx.v1beta1.Service)
+  
 - [Scalar Value Types](#scalar-value-types)
 
 
@@ -8072,7 +8078,7 @@ Since: cosmos-sdk 0.45.2
 | ----- | ---- | ----- | ----------- |
 | `txs` | [Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
 | `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
-| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
 
 
@@ -13833,6 +13839,73 @@ Msg defines the token Msg service.
 | `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) | |
 | `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Fires: - EventBurned - burn_from (deprecated, not typed) | |
 | `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/tx/v1beta1/service.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/tx/v1beta1/service.proto
+
+
+
+<a name="lbm.tx.v1beta1.GetBlockWithTxsRequest"></a>
+
+### GetBlockWithTxsRequest
+GetBlockWithTxsRequest is the request type for the Service.GetBlockWithTxs
+RPC method.
+
+Since: lbm-sdk 0.47.0
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  | height is the height of the block to query. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines a pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.tx.v1beta1.GetBlockWithTxsResponse"></a>
+
+### GetBlockWithTxsResponse
+GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
+
+Since: lbm-sdk 0.47.0
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `txs` | [cosmos.tx.v1beta1.Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
+| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.tx.v1beta1.Service"></a>
+
+### Service
+Service defines a gRPC service for interacting with transactions.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GetBlockWithTxs` | [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
+
+Since: lbm-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
 
  <!-- end services -->
 
