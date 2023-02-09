@@ -70,24 +70,9 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}";
   }
 
-  // TokenTypes queries metadata of all the token types.
-  rpc TokenTypes(QueryTokenTypesRequest) returns (QueryTokenTypesResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types";
-  }
-
   // Token queries a metadata of a token from its token id.
   rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}";
-  }
-
-  // TokensWithTokenType queries all token metadata with token type.
-  rpc TokensWithTokenType(QueryTokensWithTokenTypeRequest) returns (QueryTokensWithTokenTypeResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens";
-  }
-
-  // Tokens queries all token metadata.
-  rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens";
   }
 
   // Root queries the root of a given nft.
@@ -285,24 +270,6 @@ message QueryTokenTypeResponse {
   TokenType token_type = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
-message QueryTokenTypesRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-// QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
-message QueryTokenTypesResponse {
-  // token types is the informations of all the token types.
-  repeated TokenType token_types = 1 [(gogoproto.nullable) = false];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
 // QueryTokenRequest is the request type for the Query/Token RPC method.
 message QueryTokenRequest {
   // contract id associated with the contract.
@@ -315,45 +282,6 @@ message QueryTokenRequest {
 message QueryTokenResponse {
   // information of the token.
   google.protobuf.Any token = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryTokensWithTokenTypeRequest is the request type for the Query/TokensWithTokenType RPC method.
-message QueryTokensWithTokenTypeRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token type associated with the token type.
-  // refer to TokenType for the definition.
-  string token_type = 2;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
-}
-
-// QueryTokensWithTokenTypeResponse is the response type for the Query/TokensWithTokenType RPC method.
-message QueryTokensWithTokenTypeResponse {
-  // informations of all the tokens.
-  repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryTokensRequest is the request type for the Query/Tokens RPC method.
-message QueryTokensRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-// QueryTokensResponse is the response type for the Query/Tokens RPC method.
-message QueryTokensResponse {
-  // informations of all the tokens.
-  repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryRootRequest is the request type for the Query/Root RPC method.

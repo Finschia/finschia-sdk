@@ -135,54 +135,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	testCases := map[string]struct {
-		args     []string
-		valid    bool
-		expected proto.Message
-	}{
-		"query all": {
-			[]string{},
-			true,
-			&token.QueryContractsResponse{
-				Contracts:  s.classes,
-				Pagination: &query.PageResponse{},
-			},
-		},
-		"extra args": {
-			[]string{
-				"extra",
-			},
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewQueryCmdContracts()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var actual token.QueryContractsResponse
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
-			s.Require().Equal(tc.expected, &actual)
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{

@@ -126,29 +126,6 @@ func (s queryServer) Contract(c context.Context, req *token.QueryContractRequest
 	return &token.QueryContractResponse{Contract: *class}, nil
 }
 
-// Contracts queries all token metadata.
-func (s queryServer) Contracts(c context.Context, req *token.QueryContractsRequest) (*token.QueryContractsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	classStore := prefix.NewStore(store, classKeyPrefix)
-	var classes []token.Contract
-	pageRes, err := query.Paginate(classStore, req.Pagination, func(key []byte, value []byte) error {
-		var class token.Contract
-		s.keeper.cdc.MustUnmarshal(value, &class)
-		classes = append(classes, class)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &token.QueryContractsResponse{Contracts: classes, Pagination: pageRes}, nil
-}
-
 func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGrantsRequest) (*token.QueryGranteeGrantsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")

@@ -212,55 +212,6 @@ func (s *KeeperTestSuite) TestQueryContract() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryContracts() {
-	// empty request
-	_, err := s.queryServer.Contracts(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		valid      bool
-		count      uint64
-		postTest   func(res *token.QueryContractsResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			valid:      true,
-			postTest: func(res *token.QueryContractsResponse) {
-				s.Require().Equal(2, len(res.Contracts))
-			},
-		},
-		"valid request with limit": {
-			contractID: s.contractID,
-			valid:      true,
-			count:      1,
-			postTest: func(res *token.QueryContractsResponse) {
-				s.Require().Equal(1, len(res.Contracts))
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			pageReq := &query.PageRequest{}
-			if tc.count != 0 {
-				pageReq.Limit = tc.count
-			}
-			req := &token.QueryContractsRequest{
-				Pagination: pageReq,
-			}
-			res, err := s.queryServer.Contracts(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	// empty request
 	_, err := s.queryServer.GranteeGrants(s.goCtx, nil)
