@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"github.com/stretchr/testify/suite"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
@@ -32,7 +31,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 	app := simapp.Setup(false)
 	s.app = app
-	s.ctx = app.BaseApp.NewContext(false, ocproto.Header{})
+	s.ctx = app.BaseApp.NewContext(false, tmproto.Header{})
 
 	cfg := network.DefaultConfig()
 	cfg.NumValidators = 1

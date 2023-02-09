@@ -12,11 +12,11 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	ocabci "github.com/line/ostracon/abci/types"
 	ostjson "github.com/line/ostracon/libs/json"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
@@ -101,7 +101,7 @@ func TestExportCmd_Height(t *testing.T) {
 
 			// Fast forward to block `tc.fastForward`.
 			for i := int64(2); i <= tc.fastForward; i++ {
-				app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: i}})
+				app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
 				app.Commit()
 			}
 

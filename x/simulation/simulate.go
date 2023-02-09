@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
@@ -97,7 +97,7 @@ func SimulateFromSeed(
 	accs = tmpAccs
 	nextValidators := validators
 
-	header := ocproto.Header{
+	header := tmproto.Header{
 		ChainID:         config.ChainID,
 		Height:          1,
 		Time:            genesisTimestamp,
@@ -245,7 +245,7 @@ func SimulateFromSeed(
 }
 
 type blockSimFn func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context,
-	accounts []simulation.Account, header ocproto.Header) (opCount int)
+	accounts []simulation.Account, header tmproto.Header) (opCount int)
 
 // Returns a function to simulate blocks. Written like this to avoid constant
 // parameters being passed everytime, to minimize memory overhead.
@@ -259,7 +259,7 @@ func createBlockSimulator(testingMode bool, tb testing.TB, w io.Writer, params P
 	selectOp := ops.getSelectOpFn()
 
 	return func(
-		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accounts []simulation.Account, header ocproto.Header,
+		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accounts []simulation.Account, header tmproto.Header,
 	) (opCount int) {
 		_, _ = fmt.Fprintf(
 			w, "\rSimulating... block %d/%d, operation %d/%d.",

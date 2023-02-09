@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	types2 "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/std"
@@ -27,7 +27,7 @@ func makeCodec(bm module.BasicManager) *codec.LegacyAmino {
 
 func TestSetup(t *testing.T) {
 	app := Setup(false)
-	ctx := app.BaseApp.NewContext(false, types2.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	app.InitChain(
 		types.RequestInitChain{

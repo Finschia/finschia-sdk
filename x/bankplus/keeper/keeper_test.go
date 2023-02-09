@@ -4,12 +4,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/bank/types"
@@ -49,7 +48,7 @@ type IntegrationTestSuite struct {
 
 func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper
@@ -119,7 +118,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 
 func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper
@@ -170,7 +169,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 
 func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper
@@ -207,7 +206,7 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 
 func (suite *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper
@@ -234,7 +233,7 @@ func (suite *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() 
 
 func (suite *IntegrationTestSuite) TestInputOutputCoins() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper

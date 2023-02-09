@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/codec"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
@@ -102,7 +103,7 @@ func TestStdSignBytes(t *testing.T) {
 }
 
 func TestTxValidateBasic(t *testing.T) {
-	ctx := sdk.NewContext(nil, ocproto.Header{ChainID: "mychainid"}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(nil, tmproto.Header{ChainID: "mychainid"}, false, log.NewNopLogger())
 
 	// keys and addresses
 	priv1, _, addr1 := testdata.KeyTestPubAddr()

@@ -20,7 +20,6 @@ import (
 
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 
 	bam "github.com/line/lbm-sdk/baseapp"
@@ -166,7 +165,7 @@ func Setup(isCheckTx bool) *SimApp {
 //
 //	// commit genesis changes
 //	app.Commit()
-//	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{
+//	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{
 //		Height:             app.LastBlockHeight() + 1,
 //		AppHash:            app.LastCommitID().Hash,
 //		ValidatorsHash:     valSet.Hash(),
@@ -205,7 +204,7 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 	)
 
 	app.Commit()
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	return app
 }
@@ -377,7 +376,7 @@ func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 
 // CheckBalance checks the balance of an account.
 func CheckBalance(t *testing.T, app *SimApp, addr sdk.AccAddress, balances sdk.Coins) {
-	ctxCheck := app.BaseApp.NewContext(true, ocproto.Header{})
+	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
 	require.True(t, balances.IsEqual(app.BankKeeper.GetAllBalances(ctxCheck, addr)))
 }
 
@@ -386,7 +385,7 @@ func CheckBalance(t *testing.T, app *SimApp, addr sdk.AccAddress, balances sdk.C
 // the parameter 'expPass' against the result. A corresponding result is
 // returned.
 func SignCheckDeliver(
-	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header ocproto.Header, msgs []sdk.Msg,
+	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header tmproto.Header, msgs []sdk.Msg,
 	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
 ) (sdk.GasInfo, *sdk.Result, error) {
 	tx, err := helpers.GenSignedMockTx(
@@ -439,7 +438,7 @@ func SignCheckDeliver(
 // SignAndDeliver signs and delivers a transaction. No simulation occurs as the
 // ibc testing package causes checkState and deliverState to diverge in block time.
 func SignAndDeliver(
-	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header ocproto.Header, msgs []sdk.Msg,
+	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header tmproto.Header, msgs []sdk.Msg,
 	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
 ) (sdk.GasInfo, *sdk.Result, error) {
 	tx, err := helpers.GenTx(

@@ -6,11 +6,12 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	dbm "github.com/tendermint/tm-db"
+
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -124,7 +125,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			for i := int64(2); i <= upgradeHeight-1; i++ {
-				origapp.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: i}})
+				origapp.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
 				res := origapp.Commit()
 				require.NotNil(t, res.Data)
 			}
@@ -140,7 +141,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			// "execute" one block
-			app.BeginBlock(ocabci.RequestBeginBlock{Header: ocproto.Header{Height: upgradeHeight}})
+			app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: upgradeHeight}})
 			res := app.Commit()
 			require.NotNil(t, res.Data)
 

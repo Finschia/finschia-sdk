@@ -6,8 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
@@ -15,7 +14,7 @@ import (
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
-var header = ocproto.Header{
+var header = tmproto.Header{
 	ChainID: "hello",
 	Height:  5,
 }

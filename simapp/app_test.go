@@ -8,10 +8,11 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/tests/mocks"
@@ -165,7 +166,7 @@ func TestRunMigrations(t *testing.T) {
 			// version for bank as 1, and for all other modules, we put as
 			// their latest ConsensusVersion.
 			_, err = app.mm.RunMigrations(
-				app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}), app.configurator,
+				app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()}), app.configurator,
 				module.VersionMap{
 					"bank":         1,
 					"auth":         auth.AppModule{}.ConsensusVersion(),
@@ -203,7 +204,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
-	ctx := app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
+	ctx := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
 
 	// Create a mock module. This module will serve as the new module we're
 	// adding during a migration.
@@ -261,7 +262,7 @@ func TestUpgradeStateOnGenesis(t *testing.T) {
 	)
 
 	// make sure the upgrade keeper has version map in state
-	ctx := app.NewContext(false, ocproto.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 	vm := app.UpgradeKeeper.GetModuleVersionMap(ctx)
 	for v, i := range app.mm.Modules {
 		require.Equal(t, vm[v], i.ConsensusVersion())

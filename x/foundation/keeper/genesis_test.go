@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -29,7 +29,7 @@ func TestImportExportGenesis(t *testing.T) {
 	app := simapp.Setup(checkTx)
 	testdata.RegisterInterfaces(app.InterfaceRegistry())
 
-	ctx := app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	keeper := app.FoundationKeeper
 
 	createAddress := func() sdk.AccAddress {

@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -16,7 +16,7 @@ import (
 
 func TestAllocateTokensToValidatorWithCommission(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1234))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
@@ -45,7 +45,7 @@ func TestAllocateTokensToValidatorWithCommission(t *testing.T) {
 
 func TestAllocateTokensToManyValidators(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1234))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
@@ -116,7 +116,7 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 
 func TestAllocateTokensTruncation(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1234))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)

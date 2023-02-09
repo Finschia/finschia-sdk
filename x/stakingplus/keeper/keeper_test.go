@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -34,7 +34,7 @@ type KeeperTestSuite struct {
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	s.app = simapp.Setup(checkTx)
-	s.ctx = s.app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.keeper = s.app.StakingKeeper
 
 	s.msgServer = keeper.NewMsgServerImpl(s.keeper, s.app.FoundationKeeper)

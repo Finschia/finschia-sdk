@@ -8,11 +8,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	abci "github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp/helpers"
@@ -155,8 +155,8 @@ func TestAppImportExport(t *testing.T) {
 	err = json.Unmarshal(exported.AppState, &genesisState)
 	require.NoError(t, err)
 
-	ctxA := app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
-	ctxB := newApp.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
+	ctxA := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
+	ctxB := newApp.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
 	newApp.mm.InitGenesis(ctxB, app.AppCodec(), genesisState)
 	newApp.StoreConsensusParams(ctxB, exported.ConsensusParams)
 

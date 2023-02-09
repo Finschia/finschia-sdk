@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-
-	ocabci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
@@ -16,6 +14,7 @@ import (
 	"github.com/line/lbm-sdk/x/capability"
 	"github.com/line/lbm-sdk/x/capability/keeper"
 	"github.com/line/lbm-sdk/x/capability/types"
+	ocabci "github.com/line/ostracon/abci/types"
 )
 
 type CapabilityTestSuite struct {
@@ -37,7 +36,7 @@ func (suite *CapabilityTestSuite) SetupTest() {
 	keeper := keeper.NewKeeper(cdc, app.GetKey(types.StoreKey), app.GetMemKey(types.MemStoreKey))
 
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
 	suite.keeper = keeper
 	suite.cdc = cdc
 	suite.module = capability.NewAppModule(cdc, *keeper)
@@ -57,12 +56,12 @@ func (suite *CapabilityTestSuite) TestInitializeMemStore() {
 	newSk1 := newKeeper.ScopeToModule(banktypes.ModuleName)
 
 	// Mock App startup
-	ctx := suite.app.BaseApp.NewUncachedContext(false, ocproto.Header{})
+	ctx := suite.app.BaseApp.NewUncachedContext(false, tmproto.Header{})
 	newKeeper.Seal()
 	suite.Require().False(newKeeper.IsInitialized(ctx), "memstore initialized flag set before BeginBlock")
 
 	// Mock app beginblock and ensure that no gas has been consumed and memstore is initialized
-	ctx = suite.app.BaseApp.NewContext(false, ocproto.Header{}).WithBlockGasMeter(sdk.NewGasMeter(50))
+	ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{}).WithBlockGasMeter(sdk.NewGasMeter(50))
 	prevGas := ctx.BlockGasMeter().GasConsumed()
 	restartedModule := capability.NewAppModule(suite.cdc, *newKeeper)
 	restartedModule.BeginBlock(ctx, ocabci.RequestBeginBlock{})
@@ -78,7 +77,7 @@ func (suite *CapabilityTestSuite) TestInitializeMemStore() {
 	suite.Require().True(ok)
 
 	// Ensure that the second transaction can still receive capability even if first tx fails.
-	ctx = suite.app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{})
 
 	cap1, ok = newSk1.GetCapability(ctx, "transfer")
 	suite.Require().True(ok)

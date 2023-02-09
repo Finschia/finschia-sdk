@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -54,7 +54,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	testdata.RegisterInterfaces(s.app.InterfaceRegistry())
 	testdata.RegisterMsgServer(s.app.MsgServiceRouter(), testdata.MsgServerImpl{})
 
-	s.ctx = s.app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.keeper = s.app.FoundationKeeper
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)

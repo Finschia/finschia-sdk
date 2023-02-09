@@ -6737,7 +6737,7 @@ recent HistoricalInfo
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `header` | [ostracon.types.Header](#ostracon.types.Header) |  |  |
+| `header` | [tendermint.types.Header](#tendermint.types.Header) |  |  |
 | `valset` | [Validator](#cosmos.staking.v1beta1.Validator) | repeated |  |
 
 
