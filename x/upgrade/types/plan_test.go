@@ -10,6 +10,7 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
@@ -57,6 +58,12 @@ func TestPlanValid(t *testing.T) {
 		p     types.Plan
 		valid bool
 	}{
+		"IBC upgrade": {
+			p: types.Plan{
+				Height:              123450000,
+				UpgradedClientState: &codectypes.Any{},
+			},
+		},
 		"no due at": {
 			p: types.Plan{
 				Name: "missing",
