@@ -41,6 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (baseapp) [\#840](https://github.com/line/lbm-sdk/pull/840) allow querying the state based on `CheckState`.
 * (x/foundation) [\#848](https://github.com/line/lbm-sdk/pull/848) remove `gov mint` for x/foundation proposal
 * (x/wasm) [\#850](https://github.com/line/lbm-sdk/pull/850) remove `x/wasm` module in lbm-sdk
+* (Ostracon) [\#887](https://github.com/line/lbm-sdk/pull/887) apply the changes of vrf location in Ostracon
 
 ### Improvements
 * (cosmovisor) [\#792](https://github.com/line/lbm-sdk/pull/792) Use upstream's cosmovisor
