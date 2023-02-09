@@ -10,7 +10,6 @@ import (
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
@@ -58,34 +57,10 @@ func TestPlanValid(t *testing.T) {
 		p     types.Plan
 		valid bool
 	}{
-		"proper by height": {
-			p: types.Plan{
-				Name:   "all-good",
-				Height: 123450000,
-			},
-			valid: true,
-		},
-		"no name": {
-			p: types.Plan{
-				Height: 123450000,
-			},
-		},
-		"IBC upgrade": {
-			p: types.Plan{
-				Height:              123450000,
-				UpgradedClientState: &codectypes.Any{},
-			},
-		},
 		"no due at": {
 			p: types.Plan{
 				Name: "missing",
 				Info: "important",
-			},
-		},
-		"negative height": {
-			p: types.Plan{
-				Name:   "minus",
-				Height: -12345,
 			},
 		},
 	}

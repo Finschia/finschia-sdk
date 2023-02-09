@@ -23,8 +23,8 @@ func (p Plan) ValidateBasic() error {
 	if len(p.Name) == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "name cannot be empty")
 	}
-	if p.Height < 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "height cannot be negative")
+	if p.Height <= 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "height must be greater than 0")
 	}
 
 	return nil
