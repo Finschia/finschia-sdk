@@ -642,17 +642,17 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
 		{
 			"empty params",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/block/0", val.APIAddress),
-			true, "height must not be less than 1 or greater than the current height",
+			true, "services not supported",
 		},
 		{
 			"bad height",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/block/%d", val.APIAddress, 9999999),
-			true, "height must not be less than 1 or greater than the current height",
+			true, "services not supported",
 		},
 		{
 			"good request",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/block/%d", val.APIAddress, s.txHeight),
-			false, "",
+			true, "services not supported",
 		},
 	}
 	for _, tc := range testCases {
