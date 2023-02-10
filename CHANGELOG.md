@@ -69,6 +69,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ostracon) [\#869](https://github.com/line/lbm-sdk/pull/869) apply changes to replace Ostracon proto message with Tendermint
 * (x/bank) [\#876](https://github.com/line/lbm-sdk/pull/876) Add `MultiSend` deactivation
 * (x/auth) [\#891](https://github.com/line/lbm-sdk/pull/891) deprecate `cosmos.tx.v1beta1.Service/GetBlockWithTxs` and add `lbm.tx.v1beta1.Service/GetBlockWithTxs` for lbm
+* (abci) [\#892](https://github.com/line/lbm-sdk/pull/892) remove the incompatible field `index=14` in `TxResponse`
 
 ### Build, CI
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process
