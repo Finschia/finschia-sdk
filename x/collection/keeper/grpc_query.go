@@ -312,47 +312,6 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 	return &collection.QueryTokenTypeResponse{TokenType: tokenType}, nil
 }
 
-func (s queryServer) TokenTypes(c context.Context, req *collection.QueryTokenTypesRequest) (*collection.QueryTokenTypesResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	tokenTypeStore := prefix.NewStore(store, legacyTokenTypeKeyPrefixByContractID(req.ContractId))
-	var tokenTypes []collection.TokenType
-	pageRes, err := query.Paginate(tokenTypeStore, req.Pagination, func(key []byte, value []byte) error {
-		classID := string(key)
-		class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
-		if err != nil {
-			panic(err)
-		}
-
-		nftClass, ok := class.(*collection.NFTClass)
-		if !ok {
-			panic(sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", key))
-		}
-
-		tokenType := collection.TokenType{
-			ContractId: req.ContractId,
-			TokenType:  nftClass.Id,
-			Name:       nftClass.Name,
-			Meta:       nftClass.Meta,
-		}
-		tokenTypes = append(tokenTypes, tokenType)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryTokenTypesResponse{TokenTypes: tokenTypes, Pagination: pageRes}, nil
-}
-
 func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string) (collection.Token, error) {
 	switch {
 	case collection.ValidateNFTID(tokenID) == nil:
@@ -419,80 +378,6 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 	}
 
 	return &collection.QueryTokenResponse{Token: *any}, nil
-}
-
-func (s queryServer) TokensWithTokenType(c context.Context, req *collection.QueryTokensWithTokenTypeRequest) (*collection.QueryTokensWithTokenTypeResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	if err := collection.ValidateClassID(req.TokenType); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	tokenStore := prefix.NewStore(store, legacyTokenKeyPrefixByTokenType(req.ContractId, req.TokenType))
-	var tokens []codectypes.Any
-	pageRes, err := query.Paginate(tokenStore, req.Pagination, func(key []byte, value []byte) error {
-		tokenID := req.TokenType + string(key)
-		legacyToken, err := s.getToken(ctx, req.ContractId, tokenID)
-		if err != nil {
-			panic(err)
-		}
-
-		any, err := codectypes.NewAnyWithValue(legacyToken)
-		if err != nil {
-			panic(err)
-		}
-
-		tokens = append(tokens, *any)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryTokensWithTokenTypeResponse{Tokens: tokens, Pagination: pageRes}, nil
-}
-
-func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensRequest) (*collection.QueryTokensResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	tokenStore := prefix.NewStore(store, legacyTokenKeyPrefixByContractID(req.ContractId))
-	var tokens []codectypes.Any
-	pageRes, err := query.Paginate(tokenStore, req.Pagination, func(key []byte, value []byte) error {
-		tokenID := string(key)
-		legacyToken, err := s.getToken(ctx, req.ContractId, tokenID)
-		if err != nil {
-			panic(err)
-		}
-
-		any, err := codectypes.NewAnyWithValue(legacyToken)
-		if err != nil {
-			panic(err)
-		}
-
-		tokens = append(tokens, *any)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryTokensResponse{Tokens: tokens, Pagination: pageRes}, nil
 }
 
 func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (*collection.QueryRootResponse, error) {

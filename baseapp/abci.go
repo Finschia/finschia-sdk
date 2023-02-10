@@ -12,19 +12,18 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	ocabci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/codec"
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	ocabci "github.com/line/ostracon/abci/types"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic
@@ -32,13 +31,13 @@ import (
 func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitChain) {
 	// On a new chain, we consider the init chain block height as 0, even though
 	// req.InitialHeight is 1 by default.
-	initHeader := ocproto.Header{ChainID: req.ChainId, Time: req.Time}
+	initHeader := tmproto.Header{ChainID: req.ChainId, Time: req.Time}
 
 	// If req.InitialHeight is > 1, then we set the initial version in the
 	// stores.
 	if req.InitialHeight > 1 {
 		app.initialHeight = req.InitialHeight
-		initHeader = ocproto.Header{ChainID: req.ChainId, Height: req.InitialHeight, Time: req.Time}
+		initHeader = tmproto.Header{ChainID: req.ChainId, Height: req.InitialHeight, Time: req.Time}
 		err := app.cms.SetInitialVersion(req.InitialHeight)
 		if err != nil {
 			panic(err)

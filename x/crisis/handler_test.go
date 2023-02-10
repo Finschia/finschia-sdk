@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
@@ -24,7 +24,7 @@ var (
 
 func createTestApp() (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, ocproto.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 
 	constantFee := sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)
 	app.CrisisKeeper.SetConstantFee(ctx, constantFee)

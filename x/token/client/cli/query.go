@@ -28,7 +28,6 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdMinted(),
 		NewQueryCmdBurnt(),
 		NewQueryCmdContract(),
-		NewQueryCmdContracts(),
 		NewQueryCmdGranteeGrants(),
 		NewQueryCmdIsOperatorFor(),
 		NewQueryCmdHoldersByOperator(),
@@ -165,37 +164,6 @@ func NewQueryCmdContract() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func NewQueryCmdContracts() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "tokens",
-		Args:    cobra.NoArgs,
-		Short:   "query all token metadata",
-		Example: fmt.Sprintf(`$ %s query %s tokens`, version.AppName, token.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-			queryClient := token.NewQueryClient(clientCtx)
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-			res, err := queryClient.Contracts(cmd.Context(), &token.QueryContractsRequest{
-				Pagination: pageReq,
-			})
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "classes")
 	return cmd
 }
 

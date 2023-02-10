@@ -3,8 +3,8 @@ package bank_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
@@ -92,7 +92,7 @@ func TestSendNotEnoughBalance(t *testing.T) {
 
 	genAccs := []authtypes.GenesisAccount{acc}
 	app := simapp.SetupWithGenesisAccounts(genAccs)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	require.NoError(t, simapp.FundAccount(app, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 67))))
 
@@ -106,14 +106,14 @@ func TestSendNotEnoughBalance(t *testing.T) {
 	origSeq := res1.GetSequence()
 
 	sendMsg := types.NewMsgSend(addr1, addr2, sdk.Coins{sdk.NewInt64Coin("foocoin", 100)})
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
 	txGen := simapp.MakeTestEncodingConfig().TxConfig
 	_, _, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, []sdk.Msg{sendMsg}, "", []uint64{origAccNum}, []uint64{origSeq}, false, false, priv1)
 	require.Error(t, err)
 
 	simapp.CheckBalance(t, app, addr1, sdk.Coins{sdk.NewInt64Coin("foocoin", 67)})
 
-	res2 := app.AccountKeeper.GetAccount(app.NewContext(true, ocproto.Header{}), addr1)
+	res2 := app.AccountKeeper.GetAccount(app.NewContext(true, tmproto.Header{}), addr1)
 	require.NotNil(t, res2)
 
 	require.Equal(t, res2.GetAccountNumber(), origAccNum)
@@ -127,7 +127,7 @@ func TestMsgMultiSendWithAccounts(t *testing.T) {
 
 	genAccs := []authtypes.GenesisAccount{acc}
 	app := simapp.SetupWithGenesisAccounts(genAccs)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	require.NoError(t, simapp.FundAccount(app, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 67))))
 
@@ -172,7 +172,7 @@ func TestMsgMultiSendWithAccounts(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		header := ocproto.Header{Height: app.LastBlockHeight() + 1}
+		header := tmproto.Header{Height: app.LastBlockHeight() + 1}
 		txGen := simapp.MakeTestEncodingConfig().TxConfig
 		_, _, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, tc.msgs, "", tc.accNums, tc.accSeqs, tc.expSimPass, tc.expPass, tc.privKeys...)
 		if tc.expPass {
@@ -197,7 +197,7 @@ func TestMsgMultiSendMultipleOut(t *testing.T) {
 
 	genAccs := []authtypes.GenesisAccount{acc1, acc2}
 	app := simapp.SetupWithGenesisAccounts(genAccs)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	require.NoError(t, simapp.FundAccount(app, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 42))))
 
@@ -222,7 +222,7 @@ func TestMsgMultiSendMultipleOut(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		header := ocproto.Header{Height: app.LastBlockHeight() + 1}
+		header := tmproto.Header{Height: app.LastBlockHeight() + 1}
 		txGen := simapp.MakeTestEncodingConfig().TxConfig
 		_, _, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, tc.msgs, "", tc.accNums, tc.accSeqs, tc.expSimPass, tc.expPass, tc.privKeys...)
 		require.NoError(t, err)
@@ -246,7 +246,7 @@ func TestMsgMultiSendMultipleInOut(t *testing.T) {
 
 	genAccs := []authtypes.GenesisAccount{acc1, acc2, acc4}
 	app := simapp.SetupWithGenesisAccounts(genAccs)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	require.NoError(t, simapp.FundAccount(app, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 42))))
 
@@ -274,7 +274,7 @@ func TestMsgMultiSendMultipleInOut(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		header := ocproto.Header{Height: app.LastBlockHeight() + 1}
+		header := tmproto.Header{Height: app.LastBlockHeight() + 1}
 		txGen := simapp.MakeTestEncodingConfig().TxConfig
 		_, _, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, tc.msgs, "", tc.accNums, tc.accSeqs, tc.expSimPass, tc.expPass, tc.privKeys...)
 		require.NoError(t, err)
@@ -293,7 +293,7 @@ func TestMsgMultiSendDependent(t *testing.T) {
 
 	genAccs := []authtypes.GenesisAccount{acc1, acc2}
 	app := simapp.SetupWithGenesisAccounts(genAccs)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	require.NoError(t, simapp.FundAccount(app, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 42))))
 
@@ -326,7 +326,7 @@ func TestMsgMultiSendDependent(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		header := ocproto.Header{Height: app.LastBlockHeight() + 1}
+		header := tmproto.Header{Height: app.LastBlockHeight() + 1}
 		txGen := simapp.MakeTestEncodingConfig().TxConfig
 		_, _, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, tc.msgs, "", tc.accNums, tc.accSeqs, tc.expSimPass, tc.expPass, tc.privKeys...)
 		require.NoError(t, err)

@@ -1,9 +1,10 @@
 package capability_test
 
 import (
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/line/ostracon/libs/log"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -40,7 +41,7 @@ func (suite *CapabilityTestSuite) TestGenesis() {
 	newKeeper := keeper.NewKeeper(suite.cdc, newApp.GetKey(types.StoreKey), newApp.GetMemKey(types.MemStoreKey))
 	newSk1 := newKeeper.ScopeToModule(banktypes.ModuleName)
 	newSk2 := newKeeper.ScopeToModule(stakingtypes.ModuleName)
-	deliverCtx, _ := newApp.BaseApp.NewUncachedContext(false, ocproto.Header{}).WithBlockGasMeter(sdk.NewInfiniteGasMeter()).CacheContext()
+	deliverCtx, _ := newApp.BaseApp.NewUncachedContext(false, tmproto.Header{}).WithBlockGasMeter(sdk.NewInfiniteGasMeter()).CacheContext()
 
 	capability.InitGenesis(deliverCtx, *newKeeper, *genState)
 

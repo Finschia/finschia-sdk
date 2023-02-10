@@ -3,9 +3,9 @@ package distribution_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -14,7 +14,7 @@ import (
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	app.InitChain(
 		abci.RequestInitChain{

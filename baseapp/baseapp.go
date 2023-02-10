@@ -15,7 +15,6 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto/tmhash"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec/types"
@@ -340,7 +339,7 @@ func (app *BaseApp) init() error {
 	}
 
 	// needed for the export command which inits from store but never calls initchain
-	app.setCheckState(ocproto.Header{})
+	app.setCheckState(tmproto.Header{})
 	app.Seal()
 
 	// make sure the snapshot interval is a multiple of the pruning KeepEvery interval
@@ -416,7 +415,7 @@ func (app *BaseApp) IsSealed() bool { return app.sealed }
 // (i.e. a CacheMultiStore) and a new Context with the same multi-store branch,
 // provided header, and minimum gas prices set. It is set on InitChain and reset
 // on Commit.
-func (app *BaseApp) setCheckState(header ocproto.Header) {
+func (app *BaseApp) setCheckState(header tmproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.checkStateMtx.Lock()
 	defer app.checkStateMtx.Unlock()
@@ -435,7 +434,7 @@ func (app *BaseApp) setCheckState(header ocproto.Header) {
 // (i.e. a CacheMultiStore) and a new Context with the same multi-store branch,
 // and provided header. It is set on InitChain and BeginBlock and set to nil on
 // Commit.
-func (app *BaseApp) setDeliverState(header ocproto.Header) {
+func (app *BaseApp) setDeliverState(header tmproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.deliverState = &state{
 		ms:  ms,

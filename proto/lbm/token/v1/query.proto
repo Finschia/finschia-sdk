@@ -36,11 +36,6 @@ service Query {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}";
   }
 
-  // Contracts queries all token metadata.
-  rpc Contracts(QueryContractsRequest) returns (QueryContractsResponse) {
-    option (google.api.http).get = "/lbm/token/v1/token_classes";
-  }
-
   // GranteeGrants queries permissions on a given grantee.
   rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}";
@@ -112,20 +107,6 @@ message QueryContractRequest {
 // QueryContractResponse is the response type for the Query/Contract RPC method
 message QueryContractResponse {
   Contract contract = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryContractsRequest is the request type for the Query/Contracts RPC method
-message QueryContractsRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-// QueryContractsResponse is the response type for the Query/Contracts RPC method
-message QueryContractsResponse {
-  // information of the contracts.
-  repeated Contract contracts = 1 [(gogoproto.nullable) = false];
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
