@@ -163,7 +163,7 @@ func (s txServer) GetTx(ctx context.Context, req *txtypes.GetTxRequest) (*txtype
 
 // GetBlockWithTxs returns a block with decoded txs.
 func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWithTxsRequest) (*txtypes.GetBlockWithTxsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "services not supported")
+	return nil, status.Error(codes.Unimplemented, "service not supported")
 }
 
 func (s txServer) BroadcastTx(ctx context.Context, req *txtypes.BroadcastTxRequest) (*txtypes.BroadcastTxResponse, error) {
