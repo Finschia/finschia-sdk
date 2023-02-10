@@ -56,7 +56,8 @@ func CheckTendermintError(err error, tx octypes.Tx) *sdk.TxResponse {
 	txHash := fmt.Sprintf("%X", tx.Hash())
 
 	switch {
-	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInCache.Error())):
+	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInCache.Error())),
+		strings.Contains(errStr, strings.ToLower(mempool.ErrTxInMap.Error())):
 		return &sdk.TxResponse{
 			Code:      sdkerrors.ErrTxInMempoolCache.ABCICode(),
 			Codespace: sdkerrors.ErrTxInMempoolCache.Codespace(),
@@ -74,13 +75,6 @@ func CheckTendermintError(err error, tx octypes.Tx) *sdk.TxResponse {
 		return &sdk.TxResponse{
 			Code:      sdkerrors.ErrTxTooLarge.ABCICode(),
 			Codespace: sdkerrors.ErrTxTooLarge.Codespace(),
-			TxHash:    txHash,
-		}
-
-	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInMap.Error())):
-		return &sdk.TxResponse{
-			Code:      sdkerrors.ErrTxInMempoolCache.ABCICode(),
-			Codespace: sdkerrors.ErrTxInMempoolCache.Codespace(),
 			TxHash:    txHash,
 		}
 
