@@ -58,6 +58,18 @@ func TestPlanValid(t *testing.T) {
 		p     types.Plan
 		valid bool
 	}{
+		"proper by height": {
+			p: types.Plan{
+				Name:   "all-good",
+				Height: 123450000,
+			},
+			valid: true,
+		},
+		"no name": {
+			p: types.Plan{
+				Height: 123450000,
+			},
+		},
 		"IBC upgrade": {
 			p: types.Plan{
 				Height:              123450000,
@@ -68,6 +80,12 @@ func TestPlanValid(t *testing.T) {
 			p: types.Plan{
 				Name: "missing",
 				Info: "important",
+			},
+		},
+		"negative height": {
+			p: types.Plan{
+				Name:   "minus",
+				Height: -12345,
 			},
 		},
 	}
