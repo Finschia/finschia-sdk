@@ -6,15 +6,15 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) {
-	k.issue(ctx, class)
+func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAddress, amount sdk.Int) string {
+	contractID := k.issue(ctx, class)
 
 	event := token.EventIssued{
 		Creator:    owner.String(),
-		ContractId: class.ContractId,
+		ContractId: contractID,
 		Name:       class.Name,
 		Symbol:     class.Symbol,
-		Uri:        class.ImageUri,
+		Uri:        class.Uri,
 		Meta:       class.Meta,
 		Decimals:   class.Decimals,
 		Mintable:   class.Mintable,
@@ -36,43 +36,46 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 
 	// legacy
 	eventGrant := token.EventGranted{
-		ContractId: class.ContractId,
+		ContractId: contractID,
 		Grantee:    to.String(),
 	}
 	ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenHead(eventGrant))
 	for _, permission := range permissions {
 		eventGrant.Permission = permission
 		ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenBody(eventGrant))
-		k.Grant(ctx, class.ContractId, nil, owner, permission)
+		k.Grant(ctx, contractID, nil, owner, permission)
 	}
 
-	k.mintToken(ctx, class.ContractId, to, amount)
+	k.mintToken(ctx, contractID, to, amount)
 
 	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
-		ContractId: class.ContractId,
+		ContractId: contractID,
 		Operator:   owner.String(),
 		To:         to.String(),
 		Amount:     amount,
 	}); err != nil {
 		panic(err)
 	}
+
+	return contractID
 }
 
-func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) {
-	if _, err := k.GetClass(ctx, class.ContractId); err == nil {
-		panic(sdkerrors.ErrInvalidRequest.Wrapf("ID already exists: %s", class.ContractId))
-	}
+func (k Keeper) issue(ctx sdk.Context, class token.Contract) string {
+	contractID := k.classKeeper.NewID(ctx)
+	class.Id = contractID
 	k.setClass(ctx, class)
+
+	return contractID
 }
 
-func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass, error) {
+func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.Contract, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(classKey(contractID))
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no class for %s", contractID)
+		return nil, token.ErrTokenNotExist.Wrapf("no class for %s", contractID)
 	}
 
-	var class token.TokenClass
+	var class token.Contract
 	if err := k.cdc.Unmarshal(bz, &class); err != nil {
 		panic(err)
 	}
@@ -80,14 +83,14 @@ func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass,
 	return &class, nil
 }
 
-func (k Keeper) setClass(ctx sdk.Context, class token.TokenClass) {
+func (k Keeper) setClass(ctx sdk.Context, class token.Contract) {
 	store := ctx.KVStore(k.storeKey)
 	bz, err := k.cdc.Marshal(&class)
 	if err != nil {
 		panic(err)
 	}
 
-	store.Set(classKey(class.ContractId), bz)
+	store.Set(classKey(class.Id), bz)
 }
 
 func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
@@ -110,7 +113,7 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 
 func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, grantee, token.PermissionMint); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	k.mintToken(ctx, contractID, to, amount)
@@ -150,7 +153,7 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, from, token.PermissionBurn); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -181,10 +184,10 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
 	_, err := k.GetGrant(ctx, contractID, operator, token.PermissionBurn)
 	if err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, from, operator); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -262,7 +265,7 @@ func (k Keeper) setBurnt(ctx sdk.Context, contractID string, amount sdk.Int) {
 	k.setStatistics(ctx, contractID, amount, burnKeyPrefix)
 }
 
-func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddress, changes []token.Pair) error {
+func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddress, changes []token.Attribute) error {
 	if err := k.modify(ctx, contractID, changes); err != nil {
 		return err
 	}
@@ -279,10 +282,10 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair) error {
+func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Attribute) error {
 	class, err := k.GetClass(ctx, contractID)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	modifiers := map[token.AttributeKey]func(string){
@@ -290,14 +293,14 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair)
 			class.Name = name
 		},
 		token.AttributeKeyImageURI: func(uri string) {
-			class.ImageUri = uri
+			class.Uri = uri
 		},
 		token.AttributeKeyMeta: func(meta string) {
 			class.Meta = meta
 		},
 	}
 	for _, change := range changes {
-		key := token.AttributeKeyFromString(change.Field)
+		key := token.AttributeKeyFromString(change.Key)
 		modifiers[key](change.Value)
 	}
 
@@ -323,10 +326,6 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 
 func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	k.setGrant(ctx, contractID, grantee, permission)
-
-	if !k.accountKeeper.HasAccount(ctx, grantee) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, grantee))
-	}
 }
 
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {

@@ -154,7 +154,7 @@ func (k Keeper) getContracts(ctx sdk.Context) []collection.Contract {
 func (k Keeper) getClasses(ctx sdk.Context, contracts []collection.Contract) []collection.ContractClasses {
 	var classes []collection.ContractClasses
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractClasses := collection.ContractClasses{
 			ContractId: contractID,
 		}
@@ -185,7 +185,7 @@ func (k Keeper) getAllNextClassIDs(ctx sdk.Context) []collection.NextClassIDs {
 func (k Keeper) getNextTokenIDs(ctx sdk.Context, contracts []collection.Contract) []collection.ContractNextTokenIDs {
 	var nextIDs []collection.ContractNextTokenIDs
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractNextIDs := collection.ContractNextTokenIDs{
 			ContractId: contractID,
 		}
@@ -205,7 +205,7 @@ func (k Keeper) getNextTokenIDs(ctx sdk.Context, contracts []collection.Contract
 func (k Keeper) getBalances(ctx sdk.Context, contracts []collection.Contract) []collection.ContractBalances {
 	var balances []collection.ContractBalances
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractBalances := collection.ContractBalances{
 			ContractId: contractID,
 		}
@@ -245,7 +245,7 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 func (k Keeper) getNFTs(ctx sdk.Context, contracts []collection.Contract) []collection.ContractNFTs {
 	var parents []collection.ContractNFTs
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractParents := collection.ContractNFTs{
 			ContractId: contractID,
 		}
@@ -265,7 +265,7 @@ func (k Keeper) getNFTs(ctx sdk.Context, contracts []collection.Contract) []coll
 func (k Keeper) getParents(ctx sdk.Context, contracts []collection.Contract) []collection.ContractTokenRelations {
 	var parents []collection.ContractTokenRelations
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractParents := collection.ContractTokenRelations{
 			ContractId: contractID,
 		}
@@ -289,7 +289,7 @@ func (k Keeper) getParents(ctx sdk.Context, contracts []collection.Contract) []c
 func (k Keeper) getAuthorizations(ctx sdk.Context, contracts []collection.Contract) []collection.ContractAuthorizations {
 	var authorizations []collection.ContractAuthorizations
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractAuthorizations := collection.ContractAuthorizations{
 			ContractId: contractID,
 		}
@@ -309,7 +309,7 @@ func (k Keeper) getAuthorizations(ctx sdk.Context, contracts []collection.Contra
 func (k Keeper) getGrants(ctx sdk.Context, contracts []collection.Contract) []collection.ContractGrants {
 	var grants []collection.ContractGrants
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractGrants := collection.ContractGrants{
 			ContractId: contractID,
 		}
@@ -337,7 +337,7 @@ func (k Keeper) getBurnts(ctx sdk.Context, contracts []collection.Contract) []co
 func (k Keeper) getStatistics(ctx sdk.Context, contracts []collection.Contract, iterator func(ctx sdk.Context, contractID string, cb func(classID string, amount sdk.Int) (stop bool))) []collection.ContractStatistics {
 	var statistics []collection.ContractStatistics
 	for _, contract := range contracts {
-		contractID := contract.ContractId
+		contractID := contract.Id
 		contractStatistics := collection.ContractStatistics{
 			ContractId: contractID,
 		}

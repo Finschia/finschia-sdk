@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -15,7 +15,7 @@ import (
 
 func TestTallyNoOneVotes(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	createValidators(t, ctx, app, []int64{5, 5, 5})
 
@@ -37,7 +37,7 @@ func TestTallyNoOneVotes(t *testing.T) {
 
 func TestTallyNoQuorum(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	createValidators(t, ctx, app, []int64{2, 5, 0})
 
@@ -62,7 +62,7 @@ func TestTallyNoQuorum(t *testing.T) {
 
 func TestTallyOnlyValidatorsAllYes(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs, _ := createValidators(t, ctx, app, []int64{5, 5, 5})
 	tp := TestProposal
@@ -88,7 +88,7 @@ func TestTallyOnlyValidatorsAllYes(t *testing.T) {
 
 func TestTallyOnlyValidators51No(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	valAccAddrs, _ := createValidators(t, ctx, app, []int64{5, 6, 0})
 
@@ -112,7 +112,7 @@ func TestTallyOnlyValidators51No(t *testing.T) {
 
 func TestTallyOnlyValidators51Yes(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	valAccAddrs, _ := createValidators(t, ctx, app, []int64{5, 6, 0})
 
@@ -137,7 +137,7 @@ func TestTallyOnlyValidators51Yes(t *testing.T) {
 
 func TestTallyOnlyValidatorsVetoed(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	valAccAddrs, _ := createValidators(t, ctx, app, []int64{6, 6, 7})
 
@@ -163,7 +163,7 @@ func TestTallyOnlyValidatorsVetoed(t *testing.T) {
 
 func TestTallyOnlyValidatorsAbstainPasses(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	valAccAddrs, _ := createValidators(t, ctx, app, []int64{6, 6, 7})
 
@@ -189,7 +189,7 @@ func TestTallyOnlyValidatorsAbstainPasses(t *testing.T) {
 
 func TestTallyOnlyValidatorsAbstainFails(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	valAccAddrs, _ := createValidators(t, ctx, app, []int64{6, 6, 7})
 
@@ -215,7 +215,7 @@ func TestTallyOnlyValidatorsAbstainFails(t *testing.T) {
 
 func TestTallyOnlyValidatorsNonVoter(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	valAccAddrs, _ := createValidators(t, ctx, app, []int64{5, 6, 7})
 	valAccAddr1, valAccAddr2 := valAccAddrs[0], valAccAddrs[1]
@@ -241,7 +241,7 @@ func TestTallyOnlyValidatorsNonVoter(t *testing.T) {
 
 func TestTallyDelgatorOverride(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs, valAddrs := createValidators(t, ctx, app, []int64{5, 6, 7})
 
@@ -277,7 +277,7 @@ func TestTallyDelgatorOverride(t *testing.T) {
 
 func TestTallyDelgatorInherit(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs, vals := createValidators(t, ctx, app, []int64{5, 6, 7})
 
@@ -312,7 +312,7 @@ func TestTallyDelgatorInherit(t *testing.T) {
 
 func TestTallyDelgatorMultipleOverride(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs, vals := createValidators(t, ctx, app, []int64{5, 6, 7})
 
@@ -352,7 +352,7 @@ func TestTallyDelgatorMultipleOverride(t *testing.T) {
 
 func TestTallyDelgatorMultipleInherit(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	createValidators(t, ctx, app, []int64{25, 6, 7})
 
@@ -393,7 +393,7 @@ func TestTallyDelgatorMultipleInherit(t *testing.T) {
 
 func TestTallyJailedValidator(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs, valAddrs := createValidators(t, ctx, app, []int64{25, 6, 7})
 
@@ -436,7 +436,7 @@ func TestTallyJailedValidator(t *testing.T) {
 
 func TestTallyValidatorMultipleDelegations(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs, valAddrs := createValidators(t, ctx, app, []int64{10, 10, 10})
 

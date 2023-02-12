@@ -3,7 +3,7 @@ package baseapp
 import (
 	"sync"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -16,7 +16,7 @@ func (app *BaseApp) startReactors() {
 type RequestCheckTxAsync struct {
 	txBytes  []byte
 	recheck  bool
-	callback abci.CheckTxCallback
+	callback ocabci.CheckTxCallback
 	prepare  *sync.WaitGroup
 	tx       sdk.Tx
 	err      error
@@ -52,7 +52,7 @@ func (app *BaseApp) checkTxAsync(req *RequestCheckTxAsync, waits []*sync.WaitGro
 		return
 	}
 
-	req.callback(abci.ResponseCheckTx{
+	req.callback(ocabci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	})

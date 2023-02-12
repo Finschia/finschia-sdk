@@ -15,7 +15,7 @@ import (
 	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/collection"
 	"github.com/line/lbm-sdk/x/collection/client/cli"
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type IntegrationTestSuite struct {
@@ -180,7 +180,7 @@ func (s *IntegrationTestSuite) createFTClass(contractID string, operator sdk.Acc
 	s.pickEvent(res.Events, &event, func(e proto.Message) {
 		event = *e.(*collection.EventCreatedFTClass)
 	})
-	return event.ClassId
+	return collection.SplitTokenID(event.TokenId)
 }
 
 func (s *IntegrationTestSuite) createNFTClass(contractID string, operator sdk.AccAddress) string {
@@ -201,7 +201,7 @@ func (s *IntegrationTestSuite) createNFTClass(contractID string, operator sdk.Ac
 	s.pickEvent(res.Events, &event, func(e proto.Message) {
 		event = *e.(*collection.EventCreatedNFTClass)
 	})
-	return event.ClassId
+	return event.TokenType
 }
 
 func (s *IntegrationTestSuite) mintFT(contractID string, operator, to sdk.AccAddress, classID string, amount sdk.Int) {
@@ -229,6 +229,7 @@ func (s *IntegrationTestSuite) mintNFT(contractID string, operator, to sdk.AccAd
 		operator.String(),
 		to.String(),
 		classID,
+		fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintNFT(), args)
@@ -244,7 +245,7 @@ func (s *IntegrationTestSuite) mintNFT(contractID string, operator, to sdk.AccAd
 	})
 
 	s.Require().Equal(1, len(event.Tokens))
-	return event.Tokens[0].Id
+	return event.Tokens[0].TokenId
 }
 
 func (s *IntegrationTestSuite) burnFT(contractID string, from sdk.AccAddress, amount collection.Coins) {
@@ -329,7 +330,7 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 		operator.String(),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse

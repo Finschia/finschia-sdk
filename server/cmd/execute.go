@@ -5,7 +5,6 @@ import (
 
 	ostcfg "github.com/line/ostracon/config"
 	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
@@ -33,7 +32,7 @@ func Execute(rootCmd *cobra.Command, defaultHome string) error {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
 	ctx = context.WithValue(ctx, server.ServerContextKey, srvCtx)
 
-	rootCmd.PersistentFlags().String(flags.FlagLogLevel, zerolog.InfoLevel.String(), "The logging level (trace|debug|info|warn|error|fatal|panic)")
+	rootCmd.PersistentFlags().String(flags.FlagLogLevel, ostcfg.DefaultPackageLogLevels(), "The logging level by modules (debug|info|error|none)")
 	rootCmd.PersistentFlags().String(flags.FlagLogFormat, ostcfg.LogFormatPlain, "The logging format (json|plain)")
 
 	executor := ostcli.PrepareBaseCmd(rootCmd, envPrefix, defaultHome)

@@ -107,8 +107,8 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	return &token.QueryBurntResponse{Amount: burnt}, nil
 }
 
-// TokenClass queries an token metadata based on its contract id.
-func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassRequest) (*token.QueryTokenClassResponse, error) {
+// Contract queries an token metadata based on its contract id.
+func (s queryServer) Contract(c context.Context, req *token.QueryContractRequest) (*token.QueryContractResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -123,30 +123,7 @@ func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassReq
 		return nil, err
 	}
 
-	return &token.QueryTokenClassResponse{Class: *class}, nil
-}
-
-// TokenClasses queries all token metadata.
-func (s queryServer) TokenClasses(c context.Context, req *token.QueryTokenClassesRequest) (*token.QueryTokenClassesResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	classStore := prefix.NewStore(store, classKeyPrefix)
-	var classes []token.TokenClass
-	pageRes, err := query.Paginate(classStore, req.Pagination, func(key []byte, value []byte) error {
-		var class token.TokenClass
-		s.keeper.cdc.MustUnmarshal(value, &class)
-		classes = append(classes, class)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &token.QueryTokenClassesResponse{Classes: classes, Pagination: pageRes}, nil
+	return &token.QueryContractResponse{Contract: *class}, nil
 }
 
 func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGrantsRequest) (*token.QueryGranteeGrantsResponse, error) {
@@ -181,7 +158,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	return &token.QueryGranteeGrantsResponse{Grants: grants, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest) (*token.QueryApprovedResponse, error) {
+func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperatorForRequest) (*token.QueryIsOperatorForResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -189,23 +166,23 @@ func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
 		return nil, err
 	}
-	approver, err := sdk.AccAddressFromBech32(req.Approver)
+	holder, err := sdk.AccAddressFromBech32(req.Holder)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, approver, proxy)
-	approved := err == nil
+	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, holder, operator)
+	authorized := err == nil
 
-	return &token.QueryApprovedResponse{Approved: approved}, nil
+	return &token.QueryIsOperatorForResponse{Authorized: authorized}, nil
 }
 
-func (s queryServer) Approvers(c context.Context, req *token.QueryApproversRequest) (*token.QueryApproversResponse, error) {
+func (s queryServer) HoldersByOperator(c context.Context, req *token.QueryHoldersByOperatorRequest) (*token.QueryHoldersByOperatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -213,23 +190,23 @@ func (s queryServer) Approvers(c context.Context, req *token.QueryApproversReque
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator: %s", req.Operator)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, addr))
-	var approvers []string
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
+	var holders []string
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
 		holder := sdk.AccAddress(key)
-		approvers = append(approvers, holder.String())
+		holders = append(holders, holder.String())
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &token.QueryApproversResponse{Approvers: approvers, Pagination: pageRes}, nil
+	return &token.QueryHoldersByOperatorResponse{Holders: holders, Pagination: pageRes}, nil
 }

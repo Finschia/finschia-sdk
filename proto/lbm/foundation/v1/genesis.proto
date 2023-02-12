@@ -38,8 +38,7 @@ message GenesisState {
   // pool
   Pool pool = 8 [(gogoproto.nullable) = false];
 
-  // gov_mint_count_left is the remaining number of times for gov_mint.
-  uint32 gov_mint_left_count = 9;
+  reserved 9; // previously used tag number for 'gov_mint_left_count'.
 }
 
 // GrantAuthorization defines authorization grant to grantee via route.

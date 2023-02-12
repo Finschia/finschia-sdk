@@ -8,9 +8,9 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
+	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/proto/ostracon/crypto"
 	"github.com/line/ostracon/rpc/client/http"
 
 	"github.com/line/lbm-sdk/client/flags"

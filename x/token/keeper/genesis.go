@@ -66,15 +66,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 
 // ExportGenesis returns a GenesisState for a given context.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
-	var classes []token.TokenClass
-	k.iterateClasses(ctx, func(class token.TokenClass) (stop bool) {
+	var classes []token.Contract
+	k.iterateClasses(ctx, func(class token.Contract) (stop bool) {
 		classes = append(classes, class)
 		return false
 	})
 
 	var balances []token.ContractBalances
 	for _, class := range classes {
-		id := class.ContractId
+		id := class.Id
 		contractBalances := token.ContractBalances{
 			ContractId: id,
 		}
@@ -120,7 +120,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 
 	var grants []token.ContractGrants
 	for _, class := range classes {
-		id := class.ContractId
+		id := class.Id
 		contractGrants := token.ContractGrants{
 			ContractId: id,
 		}
@@ -136,7 +136,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 
 	var authorizations []token.ContractAuthorizations
 	for _, class := range classes {
-		id := class.ContractId
+		id := class.Id
 		contractAuthorizations := token.ContractAuthorizations{
 			ContractId: id,
 		}

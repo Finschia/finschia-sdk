@@ -8,33 +8,34 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+	fdncodec "github.com/line/lbm-sdk/x/foundation/codec"
 	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 )
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgTransferFT{}, "lbm-sdk/MsgTransferFT")
-	legacy.RegisterAminoMsg(cdc, &MsgTransferFTFrom{}, "lbm-sdk/MsgTransferFTFrom")
-	legacy.RegisterAminoMsg(cdc, &MsgTransferNFT{}, "lbm-sdk/MsgTransferNFT")
-	legacy.RegisterAminoMsg(cdc, &MsgTransferNFTFrom{}, "lbm-sdk/MsgTransferNFTFrom")
-	legacy.RegisterAminoMsg(cdc, &MsgApprove{}, "lbm-sdk/collection/MsgApprove") // Changed msgName due to conflict with `x/token`
-	legacy.RegisterAminoMsg(cdc, &MsgDisapprove{}, "lbm-sdk/MsgDisapprove")
+	legacy.RegisterAminoMsg(cdc, &MsgSendFT{}, "lbm-sdk/MsgSendFT")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorSendFT{}, "lbm-sdk/MsgOperatorSendFT")
+	legacy.RegisterAminoMsg(cdc, &MsgSendNFT{}, "lbm-sdk/MsgSendNFT")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorSendNFT{}, "lbm-sdk/MsgOperatorSendNFT")
+	legacy.RegisterAminoMsg(cdc, &MsgAuthorizeOperator{}, "lbm-sdk/collection/MsgAuthorizeOperator") // Changed msgName due to conflict with `x/token`
+	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/collection/MsgRevokeOperator")       // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgCreateContract{}, "lbm-sdk/MsgCreateContract")
 	legacy.RegisterAminoMsg(cdc, &MsgIssueFT{}, "lbm-sdk/MsgIssueFT")
 	legacy.RegisterAminoMsg(cdc, &MsgIssueNFT{}, "lbm-sdk/MsgIssueNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgMintFT{}, "lbm-sdk/MsgMintFT")
 	legacy.RegisterAminoMsg(cdc, &MsgMintNFT{}, "lbm-sdk/MsgMintNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgBurnFT{}, "lbm-sdk/MsgBurnFT")
-	legacy.RegisterAminoMsg(cdc, &MsgBurnFTFrom{}, "lbm-sdk/MsgBurnFTFrom")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorBurnFT{}, "lbm-sdk/MsgOperatorBurnFT")
 	legacy.RegisterAminoMsg(cdc, &MsgBurnNFT{}, "lbm-sdk/MsgBurnNFT")
-	legacy.RegisterAminoMsg(cdc, &MsgBurnNFTFrom{}, "lbm-sdk/MsgBurnNFTFrom")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorBurnNFT{}, "lbm-sdk/MsgOperatorBurnNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/collection/MsgModify")                     // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgGrantPermission{}, "lbm-sdk/collection/MsgGrantPermission")   // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgRevokePermission{}, "lbm-sdk/collection/MsgRevokePermission") // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgAttach{}, "lbm-sdk/MsgAttach")
 	legacy.RegisterAminoMsg(cdc, &MsgDetach{}, "lbm-sdk/MsgDetach")
-	legacy.RegisterAminoMsg(cdc, &MsgAttachFrom{}, "lbm-sdk/MsgAttachFrom")
-	legacy.RegisterAminoMsg(cdc, &MsgDetachFrom{}, "lbm-sdk/MsgDetachFrom")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorAttach{}, "lbm-sdk/MsgOperatorAttach")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorDetach{}, "lbm-sdk/MsgOperatorDetach")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -46,21 +47,21 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgMintNFT{},
 		&MsgAttach{},
 		&MsgDetach{},
-		&MsgTransferFT{},
-		&MsgTransferFTFrom{},
-		&MsgTransferNFT{},
-		&MsgTransferNFTFrom{},
-		&MsgApprove{},
-		&MsgDisapprove{},
+		&MsgSendFT{},
+		&MsgOperatorSendFT{},
+		&MsgSendNFT{},
+		&MsgOperatorSendNFT{},
+		&MsgAuthorizeOperator{},
+		&MsgRevokeOperator{},
 		&MsgBurnFT{},
-		&MsgBurnFTFrom{},
+		&MsgOperatorBurnFT{},
 		&MsgBurnNFT{},
-		&MsgBurnNFTFrom{},
+		&MsgOperatorBurnNFT{},
 		&MsgModify{},
 		&MsgGrantPermission{},
 		&MsgRevokePermission{},
-		&MsgAttachFrom{},
-		&MsgDetachFrom{},
+		&MsgOperatorAttach{},
+		&MsgOperatorDetach{},
 	)
 
 	registry.RegisterInterface(
@@ -94,4 +95,5 @@ func init() {
 	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
 	RegisterLegacyAminoCodec(authzcodec.Amino)
 	RegisterLegacyAminoCodec(govcodec.Amino)
+	RegisterLegacyAminoCodec(fdncodec.Amino)
 }

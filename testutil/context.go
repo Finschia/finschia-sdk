@@ -1,9 +1,10 @@
 package testutil
 
 import (
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/store"
 	sdk "github.com/line/lbm-sdk/types"
@@ -19,7 +20,7 @@ func DefaultContext(key sdk.StoreKey, tkey sdk.StoreKey) sdk.Context {
 	if err != nil {
 		panic(err)
 	}
-	ctx := sdk.NewContext(cms, ocproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, tmproto.Header{}, false, log.NewNopLogger())
 
 	return ctx
 }

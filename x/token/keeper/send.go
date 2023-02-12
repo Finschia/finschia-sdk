@@ -21,25 +21,19 @@ func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetClass(ctx, contractID); err != nil {
-		return err
+		panic(err)
 	}
+
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
+		return token.ErrTokenAlreadyApproved.Wrap("Already authorized")
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
-
-	if !k.accountKeeper.HasAccount(ctx, operator) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, operator))
-	}
 
 	return nil
 }
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
-	if _, err := k.GetClass(ctx, contractID); err != nil {
-		return err
-	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
 		return err
 	}
@@ -56,7 +50,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization to %s by %s", operator, holder)
+	return nil, token.ErrTokenNotApproved.Wrapf("no authorization to %s by %s", operator, holder)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
@@ -75,7 +69,8 @@ func (k Keeper) subtractToken(ctx sdk.Context, contractID string, addr sdk.AccAd
 	balance := k.GetBalance(ctx, contractID, addr)
 	newBalance := balance.Sub(amount)
 	if newBalance.IsNegative() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is smaller than %s", balance, amount)
+		// Daphne emits ErrInsufficientFunds here, which is against to the spec.
+		return token.ErrInsufficientBalance.Wrapf("%s is smaller than %s", balance, amount)
 	}
 
 	k.setBalance(ctx, contractID, addr, newBalance)
@@ -88,10 +83,6 @@ func (k Keeper) addToken(ctx sdk.Context, contractID string, addr sdk.AccAddress
 	newBalance := balance.Add(amount)
 
 	k.setBalance(ctx, contractID, addr, newBalance)
-
-	if !k.accountKeeper.HasAccount(ctx, addr) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, addr))
-	}
 }
 
 func (k Keeper) GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress) sdk.Int {

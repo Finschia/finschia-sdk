@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	ocabci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -29,7 +29,7 @@ func (suite *SimTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
 }
 
 func (suite *SimTestSuite) TestWeightedOperations() {
@@ -90,8 +90,8 @@ func (suite *SimTestSuite) TestSimulateGrant() {
 	ctx := suite.ctx.WithBlockTime(blockTime)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{
-		Header: ocproto.Header{
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{
+		Header: tmproto.Header{
 			Height:  suite.app.LastBlockHeight() + 1,
 			AppHash: suite.app.LastCommitID().Hash,
 		},
@@ -120,8 +120,8 @@ func (suite *SimTestSuite) TestSimulateRevoke() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{
-		Header: ocproto.Header{
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{
+		Header: tmproto.Header{
 			Height:  suite.app.LastBlockHeight() + 1,
 			AppHash: suite.app.LastCommitID().Hash,
 		},
@@ -159,7 +159,7 @@ func (suite *SimTestSuite) TestSimulateExec() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	initAmt := suite.app.StakingKeeper.TokensFromConsensusPower(suite.ctx, 200000)
 	initCoins := sdk.NewCoins(sdk.NewCoin("stake", initAmt))

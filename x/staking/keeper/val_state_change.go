@@ -8,7 +8,7 @@ import (
 	gogotypes "github.com/gogo/protobuf/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/staking/types"
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // BlockValidatorUpdates calculates the ValidatorUpdates for the current block

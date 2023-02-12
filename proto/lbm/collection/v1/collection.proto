@@ -17,13 +17,13 @@ message Params {
 // Contract defines the information of the contract for the collection.
 message Contract {
   // contract_id defines the unique identifier of the contract.
-  string contract_id = 1;
+  string id = 1;
   // name defines the human-readable name of the contract.
   string name = 2;
   // meta is a brief description of the contract.
   string meta = 3;
-  // base img uri is an uri for the contract image stored off chain.
-  string base_img_uri = 4;
+  // uri for the contract image stored off chain.
+  string uri = 4;
 }
 
 // FTClass defines the class of fungible token.
@@ -67,8 +67,8 @@ message NFTClass {
 //
 // Since: 0.46.0 (finschia)
 message NFT {
-  // id defines the unique identifier of the token.
-  string id = 1;
+  // token id defines the unique identifier of the token.
+  string token_id = 1;
   // name defines the human-readable name of the token.
   string name = 2;
   // meta is a brief description of the token.
@@ -117,10 +117,14 @@ message FT {
 // Deprecated: use TokenClass
 //
 // TokenType defines the information of token type.
+// It represents a NFTClass whose class_id is token_type.
+//
+// Note: There is no TokenType instance for FTClass.
 message TokenType {
   // contract id associated with the contract.
   string contract_id = 1;
   // token type defines the unique identifier of the token type.
+  // the format of the value is identical to that of class_id.
   string token_type = 2;
   // name defines the human-readable name of the token type.
   string name = 3;
@@ -201,13 +205,5 @@ message Authorization {
 // Since: 0.46.0 (finschia)
 message Attribute {
   string key   = 1;
-  string value = 2;
-}
-
-// Deprecated: use Attribute
-//
-// Change defines a field-value pair.
-message Change {
-  string field = 1;
   string value = 2;
 }

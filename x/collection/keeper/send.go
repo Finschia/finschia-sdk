@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -10,9 +9,7 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 	if err := k.subtractCoins(ctx, contractID, from, amount); err != nil {
 		return err
 	}
-	if err := k.addCoins(ctx, contractID, to, amount); err != nil {
-		return err
-	}
+	k.addCoins(ctx, contractID, to, amount)
 
 	// legacy
 	for _, coin := range amount {
@@ -36,7 +33,7 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 	return nil
 }
 
-func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
+func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) {
 	for _, coin := range amount {
 		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
 		newBalance := balance.Add(coin.Amount)
@@ -46,11 +43,6 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 			k.setOwner(ctx, contractID, coin.TokenId, address)
 		}
 	}
-
-	// create account if recipient does not exist.
-	k.createAccountOnAbsence(ctx, address)
-
-	return nil
 }
 
 func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
@@ -58,9 +50,13 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
 		newBalance := balance.Sub(coin.Amount)
 		if newBalance.IsNegative() {
-			return sdkerrors.ErrInvalidRequest.Wrapf("%s is smaller than %s", balance, coin.Amount)
+			return collection.ErrInsufficientToken.Wrapf("%s is smaller than %s", balance, coin.Amount)
 		}
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
+
+		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			k.deleteOwner(ctx, contractID, coin.TokenId)
+		}
 	}
 
 	return nil
@@ -98,24 +94,19 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)
+		panic(err)
 	}
+
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
+		return collection.ErrCollectionAlreadyApproved.Wrap("Already authorized")
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
-
-	// create account if operator does not exist.
-	k.createAccountOnAbsence(ctx, operator)
 
 	return nil
 }
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
-	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)
-	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
 		return err
 	}
@@ -132,7 +123,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization by %s to %s", holder, operator)
+	return nil, collection.ErrCollectionNotApproved.Wrapf("no authorization by %s to %s", holder, operator)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {

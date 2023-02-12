@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	abci "github.com/line/ostracon/abci/types"
 	octypes "github.com/line/ostracon/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"

@@ -4,11 +4,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/proto"
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	ocabci "github.com/line/ostracon/abci/types"
+
+	"github.com/golang/protobuf/proto"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/gov"
@@ -18,11 +19,11 @@ import (
 
 func TestTickExpiredDepositPeriod(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -70,11 +71,11 @@ func TestTickExpiredDepositPeriod(t *testing.T) {
 
 func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -147,11 +148,11 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 
 func TestTickPassedDepositPeriod(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -204,13 +205,13 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 
 func TestTickPassedVotingPeriod(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
 	SortAddresses(addrs)
 
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	govHandler := gov.NewHandler(app.GovKeeper)
 
@@ -272,7 +273,7 @@ func TestTickPassedVotingPeriod(t *testing.T) {
 
 func TestProposalPassedEndblocker(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 10, valTokens)
 
 	SortAddresses(addrs)
@@ -280,8 +281,8 @@ func TestProposalPassedEndblocker(t *testing.T) {
 	handler := gov.NewHandler(app.GovKeeper)
 	stakingHandler := staking.NewHandler(app.StakingKeeper)
 
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	valAddr := sdk.ValAddress(addrs[0])
 
@@ -323,14 +324,14 @@ func TestProposalPassedEndblocker(t *testing.T) {
 
 func TestEndBlockerProposalHandlerFailed(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 1, valTokens)
 
 	SortAddresses(addrs)
 
 	stakingHandler := staking.NewHandler(app.StakingKeeper)
-	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 
 	valAddr := sdk.ValAddress(addrs[0])
 

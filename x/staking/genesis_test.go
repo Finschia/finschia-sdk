@@ -5,10 +5,10 @@ import (
 	"log"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
@@ -107,7 +107,7 @@ func TestInitGenesis(t *testing.T) {
 
 func TestInitGenesis_PoolsBalanceMismatch(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, ocproto.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 
 	consPub, err := codectypes.NewAnyWithValue(PKs[0])
 	require.NoError(t, err)

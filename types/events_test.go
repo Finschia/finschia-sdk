@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/suite"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	testdata "github.com/line/lbm-sdk/testutil/testdata"

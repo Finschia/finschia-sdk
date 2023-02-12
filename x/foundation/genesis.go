@@ -8,10 +8,6 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
-const (
-	GovMintMaxCount = 1
-)
-
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
@@ -75,11 +71,11 @@ func (i FoundationInfo) ValidateBasic() error {
 
 	// Is foundation outsourcing the proposal feature
 	_, isOutsourcing := i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
-	memberExists := !i.TotalWeight.IsZero()
-	if isOutsourcing && memberExists {
+	memberNotExists := i.TotalWeight.IsZero()
+	if isOutsourcing && !memberNotExists {
 		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
 	}
-	if !isOutsourcing && !memberExists {
+	if !isOutsourcing && memberNotExists {
 		return sdkerrors.ErrInvalidRequest.Wrap("one member must exist at least")
 	}
 
@@ -157,10 +153,6 @@ func ValidateGenesis(data GenesisState) error {
 
 	if err := data.Pool.ValidateBasic(); err != nil {
 		return err
-	}
-
-	if data.GovMintLeftCount > GovMintMaxCount {
-		return ErrInvalidGovMintLeftCount.Wrapf("invalid value: %d, max: %d", data.GovMintLeftCount, GovMintMaxCount)
 	}
 
 	return nil

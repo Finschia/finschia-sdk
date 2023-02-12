@@ -8,9 +8,10 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 
 	"github.com/golang/mock/gomock"
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
@@ -249,7 +250,7 @@ func TestManager_BeginBlock(t *testing.T) {
 	require.NotNil(t, mm)
 	require.Equal(t, 2, len(mm.Modules))
 
-	req := abci.RequestBeginBlock{Hash: []byte("test")}
+	req := ocabci.RequestBeginBlock{Hash: []byte("test")}
 
 	mockAppModule1.EXPECT().BeginBlock(gomock.Any(), gomock.Eq(req)).Times(1)
 	mockAppModule2.EXPECT().BeginBlock(gomock.Any(), gomock.Eq(req)).Times(1)

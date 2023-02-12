@@ -15,44 +15,27 @@ service Msg {
   // Fires:
   // - EventSent
   // - transfer (deprecated, not typed)
-  // Throws:
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to spend.
   rpc Send(MsgSend) returns (MsgSendResponse);
 
-  // TransferFrom defines a method to send tokens from one account to another account by the proxy.
+  // OperatorSend defines a method to send tokens from one account to another account by the operator.
   // Fires:
   // - EventSent
   // - transfer_from (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized:
-  //   - the approver has not authorized the proxy.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to spend.
   // Note: the approval has no value of limit (not ERC20 compliant).
-  rpc TransferFrom(MsgTransferFrom) returns (MsgTransferFromResponse);
+  rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
 
   // RevokeOperator revoke the authorization of the operator to send the holder's tokens.
   // Fires:
   // - EventRevokedOperator
-  // Throws:
-  // - ErrNotFound:
-  //   - there is no token class of `contract_id`.
-  //   - there is no authorization by `holder` to `operator`.
   // Note: it introduces breaking change, because the legacy clients cannot track this revocation.
   // Since: 0.46.0 (finschia)
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
-  // Approve allows one to send tokens on behalf of the approver.
+  // AuthorizeOperator allows one to send tokens on behalf of the holder.
   // Fires:
   // - EventAuthorizedOperator
   // - approve_token (deprecated, not typed)
-  // Throws:
-  // - ErrNotFound:
-  //   - there is no token class of `contract_id`.
-  // - ErrInvalidRequest:
-  //   - `approver` has already authorized `proxy`.
-  rpc Approve(MsgApprove) returns (MsgApproveResponse);
+  rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // Issue defines a method to create a class of token.
   // it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`).
@@ -66,81 +49,46 @@ service Msg {
   // Fires:
   // - EventGrant
   // - grant_perm (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `granter` does not have `permission`.
-  // - ErrInvalidRequest
-  //   - `grantee` already has `permission`.
   rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
 
   // RevokePermission abandons a permission.
   // Fires:
   // - EventAbandon
   // - revoke_perm (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `grantee` does not have `permission`.
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 
   // Mint defines a method to mint tokens.
   // Fires:
   // - EventMinted
   // - mint (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `from` does not have `mint` permission.
   rpc Mint(MsgMint) returns (MsgMintResponse);
 
   // Burn defines a method to burn tokens.
   // Fires:
   // - EventBurned
   // - burn (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `from` does not have `burn` permission.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to burn.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
-  // BurnFrom defines a method to burn tokens by the proxy.
+  // OperatorBurn defines a method to burn tokens by the operator.
   // Fires:
   // - EventBurned
   // - burn_from (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `proxy` does not have `burn` permission.
-  //   - the approver has not authorized `proxy`.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to burn.
-  rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
+  rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
 
   // Modify defines a method to modify a token class.
   // Fires:
   // - EventModified
   // - modify_token (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - the proxy does not have `modify` permission.
-  // - ErrNotFound
-  //   - there is no token class of `contract_id`.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 }
 
 // MsgSend defines the Msg/Send request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
-//
 // Signer: `from`
 message MsgSend {
   // contract id associated with the token class.
   string contract_id = 1;
-  // approver whose tokens are being sent.
+  // holder whose tokens are being sent.
   string from = 2;
   // recipient of the tokens.
   string to = 3;
@@ -151,22 +99,14 @@ message MsgSend {
 // MsgSendResponse defines the Msg/Send response type.
 message MsgSendResponse {}
 
-// MsgTransferFrom defines the Msg/TransferFrom request type.
-// Throws:
-// - ErrInvalidAddress
-//   - `proxy` is of invalid format.
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
+// MsgOperatorSend defines the Msg/OperatorSend request type.
 //
-// Signer: `proxy`
-message MsgTransferFrom {
+// Signer: `operator`
+message MsgOperatorSend {
   // contract id associated with the token class.
   string contract_id = 1;
-  // the address of the proxy.
-  string proxy = 2;
+  // the address of the operator.
+  string operator = 2;
   // the address which the transfer is from.
   string from = 3;
   // the address which the transfer is to.
@@ -175,17 +115,10 @@ message MsgTransferFrom {
   string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgTransferFromResponse defines the Msg/TransferFrom response type.
-message MsgTransferFromResponse {}
+// MsgOperatorSendResponse defines the Msg/OperatorSend response type.
+message MsgOperatorSendResponse {}
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `holder` is of invalid format.
-//   - `operator` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
 //
 // Signer: `holder`
 //
@@ -204,42 +137,22 @@ message MsgRevokeOperator {
 // Since: 0.46.0 (finschia)
 message MsgRevokeOperatorResponse {}
 
-// MsgApprove defines the Msg/Approve request type.
+// MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `approver` is of invalid format.
-//   - `proxy` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//
-// Signer: `approver`
-message MsgApprove {
+// Signer: `holder`
+message MsgAuthorizeOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the token approver which approves the authorization.
-  string approver = 2;
-  // address of the proxy which the authorization is granted to.
-  string proxy = 3;
+  // address of the token holder which approves the authorization.
+  string holder = 2;
+  // address of the operator which the authorization is granted to.
+  string operator = 3;
 }
 
-// MsgApproveResponse defines the Msg/Approve response type.
-message MsgApproveResponse {}
+// MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
+message MsgAuthorizeOperatorResponse {}
 
 // MsgIssue defines the Msg/Issue request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `name` is empty.
-//   - `name` exceeds the app-specific limit in length.
-//   - `symbol` is of invalid format.
-//   - `image_uri` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//   - `decimals` is lesser than 0 or greater than 18.
-//   - `amount` is not positive.
 //
 // Signer: `owner`
 message MsgIssue {
@@ -247,8 +160,8 @@ message MsgIssue {
   string name = 1;
   // symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
   string symbol = 2;
-  // image_uri is an uri for the image of the token class stored off chain.
-  string image_uri = 3;
+  // uri for the image of the token class stored off chain.
+  string uri = 3;
   // meta is a brief description of token class.
   string meta = 4;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
@@ -267,19 +180,11 @@ message MsgIssue {
 
 // MsgIssueResponse defines the Msg/Issue response type.
 message MsgIssueResponse {
-  // id of the new token class.
-  string id = 1;
+  // id of the new contract.
+  string contract_id = 1;
 }
 
 // MsgGrantPermission defines the Msg/GrantPermission request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `granter` is of invalid format.
-//   - `grantee` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `permission` is not a valid permission.
 //
 // Signer: `granter`
 message MsgGrantPermission {
@@ -298,13 +203,6 @@ message MsgGrantPermissionResponse {}
 
 // MsgRevokePermission defines the Msg/RevokePermission request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `grantee` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `permission` is not a valid permission.
-//
 // Signer: `grantee`
 message MsgRevokePermission {
   // contract id associated with the token class.
@@ -319,14 +217,6 @@ message MsgRevokePermission {
 message MsgRevokePermissionResponse {}
 
 // MsgMint defines the Msg/Mint request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
 //
 // Signer: `from`
 message MsgMint {
@@ -345,13 +235,6 @@ message MsgMintResponse {}
 
 // MsgBurn defines the Msg/Burn request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
-//
 // Signer: `from`
 message MsgBurn {
   // contract id associated with the token class.
@@ -365,41 +248,24 @@ message MsgBurn {
 // MsgBurnResponse defines the Msg/Burn response type.
 message MsgBurnResponse {}
 
-// MsgBurnFrom defines the Msg/BurnFrom request type.
+// MsgOperatorBurn defines the Msg/OperatorBurn request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `proxy` is of invalid format.
-//   - `from` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
-//
-// Signer: `proxy`
-message MsgBurnFrom {
+// Signer: `operator`
+message MsgOperatorBurn {
   // contract id associated with the token class.
   string contract_id = 1;
   // address which triggers the burn.
-  string proxy = 2;
+  string operator = 2;
   // address which the tokens will be burnt from.
   string from = 3;
   // the amount of the burn.
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgBurnFromResponse defines the Msg/BurnFrom response type.
-message MsgBurnFromResponse {}
+// MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
+message MsgOperatorBurnResponse {}
 
 // MsgModify defines the Msg/Modify request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `changes` has duplicate keys.
-//   - `changes` has a key which is not allowed to modify.
-//   - `changes` is empty.
 //
 // Signer: `owner`
 message MsgModify {
@@ -408,7 +274,8 @@ message MsgModify {
   // the address of the grantee which must have modify permission.
   string owner = 2;
   // changes to apply.
-  repeated Pair changes = 3 [(gogoproto.nullable) = false];
+  // possible attribute keys are: name, img_uri, meta
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgModifyResponse defines the Msg/Modify response type.

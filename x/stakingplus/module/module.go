@@ -3,7 +3,8 @@ package module
 import (
 	"encoding/json"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/types/module"
@@ -19,7 +20,12 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
-var _ module.AppModuleBasic = AppModuleBasic{}
+var (
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.BeginBlockAppModule = AppModule{}
+	_ module.EndBlockAppModule   = AppModule{}
+)
 
 // AppModuleBasic defines the basic application module used by the stakingplus module.
 type AppModuleBasic struct {
@@ -32,8 +38,6 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 }
 
 //____________________________________________________________________________
-
-var _ module.AppModule = AppModule{}
 
 // AppModule implements an application module for the stakingplus module.
 type AppModule struct {
@@ -114,7 +118,7 @@ func (am AppModule) ConsensusVersion() uint64 {
 }
 
 // BeginBlock returns the begin blocker for the stakingplus module.
-func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(ctx sdk.Context, req ocabci.RequestBeginBlock) {
 	am.impl.BeginBlock(ctx, req)
 }
 

@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	abci "github.com/line/ostracon/abci/types"
 	ostbytes "github.com/line/ostracon/libs/bytes"
 	rpcclient "github.com/line/ostracon/rpc/client"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/store/rootmulti"
 	sdk "github.com/line/lbm-sdk/types"

@@ -2,7 +2,7 @@ package types
 
 import (
 	proto "github.com/gogo/protobuf/proto"
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )

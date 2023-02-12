@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/tests/mocks"
@@ -82,7 +82,7 @@ func (s *contextTestSuite) TestContextWithCustom() {
 	ctrl := gomock.NewController(s.T())
 	s.T().Cleanup(ctrl.Finish)
 
-	header := ocproto.Header{}
+	header := tmproto.Header{}
 	height := int64(1)
 	chainid := "chainid"
 	ischeck := true
@@ -144,7 +144,7 @@ func (s *contextTestSuite) TestContextHeader() {
 	addr := secp256k1.GenPrivKey().PubKey().Address()
 	proposer := types.ConsAddress(addr)
 
-	ctx = types.NewContext(nil, ocproto.Header{}, false, nil)
+	ctx = types.NewContext(nil, tmproto.Header{}, false, nil)
 
 	ctx = ctx.
 		WithBlockHeight(height).
@@ -158,35 +158,35 @@ func (s *contextTestSuite) TestContextHeader() {
 
 func (s *contextTestSuite) TestContextHeaderClone() {
 	cases := map[string]struct {
-		h ocproto.Header
+		h tmproto.Header
 	}{
 		"empty": {
-			h: ocproto.Header{},
+			h: tmproto.Header{},
 		},
 		"height": {
-			h: ocproto.Header{
+			h: tmproto.Header{
 				Height: 77,
 			},
 		},
 		"time": {
-			h: ocproto.Header{
+			h: tmproto.Header{
 				Time: time.Unix(12345677, 12345),
 			},
 		},
 		"zero time": {
-			h: ocproto.Header{
+			h: tmproto.Header{
 				Time: time.Unix(0, 0),
 			},
 		},
 		"many items": {
-			h: ocproto.Header{
+			h: tmproto.Header{
 				Height:  823,
 				Time:    time.Unix(9999999999, 0),
 				ChainID: "silly-demo",
 			},
 		},
 		"many items with hash": {
-			h: ocproto.Header{
+			h: tmproto.Header{
 				Height:        823,
 				Time:          time.Unix(9999999999, 0),
 				ChainID:       "silly-demo",
@@ -213,7 +213,7 @@ func (s *contextTestSuite) TestContextHeaderClone() {
 }
 
 func (s *contextTestSuite) TestUnwrapSDKContext() {
-	sdkCtx := types.NewContext(nil, ocproto.Header{}, false, nil)
+	sdkCtx := types.NewContext(nil, tmproto.Header{}, false, nil)
 	ctx := types.WrapSDKContext(sdkCtx)
 	sdkCtx2 := types.UnwrapSDKContext(ctx)
 	s.Require().Equal(sdkCtx, sdkCtx2)

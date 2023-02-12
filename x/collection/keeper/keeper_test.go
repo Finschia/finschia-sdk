@@ -4,9 +4,8 @@ import (
 	"context"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -34,7 +33,8 @@ type KeeperTestSuite struct {
 
 	balance sdk.Int
 
-	numNFTs int
+	numNFTs  int
+	numRoots int
 }
 
 func createRandomAccounts(accNum int) []sdk.AccAddress {
@@ -58,7 +58,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
-	s.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.CollectionKeeper
 
@@ -131,14 +131,17 @@ func (s *KeeperTestSuite) SetupTest() {
 	// 1 for the successful attach, 2 for the failure
 	remainders := 1 + 2
 	s.numNFTs = collection.DefaultDepthLimit + remainders
+	// 3 chains, and each chain has depth_limit, 1 and 2 of its length.
+	s.numRoots = 3
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
 		tokens, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, collection.DefaultDepthLimit))
 		s.Require().NoError(err)
 
+		// create a chain of its length depth_limit
 		for i := range tokens[1:] {
 			r := len(tokens) - 1 - i
-			subject := tokens[r].Id
-			target := tokens[r-1].Id
+			subject := tokens[r].TokenId
+			target := tokens[r-1].TokenId
 			err := s.keeper.Attach(s.ctx, s.contractID, to, subject, target)
 			s.Require().NoError(err)
 		}
@@ -146,7 +149,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		tokens, err = s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, remainders))
 		s.Require().NoError(err)
 
-		err = s.keeper.Attach(s.ctx, s.contractID, to, tokens[remainders-1].Id, tokens[remainders-2].Id)
+		// a chain of length 2
+		err = s.keeper.Attach(s.ctx, s.contractID, to, tokens[remainders-1].TokenId, tokens[remainders-2].TokenId)
 		s.Require().NoError(err)
 
 	}
@@ -156,6 +160,11 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, s.customer, s.stranger)
 	s.Require().NoError(err)
+
+	// not token contract
+	notTokenContractID := app.ClassKeeper.NewID(s.ctx)
+	err = keeper.ValidateLegacyContract(s.keeper, s.ctx, notTokenContractID)
+	s.Require().ErrorIs(err, collection.ErrCollectionNotExist)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

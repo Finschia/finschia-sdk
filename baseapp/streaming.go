@@ -4,7 +4,9 @@ import (
 	"io"
 	"sync"
 
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+
+	ocabci "github.com/line/ostracon/abci/types"
 
 	store "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/types"
@@ -13,7 +15,7 @@ import (
 // ABCIListener interface used to hook into the ABCI message processing of the BaseApp
 type ABCIListener interface {
 	// ListenBeginBlock updates the streaming service with the latest BeginBlock messages
-	ListenBeginBlock(ctx types.Context, req abci.RequestBeginBlock, res abci.ResponseBeginBlock) error
+	ListenBeginBlock(ctx types.Context, req ocabci.RequestBeginBlock, res abci.ResponseBeginBlock) error
 	// ListenEndBlock updates the steaming service with the latest EndBlock messages
 	ListenEndBlock(ctx types.Context, req abci.RequestEndBlock, res abci.ResponseEndBlock) error
 	// ListenDeliverTx updates the steaming service with the latest DeliverTx messages

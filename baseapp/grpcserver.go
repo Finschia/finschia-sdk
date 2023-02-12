@@ -31,8 +31,10 @@ func (app *BaseApp) RegisterGRPCServer(server gogogrpc.Server) {
 			return nil, status.Error(codes.Internal, "unable to retrieve metadata")
 		}
 
+		var sdkCtx sdk.Context
 		// Get height header from the request context, if present.
 		var height int64
+
 		if heightHeaders := md.Get(grpctypes.GRPCBlockHeightHeader); len(heightHeaders) == 1 {
 			height, err = strconv.ParseInt(heightHeaders[0], 10, 64)
 			if err != nil {
@@ -43,13 +45,27 @@ func (app *BaseApp) RegisterGRPCServer(server gogogrpc.Server) {
 			if err := checkNegativeHeight(height); err != nil {
 				return nil, err
 			}
-		}
 
-		// Create the sdk.Context. Passing false as 2nd arg, as we can't
-		// actually support proofs with gRPC right now.
-		sdkCtx, err := app.createQueryContext(height, false)
-		if err != nil {
-			return nil, err
+			// Create the sdk.Context. Passing false as 2nd arg, as we can't
+			// actually support proofs with gRPC right now.
+			sdkCtx, err = app.createQueryContext(height, false)
+			if err != nil {
+				return nil, err
+			}
+		} else if csHeaders := md.Get(grpctypes.GRPCCheckStateHeader); len(csHeaders) == 1 {
+			isCheck := csHeaders[0]
+			if isCheck != "on" {
+				return nil, sdkerrors.Wrapf(
+					sdkerrors.ErrInvalidRequest,
+					"Baseapp.RegisterGRPCServer: invalid checkState header %q: %v", grpctypes.GRPCCheckStateHeader, err)
+			}
+
+			sdkCtx = app.createQueryContextWithCheckState()
+		} else {
+			sdkCtx, err = app.createQueryContext(height, false)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// Add relevant gRPC headers
