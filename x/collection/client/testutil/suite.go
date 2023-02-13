@@ -53,8 +53,21 @@ func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
+	var gs collection.GenesisState
+	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(s.cfg.GenesisState[collection.ModuleName], &gs))
+
+	params := collection.Params{
+		DepthLimit: 4,
+		WidthLimit: 4,
+	}
+	gs.Params = params
+
+	gsBz, err := s.cfg.Codec.MarshalJSON(&gs)
+	s.Require().NoError(err)
+	s.cfg.GenesisState[collection.ModuleName] = gsBz
+
 	s.network = network.New(s.T(), s.cfg)
-	_, err := s.network.WaitForHeight(1)
+	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
 	s.vendor = s.createAccount("vendor")
