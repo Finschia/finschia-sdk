@@ -162,7 +162,6 @@ func (s *resultTestSuite) TestResponseResultTx() {
 		GasUsed:   90,
 		Tx:        nil,
 		Timestamp: "timestamp",
-		Index:     1,
 	}
 
 	s.Require().Equal(want, sdk.NewResponseResultTx(resultTx, nil, "timestamp"))
@@ -174,7 +173,6 @@ events: []
 gas_used: "90"
 gas_wanted: "100"
 height: "10"
-index: 1
 info: info
 logs: []
 raw_log: '[]'
