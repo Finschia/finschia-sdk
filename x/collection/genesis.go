@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	DefaultDepthLimit = 3
-	DefaultWidthLimit = 8
+	DefaultDepthLimit = 1
+	DefaultWidthLimit = 4
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues

@@ -1035,7 +1035,7 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.depthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 		"contract not found": {
@@ -1131,7 +1131,7 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.depthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 		"contract not found": {
@@ -1144,7 +1144,7 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 		"not authorized": {
 			contractID: s.contractID,
 			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.depthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			err:        collection.ErrCollectionNotApproved,
 		},
