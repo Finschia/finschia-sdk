@@ -63,6 +63,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	gs.Params = params
 
 	gsBz, err := s.cfg.Codec.MarshalJSON(&gs)
+	s.Require().NoError(err)
 	s.cfg.GenesisState[collection.ModuleName] = gsBz
 
 	s.network = network.New(s.T(), s.cfg)

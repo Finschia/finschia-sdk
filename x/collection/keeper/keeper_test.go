@@ -35,7 +35,7 @@ type KeeperTestSuite struct {
 
 	depthLimit int
 
-	numNFTs int
+	numNFTs  int
 	numRoots int
 }
 
