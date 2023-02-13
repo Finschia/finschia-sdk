@@ -175,8 +175,7 @@ func (app *BaseApp) BeginBlock(req ocabci.RequestBeginBlock) (res abci.ResponseB
 	if app.checkState != nil {
 		app.checkState.ctx = app.checkState.ctx.
 			WithBlockGasMeter(gasMeter).
-			WithHeaderHash(req.Hash).
-			WithConsensusParams(app.GetConsensusParams(app.deliverState.ctx))
+			WithHeaderHash(req.Hash)
 	}
 
 	if app.beginBlocker != nil {

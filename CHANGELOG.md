@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server) [\#821](https://github.com/line/lbm-sdk/pull/821) Get validator pubkey considering KMS
 * (client) [\#890](https://github.com/line/lbm-sdk/pull/890) Map Ostracon:ErrTxInMap to lbm-sdk:ErrTxInMempoolCache
 * (x/collection) [\#894](https://github.com/line/lbm-sdk/pull/894) Change the default params of x/collection
+* (ante) [\#895](https://github.com/line/lbm-sdk/pull/895) Remove max gas validation
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
