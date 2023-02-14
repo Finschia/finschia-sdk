@@ -690,6 +690,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				Operator:   operator.String(),
 				Changes:    changes,
 			}
+			collection.UpdateEventModifiedContract(&event)
 			ctx.EventManager().EmitEvents(collection.NewEventModifyCollection(event))
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 				panic(err)

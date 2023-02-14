@@ -275,6 +275,7 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 		Operator:   grantee.String(),
 		Changes:    changes,
 	}
+	token.UpdateEventModified(&event)
 	ctx.EventManager().EmitEvents(token.NewEventModifyToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
