@@ -49,5 +49,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Breaking Changes
 
 ### Build, CI
+* (ci, build) [\#901](https://github.com/line/lbm-sdk/pull/901) Update release pipeline to match non-wasm env
 
 ### Document Updates
