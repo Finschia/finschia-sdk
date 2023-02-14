@@ -573,17 +573,15 @@ libsodium:
 ###                                release                                  ###
 ###############################################################################
 
-GORELEASER_CONFIG ?= .goreleaser.yml
+GORELEASER_CONFIG ?= .goreleaser.yaml
 
 GORELEASER_BUILD_LDF = $(ldflags)
-GORELEASER_BUILD_LDF += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
 GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
 GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
 GORELEASER_IMAGE         ?= line/goreleaserx-wasm:1.0.0-0.10.0
 GORELEASER_RELEASE       ?= false
-#GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
 GO_MOD_NAME              := github.com/line/lbm-sdk
 
 ifeq ($(GORELEASER_RELEASE),true)
@@ -629,7 +627,4 @@ release:
 		--debug=$(GORELEASER_DEBUG) \
 		--rm-dist
 
-build-static: go.sum
-	CGO_ENABLED=1 go build -mod=readonly -tags "$(build_tags)" -ldflags '$(GORELEASER_BUILD_LDF)' -trimpath -o ./build/ ./...
-
-.PHONY: release-snapshot release build-static
+.PHONY: release-snapshot release
