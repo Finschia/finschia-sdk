@@ -13,10 +13,10 @@ import (
 const (
 	lengthClassID = 8
 
-	nameLengthLimit       = 20
-	baseImgURILengthLimit = 1000
-	metaLengthLimit       = 1000
-	changesLimit          = 100
+	nameLengthLimit = 20
+	uriLengthLimit  = 1000
+	metaLengthLimit = 1000
+	changesLimit    = 100
 )
 
 var (
@@ -153,8 +153,8 @@ func validateName(name string) error {
 	return nil
 }
 
-func validateBaseImgURI(baseImgURI string) error {
-	if err := validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri"); err != nil {
+func validateURI(uri string) error {
+	if err := validateStringSize(uri, uriLengthLimit, "uri"); err != nil {
 		return ErrInvalidBaseImgURILength.Wrap(err.Error())
 	}
 
@@ -197,8 +197,9 @@ func ValidatePermission(permission Permission) error {
 func validateContractChange(change Attribute) error {
 	validators := map[string]func(string) error{
 		AttributeKeyName.String():       validateName,
-		AttributeKeyBaseImgURI.String(): validateBaseImgURI,
+		AttributeKeyBaseImgURI.String(): validateURI,
 		AttributeKeyMeta.String():       validateMeta,
+		AttributeKeyURI.String():        validateURI,
 	}
 
 	return validateChange(change, validators)
@@ -219,6 +220,16 @@ func validateChange(change Attribute, validators map[string]func(string) error) 
 		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
+}
+
+func canonicalKey(key string) string {
+	convert := map[string]string{
+		AttributeKeyBaseImgURI.String(): AttributeKeyURI.String(),
+	}
+	if converted, ok := convert[key]; ok {
+		return converted
+	}
+	return key
 }
 
 var _ sdk.Msg = (*MsgSendFT)(nil)
@@ -507,7 +518,7 @@ func (m MsgCreateContract) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateBaseImgURI(m.Uri); err != nil {
+	if err := validateURI(m.Uri); err != nil {
 		return err
 	}
 
@@ -967,10 +978,11 @@ func (m MsgModify) ValidateBasic() error {
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
-		if seenKeys[change.Key] {
+		key := canonicalKey(change.Key)
+		if seenKeys[key] {
 			return ErrDuplicateChangesField.Wrapf("duplicate keys: %s", change.Key)
 		}
-		seenKeys[change.Key] = true
+		seenKeys[key] = true
 
 		attribute := Attribute{
 			Key:   change.Key,

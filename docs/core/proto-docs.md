@@ -9694,7 +9694,7 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 | ATTRIBUTE_KEY_OWNER | 5 |  |
 | ATTRIBUTE_KEY_AMOUNT | 6 |  |
 | ATTRIBUTE_KEY_DECIMALS | 7 |  |
-| ATTRIBUTE_KEY_BASE_IMG_URI | 8 |  |
+| ATTRIBUTE_KEY_BASE_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
 | ATTRIBUTE_KEY_MINTABLE | 9 |  |
 | ATTRIBUTE_KEY_TOKEN_TYPE | 10 |  |
 | ATTRIBUTE_KEY_FROM | 11 |  |
@@ -9706,6 +9706,7 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 | ATTRIBUTE_KEY_PROXY | 17 |  |
 | ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID | 18 |  |
 | ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID | 19 |  |
+| ATTRIBUTE_KEY_URI | 20 |  |
 
 
 
@@ -11003,7 +11004,7 @@ MsgModify is the Msg/Modify request type.
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
 | `token_type` | [string](#string) |  | token type of the token. refer to TokenType for the definition. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, uri, base_img_uri (deprecated), meta. possible attribute keys on modifying token type and token: name, meta. |
 
 
 
