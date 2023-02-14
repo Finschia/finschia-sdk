@@ -171,11 +171,19 @@ func TestNewEventModifyToken(t *testing.T) {
 	event := token.EventModified{
 		ContractId: str(),
 		Operator:   str(),
-		Changes: []token.Attribute{{
-			Key:   token.AttributeKeyName.String(),
-			Value: str(),
-		}},
+		Changes: []token.Attribute{
+			{
+				Key:   token.AttributeKeyName.String(),
+				Value: str(),
+			},
+			{
+				Key:   token.AttributeKeyImageURI.String(),
+				Value: str(),
+			},
+		},
 	}
+	token.UpdateEventModified(&event)
+
 	legacies := token.NewEventModifyToken(event)
 	require.Greater(t, len(legacies), 1)
 
@@ -383,4 +391,28 @@ func TestNewEventApproveToken(t *testing.T) {
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacy, key.String(), value), key)
 	}
+}
+
+func TestUpdateModified(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
+	str := func() string { return randomString(8) }
+
+	event := token.EventModified{
+		ContractId: str(),
+		Operator:   str(),
+		Changes: []token.Attribute{
+			{
+				Key:   token.AttributeKeyName.String(),
+				Value: str(),
+			},
+			{
+				Key:   token.AttributeKeyImageURI.String(),
+				Value: str(),
+			},
+		},
+	}
+	token.UpdateEventModified(&event)
+
+	newChange := event.Changes[len(event.Changes) - 1]
+	require.Equal(t, token.AttributeKeyURI.String(), newChange.Key)
 }

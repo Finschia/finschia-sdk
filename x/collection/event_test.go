@@ -344,11 +344,19 @@ func TestNewEventModifyCollection(t *testing.T) {
 	event := collection.EventModifiedContract{
 		ContractId: str(),
 		Operator:   str(),
-		Changes: []collection.Attribute{{
-			Key:   collection.AttributeKeyName.String(),
-			Value: str(),
-		}},
+		Changes: []collection.Attribute{
+			{
+				Key:   collection.AttributeKeyName.String(),
+				Value: str(),
+			},
+			{
+				Key:   collection.AttributeKeyBaseImgURI.String(),
+				Value: str(),
+			},
+		},
 	}
+	collection.UpdateEventModifiedContract(&event)
+
 	legacies := collection.NewEventModifyCollection(event)
 	require.Greater(t, len(legacies), 1)
 
@@ -955,4 +963,28 @@ func TestNewEventOperationRootChanged(t *testing.T) {
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacy, key.String(), value), key)
 	}
+}
+
+func TestUpdateModifiedContract(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
+	str := func() string { return randomString(8) }
+
+	event := collection.EventModifiedContract{
+		ContractId: str(),
+		Operator:   str(),
+		Changes: []collection.Attribute{
+			{
+				Key:   collection.AttributeKeyName.String(),
+				Value: str(),
+			},
+			{
+				Key:   collection.AttributeKeyBaseImgURI.String(),
+				Value: str(),
+			},
+		},
+	}
+	collection.UpdateEventModifiedContract(&event)
+
+	newChange := event.Changes[len(event.Changes) - 1]
+	require.Equal(t, collection.AttributeKeyURI.String(), newChange.Key)
 }
