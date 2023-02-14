@@ -13009,13 +13009,14 @@ AttributeKey enumerates the valid attribute keys on x/token.
 | ATTRIBUTE_KEY_OWNER | 5 |  |
 | ATTRIBUTE_KEY_AMOUNT | 6 |  |
 | ATTRIBUTE_KEY_DECIMALS | 7 |  |
-| ATTRIBUTE_KEY_IMG_URI | 8 |  |
+| ATTRIBUTE_KEY_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
 | ATTRIBUTE_KEY_MINTABLE | 9 |  |
 | ATTRIBUTE_KEY_FROM | 10 |  |
 | ATTRIBUTE_KEY_TO | 11 |  |
 | ATTRIBUTE_KEY_PERM | 12 |  |
 | ATTRIBUTE_KEY_APPROVER | 13 |  |
 | ATTRIBUTE_KEY_PROXY | 14 |  |
+| ATTRIBUTE_KEY_URI | 15 |  |
 
 
 
@@ -13644,7 +13645,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes to apply. possible attribute keys are: name, img_uri, meta |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes to apply. possible attribute keys are: name, uri, img_uri (deprecated), meta |
 
 
 

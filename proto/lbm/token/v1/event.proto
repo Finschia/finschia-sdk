@@ -42,13 +42,15 @@ enum AttributeKey {
   ATTRIBUTE_KEY_OWNER       = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
   ATTRIBUTE_KEY_AMOUNT      = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
   ATTRIBUTE_KEY_DECIMALS    = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
-  ATTRIBUTE_KEY_IMG_URI     = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
-  ATTRIBUTE_KEY_MINTABLE    = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
-  ATTRIBUTE_KEY_FROM        = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
-  ATTRIBUTE_KEY_TO          = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
-  ATTRIBUTE_KEY_PERM        = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
-  ATTRIBUTE_KEY_APPROVER    = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
-  ATTRIBUTE_KEY_PROXY       = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
+  // deprecated: use ATTRIBUTE_KEY_URI
+  ATTRIBUTE_KEY_IMG_URI  = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
+  ATTRIBUTE_KEY_MINTABLE = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
+  ATTRIBUTE_KEY_FROM     = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
+  ATTRIBUTE_KEY_TO       = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
+  ATTRIBUTE_KEY_PERM     = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
+  ATTRIBUTE_KEY_APPROVER = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
+  ATTRIBUTE_KEY_PROXY    = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
+  ATTRIBUTE_KEY_URI      = 15 [(gogoproto.enumvalue_customname) = "AttributeKeyURI"];
 }
 
 // EventSent is emitted when tokens are transferred.

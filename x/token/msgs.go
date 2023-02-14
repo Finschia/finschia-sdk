@@ -201,7 +201,7 @@ func (m MsgIssue) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateImageURI(m.Uri); err != nil {
+	if err := validateURI(m.Uri); err != nil {
 		return err
 	}
 
@@ -462,10 +462,11 @@ func (m MsgModify) ValidateBasic() error {
 
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
-		if seenKeys[change.Key] {
+		key := canonicalKey(change.Key)
+		if seenKeys[key] {
 			return ErrDuplicateChangesField.Wrapf("duplicate fields: %s", change.Key)
 		}
-		seenKeys[change.Key] = true
+		seenKeys[key] = true
 
 		if err := validateChange(change); err != nil {
 			return err
