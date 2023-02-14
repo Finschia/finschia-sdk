@@ -7,8 +7,7 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -19,7 +18,7 @@ import (
 func TestFilteredFeeValidAllow(t *testing.T) {
 	app := simapp.Setup(false)
 
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{
 		Time: time.Now(),
 	})
 	eth := sdk.NewCoins(sdk.NewInt64Coin("eth", 10))
@@ -137,7 +136,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 			err := tc.allowance.ValidateBasic()
 			require.NoError(t, err)
 
-			ctx := app.BaseApp.NewContext(false, ocproto.Header{}).WithBlockTime(tc.blockTime)
+			ctx := app.BaseApp.NewContext(false, tmproto.Header{}).WithBlockTime(tc.blockTime)
 
 			// create grant
 			var granter, grantee sdk.AccAddress

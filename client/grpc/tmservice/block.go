@@ -5,6 +5,7 @@ import (
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	ctypes "github.com/line/ostracon/rpc/core/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/client"
 )
@@ -39,14 +40,14 @@ func getBlockResultsByHeight(clientCtx client.Context, height *int64) (*ctypes.R
 	return node.BlockResults(context.Background(), height)
 }
 
-func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64) (ocproto.BlockID, *ocproto.Block, error) {
+func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64) (tmproto.BlockID, *ocproto.Block, error) {
 	block, err := getBlock(ctx, clientCtx, height)
 	if err != nil {
-		return ocproto.BlockID{}, nil, err
+		return tmproto.BlockID{}, nil, err
 	}
 	protoBlock, err := block.Block.ToProto()
 	if err != nil {
-		return ocproto.BlockID{}, nil, err
+		return tmproto.BlockID{}, nil, err
 	}
 	protoBlockID := block.BlockID.ToProto()
 

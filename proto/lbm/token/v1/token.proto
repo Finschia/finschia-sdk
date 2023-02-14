@@ -10,17 +10,17 @@ import "gogoproto/gogo.proto";
 // Params defines the parameters for the token module.
 message Params {}
 
-// TokenClass defines token information.
-message TokenClass {
-  // contract_id defines the unique identifier of the token class.
-  string contract_id = 1;
-  // name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
+// Contract defines token information.
+message Contract {
+  // id defines the unique identifier of the contract.
+  string id = 1;
+  // name defines the human-readable name of the contract. mandatory (not ERC20 compliant).
   string name = 2;
-  // symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
+  // symbol is an abbreviated name for contract. mandatory (not ERC20 compliant).
   string symbol = 3;
-  // image_uri is an uri for the image of the token class stored off chain.
-  string image_uri = 4;
-  // meta is a brief description of token class.
+  // an uri for the image of the contract stored off chain.
+  string uri = 4;
+  // meta is a brief description of contract.
   string meta = 5;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
   int32 decimals = 6;
@@ -28,13 +28,13 @@ message TokenClass {
   bool mintable = 7;
 }
 
-// Pair defines a key-value pair.
-message Pair {
-  string field = 1;
+// Attribute defines a key and value of the attribute.
+message Attribute {
+  string key   = 1;
   string value = 2;
 }
 
-// Permission enumerates the valid permissions on a token class.
+// Permission enumerates the valid permissions on a contract.
 enum Permission {
   option (gogoproto.goproto_enum_prefix) = false;
 
@@ -51,7 +51,7 @@ enum Permission {
 
 // Deprecated: use Permission
 //
-// LegacyPermission enumerates the valid permissions on a token class.
+// LegacyPermission enumerates the valid permissions on a contract.
 enum LegacyPermission {
   option (gogoproto.goproto_enum_stringer) = false;
   option (gogoproto.goproto_enum_prefix)   = false;
@@ -79,6 +79,6 @@ message Authorization {
 message Grant {
   // address of the grantee.
   string grantee = 1;
-  // permission on the token class.
+  // permission on the contract.
   Permission permission = 2;
 }

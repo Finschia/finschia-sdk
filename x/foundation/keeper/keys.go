@@ -23,7 +23,9 @@ var (
 
 	poolKey = []byte{0x30}
 
-	govMintKey = []byte{0x40}
+	// deprecatedGovMintKey Deprecated. Don't use it again.
+	deprecatedGovMintKey = []byte{0x40}
+	_                    = deprecatedGovMintKey
 )
 
 // must be constant

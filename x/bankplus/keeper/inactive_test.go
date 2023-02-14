@@ -4,10 +4,11 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -36,7 +37,7 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 	accountKeeper := accountkeeper.NewAccountKeeper(cdc, accountStoreKey, accountSubspace, accounttypes.ProtoBaseAccount, nil)
 
 	bankSubspace := paramtypes.NewSubspace(cdc, amino, storeKey, testTransientStoreKey, banktypes.StoreKey)
-	return NewBaseKeeper(cdc, storeKey, accountKeeper, bankSubspace, nil)
+	return NewBaseKeeper(cdc, storeKey, accountKeeper, bankSubspace, nil, false)
 }
 
 func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
@@ -45,7 +46,7 @@ func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
 	stateStore.MountStoreWithDB(storeKey, sdk.StoreTypeIAVL, db)
 	require.NoError(t, stateStore.LoadLatestVersion())
 
-	return sdk.NewContext(stateStore, ostproto.Header{}, false, log.NewNopLogger())
+	return sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 }
 
 func TestInactiveAddr(t *testing.T) {

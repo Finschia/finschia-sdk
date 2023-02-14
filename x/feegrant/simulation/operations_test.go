@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	ocabci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
@@ -29,7 +29,7 @@ func (suite *SimTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{
+	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{
 		Time: time.Now(),
 	})
 }
@@ -104,7 +104,7 @@ func (suite *SimTestSuite) TestSimulateMsgGrantAllowance() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgGrantAllowance(app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper)
@@ -129,7 +129,7 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeAllowance() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	feeAmt := app.StakingKeeper.TokensFromConsensusPower(ctx, 200000)
 	feeCoins := sdk.NewCoins(sdk.NewCoin("foo", feeAmt))

@@ -8,7 +8,7 @@ import (
 	"github.com/line/lbm-sdk/x/evidence/exported"
 	"github.com/line/lbm-sdk/x/evidence/types"
 
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {

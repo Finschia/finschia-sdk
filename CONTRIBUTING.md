@@ -57,6 +57,20 @@ Other notes:
   A convenience git `pre-commit` hook that runs the formatters automatically
   before each commit is available in the `contrib/githooks/` directory.
 
+## Commit Convention
+All commits pushed to `lbm-sdk` are classified according to the rules below.
+Therefore, it cannot be included in the release notes unless you properly assign the prefix to the commit. For example, you can write commit message like `feat: this is new feature`. However, if you want to clarify the scope of the commit, you can write it as follows `feat(x/token): this is new feature`.
+- `chore` : a commit of the type chore makes trivial changes. If you don't want to include specific commit in the release note, add this prefix.
+- `feat` : a commit of the type feat introduces a new feature to the codebase
+- `fix` : a commit of the type fix patches a bug in your codebase
+- `refactor` : A code change that neither fixes a bug nor adds a feature
+- `BREAKING CHANGE` : a commit of the type breaking changes to the codebase. This changes breaks down the backward compatibility
+- `perf` : A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `docs`: Documentation only changes
+- `build`: Changes that affect the build system or external dependencies
+- `ci`: Changes to our CI configuration files and scripts
+
 ## Pull Requests
 
 To accommodate review process we suggest that PRs are categorically broken up.

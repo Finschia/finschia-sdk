@@ -2,7 +2,7 @@ syntax = "proto3";
 package cosmos.base.abci.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "ostracon/abci/types.proto";
+import "tendermint/abci/types.proto";
 import "google/protobuf/any.proto";
 
 option go_package                       = "github.com/line/lbm-sdk/types";
@@ -45,9 +45,7 @@ message TxResponse {
   // additional metadata, emitted only by processing the messages.
   //
   // Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
-  repeated ostracon.abci.Event events = 13 [(gogoproto.nullable) = false];
-  // The transaction index within block
-  uint32 index = 14;
+  repeated tendermint.abci.Event events = 13 [(gogoproto.nullable) = false];
 }
 
 // ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
@@ -100,7 +98,7 @@ message Result {
 
   // Events contains a slice of Event objects that were emitted during message
   // or handler execution.
-  repeated ostracon.abci.Event events = 3 [(gogoproto.nullable) = false];
+  repeated tendermint.abci.Event events = 3 [(gogoproto.nullable) = false];
 }
 
 // SimulationResponse defines the response generated when a transaction is

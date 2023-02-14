@@ -6,18 +6,19 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/simapp"
 )
 
 func setup(withGenesis bool, invCheckPeriod uint, db dbm.DB) (*simapp.SimApp, simapp.GenesisState) {
 	encCdc := simapp.MakeTestEncodingConfig()
-	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, invCheckPeriod, encCdc, simapp.EmptyAppOptions{}, nil)
+	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, invCheckPeriod, encCdc, simapp.EmptyAppOptions{})
 	if withGenesis {
 		return app, simapp.NewDefaultGenesisState(encCdc.Marshaler)
 	}
@@ -55,11 +56,11 @@ func TestRollback(t *testing.T) {
 	ver0 := app.LastBlockHeight()
 	// commit 10 blocks
 	for i := int64(1); i <= 10; i++ {
-		header := ocproto.Header{
+		header := tmproto.Header{
 			Height:  ver0 + i,
 			AppHash: app.LastCommitID().Hash,
 		}
-		app.BeginBlock(abci.RequestBeginBlock{Header: header})
+		app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 		ctx := app.NewContext(false, header)
 		store := ctx.KVStore(app.GetKey("bank"))
 		store.Set([]byte("key"), []byte(fmt.Sprintf("value%d", i)))
@@ -67,7 +68,7 @@ func TestRollback(t *testing.T) {
 	}
 
 	require.Equal(t, ver0+10, app.LastBlockHeight())
-	store := app.NewContext(true, ocproto.Header{}).KVStore(app.GetKey("bank"))
+	store := app.NewContext(true, tmproto.Header{}).KVStore(app.GetKey("bank"))
 	require.Equal(t, []byte("value10"), store.Get([]byte("key")))
 
 	// rollback 5 blocks
@@ -77,17 +78,17 @@ func TestRollback(t *testing.T) {
 
 	// recreate app to have clean check state
 	encCdc := simapp.MakeTestEncodingConfig()
-	app = simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 5, encCdc, simapp.EmptyAppOptions{}, nil)
-	store = app.NewContext(true, ocproto.Header{}).KVStore(app.GetKey("bank"))
+	app = simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 5, encCdc, simapp.EmptyAppOptions{})
+	store = app.NewContext(true, tmproto.Header{}).KVStore(app.GetKey("bank"))
 	require.Equal(t, []byte("value5"), store.Get([]byte("key")))
 
 	// commit another 5 blocks with different values
 	for i := int64(6); i <= 10; i++ {
-		header := ocproto.Header{
+		header := tmproto.Header{
 			Height:  ver0 + i,
 			AppHash: app.LastCommitID().Hash,
 		}
-		app.BeginBlock(abci.RequestBeginBlock{Header: header})
+		app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 		ctx := app.NewContext(false, header)
 		store := ctx.KVStore(app.GetKey("bank"))
 		store.Set([]byte("key"), []byte(fmt.Sprintf("VALUE%d", i)))
@@ -95,6 +96,6 @@ func TestRollback(t *testing.T) {
 	}
 
 	require.Equal(t, ver0+10, app.LastBlockHeight())
-	store = app.NewContext(true, ocproto.Header{}).KVStore(app.GetKey("bank"))
+	store = app.NewContext(true, tmproto.Header{}).KVStore(app.GetKey("bank"))
 	require.Equal(t, []byte("VALUE10"), store.Get([]byte("key")))
 }

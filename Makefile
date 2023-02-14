@@ -573,7 +573,7 @@ libsodium:
 ###                                release                                  ###
 ###############################################################################
 
-GORELEASER_CONFIG ?= .goreleaser.yaml
+GORELEASER_CONFIG ?= .goreleaser.yml
 
 GORELEASER_BUILD_LDF = $(ldflags)
 GORELEASER_BUILD_LDF += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
@@ -581,11 +581,10 @@ GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
 GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
-GORELEASER_IMAGE         ?= line/goreleaser-cross:1.13-1.19.3
+GORELEASER_IMAGE         ?= line/goreleaserx-wasm:1.0.0-0.10.0
 GORELEASER_RELEASE       ?= false
-GORELEASER_IMAGE         ?= goreleaser/goreleaser-cross:v$(GOLANG_VERSION)
-GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
-#GO_MOD_NAME              := github.com/line/lbm-sdk
+#GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
+GO_MOD_NAME              := github.com/line/lbm-sdk
 
 ifeq ($(GORELEASER_RELEASE),true)
 	GORELEASER_SKIP_VALIDATE := false

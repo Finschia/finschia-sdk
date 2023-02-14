@@ -14,17 +14,21 @@ import (
 
 func TestEventTypeStringer(t *testing.T) {
 	for _, name := range token.EventType_name {
-		value := token.EventType(token.EventType_value[name])
-		customName := value.String()
-		require.EqualValues(t, value, token.EventTypeFromString(customName), name)
+		t.Run(name, func(t *testing.T) {
+			value := token.EventType(token.EventType_value[name])
+			customName := value.String()
+			require.EqualValues(t, value, token.EventTypeFromString(customName))
+		})
 	}
 }
 
 func TestAttributeKeyStringer(t *testing.T) {
 	for _, name := range token.AttributeKey_name {
-		value := token.AttributeKey(token.AttributeKey_value[name])
-		customName := value.String()
-		require.EqualValues(t, value, token.AttributeKeyFromString(customName), name)
+		t.Run(name, func(t *testing.T) {
+			value := token.AttributeKey(token.AttributeKey_value[name])
+			customName := value.String()
+			require.EqualValues(t, value, token.AttributeKeyFromString(customName))
+		})
 	}
 }
 
@@ -167,8 +171,8 @@ func TestNewEventModifyToken(t *testing.T) {
 	event := token.EventModified{
 		ContractId: str(),
 		Operator:   str(),
-		Changes: []token.Pair{{
-			Field: token.AttributeKeyName.String(),
+		Changes: []token.Attribute{{
+			Key:   token.AttributeKeyName.String(),
 			Value: str(),
 		}},
 	}
@@ -187,7 +191,7 @@ func TestNewEventModifyToken(t *testing.T) {
 		require.Equal(t, token.EventTypeModifyToken.String(), legacy.Type)
 
 		attributes := map[string]string{
-			event.Changes[i].Field: event.Changes[i].Value,
+			event.Changes[i].Key: event.Changes[i].Value,
 		}
 		for key, value := range attributes {
 			require.True(t, assertAttribute(legacy, key, value), key)

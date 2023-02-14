@@ -312,47 +312,6 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 	return &collection.QueryTokenTypeResponse{TokenType: tokenType}, nil
 }
 
-func (s queryServer) TokenTypes(c context.Context, req *collection.QueryTokenTypesRequest) (*collection.QueryTokenTypesResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	tokenTypeStore := prefix.NewStore(store, legacyTokenTypeKeyPrefixByContractID(req.ContractId))
-	var tokenTypes []collection.TokenType
-	pageRes, err := query.Paginate(tokenTypeStore, req.Pagination, func(key []byte, value []byte) error {
-		classID := string(key)
-		class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
-		if err != nil {
-			panic(err)
-		}
-
-		nftClass, ok := class.(*collection.NFTClass)
-		if !ok {
-			panic(sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", key))
-		}
-
-		tokenType := collection.TokenType{
-			ContractId: req.ContractId,
-			TokenType:  nftClass.Id,
-			Name:       nftClass.Name,
-			Meta:       nftClass.Meta,
-		}
-		tokenTypes = append(tokenTypes, tokenType)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryTokenTypesResponse{TokenTypes: tokenTypes, Pagination: pageRes}, nil
-}
-
 func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string) (collection.Token, error) {
 	switch {
 	case collection.ValidateNFTID(tokenID) == nil:
@@ -361,10 +320,10 @@ func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string
 			return nil, err
 		}
 
-		owner := s.keeper.GetRootOwner(ctx, contractID, token.Id)
+		owner := s.keeper.GetRootOwner(ctx, contractID, token.TokenId)
 		return &collection.OwnerNFT{
 			ContractId: contractID,
-			TokenId:    token.Id,
+			TokenId:    token.TokenId,
 			Name:       token.Name,
 			Meta:       token.Meta,
 			Owner:      owner.String(),
@@ -419,80 +378,6 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 	}
 
 	return &collection.QueryTokenResponse{Token: *any}, nil
-}
-
-func (s queryServer) TokensWithTokenType(c context.Context, req *collection.QueryTokensWithTokenTypeRequest) (*collection.QueryTokensWithTokenTypeResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	if err := collection.ValidateClassID(req.TokenType); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	tokenStore := prefix.NewStore(store, legacyTokenKeyPrefixByTokenType(req.ContractId, req.TokenType))
-	var tokens []codectypes.Any
-	pageRes, err := query.Paginate(tokenStore, req.Pagination, func(key []byte, value []byte) error {
-		tokenID := req.TokenType + string(key)
-		legacyToken, err := s.getToken(ctx, req.ContractId, tokenID)
-		if err != nil {
-			panic(err)
-		}
-
-		any, err := codectypes.NewAnyWithValue(legacyToken)
-		if err != nil {
-			panic(err)
-		}
-
-		tokens = append(tokens, *any)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryTokensWithTokenTypeResponse{Tokens: tokens, Pagination: pageRes}, nil
-}
-
-func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensRequest) (*collection.QueryTokensResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	tokenStore := prefix.NewStore(store, legacyTokenKeyPrefixByContractID(req.ContractId))
-	var tokens []codectypes.Any
-	pageRes, err := query.Paginate(tokenStore, req.Pagination, func(key []byte, value []byte) error {
-		tokenID := string(key)
-		legacyToken, err := s.getToken(ctx, req.ContractId, tokenID)
-		if err != nil {
-			panic(err)
-		}
-
-		any, err := codectypes.NewAnyWithValue(legacyToken)
-		if err != nil {
-			panic(err)
-		}
-
-		tokens = append(tokens, *any)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryTokensResponse{Tokens: tokens, Pagination: pageRes}, nil
 }
 
 func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (*collection.QueryRootResponse, error) {
@@ -624,7 +509,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 	return &collection.QueryGranteeGrantsResponse{Grants: grants, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRequest) (*collection.QueryApprovedResponse, error) {
+func (s queryServer) IsOperatorFor(c context.Context, req *collection.QueryIsOperatorForRequest) (*collection.QueryIsOperatorForResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -633,23 +518,23 @@ func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRe
 		return nil, err
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
 		return nil, err
 	}
-	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
+	holder, err := sdk.AccAddressFromBech32(req.Holder)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, approverAddr, addr)
-	approved := (err == nil)
+	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, holder, operator)
+	authorized := (err == nil)
 
-	return &collection.QueryApprovedResponse{Approved: approved}, nil
+	return &collection.QueryIsOperatorForResponse{Authorized: authorized}, nil
 }
 
-func (s queryServer) Approvers(c context.Context, req *collection.QueryApproversRequest) (*collection.QueryApproversResponse, error) {
+func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryHoldersByOperatorRequest) (*collection.QueryHoldersByOperatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -658,23 +543,23 @@ func (s queryServer) Approvers(c context.Context, req *collection.QueryApprovers
 		return nil, err
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address address: %s", req.Address)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, addr))
-	var approvers []string
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
+	var holders []string
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
 		holder := sdk.AccAddress(key)
-		approvers = append(approvers, holder.String())
+		holders = append(holders, holder.String())
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &collection.QueryApproversResponse{Approvers: approvers, Pagination: pageRes}, nil
+	return &collection.QueryHoldersByOperatorResponse{Holders: holders, Pagination: pageRes}, nil
 }

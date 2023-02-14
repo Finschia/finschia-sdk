@@ -34,7 +34,6 @@ type Keeper struct {
 	// - MsgGrant
 	// - MsgRevoke
 	// - MsgWithdrawFromTreasury
-	// - MsgGovMint
 	//
 	// Typically, this should be the x/foundation module account.
 	authority string

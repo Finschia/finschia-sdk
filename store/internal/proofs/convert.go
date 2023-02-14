@@ -5,7 +5,7 @@ import (
 	"math/bits"
 
 	ics23 "github.com/confio/ics23/go"
-	"github.com/line/ostracon/proto/ostracon/crypto"
+	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 )
 
 // ConvertExistenceProof will convert the given proof into a valid

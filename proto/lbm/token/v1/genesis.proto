@@ -18,7 +18,7 @@ message GenesisState {
   repeated ContractBalances balances = 3 [(gogoproto.nullable) = false];
 
   // classes defines the metadata of the differents tokens.
-  repeated TokenClass classes = 4 [(gogoproto.nullable) = false];
+  repeated Contract classes = 4 [(gogoproto.nullable) = false];
 
   // grants defines the grant information.
   repeated ContractGrants grants = 5 [(gogoproto.nullable) = false];

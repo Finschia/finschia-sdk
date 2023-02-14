@@ -584,345 +584,6 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
-- [cosmwasm/wasm/v1/types.proto](#cosmwasm/wasm/v1/types.proto)
-    - [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition)
-    - [AccessConfig](#cosmwasm.wasm.v1.AccessConfig)
-    - [AccessTypeParam](#cosmwasm.wasm.v1.AccessTypeParam)
-    - [CodeInfo](#cosmwasm.wasm.v1.CodeInfo)
-    - [ContractCodeHistoryEntry](#cosmwasm.wasm.v1.ContractCodeHistoryEntry)
-    - [ContractInfo](#cosmwasm.wasm.v1.ContractInfo)
-    - [Model](#cosmwasm.wasm.v1.Model)
-    - [Params](#cosmwasm.wasm.v1.Params)
-  
-    - [AccessType](#cosmwasm.wasm.v1.AccessType)
-    - [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType)
-  
-- [cosmwasm/wasm/v1/tx.proto](#cosmwasm/wasm/v1/tx.proto)
-    - [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin)
-    - [MsgClearAdminResponse](#cosmwasm.wasm.v1.MsgClearAdminResponse)
-    - [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract)
-    - [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse)
-    - [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract)
-    - [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse)
-    - [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract)
-    - [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse)
-    - [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode)
-    - [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse)
-    - [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin)
-    - [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse)
-  
-    - [Msg](#cosmwasm.wasm.v1.Msg)
-  
-- [cosmwasm/wasm/v1/genesis.proto](#cosmwasm/wasm/v1/genesis.proto)
-    - [Code](#cosmwasm.wasm.v1.Code)
-    - [Contract](#cosmwasm.wasm.v1.Contract)
-    - [GenesisState](#cosmwasm.wasm.v1.GenesisState)
-    - [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs)
-    - [Sequence](#cosmwasm.wasm.v1.Sequence)
-  
-- [cosmwasm/wasm/v1/ibc.proto](#cosmwasm/wasm/v1/ibc.proto)
-    - [MsgIBCCloseChannel](#cosmwasm.wasm.v1.MsgIBCCloseChannel)
-    - [MsgIBCSend](#cosmwasm.wasm.v1.MsgIBCSend)
-  
-- [cosmwasm/wasm/v1/proposal.proto](#cosmwasm/wasm/v1/proposal.proto)
-    - [AccessConfigUpdate](#cosmwasm.wasm.v1.AccessConfigUpdate)
-    - [ClearAdminProposal](#cosmwasm.wasm.v1.ClearAdminProposal)
-    - [ExecuteContractProposal](#cosmwasm.wasm.v1.ExecuteContractProposal)
-    - [InstantiateContractProposal](#cosmwasm.wasm.v1.InstantiateContractProposal)
-    - [MigrateContractProposal](#cosmwasm.wasm.v1.MigrateContractProposal)
-    - [PinCodesProposal](#cosmwasm.wasm.v1.PinCodesProposal)
-    - [StoreCodeProposal](#cosmwasm.wasm.v1.StoreCodeProposal)
-    - [SudoContractProposal](#cosmwasm.wasm.v1.SudoContractProposal)
-    - [UnpinCodesProposal](#cosmwasm.wasm.v1.UnpinCodesProposal)
-    - [UpdateAdminProposal](#cosmwasm.wasm.v1.UpdateAdminProposal)
-    - [UpdateInstantiateConfigProposal](#cosmwasm.wasm.v1.UpdateInstantiateConfigProposal)
-  
-- [cosmwasm/wasm/v1/query.proto](#cosmwasm/wasm/v1/query.proto)
-    - [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse)
-    - [QueryAllContractStateRequest](#cosmwasm.wasm.v1.QueryAllContractStateRequest)
-    - [QueryAllContractStateResponse](#cosmwasm.wasm.v1.QueryAllContractStateResponse)
-    - [QueryCodeRequest](#cosmwasm.wasm.v1.QueryCodeRequest)
-    - [QueryCodeResponse](#cosmwasm.wasm.v1.QueryCodeResponse)
-    - [QueryCodesRequest](#cosmwasm.wasm.v1.QueryCodesRequest)
-    - [QueryCodesResponse](#cosmwasm.wasm.v1.QueryCodesResponse)
-    - [QueryContractHistoryRequest](#cosmwasm.wasm.v1.QueryContractHistoryRequest)
-    - [QueryContractHistoryResponse](#cosmwasm.wasm.v1.QueryContractHistoryResponse)
-    - [QueryContractInfoRequest](#cosmwasm.wasm.v1.QueryContractInfoRequest)
-    - [QueryContractInfoResponse](#cosmwasm.wasm.v1.QueryContractInfoResponse)
-    - [QueryContractsByCodeRequest](#cosmwasm.wasm.v1.QueryContractsByCodeRequest)
-    - [QueryContractsByCodeResponse](#cosmwasm.wasm.v1.QueryContractsByCodeResponse)
-    - [QueryPinnedCodesRequest](#cosmwasm.wasm.v1.QueryPinnedCodesRequest)
-    - [QueryPinnedCodesResponse](#cosmwasm.wasm.v1.QueryPinnedCodesResponse)
-    - [QueryRawContractStateRequest](#cosmwasm.wasm.v1.QueryRawContractStateRequest)
-    - [QueryRawContractStateResponse](#cosmwasm.wasm.v1.QueryRawContractStateResponse)
-    - [QuerySmartContractStateRequest](#cosmwasm.wasm.v1.QuerySmartContractStateRequest)
-    - [QuerySmartContractStateResponse](#cosmwasm.wasm.v1.QuerySmartContractStateResponse)
-  
-    - [Query](#cosmwasm.wasm.v1.Query)
-  
-- [ibc/applications/interchain_accounts/v1/account.proto](#ibc/applications/interchain_accounts/v1/account.proto)
-    - [InterchainAccount](#ibc.applications.interchain_accounts.v1.InterchainAccount)
-  
-- [ibc/applications/interchain_accounts/v1/genesis.proto](#ibc/applications/interchain_accounts/v1/genesis.proto)
-    - [ActiveChannel](#ibc.applications.interchain_accounts.v1.ActiveChannel)
-    - [ControllerGenesisState](#ibc.applications.interchain_accounts.v1.ControllerGenesisState)
-    - [GenesisState](#ibc.applications.interchain_accounts.v1.GenesisState)
-    - [HostGenesisState](#ibc.applications.interchain_accounts.v1.HostGenesisState)
-    - [RegisteredInterchainAccount](#ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount)
-  
-- [ibc/applications/interchain_accounts/v1/metadata.proto](#ibc/applications/interchain_accounts/v1/metadata.proto)
-    - [Metadata](#ibc.applications.interchain_accounts.v1.Metadata)
-  
-- [ibc/applications/interchain_accounts/v1/packet.proto](#ibc/applications/interchain_accounts/v1/packet.proto)
-    - [CosmosTx](#ibc.applications.interchain_accounts.v1.CosmosTx)
-    - [InterchainAccountPacketData](#ibc.applications.interchain_accounts.v1.InterchainAccountPacketData)
-  
-    - [Type](#ibc.applications.interchain_accounts.v1.Type)
-  
-- [ibc/applications/transfer/v1/transfer.proto](#ibc/applications/transfer/v1/transfer.proto)
-    - [DenomTrace](#ibc.applications.transfer.v1.DenomTrace)
-    - [Params](#ibc.applications.transfer.v1.Params)
-  
-- [ibc/applications/transfer/v1/genesis.proto](#ibc/applications/transfer/v1/genesis.proto)
-    - [GenesisState](#ibc.applications.transfer.v1.GenesisState)
-  
-- [ibc/applications/transfer/v1/query.proto](#ibc/applications/transfer/v1/query.proto)
-    - [QueryDenomHashRequest](#ibc.applications.transfer.v1.QueryDenomHashRequest)
-    - [QueryDenomHashResponse](#ibc.applications.transfer.v1.QueryDenomHashResponse)
-    - [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest)
-    - [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse)
-    - [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest)
-    - [QueryDenomTracesResponse](#ibc.applications.transfer.v1.QueryDenomTracesResponse)
-    - [QueryParamsRequest](#ibc.applications.transfer.v1.QueryParamsRequest)
-    - [QueryParamsResponse](#ibc.applications.transfer.v1.QueryParamsResponse)
-  
-    - [Query](#ibc.applications.transfer.v1.Query)
-  
-- [ibc/core/client/v1/client.proto](#ibc/core/client/v1/client.proto)
-    - [ClientConsensusStates](#ibc.core.client.v1.ClientConsensusStates)
-    - [ClientUpdateProposal](#ibc.core.client.v1.ClientUpdateProposal)
-    - [ConsensusStateWithHeight](#ibc.core.client.v1.ConsensusStateWithHeight)
-    - [Height](#ibc.core.client.v1.Height)
-    - [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState)
-    - [Params](#ibc.core.client.v1.Params)
-    - [UpgradeProposal](#ibc.core.client.v1.UpgradeProposal)
-  
-- [ibc/applications/transfer/v1/tx.proto](#ibc/applications/transfer/v1/tx.proto)
-    - [MsgTransfer](#ibc.applications.transfer.v1.MsgTransfer)
-    - [MsgTransferResponse](#ibc.applications.transfer.v1.MsgTransferResponse)
-  
-    - [Msg](#ibc.applications.transfer.v1.Msg)
-  
-- [ibc/applications/transfer/v2/packet.proto](#ibc/applications/transfer/v2/packet.proto)
-    - [FungibleTokenPacketData](#ibc.applications.transfer.v2.FungibleTokenPacketData)
-  
-- [ibc/core/channel/v1/channel.proto](#ibc/core/channel/v1/channel.proto)
-    - [Acknowledgement](#ibc.core.channel.v1.Acknowledgement)
-    - [Channel](#ibc.core.channel.v1.Channel)
-    - [Counterparty](#ibc.core.channel.v1.Counterparty)
-    - [IdentifiedChannel](#ibc.core.channel.v1.IdentifiedChannel)
-    - [Packet](#ibc.core.channel.v1.Packet)
-    - [PacketState](#ibc.core.channel.v1.PacketState)
-  
-    - [Order](#ibc.core.channel.v1.Order)
-    - [State](#ibc.core.channel.v1.State)
-  
-- [ibc/core/channel/v1/genesis.proto](#ibc/core/channel/v1/genesis.proto)
-    - [GenesisState](#ibc.core.channel.v1.GenesisState)
-    - [PacketSequence](#ibc.core.channel.v1.PacketSequence)
-  
-- [ibc/core/channel/v1/query.proto](#ibc/core/channel/v1/query.proto)
-    - [QueryChannelClientStateRequest](#ibc.core.channel.v1.QueryChannelClientStateRequest)
-    - [QueryChannelClientStateResponse](#ibc.core.channel.v1.QueryChannelClientStateResponse)
-    - [QueryChannelConsensusStateRequest](#ibc.core.channel.v1.QueryChannelConsensusStateRequest)
-    - [QueryChannelConsensusStateResponse](#ibc.core.channel.v1.QueryChannelConsensusStateResponse)
-    - [QueryChannelRequest](#ibc.core.channel.v1.QueryChannelRequest)
-    - [QueryChannelResponse](#ibc.core.channel.v1.QueryChannelResponse)
-    - [QueryChannelsRequest](#ibc.core.channel.v1.QueryChannelsRequest)
-    - [QueryChannelsResponse](#ibc.core.channel.v1.QueryChannelsResponse)
-    - [QueryConnectionChannelsRequest](#ibc.core.channel.v1.QueryConnectionChannelsRequest)
-    - [QueryConnectionChannelsResponse](#ibc.core.channel.v1.QueryConnectionChannelsResponse)
-    - [QueryNextSequenceReceiveRequest](#ibc.core.channel.v1.QueryNextSequenceReceiveRequest)
-    - [QueryNextSequenceReceiveResponse](#ibc.core.channel.v1.QueryNextSequenceReceiveResponse)
-    - [QueryPacketAcknowledgementRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementRequest)
-    - [QueryPacketAcknowledgementResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementResponse)
-    - [QueryPacketAcknowledgementsRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementsRequest)
-    - [QueryPacketAcknowledgementsResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementsResponse)
-    - [QueryPacketCommitmentRequest](#ibc.core.channel.v1.QueryPacketCommitmentRequest)
-    - [QueryPacketCommitmentResponse](#ibc.core.channel.v1.QueryPacketCommitmentResponse)
-    - [QueryPacketCommitmentsRequest](#ibc.core.channel.v1.QueryPacketCommitmentsRequest)
-    - [QueryPacketCommitmentsResponse](#ibc.core.channel.v1.QueryPacketCommitmentsResponse)
-    - [QueryPacketReceiptRequest](#ibc.core.channel.v1.QueryPacketReceiptRequest)
-    - [QueryPacketReceiptResponse](#ibc.core.channel.v1.QueryPacketReceiptResponse)
-    - [QueryUnreceivedAcksRequest](#ibc.core.channel.v1.QueryUnreceivedAcksRequest)
-    - [QueryUnreceivedAcksResponse](#ibc.core.channel.v1.QueryUnreceivedAcksResponse)
-    - [QueryUnreceivedPacketsRequest](#ibc.core.channel.v1.QueryUnreceivedPacketsRequest)
-    - [QueryUnreceivedPacketsResponse](#ibc.core.channel.v1.QueryUnreceivedPacketsResponse)
-  
-    - [Query](#ibc.core.channel.v1.Query)
-  
-- [ibc/core/channel/v1/tx.proto](#ibc/core/channel/v1/tx.proto)
-    - [MsgAcknowledgement](#ibc.core.channel.v1.MsgAcknowledgement)
-    - [MsgAcknowledgementResponse](#ibc.core.channel.v1.MsgAcknowledgementResponse)
-    - [MsgChannelCloseConfirm](#ibc.core.channel.v1.MsgChannelCloseConfirm)
-    - [MsgChannelCloseConfirmResponse](#ibc.core.channel.v1.MsgChannelCloseConfirmResponse)
-    - [MsgChannelCloseInit](#ibc.core.channel.v1.MsgChannelCloseInit)
-    - [MsgChannelCloseInitResponse](#ibc.core.channel.v1.MsgChannelCloseInitResponse)
-    - [MsgChannelOpenAck](#ibc.core.channel.v1.MsgChannelOpenAck)
-    - [MsgChannelOpenAckResponse](#ibc.core.channel.v1.MsgChannelOpenAckResponse)
-    - [MsgChannelOpenConfirm](#ibc.core.channel.v1.MsgChannelOpenConfirm)
-    - [MsgChannelOpenConfirmResponse](#ibc.core.channel.v1.MsgChannelOpenConfirmResponse)
-    - [MsgChannelOpenInit](#ibc.core.channel.v1.MsgChannelOpenInit)
-    - [MsgChannelOpenInitResponse](#ibc.core.channel.v1.MsgChannelOpenInitResponse)
-    - [MsgChannelOpenTry](#ibc.core.channel.v1.MsgChannelOpenTry)
-    - [MsgChannelOpenTryResponse](#ibc.core.channel.v1.MsgChannelOpenTryResponse)
-    - [MsgRecvPacket](#ibc.core.channel.v1.MsgRecvPacket)
-    - [MsgRecvPacketResponse](#ibc.core.channel.v1.MsgRecvPacketResponse)
-    - [MsgTimeout](#ibc.core.channel.v1.MsgTimeout)
-    - [MsgTimeoutOnClose](#ibc.core.channel.v1.MsgTimeoutOnClose)
-    - [MsgTimeoutOnCloseResponse](#ibc.core.channel.v1.MsgTimeoutOnCloseResponse)
-    - [MsgTimeoutResponse](#ibc.core.channel.v1.MsgTimeoutResponse)
-  
-    - [ResponseResultType](#ibc.core.channel.v1.ResponseResultType)
-  
-    - [Msg](#ibc.core.channel.v1.Msg)
-  
-- [ibc/core/client/v1/genesis.proto](#ibc/core/client/v1/genesis.proto)
-    - [GenesisMetadata](#ibc.core.client.v1.GenesisMetadata)
-    - [GenesisState](#ibc.core.client.v1.GenesisState)
-    - [IdentifiedGenesisMetadata](#ibc.core.client.v1.IdentifiedGenesisMetadata)
-  
-- [ibc/core/client/v1/query.proto](#ibc/core/client/v1/query.proto)
-    - [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest)
-    - [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse)
-    - [QueryClientStateRequest](#ibc.core.client.v1.QueryClientStateRequest)
-    - [QueryClientStateResponse](#ibc.core.client.v1.QueryClientStateResponse)
-    - [QueryClientStatesRequest](#ibc.core.client.v1.QueryClientStatesRequest)
-    - [QueryClientStatesResponse](#ibc.core.client.v1.QueryClientStatesResponse)
-    - [QueryClientStatusRequest](#ibc.core.client.v1.QueryClientStatusRequest)
-    - [QueryClientStatusResponse](#ibc.core.client.v1.QueryClientStatusResponse)
-    - [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest)
-    - [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse)
-    - [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest)
-    - [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse)
-    - [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest)
-    - [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse)
-    - [QueryUpgradedConsensusStateRequest](#ibc.core.client.v1.QueryUpgradedConsensusStateRequest)
-    - [QueryUpgradedConsensusStateResponse](#ibc.core.client.v1.QueryUpgradedConsensusStateResponse)
-  
-    - [Query](#ibc.core.client.v1.Query)
-  
-- [ibc/core/client/v1/tx.proto](#ibc/core/client/v1/tx.proto)
-    - [MsgCreateClient](#ibc.core.client.v1.MsgCreateClient)
-    - [MsgCreateClientResponse](#ibc.core.client.v1.MsgCreateClientResponse)
-    - [MsgSubmitMisbehaviour](#ibc.core.client.v1.MsgSubmitMisbehaviour)
-    - [MsgSubmitMisbehaviourResponse](#ibc.core.client.v1.MsgSubmitMisbehaviourResponse)
-    - [MsgUpdateClient](#ibc.core.client.v1.MsgUpdateClient)
-    - [MsgUpdateClientResponse](#ibc.core.client.v1.MsgUpdateClientResponse)
-    - [MsgUpgradeClient](#ibc.core.client.v1.MsgUpgradeClient)
-    - [MsgUpgradeClientResponse](#ibc.core.client.v1.MsgUpgradeClientResponse)
-  
-    - [Msg](#ibc.core.client.v1.Msg)
-  
-- [ibc/core/commitment/v1/commitment.proto](#ibc/core/commitment/v1/commitment.proto)
-    - [MerklePath](#ibc.core.commitment.v1.MerklePath)
-    - [MerklePrefix](#ibc.core.commitment.v1.MerklePrefix)
-    - [MerkleProof](#ibc.core.commitment.v1.MerkleProof)
-    - [MerkleRoot](#ibc.core.commitment.v1.MerkleRoot)
-  
-- [ibc/core/connection/v1/connection.proto](#ibc/core/connection/v1/connection.proto)
-    - [ClientPaths](#ibc.core.connection.v1.ClientPaths)
-    - [ConnectionEnd](#ibc.core.connection.v1.ConnectionEnd)
-    - [ConnectionPaths](#ibc.core.connection.v1.ConnectionPaths)
-    - [Counterparty](#ibc.core.connection.v1.Counterparty)
-    - [IdentifiedConnection](#ibc.core.connection.v1.IdentifiedConnection)
-    - [Params](#ibc.core.connection.v1.Params)
-    - [Version](#ibc.core.connection.v1.Version)
-  
-    - [State](#ibc.core.connection.v1.State)
-  
-- [ibc/core/connection/v1/genesis.proto](#ibc/core/connection/v1/genesis.proto)
-    - [GenesisState](#ibc.core.connection.v1.GenesisState)
-  
-- [ibc/core/connection/v1/query.proto](#ibc/core/connection/v1/query.proto)
-    - [QueryClientConnectionsRequest](#ibc.core.connection.v1.QueryClientConnectionsRequest)
-    - [QueryClientConnectionsResponse](#ibc.core.connection.v1.QueryClientConnectionsResponse)
-    - [QueryConnectionClientStateRequest](#ibc.core.connection.v1.QueryConnectionClientStateRequest)
-    - [QueryConnectionClientStateResponse](#ibc.core.connection.v1.QueryConnectionClientStateResponse)
-    - [QueryConnectionConsensusStateRequest](#ibc.core.connection.v1.QueryConnectionConsensusStateRequest)
-    - [QueryConnectionConsensusStateResponse](#ibc.core.connection.v1.QueryConnectionConsensusStateResponse)
-    - [QueryConnectionRequest](#ibc.core.connection.v1.QueryConnectionRequest)
-    - [QueryConnectionResponse](#ibc.core.connection.v1.QueryConnectionResponse)
-    - [QueryConnectionsRequest](#ibc.core.connection.v1.QueryConnectionsRequest)
-    - [QueryConnectionsResponse](#ibc.core.connection.v1.QueryConnectionsResponse)
-  
-    - [Query](#ibc.core.connection.v1.Query)
-  
-- [ibc/core/connection/v1/tx.proto](#ibc/core/connection/v1/tx.proto)
-    - [MsgConnectionOpenAck](#ibc.core.connection.v1.MsgConnectionOpenAck)
-    - [MsgConnectionOpenAckResponse](#ibc.core.connection.v1.MsgConnectionOpenAckResponse)
-    - [MsgConnectionOpenConfirm](#ibc.core.connection.v1.MsgConnectionOpenConfirm)
-    - [MsgConnectionOpenConfirmResponse](#ibc.core.connection.v1.MsgConnectionOpenConfirmResponse)
-    - [MsgConnectionOpenInit](#ibc.core.connection.v1.MsgConnectionOpenInit)
-    - [MsgConnectionOpenInitResponse](#ibc.core.connection.v1.MsgConnectionOpenInitResponse)
-    - [MsgConnectionOpenTry](#ibc.core.connection.v1.MsgConnectionOpenTry)
-    - [MsgConnectionOpenTryResponse](#ibc.core.connection.v1.MsgConnectionOpenTryResponse)
-  
-    - [Msg](#ibc.core.connection.v1.Msg)
-  
-- [ibc/core/types/v1/genesis.proto](#ibc/core/types/v1/genesis.proto)
-    - [GenesisState](#ibc.core.types.v1.GenesisState)
-  
-- [ibc/lightclients/localhost/v1/localhost.proto](#ibc/lightclients/localhost/v1/localhost.proto)
-    - [ClientState](#ibc.lightclients.localhost.v1.ClientState)
-  
-- [ibc/lightclients/ostracon/v1/ostracon.proto](#ibc/lightclients/ostracon/v1/ostracon.proto)
-    - [ClientState](#ibc.lightclients.ostracon.v1.ClientState)
-    - [ConsensusState](#ibc.lightclients.ostracon.v1.ConsensusState)
-    - [Fraction](#ibc.lightclients.ostracon.v1.Fraction)
-    - [Header](#ibc.lightclients.ostracon.v1.Header)
-    - [Misbehaviour](#ibc.lightclients.ostracon.v1.Misbehaviour)
-  
-- [ibc/lightclients/solomachine/v1/solomachine.proto](#ibc/lightclients/solomachine/v1/solomachine.proto)
-    - [ChannelStateData](#ibc.lightclients.solomachine.v1.ChannelStateData)
-    - [ClientState](#ibc.lightclients.solomachine.v1.ClientState)
-    - [ClientStateData](#ibc.lightclients.solomachine.v1.ClientStateData)
-    - [ConnectionStateData](#ibc.lightclients.solomachine.v1.ConnectionStateData)
-    - [ConsensusState](#ibc.lightclients.solomachine.v1.ConsensusState)
-    - [ConsensusStateData](#ibc.lightclients.solomachine.v1.ConsensusStateData)
-    - [Header](#ibc.lightclients.solomachine.v1.Header)
-    - [HeaderData](#ibc.lightclients.solomachine.v1.HeaderData)
-    - [Misbehaviour](#ibc.lightclients.solomachine.v1.Misbehaviour)
-    - [NextSequenceRecvData](#ibc.lightclients.solomachine.v1.NextSequenceRecvData)
-    - [PacketAcknowledgementData](#ibc.lightclients.solomachine.v1.PacketAcknowledgementData)
-    - [PacketCommitmentData](#ibc.lightclients.solomachine.v1.PacketCommitmentData)
-    - [PacketReceiptAbsenceData](#ibc.lightclients.solomachine.v1.PacketReceiptAbsenceData)
-    - [SignBytes](#ibc.lightclients.solomachine.v1.SignBytes)
-    - [SignatureAndData](#ibc.lightclients.solomachine.v1.SignatureAndData)
-    - [TimestampedSignatureData](#ibc.lightclients.solomachine.v1.TimestampedSignatureData)
-  
-    - [DataType](#ibc.lightclients.solomachine.v1.DataType)
-  
-- [ibc/lightclients/solomachine/v2/solomachine.proto](#ibc/lightclients/solomachine/v2/solomachine.proto)
-    - [ChannelStateData](#ibc.lightclients.solomachine.v2.ChannelStateData)
-    - [ClientState](#ibc.lightclients.solomachine.v2.ClientState)
-    - [ClientStateData](#ibc.lightclients.solomachine.v2.ClientStateData)
-    - [ConnectionStateData](#ibc.lightclients.solomachine.v2.ConnectionStateData)
-    - [ConsensusState](#ibc.lightclients.solomachine.v2.ConsensusState)
-    - [ConsensusStateData](#ibc.lightclients.solomachine.v2.ConsensusStateData)
-    - [Header](#ibc.lightclients.solomachine.v2.Header)
-    - [HeaderData](#ibc.lightclients.solomachine.v2.HeaderData)
-    - [Misbehaviour](#ibc.lightclients.solomachine.v2.Misbehaviour)
-    - [NextSequenceRecvData](#ibc.lightclients.solomachine.v2.NextSequenceRecvData)
-    - [PacketAcknowledgementData](#ibc.lightclients.solomachine.v2.PacketAcknowledgementData)
-    - [PacketCommitmentData](#ibc.lightclients.solomachine.v2.PacketCommitmentData)
-    - [PacketReceiptAbsenceData](#ibc.lightclients.solomachine.v2.PacketReceiptAbsenceData)
-    - [SignBytes](#ibc.lightclients.solomachine.v2.SignBytes)
-    - [SignatureAndData](#ibc.lightclients.solomachine.v2.SignatureAndData)
-    - [TimestampedSignatureData](#ibc.lightclients.solomachine.v2.TimestampedSignatureData)
-  
-    - [DataType](#ibc.lightclients.solomachine.v2.DataType)
-  
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
   
@@ -952,7 +613,6 @@
 - [lbm/collection/v1/collection.proto](#lbm/collection/v1/collection.proto)
     - [Attribute](#lbm.collection.v1.Attribute)
     - [Authorization](#lbm.collection.v1.Authorization)
-    - [Change](#lbm.collection.v1.Change)
     - [Coin](#lbm.collection.v1.Coin)
     - [Contract](#lbm.collection.v1.Contract)
     - [FT](#lbm.collection.v1.FT)
@@ -1009,10 +669,6 @@
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
     - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
     - [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse)
-    - [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest)
-    - [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse)
-    - [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest)
-    - [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse)
     - [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse)
     - [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest)
@@ -1027,6 +683,10 @@
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
     - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
+    - [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest)
+    - [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse)
+    - [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest)
+    - [QueryIsOperatorForResponse](#lbm.collection.v1.QueryIsOperatorForResponse)
     - [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest)
     - [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse)
     - [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest)
@@ -1043,39 +703,23 @@
     - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
     - [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse)
-    - [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest)
-    - [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse)
-    - [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest)
-    - [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse)
-    - [QueryTokensWithTokenTypeRequest](#lbm.collection.v1.QueryTokensWithTokenTypeRequest)
-    - [QueryTokensWithTokenTypeResponse](#lbm.collection.v1.QueryTokensWithTokenTypeResponse)
   
     - [Query](#lbm.collection.v1.Query)
   
 - [lbm/collection/v1/tx.proto](#lbm/collection/v1/tx.proto)
     - [MintNFTParam](#lbm.collection.v1.MintNFTParam)
-    - [MsgApprove](#lbm.collection.v1.MsgApprove)
-    - [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse)
     - [MsgAttach](#lbm.collection.v1.MsgAttach)
-    - [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom)
-    - [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse)
     - [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse)
+    - [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator)
+    - [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse)
     - [MsgBurnFT](#lbm.collection.v1.MsgBurnFT)
-    - [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom)
-    - [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse)
     - [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse)
     - [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT)
-    - [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom)
-    - [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse)
     - [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse)
     - [MsgCreateContract](#lbm.collection.v1.MsgCreateContract)
     - [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse)
     - [MsgDetach](#lbm.collection.v1.MsgDetach)
-    - [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom)
-    - [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse)
     - [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse)
-    - [MsgDisapprove](#lbm.collection.v1.MsgDisapprove)
-    - [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse)
     - [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission)
     - [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse)
     - [MsgIssueFT](#lbm.collection.v1.MsgIssueFT)
@@ -1088,16 +732,26 @@
     - [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse)
     - [MsgModify](#lbm.collection.v1.MsgModify)
     - [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse)
+    - [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach)
+    - [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse)
+    - [MsgOperatorBurnFT](#lbm.collection.v1.MsgOperatorBurnFT)
+    - [MsgOperatorBurnFTResponse](#lbm.collection.v1.MsgOperatorBurnFTResponse)
+    - [MsgOperatorBurnNFT](#lbm.collection.v1.MsgOperatorBurnNFT)
+    - [MsgOperatorBurnNFTResponse](#lbm.collection.v1.MsgOperatorBurnNFTResponse)
+    - [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach)
+    - [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse)
+    - [MsgOperatorSendFT](#lbm.collection.v1.MsgOperatorSendFT)
+    - [MsgOperatorSendFTResponse](#lbm.collection.v1.MsgOperatorSendFTResponse)
+    - [MsgOperatorSendNFT](#lbm.collection.v1.MsgOperatorSendNFT)
+    - [MsgOperatorSendNFTResponse](#lbm.collection.v1.MsgOperatorSendNFTResponse)
+    - [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator)
+    - [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse)
     - [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission)
     - [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse)
-    - [MsgTransferFT](#lbm.collection.v1.MsgTransferFT)
-    - [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom)
-    - [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse)
-    - [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse)
-    - [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT)
-    - [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom)
-    - [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse)
-    - [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse)
+    - [MsgSendFT](#lbm.collection.v1.MsgSendFT)
+    - [MsgSendFTResponse](#lbm.collection.v1.MsgSendFTResponse)
+    - [MsgSendNFT](#lbm.collection.v1.MsgSendNFT)
+    - [MsgSendNFTResponse](#lbm.collection.v1.MsgSendNFTResponse)
   
     - [Msg](#lbm.collection.v1.Msg)
   
@@ -1125,7 +779,6 @@
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
     - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
-    - [EventGovMint](#lbm.foundation.v1.EventGovMint)
     - [EventGrant](#lbm.foundation.v1.EventGrant)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
@@ -1144,8 +797,6 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
-    - [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest)
-    - [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse)
     - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse)
     - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
@@ -1174,8 +825,6 @@
     - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
-    - [MsgGovMint](#lbm.foundation.v1.MsgGovMint)
-    - [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse)
     - [MsgGrant](#lbm.foundation.v1.MsgGrant)
     - [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse)
     - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
@@ -1205,11 +854,11 @@
     - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
   
 - [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
+    - [Attribute](#lbm.token.v1.Attribute)
     - [Authorization](#lbm.token.v1.Authorization)
+    - [Contract](#lbm.token.v1.Contract)
     - [Grant](#lbm.token.v1.Grant)
-    - [Pair](#lbm.token.v1.Pair)
     - [Params](#lbm.token.v1.Params)
-    - [TokenClass](#lbm.token.v1.TokenClass)
   
     - [LegacyPermission](#lbm.token.v1.LegacyPermission)
     - [Permission](#lbm.token.v1.Permission)
@@ -1238,33 +887,29 @@
     - [GenesisState](#lbm.token.v1.GenesisState)
   
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
-    - [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest)
-    - [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse)
-    - [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest)
-    - [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
     - [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest)
     - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
+    - [QueryContractRequest](#lbm.token.v1.QueryContractRequest)
+    - [QueryContractResponse](#lbm.token.v1.QueryContractResponse)
     - [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse)
+    - [QueryHoldersByOperatorRequest](#lbm.token.v1.QueryHoldersByOperatorRequest)
+    - [QueryHoldersByOperatorResponse](#lbm.token.v1.QueryHoldersByOperatorResponse)
+    - [QueryIsOperatorForRequest](#lbm.token.v1.QueryIsOperatorForRequest)
+    - [QueryIsOperatorForResponse](#lbm.token.v1.QueryIsOperatorForResponse)
     - [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest)
     - [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
-    - [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest)
-    - [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse)
-    - [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest)
-    - [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse)
   
     - [Query](#lbm.token.v1.Query)
   
 - [lbm/token/v1/tx.proto](#lbm/token/v1/tx.proto)
-    - [MsgApprove](#lbm.token.v1.MsgApprove)
-    - [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse)
+    - [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator)
+    - [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse)
     - [MsgBurn](#lbm.token.v1.MsgBurn)
-    - [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom)
-    - [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse)
     - [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse)
     - [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission)
     - [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse)
@@ -1274,38 +919,24 @@
     - [MsgMintResponse](#lbm.token.v1.MsgMintResponse)
     - [MsgModify](#lbm.token.v1.MsgModify)
     - [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse)
+    - [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn)
+    - [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse)
+    - [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend)
+    - [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse)
     - [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator)
     - [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse)
     - [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission)
     - [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse)
     - [MsgSend](#lbm.token.v1.MsgSend)
     - [MsgSendResponse](#lbm.token.v1.MsgSendResponse)
-    - [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom)
-    - [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse)
   
     - [Msg](#lbm.token.v1.Msg)
   
-- [lbm/wasm/v1/event.proto](#lbm/wasm/v1/event.proto)
-    - [EventActivateContractProposal](#lbm.wasm.v1.EventActivateContractProposal)
-    - [EventDeactivateContractProposal](#lbm.wasm.v1.EventDeactivateContractProposal)
+- [lbm/tx/v1beta1/service.proto](#lbm/tx/v1beta1/service.proto)
+    - [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest)
+    - [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse)
   
-- [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
-    - [ActivateContractProposal](#lbm.wasm.v1.ActivateContractProposal)
-    - [DeactivateContractProposal](#lbm.wasm.v1.DeactivateContractProposal)
-  
-- [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
-    - [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest)
-    - [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse)
-    - [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest)
-    - [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse)
-  
-    - [Query](#lbm.wasm.v1.Query)
-  
-- [lbm/wasm/v1/tx.proto](#lbm/wasm/v1/tx.proto)
-    - [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract)
-    - [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
-  
-    - [Msg](#lbm.wasm.v1.Msg)
+    - [Service](#lbm.tx.v1beta1.Service)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -1996,7 +1627,7 @@ Result is the union of ResponseFormat and ResponseCheckTx.
 | ----- | ---- | ----- | ----------- |
 | `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
 | `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
+| `events` | [tendermint.abci.Event](#tendermint.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
 
 
 
@@ -2094,10 +1725,9 @@ tags are stringified and the log is JSON decoded.
 | `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
 | `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
 | `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+| `events` | [tendermint.abci.Event](#tendermint.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
 
 Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
-| `index` | [uint32](#uint32) |  | The transaction index within block |
 
 
 
@@ -7112,7 +6742,7 @@ recent HistoricalInfo
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `header` | [ostracon.types.Header](#ostracon.types.Header) |  |  |
+| `header` | [tendermint.types.Header](#tendermint.types.Header) |  |  |
 | `valset` | [Validator](#cosmos.staking.v1beta1.Validator) | repeated |  |
 
 
@@ -8446,8 +8076,8 @@ Since: cosmos-sdk 0.45.2
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `txs` | [Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
-| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
 
 
@@ -9036,4900 +8666,6 @@ Since: cosmos-sdk 0.43
 
 
 
-<a name="cosmwasm/wasm/v1/types.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmwasm/wasm/v1/types.proto
-
-
-
-<a name="cosmwasm.wasm.v1.AbsoluteTxPosition"></a>
-
-### AbsoluteTxPosition
-AbsoluteTxPosition is a unique transaction position that allows for global
-ordering of transactions.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `block_height` | [uint64](#uint64) |  | BlockHeight is the block the contract was created at |
-| `tx_index` | [uint64](#uint64) |  | TxIndex is a monotonic counter within the block (actual transaction index, or gas consumed) |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.AccessConfig"></a>
-
-### AccessConfig
-AccessConfig access control type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
-| `address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.AccessTypeParam"></a>
-
-### AccessTypeParam
-AccessTypeParam
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `value` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.CodeInfo"></a>
-
-### CodeInfo
-CodeInfo is data for the uploaded contract WASM code
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_hash` | [bytes](#bytes) |  | CodeHash is the unique identifier created by wasmvm |
-| `creator` | [string](#string) |  | Creator address who initially stored the code |
-| `instantiate_config` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.ContractCodeHistoryEntry"></a>
-
-### ContractCodeHistoryEntry
-ContractCodeHistoryEntry metadata to a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operation` | [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType) |  |  |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `updated` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Updated Tx position when the operation was executed. |
-| `msg` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.ContractInfo"></a>
-
-### ContractInfo
-ContractInfo stores a WASM contract instance
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored Wasm code |
-| `creator` | [string](#string) |  | Creator address who initially instantiated the contract |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `created` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Created Tx position when the contract was instantiated. This data should kept internal and not be exposed via query results. Just use for sorting |
-| `ibc_port_id` | [string](#string) |  |  |
-| `extension` | [google.protobuf.Any](#google.protobuf.Any) |  | Extension is an extension point to store custom metadata within the persistence model. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.Model"></a>
-
-### Model
-Model is a struct that holds a KV pair
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  | hex-encode key to read it better (this is often ascii) |
-| `value` | [bytes](#bytes) |  | base64-encode raw value |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.Params"></a>
-
-### Params
-Params defines the set of wasm parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_upload_access` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
-| `instantiate_default_permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
-| `gas_multiplier` | [uint64](#uint64) |  |  |
-| `instance_cost` | [uint64](#uint64) |  |  |
-| `compile_cost` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="cosmwasm.wasm.v1.AccessType"></a>
-
-### AccessType
-AccessType permission types
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| ACCESS_TYPE_UNSPECIFIED | 0 | AccessTypeUnspecified placeholder for empty value |
-| ACCESS_TYPE_NOBODY | 1 | AccessTypeNobody forbidden |
-| ACCESS_TYPE_ONLY_ADDRESS | 2 | AccessTypeOnlyAddress restricted to an address |
-| ACCESS_TYPE_EVERYBODY | 3 | AccessTypeEverybody unrestricted |
-
-
-
-<a name="cosmwasm.wasm.v1.ContractCodeHistoryOperationType"></a>
-
-### ContractCodeHistoryOperationType
-ContractCodeHistoryOperationType actions that caused a code change
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED | 0 | ContractCodeHistoryOperationTypeUnspecified placeholder for empty value |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT | 1 | ContractCodeHistoryOperationTypeInit on chain contract instantiation |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE | 2 | ContractCodeHistoryOperationTypeMigrate code migration |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS | 3 | ContractCodeHistoryOperationTypeGenesis based on genesis data |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmwasm/wasm/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmwasm/wasm/v1/tx.proto
-
-
-
-<a name="cosmwasm.wasm.v1.MsgClearAdmin"></a>
-
-### MsgClearAdmin
-MsgClearAdmin removes any admin stored for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgClearAdminResponse"></a>
-
-### MsgClearAdminResponse
-MsgClearAdminResponse returns empty data
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgExecuteContract"></a>
-
-### MsgExecuteContract
-MsgExecuteContract submits the given message data to a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on execution |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgExecuteContractResponse"></a>
-
-### MsgExecuteContractResponse
-MsgExecuteContractResponse returns execution result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgInstantiateContract"></a>
-
-### MsgInstantiateContract
-MsgInstantiateContract create a new smart contract instance for the given
-code id.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgInstantiateContractResponse"></a>
-
-### MsgInstantiateContractResponse
-MsgInstantiateContractResponse return instantiation result data
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgMigrateContract"></a>
-
-### MsgMigrateContract
-MsgMigrateContract runs a code upgrade/ downgrade for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgMigrateContractResponse"></a>
-
-### MsgMigrateContractResponse
-MsgMigrateContractResponse returns contract migration result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains same raw bytes returned as data from the wasm contract. (May be empty) |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgStoreCode"></a>
-
-### MsgStoreCode
-MsgStoreCode submit Wasm code to the system
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgStoreCodeResponse"></a>
-
-### MsgStoreCodeResponse
-MsgStoreCodeResponse returns store result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgUpdateAdmin"></a>
-
-### MsgUpdateAdmin
-MsgUpdateAdmin sets a new admin for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `new_admin` | [string](#string) |  | NewAdmin address to be set |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgUpdateAdminResponse"></a>
-
-### MsgUpdateAdminResponse
-MsgUpdateAdminResponse returns empty data
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="cosmwasm.wasm.v1.Msg"></a>
-
-### Msg
-Msg defines the wasm Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `StoreCode` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) | [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse) | StoreCode to submit Wasm code to the system | |
-| `InstantiateContract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) | [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse) | Instantiate creates a new smart contract instance for the given code id. | |
-| `ExecuteContract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) | [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse) | Execute submits the given message data to a smart contract | |
-| `MigrateContract` | [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract) | [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
-| `UpdateAdmin` | [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
-| `ClearAdmin` | [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin) | [MsgClearAdminResponse](#cosmwasm.wasm.v1.MsgClearAdminResponse) | ClearAdmin removes any admin stored for a smart contract | |
-
- <!-- end services -->
-
-
-
-<a name="cosmwasm/wasm/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmwasm/wasm/v1/genesis.proto
-
-
-
-<a name="cosmwasm.wasm.v1.Code"></a>
-
-### Code
-Code struct encompasses CodeInfo and CodeBytes
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  |  |
-| `code_info` | [CodeInfo](#cosmwasm.wasm.v1.CodeInfo) |  |  |
-| `code_bytes` | [bytes](#bytes) |  |  |
-| `pinned` | [bool](#bool) |  | Pinned to wasmvm cache |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.Contract"></a>
-
-### Contract
-Contract struct encompasses ContractAddress, ContractInfo, and ContractState
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_address` | [string](#string) |  |  |
-| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1.ContractInfo) |  |  |
-| `contract_state` | [Model](#cosmwasm.wasm.v1.Model) | repeated |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState - genesis state of x/wasm
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#cosmwasm.wasm.v1.Params) |  |  |
-| `codes` | [Code](#cosmwasm.wasm.v1.Code) | repeated |  |
-| `contracts` | [Contract](#cosmwasm.wasm.v1.Contract) | repeated |  |
-| `sequences` | [Sequence](#cosmwasm.wasm.v1.Sequence) | repeated |  |
-| `gen_msgs` | [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs) | repeated |  |
-| `inactive_contract_addresses` | [string](#string) | repeated | InactiveContractAddresses is a list of contract address that set inactive |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.GenesisState.GenMsgs"></a>
-
-### GenesisState.GenMsgs
-GenMsgs define the messages that can be executed during genesis phase in order.
-The intention is to have more human readable data that is auditable.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `store_code` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) |  |  |
-| `instantiate_contract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) |  |  |
-| `execute_contract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.Sequence"></a>
-
-### Sequence
-Sequence key and value of an id generation counter
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id_key` | [bytes](#bytes) |  |  |
-| `value` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmwasm/wasm/v1/ibc.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmwasm/wasm/v1/ibc.proto
-
-
-
-<a name="cosmwasm.wasm.v1.MsgIBCCloseChannel"></a>
-
-### MsgIBCCloseChannel
-MsgIBCCloseChannel port and channel need to be owned by the contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channel` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgIBCSend"></a>
-
-### MsgIBCSend
-MsgIBCSend
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channel` | [string](#string) |  | the channel by which the packet will be sent |
-| `timeout_height` | [uint64](#uint64) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
-| `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp (in nanoseconds) relative to the current block timestamp. The timeout is disabled when set to 0. |
-| `data` | [bytes](#bytes) |  | Data is the payload to transfer. We must not make assumption what format or content is in here. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmwasm/wasm/v1/proposal.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmwasm/wasm/v1/proposal.proto
-
-
-
-<a name="cosmwasm.wasm.v1.AccessConfigUpdate"></a>
-
-### AccessConfigUpdate
-AccessConfigUpdate contains the code id and the access config to be
-applied.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.ClearAdminProposal"></a>
-
-### ClearAdminProposal
-ClearAdminProposal gov proposal content type to clear the admin of a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.ExecuteContractProposal"></a>
-
-### ExecuteContractProposal
-ExecuteContractProposal gov proposal content type to call execute on a
-contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as execute |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.InstantiateContractProposal"></a>
-
-### InstantiateContractProposal
-InstantiateContractProposal gov proposal content type to instantiate a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a constract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MigrateContractProposal"></a>
-
-### MigrateContractProposal
-MigrateContractProposal gov proposal content type to migrate a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text
-
-Note: skipping 3 as this was previously used for unneeded run_as |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.PinCodesProposal"></a>
-
-### PinCodesProposal
-PinCodesProposal gov proposal content type to pin a set of code ids in the wasmvm cache.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the new WASM codes |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.StoreCodeProposal"></a>
-
-### StoreCodeProposal
-StoreCodeProposal gov proposal content type to submit WASM code to the system
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.SudoContractProposal"></a>
-
-### SudoContractProposal
-SudoContractProposal gov proposal content type to call sudo on a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.UnpinCodesProposal"></a>
-
-### UnpinCodesProposal
-UnpinCodesProposal gov proposal content type to unpin a set of code ids in the wasmvm cache.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the WASM codes |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.UpdateAdminProposal"></a>
-
-### UpdateAdminProposal
-UpdateAdminProposal gov proposal content type to set an admin for a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `new_admin` | [string](#string) |  | NewAdmin address to be set |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.UpdateInstantiateConfigProposal"></a>
-
-### UpdateInstantiateConfigProposal
-UpdateInstantiateConfigProposal gov proposal content type to update
-instantiate config to a  set of code ids.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `access_config_updates` | [AccessConfigUpdate](#cosmwasm.wasm.v1.AccessConfigUpdate) | repeated | AccessConfigUpdate contains the list of code ids and the access config to be applied. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmwasm/wasm/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmwasm/wasm/v1/query.proto
-
-
-
-<a name="cosmwasm.wasm.v1.CodeInfoResponse"></a>
-
-### CodeInfoResponse
-CodeInfoResponse contains code meta data from CodeInfo
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | id for legacy support |
-| `creator` | [string](#string) |  |  |
-| `data_hash` | [bytes](#bytes) |  |  |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryAllContractStateRequest"></a>
-
-### QueryAllContractStateRequest
-QueryAllContractStateRequest is the request type for the Query/AllContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryAllContractStateResponse"></a>
-
-### QueryAllContractStateResponse
-QueryAllContractStateResponse is the response type for the
-Query/AllContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `models` | [Model](#cosmwasm.wasm.v1.Model) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryCodeRequest"></a>
-
-### QueryCodeRequest
-QueryCodeRequest is the request type for the Query/Code RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryCodeResponse"></a>
-
-### QueryCodeResponse
-QueryCodeResponse is the response type for the Query/Code RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_info` | [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryCodesRequest"></a>
-
-### QueryCodesRequest
-QueryCodesRequest is the request type for the Query/Codes RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryCodesResponse"></a>
-
-### QueryCodesResponse
-QueryCodesResponse is the response type for the Query/Codes RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_infos` | [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryContractHistoryRequest"></a>
-
-### QueryContractHistoryRequest
-QueryContractHistoryRequest is the request type for the Query/ContractHistory RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract to query |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryContractHistoryResponse"></a>
-
-### QueryContractHistoryResponse
-QueryContractHistoryResponse is the response type for the Query/ContractHistory RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `entries` | [ContractCodeHistoryEntry](#cosmwasm.wasm.v1.ContractCodeHistoryEntry) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryContractInfoRequest"></a>
-
-### QueryContractInfoRequest
-QueryContractInfoRequest is the request type for the Query/ContractInfo RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract to query |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryContractInfoResponse"></a>
-
-### QueryContractInfoResponse
-QueryContractInfoResponse is the response type for the Query/ContractInfo RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1.ContractInfo) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryContractsByCodeRequest"></a>
-
-### QueryContractsByCodeRequest
-QueryContractsByCodeRequest is the request type for the Query/ContractsByCode RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryContractsByCodeResponse"></a>
-
-### QueryContractsByCodeResponse
-QueryContractsByCodeResponse is the response type for the
-Query/ContractsByCode RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contracts` | [string](#string) | repeated | contracts are a set of contract addresses |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryPinnedCodesRequest"></a>
-
-### QueryPinnedCodesRequest
-QueryPinnedCodesRequest is the request type for the Query/PinnedCodes
-RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryPinnedCodesResponse"></a>
-
-### QueryPinnedCodesResponse
-QueryPinnedCodesResponse is the response type for the
-Query/PinnedCodes RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_ids` | [uint64](#uint64) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryRawContractStateRequest"></a>
-
-### QueryRawContractStateRequest
-QueryRawContractStateRequest is the request type for the
-Query/RawContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `query_data` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QueryRawContractStateResponse"></a>
-
-### QueryRawContractStateResponse
-QueryRawContractStateResponse is the response type for the
-Query/RawContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains the raw store data |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QuerySmartContractStateRequest"></a>
-
-### QuerySmartContractStateRequest
-QuerySmartContractStateRequest is the request type for the
-Query/SmartContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `query_data` | [bytes](#bytes) |  | QueryData contains the query data passed to the contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.QuerySmartContractStateResponse"></a>
-
-### QuerySmartContractStateResponse
-QuerySmartContractStateResponse is the response type for the
-Query/SmartContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains the json data returned from the smart contract |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="cosmwasm.wasm.v1.Query"></a>
-
-### Query
-Query provides defines the gRPC querier service
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ContractInfo` | [QueryContractInfoRequest](#cosmwasm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#cosmwasm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/cosmwasm/wasm/v1/contract/{address}|
-| `ContractHistory` | [QueryContractHistoryRequest](#cosmwasm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#cosmwasm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/cosmwasm/wasm/v1/contract/{address}/history|
-| `ContractsByCode` | [QueryContractsByCodeRequest](#cosmwasm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#cosmwasm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/cosmwasm/wasm/v1/code/{code_id}/contracts|
-| `AllContractState` | [QueryAllContractStateRequest](#cosmwasm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#cosmwasm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/cosmwasm/wasm/v1/contract/{address}/state|
-| `RawContractState` | [QueryRawContractStateRequest](#cosmwasm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#cosmwasm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/cosmwasm/wasm/v1/contract/{address}/raw/{query_data}|
-| `SmartContractState` | [QuerySmartContractStateRequest](#cosmwasm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#cosmwasm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/cosmwasm/wasm/v1/contract/{address}/smart/{query_data}|
-| `Code` | [QueryCodeRequest](#cosmwasm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#cosmwasm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/cosmwasm/wasm/v1/code/{code_id}|
-| `Codes` | [QueryCodesRequest](#cosmwasm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#cosmwasm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/cosmwasm/wasm/v1/code|
-| `PinnedCodes` | [QueryPinnedCodesRequest](#cosmwasm.wasm.v1.QueryPinnedCodesRequest) | [QueryPinnedCodesResponse](#cosmwasm.wasm.v1.QueryPinnedCodesResponse) | PinnedCodes gets the pinned code ids | GET|/cosmwasm/wasm/v1/codes/pinned|
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/interchain_accounts/v1/account.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/interchain_accounts/v1/account.proto
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.InterchainAccount"></a>
-
-### InterchainAccount
-An InterchainAccount is defined as a BaseAccount & the address of the account owner on the controller chain
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `base_account` | [cosmos.auth.v1beta1.BaseAccount](#cosmos.auth.v1beta1.BaseAccount) |  |  |
-| `account_owner` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/interchain_accounts/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/interchain_accounts/v1/genesis.proto
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.ActiveChannel"></a>
-
-### ActiveChannel
-ActiveChannel contains a connection ID, port ID and associated active channel ID
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  |  |
-| `port_id` | [string](#string) |  |  |
-| `channel_id` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.ControllerGenesisState"></a>
-
-### ControllerGenesisState
-ControllerGenesisState defines the interchain accounts controller genesis state
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `active_channels` | [ActiveChannel](#ibc.applications.interchain_accounts.v1.ActiveChannel) | repeated |  |
-| `interchain_accounts` | [RegisteredInterchainAccount](#ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount) | repeated |  |
-| `ports` | [string](#string) | repeated |  |
-| `params` | [ibc.applications.interchain_accounts.controller.v1.Params](#ibc.applications.interchain_accounts.controller.v1.Params) |  |  |
-
-
-
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the interchain accounts genesis state
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `controller_genesis_state` | [ControllerGenesisState](#ibc.applications.interchain_accounts.v1.ControllerGenesisState) |  |  |
-| `host_genesis_state` | [HostGenesisState](#ibc.applications.interchain_accounts.v1.HostGenesisState) |  |  |
-
-
-
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.HostGenesisState"></a>
-
-### HostGenesisState
-HostGenesisState defines the interchain accounts host genesis state
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `active_channels` | [ActiveChannel](#ibc.applications.interchain_accounts.v1.ActiveChannel) | repeated |  |
-| `interchain_accounts` | [RegisteredInterchainAccount](#ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount) | repeated |  |
-| `port` | [string](#string) |  |  |
-| `params` | [ibc.applications.interchain_accounts.host.v1.Params](#ibc.applications.interchain_accounts.host.v1.Params) |  |  |
-
-
-
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount"></a>
-
-### RegisteredInterchainAccount
-RegisteredInterchainAccount contains a connection ID, port ID and associated interchain account address
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  |  |
-| `port_id` | [string](#string) |  |  |
-| `account_address` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/interchain_accounts/v1/metadata.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/interchain_accounts/v1/metadata.proto
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.Metadata"></a>
-
-### Metadata
-Metadata defines a set of protocol specific data encoded into the ICS27 channel version bytestring
-See ICS004: https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#Versioning
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `version` | [string](#string) |  | version defines the ICS27 protocol version |
-| `controller_connection_id` | [string](#string) |  | controller_connection_id is the connection identifier associated with the controller chain |
-| `host_connection_id` | [string](#string) |  | host_connection_id is the connection identifier associated with the host chain |
-| `address` | [string](#string) |  | address defines the interchain account address to be fulfilled upon the OnChanOpenTry handshake step NOTE: the address field is empty on the OnChanOpenInit handshake step |
-| `encoding` | [string](#string) |  | encoding defines the supported codec format |
-| `tx_type` | [string](#string) |  | tx_type defines the type of transactions the interchain account can execute |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/interchain_accounts/v1/packet.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/interchain_accounts/v1/packet.proto
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.CosmosTx"></a>
-
-### CosmosTx
-CosmosTx contains a list of sdk.Msg's. It should be used when sending transactions to an SDK host chain.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
-
-
-
-
-
-
-<a name="ibc.applications.interchain_accounts.v1.InterchainAccountPacketData"></a>
-
-### InterchainAccountPacketData
-InterchainAccountPacketData is comprised of a raw transaction, type of transaction and optional memo field.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `type` | [Type](#ibc.applications.interchain_accounts.v1.Type) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-| `memo` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="ibc.applications.interchain_accounts.v1.Type"></a>
-
-### Type
-Type defines a classification of message issued from a controller chain to its associated interchain accounts
-host
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| TYPE_UNSPECIFIED | 0 | Default zero value enumeration |
-| TYPE_EXECUTE_TX | 1 | Execute a transaction on an interchain accounts host chain |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/transfer/v1/transfer.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/transfer/v1/transfer.proto
-
-
-
-<a name="ibc.applications.transfer.v1.DenomTrace"></a>
-
-### DenomTrace
-DenomTrace contains the base denomination for ICS20 fungible tokens and the
-source tracing information path.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [string](#string) |  | path defines the chain of port/channel identifiers used for tracing the source of the fungible token. |
-| `base_denom` | [string](#string) |  | base denomination of the relayed fungible token. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.Params"></a>
-
-### Params
-Params defines the set of IBC transfer parameters.
-NOTE: To prevent a single token from being transferred, set the
-TransfersEnabled parameter to true and then set the bank module's SendEnabled
-parameter for the denomination to false.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `send_enabled` | [bool](#bool) |  | send_enabled enables or disables all cross-chain token transfers from this chain. |
-| `receive_enabled` | [bool](#bool) |  | receive_enabled enables or disables all cross-chain token transfers to this chain. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/transfer/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/transfer/v1/genesis.proto
-
-
-
-<a name="ibc.applications.transfer.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the ibc-transfer genesis state
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `denom_traces` | [DenomTrace](#ibc.applications.transfer.v1.DenomTrace) | repeated |  |
-| `params` | [Params](#ibc.applications.transfer.v1.Params) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/transfer/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/transfer/v1/query.proto
-
-
-
-<a name="ibc.applications.transfer.v1.QueryDenomHashRequest"></a>
-
-### QueryDenomHashRequest
-QueryDenomHashRequest is the request type for the Query/DenomHash RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `trace` | [string](#string) |  | The denomination trace ([port_id]/[channel_id])+/[denom] |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryDenomHashResponse"></a>
-
-### QueryDenomHashResponse
-QueryDenomHashResponse is the response type for the Query/DenomHash RPC
-method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `hash` | [string](#string) |  | hash (in hex format) of the denomination trace information. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryDenomTraceRequest"></a>
-
-### QueryDenomTraceRequest
-QueryDenomTraceRequest is the request type for the Query/DenomTrace RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `hash` | [string](#string) |  | hash (in hex format) of the denomination trace information. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryDenomTraceResponse"></a>
-
-### QueryDenomTraceResponse
-QueryDenomTraceResponse is the response type for the Query/DenomTrace RPC
-method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom_trace` | [DenomTrace](#ibc.applications.transfer.v1.DenomTrace) |  | denom_trace returns the requested denomination trace information. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryDenomTracesRequest"></a>
-
-### QueryDenomTracesRequest
-QueryConnectionsRequest is the request type for the Query/DenomTraces RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryDenomTracesResponse"></a>
-
-### QueryDenomTracesResponse
-QueryConnectionsResponse is the response type for the Query/DenomTraces RPC
-method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom_traces` | [DenomTrace](#ibc.applications.transfer.v1.DenomTrace) | repeated | denom_traces returns all denominations trace information. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryParamsRequest"></a>
-
-### QueryParamsRequest
-QueryParamsRequest is the request type for the Query/Params RPC method.
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.QueryParamsResponse"></a>
-
-### QueryParamsResponse
-QueryParamsResponse is the response type for the Query/Params RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ibc.applications.transfer.v1.Params) |  | params defines the parameters of the module. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.applications.transfer.v1.Query"></a>
-
-### Query
-Query provides defines the gRPC querier service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `DenomTrace` | [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest) | [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse) | DenomTrace queries a denomination trace information. | GET|/ibc/apps/transfer/v1/denom_traces/{hash}|
-| `DenomTraces` | [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest) | [QueryDenomTracesResponse](#ibc.applications.transfer.v1.QueryDenomTracesResponse) | DenomTraces queries all denomination traces. | GET|/ibc/apps/transfer/v1/denom_traces|
-| `Params` | [QueryParamsRequest](#ibc.applications.transfer.v1.QueryParamsRequest) | [QueryParamsResponse](#ibc.applications.transfer.v1.QueryParamsResponse) | Params queries all parameters of the ibc-transfer module. | GET|/ibc/apps/transfer/v1/params|
-| `DenomHash` | [QueryDenomHashRequest](#ibc.applications.transfer.v1.QueryDenomHashRequest) | [QueryDenomHashResponse](#ibc.applications.transfer.v1.QueryDenomHashResponse) | DenomHash queries a denomination hash information. | GET|/ibc/apps/transfer/v1/denom_hashes/{trace}|
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/client/v1/client.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/client/v1/client.proto
-
-
-
-<a name="ibc.core.client.v1.ClientConsensusStates"></a>
-
-### ClientConsensusStates
-ClientConsensusStates defines all the stored consensus states for a given
-client.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client identifier |
-| `consensus_states` | [ConsensusStateWithHeight](#ibc.core.client.v1.ConsensusStateWithHeight) | repeated | consensus states and their heights associated with the client |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.ClientUpdateProposal"></a>
-
-### ClientUpdateProposal
-ClientUpdateProposal is a governance proposal. If it passes, the substitute
-client's latest consensus state is copied over to the subject client. The proposal
-handler may fail if the subject and the substitute do not match in client and
-chain parameters (with exception to latest height, frozen height, and chain-id).
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | the title of the update proposal |
-| `description` | [string](#string) |  | the description of the proposal |
-| `subject_client_id` | [string](#string) |  | the client identifier for the client to be updated if the proposal passes |
-| `substitute_client_id` | [string](#string) |  | the substitute client identifier for the client standing in for the subject client |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.ConsensusStateWithHeight"></a>
-
-### ConsensusStateWithHeight
-ConsensusStateWithHeight defines a consensus state with an additional height
-field.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `height` | [Height](#ibc.core.client.v1.Height) |  | consensus state height |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | consensus state |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.Height"></a>
-
-### Height
-Height is a monotonically increasing data type
-that can be compared against another Height for the purposes of updating and
-freezing clients
-
-Normally the RevisionHeight is incremented at each height while keeping
-RevisionNumber the same. However some consensus algorithms may choose to
-reset the height in certain conditions e.g. hard forks, state-machine
-breaking changes In these cases, the RevisionNumber is incremented so that
-height continues to be monitonically increasing even as the RevisionHeight
-gets reset
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `revision_number` | [uint64](#uint64) |  | the revision that the client is currently on |
-| `revision_height` | [uint64](#uint64) |  | the height within the given revision |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.IdentifiedClientState"></a>
-
-### IdentifiedClientState
-IdentifiedClientState defines a client state with an additional client
-identifier field.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client identifier |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | client state |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.Params"></a>
-
-### Params
-Params defines the set of IBC light client parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `allowed_clients` | [string](#string) | repeated | allowed_clients defines the list of allowed client state types. |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.UpgradeProposal"></a>
-
-### UpgradeProposal
-UpgradeProposal is a gov Content type for initiating an IBC breaking
-upgrade.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `plan` | [cosmos.upgrade.v1beta1.Plan](#cosmos.upgrade.v1beta1.Plan) |  |  |
-| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | An UpgradedClientState must be provided to perform an IBC breaking upgrade. This will make the chain commit to the correct upgraded (self) client state before the upgrade occurs, so that connecting chains can verify that the new upgraded client is valid by verifying a proof on the previous version of the chain. This will allow IBC connections to persist smoothly across planned chain upgrades |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/transfer/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/transfer/v1/tx.proto
-
-
-
-<a name="ibc.applications.transfer.v1.MsgTransfer"></a>
-
-### MsgTransfer
-MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between
-ICS20 enabled chains. See ICS Spec here:
-https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `source_port` | [string](#string) |  | the port on which the packet will be sent |
-| `source_channel` | [string](#string) |  | the channel by which the packet will be sent |
-| `token` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | the tokens to be transferred |
-| `sender` | [string](#string) |  | the sender address |
-| `receiver` | [string](#string) |  | the recipient address on the destination chain |
-| `timeout_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
-| `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp in absolute nanoseconds since unix epoch. The timeout is disabled when set to 0. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.MsgTransferResponse"></a>
-
-### MsgTransferResponse
-MsgTransferResponse defines the Msg/Transfer response type.
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.applications.transfer.v1.Msg"></a>
-
-### Msg
-Msg defines the ibc/transfer Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Transfer` | [MsgTransfer](#ibc.applications.transfer.v1.MsgTransfer) | [MsgTransferResponse](#ibc.applications.transfer.v1.MsgTransferResponse) | Transfer defines a rpc handler method for MsgTransfer. | |
-
- <!-- end services -->
-
-
-
-<a name="ibc/applications/transfer/v2/packet.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/applications/transfer/v2/packet.proto
-
-
-
-<a name="ibc.applications.transfer.v2.FungibleTokenPacketData"></a>
-
-### FungibleTokenPacketData
-FungibleTokenPacketData defines a struct for the packet payload
-See FungibleTokenPacketData spec:
-https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  | the token denomination to be transferred |
-| `amount` | [string](#string) |  | the token amount to be transferred |
-| `sender` | [string](#string) |  | the sender address |
-| `receiver` | [string](#string) |  | the recipient address on the destination chain |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/channel/v1/channel.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/channel/v1/channel.proto
-
-
-
-<a name="ibc.core.channel.v1.Acknowledgement"></a>
-
-### Acknowledgement
-Acknowledgement is the recommended acknowledgement format to be used by
-app-specific protocols.
-NOTE: The field numbers 21 and 22 were explicitly chosen to avoid accidental
-conflicts with other protobuf message formats used for acknowledgements.
-The first byte of any message with this format will be the non-ASCII values
-`0xaa` (result) or `0xb2` (error). Implemented as defined by ICS:
-https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#acknowledgement-envelope
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `result` | [bytes](#bytes) |  |  |
-| `error` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.Channel"></a>
-
-### Channel
-Channel defines pipeline for exactly-once packet delivery between specific
-modules on separate blockchains, which has at least one end capable of
-sending packets and one end capable of receiving packets.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `state` | [State](#ibc.core.channel.v1.State) |  | current state of the channel end |
-| `ordering` | [Order](#ibc.core.channel.v1.Order) |  | whether the channel is ordered or unordered |
-| `counterparty` | [Counterparty](#ibc.core.channel.v1.Counterparty) |  | counterparty channel end |
-| `connection_hops` | [string](#string) | repeated | list of connection identifiers, in order, along which packets sent on this channel will travel |
-| `version` | [string](#string) |  | opaque channel version, which is agreed upon during the handshake |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.Counterparty"></a>
-
-### Counterparty
-Counterparty defines a channel end counterparty
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port on the counterparty chain which owns the other end of the channel. |
-| `channel_id` | [string](#string) |  | channel end on the counterparty chain |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.IdentifiedChannel"></a>
-
-### IdentifiedChannel
-IdentifiedChannel defines a channel with additional port and channel
-identifier fields.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `state` | [State](#ibc.core.channel.v1.State) |  | current state of the channel end |
-| `ordering` | [Order](#ibc.core.channel.v1.Order) |  | whether the channel is ordered or unordered |
-| `counterparty` | [Counterparty](#ibc.core.channel.v1.Counterparty) |  | counterparty channel end |
-| `connection_hops` | [string](#string) | repeated | list of connection identifiers, in order, along which packets sent on this channel will travel |
-| `version` | [string](#string) |  | opaque channel version, which is agreed upon during the handshake |
-| `port_id` | [string](#string) |  | port identifier |
-| `channel_id` | [string](#string) |  | channel identifier |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.Packet"></a>
-
-### Packet
-Packet defines a type that carries data across different chains through IBC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  | number corresponds to the order of sends and receives, where a Packet with an earlier sequence number must be sent and received before a Packet with a later sequence number. |
-| `source_port` | [string](#string) |  | identifies the port on the sending chain. |
-| `source_channel` | [string](#string) |  | identifies the channel end on the sending chain. |
-| `destination_port` | [string](#string) |  | identifies the port on the receiving chain. |
-| `destination_channel` | [string](#string) |  | identifies the channel end on the receiving chain. |
-| `data` | [bytes](#bytes) |  | actual opaque bytes transferred directly to the application module |
-| `timeout_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | block height after which the packet times out |
-| `timeout_timestamp` | [uint64](#uint64) |  | block timestamp (in nanoseconds) after which the packet times out |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.PacketState"></a>
-
-### PacketState
-PacketState defines the generic type necessary to retrieve and store
-packet commitments, acknowledgements, and receipts.
-Caller is responsible for knowing the context necessary to interpret this
-state as a commitment, acknowledgement, or a receipt.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | channel port identifier. |
-| `channel_id` | [string](#string) |  | channel unique identifier. |
-| `sequence` | [uint64](#uint64) |  | packet sequence. |
-| `data` | [bytes](#bytes) |  | embedded data that represents packet state. |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="ibc.core.channel.v1.Order"></a>
-
-### Order
-Order defines if a channel is ORDERED or UNORDERED
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| ORDER_NONE_UNSPECIFIED | 0 | zero-value for channel ordering |
-| ORDER_UNORDERED | 1 | packets can be delivered in any order, which may differ from the order in which they were sent. |
-| ORDER_ORDERED | 2 | packets are delivered exactly in the order which they were sent |
-
-
-
-<a name="ibc.core.channel.v1.State"></a>
-
-### State
-State defines if a channel is in one of the following states:
-CLOSED, INIT, TRYOPEN, OPEN or UNINITIALIZED.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| STATE_UNINITIALIZED_UNSPECIFIED | 0 | Default State |
-| STATE_INIT | 1 | A channel has just started the opening handshake. |
-| STATE_TRYOPEN | 2 | A channel has acknowledged the handshake step on the counterparty chain. |
-| STATE_OPEN | 3 | A channel has completed the handshake. Open channels are ready to send and receive packets. |
-| STATE_CLOSED | 4 | A channel has been closed and can no longer be used to send or receive packets. |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/channel/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/channel/v1/genesis.proto
-
-
-
-<a name="ibc.core.channel.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the ibc channel submodule's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channels` | [IdentifiedChannel](#ibc.core.channel.v1.IdentifiedChannel) | repeated |  |
-| `acknowledgements` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `commitments` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `receipts` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `send_sequences` | [PacketSequence](#ibc.core.channel.v1.PacketSequence) | repeated |  |
-| `recv_sequences` | [PacketSequence](#ibc.core.channel.v1.PacketSequence) | repeated |  |
-| `ack_sequences` | [PacketSequence](#ibc.core.channel.v1.PacketSequence) | repeated |  |
-| `next_channel_sequence` | [uint64](#uint64) |  | the sequence for the next generated channel identifier |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.PacketSequence"></a>
-
-### PacketSequence
-PacketSequence defines the genesis type necessary to retrieve and store
-next send and receive sequences.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `channel_id` | [string](#string) |  |  |
-| `sequence` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/channel/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/channel/v1/query.proto
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelClientStateRequest"></a>
-
-### QueryChannelClientStateRequest
-QueryChannelClientStateRequest is the request type for the Query/ClientState
-RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelClientStateResponse"></a>
-
-### QueryChannelClientStateResponse
-QueryChannelClientStateResponse is the Response type for the
-Query/QueryChannelClientState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `identified_client_state` | [ibc.core.client.v1.IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState) |  | client state associated with the channel |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelConsensusStateRequest"></a>
-
-### QueryChannelConsensusStateRequest
-QueryChannelConsensusStateRequest is the request type for the
-Query/ConsensusState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `revision_number` | [uint64](#uint64) |  | revision number of the consensus state |
-| `revision_height` | [uint64](#uint64) |  | revision height of the consensus state |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelConsensusStateResponse"></a>
-
-### QueryChannelConsensusStateResponse
-QueryChannelClientStateResponse is the Response type for the
-Query/QueryChannelClientState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | consensus state associated with the channel |
-| `client_id` | [string](#string) |  | client ID associated with the consensus state |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelRequest"></a>
-
-### QueryChannelRequest
-QueryChannelRequest is the request type for the Query/Channel RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelResponse"></a>
-
-### QueryChannelResponse
-QueryChannelResponse is the response type for the Query/Channel RPC method.
-Besides the Channel end, it includes a proof and the height from which the
-proof was retrieved.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channel` | [Channel](#ibc.core.channel.v1.Channel) |  | channel associated with the request identifiers |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelsRequest"></a>
-
-### QueryChannelsRequest
-QueryChannelsRequest is the request type for the Query/Channels RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryChannelsResponse"></a>
-
-### QueryChannelsResponse
-QueryChannelsResponse is the response type for the Query/Channels RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channels` | [IdentifiedChannel](#ibc.core.channel.v1.IdentifiedChannel) | repeated | list of stored channels of the chain. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryConnectionChannelsRequest"></a>
-
-### QueryConnectionChannelsRequest
-QueryConnectionChannelsRequest is the request type for the
-Query/QueryConnectionChannels RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection` | [string](#string) |  | connection unique identifier |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryConnectionChannelsResponse"></a>
-
-### QueryConnectionChannelsResponse
-QueryConnectionChannelsResponse is the Response type for the
-Query/QueryConnectionChannels RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channels` | [IdentifiedChannel](#ibc.core.channel.v1.IdentifiedChannel) | repeated | list of channels associated with a connection. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryNextSequenceReceiveRequest"></a>
-
-### QueryNextSequenceReceiveRequest
-QueryNextSequenceReceiveRequest is the request type for the
-Query/QueryNextSequenceReceiveRequest RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryNextSequenceReceiveResponse"></a>
-
-### QueryNextSequenceReceiveResponse
-QuerySequenceResponse is the request type for the
-Query/QueryNextSequenceReceiveResponse RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `next_sequence_receive` | [uint64](#uint64) |  | next sequence receive number |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketAcknowledgementRequest"></a>
-
-### QueryPacketAcknowledgementRequest
-QueryPacketAcknowledgementRequest is the request type for the
-Query/PacketAcknowledgement RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `sequence` | [uint64](#uint64) |  | packet sequence |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketAcknowledgementResponse"></a>
-
-### QueryPacketAcknowledgementResponse
-QueryPacketAcknowledgementResponse defines the client query response for a
-packet which also includes a proof and the height from which the
-proof was retrieved
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `acknowledgement` | [bytes](#bytes) |  | packet associated with the request fields |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketAcknowledgementsRequest"></a>
-
-### QueryPacketAcknowledgementsRequest
-QueryPacketAcknowledgementsRequest is the request type for the
-Query/QueryPacketCommitments RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
-| `packet_commitment_sequences` | [uint64](#uint64) | repeated | list of packet sequences |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketAcknowledgementsResponse"></a>
-
-### QueryPacketAcknowledgementsResponse
-QueryPacketAcknowledgemetsResponse is the request type for the
-Query/QueryPacketAcknowledgements RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `acknowledgements` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketCommitmentRequest"></a>
-
-### QueryPacketCommitmentRequest
-QueryPacketCommitmentRequest is the request type for the
-Query/PacketCommitment RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `sequence` | [uint64](#uint64) |  | packet sequence |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketCommitmentResponse"></a>
-
-### QueryPacketCommitmentResponse
-QueryPacketCommitmentResponse defines the client query response for a packet
-which also includes a proof and the height from which the proof was
-retrieved
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `commitment` | [bytes](#bytes) |  | packet associated with the request fields |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketCommitmentsRequest"></a>
-
-### QueryPacketCommitmentsRequest
-QueryPacketCommitmentsRequest is the request type for the
-Query/QueryPacketCommitments RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketCommitmentsResponse"></a>
-
-### QueryPacketCommitmentsResponse
-QueryPacketCommitmentsResponse is the request type for the
-Query/QueryPacketCommitments RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `commitments` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketReceiptRequest"></a>
-
-### QueryPacketReceiptRequest
-QueryPacketReceiptRequest is the request type for the
-Query/PacketReceipt RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `sequence` | [uint64](#uint64) |  | packet sequence |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryPacketReceiptResponse"></a>
-
-### QueryPacketReceiptResponse
-QueryPacketReceiptResponse defines the client query response for a packet
-receipt which also includes a proof, and the height from which the proof was
-retrieved
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `received` | [bool](#bool) |  | success flag for if receipt exists |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryUnreceivedAcksRequest"></a>
-
-### QueryUnreceivedAcksRequest
-QueryUnreceivedAcks is the request type for the
-Query/UnreceivedAcks RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `packet_ack_sequences` | [uint64](#uint64) | repeated | list of acknowledgement sequences |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryUnreceivedAcksResponse"></a>
-
-### QueryUnreceivedAcksResponse
-QueryUnreceivedAcksResponse is the response type for the
-Query/UnreceivedAcks RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequences` | [uint64](#uint64) | repeated | list of unreceived acknowledgement sequences |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryUnreceivedPacketsRequest"></a>
-
-### QueryUnreceivedPacketsRequest
-QueryUnreceivedPacketsRequest is the request type for the
-Query/UnreceivedPackets RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  | port unique identifier |
-| `channel_id` | [string](#string) |  | channel unique identifier |
-| `packet_commitment_sequences` | [uint64](#uint64) | repeated | list of packet sequences |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.QueryUnreceivedPacketsResponse"></a>
-
-### QueryUnreceivedPacketsResponse
-QueryUnreceivedPacketsResponse is the response type for the
-Query/UnreceivedPacketCommitments RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequences` | [uint64](#uint64) | repeated | list of unreceived packet sequences |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.core.channel.v1.Query"></a>
-
-### Query
-Query provides defines the gRPC querier service
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Channel` | [QueryChannelRequest](#ibc.core.channel.v1.QueryChannelRequest) | [QueryChannelResponse](#ibc.core.channel.v1.QueryChannelResponse) | Channel queries an IBC Channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}|
-| `Channels` | [QueryChannelsRequest](#ibc.core.channel.v1.QueryChannelsRequest) | [QueryChannelsResponse](#ibc.core.channel.v1.QueryChannelsResponse) | Channels queries all the IBC channels of a chain. | GET|/ibc/core/channel/v1/channels|
-| `ConnectionChannels` | [QueryConnectionChannelsRequest](#ibc.core.channel.v1.QueryConnectionChannelsRequest) | [QueryConnectionChannelsResponse](#ibc.core.channel.v1.QueryConnectionChannelsResponse) | ConnectionChannels queries all the channels associated with a connection end. | GET|/ibc/core/channel/v1/connections/{connection}/channels|
-| `ChannelClientState` | [QueryChannelClientStateRequest](#ibc.core.channel.v1.QueryChannelClientStateRequest) | [QueryChannelClientStateResponse](#ibc.core.channel.v1.QueryChannelClientStateResponse) | ChannelClientState queries for the client state for the channel associated with the provided channel identifiers. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/client_state|
-| `ChannelConsensusState` | [QueryChannelConsensusStateRequest](#ibc.core.channel.v1.QueryChannelConsensusStateRequest) | [QueryChannelConsensusStateResponse](#ibc.core.channel.v1.QueryChannelConsensusStateResponse) | ChannelConsensusState queries for the consensus state for the channel associated with the provided channel identifiers. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/consensus_state/revision/{revision_number}/height/{revision_height}|
-| `PacketCommitment` | [QueryPacketCommitmentRequest](#ibc.core.channel.v1.QueryPacketCommitmentRequest) | [QueryPacketCommitmentResponse](#ibc.core.channel.v1.QueryPacketCommitmentResponse) | PacketCommitment queries a stored packet commitment hash. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments/{sequence}|
-| `PacketCommitments` | [QueryPacketCommitmentsRequest](#ibc.core.channel.v1.QueryPacketCommitmentsRequest) | [QueryPacketCommitmentsResponse](#ibc.core.channel.v1.QueryPacketCommitmentsResponse) | PacketCommitments returns all the packet commitments hashes associated with a channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments|
-| `PacketReceipt` | [QueryPacketReceiptRequest](#ibc.core.channel.v1.QueryPacketReceiptRequest) | [QueryPacketReceiptResponse](#ibc.core.channel.v1.QueryPacketReceiptResponse) | PacketReceipt queries if a given packet sequence has been received on the queried chain | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_receipts/{sequence}|
-| `PacketAcknowledgement` | [QueryPacketAcknowledgementRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementRequest) | [QueryPacketAcknowledgementResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementResponse) | PacketAcknowledgement queries a stored packet acknowledgement hash. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acks/{sequence}|
-| `PacketAcknowledgements` | [QueryPacketAcknowledgementsRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementsRequest) | [QueryPacketAcknowledgementsResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementsResponse) | PacketAcknowledgements returns all the packet acknowledgements associated with a channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acknowledgements|
-| `UnreceivedPackets` | [QueryUnreceivedPacketsRequest](#ibc.core.channel.v1.QueryUnreceivedPacketsRequest) | [QueryUnreceivedPacketsResponse](#ibc.core.channel.v1.QueryUnreceivedPacketsResponse) | UnreceivedPackets returns all the unreceived IBC packets associated with a channel and sequences. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments/{packet_commitment_sequences}/unreceived_packets|
-| `UnreceivedAcks` | [QueryUnreceivedAcksRequest](#ibc.core.channel.v1.QueryUnreceivedAcksRequest) | [QueryUnreceivedAcksResponse](#ibc.core.channel.v1.QueryUnreceivedAcksResponse) | UnreceivedAcks returns all the unreceived IBC acknowledgements associated with a channel and sequences. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks|
-| `NextSequenceReceive` | [QueryNextSequenceReceiveRequest](#ibc.core.channel.v1.QueryNextSequenceReceiveRequest) | [QueryNextSequenceReceiveResponse](#ibc.core.channel.v1.QueryNextSequenceReceiveResponse) | NextSequenceReceive returns the next receive sequence for a given channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/next_sequence|
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/channel/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/channel/v1/tx.proto
-
-
-
-<a name="ibc.core.channel.v1.MsgAcknowledgement"></a>
-
-### MsgAcknowledgement
-MsgAcknowledgement receives incoming IBC acknowledgement
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `packet` | [Packet](#ibc.core.channel.v1.Packet) |  |  |
-| `acknowledgement` | [bytes](#bytes) |  |  |
-| `proof_acked` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgAcknowledgementResponse"></a>
-
-### MsgAcknowledgementResponse
-MsgAcknowledgementResponse defines the Msg/Acknowledgement response type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelCloseConfirm"></a>
-
-### MsgChannelCloseConfirm
-MsgChannelCloseConfirm defines a msg sent by a Relayer to Chain B
-to acknowledge the change of channel state to CLOSED on Chain A.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `channel_id` | [string](#string) |  |  |
-| `proof_init` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelCloseConfirmResponse"></a>
-
-### MsgChannelCloseConfirmResponse
-MsgChannelCloseConfirmResponse defines the Msg/ChannelCloseConfirm response
-type.
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelCloseInit"></a>
-
-### MsgChannelCloseInit
-MsgChannelCloseInit defines a msg sent by a Relayer to Chain A
-to close a channel with Chain B.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `channel_id` | [string](#string) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelCloseInitResponse"></a>
-
-### MsgChannelCloseInitResponse
-MsgChannelCloseInitResponse defines the Msg/ChannelCloseInit response type.
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenAck"></a>
-
-### MsgChannelOpenAck
-MsgChannelOpenAck defines a msg sent by a Relayer to Chain A to acknowledge
-the change of channel state to TRYOPEN on Chain B.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `channel_id` | [string](#string) |  |  |
-| `counterparty_channel_id` | [string](#string) |  |  |
-| `counterparty_version` | [string](#string) |  |  |
-| `proof_try` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenAckResponse"></a>
-
-### MsgChannelOpenAckResponse
-MsgChannelOpenAckResponse defines the Msg/ChannelOpenAck response type.
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenConfirm"></a>
-
-### MsgChannelOpenConfirm
-MsgChannelOpenConfirm defines a msg sent by a Relayer to Chain B to
-acknowledge the change of channel state to OPEN on Chain A.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `channel_id` | [string](#string) |  |  |
-| `proof_ack` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenConfirmResponse"></a>
-
-### MsgChannelOpenConfirmResponse
-MsgChannelOpenConfirmResponse defines the Msg/ChannelOpenConfirm response
-type.
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenInit"></a>
-
-### MsgChannelOpenInit
-MsgChannelOpenInit defines an sdk.Msg to initialize a channel handshake. It
-is called by a relayer on Chain A.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `channel` | [Channel](#ibc.core.channel.v1.Channel) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenInitResponse"></a>
-
-### MsgChannelOpenInitResponse
-MsgChannelOpenInitResponse defines the Msg/ChannelOpenInit response type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channel_id` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenTry"></a>
-
-### MsgChannelOpenTry
-MsgChannelOpenInit defines a msg sent by a Relayer to try to open a channel
-on Chain B. The version field within the Channel field has been deprecated. Its
-value will be ignored by core IBC.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `port_id` | [string](#string) |  |  |
-| `previous_channel_id` | [string](#string) |  | in the case of crossing hello's, when both chains call OpenInit, we need the channel identifier of the previous channel in state INIT |
-| `channel` | [Channel](#ibc.core.channel.v1.Channel) |  | NOTE: the version field within the channel has been deprecated. Its value will be ignored by core IBC. |
-| `counterparty_version` | [string](#string) |  |  |
-| `proof_init` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgChannelOpenTryResponse"></a>
-
-### MsgChannelOpenTryResponse
-MsgChannelOpenTryResponse defines the Msg/ChannelOpenTry response type.
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgRecvPacket"></a>
-
-### MsgRecvPacket
-MsgRecvPacket receives incoming IBC packet
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `packet` | [Packet](#ibc.core.channel.v1.Packet) |  |  |
-| `proof_commitment` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgRecvPacketResponse"></a>
-
-### MsgRecvPacketResponse
-MsgRecvPacketResponse defines the Msg/RecvPacket response type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgTimeout"></a>
-
-### MsgTimeout
-MsgTimeout receives timed-out packet
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `packet` | [Packet](#ibc.core.channel.v1.Packet) |  |  |
-| `proof_unreceived` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `next_sequence_recv` | [uint64](#uint64) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgTimeoutOnClose"></a>
-
-### MsgTimeoutOnClose
-MsgTimeoutOnClose timed-out packet upon counterparty channel closure.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `packet` | [Packet](#ibc.core.channel.v1.Packet) |  |  |
-| `proof_unreceived` | [bytes](#bytes) |  |  |
-| `proof_close` | [bytes](#bytes) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `next_sequence_recv` | [uint64](#uint64) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgTimeoutOnCloseResponse"></a>
-
-### MsgTimeoutOnCloseResponse
-MsgTimeoutOnCloseResponse defines the Msg/TimeoutOnClose response type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.channel.v1.MsgTimeoutResponse"></a>
-
-### MsgTimeoutResponse
-MsgTimeoutResponse defines the Msg/Timeout response type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="ibc.core.channel.v1.ResponseResultType"></a>
-
-### ResponseResultType
-ResponseResultType defines the possible outcomes of the execution of a message
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| RESPONSE_RESULT_UNSPECIFIED | 0 | Default zero value enumeration |
-| RESPONSE_RESULT_NOOP | 1 | The message did not call the IBC application callbacks (because, for example, the packet had already been relayed) |
-| RESPONSE_RESULT_SUCCESS | 2 | The message was executed successfully |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.core.channel.v1.Msg"></a>
-
-### Msg
-Msg defines the ibc/channel Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ChannelOpenInit` | [MsgChannelOpenInit](#ibc.core.channel.v1.MsgChannelOpenInit) | [MsgChannelOpenInitResponse](#ibc.core.channel.v1.MsgChannelOpenInitResponse) | ChannelOpenInit defines a rpc handler method for MsgChannelOpenInit. | |
-| `ChannelOpenTry` | [MsgChannelOpenTry](#ibc.core.channel.v1.MsgChannelOpenTry) | [MsgChannelOpenTryResponse](#ibc.core.channel.v1.MsgChannelOpenTryResponse) | ChannelOpenTry defines a rpc handler method for MsgChannelOpenTry. | |
-| `ChannelOpenAck` | [MsgChannelOpenAck](#ibc.core.channel.v1.MsgChannelOpenAck) | [MsgChannelOpenAckResponse](#ibc.core.channel.v1.MsgChannelOpenAckResponse) | ChannelOpenAck defines a rpc handler method for MsgChannelOpenAck. | |
-| `ChannelOpenConfirm` | [MsgChannelOpenConfirm](#ibc.core.channel.v1.MsgChannelOpenConfirm) | [MsgChannelOpenConfirmResponse](#ibc.core.channel.v1.MsgChannelOpenConfirmResponse) | ChannelOpenConfirm defines a rpc handler method for MsgChannelOpenConfirm. | |
-| `ChannelCloseInit` | [MsgChannelCloseInit](#ibc.core.channel.v1.MsgChannelCloseInit) | [MsgChannelCloseInitResponse](#ibc.core.channel.v1.MsgChannelCloseInitResponse) | ChannelCloseInit defines a rpc handler method for MsgChannelCloseInit. | |
-| `ChannelCloseConfirm` | [MsgChannelCloseConfirm](#ibc.core.channel.v1.MsgChannelCloseConfirm) | [MsgChannelCloseConfirmResponse](#ibc.core.channel.v1.MsgChannelCloseConfirmResponse) | ChannelCloseConfirm defines a rpc handler method for MsgChannelCloseConfirm. | |
-| `RecvPacket` | [MsgRecvPacket](#ibc.core.channel.v1.MsgRecvPacket) | [MsgRecvPacketResponse](#ibc.core.channel.v1.MsgRecvPacketResponse) | RecvPacket defines a rpc handler method for MsgRecvPacket. | |
-| `Timeout` | [MsgTimeout](#ibc.core.channel.v1.MsgTimeout) | [MsgTimeoutResponse](#ibc.core.channel.v1.MsgTimeoutResponse) | Timeout defines a rpc handler method for MsgTimeout. | |
-| `TimeoutOnClose` | [MsgTimeoutOnClose](#ibc.core.channel.v1.MsgTimeoutOnClose) | [MsgTimeoutOnCloseResponse](#ibc.core.channel.v1.MsgTimeoutOnCloseResponse) | TimeoutOnClose defines a rpc handler method for MsgTimeoutOnClose. | |
-| `Acknowledgement` | [MsgAcknowledgement](#ibc.core.channel.v1.MsgAcknowledgement) | [MsgAcknowledgementResponse](#ibc.core.channel.v1.MsgAcknowledgementResponse) | Acknowledgement defines a rpc handler method for MsgAcknowledgement. | |
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/client/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/client/v1/genesis.proto
-
-
-
-<a name="ibc.core.client.v1.GenesisMetadata"></a>
-
-### GenesisMetadata
-GenesisMetadata defines the genesis type for metadata that clients may return
-with ExportMetadata
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  | store key of metadata without clientID-prefix |
-| `value` | [bytes](#bytes) |  | metadata value |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the ibc client submodule's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `clients` | [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState) | repeated | client states with their corresponding identifiers |
-| `clients_consensus` | [ClientConsensusStates](#ibc.core.client.v1.ClientConsensusStates) | repeated | consensus states from each client |
-| `clients_metadata` | [IdentifiedGenesisMetadata](#ibc.core.client.v1.IdentifiedGenesisMetadata) | repeated | metadata from each client |
-| `params` | [Params](#ibc.core.client.v1.Params) |  |  |
-| `create_localhost` | [bool](#bool) |  | create localhost on initialization |
-| `next_client_sequence` | [uint64](#uint64) |  | the sequence for the next generated client identifier |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.IdentifiedGenesisMetadata"></a>
-
-### IdentifiedGenesisMetadata
-IdentifiedGenesisMetadata has the client metadata with the corresponding
-client id.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
-| `client_metadata` | [GenesisMetadata](#ibc.core.client.v1.GenesisMetadata) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/client/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/client/v1/query.proto
-
-
-
-<a name="ibc.core.client.v1.QueryClientParamsRequest"></a>
-
-### QueryClientParamsRequest
-QueryClientParamsRequest is the request type for the Query/ClientParams RPC
-method.
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientParamsResponse"></a>
-
-### QueryClientParamsResponse
-QueryClientParamsResponse is the response type for the Query/ClientParams RPC
-method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ibc.core.client.v1.Params) |  | params defines the parameters of the module. |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientStateRequest"></a>
-
-### QueryClientStateRequest
-QueryClientStateRequest is the request type for the Query/ClientState RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client state unique identifier |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientStateResponse"></a>
-
-### QueryClientStateResponse
-QueryClientStateResponse is the response type for the Query/ClientState RPC
-method. Besides the client state, it includes a proof and the height from
-which the proof was retrieved.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | client state associated with the request identifier |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientStatesRequest"></a>
-
-### QueryClientStatesRequest
-QueryClientStatesRequest is the request type for the Query/ClientStates RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientStatesResponse"></a>
-
-### QueryClientStatesResponse
-QueryClientStatesResponse is the response type for the Query/ClientStates RPC
-method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_states` | [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState) | repeated | list of stored ClientStates of the chain. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientStatusRequest"></a>
-
-### QueryClientStatusRequest
-QueryClientStatusRequest is the request type for the Query/ClientStatus RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client unique identifier |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryClientStatusResponse"></a>
-
-### QueryClientStatusResponse
-QueryClientStatusResponse is the response type for the Query/ClientStatus RPC
-method. It returns the current status of the IBC client.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `status` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryConsensusStateRequest"></a>
-
-### QueryConsensusStateRequest
-QueryConsensusStateRequest is the request type for the Query/ConsensusState
-RPC method. Besides the consensus state, it includes a proof and the height
-from which the proof was retrieved.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client identifier |
-| `revision_number` | [uint64](#uint64) |  | consensus state revision number |
-| `revision_height` | [uint64](#uint64) |  | consensus state revision height |
-| `latest_height` | [bool](#bool) |  | latest_height overrrides the height field and queries the latest stored ConsensusState |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryConsensusStateResponse"></a>
-
-### QueryConsensusStateResponse
-QueryConsensusStateResponse is the response type for the Query/ConsensusState
-RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | consensus state associated with the client identifier at the given height |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryConsensusStatesRequest"></a>
-
-### QueryConsensusStatesRequest
-QueryConsensusStatesRequest is the request type for the Query/ConsensusStates
-RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client identifier |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryConsensusStatesResponse"></a>
-
-### QueryConsensusStatesResponse
-QueryConsensusStatesResponse is the response type for the
-Query/ConsensusStates RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `consensus_states` | [ConsensusStateWithHeight](#ibc.core.client.v1.ConsensusStateWithHeight) | repeated | consensus states associated with the identifier |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryUpgradedClientStateRequest"></a>
-
-### QueryUpgradedClientStateRequest
-QueryUpgradedClientStateRequest is the request type for the
-Query/UpgradedClientState RPC method
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryUpgradedClientStateResponse"></a>
-
-### QueryUpgradedClientStateResponse
-QueryUpgradedClientStateResponse is the response type for the
-Query/UpgradedClientState RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | client state associated with the request identifier |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryUpgradedConsensusStateRequest"></a>
-
-### QueryUpgradedConsensusStateRequest
-QueryUpgradedConsensusStateRequest is the request type for the
-Query/UpgradedConsensusState RPC method
-
-
-
-
-
-
-<a name="ibc.core.client.v1.QueryUpgradedConsensusStateResponse"></a>
-
-### QueryUpgradedConsensusStateResponse
-QueryUpgradedConsensusStateResponse is the response type for the
-Query/UpgradedConsensusState RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `upgraded_consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | Consensus state associated with the request identifier |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.core.client.v1.Query"></a>
-
-### Query
-Query provides defines the gRPC querier service
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ClientState` | [QueryClientStateRequest](#ibc.core.client.v1.QueryClientStateRequest) | [QueryClientStateResponse](#ibc.core.client.v1.QueryClientStateResponse) | ClientState queries an IBC light client. | GET|/ibc/core/client/v1/client_states/{client_id}|
-| `ClientStates` | [QueryClientStatesRequest](#ibc.core.client.v1.QueryClientStatesRequest) | [QueryClientStatesResponse](#ibc.core.client.v1.QueryClientStatesResponse) | ClientStates queries all the IBC light clients of a chain. | GET|/ibc/core/client/v1/client_states|
-| `ConsensusState` | [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest) | [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse) | ConsensusState queries a consensus state associated with a client state at a given height. | GET|/ibc/core/client/v1/consensus_states/{client_id}/revision/{revision_number}/height/{revision_height}|
-| `ConsensusStates` | [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest) | [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse) | ConsensusStates queries all the consensus state associated with a given client. | GET|/ibc/core/client/v1/consensus_states/{client_id}|
-| `ClientStatus` | [QueryClientStatusRequest](#ibc.core.client.v1.QueryClientStatusRequest) | [QueryClientStatusResponse](#ibc.core.client.v1.QueryClientStatusResponse) | Status queries the status of an IBC client. | GET|/ibc/core/client/v1/client_status/{client_id}|
-| `ClientParams` | [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest) | [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse) | ClientParams queries all parameters of the ibc client. | GET|/ibc/client/v1/params|
-| `UpgradedClientState` | [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest) | [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse) | UpgradedClientState queries an Upgraded IBC light client. | GET|/ibc/core/client/v1/upgraded_client_states|
-| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#ibc.core.client.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#ibc.core.client.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries an Upgraded IBC consensus state. | GET|/ibc/core/client/v1/upgraded_consensus_states|
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/client/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/client/v1/tx.proto
-
-
-
-<a name="ibc.core.client.v1.MsgCreateClient"></a>
-
-### MsgCreateClient
-MsgCreateClient defines a message to create an IBC client
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | light client state |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | consensus state associated with the client that corresponds to a given height. |
-| `signer` | [string](#string) |  | signer address |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgCreateClientResponse"></a>
-
-### MsgCreateClientResponse
-MsgCreateClientResponse defines the Msg/CreateClient response type.
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgSubmitMisbehaviour"></a>
-
-### MsgSubmitMisbehaviour
-MsgSubmitMisbehaviour defines an sdk.Msg type that submits Evidence for
-light client misbehaviour.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client unique identifier |
-| `misbehaviour` | [google.protobuf.Any](#google.protobuf.Any) |  | misbehaviour used for freezing the light client |
-| `signer` | [string](#string) |  | signer address |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgSubmitMisbehaviourResponse"></a>
-
-### MsgSubmitMisbehaviourResponse
-MsgSubmitMisbehaviourResponse defines the Msg/SubmitMisbehaviour response
-type.
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgUpdateClient"></a>
-
-### MsgUpdateClient
-MsgUpdateClient defines an sdk.Msg to update a IBC client state using
-the given header.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client unique identifier |
-| `header` | [google.protobuf.Any](#google.protobuf.Any) |  | header to update the light client |
-| `signer` | [string](#string) |  | signer address |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgUpdateClientResponse"></a>
-
-### MsgUpdateClientResponse
-MsgUpdateClientResponse defines the Msg/UpdateClient response type.
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgUpgradeClient"></a>
-
-### MsgUpgradeClient
-MsgUpgradeClient defines an sdk.Msg to upgrade an IBC client to a new client
-state
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client unique identifier |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | upgraded client state |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | upgraded consensus state, only contains enough information to serve as a basis of trust in update logic |
-| `proof_upgrade_client` | [bytes](#bytes) |  | proof that old chain committed to new client |
-| `proof_upgrade_consensus_state` | [bytes](#bytes) |  | proof that old chain committed to new consensus state |
-| `signer` | [string](#string) |  | signer address |
-
-
-
-
-
-
-<a name="ibc.core.client.v1.MsgUpgradeClientResponse"></a>
-
-### MsgUpgradeClientResponse
-MsgUpgradeClientResponse defines the Msg/UpgradeClient response type.
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.core.client.v1.Msg"></a>
-
-### Msg
-Msg defines the ibc/client Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `CreateClient` | [MsgCreateClient](#ibc.core.client.v1.MsgCreateClient) | [MsgCreateClientResponse](#ibc.core.client.v1.MsgCreateClientResponse) | CreateClient defines a rpc handler method for MsgCreateClient. | |
-| `UpdateClient` | [MsgUpdateClient](#ibc.core.client.v1.MsgUpdateClient) | [MsgUpdateClientResponse](#ibc.core.client.v1.MsgUpdateClientResponse) | UpdateClient defines a rpc handler method for MsgUpdateClient. | |
-| `UpgradeClient` | [MsgUpgradeClient](#ibc.core.client.v1.MsgUpgradeClient) | [MsgUpgradeClientResponse](#ibc.core.client.v1.MsgUpgradeClientResponse) | UpgradeClient defines a rpc handler method for MsgUpgradeClient. | |
-| `SubmitMisbehaviour` | [MsgSubmitMisbehaviour](#ibc.core.client.v1.MsgSubmitMisbehaviour) | [MsgSubmitMisbehaviourResponse](#ibc.core.client.v1.MsgSubmitMisbehaviourResponse) | SubmitMisbehaviour defines a rpc handler method for MsgSubmitMisbehaviour. | |
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/commitment/v1/commitment.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/commitment/v1/commitment.proto
-
-
-
-<a name="ibc.core.commitment.v1.MerklePath"></a>
-
-### MerklePath
-MerklePath is the path used to verify commitment proofs, which can be an
-arbitrary structured object (defined by a commitment type).
-MerklePath is represented from root-to-leaf
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key_path` | [string](#string) | repeated |  |
-
-
-
-
-
-
-<a name="ibc.core.commitment.v1.MerklePrefix"></a>
-
-### MerklePrefix
-MerklePrefix is merkle path prefixed to the key.
-The constructed key from the Path and the key will be append(Path.KeyPath,
-append(Path.KeyPrefix, key...))
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key_prefix` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.commitment.v1.MerkleProof"></a>
-
-### MerkleProof
-MerkleProof is a wrapper type over a chain of CommitmentProofs.
-It demonstrates membership or non-membership for an element or set of
-elements, verifiable in conjunction with a known commitment root. Proofs
-should be succinct.
-MerkleProofs are ordered from leaf-to-root
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `proofs` | [ics23.CommitmentProof](#ics23.CommitmentProof) | repeated |  |
-
-
-
-
-
-
-<a name="ibc.core.commitment.v1.MerkleRoot"></a>
-
-### MerkleRoot
-MerkleRoot defines a merkle root hash.
-In the Cosmos SDK, the AppHash of a block header becomes the root.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `hash` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/connection/v1/connection.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/connection/v1/connection.proto
-
-
-
-<a name="ibc.core.connection.v1.ClientPaths"></a>
-
-### ClientPaths
-ClientPaths define all the connection paths for a client state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `paths` | [string](#string) | repeated | list of connection paths |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.ConnectionEnd"></a>
-
-### ConnectionEnd
-ConnectionEnd defines a stateful object on a chain connected to another
-separate one.
-NOTE: there must only be 2 defined ConnectionEnds to establish
-a connection between two chains.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client associated with this connection. |
-| `versions` | [Version](#ibc.core.connection.v1.Version) | repeated | IBC version which can be utilised to determine encodings or protocols for channels or packets utilising this connection. |
-| `state` | [State](#ibc.core.connection.v1.State) |  | current state of the connection end. |
-| `counterparty` | [Counterparty](#ibc.core.connection.v1.Counterparty) |  | counterparty chain associated with this connection. |
-| `delay_period` | [uint64](#uint64) |  | delay period that must pass before a consensus state can be used for packet-verification NOTE: delay period logic is only implemented by some clients. |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.ConnectionPaths"></a>
-
-### ConnectionPaths
-ConnectionPaths define all the connection paths for a given client state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client state unique identifier |
-| `paths` | [string](#string) | repeated | list of connection paths |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.Counterparty"></a>
-
-### Counterparty
-Counterparty defines the counterparty chain associated with a connection end.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | identifies the client on the counterparty chain associated with a given connection. |
-| `connection_id` | [string](#string) |  | identifies the connection end on the counterparty chain associated with a given connection. |
-| `prefix` | [ibc.core.commitment.v1.MerklePrefix](#ibc.core.commitment.v1.MerklePrefix) |  | commitment merkle prefix of the counterparty chain. |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.IdentifiedConnection"></a>
-
-### IdentifiedConnection
-IdentifiedConnection defines a connection with additional connection
-identifier field.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | connection identifier. |
-| `client_id` | [string](#string) |  | client associated with this connection. |
-| `versions` | [Version](#ibc.core.connection.v1.Version) | repeated | IBC version which can be utilised to determine encodings or protocols for channels or packets utilising this connection |
-| `state` | [State](#ibc.core.connection.v1.State) |  | current state of the connection end. |
-| `counterparty` | [Counterparty](#ibc.core.connection.v1.Counterparty) |  | counterparty chain associated with this connection. |
-| `delay_period` | [uint64](#uint64) |  | delay period associated with this connection. |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.Params"></a>
-
-### Params
-Params defines the set of Connection parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `max_expected_time_per_block` | [uint64](#uint64) |  | maximum expected time per block (in nanoseconds), used to enforce block delay. This parameter should reflect the largest amount of time that the chain might reasonably take to produce the next block under normal operating conditions. A safe choice is 3-5x the expected time per block. |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.Version"></a>
-
-### Version
-Version defines the versioning scheme used to negotiate the IBC verison in
-the connection handshake.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `identifier` | [string](#string) |  | unique version identifier |
-| `features` | [string](#string) | repeated | list of features compatible with the specified identifier |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="ibc.core.connection.v1.State"></a>
-
-### State
-State defines if a connection is in one of the following states:
-INIT, TRYOPEN, OPEN or UNINITIALIZED.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| STATE_UNINITIALIZED_UNSPECIFIED | 0 | Default State |
-| STATE_INIT | 1 | A connection end has just started the opening handshake. |
-| STATE_TRYOPEN | 2 | A connection end has acknowledged the handshake step on the counterparty chain. |
-| STATE_OPEN | 3 | A connection end has completed the handshake. |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/connection/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/connection/v1/genesis.proto
-
-
-
-<a name="ibc.core.connection.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the ibc connection submodule's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connections` | [IdentifiedConnection](#ibc.core.connection.v1.IdentifiedConnection) | repeated |  |
-| `client_connection_paths` | [ConnectionPaths](#ibc.core.connection.v1.ConnectionPaths) | repeated |  |
-| `next_connection_sequence` | [uint64](#uint64) |  | the sequence for the next generated connection identifier |
-| `params` | [Params](#ibc.core.connection.v1.Params) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/connection/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/connection/v1/query.proto
-
-
-
-<a name="ibc.core.connection.v1.QueryClientConnectionsRequest"></a>
-
-### QueryClientConnectionsRequest
-QueryClientConnectionsRequest is the request type for the
-Query/ClientConnections RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client identifier associated with a connection |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryClientConnectionsResponse"></a>
-
-### QueryClientConnectionsResponse
-QueryClientConnectionsResponse is the response type for the
-Query/ClientConnections RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_paths` | [string](#string) | repeated | slice of all the connection paths associated with a client. |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was generated |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionClientStateRequest"></a>
-
-### QueryConnectionClientStateRequest
-QueryConnectionClientStateRequest is the request type for the
-Query/ConnectionClientState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  | connection identifier |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionClientStateResponse"></a>
-
-### QueryConnectionClientStateResponse
-QueryConnectionClientStateResponse is the response type for the
-Query/ConnectionClientState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `identified_client_state` | [ibc.core.client.v1.IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState) |  | client state associated with the channel |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionConsensusStateRequest"></a>
-
-### QueryConnectionConsensusStateRequest
-QueryConnectionConsensusStateRequest is the request type for the
-Query/ConnectionConsensusState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  | connection identifier |
-| `revision_number` | [uint64](#uint64) |  |  |
-| `revision_height` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionConsensusStateResponse"></a>
-
-### QueryConnectionConsensusStateResponse
-QueryConnectionConsensusStateResponse is the response type for the
-Query/ConnectionConsensusState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | consensus state associated with the channel |
-| `client_id` | [string](#string) |  | client ID associated with the consensus state |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionRequest"></a>
-
-### QueryConnectionRequest
-QueryConnectionRequest is the request type for the Query/Connection RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  | connection unique identifier |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionResponse"></a>
-
-### QueryConnectionResponse
-QueryConnectionResponse is the response type for the Query/Connection RPC
-method. Besides the connection end, it includes a proof and the height from
-which the proof was retrieved.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection` | [ConnectionEnd](#ibc.core.connection.v1.ConnectionEnd) |  | connection associated with the request identifier |
-| `proof` | [bytes](#bytes) |  | merkle proof of existence |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | height at which the proof was retrieved |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionsRequest"></a>
-
-### QueryConnectionsRequest
-QueryConnectionsRequest is the request type for the Query/Connections RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.QueryConnectionsResponse"></a>
-
-### QueryConnectionsResponse
-QueryConnectionsResponse is the response type for the Query/Connections RPC
-method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connections` | [IdentifiedConnection](#ibc.core.connection.v1.IdentifiedConnection) | repeated | list of stored connections of the chain. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.core.connection.v1.Query"></a>
-
-### Query
-Query provides defines the gRPC querier service
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Connection` | [QueryConnectionRequest](#ibc.core.connection.v1.QueryConnectionRequest) | [QueryConnectionResponse](#ibc.core.connection.v1.QueryConnectionResponse) | Connection queries an IBC connection end. | GET|/ibc/core/connection/v1/connections/{connection_id}|
-| `Connections` | [QueryConnectionsRequest](#ibc.core.connection.v1.QueryConnectionsRequest) | [QueryConnectionsResponse](#ibc.core.connection.v1.QueryConnectionsResponse) | Connections queries all the IBC connections of a chain. | GET|/ibc/core/connection/v1/connections|
-| `ClientConnections` | [QueryClientConnectionsRequest](#ibc.core.connection.v1.QueryClientConnectionsRequest) | [QueryClientConnectionsResponse](#ibc.core.connection.v1.QueryClientConnectionsResponse) | ClientConnections queries the connection paths associated with a client state. | GET|/ibc/core/connection/v1/client_connections/{client_id}|
-| `ConnectionClientState` | [QueryConnectionClientStateRequest](#ibc.core.connection.v1.QueryConnectionClientStateRequest) | [QueryConnectionClientStateResponse](#ibc.core.connection.v1.QueryConnectionClientStateResponse) | ConnectionClientState queries the client state associated with the connection. | GET|/ibc/core/connection/v1/connections/{connection_id}/client_state|
-| `ConnectionConsensusState` | [QueryConnectionConsensusStateRequest](#ibc.core.connection.v1.QueryConnectionConsensusStateRequest) | [QueryConnectionConsensusStateResponse](#ibc.core.connection.v1.QueryConnectionConsensusStateResponse) | ConnectionConsensusState queries the consensus state associated with the connection. | GET|/ibc/core/connection/v1/connections/{connection_id}/consensus_state/revision/{revision_number}/height/{revision_height}|
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/connection/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/connection/v1/tx.proto
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenAck"></a>
-
-### MsgConnectionOpenAck
-MsgConnectionOpenAck defines a msg sent by a Relayer to Chain A to
-acknowledge the change of connection state to TRYOPEN on Chain B.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  |  |
-| `counterparty_connection_id` | [string](#string) |  |  |
-| `version` | [Version](#ibc.core.connection.v1.Version) |  |  |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `proof_try` | [bytes](#bytes) |  | proof of the initialization the connection on Chain B: `UNITIALIZED -> TRYOPEN` |
-| `proof_client` | [bytes](#bytes) |  | proof of client state included in message |
-| `proof_consensus` | [bytes](#bytes) |  | proof of client consensus state |
-| `consensus_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenAckResponse"></a>
-
-### MsgConnectionOpenAckResponse
-MsgConnectionOpenAckResponse defines the Msg/ConnectionOpenAck response type.
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenConfirm"></a>
-
-### MsgConnectionOpenConfirm
-MsgConnectionOpenConfirm defines a msg sent by a Relayer to Chain B to
-acknowledge the change of connection state to OPEN on Chain A.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `connection_id` | [string](#string) |  |  |
-| `proof_ack` | [bytes](#bytes) |  | proof for the change of the connection state on Chain A: `INIT -> OPEN` |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenConfirmResponse"></a>
-
-### MsgConnectionOpenConfirmResponse
-MsgConnectionOpenConfirmResponse defines the Msg/ConnectionOpenConfirm
-response type.
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenInit"></a>
-
-### MsgConnectionOpenInit
-MsgConnectionOpenInit defines the msg sent by an account on Chain A to
-initialize a connection with Chain B.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
-| `counterparty` | [Counterparty](#ibc.core.connection.v1.Counterparty) |  |  |
-| `version` | [Version](#ibc.core.connection.v1.Version) |  |  |
-| `delay_period` | [uint64](#uint64) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenInitResponse"></a>
-
-### MsgConnectionOpenInitResponse
-MsgConnectionOpenInitResponse defines the Msg/ConnectionOpenInit response
-type.
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenTry"></a>
-
-### MsgConnectionOpenTry
-MsgConnectionOpenTry defines a msg sent by a Relayer to try to open a
-connection on Chain B.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
-| `previous_connection_id` | [string](#string) |  | in the case of crossing hello's, when both chains call OpenInit, we need the connection identifier of the previous connection in state INIT |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `counterparty` | [Counterparty](#ibc.core.connection.v1.Counterparty) |  |  |
-| `delay_period` | [uint64](#uint64) |  |  |
-| `counterparty_versions` | [Version](#ibc.core.connection.v1.Version) | repeated |  |
-| `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `proof_init` | [bytes](#bytes) |  | proof of the initialization the connection on Chain A: `UNITIALIZED -> INIT` |
-| `proof_client` | [bytes](#bytes) |  | proof of client state included in message |
-| `proof_consensus` | [bytes](#bytes) |  | proof of client consensus state |
-| `consensus_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `signer` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.core.connection.v1.MsgConnectionOpenTryResponse"></a>
-
-### MsgConnectionOpenTryResponse
-MsgConnectionOpenTryResponse defines the Msg/ConnectionOpenTry response type.
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ibc.core.connection.v1.Msg"></a>
-
-### Msg
-Msg defines the ibc/connection Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ConnectionOpenInit` | [MsgConnectionOpenInit](#ibc.core.connection.v1.MsgConnectionOpenInit) | [MsgConnectionOpenInitResponse](#ibc.core.connection.v1.MsgConnectionOpenInitResponse) | ConnectionOpenInit defines a rpc handler method for MsgConnectionOpenInit. | |
-| `ConnectionOpenTry` | [MsgConnectionOpenTry](#ibc.core.connection.v1.MsgConnectionOpenTry) | [MsgConnectionOpenTryResponse](#ibc.core.connection.v1.MsgConnectionOpenTryResponse) | ConnectionOpenTry defines a rpc handler method for MsgConnectionOpenTry. | |
-| `ConnectionOpenAck` | [MsgConnectionOpenAck](#ibc.core.connection.v1.MsgConnectionOpenAck) | [MsgConnectionOpenAckResponse](#ibc.core.connection.v1.MsgConnectionOpenAckResponse) | ConnectionOpenAck defines a rpc handler method for MsgConnectionOpenAck. | |
-| `ConnectionOpenConfirm` | [MsgConnectionOpenConfirm](#ibc.core.connection.v1.MsgConnectionOpenConfirm) | [MsgConnectionOpenConfirmResponse](#ibc.core.connection.v1.MsgConnectionOpenConfirmResponse) | ConnectionOpenConfirm defines a rpc handler method for MsgConnectionOpenConfirm. | |
-
- <!-- end services -->
-
-
-
-<a name="ibc/core/types/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/core/types/v1/genesis.proto
-
-
-
-<a name="ibc.core.types.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the ibc module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_genesis` | [ibc.core.client.v1.GenesisState](#ibc.core.client.v1.GenesisState) |  | ICS002 - Clients genesis state |
-| `connection_genesis` | [ibc.core.connection.v1.GenesisState](#ibc.core.connection.v1.GenesisState) |  | ICS003 - Connections genesis state |
-| `channel_genesis` | [ibc.core.channel.v1.GenesisState](#ibc.core.channel.v1.GenesisState) |  | ICS004 - Channel genesis state |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/lightclients/localhost/v1/localhost.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/lightclients/localhost/v1/localhost.proto
-
-
-
-<a name="ibc.lightclients.localhost.v1.ClientState"></a>
-
-### ClientState
-ClientState defines a loopback (localhost) client. It requires (read-only)
-access to keys outside the client prefix.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `chain_id` | [string](#string) |  | self chain ID |
-| `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | self latest block height |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/lightclients/ostracon/v1/ostracon.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/lightclients/ostracon/v1/ostracon.proto
-
-
-
-<a name="ibc.lightclients.ostracon.v1.ClientState"></a>
-
-### ClientState
-ClientState from Ostracon tracks the current validator set, latest height,
-and a possible frozen height.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `chain_id` | [string](#string) |  |  |
-| `trust_level` | [Fraction](#ibc.lightclients.ostracon.v1.Fraction) |  |  |
-| `trusting_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | duration of the period since the LastestTimestamp during which the submitted headers are valid for upgrade |
-| `unbonding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | duration of the staking unbonding period |
-| `max_clock_drift` | [google.protobuf.Duration](#google.protobuf.Duration) |  | defines how much new (untrusted) header's Time can drift into the future. |
-| `frozen_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Block height when the client was frozen due to a misbehaviour |
-| `latest_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Latest height the client was updated to |
-| `proof_specs` | [ics23.ProofSpec](#ics23.ProofSpec) | repeated | Proof specifications used in verifying counterparty state |
-| `upgrade_path` | [string](#string) | repeated | Path at which next upgraded client will be committed. Each element corresponds to the key for a single CommitmentProof in the chained proof. NOTE: ClientState must stored under `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using the default upgrade module, upgrade_path should be []string{"upgrade", "upgradedIBCState"}` |
-| `allow_update_after_expiry` | [bool](#bool) |  | **Deprecated.** allow_update_after_expiry is deprecated |
-| `allow_update_after_misbehaviour` | [bool](#bool) |  | **Deprecated.** allow_update_after_misbehaviour is deprecated |
-
-
-
-
-
-
-<a name="ibc.lightclients.ostracon.v1.ConsensusState"></a>
-
-### ConsensusState
-ConsensusState defines the consensus state from Ostracon.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp that corresponds to the block height in which the ConsensusState was stored. |
-| `root` | [ibc.core.commitment.v1.MerkleRoot](#ibc.core.commitment.v1.MerkleRoot) |  | commitment root (i.e app hash) |
-| `next_validators_hash` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.ostracon.v1.Fraction"></a>
-
-### Fraction
-Fraction defines the protobuf message type for tmmath.Fraction that only
-supports positive values.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `numerator` | [uint64](#uint64) |  |  |
-| `denominator` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.ostracon.v1.Header"></a>
-
-### Header
-Header defines the Ostracon client consensus Header.
-It encapsulates all the information necessary to update from a trusted
-Ostracon ConsensusState. The inclusion of TrustedHeight and
-TrustedValidators allows this update to process correctly, so long as the
-ConsensusState for the TrustedHeight exists, this removes race conditions
-among relayers The SignedHeader and ValidatorSet are the new untrusted update
-fields for the client. The TrustedHeight is the height of a stored
-ConsensusState on the client that will be used to verify the new untrusted
-header. The Trusted ConsensusState must be within the unbonding period of
-current time in order to correctly verify, and the TrustedValidators must
-hash to TrustedConsensusState.NextValidatorsHash since that is the last
-trusted validator set at the TrustedHeight.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `signed_header` | [ostracon.types.SignedHeader](#ostracon.types.SignedHeader) |  |  |
-| `validator_set` | [ostracon.types.ValidatorSet](#ostracon.types.ValidatorSet) |  |  |
-| `voter_set` | [ostracon.types.VoterSet](#ostracon.types.VoterSet) |  |  |
-| `trusted_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `trusted_validators` | [ostracon.types.ValidatorSet](#ostracon.types.ValidatorSet) |  |  |
-| `trusted_voters` | [ostracon.types.VoterSet](#ostracon.types.VoterSet) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.ostracon.v1.Misbehaviour"></a>
-
-### Misbehaviour
-Misbehaviour is a wrapper over two conflicting Headers
-that implements Misbehaviour interface expected by ICS-02
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | **Deprecated.** ClientID is deprecated |
-| `header_1` | [Header](#ibc.lightclients.ostracon.v1.Header) |  |  |
-| `header_2` | [Header](#ibc.lightclients.ostracon.v1.Header) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/lightclients/solomachine/v1/solomachine.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/lightclients/solomachine/v1/solomachine.proto
-
-
-
-<a name="ibc.lightclients.solomachine.v1.ChannelStateData"></a>
-
-### ChannelStateData
-ChannelStateData returns the SignBytes data for channel state
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `channel` | [ibc.core.channel.v1.Channel](#ibc.core.channel.v1.Channel) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.ClientState"></a>
-
-### ClientState
-ClientState defines a solo machine client that tracks the current consensus
-state and if the client is frozen.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  | latest sequence of the client state |
-| `frozen_sequence` | [uint64](#uint64) |  | frozen sequence of the solo machine |
-| `consensus_state` | [ConsensusState](#ibc.lightclients.solomachine.v1.ConsensusState) |  |  |
-| `allow_update_after_proposal` | [bool](#bool) |  | when set to true, will allow governance to update a solo machine client. The client will be unfrozen if it is frozen. |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.ClientStateData"></a>
-
-### ClientStateData
-ClientStateData returns the SignBytes data for client state verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.ConnectionStateData"></a>
-
-### ConnectionStateData
-ConnectionStateData returns the SignBytes data for connection state
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `connection` | [ibc.core.connection.v1.ConnectionEnd](#ibc.core.connection.v1.ConnectionEnd) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.ConsensusState"></a>
-
-### ConsensusState
-ConsensusState defines a solo machine consensus state. The sequence of a
-consensus state is contained in the "height" key used in storing the
-consensus state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `public_key` | [google.protobuf.Any](#google.protobuf.Any) |  | public key of the solo machine |
-| `diversifier` | [string](#string) |  | diversifier allows the same public key to be re-used across different solo machine clients (potentially on different chains) without being considered misbehaviour. |
-| `timestamp` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.ConsensusStateData"></a>
-
-### ConsensusStateData
-ConsensusStateData returns the SignBytes data for consensus state
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.Header"></a>
-
-### Header
-Header defines a solo machine consensus header
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  | sequence to update solo machine public key at |
-| `timestamp` | [uint64](#uint64) |  |  |
-| `signature` | [bytes](#bytes) |  |  |
-| `new_public_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `new_diversifier` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.HeaderData"></a>
-
-### HeaderData
-HeaderData returns the SignBytes data for update verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `new_pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  | header public key |
-| `new_diversifier` | [string](#string) |  | header diversifier |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.Misbehaviour"></a>
-
-### Misbehaviour
-Misbehaviour defines misbehaviour for a solo machine which consists
-of a sequence and two signatures over different messages at that sequence.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
-| `sequence` | [uint64](#uint64) |  |  |
-| `signature_one` | [SignatureAndData](#ibc.lightclients.solomachine.v1.SignatureAndData) |  |  |
-| `signature_two` | [SignatureAndData](#ibc.lightclients.solomachine.v1.SignatureAndData) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.NextSequenceRecvData"></a>
-
-### NextSequenceRecvData
-NextSequenceRecvData returns the SignBytes data for verification of the next
-sequence to be received.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `next_seq_recv` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.PacketAcknowledgementData"></a>
-
-### PacketAcknowledgementData
-PacketAcknowledgementData returns the SignBytes data for acknowledgement
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `acknowledgement` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.PacketCommitmentData"></a>
-
-### PacketCommitmentData
-PacketCommitmentData returns the SignBytes data for packet commitment
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `commitment` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.PacketReceiptAbsenceData"></a>
-
-### PacketReceiptAbsenceData
-PacketReceiptAbsenceData returns the SignBytes data for
-packet receipt absence verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.SignBytes"></a>
-
-### SignBytes
-SignBytes defines the signed bytes used for signature verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  |  |
-| `timestamp` | [uint64](#uint64) |  |  |
-| `diversifier` | [string](#string) |  |  |
-| `data_type` | [DataType](#ibc.lightclients.solomachine.v1.DataType) |  | type of the data used |
-| `data` | [bytes](#bytes) |  | marshaled data |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.SignatureAndData"></a>
-
-### SignatureAndData
-SignatureAndData contains a signature and the data signed over to create that
-signature.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `signature` | [bytes](#bytes) |  |  |
-| `data_type` | [DataType](#ibc.lightclients.solomachine.v1.DataType) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-| `timestamp` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v1.TimestampedSignatureData"></a>
-
-### TimestampedSignatureData
-TimestampedSignatureData contains the signature data and the timestamp of the
-signature.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `signature_data` | [bytes](#bytes) |  |  |
-| `timestamp` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="ibc.lightclients.solomachine.v1.DataType"></a>
-
-### DataType
-DataType defines the type of solo machine proof being created. This is done
-to preserve uniqueness of different data sign byte encodings.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| DATA_TYPE_UNINITIALIZED_UNSPECIFIED | 0 | Default State |
-| DATA_TYPE_CLIENT_STATE | 1 | Data type for client state verification |
-| DATA_TYPE_CONSENSUS_STATE | 2 | Data type for consensus state verification |
-| DATA_TYPE_CONNECTION_STATE | 3 | Data type for connection state verification |
-| DATA_TYPE_CHANNEL_STATE | 4 | Data type for channel state verification |
-| DATA_TYPE_PACKET_COMMITMENT | 5 | Data type for packet commitment verification |
-| DATA_TYPE_PACKET_ACKNOWLEDGEMENT | 6 | Data type for packet acknowledgement verification |
-| DATA_TYPE_PACKET_RECEIPT_ABSENCE | 7 | Data type for packet receipt absence verification |
-| DATA_TYPE_NEXT_SEQUENCE_RECV | 8 | Data type for next sequence recv verification |
-| DATA_TYPE_HEADER | 9 | Data type for header verification |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/lightclients/solomachine/v2/solomachine.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/lightclients/solomachine/v2/solomachine.proto
-
-
-
-<a name="ibc.lightclients.solomachine.v2.ChannelStateData"></a>
-
-### ChannelStateData
-ChannelStateData returns the SignBytes data for channel state
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `channel` | [ibc.core.channel.v1.Channel](#ibc.core.channel.v1.Channel) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.ClientState"></a>
-
-### ClientState
-ClientState defines a solo machine client that tracks the current consensus
-state and if the client is frozen.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  | latest sequence of the client state |
-| `is_frozen` | [bool](#bool) |  | frozen sequence of the solo machine |
-| `consensus_state` | [ConsensusState](#ibc.lightclients.solomachine.v2.ConsensusState) |  |  |
-| `allow_update_after_proposal` | [bool](#bool) |  | when set to true, will allow governance to update a solo machine client. The client will be unfrozen if it is frozen. |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.ClientStateData"></a>
-
-### ClientStateData
-ClientStateData returns the SignBytes data for client state verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.ConnectionStateData"></a>
-
-### ConnectionStateData
-ConnectionStateData returns the SignBytes data for connection state
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `connection` | [ibc.core.connection.v1.ConnectionEnd](#ibc.core.connection.v1.ConnectionEnd) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.ConsensusState"></a>
-
-### ConsensusState
-ConsensusState defines a solo machine consensus state. The sequence of a
-consensus state is contained in the "height" key used in storing the
-consensus state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `public_key` | [google.protobuf.Any](#google.protobuf.Any) |  | public key of the solo machine |
-| `diversifier` | [string](#string) |  | diversifier allows the same public key to be re-used across different solo machine clients (potentially on different chains) without being considered misbehaviour. |
-| `timestamp` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.ConsensusStateData"></a>
-
-### ConsensusStateData
-ConsensusStateData returns the SignBytes data for consensus state
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.Header"></a>
-
-### Header
-Header defines a solo machine consensus header
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  | sequence to update solo machine public key at |
-| `timestamp` | [uint64](#uint64) |  |  |
-| `signature` | [bytes](#bytes) |  |  |
-| `new_public_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `new_diversifier` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.HeaderData"></a>
-
-### HeaderData
-HeaderData returns the SignBytes data for update verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `new_pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  | header public key |
-| `new_diversifier` | [string](#string) |  | header diversifier |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.Misbehaviour"></a>
-
-### Misbehaviour
-Misbehaviour defines misbehaviour for a solo machine which consists
-of a sequence and two signatures over different messages at that sequence.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
-| `sequence` | [uint64](#uint64) |  |  |
-| `signature_one` | [SignatureAndData](#ibc.lightclients.solomachine.v2.SignatureAndData) |  |  |
-| `signature_two` | [SignatureAndData](#ibc.lightclients.solomachine.v2.SignatureAndData) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.NextSequenceRecvData"></a>
-
-### NextSequenceRecvData
-NextSequenceRecvData returns the SignBytes data for verification of the next
-sequence to be received.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `next_seq_recv` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.PacketAcknowledgementData"></a>
-
-### PacketAcknowledgementData
-PacketAcknowledgementData returns the SignBytes data for acknowledgement
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `acknowledgement` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.PacketCommitmentData"></a>
-
-### PacketCommitmentData
-PacketCommitmentData returns the SignBytes data for packet commitment
-verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-| `commitment` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.PacketReceiptAbsenceData"></a>
-
-### PacketReceiptAbsenceData
-PacketReceiptAbsenceData returns the SignBytes data for
-packet receipt absence verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `path` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.SignBytes"></a>
-
-### SignBytes
-SignBytes defines the signed bytes used for signature verification.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sequence` | [uint64](#uint64) |  |  |
-| `timestamp` | [uint64](#uint64) |  |  |
-| `diversifier` | [string](#string) |  |  |
-| `data_type` | [DataType](#ibc.lightclients.solomachine.v2.DataType) |  | type of the data used |
-| `data` | [bytes](#bytes) |  | marshaled data |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.SignatureAndData"></a>
-
-### SignatureAndData
-SignatureAndData contains a signature and the data signed over to create that
-signature.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `signature` | [bytes](#bytes) |  |  |
-| `data_type` | [DataType](#ibc.lightclients.solomachine.v2.DataType) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-| `timestamp` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.solomachine.v2.TimestampedSignatureData"></a>
-
-### TimestampedSignatureData
-TimestampedSignatureData contains the signature data and the timestamp of the
-signature.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `signature_data` | [bytes](#bytes) |  |  |
-| `timestamp` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="ibc.lightclients.solomachine.v2.DataType"></a>
-
-### DataType
-DataType defines the type of solo machine proof being created. This is done
-to preserve uniqueness of different data sign byte encodings.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| DATA_TYPE_UNINITIALIZED_UNSPECIFIED | 0 | Default State |
-| DATA_TYPE_CLIENT_STATE | 1 | Data type for client state verification |
-| DATA_TYPE_CONSENSUS_STATE | 2 | Data type for consensus state verification |
-| DATA_TYPE_CONNECTION_STATE | 3 | Data type for connection state verification |
-| DATA_TYPE_CHANNEL_STATE | 4 | Data type for channel state verification |
-| DATA_TYPE_PACKET_COMMITMENT | 5 | Data type for packet commitment verification |
-| DATA_TYPE_PACKET_ACKNOWLEDGEMENT | 6 | Data type for packet acknowledgement verification |
-| DATA_TYPE_PACKET_RECEIPT_ABSENCE | 7 | Data type for packet receipt absence verification |
-| DATA_TYPE_NEXT_SEQUENCE_RECV | 8 | Data type for next sequence recv verification |
-| DATA_TYPE_HEADER | 9 | Data type for header verification |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/bankplus/v1/bankplus.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -13991,7 +8727,7 @@ GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC met
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -14022,7 +8758,7 @@ GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -14054,9 +8790,9 @@ GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResul
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `height` | [int64](#int64) |  |  |
-| `txs_results` | [ostracon.abci.ResponseDeliverTx](#ostracon.abci.ResponseDeliverTx) | repeated |  |
-| `res_begin_block` | [ostracon.abci.ResponseBeginBlock](#ostracon.abci.ResponseBeginBlock) |  |  |
-| `res_end_block` | [ostracon.abci.ResponseEndBlock](#ostracon.abci.ResponseEndBlock) |  |  |
+| `txs_results` | [tendermint.abci.ResponseDeliverTx](#tendermint.abci.ResponseDeliverTx) | repeated |  |
+| `res_begin_block` | [tendermint.abci.ResponseBeginBlock](#tendermint.abci.ResponseBeginBlock) |  |  |
+| `res_end_block` | [tendermint.abci.ResponseEndBlock](#tendermint.abci.ResponseEndBlock) |  |  |
 
 
 
@@ -14081,7 +8817,7 @@ GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC met
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
 
 
@@ -14139,7 +8875,7 @@ GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `default_node_info` | [ostracon.p2p.DefaultNodeInfo](#ostracon.p2p.DefaultNodeInfo) |  |  |
+| `default_node_info` | [tendermint.p2p.DefaultNodeInfo](#tendermint.p2p.DefaultNodeInfo) |  |  |
 | `application_version` | [VersionInfo](#lbm.base.ostracon.v1.VersionInfo) |  |  |
 
 
@@ -14331,24 +9067,6 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.Change"></a>
-
-### Change
-Deprecated: use Attribute
-
-Change defines a field-value pair.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `field` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="lbm.collection.v1.Coin"></a>
 
 ### Coin
@@ -14373,10 +9091,10 @@ Contract defines the information of the contract for the collection.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract_id defines the unique identifier of the contract. |
+| `id` | [string](#string) |  | contract_id defines the unique identifier of the contract. |
 | `name` | [string](#string) |  | name defines the human-readable name of the contract. |
 | `meta` | [string](#string) |  | meta is a brief description of the contract. |
-| `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
+| `uri` | [string](#string) |  | uri for the contract image stored off chain. |
 
 
 
@@ -14454,7 +9172,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id defines the unique identifier of the token. |
+| `token_id` | [string](#string) |  | token id defines the unique identifier of the token. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token. |
 | `meta` | [string](#string) |  | meta is a brief description of the token. |
 
@@ -14525,12 +9243,15 @@ Params defines the parameters for the collection module.
 Deprecated: use TokenClass
 
 TokenType defines the information of token type.
+It represents a NFTClass whose class_id is token_type.
+
+Note: There is no TokenType instance for FTClass.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. |
+| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. the format of the value is identical to that of class_id. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token type. |
 | `meta` | [string](#string) |  | meta is a brief description of the token type. |
 
@@ -14661,7 +9382,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `name` | [string](#string) |  | name of the contract. |
 | `meta` | [string](#string) |  | metadata of the contract. |
-| `base_img_uri` | [string](#string) |  | uri for the contract image stored off chain. |
+| `uri` | [string](#string) |  | uri for the contract image stored off chain. |
 
 
 
@@ -14680,7 +9401,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `token_id` | [string](#string) |  | token id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 | `decimals` | [int32](#int32) |  | decimals of the token class. |
@@ -14703,7 +9424,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 
@@ -14807,7 +9528,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 
 
 
@@ -14827,7 +9548,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 
 
 
@@ -14846,8 +9567,8 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `token_type` | [string](#string) |  | token type associated with the token class. refer to TokenType for the definition. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 | `type_name` | [string](#string) |  | type name of the token class. |
 
 
@@ -15328,71 +10049,6 @@ QueryAllBalancesResponse is the response type for the Query/AllBalances RPC meth
 
 
 
-<a name="lbm.collection.v1.QueryApprovedRequest"></a>
-
-### QueryApprovedRequest
-QueryApprovedRequest is the request type for the Query/Approved RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `address` | [string](#string) |  | the address of the proxy. |
-| `approver` | [string](#string) |  | the address of the token approver. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryApprovedResponse"></a>
-
-### QueryApprovedResponse
-QueryApprovedResponse is the response type for the Query/Approved RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approved` | [bool](#bool) |  |  |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryApproversRequest"></a>
-
-### QueryApproversRequest
-QueryApproversRequest is the request type for the Query/Approvers RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `address` | [string](#string) |  | address of the proxy. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryApproversResponse"></a>
-
-### QueryApproversResponse
-QueryApproversResponse is the response type for the Query/Approvers RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approvers` | [string](#string) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryBalanceRequest"></a>
 
 ### QueryBalanceRequest
@@ -15614,6 +10270,71 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 
 
 
+<a name="lbm.collection.v1.QueryHoldersByOperatorRequest"></a>
+
+### QueryHoldersByOperatorRequest
+QueryHoldersByOperatorRequest is the request type for the Query/HoldersByOperator RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryHoldersByOperatorResponse"></a>
+
+### QueryHoldersByOperatorResponse
+QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `holders` | [string](#string) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryIsOperatorForRequest"></a>
+
+### QueryIsOperatorForRequest
+QueryIsOperatorForRequest is the request type for the Query/IsOperatorFor RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `holder` | [string](#string) |  | the address of the token holder. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryIsOperatorForResponse"></a>
+
+### QueryIsOperatorForResponse
+QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorized` | [bool](#bool) |  |  |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryNFTBurntRequest"></a>
 
 ### QueryNFTBurntRequest
@@ -15623,7 +10344,7 @@ QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -15654,7 +10375,7 @@ QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -15685,7 +10406,7 @@ QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -15844,7 +10565,7 @@ QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `token_type` | [string](#string) |  | token type associated with the token type. refer to TokenType for the definition. |
 
 
 
@@ -15865,103 +10586,6 @@ QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 
 
 
-
-<a name="lbm.collection.v1.QueryTokenTypesRequest"></a>
-
-### QueryTokenTypesRequest
-QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenTypesResponse"></a>
-
-### QueryTokenTypesResponse
-QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `token_types` | [TokenType](#lbm.collection.v1.TokenType) | repeated | token types is the informations of all the token types. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensRequest"></a>
-
-### QueryTokensRequest
-QueryTokensRequest is the request type for the Query/Tokens RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensResponse"></a>
-
-### QueryTokensResponse
-QueryTokensResponse is the response type for the Query/Tokens RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tokens` | [google.protobuf.Any](#google.protobuf.Any) | repeated | informations of all the tokens. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensWithTokenTypeRequest"></a>
-
-### QueryTokensWithTokenTypeRequest
-QueryTokensWithTokenTypeRequest is the request type for the Query/TokensWithTokenType RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_type` | [string](#string) |  | token type associated with the token type. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokensWithTokenTypeResponse"></a>
-
-### QueryTokensWithTokenTypeResponse
-QueryTokensWithTokenTypeResponse is the response type for the Query/TokensWithTokenType RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tokens` | [google.protobuf.Any](#google.protobuf.Any) | repeated | informations of all the tokens. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -15976,27 +10600,26 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `address` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
-| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `address` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
-| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
-| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
-| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
-| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
-| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
-| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
-| `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}|
-| `TokenClassTypeName` | [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest) | [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse) | TokenClassTypeName queries the fully qualified message type name of a token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
-| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
-| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
-| `TokensWithTokenType` | [QueryTokensWithTokenTypeRequest](#lbm.collection.v1.QueryTokensWithTokenTypeRequest) | [QueryTokensWithTokenTypeResponse](#lbm.collection.v1.QueryTokensWithTokenTypeResponse) | TokensWithTokenType queries all token metadata with token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_type` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
-| `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
-| `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. - token is the root. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
-| `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
-| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
-| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the proxy is approved by the approver. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. - ErrNotFound - there is no authorization given by `approver` to `proxy`. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
-| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
+| `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
+| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
+| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
+| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
+| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
+| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
+| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
+| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
+| `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. | GET|/lbm/collection/v1/contracts/{contract_id}|
+| `TokenClassTypeName` | [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest) | [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse) | TokenClassTypeName queries the fully qualified message type name of a token class from its class id.
+
+Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
+| `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
+| `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
+| `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
+| `IsOperatorFor` | [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest) | [QueryIsOperatorForResponse](#lbm.collection.v1.QueryIsOperatorForResponse) | IsOperatorFor queries whether the operator is authorized by the holder. | |
+| `HoldersByOperator` | [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest) | [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse) | HoldersByOperator queries holders of a given operator. | |
 
  <!-- end services -->
 
@@ -16017,36 +10640,9 @@ MintNFTParam defines a parameter for minting nft.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. |
+| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. refer to TokenType for the definition. |
 | `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). Note: it has an app-specific limit in length. |
 | `meta` | [string](#string) |  | meta is a brief description of the nft. Note: it has an app-specific limit in length. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgApprove"></a>
-
-### MsgApprove
-MsgApprove is the Msg/Approve request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `approver` | [string](#string) |  | address of the approver who allows the manipulation of its token. |
-| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgApproveResponse"></a>
-
-### MsgApproveResponse
-MsgApproveResponse is the Msg/Approve response type.
 
 
 
@@ -16057,15 +10653,6 @@ MsgApproveResponse is the Msg/Approve response type.
 
 ### MsgAttach
 MsgAttach is the Msg/Attach request type.
-
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `token_id` is of invalid format.
-  - `to_token_id` is of invalid format.
-  - `token_id` is equal to `to_token_id`.
 
 Signer: `from`
 
@@ -16082,39 +10669,37 @@ Signer: `from`
 
 
 
-<a name="lbm.collection.v1.MsgAttachFrom"></a>
+<a name="lbm.collection.v1.MsgAttachResponse"></a>
 
-### MsgAttachFrom
-MsgAttachFrom is the Msg/AttachFrom request type.
+### MsgAttachResponse
+MsgAttachResponse is the Msg/Attach response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAuthorizeOperator"></a>
+
+### MsgAuthorizeOperator
+MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | address of the proxy. |
-| `from` | [string](#string) |  | address of the owner of the token. |
-| `token_id` | [string](#string) |  | token id of the token to attach. |
-| `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
 
 
 
 
 
 
-<a name="lbm.collection.v1.MsgAttachFromResponse"></a>
+<a name="lbm.collection.v1.MsgAuthorizeOperatorResponse"></a>
 
-### MsgAttachFromResponse
-MsgAttachFromResponse is the Msg/AttachFrom response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgAttachResponse"></a>
-
-### MsgAttachResponse
-MsgAttachResponse is the Msg/Attach response type.
+### MsgAuthorizeOperatorResponse
+MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
 
 
 
@@ -16132,34 +10717,6 @@ MsgBurnFT is the Msg/BurnFT request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. Note: it must have the permission for the burn. |
 | `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. Note: amount may be empty. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgBurnFTFrom"></a>
-
-### MsgBurnFTFrom
-MsgBurnFTFrom is the Msg/BurnFTFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. Note: amount may be empty. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgBurnFTFromResponse"></a>
-
-### MsgBurnFTFromResponse
-MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
 
 
 
@@ -16193,34 +10750,6 @@ MsgBurnNFT is the Msg/BurnNFT request type.
 
 
 
-<a name="lbm.collection.v1.MsgBurnNFTFrom"></a>
-
-### MsgBurnNFTFrom
-MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `token_ids` | [string](#string) | repeated | the token ids to burn. Note: id cannot start with zero. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgBurnNFTFromResponse"></a>
-
-### MsgBurnNFTFromResponse
-MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
-
-
-
-
-
-
 <a name="lbm.collection.v1.MsgBurnNFTResponse"></a>
 
 ### MsgBurnNFTResponse
@@ -16236,14 +10765,6 @@ MsgBurnNFTResponse is the Msg/BurnNFT response type.
 ### MsgCreateContract
 MsgCreateContract is the Msg/CreateContract request type.
 
-Throws:
-- ErrInvalidAddress
-  - `owner` is of invalid format.
-- ErrInvalidRequest
-  - `name` exceeds the app-specific limit in length.
-  - `base_img_uri` exceeds the app-specific limit in length.
-  - `meta` exceeds the app-specific limit in length.
-
 Signer: `owner`
 
 
@@ -16251,7 +10772,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `owner` | [string](#string) |  | address which all the permissions on the contract will be granted to (not a permanent property). |
 | `name` | [string](#string) |  | name defines the human-readable name of the contract. |
-| `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
+| `uri` | [string](#string) |  | uri for the contract image stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of the contract. |
 
 
@@ -16267,7 +10788,7 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new contract. |
+| `contract_id` | [string](#string) |  | id of the new contract. |
 
 
 
@@ -16278,13 +10799,6 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 ### MsgDetach
 MsgDetach is the Msg/Detach request type.
-
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `token_id` is of invalid format.
 
 Signer: `from`
 
@@ -16300,65 +10814,10 @@ Signer: `from`
 
 
 
-<a name="lbm.collection.v1.MsgDetachFrom"></a>
-
-### MsgDetachFrom
-MsgDetachFrom is the Msg/DetachFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | address of the proxy. |
-| `from` | [string](#string) |  | address of the owner of the token. |
-| `token_id` | [string](#string) |  | token id of the token to detach. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgDetachFromResponse"></a>
-
-### MsgDetachFromResponse
-MsgDetachFromResponse is the Msg/DetachFrom response type.
-
-
-
-
-
-
 <a name="lbm.collection.v1.MsgDetachResponse"></a>
 
 ### MsgDetachResponse
 MsgDetachResponse is the Msg/Detach response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgDisapprove"></a>
-
-### MsgDisapprove
-MsgDisapprove is the Msg/Disapprove request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `approver` | [string](#string) |  | address of the approver who allows the manipulation of its token. |
-| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgDisapproveResponse"></a>
-
-### MsgDisapproveResponse
-MsgDisapproveResponse is the Msg/Disapprove response type.
 
 
 
@@ -16398,19 +10857,6 @@ MsgGrantPermissionResponse is the Msg/GrantPermission response type.
 ### MsgIssueFT
 MsgIssueFT is the Msg/IssueFT request type.
 
-Throws:
-- ErrInvalidAddress
-  - `owner` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `name` is empty.
-  - `name` exceeds the app-specific limit in length.
-  - `meta` exceeds the app-specific limit in length.
-  - `decimals` is lesser than 0 or greater than 18.
-  - `amount` is not positive.
-  - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
-
 Signer: `owner`
 
 
@@ -16438,7 +10884,7 @@ MsgIssueFTResponse is the Msg/IssueFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token type. |
+| `token_id` | [string](#string) |  | id of the token. |
 
 
 
@@ -16449,14 +10895,6 @@ MsgIssueFTResponse is the Msg/IssueFT response type.
 
 ### MsgIssueNFT
 MsgIssueNFT is the Msg/IssueNFT request type.
-
-Throws:
-- ErrInvalidAddress
-  - `owner` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `name` exceeds the app-specific limit in length.
-  - `meta` exceeds the app-specific limit in length.
 
 Signer: `owner`
 
@@ -16481,7 +10919,7 @@ MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token type. |
+| `token_type` | [string](#string) |  | id of the new token type. refer to TokenType for the definition. |
 
 
 
@@ -16492,14 +10930,6 @@ MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 ### MsgMintFT
 MsgMintFT is the Msg/MintFT request type.
-
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
 
 Signer: `from`
 
@@ -16531,15 +10961,6 @@ MsgMintFTResponse is the Msg/MintFT response type.
 ### MsgMintNFT
 MsgMintNFT is the Msg/MintNFT request type.
 
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `params` is empty.
-  - `params` has an invalid element.
-
 Signer: `from`
 
 
@@ -16563,7 +10984,7 @@ MsgMintNFTResponse is the Msg/MintNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `ids` | [string](#string) | repeated | ids of the new non-fungible tokens. |
+| `token_ids` | [string](#string) | repeated | ids of the new non-fungible tokens. |
 
 
 
@@ -16580,9 +11001,9 @@ MsgModify is the Msg/Modify request type.
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `token_type` | [string](#string) |  | token type of the token. |
+| `token_type` | [string](#string) |  | token type of the token. refer to TokenType for the definition. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
-| `changes` | [Change](#lbm.collection.v1.Change) | repeated | changes to apply. on modifying collection: name, base_img_uri, meta. on modifying token type and token: name, meta. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
 
 
 
@@ -16593,6 +11014,204 @@ MsgModify is the Msg/Modify request type.
 
 ### MsgModifyResponse
 MsgModifyResponse is the Msg/Modify response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorAttach"></a>
+
+### MsgOperatorAttach
+MsgOperatorAttach is the Msg/OperatorAttach request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to attach. |
+| `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorAttachResponse"></a>
+
+### MsgOperatorAttachResponse
+MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorBurnFT"></a>
+
+### MsgOperatorBurnFT
+MsgOperatorBurnFT is the Msg/OperatorBurnFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. Note: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorBurnFTResponse"></a>
+
+### MsgOperatorBurnFTResponse
+MsgOperatorBurnFTResponse is the Msg/OperatorBurnFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorBurnNFT"></a>
+
+### MsgOperatorBurnNFT
+MsgOperatorBurnNFT is the Msg/OperatorBurnNFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. Note: id cannot start with zero. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorBurnNFTResponse"></a>
+
+### MsgOperatorBurnNFTResponse
+MsgOperatorBurnNFTResponse is the Msg/OperatorBurnNFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorDetach"></a>
+
+### MsgOperatorDetach
+MsgOperatorDetach is the Msg/OperatorDetach request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to detach. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorDetachResponse"></a>
+
+### MsgOperatorDetachResponse
+MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorSendFT"></a>
+
+### MsgOperatorSendFT
+MsgOperatorSendFT is the Msg/OperatorSendFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. Note: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorSendFTResponse"></a>
+
+### MsgOperatorSendFTResponse
+MsgOperatorSendFTResponse is the Msg/OperatorSendFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorSendNFT"></a>
+
+### MsgOperatorSendNFT
+MsgOperatorSendNFT is the Msg/OperatorSendNFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `token_ids` | [string](#string) | repeated | the token ids to transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorSendNFTResponse"></a>
+
+### MsgOperatorSendNFTResponse
+MsgOperatorSendNFTResponse is the Msg/OperatorSendNFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokeOperator"></a>
+
+### MsgRevokeOperator
+MsgRevokeOperator is the Msg/RevokeOperator request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokeOperatorResponse"></a>
+
+### MsgRevokeOperatorResponse
+MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
 
 
 
@@ -16626,10 +11245,10 @@ MsgRevokePermissionResponse is the Msg/RevokePermission response type.
 
 
 
-<a name="lbm.collection.v1.MsgTransferFT"></a>
+<a name="lbm.collection.v1.MsgSendFT"></a>
 
-### MsgTransferFT
-MsgTransferFT is the Msg/TransferFT request type.
+### MsgSendFT
+MsgSendFT is the Msg/SendFT request type.
 
 
 | Field | Type | Label | Description |
@@ -16644,49 +11263,20 @@ MsgTransferFT is the Msg/TransferFT request type.
 
 
 
-<a name="lbm.collection.v1.MsgTransferFTFrom"></a>
+<a name="lbm.collection.v1.MsgSendFTResponse"></a>
 
-### MsgTransferFTFrom
-MsgTransferFTFrom is the Msg/TransferFTFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | the address of the proxy. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. Note: amount may be empty. |
+### MsgSendFTResponse
+MsgSendFTResponse is the Msg/SendFT response type.
 
 
 
 
 
 
-<a name="lbm.collection.v1.MsgTransferFTFromResponse"></a>
+<a name="lbm.collection.v1.MsgSendNFT"></a>
 
-### MsgTransferFTFromResponse
-MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgTransferFTResponse"></a>
-
-### MsgTransferFTResponse
-MsgTransferFTResponse is the Msg/TransferFT response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgTransferNFT"></a>
-
-### MsgTransferNFT
-MsgTransferNFT is the Msg/TransferNFT request type.
+### MsgSendNFT
+MsgSendNFT is the Msg/SendNFT request type.
 
 
 | Field | Type | Label | Description |
@@ -16701,39 +11291,10 @@ MsgTransferNFT is the Msg/TransferNFT request type.
 
 
 
-<a name="lbm.collection.v1.MsgTransferNFTFrom"></a>
+<a name="lbm.collection.v1.MsgSendNFTResponse"></a>
 
-### MsgTransferNFTFrom
-MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | the address of the proxy. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `token_ids` | [string](#string) | repeated | the token ids to transfer. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgTransferNFTFromResponse"></a>
-
-### MsgTransferNFTFromResponse
-MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgTransferNFTResponse"></a>
-
-### MsgTransferNFTResponse
-MsgTransferNFTResponse is the Msg/TransferNFT response type.
+### MsgSendNFTResponse
+MsgSendNFTResponse is the Msg/SendNFT response type.
 
 
 
@@ -16753,28 +11314,28 @@ Msg defines the collection Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. Fires: - EventSent - transfer_ft (deprecated, not typed) Throws: - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
-| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the proxy. Fires: - EventSent - transfer_ft_from (deprecated, not typed) Throws: - ErrUnauthorized: - the approver has not authorized the proxy. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
-| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. Fires: - EventSent - transfer_nft (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
-| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the proxy. Fires: - EventSent - transfer_nft_from (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrUnauthorized: - the approver has not authorized the proxy. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
-| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - ErrInvalidRequest: - `approver` has already authorized `proxy`. | |
-| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the proxy to send the approver's token. Fires: - EventRevokedOperator - disapprove_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - there is no authorization by `approver` to `proxy`. | |
+| `SendFT` | [MsgSendFT](#lbm.collection.v1.MsgSendFT) | [MsgSendFTResponse](#lbm.collection.v1.MsgSendFTResponse) | SendFT defines a method to send fungible tokens from one account to another account. Fires: - EventSent - transfer_ft (deprecated, not typed) | |
+| `OperatorSendFT` | [MsgOperatorSendFT](#lbm.collection.v1.MsgOperatorSendFT) | [MsgOperatorSendFTResponse](#lbm.collection.v1.MsgOperatorSendFTResponse) | OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator. Fires: - EventSent - transfer_ft_from (deprecated, not typed) | |
+| `SendNFT` | [MsgSendNFT](#lbm.collection.v1.MsgSendNFT) | [MsgSendNFTResponse](#lbm.collection.v1.MsgSendNFTResponse) | SendNFT defines a method to send non-fungible tokens from one account to another account. Fires: - EventSent - transfer_nft (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) | |
+| `OperatorSendNFT` | [MsgOperatorSendNFT](#lbm.collection.v1.MsgOperatorSendNFT) | [MsgOperatorSendNFTResponse](#lbm.collection.v1.MsgOperatorSendNFTResponse) | OperatorSendNFT defines a method to send non-fungible tokens from one account to another account by the operator. Fires: - EventSent - transfer_nft_from (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Fires: - EventAuthorizedOperator - approve_collection (deprecated, not typed) | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the holder's token. Fires: - EventRevokedOperator - disapprove_collection (deprecated, not typed) | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract for collection. it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator. Fires: - EventCreatedContract - create_collection (deprecated, not typed) | |
 | `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. Fires: - EventCreatedFTClass - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. | |
 | `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. Fires: - EventCreatedNFTClass - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. | |
-| `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. Fires: - EventMintedFT - mint_ft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
-| `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. Fires: - EventMintedNFT - mint_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
-| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the approver by the proxy. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) - EventModifiedNFT Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no contract of `contract_id`. - there is no token type of `token_type`. - there is no token of `token_id`. | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGranted - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventRenounced - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
-| `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. Fires: - EventAttach - attach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `id`. - `owner` does not owns `to`. - `token_id` is not root. - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result. - depth of `to_token_id` exceeds an app-specific limit. | |
-| `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `token_id`. | |
-| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by proxy. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the approver has not authorized `proxy`. - ErrInvalidRequest - `owner` does not owns `subject`. - `owner` does not owns `target`. - `subject` is not root. - `subject` is an ancestor of `target`, which creates a cycle as a result. - depth of `to` exceeds an app-specific limit. | |
-| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by proxy. Fires: - EventDetach - detach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the approver has not authorized `proxy`. - ErrInvalidRequest - `owner` does not owns `subject`. | |
+| `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. Fires: - EventMintedFT - mint_ft (deprecated, not typed) | |
+| `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. Fires: - EventMintedNFT - mint_nft (deprecated, not typed) | |
+| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) | |
+| `OperatorBurnFT` | [MsgOperatorBurnFT](#lbm.collection.v1.MsgOperatorBurnFT) | [MsgOperatorBurnFTResponse](#lbm.collection.v1.MsgOperatorBurnFTResponse) | OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) | |
+| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) | |
+| `OperatorBurnNFT` | [MsgOperatorBurnNFT](#lbm.collection.v1.MsgOperatorBurnNFT) | [MsgOperatorBurnNFTResponse](#lbm.collection.v1.MsgOperatorBurnNFTResponse) | OperatorBurnNFT defines a method to burn non-fungible tokens of the holder by the operator. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) | |
+| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) - EventModifiedNFT | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGranted - grant_perm (deprecated, not typed) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventRenounced - revoke_perm (deprecated, not typed) | |
+| `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. Fires: - EventAttach - attach (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
+| `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
+| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
+| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | OperatorDetach defines a method to detach a token from another token by operator. Fires: - EventDetach - detach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
 
  <!-- end services -->
 
@@ -17132,21 +11693,6 @@ EventFundTreasury is an event emitted when one funds the treasury.
 
 
 
-<a name="lbm.foundation.v1.EventGovMint"></a>
-
-### EventGovMint
-EventGovMint is an event emitted when the minter mint coins to the treasury.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.EventGrant"></a>
 
 ### EventGrant
@@ -17332,7 +11878,6 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
-| `gov_mint_left_count` | [uint32](#uint32) |  | gov_mint_count_left is the remaining number of times for gov_mint. |
 
 
 
@@ -17390,31 +11935,6 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `info` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | info is the FoundationInfo for the foundation. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryGovMintRequest"></a>
-
-### QueryGovMintRequest
-QueryGovMintRequest is the Query/GovMint request type.
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryGovMintResponse"></a>
-
-### QueryGovMintResponse
-QueryGovMintResponse is the Query/GovMint response type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `leftCount` | [uint32](#uint32) |  | leftCount is the left count of GovMint. |
 
 
 
@@ -17745,7 +12265,6 @@ Query defines the gRPC querier service for foundation module.
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
-| `GovMint` | [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest) | [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse) | GovMint queries the left count of gov mint. | GET|/lbm/foundation/v1/gov_mint|
 
  <!-- end services -->
 
@@ -17804,32 +12323,6 @@ MsgFundTreasury is the Msg/FundTreasury request type.
 
 ### MsgFundTreasuryResponse
 MsgFundTreasuryResponse is the Msg/FundTreasury response type.
-
-
-
-
-
-
-<a name="lbm.foundation.v1.MsgGovMint"></a>
-
-### MsgGovMint
-MsgGovMint is the Msg/GovMint request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authority` | [string](#string) |  | authority is the address of the privileged account. |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.MsgGovMintResponse"></a>
-
-### MsgGovMintResponse
-MsgGovMintResponse is the Msg/GovMint response type.
 
 
 
@@ -18148,7 +12641,6 @@ Msg defines the foundation Msg service.
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
-| `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
 
@@ -18192,6 +12684,22 @@ CreateValidatorAuthorization allows the grantee to create a new validator.
 
 
 
+<a name="lbm.token.v1.Attribute"></a>
+
+### Attribute
+Attribute defines a key and value of the attribute.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.Authorization"></a>
 
 ### Authorization
@@ -18208,6 +12716,27 @@ Authorization defines an authorization given to the operator on tokens of the ho
 
 
 
+<a name="lbm.token.v1.Contract"></a>
+
+### Contract
+Contract defines token information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id defines the unique identifier of the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the contract. mandatory (not ERC20 compliant). |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for contract. mandatory (not ERC20 compliant). |
+| `uri` | [string](#string) |  | an uri for the image of the contract stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of contract. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint or burn. |
+
+
+
+
+
+
 <a name="lbm.token.v1.Grant"></a>
 
 ### Grant
@@ -18217,23 +12746,7 @@ Grant defines permission given to a grantee.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.Pair"></a>
-
-### Pair
-Pair defines a key-value pair.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `field` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -18249,27 +12762,6 @@ Params defines the parameters for the token module.
 
 
 
-
-<a name="lbm.token.v1.TokenClass"></a>
-
-### TokenClass
-TokenClass defines token information.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract_id defines the unique identifier of the token class. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. mandatory (not ERC20 compliant). |
-| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. mandatory (not ERC20 compliant). |
-| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
-| `meta` | [string](#string) |  | meta is a brief description of token class. |
-| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
-| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint or burn. |
-
-
-
-
-
  <!-- end messages -->
 
 
@@ -18278,7 +12770,7 @@ TokenClass defines token information.
 ### LegacyPermission
 Deprecated: use Permission
 
-LegacyPermission enumerates the valid permissions on a token class.
+LegacyPermission enumerates the valid permissions on a contract.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -18292,7 +12784,7 @@ LegacyPermission enumerates the valid permissions on a token class.
 <a name="lbm.token.v1.Permission"></a>
 
 ### Permission
-Permission enumerates the valid permissions on a token class.
+Permission enumerates the valid permissions on a contract.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -18327,7 +12819,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `holder` | [string](#string) |  | address of a holder which authorized the `operator` address as an operator. |
 | `operator` | [string](#string) |  | address which became an operator of `holder`. |
 
@@ -18346,7 +12838,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the burn. |
 | `from` | [string](#string) |  | holder whose tokens were burned. |
 | `amount` | [string](#string) |  | number of tokens burned. |
@@ -18368,10 +12860,10 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `granter` | [string](#string) |  | address which granted the permission to `grantee`. it would be empty where the event is triggered by the issuance. |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -18381,7 +12873,7 @@ Since: 0.46.0 (finschia)
 <a name="lbm.token.v1.EventIssued"></a>
 
 ### EventIssued
-EventIssued is emitted when a new token class is created.
+EventIssued is emitted when a new contract is created.
 
 Since: 0.46.0 (finschia)
 
@@ -18389,11 +12881,11 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `creator` | [string](#string) |  | address which created the contract. |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
-| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
-| `uri` | [string](#string) |  | uri is an uri for the resource of the token class stored off chain. |
-| `meta` | [string](#string) |  | meta is a brief description of token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the contract. |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for contract. |
+| `uri` | [string](#string) |  | uri is an uri for the resource of the contract stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of contract. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
 | `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
 
@@ -18412,7 +12904,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the mint. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [string](#string) |  | number of tokens minted. |
@@ -18425,16 +12917,16 @@ Since: 0.46.0 (finschia)
 <a name="lbm.token.v1.EventModified"></a>
 
 ### EventModified
-EventModified is emitted when the information of a token class is modified.
+EventModified is emitted when the information of a contract is modified.
 
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes on the metadata of the class. possible attribute keys are same as those of MsgModify. |
 
 
 
@@ -18451,9 +12943,9 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -18470,7 +12962,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `holder` | [string](#string) |  | address of a holder which revoked the `operator` address as an operator. |
 | `operator` | [string](#string) |  | address which was revoked as an operator of `holder`. |
 
@@ -18489,7 +12981,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the send. |
 | `from` | [string](#string) |  | holder whose tokens were sent. |
 | `to` | [string](#string) |  | recipient of the tokens |
@@ -18672,7 +13164,7 @@ GenesisState defines the token module's genesis state.
 | `params` | [Params](#lbm.token.v1.Params) |  | params defines all the paramaters of the module. |
 | `class_state` | [ClassGenesisState](#lbm.token.v1.ClassGenesisState) |  | class_state is the class keeper's genesis state. |
 | `balances` | [ContractBalances](#lbm.token.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
-| `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated | classes defines the metadata of the differents tokens. |
+| `classes` | [Contract](#lbm.token.v1.Contract) | repeated | classes defines the metadata of the differents tokens. |
 | `grants` | [ContractGrants](#lbm.token.v1.ContractGrants) | repeated | grants defines the grant information. |
 | `authorizations` | [ContractAuthorizations](#lbm.token.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
 | `supplies` | [ContractCoin](#lbm.token.v1.ContractCoin) | repeated | supplies represents the total supplies of tokens. |
@@ -18700,71 +13192,6 @@ GenesisState defines the token module's genesis state.
 
 
 
-<a name="lbm.token.v1.QueryApprovedRequest"></a>
-
-### QueryApprovedRequest
-QueryApprovedRequest is the request type for the Query/Approved RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
-| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryApprovedResponse"></a>
-
-### QueryApprovedResponse
-QueryApprovedResponse is the response type for the Query/Approved RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approved` | [bool](#bool) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryApproversRequest"></a>
-
-### QueryApproversRequest
-QueryApproversRequest is the request type for the Query/Approvers RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `address` | [string](#string) |  | address of the proxy which the authorization is granted to. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryApproversResponse"></a>
-
-### QueryApproversResponse
-QueryApproversResponse is the response type for the Query/Approvers RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approvers` | [string](#string) | repeated | all the authorizations on the proxy. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.token.v1.QueryBalanceRequest"></a>
 
 ### QueryBalanceRequest
@@ -18773,7 +13200,7 @@ QueryBalanceRequest is the request type for the Query/Balance RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `address` | [string](#string) |  | address is the address to query balance for. |
 
 
@@ -18804,7 +13231,7 @@ QueryBurntRequest is the request type for the Query/Burnt RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 
 
 
@@ -18826,6 +13253,36 @@ QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 
 
+<a name="lbm.token.v1.QueryContractRequest"></a>
+
+### QueryContractRequest
+QueryContractRequest is the request type for the Query/Contract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryContractResponse"></a>
+
+### QueryContractResponse
+QueryContractResponse is the response type for the Query/Contract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract` | [Contract](#lbm.token.v1.Contract) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.QueryGranteeGrantsRequest"></a>
 
 ### QueryGranteeGrantsRequest
@@ -18834,8 +13291,8 @@ QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC me
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | grantee which has permissions on the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | grantee which has permissions on the contract. |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -18859,6 +13316,71 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 
 
 
+<a name="lbm.token.v1.QueryHoldersByOperatorRequest"></a>
+
+### QueryHoldersByOperatorRequest
+QueryHoldersByOperatorRequest is the request type for the Query/HoldersByOperator RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryHoldersByOperatorResponse"></a>
+
+### QueryHoldersByOperatorResponse
+QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `holders` | [string](#string) | repeated | holder addresses |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryIsOperatorForRequest"></a>
+
+### QueryIsOperatorForRequest
+QueryIsOperatorForRequest is the request type for the Query/IsOperatorFor RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the holder of the authorization. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryIsOperatorForResponse"></a>
+
+### QueryIsOperatorForResponse
+QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorized` | [bool](#bool) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.QueryMintedRequest"></a>
 
 ### QueryMintedRequest
@@ -18867,7 +13389,7 @@ QueryMintedRequest is the request type for the Query/Minted RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 
 
 
@@ -18897,7 +13419,7 @@ QuerySupplyRequest is the request type for the Query/Supply RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 
 
 
@@ -18918,67 +13440,6 @@ QuerySupplyResponse is the response type for the Query/Supply RPC method
 
 
 
-
-<a name="lbm.token.v1.QueryTokenClassRequest"></a>
-
-### QueryTokenClassRequest
-QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassResponse"></a>
-
-### QueryTokenClassResponse
-QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class` | [TokenClass](#lbm.token.v1.TokenClass) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassesRequest"></a>
-
-### QueryTokenClassesRequest
-QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassesResponse"></a>
-
-### QueryTokenClassesResponse
-QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated | information of the token classes. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -18993,15 +13454,14 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Balance` | [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse) | Balance queries the number of tokens of a given contract owned by the address. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `address` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/balances/{address}|
-| `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/supply|
-| `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
-| `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
-| `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. | GET|/lbm/token/v1/token_classes|
-| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
-| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}|
-| `Approvers` | [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse) | Approvers queries approvers on a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers|
+| `Balance` | [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse) | Balance queries the number of tokens of a given contract owned by the address. | GET|/lbm/token/v1/token_classes/{contract_id}/balances/{address}|
+| `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/supply|
+| `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
+| `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
+| `Contract` | [QueryContractRequest](#lbm.token.v1.QueryContractRequest) | [QueryContractResponse](#lbm.token.v1.QueryContractResponse) | Contract queries an token metadata based on its contract id. | GET|/lbm/token/v1/token_classes/{contract_id}|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
+| `IsOperatorFor` | [QueryIsOperatorForRequest](#lbm.token.v1.QueryIsOperatorForRequest) | [QueryIsOperatorForResponse](#lbm.token.v1.QueryIsOperatorForResponse) | IsOperatorFor queries authorization on a given operator holder pair. | |
+| `HoldersByOperator` | [QueryHoldersByOperatorRequest](#lbm.token.v1.QueryHoldersByOperatorRequest) | [QueryHoldersByOperatorResponse](#lbm.token.v1.QueryHoldersByOperatorResponse) | HoldersByOperator queries holders on a given operator. | |
 
  <!-- end services -->
 
@@ -19014,36 +13474,29 @@ Query defines the gRPC querier service.
 
 
 
-<a name="lbm.token.v1.MsgApprove"></a>
+<a name="lbm.token.v1.MsgAuthorizeOperator"></a>
 
-### MsgApprove
-MsgApprove defines the Msg/Approve request type.
+### MsgAuthorizeOperator
+MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
 
-Throws:
-- ErrInvalidAddress
-  - `approver` is of invalid format.
-  - `proxy` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-
-Signer: `approver`
+Signer: `holder`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | address of the token approver which approves the authorization. |
-| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the token holder which approves the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
 
 
 
 
 
 
-<a name="lbm.token.v1.MsgApproveResponse"></a>
+<a name="lbm.token.v1.MsgAuthorizeOperatorResponse"></a>
 
-### MsgApproveResponse
-MsgApproveResponse defines the Msg/Approve response type.
+### MsgAuthorizeOperatorResponse
+MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
 
 
 
@@ -19055,13 +13508,6 @@ MsgApproveResponse defines the Msg/Approve response type.
 ### MsgBurn
 MsgBurn defines the Msg/Burn request type.
 
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
 Signer: `from`
 
 
@@ -19070,44 +13516,6 @@ Signer: `from`
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `from` | [string](#string) |  | address whose tokens are being burned. |
 | `amount` | [string](#string) |  | number of tokens to burn. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgBurnFrom"></a>
-
-### MsgBurnFrom
-MsgBurnFrom defines the Msg/BurnFrom request type.
-
-Throws:
-- ErrInvalidAddress
-  - `proxy` is of invalid format.
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `proxy`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | address which triggers the burn. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [string](#string) |  | the amount of the burn. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgBurnFromResponse"></a>
-
-### MsgBurnFromResponse
-MsgBurnFromResponse defines the Msg/BurnFrom response type.
 
 
 
@@ -19128,14 +13536,6 @@ MsgBurnResponse defines the Msg/Burn response type.
 
 ### MsgGrantPermission
 MsgGrantPermission defines the Msg/GrantPermission request type.
-
-Throws:
-- ErrInvalidAddress
-  - `granter` is of invalid format.
-  - `grantee` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `permission` is not a valid permission.
 
 Signer: `granter`
 
@@ -19167,19 +13567,6 @@ MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
 ### MsgIssue
 MsgIssue defines the Msg/Issue request type.
 
-Throws:
-- ErrInvalidAddress
-  - `owner` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `name` is empty.
-  - `name` exceeds the app-specific limit in length.
-  - `symbol` is of invalid format.
-  - `image_uri` exceeds the app-specific limit in length.
-  - `meta` exceeds the app-specific limit in length.
-  - `decimals` is lesser than 0 or greater than 18.
-  - `amount` is not positive.
-
 Signer: `owner`
 
 
@@ -19187,7 +13574,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. mandatory (not ERC20 compliant). |
 | `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. mandatory (not ERC20 compliant). |
-| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
+| `uri` | [string](#string) |  | uri for the image of the token class stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of token class. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
 | `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
@@ -19208,7 +13595,7 @@ MsgIssueResponse defines the Msg/Issue response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token class. |
+| `contract_id` | [string](#string) |  | id of the new contract. |
 
 
 
@@ -19219,14 +13606,6 @@ MsgIssueResponse defines the Msg/Issue response type.
 
 ### MsgMint
 MsgMint defines the Msg/Mint request type.
-
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
 
 Signer: `from`
 
@@ -19258,15 +13637,6 @@ MsgMintResponse defines the Msg/Mint response type.
 ### MsgModify
 MsgModify defines the Msg/Modify request type.
 
-Throws:
-- ErrInvalidAddress
-  - `owner` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `changes` has duplicate keys.
-  - `changes` has a key which is not allowed to modify.
-  - `changes` is empty.
-
 Signer: `owner`
 
 
@@ -19274,7 +13644,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes to apply. |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes to apply. possible attribute keys are: name, img_uri, meta |
 
 
 
@@ -19291,17 +13661,71 @@ MsgModifyResponse defines the Msg/Modify response type.
 
 
 
+<a name="lbm.token.v1.MsgOperatorBurn"></a>
+
+### MsgOperatorBurn
+MsgOperatorBurn defines the Msg/OperatorBurn request type.
+
+Signer: `operator`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | address which triggers the burn. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `amount` | [string](#string) |  | the amount of the burn. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgOperatorBurnResponse"></a>
+
+### MsgOperatorBurnResponse
+MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgOperatorSend"></a>
+
+### MsgOperatorSend
+MsgOperatorSend defines the Msg/OperatorSend request type.
+
+Signer: `operator`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [string](#string) |  | the amount of the transfer. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgOperatorSendResponse"></a>
+
+### MsgOperatorSendResponse
+MsgOperatorSendResponse defines the Msg/OperatorSend response type.
+
+
+
+
+
+
 <a name="lbm.token.v1.MsgRevokeOperator"></a>
 
 ### MsgRevokeOperator
 MsgRevokeOperator defines the Msg/RevokeOperator request type.
-
-Throws:
-- ErrInvalidAddress
-  - `holder` is of invalid format.
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
 
 Signer: `holder`
 
@@ -19336,13 +13760,6 @@ Since: 0.46.0 (finschia)
 ### MsgRevokePermission
 MsgRevokePermission defines the Msg/RevokePermission request type.
 
-Throws:
-- ErrInvalidAddress
-  - `grantee` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `permission` is not a valid permission.
-
 Signer: `grantee`
 
 
@@ -19372,21 +13789,13 @@ MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
 ### MsgSend
 MsgSend defines the Msg/Send request type.
 
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
 Signer: `from`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | approver whose tokens are being sent. |
+| `from` | [string](#string) |  | holder whose tokens are being sent. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [string](#string) |  | number of tokens to send. |
 
@@ -19399,45 +13808,6 @@ Signer: `from`
 
 ### MsgSendResponse
 MsgSendResponse defines the Msg/Send response type.
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgTransferFrom"></a>
-
-### MsgTransferFrom
-MsgTransferFrom defines the Msg/TransferFrom request type.
-Throws:
-- ErrInvalidAddress
-  - `proxy` is of invalid format.
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `proxy`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | the address of the proxy. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [string](#string) |  | the amount of the transfer. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgTransferFromResponse"></a>
-
-### MsgTransferFromResponse
-MsgTransferFromResponse defines the Msg/TransferFrom response type.
 
 
 
@@ -19457,180 +13827,62 @@ Msg defines the token Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
-| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the proxy. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the approver has not authorized the proxy. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. Note: the approval has no value of limit (not ERC20 compliant). | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Fires: - EventRevokedOperator Throws: - ErrNotFound: - there is no token class of `contract_id`. - there is no authorization by `holder` to `operator`. Note: it introduces breaking change, because the legacy clients cannot track this revocation. Since: 0.46.0 (finschia) | |
-| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `approver` has already authorized `proxy`. | |
+| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_from (deprecated, not typed) Note: the approval has no value of limit (not ERC20 compliant). | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Fires: - EventRevokedOperator Note: it introduces breaking change, because the legacy clients cannot track this revocation. Since: 0.46.0 (finschia) | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`). Fires: - EventIssue - EventMinted - issue (deprecated, not typed) | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
-| `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. Fires: - EventMinted - mint (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
-| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the proxy. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) | |
+| `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. Fires: - EventMinted - mint (deprecated, not typed) | |
+| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Fires: - EventBurned - burn_from (deprecated, not typed) | |
+| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/wasm/v1/event.proto"></a>
+<a name="lbm/tx/v1beta1/service.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/wasm/v1/event.proto
+## lbm/tx/v1beta1/service.proto
 
 
 
-<a name="lbm.wasm.v1.EventActivateContractProposal"></a>
+<a name="lbm.tx.v1beta1.GetBlockWithTxsRequest"></a>
 
-### EventActivateContractProposal
-EventActivateContractProposal is the event that is emitted when the contract is activates.
+### GetBlockWithTxsRequest
+GetBlockWithTxsRequest is the request type for the Service.GetBlockWithTxs
+RPC method.
 
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract` | [string](#string) |  | contract is the smart contract's address |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.EventDeactivateContractProposal"></a>
-
-### EventDeactivateContractProposal
-EventDeactivateContractProposal is the event that is emitted when the contract is deactivate.
+Since: lbm-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract` | [string](#string) |  | contract is the smart contract's address |
+| `height` | [int64](#int64) |  | height is the height of the block to query. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines a pagination for the request. |
 
 
 
 
 
- <!-- end messages -->
 
- <!-- end enums -->
+<a name="lbm.tx.v1beta1.GetBlockWithTxsResponse"></a>
 
- <!-- end HasExtensions -->
+### GetBlockWithTxsResponse
+GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
 
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/proposal.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/proposal.proto
-
-
-
-<a name="lbm.wasm.v1.ActivateContractProposal"></a>
-
-### ActivateContractProposal
-ActivateContractProposal gov proposal content type deletes a contract from inactive list.
+Since: lbm-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the smart contract address to activate |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.DeactivateContractProposal"></a>
-
-### DeactivateContractProposal
-DeactivateContractProposal gov proposal content type adds a contract to inactive list.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the smart contract address to deactivate |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/query.proto
-
-
-
-<a name="lbm.wasm.v1.QueryInactiveContractRequest"></a>
-
-### QueryInactiveContractRequest
-QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryInactiveContractResponse"></a>
-
-### QueryInactiveContractResponse
-QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `inactivated` | [bool](#bool) |  | inactivated is the result if the contract is inactive contract or not |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryInactiveContractsRequest"></a>
-
-### QueryInactiveContractsRequest
-QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryInactiveContractsResponse"></a>
-
-### QueryInactiveContractsResponse
-QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `addresses` | [string](#string) | repeated | addresses is the inactive address list |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response |
+| `txs` | [cosmos.tx.v1beta1.Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
+| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
 
 
 
@@ -19643,79 +13895,16 @@ QueryInactiveContractsResponse is the response type for the Query/InactiveContra
  <!-- end HasExtensions -->
 
 
-<a name="lbm.wasm.v1.Query"></a>
+<a name="lbm.tx.v1beta1.Service"></a>
 
-### Query
-Query defines the gRPC querier service.
+### Service
+Service defines a gRPC service for interacting with transactions.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `InactiveContracts` | [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest) | [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse) | InactiveContracts queries all inactive contracts | GET|/lbm/wasm/v1/inactive_contracts|
-| `InactiveContract` | [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest) | [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse) |  | GET|/lbm/wasm/v1/inactive_contracts/{address}|
+| `GetBlockWithTxs` | [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
 
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/tx.proto
-
-
-
-<a name="lbm.wasm.v1.MsgStoreCodeAndInstantiateContract"></a>
-
-### MsgStoreCodeAndInstantiateContract
-MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [cosmwasm.wasm.v1.AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse"></a>
-
-### MsgStoreCodeAndInstantiateContractResponse
-MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="lbm.wasm.v1.Msg"></a>
-
-### Msg
-Msg defines the wasm Msg service for lbm-sdk.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiateContract upload code and instantiate a contract using it | |
+Since: lbm-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
 
  <!-- end services -->
 

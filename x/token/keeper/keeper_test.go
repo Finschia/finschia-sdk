@@ -4,9 +4,8 @@ import (
 	"context"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -54,7 +53,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
-	s.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.TokenKeeper
 
@@ -74,24 +73,22 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	s.contractID = "f00dbabe"
-	class := token.TokenClass{
-		ContractId: s.contractID,
-		Name:       "Mintable",
-		Symbol:     "OK",
-		Mintable:   true,
+	class := token.Contract{
+		Name:     "Mintable",
+		Symbol:   "OK",
+		Mintable: true,
 	}
-	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	s.contractID = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+
 	err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
-	class.ContractId = "deadbeef"
 	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 
 	// mint to the others
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		err = s.keeper.Mint(s.ctx, s.contractID, s.vendor, to, s.balance)
+		err := s.keeper.Mint(s.ctx, s.contractID, s.vendor, to, s.balance)
 		s.Require().NoError(err)
 	}
 
@@ -105,9 +102,14 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// authorize operator
 	for _, holder := range []sdk.AccAddress{s.vendor, s.customer} {
-		err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, holder, s.operator)
+		err := s.keeper.AuthorizeOperator(s.ctx, s.contractID, holder, s.operator)
 		s.Require().NoError(err)
 	}
+
+	// not token contract
+	notTokenContractID := app.ClassKeeper.NewID(s.ctx)
+	err = keeper.ValidateLegacyContract(s.keeper, s.ctx, notTokenContractID)
+	s.Require().ErrorIs(err, token.ErrTokenNotExist)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

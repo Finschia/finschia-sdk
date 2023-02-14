@@ -69,11 +69,6 @@ service Query {
   rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/grants/{grantee}/{msg_type_url}";
   }
-
-  // GovMint queries the left count of gov mint.
-  rpc GovMint(QueryGovMintRequest) returns (QueryGovMintResponse) {
-    option (google.api.http).get = "/lbm/foundation/v1/gov_mint";
-  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -219,13 +214,4 @@ message QueryGrantsResponse {
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryGovMintRequest is the Query/GovMint request type.
-message QueryGovMintRequest {}
-
-// QueryGovMintResponse is the Query/GovMint response type.
-message QueryGovMintResponse {
-  // leftCount is the left count of GovMint.
-  uint32 leftCount = 1;
 }

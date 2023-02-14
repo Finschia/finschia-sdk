@@ -4,15 +4,30 @@ import (
 	gogotypes "github.com/gogo/protobuf/types"
 
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
 )
+
+func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenID string) error {
+	if err2 := collection.ValidateLegacyNFTID(tokenID); err2 == nil /* "==" is intentional */ {
+		return collection.ErrTokenNotExist.Wrap(tokenID)
+	}
+
+	if err2 := collection.ValidateFTID(tokenID); err2 != nil {
+		return collection.ErrTokenNotExist.Wrap(tokenID)
+	}
+	classID := collection.SplitTokenID(tokenID)
+	if _, err2 := k.GetTokenClass(ctx, contractID, classID); err2 != nil {
+		return collection.ErrTokenNotExist.Wrap(tokenID)
+	}
+
+	return collection.ErrTokenNotNFT.Wrap(tokenID)
+}
 
 func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	if !store.Has(key) {
-		return sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
+		return legacyNFTNotFoundError(k, ctx, contractID, tokenID)
 	}
 	return nil
 }
@@ -22,7 +37,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 	key := nftKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
+		return nil, legacyNFTNotFoundError(k, ctx, contractID, tokenID)
 	}
 
 	var token collection.NFT
@@ -33,7 +48,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 
 func (k Keeper) setNFT(ctx sdk.Context, contractID string, token collection.NFT) {
 	store := ctx.KVStore(k.storeKey)
-	key := nftKey(contractID, token.Id)
+	key := nftKey(contractID, token.TokenId)
 
 	bz, err := token.Marshal()
 	if err != nil {
@@ -64,8 +79,16 @@ func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []s
 
 func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
 	// validate subject
+	if err := k.hasNFT(ctx, contractID, subject); err != nil {
+		return err
+	}
+
+	if _, err := k.GetParent(ctx, contractID, subject); err == nil {
+		return collection.ErrTokenAlreadyAChild.Wrap(subject)
+	}
+
 	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
 	// validate target
@@ -75,17 +98,18 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 	root := k.GetRoot(ctx, contractID, target)
 	if !owner.Equals(k.getOwner(ctx, contractID, root)) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, target)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, target)
 	}
 	if root == subject {
-		return sdkerrors.ErrInvalidRequest.Wrap("cycles not allowed")
+		return collection.ErrCannotAttachToADescendant.Wrap("cycles not allowed")
 	}
 
-	// update subject
-	k.deleteOwner(ctx, contractID, subject)
-	k.setParent(ctx, contractID, subject, target)
+	if err := k.subtractCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt()))); err != nil {
+		panic(collection.ErrInsufficientToken.Wrapf("%s not owns %s", owner, subject))
+	}
 
-	// update target
+	// update relation
+	k.setParent(ctx, contractID, subject, target)
 	k.setChild(ctx, contractID, target, subject)
 
 	// finally, check the invariant
@@ -118,18 +142,17 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 	parent, err := k.GetParent(ctx, contractID, subject)
 	if err != nil {
-		return err
+		return collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 
 	if !owner.Equals(k.GetRootOwner(ctx, contractID, subject)) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
-	// update subject
-	k.deleteParent(ctx, contractID, subject)
-	k.setOwner(ctx, contractID, subject, owner)
+	k.addCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt())))
 
-	// update parent
+	// update relation
+	k.deleteParent(ctx, contractID, subject)
 	k.deleteChild(ctx, contractID, *parent, subject)
 
 	// legacy
@@ -204,7 +227,7 @@ func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*
 	key := parentKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s has no parent", tokenID)
+		return nil, collection.ErrTokenNotAChild.Wrapf("%s has no parent", tokenID)
 	}
 
 	var parent gogotypes.StringValue
@@ -312,12 +335,12 @@ func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenI
 
 	depth := len(widths)
 	if legacyDepth := depth - 1; legacyDepth > int(params.DepthLimit) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
+		return collection.ErrCompositionTooDeep.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
 	}
 
 	for _, width := range widths {
 		if width > int(params.WidthLimit) {
-			return sdkerrors.ErrInvalidRequest.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
+			return collection.ErrCompositionTooWide.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
 		}
 	}
 

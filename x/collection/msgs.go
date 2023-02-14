@@ -40,7 +40,7 @@ var (
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
+		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
@@ -95,15 +95,28 @@ func ValidateLegacyFTClassID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
-	return validateID(id, reLegacyNFTClassID)
+	// daphne emits ErrInvalidTokenID here, but it's against to the spec.
+	if err := validateID(id, reLegacyNFTClassID); err != nil {
+		return ErrInvalidTokenType.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func ValidateTokenID(id string) error {
-	return validateID(id, reTokenID)
+	if err := validateID(id, reTokenID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func ValidateFTID(id string) error {
-	return validateID(id, reFTID)
+	if err := validateID(id, reFTID); err != nil {
+		return ErrInvalidTokenID.Wrapf("%s not ft", id)
+	}
+
+	return nil
 }
 
 func ValidateNFTID(id string) error {
@@ -118,7 +131,11 @@ func ValidateNFTID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
-	return validateID(id, reLegacyNFTID)
+	if err := validateID(id, reLegacyNFTID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateID(id string, reg *regexp.Regexp) error {
@@ -129,15 +146,27 @@ func validateID(id string, reg *regexp.Regexp) error {
 }
 
 func validateName(name string) error {
-	return validateStringSize(name, nameLengthLimit, "name")
+	if err := validateStringSize(name, nameLengthLimit, "name"); err != nil {
+		return ErrInvalidNameLength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateBaseImgURI(baseImgURI string) error {
-	return validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri")
+	if err := validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri"); err != nil {
+		return ErrInvalidBaseImgURILength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateMeta(meta string) error {
-	return validateStringSize(meta, metaLengthLimit, "meta")
+	if err := validateStringSize(meta, metaLengthLimit, "meta"); err != nil {
+		return ErrInvalidMetaLength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateStringSize(str string, limit int, name string) error {
@@ -149,7 +178,7 @@ func validateStringSize(str string, limit int, name string) error {
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid decimals: %d", decimals)
+		return ErrInvalidTokenDecimals.Wrapf("got; %d", decimals)
 	}
 	return nil
 }
@@ -160,7 +189,7 @@ func validateLegacyPermission(permission string) error {
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
+		return sdkerrors.ErrInvalidPermission.Wrap(permission.String())
 	}
 	return nil
 }
@@ -187,15 +216,15 @@ func validateTokenClassChange(change Attribute) error {
 func validateChange(change Attribute, validators map[string]func(string) error) error {
 	validator, ok := validators[change.Key]
 	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
+		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
 }
 
-var _ sdk.Msg = (*MsgTransferFT)(nil)
+var _ sdk.Msg = (*MsgSendFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferFT) ValidateBasic() error {
+func (m MsgSendFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
@@ -215,36 +244,36 @@ func (m MsgTransferFT) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferFT) GetSigners() []sdk.AccAddress {
+func (m MsgSendFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferFT) Type() string {
+func (m MsgSendFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferFT) Route() string {
+func (m MsgSendFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferFT) GetSignBytes() []byte {
+func (m MsgSendFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgTransferFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorSendFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferFTFrom) ValidateBasic() error {
+func (m MsgOperatorSendFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -261,30 +290,30 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorSendFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferFTFrom) Type() string {
+func (m MsgOperatorSendFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferFTFrom) Route() string {
+func (m MsgOperatorSendFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorSendFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgTransferNFT)(nil)
+var _ sdk.Msg = (*MsgSendNFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferNFT) ValidateBasic() error {
+func (m MsgSendNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
@@ -297,7 +326,7 @@ func (m MsgTransferNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -309,36 +338,36 @@ func (m MsgTransferNFT) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferNFT) GetSigners() []sdk.AccAddress {
+func (m MsgSendNFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferNFT) Type() string {
+func (m MsgSendNFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferNFT) Route() string {
+func (m MsgSendNFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferNFT) GetSignBytes() []byte {
+func (m MsgSendNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgTransferNFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorSendNFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferNFTFrom) ValidateBasic() error {
+func (m MsgOperatorSendNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -348,7 +377,7 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -360,101 +389,109 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorSendNFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferNFTFrom) Type() string {
+func (m MsgOperatorSendNFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferNFTFrom) Route() string {
+func (m MsgOperatorSendNFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferNFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorSendNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgApprove)(nil)
+var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgApprove) ValidateBasic() error {
+func (m MsgAuthorizeOperator) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
+	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if m.Operator == m.Holder {
+		return ErrApproverProxySame
 	}
 
 	return nil
 }
 
 // GetSigners implements Msg
-func (m MsgApprove) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Approver)
+func (m MsgAuthorizeOperator) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgApprove) Type() string {
+func (m MsgAuthorizeOperator) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgApprove) Route() string {
+func (m MsgAuthorizeOperator) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgApprove) GetSignBytes() []byte {
+func (m MsgAuthorizeOperator) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgDisapprove)(nil)
+var _ sdk.Msg = (*MsgRevokeOperator)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgDisapprove) ValidateBasic() error {
+func (m MsgRevokeOperator) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
+	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if m.Operator == m.Holder {
+		return ErrApproverProxySame
 	}
 
 	return nil
 }
 
 // GetSigners implements Msg
-func (m MsgDisapprove) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Approver)
+func (m MsgRevokeOperator) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgDisapprove) Type() string {
+func (m MsgRevokeOperator) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgDisapprove) Route() string {
+func (m MsgRevokeOperator) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgDisapprove) GetSignBytes() []byte {
+func (m MsgRevokeOperator) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -470,7 +507,7 @@ func (m MsgCreateContract) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateBaseImgURI(m.BaseImgUri); err != nil {
+	if err := validateBaseImgURI(m.Uri); err != nil {
 		return err
 	}
 
@@ -515,7 +552,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 	}
 
 	if len(m.Name) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("empty name")
+		return ErrInvalidTokenName.Wrapf("empty name")
 	}
 	if err := validateName(m.Name); err != nil {
 		return err
@@ -535,7 +572,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 
 	// daphne compat.
 	if m.Amount.Equal(sdk.OneInt()) && m.Decimals == 0 && !m.Mintable {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid issue of ft")
+		return ErrInvalidIssueFT.Wrap("invalid issue of ft")
 	}
 
 	return nil
@@ -665,7 +702,7 @@ func (m MsgMintNFT) ValidateBasic() error {
 	}
 
 	if len(m.Params) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("mint params cannot be empty")
+		return ErrEmptyField.Wrap("mint params cannot be empty")
 	}
 	for _, param := range m.Params {
 		classID := param.TokenType
@@ -673,6 +710,9 @@ func (m MsgMintNFT) ValidateBasic() error {
 			return err
 		}
 
+		if len(param.Name) == 0 {
+			return ErrInvalidTokenName
+		}
 		if err := validateName(param.Name); err != nil {
 			return err
 		}
@@ -746,16 +786,16 @@ func (m MsgBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgBurnFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorBurnFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgBurnFTFrom) ValidateBasic() error {
+func (m MsgOperatorBurnFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -769,23 +809,23 @@ func (m MsgBurnFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgBurnFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorBurnFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgBurnFTFrom) Type() string {
+func (m MsgOperatorBurnFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgBurnFTFrom) Route() string {
+func (m MsgOperatorBurnFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgBurnFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -802,7 +842,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -834,23 +874,23 @@ func (m MsgBurnNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgBurnNFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorBurnNFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgBurnNFTFrom) ValidateBasic() error {
+func (m MsgOperatorBurnNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -862,23 +902,23 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorBurnNFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgBurnNFTFrom) Type() string {
+func (m MsgOperatorBurnNFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgBurnNFTFrom) Route() string {
+func (m MsgOperatorBurnNFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgBurnNFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorBurnNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -897,17 +937,17 @@ func (m MsgModify) ValidateBasic() error {
 	if len(m.TokenType) != 0 {
 		classID := m.TokenType
 		if err := ValidateClassID(classID); err != nil {
-			return err
+			return ErrInvalidTokenType.Wrap(err.Error())
 		}
 		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			return sdkerrors.ErrInvalidRequest.Wrap("fungible token type without index")
+			return ErrTokenTypeFTWithoutIndex.Wrap("fungible token type without index")
 		}
 	}
 
 	if len(m.TokenIndex) != 0 {
 		tokenID := m.TokenType + m.TokenIndex
 		if err := ValidateTokenID(tokenID); err != nil {
-			return err
+			return ErrInvalidTokenIndex.Wrap(err.Error())
 		}
 	}
 
@@ -916,24 +956,24 @@ func (m MsgModify) ValidateBasic() error {
 		if len(m.TokenIndex) == 0 {
 			validator = validateContractChange
 		} else {
-			return sdkerrors.ErrInvalidRequest.Wrap("token index without type")
+			return ErrTokenIndexWithoutType.Wrap("token index without type")
 		}
 	}
 	if len(m.Changes) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("empty changes")
+		return ErrEmptyChanges.Wrap("empty changes")
 	}
 	if len(m.Changes) > changesLimit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
+		return ErrInvalidChangesFieldCount.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
-		if seenKeys[change.Field] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Field)
+		if seenKeys[change.Key] {
+			return ErrDuplicateChangesField.Wrapf("duplicate keys: %s", change.Key)
 		}
-		seenKeys[change.Field] = true
+		seenKeys[change.Key] = true
 
 		attribute := Attribute{
-			Key:   change.Field,
+			Key:   change.Key,
 			Value: change.Value,
 		}
 		if err := validator(attribute); err != nil {
@@ -1068,7 +1108,7 @@ func (m MsgAttach) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil
@@ -1135,16 +1175,16 @@ func (m MsgDetach) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgAttachFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorAttach)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgAttachFrom) ValidateBasic() error {
+func (m MsgOperatorAttach) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -1158,43 +1198,43 @@ func (m MsgAttachFrom) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil
 }
 
 // GetSigners implements Msg
-func (m MsgAttachFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorAttach) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgAttachFrom) Type() string {
+func (m MsgOperatorAttach) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgAttachFrom) Route() string {
+func (m MsgOperatorAttach) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgAttachFrom) GetSignBytes() []byte {
+func (m MsgOperatorAttach) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgDetachFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorDetach)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgDetachFrom) ValidateBasic() error {
+func (m MsgOperatorDetach) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -1208,22 +1248,22 @@ func (m MsgDetachFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgDetachFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorDetach) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgDetachFrom) Type() string {
+func (m MsgOperatorDetach) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgDetachFrom) Route() string {
+func (m MsgOperatorDetach) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgDetachFrom) GetSignBytes() []byte {
+func (m MsgOperatorDetach) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }

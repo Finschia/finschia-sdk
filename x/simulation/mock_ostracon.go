@@ -7,10 +7,12 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	ocabci "github.com/line/ostracon/abci/types"
 	cryptoenc "github.com/line/ostracon/crypto/encoding"
 	ostbytes "github.com/line/ostracon/libs/bytes"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 )
 
 type mockValidator struct {
@@ -117,10 +119,10 @@ func updateValidators(
 func RandomRequestBeginBlock(r *rand.Rand, params Params,
 	validators mockValidators, pastTimes []time.Time,
 	pastVoteInfos [][]abci.VoteInfo,
-	event func(route, op, evResult string), header ocproto.Header,
-) abci.RequestBeginBlock {
+	event func(route, op, evResult string), header tmproto.Header,
+) ocabci.RequestBeginBlock {
 	if len(validators) == 0 {
-		return abci.RequestBeginBlock{
+		return ocabci.RequestBeginBlock{
 			Header: header,
 		}
 	}
@@ -155,9 +157,8 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 
 		voteInfos[i] = abci.VoteInfo{
 			Validator: abci.Validator{
-				Address:      pubkey.Address(),
-				Power:        mVal.val.Power,
-				VotingWeight: mVal.val.Power,
+				Address: pubkey.Address(),
+				Power:   mVal.val.Power,
 			},
 			SignedLastBlock: signed,
 		}
@@ -165,7 +166,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 
 	// return if no past times
 	if len(pastTimes) == 0 {
-		return abci.RequestBeginBlock{
+		return ocabci.RequestBeginBlock{
 			Header: header,
 			LastCommitInfo: abci.LastCommitInfo{
 				Votes: voteInfos,
@@ -208,7 +209,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 		event("begin_block", "evidence", "ok")
 	}
 
-	return abci.RequestBeginBlock{
+	return ocabci.RequestBeginBlock{
 		Header: header,
 		LastCommitInfo: abci.LastCommitInfo{
 			Votes: voteInfos,

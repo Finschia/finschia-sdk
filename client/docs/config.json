@@ -102,48 +102,12 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/ibc/core/channel/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "IBCChannelParams"
-        }
-      }
-    },
-    {
       "url": "./tmp-swagger-gen/cosmos/authz/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "AuthzParams"
         }
       }
-    },
-    {
-      "url": "./tmp-swagger-gen/ibc/core/client/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "IBCClientParams",
-          "UpgradedConsensusState": "IBCUpgradedConsensusState"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/ibc/core/connection/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "IBCConnectionParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/ibc/applications/transfer/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "IBCTransferParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/cosmwasm/wasm/v1/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/lbm/foundation/v1/query.swagger.json",
@@ -171,7 +135,8 @@
           "Approvers": "TokenApprovers",
           "Supply": "TokenSupply",
           "Minted": "TokenMinted",
-          "Burnt": "TokenBurnt"
+          "Burnt": "TokenBurnt",
+          "Contract": "TokenContract"
         }
       }
     },
@@ -184,7 +149,8 @@
           "AllBalances": "CollectionAllBalances",
           "GranteeGrants": "CollectionGranteeGrants",
           "Approved": "CollectionApproved",
-          "Approvers": "CollectionApprovers"
+          "Approvers": "CollectionApprovers",
+          "Contract": "CollectionContract"
         }
       }
     },
@@ -195,9 +161,6 @@
           "Params": "FeegrantParams"
         }
       }
-    },
-    {
-      "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"

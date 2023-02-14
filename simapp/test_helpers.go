@@ -13,17 +13,17 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	ocabci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+	octypes "github.com/line/ostracon/types"
 
 	bam "github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/simapp/helpers"
@@ -33,8 +33,6 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/line/lbm-sdk/x/wasm"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
@@ -44,19 +42,19 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 		MaxBytes: 200000,
 		MaxGas:   2000000,
 	},
-	Evidence: &ocproto.EvidenceParams{
+	Evidence: &tmproto.EvidenceParams{
 		MaxAgeNumBlocks: 302400,
 		MaxAgeDuration:  504 * time.Hour, // 3 weeks is the max duration
 		MaxBytes:        10000,
 	},
-	Validator: &ocproto.ValidatorParams{
+	Validator: &tmproto.ValidatorParams{
 		PubKeyTypes: []string{
 			octypes.ABCIPubKeyTypeEd25519,
 		},
 	},
 }
 
-func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp, GenesisState) {
+func setup(withGenesis bool, invCheckPeriod uint) (*SimApp, GenesisState) {
 	randDir, _ := os.MkdirTemp(DefaultNodeHome, "")
 	snapshotDir := filepath.Join(randDir, "data", "snapshots")
 	snapshotDB := dbm.NewMemDB()
@@ -66,7 +64,7 @@ func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp,
 
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, opts, baseAppOpts...)
+	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, baseAppOpts...)
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Marshaler)
 	}
@@ -100,82 +98,82 @@ func Setup(isCheckTx bool) *SimApp {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, opts []wasm.Option, balances ...banktypes.Balance) *SimApp {
-	app, genesisState := setup(true, 5, opts...)
-	// set genesis accounts
-	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
-	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
-
-	validators := make([]stakingtypes.Validator, 0, len(valSet.Validators))
-	delegations := make([]stakingtypes.Delegation, 0, len(valSet.Validators))
-
-	bondAmt := sdk.NewInt(1000000)
-
-	for _, val := range valSet.Validators {
-		pk, err := cryptocodec.FromOcPubKeyInterface(val.PubKey)
-		require.NoError(t, err)
-		pkAny, err := codectypes.NewAnyWithValue(pk)
-		require.NoError(t, err)
-		validator := stakingtypes.Validator{
-			OperatorAddress:   sdk.ValAddress(val.Address).String(),
-			ConsensusPubkey:   pkAny,
-			Jailed:            false,
-			Status:            stakingtypes.Bonded,
-			Tokens:            bondAmt,
-			DelegatorShares:   sdk.OneDec(),
-			Description:       stakingtypes.Description{},
-			UnbondingHeight:   int64(0),
-			UnbondingTime:     time.Unix(0, 0).UTC(),
-			Commission:        stakingtypes.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			MinSelfDelegation: sdk.ZeroInt(),
-		}
-		validators = append(validators, validator)
-		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
-
-	}
-	// set validators and delegations
-	stakingGenesis := stakingtypes.NewGenesisState(stakingtypes.DefaultParams(), validators, delegations)
-	genesisState[stakingtypes.ModuleName] = app.AppCodec().MustMarshalJSON(stakingGenesis)
-
-	totalSupply := sdk.NewCoins()
-	for _, b := range balances {
-		// add genesis acc tokens and delegated tokens to total supply
-		totalSupply = totalSupply.Add(b.Coins.Add(sdk.NewCoin(sdk.DefaultBondDenom, bondAmt))...)
-	}
-
-	// add bonded amount to bonded pool module account
-	balances = append(balances, banktypes.Balance{
-		Address: authtypes.NewModuleAddress(stakingtypes.BondedPoolName).String(),
-		Coins:   sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, bondAmt)},
-	})
-
-	// update total supply
-	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
-	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
-
-	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
-	require.NoError(t, err)
-
-	// init chain will set the validator set and initialize the genesis accounts
-	app.InitChain(
-		abci.RequestInitChain{
-			Validators:      []abci.ValidatorUpdate{},
-			ConsensusParams: DefaultConsensusParams,
-			AppStateBytes:   stateBytes,
-		},
-	)
-
-	// commit genesis changes
-	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{
-		Height:             app.LastBlockHeight() + 1,
-		AppHash:            app.LastCommitID().Hash,
-		ValidatorsHash:     valSet.Hash(),
-		NextValidatorsHash: valSet.Hash(),
-	}})
-
-	return app
-}
+//func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *SimApp {
+//	app, genesisState := setup(true, 5)
+//	// set genesis accounts
+//	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
+//	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
+//
+//	validators := make([]stakingtypes.Validator, 0, len(valSet.Validators))
+//	delegations := make([]stakingtypes.Delegation, 0, len(valSet.Validators))
+//
+//	bondAmt := sdk.NewInt(1000000)
+//
+//	for _, val := range valSet.Validators {
+//		pk, err := cryptocodec.FromOcPubKeyInterface(val.PubKey)
+//		require.NoError(t, err)
+//		pkAny, err := codectypes.NewAnyWithValue(pk)
+//		require.NoError(t, err)
+//		validator := stakingtypes.Validator{
+//			OperatorAddress:   sdk.ValAddress(val.Address).String(),
+//			ConsensusPubkey:   pkAny,
+//			Jailed:            false,
+//			Status:            stakingtypes.Bonded,
+//			Tokens:            bondAmt,
+//			DelegatorShares:   sdk.OneDec(),
+//			Description:       stakingtypes.Description{},
+//			UnbondingHeight:   int64(0),
+//			UnbondingTime:     time.Unix(0, 0).UTC(),
+//			Commission:        stakingtypes.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+//			MinSelfDelegation: sdk.ZeroInt(),
+//		}
+//		validators = append(validators, validator)
+//		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
+//
+//	}
+//	// set validators and delegations
+//	stakingGenesis := stakingtypes.NewGenesisState(stakingtypes.DefaultParams(), validators, delegations)
+//	genesisState[stakingtypes.ModuleName] = app.AppCodec().MustMarshalJSON(stakingGenesis)
+//
+//	totalSupply := sdk.NewCoins()
+//	for _, b := range balances {
+//		// add genesis acc tokens and delegated tokens to total supply
+//		totalSupply = totalSupply.Add(b.Coins.Add(sdk.NewCoin(sdk.DefaultBondDenom, bondAmt))...)
+//	}
+//
+//	// add bonded amount to bonded pool module account
+//	balances = append(balances, banktypes.Balance{
+//		Address: authtypes.NewModuleAddress(stakingtypes.BondedPoolName).String(),
+//		Coins:   sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, bondAmt)},
+//	})
+//
+//	// update total supply
+//	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
+//	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
+//
+//	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
+//	require.NoError(t, err)
+//
+//	// init chain will set the validator set and initialize the genesis accounts
+//	app.InitChain(
+//		abci.RequestInitChain{
+//			Validators:      []abci.ValidatorUpdate{},
+//			ConsensusParams: DefaultConsensusParams,
+//			AppStateBytes:   stateBytes,
+//		},
+//	)
+//
+//	// commit genesis changes
+//	app.Commit()
+//	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{
+//		Height:             app.LastBlockHeight() + 1,
+//		AppHash:            app.LastCommitID().Hash,
+//		ValidatorsHash:     valSet.Hash(),
+//		NextValidatorsHash: valSet.Hash(),
+//	}})
+//
+//	return app
+//}
 
 // SetupWithGenesisAccounts initializes a new SimApp with the provided genesis
 // accounts and possible balances.
@@ -206,7 +204,7 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 	)
 
 	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	return app
 }
@@ -378,7 +376,7 @@ func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 
 // CheckBalance checks the balance of an account.
 func CheckBalance(t *testing.T, app *SimApp, addr sdk.AccAddress, balances sdk.Coins) {
-	ctxCheck := app.BaseApp.NewContext(true, ocproto.Header{})
+	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
 	require.True(t, balances.IsEqual(app.BankKeeper.GetAllBalances(ctxCheck, addr)))
 }
 
@@ -387,7 +385,7 @@ func CheckBalance(t *testing.T, app *SimApp, addr sdk.AccAddress, balances sdk.C
 // the parameter 'expPass' against the result. A corresponding result is
 // returned.
 func SignCheckDeliver(
-	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header ocproto.Header, msgs []sdk.Msg,
+	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header tmproto.Header, msgs []sdk.Msg,
 	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
 ) (sdk.GasInfo, *sdk.Result, error) {
 	tx, err := helpers.GenSignedMockTx(
@@ -417,7 +415,7 @@ func SignCheckDeliver(
 	}
 
 	// Simulate a sending a transaction and committing a block and recheck
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {
@@ -431,8 +429,8 @@ func SignCheckDeliver(
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
 
-	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
-	app.EndRecheckTx(abci.RequestEndRecheckTx{})
+	app.BeginRecheckTx(ocabci.RequestBeginRecheckTx{Header: header})
+	app.EndRecheckTx(ocabci.RequestEndRecheckTx{})
 
 	return gInfo, res, err
 }
@@ -440,7 +438,7 @@ func SignCheckDeliver(
 // SignAndDeliver signs and delivers a transaction. No simulation occurs as the
 // ibc testing package causes checkState and deliverState to diverge in block time.
 func SignAndDeliver(
-	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header ocproto.Header, msgs []sdk.Msg,
+	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header tmproto.Header, msgs []sdk.Msg,
 	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
 ) (sdk.GasInfo, *sdk.Result, error) {
 	tx, err := helpers.GenTx(
@@ -456,7 +454,7 @@ func SignAndDeliver(
 	require.NoError(t, err)
 
 	// Simulate a sending a transaction and committing a block
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {

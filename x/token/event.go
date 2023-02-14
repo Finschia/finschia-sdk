@@ -115,7 +115,7 @@ func NewEventModifyToken(event EventModified) []sdk.Event {
 	}
 
 	for _, pair := range event.Changes {
-		attribute := sdk.NewAttribute(pair.Field, pair.Value)
+		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
 		res = append(res, event)
 	}
@@ -167,12 +167,12 @@ func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	if len(event.Granter) != 0 {
 		attributes[AttributeKeyFrom] = event.Granter
 	}
-
 	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
+
 	return res
 }
 

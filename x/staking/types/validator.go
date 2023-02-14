@@ -7,8 +7,9 @@ import (
 	"strings"
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+
 	"gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/codec"
@@ -478,16 +479,16 @@ func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 	return pk, nil
 }
 
-// OcConsPublicKey casts Validator.ConsensusPubkey to ocprotocrypto.PubKey.
-func (v Validator) OcConsPublicKey() (ocprotocrypto.PublicKey, error) {
+// OcConsPublicKey casts Validator.ConsensusPubkey to tmprotocrypto.PubKey.
+func (v Validator) OcConsPublicKey() (tmprotocrypto.PublicKey, error) {
 	pk, err := v.ConsPubKey()
 	if err != nil {
-		return ocprotocrypto.PublicKey{}, err
+		return tmprotocrypto.PublicKey{}, err
 	}
 
 	tmPk, err := cryptocodec.ToOcProtoPublicKey(pk)
 	if err != nil {
-		return ocprotocrypto.PublicKey{}, err
+		return tmprotocrypto.PublicKey{}, err
 	}
 
 	return tmPk, nil

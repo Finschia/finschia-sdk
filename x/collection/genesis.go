@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	DefaultDepthLimit = 3
-	DefaultWidthLimit = 8
+	DefaultDepthLimit = 1
+	DefaultWidthLimit = 4
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues
@@ -19,14 +19,14 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contract := range data.Contracts {
-		if err := ValidateContractID(contract.ContractId); err != nil {
+		if err := ValidateContractID(contract.Id); err != nil {
 			return err
 		}
 
 		if err := validateName(contract.Name); err != nil {
 			return err
 		}
-		if err := validateBaseImgURI(contract.BaseImgUri); err != nil {
+		if err := validateBaseImgURI(contract.Uri); err != nil {
 			return err
 		}
 		if err := validateMeta(contract.Meta); err != nil {
@@ -99,7 +99,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("nfts cannot be empty")
 		}
 		for _, token := range contractNFTs.Nfts {
-			if err := ValidateTokenID(token.Id); err != nil {
+			if err := ValidateTokenID(token.TokenId); err != nil {
 				return err
 			}
 			if err := validateName(token.Name); err != nil {

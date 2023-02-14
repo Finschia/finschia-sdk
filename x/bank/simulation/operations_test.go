@@ -4,9 +4,10 @@ import (
 	"math/rand"
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	ocabci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
@@ -27,7 +28,7 @@ func (suite *SimTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
 }
 
 // TestWeightedOperations tests the weights of the operations.
@@ -71,7 +72,7 @@ func (suite *SimTestSuite) TestSimulateMsgSend() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgSend(suite.app.AccountKeeper, suite.app.BankKeeper)
@@ -99,7 +100,7 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgMultiSend(suite.app.AccountKeeper, suite.app.BankKeeper)
@@ -134,7 +135,7 @@ func (suite *SimTestSuite) TestSimulateModuleAccountMsgSend() {
 	accounts := suite.getTestingAccounts(r, accCount)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgSendToModuleAccount(suite.app.AccountKeeper, suite.app.BankKeeper, moduleAccCount)
@@ -167,7 +168,7 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSendToModuleAccount() {
 	accounts := suite.getTestingAccounts(r, accCount)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgMultiSendToModuleAccount(suite.app.AccountKeeper, suite.app.BankKeeper, mAccCount)

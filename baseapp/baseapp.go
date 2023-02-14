@@ -9,10 +9,12 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	abci "github.com/line/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto/tmhash"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec/types"
@@ -25,7 +27,7 @@ import (
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
-var _ abci.Application = (*BaseApp)(nil)
+var _ ocabci.Application = (*BaseApp)(nil)
 
 type (
 	// StoreLoader defines a customizable function to control how we load the CommitMultiStore
@@ -337,7 +339,7 @@ func (app *BaseApp) init() error {
 	}
 
 	// needed for the export command which inits from store but never calls initchain
-	app.setCheckState(ocproto.Header{})
+	app.setCheckState(tmproto.Header{})
 	app.Seal()
 
 	// make sure the snapshot interval is a multiple of the pruning KeepEvery interval
@@ -413,7 +415,7 @@ func (app *BaseApp) IsSealed() bool { return app.sealed }
 // (i.e. a CacheMultiStore) and a new Context with the same multi-store branch,
 // provided header, and minimum gas prices set. It is set on InitChain and reset
 // on Commit.
-func (app *BaseApp) setCheckState(header ocproto.Header) {
+func (app *BaseApp) setCheckState(header tmproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.checkStateMtx.Lock()
 	defer app.checkStateMtx.Unlock()
@@ -432,7 +434,7 @@ func (app *BaseApp) setCheckState(header ocproto.Header) {
 // (i.e. a CacheMultiStore) and a new Context with the same multi-store branch,
 // and provided header. It is set on InitChain and BeginBlock and set to nil on
 // Commit.
-func (app *BaseApp) setDeliverState(header ocproto.Header) {
+func (app *BaseApp) setDeliverState(header tmproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.deliverState = &state{
 		ms:  ms,
@@ -457,14 +459,14 @@ func (app *BaseApp) GetConsensusParams(ctx sdk.Context) *abci.ConsensusParams {
 	}
 
 	if app.paramStore.Has(ctx, ParamStoreKeyEvidenceParams) {
-		var ep ocproto.EvidenceParams
+		var ep tmproto.EvidenceParams
 
 		app.paramStore.Get(ctx, ParamStoreKeyEvidenceParams, &ep)
 		cp.Evidence = &ep
 	}
 
 	if app.paramStore.Has(ctx, ParamStoreKeyValidatorParams) {
-		var vp ocproto.ValidatorParams
+		var vp tmproto.ValidatorParams
 
 		app.paramStore.Get(ctx, ParamStoreKeyValidatorParams, &vp)
 		cp.Validator = &vp
@@ -518,7 +520,7 @@ func (app *BaseApp) getMaximumBlockGas(ctx sdk.Context) uint64 {
 	}
 }
 
-func (app *BaseApp) validateHeight(req abci.RequestBeginBlock) error {
+func (app *BaseApp) validateHeight(req ocabci.RequestBeginBlock) error {
 	if req.Header.Height < 1 {
 		return fmt.Errorf("invalid height: %d", req.Header.Height)
 	}

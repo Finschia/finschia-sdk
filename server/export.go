@@ -7,9 +7,9 @@ import (
 	"os"
 
 	ostjson "github.com/line/ostracon/libs/json"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/server/types"
@@ -80,18 +80,18 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 			doc.AppState = exported.AppState
 			doc.Validators = exported.Validators
 			doc.InitialHeight = exported.Height
-			doc.ConsensusParams = &ocproto.ConsensusParams{
-				Block: ocproto.BlockParams{
+			doc.ConsensusParams = &tmproto.ConsensusParams{
+				Block: tmproto.BlockParams{
 					MaxBytes:   exported.ConsensusParams.Block.MaxBytes,
 					MaxGas:     exported.ConsensusParams.Block.MaxGas,
 					TimeIotaMs: doc.ConsensusParams.Block.TimeIotaMs,
 				},
-				Evidence: ocproto.EvidenceParams{
+				Evidence: tmproto.EvidenceParams{
 					MaxAgeNumBlocks: exported.ConsensusParams.Evidence.MaxAgeNumBlocks,
 					MaxAgeDuration:  exported.ConsensusParams.Evidence.MaxAgeDuration,
 					MaxBytes:        exported.ConsensusParams.Evidence.MaxBytes,
 				},
-				Validator: ocproto.ValidatorParams{
+				Validator: tmproto.ValidatorParams{
 					PubKeyTypes: exported.ConsensusParams.Validator.PubKeyTypes,
 				},
 			}

@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -16,7 +16,7 @@ import (
 
 func TestAllocateTokensToValidatorWithCommission(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1234))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
@@ -45,7 +45,7 @@ func TestAllocateTokensToValidatorWithCommission(t *testing.T) {
 
 func TestAllocateTokensToManyValidators(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1234))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
@@ -60,14 +60,12 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	tstaking.CreateValidator(valAddrs[1], valConsPk2, sdk.NewInt(100), true)
 
 	abciValA := abci.Validator{
-		Address:      valConsPk1.Address(),
-		Power:        100,
-		VotingWeight: 100,
+		Address: valConsPk1.Address(),
+		Power:   100,
 	}
 	abciValB := abci.Validator{
-		Address:      valConsPk2.Address(),
-		Power:        100,
-		VotingWeight: 100,
+		Address: valConsPk2.Address(),
+		Power:   100,
 	}
 
 	// assert initial state: zero outstanding rewards, zero community pool, zero commission, zero current rewards
@@ -118,7 +116,7 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 
 func TestAllocateTokensTruncation(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1234))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
@@ -137,19 +135,16 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	tstaking.CreateValidator(valAddrs[2], valConsPk3, sdk.NewInt(100), true)
 
 	abciValA := abci.Validator{
-		Address:      valConsPk1.Address(),
-		Power:        11,
-		VotingWeight: 11,
+		Address: valConsPk1.Address(),
+		Power:   11,
 	}
 	abciValB := abci.Validator{
-		Address:      valConsPk2.Address(),
-		Power:        10,
-		VotingWeight: 10,
+		Address: valConsPk2.Address(),
+		Power:   10,
 	}
 	abciValС := abci.Validator{
-		Address:      valConsPk3.Address(),
-		Power:        10,
-		VotingWeight: 10,
+		Address: valConsPk3.Address(),
+		Power:   10,
 	}
 
 	// assert initial state: zero outstanding rewards, zero community pool, zero commission, zero current rewards

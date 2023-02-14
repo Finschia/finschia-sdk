@@ -14,7 +14,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		ContractId: contractID,
 		Name:       contract.Name,
 		Meta:       contract.Meta,
-		BaseImgUri: contract.BaseImgUri,
+		Uri:        contract.Uri,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -42,7 +42,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 
 func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) string {
 	contractID := k.classKeeper.NewID(ctx)
-	contract.ContractId = contractID
+	contract.Id = contractID
 	k.setContract(ctx, contract)
 
 	// set the next class ids
@@ -57,7 +57,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 	key := contractKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no such a contract: %s", contractID)
+		return nil, collection.ErrCollectionNotExist.Wrapf("no such a contract: %s", contractID)
 	}
 
 	var contract collection.Contract
@@ -69,7 +69,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 
 func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 	store := ctx.KVStore(k.storeKey)
-	key := contractKey(contract.ContractId)
+	key := contractKey(contract.Id)
 
 	bz, err := contract.Marshal()
 	if err != nil {
@@ -80,7 +80,7 @@ func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 
 func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class collection.TokenClass) (*string, error) {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	nextClassIDs := k.getNextClassIDs(ctx, contractID)
@@ -163,22 +163,27 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
 	for _, coin := range amount {
 		if err := collection.ValidateFTID(coin.TokenId); err != nil {
-			return err
+			// legacy
+			if err := k.hasNFT(ctx, contractID, coin.TokenId); err != nil {
+				return err
+			}
+
+			return collection.ErrTokenNotMintable.Wrap(err.Error())
 		}
 
 		classID := collection.SplitTokenID(coin.TokenId)
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
-			return err
+			return collection.ErrTokenNotExist.Wrap(err.Error())
 		}
 
 		ftClass, ok := class.(*collection.FTClass)
 		if !ok {
-			return sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID)
+			return collection.ErrTokenNotMintable.Wrapf("not a class of fungible token: %s", classID)
 		}
 
 		if !ftClass.Mintable {
-			return sdkerrors.ErrInvalidRequest.Wrapf("class is not mintable")
+			return collection.ErrTokenNotMintable.Wrapf("class is not mintable")
 		}
 
 		k.mintFT(ctx, contractID, to, classID, coin.Amount)
@@ -205,11 +210,11 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		classID := param.TokenType
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
-			return nil, err
+			return nil, collection.ErrTokenTypeNotExist.Wrap(err.Error())
 		}
 
 		if _, ok := class.(*collection.NFTClass); !ok {
-			return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID)
+			return nil, collection.ErrTokenTypeNotExist.Wrapf("not a class of non-fungible token: %s", classID)
 		}
 
 		nextTokenID := k.getNextTokenID(ctx, contractID, classID)
@@ -222,9 +227,9 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		k.setOwner(ctx, contractID, tokenID, to)
 
 		token := collection.NFT{
-			Id:   tokenID,
-			Name: param.Name,
-			Meta: param.Meta,
+			TokenId: tokenID,
+			Name:    param.Name,
+			Meta:    param.Meta,
 		}
 		k.setNFT(ctx, contractID, token)
 
@@ -259,7 +264,6 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 				return false
 			})
 
-			k.deleteOwner(ctx, contractID, coin.TokenId)
 			k.deleteNFT(ctx, contractID, coin.TokenId)
 			pruned := k.pruneNFT(ctx, contractID, coin.TokenId)
 
@@ -314,7 +318,7 @@ func (k Keeper) setNextTokenID(ctx sdk.Context, contractID string, classID strin
 func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	contract, err := k.GetContract(ctx, contractID)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){
@@ -322,7 +326,7 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 			contract.Name = name
 		},
 		collection.AttributeKeyBaseImgURI: func(uri string) {
-			contract.BaseImgUri = uri
+			contract.Uri = uri
 		},
 		collection.AttributeKeyMeta: func(meta string) {
 			contract.Meta = meta
@@ -349,7 +353,16 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	class, err := k.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
-		return err
+		// legacy error split
+		if err := collection.ValidateLegacyFTClassID(classID); err == nil {
+			return collection.ErrTokenNotExist.Wrap(collection.NewFTID(classID))
+		}
+
+		if err := collection.ValidateLegacyNFTClassID(classID); err == nil {
+			return collection.ErrTokenTypeNotExist.Wrap(classID)
+		}
+
+		panic(err)
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){
@@ -369,7 +382,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 
 	event := collection.EventModifiedTokenClass{
 		ContractId: contractID,
-		ClassId:    class.GetId(),
+		TokenType:  class.GetId(),
 		Operator:   operator.String(),
 		Changes:    changes,
 	}
@@ -428,9 +441,6 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 
 func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
 	k.setGrant(ctx, contractID, grantee, permission)
-
-	// create account if grantee does not exist.
-	k.createAccountOnAbsence(ctx, grantee)
 }
 
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {

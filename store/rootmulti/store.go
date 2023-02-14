@@ -13,11 +13,11 @@ import (
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/pkg/errors"
+	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
 
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	"github.com/line/ostracon/proto/ostracon/crypto"
 
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/store/cachemulti"

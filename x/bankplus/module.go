@@ -12,6 +12,11 @@ import (
 	"github.com/line/lbm-sdk/x/bankplus/keeper"
 )
 
+var (
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleSimulation = AppModule{}
+)
+
 type AppModule struct {
 	bank.AppModule
 

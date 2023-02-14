@@ -9,9 +9,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	abci "github.com/line/ostracon/abci/types"
-	octypes "github.com/line/ostracon/proto/ostracon/types"
+	ocabci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
@@ -28,8 +29,8 @@ var (
 
 	// test abci message types
 	mockHash          = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	testBeginBlockReq = abci.RequestBeginBlock{
-		Header: octypes.Header{
+	testBeginBlockReq = ocabci.RequestBeginBlock{
+		Header: tmproto.Header{
 			Height: 1,
 		},
 		ByzantineValidators: []abci.Evidence{},

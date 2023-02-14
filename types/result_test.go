@@ -9,8 +9,9 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	abci "github.com/tendermint/tendermint/abci/types"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/bytes"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
@@ -161,7 +162,6 @@ func (s *resultTestSuite) TestResponseResultTx() {
 		GasUsed:   90,
 		Tx:        nil,
 		Timestamp: "timestamp",
-		Index:     1,
 	}
 
 	s.Require().Equal(want, sdk.NewResponseResultTx(resultTx, nil, "timestamp"))
@@ -173,7 +173,6 @@ events: []
 gas_used: "90"
 gas_wanted: "100"
 height: "10"
-index: 1
 info: info
 logs: []
 raw_log: '[]'
@@ -214,7 +213,7 @@ func (s *resultTestSuite) TestResponseFormatBroadcastTxCommit() {
 	checkTxResult := &ctypes.ResultBroadcastTxCommit{
 		Height: 10,
 		Hash:   bytes.HexBytes([]byte("test")),
-		CheckTx: abci.ResponseCheckTx{
+		CheckTx: ocabci.ResponseCheckTx{
 			Code:      90,
 			Data:      nil,
 			Log:       `[]`,

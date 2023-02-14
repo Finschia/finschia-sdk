@@ -25,15 +25,17 @@ func TestReceiveFromTreasuryAuthorization(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		authorization := &foundation.ReceiveFromTreasuryAuthorization{}
+		t.Run(name, func(t *testing.T) {
+			authorization := &foundation.ReceiveFromTreasuryAuthorization{}
 
-		resp, err := authorization.Accept(sdk.Context{}, tc.msg)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			resp, err := authorization.Accept(sdk.Context{}, tc.msg)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, tc.accept, resp.Accept)
+			require.Equal(t, tc.accept, resp.Accept)
+		})
 	}
 }

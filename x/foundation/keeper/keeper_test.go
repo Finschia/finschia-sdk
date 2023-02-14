@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
@@ -54,7 +54,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	testdata.RegisterInterfaces(s.app.InterfaceRegistry())
 	testdata.RegisterMsgServer(s.app.MsgServiceRouter(), testdata.MsgServerImpl{})
 
-	s.ctx = s.app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.keeper = s.app.FoundationKeeper
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
@@ -189,9 +189,6 @@ func (s *KeeperTestSuite) SetupTest() {
 	// grant stranger to receive foundation treasury
 	err = s.keeper.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NoError(err)
-
-	// set gov-mint left count to 1
-	s.keeper.SetGovMintLeftCount(s.ctx, 1)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -222,19 +219,20 @@ func TestNewKeeper(t *testing.T) {
 
 	for name, tc := range testCases {
 		tc := tc
+		t.Run(name, func(t *testing.T) {
+			newKeeper := func() keeper.Keeper {
+				app := simapp.Setup(false)
+				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
+			}
 
-		newKeeper := func() keeper.Keeper {
-			app := simapp.Setup(false)
-			return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
-		}
+			if tc.panics {
+				require.Panics(t, func() { newKeeper() })
+				return
+			}
+			require.NotPanics(t, func() { newKeeper() })
 
-		if tc.panics {
-			require.Panics(t, func() { newKeeper() }, name)
-			continue
-		}
-		require.NotPanics(t, func() { newKeeper() }, name)
-
-		k := newKeeper()
-		require.Equal(t, authority.String(), k.GetAuthority(), name)
+			k := newKeeper()
+			require.Equal(t, authority.String(), k.GetAuthority())
+		})
 	}
 }

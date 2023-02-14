@@ -7,11 +7,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	abci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
@@ -105,7 +106,7 @@ func TestLoadVersionPruning(t *testing.T) {
 	// Commit seven blocks, of which 7 (latest) is kept in addition to 6, 5
 	// (keep recent) and 3 (keep every).
 	for i := int64(1); i <= 7; i++ {
-		app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: i}})
+		app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
 		res := app.Commit()
 		lastCommitID = sdk.CommitID{Version: i, Hash: res.Data}
 	}
@@ -145,7 +146,7 @@ func TestSetMinGasPrices(t *testing.T) {
 func TestGetMaximumBlockGas(t *testing.T) {
 	app := setupBaseApp(t)
 	app.InitChain(abci.RequestInitChain{})
-	ctx := app.NewContext(true, ocproto.Header{})
+	ctx := app.NewContext(true, tmproto.Header{})
 
 	app.StoreConsensusParams(ctx, &abci.ConsensusParams{Block: &abci.BlockParams{MaxGas: 0}})
 	require.Equal(t, uint64(0), app.getMaximumBlockGas(ctx))

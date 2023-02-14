@@ -15,7 +15,6 @@ import (
 	"time"
 
 	ostcfg "github.com/line/ostracon/config"
-	ostflags "github.com/line/ostracon/libs/cli/flags"
 	"github.com/line/ostracon/libs/log"
 	ostrand "github.com/line/ostracon/libs/rand"
 	"github.com/line/ostracon/node"
@@ -61,7 +60,6 @@ func NewAppConstructor(encodingCfg params.EncodingConfig) AppConstructor {
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			encodingCfg,
 			simapp.EmptyAppOptions{},
-			nil,
 			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
 		)
@@ -245,7 +243,7 @@ func New(t *testing.T, cfg Config) *Network {
 		logger := log.NewNopLogger()
 		if cfg.EnableLogging {
 			logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))
-			logger, _ = ostflags.ParseLogLevel("info", logger, ostcfg.DefaultLogLevel)
+			logger, _ = log.ParseLogLevel("info", logger, ostcfg.DefaultLogLevel)
 		}
 
 		ctx.Logger = logger

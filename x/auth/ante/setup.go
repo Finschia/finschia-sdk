@@ -39,11 +39,6 @@ func (sud SetUpContextDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 
 	newCtx = SetGasMeter(simulate, ctx, gasTx.GetGas())
 
-	err = validateGasWanted(newCtx)
-	if err != nil {
-		return newCtx, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, err.Error())
-	}
-
 	// Decorator will catch an OutOfGasPanic caused in the next antehandler
 	// AnteHandlers must have their own defer/recover in order for the BaseApp
 	// to know how much gas was used! This is because the GasMeter is created in
@@ -76,29 +71,4 @@ func SetGasMeter(simulate bool, ctx sdk.Context, gasLimit uint64) sdk.Context {
 	}
 
 	return ctx.WithGasMeter(sdk.NewGasMeter(gasLimit))
-}
-
-func validateGasWanted(ctx sdk.Context) error {
-	if !ctx.IsCheckTx() {
-		return nil
-	}
-
-	// TODO: Should revise type
-	// reference: https://github.com/line/cosmos-sdk/blob/fd6d941cc429fc2a58154dbace3bbaec4beef445/baseapp/abci.go#L189
-	gasWanted := int64(ctx.GasMeter().Limit())
-	if gasWanted < 0 {
-		return fmt.Errorf("gas wanted %d is negative", gasWanted)
-	}
-
-	consParams := ctx.ConsensusParams()
-	if consParams == nil || consParams.Block == nil || consParams.Block.MaxGas == -1 {
-		return nil
-	}
-
-	maxGas := consParams.Block.MaxGas
-	if gasWanted > maxGas {
-		return fmt.Errorf("gas wanted %d is greater than max gas %d", gasWanted, maxGas)
-	}
-
-	return nil
 }

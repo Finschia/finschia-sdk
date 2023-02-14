@@ -54,10 +54,12 @@ func (s *KeeperTestSuite) TestEndBlocker() {
 			foundation.PROPOSAL_STATUS_SUBMITTED,
 		},
 	} {
-		proposal, err := s.keeper.GetProposal(ctx, tc.id)
-		s.Require().NoError(err, name)
-		s.Require().NotNil(proposal, name)
-		s.Require().Equal(tc.status, proposal.Status, name)
+		s.Run(name, func() {
+			proposal, err := s.keeper.GetProposal(ctx, tc.id)
+			s.Require().NoError(err)
+			s.Require().NotNil(proposal)
+			s.Require().Equal(tc.status, proposal.Status)
+		})
 	}
 
 	// voting periods end
@@ -87,14 +89,16 @@ func (s *KeeperTestSuite) TestEndBlocker() {
 			status: foundation.PROPOSAL_STATUS_ACCEPTED,
 		},
 	} {
-		proposal, err := s.keeper.GetProposal(ctx, tc.id)
-		if tc.removed {
-			s.Require().Error(err, name)
-			continue
-		}
-		s.Require().NoError(err, name)
-		s.Require().NotNil(proposal, name)
-		s.Require().Equal(tc.status, proposal.Status, name)
+		s.Run(name, func() {
+			proposal, err := s.keeper.GetProposal(ctx, tc.id)
+			if tc.removed {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(proposal)
+			s.Require().Equal(tc.status, proposal.Status)
+		})
 	}
 
 	// proposals expire
