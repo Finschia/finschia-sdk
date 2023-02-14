@@ -11,6 +11,8 @@ builds:
       - amd64
     env:
       - CGO_ENABLED=1
+      - CC=x86_64-linux-gnu-gcc
+      - CXX=x86_64-linux-gnu-g++
     flags:
       - -mod=readonly
       - -trimpath
@@ -27,6 +29,8 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=1
+      - CC=aarch64-linux-gnu-gcc
+      - CXX=aarch64-linux-gnu-g++
     flags:
       - -mod=readonly
       - -trimpath
@@ -43,6 +47,8 @@ builds:
       - amd64
     env:
       - CGO_ENABLED=1
+      - CC=o64-clang
+      - CXX=o64-clang++
     flags:
       - -mod=readonly
       - -trimpath
@@ -59,6 +65,8 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=1
+      - CC=oa64-clang
+      - CXX=oa64-clang++
     flags:
       - -mod=readonly
       - -trimpath
@@ -72,6 +80,8 @@ archives:
     builds:
       - simd-linux-amd64
       - simd-linux-arm64
+      - simd-darwin-amd64
+      - simd-darwin-arm64
     format: tar.gz
     name_template: "simd_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     wrap_in_directory: true
