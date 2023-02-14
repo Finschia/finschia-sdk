@@ -1281,7 +1281,10 @@ func TestMsgModify(t *testing.T) {
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Attribute{changes[0], changes[0]},
+			changes:    []collection.Attribute{
+				{Key: collection.AttributeKeyBaseImgURI.String(), Value: "hello"},
+				{Key: collection.AttributeKeyURI.String(), Value: "world"},
+			},
 			err:        collection.ErrDuplicateChangesField,
 		},
 	}
