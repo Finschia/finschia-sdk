@@ -94,7 +94,7 @@ func TestAPIGetContractEnv(t *testing.T) {
 		assert.Equal(t, ctx.ChainID(), env.Block.ChainID)
 		assert.Equal(t, contractAddr.String(), env.Contract.Address)
 
-		code, err := wasmvmapi.GetCode(*cache, hash)
+		code, err := wasmvmapi.GetCode(cache, hash)
 		assert.Equal(t, numberWasm, code)
 
 		// "number" comes from https://github.com/line/cosmwasm/blob/d08b5a59115cc3d28f375b7425b902bfd1dac6a4/contracts/number/src/contract.rs#L9

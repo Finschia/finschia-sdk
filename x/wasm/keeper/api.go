@@ -41,19 +41,16 @@ func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) 
 	return bz, gasMultiplier.ToWasmVMGas(4), err
 }
 
-func (a cosmwasmAPIImpl) getContractEnv(contractAddrStr string, inputSize uint64) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, uint64, error) {
+func (a cosmwasmAPIImpl) getContractEnv(contractAddrStr string, inputSize uint64) (wasmvm.Env, wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, uint64, error) {
 	contractAddr := sdk.MustAccAddressFromBech32(contractAddrStr)
 	contractInfo, codeInfo, prefixStore, err := a.keeper.contractInstance(*a.ctx, contractAddr)
 	if err != nil {
-		return wasmvm.Env{}, nil, nil, nil, nil, wasmvm.Checksum{}, 0, 0, err
+		return wasmvm.Env{}, wasmvm.Cache{}, nil, nil, nil, wasmvm.Checksum{}, 0, 0, err
 	}
 
 	gasMultiplier := a.keeper.getGasMultiplier(*a.ctx)
 
 	cache := a.keeper.wasmVM.GetCache()
-	if cache == nil {
-		panic("cannot found instance cache")
-	}
 
 	// prepare querier
 	querier := NewQueryHandler(*a.ctx, a.keeper.wasmVMQueryHandler, contractAddr, gasMultiplier)
