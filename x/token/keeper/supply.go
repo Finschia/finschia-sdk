@@ -275,7 +275,6 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 		Operator:   grantee.String(),
 		Changes:    changes,
 	}
-	token.UpdateEventModified(&event)
 	ctx.EventManager().EmitEvents(token.NewEventModifyToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
@@ -293,7 +292,7 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Attri
 		token.AttributeKeyName: func(name string) {
 			class.Name = name
 		},
-		token.AttributeKeyImageURI: func(uri string) {
+		token.AttributeKeyURI: func(uri string) {
 			class.Uri = uri
 		},
 		token.AttributeKeyMeta: func(meta string) {

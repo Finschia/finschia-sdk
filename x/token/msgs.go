@@ -453,6 +453,8 @@ var _ sdk.Msg = (*MsgModify)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgModify) ValidateBasic() error {
+	UpdateMsgModify(&m)
+
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
@@ -462,7 +464,7 @@ func (m MsgModify) ValidateBasic() error {
 
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
-		key := canonicalKey(change.Key)
+		key := change.Key
 		if seenKeys[key] {
 			return ErrDuplicateChangesField.Wrapf("duplicate fields: %s", change.Key)
 		}
@@ -477,6 +479,16 @@ func (m MsgModify) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func UpdateMsgModify(msg *MsgModify) {
+	for i, change := range msg.Changes {
+		key := change.Key
+		converted := canonicalKey(key)
+		if converted != key {
+			msg.Changes[i].Key = converted
+		}
+	}
 }
 
 // GetSigners implements Msg

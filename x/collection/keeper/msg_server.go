@@ -615,6 +615,8 @@ func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperato
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	collection.UpdateMsgModify(req)
+
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
@@ -690,7 +692,6 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				Operator:   operator.String(),
 				Changes:    changes,
 			}
-			collection.UpdateEventModifiedContract(&event)
 			ctx.EventManager().EmitEvents(collection.NewEventModifyCollection(event))
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 				panic(err)

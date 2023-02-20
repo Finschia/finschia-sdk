@@ -270,6 +270,8 @@ func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	token.UpdateMsgModify(req)
+
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}

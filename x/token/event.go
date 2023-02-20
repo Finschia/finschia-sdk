@@ -114,14 +114,7 @@ func NewEventModifyToken(event EventModified) []sdk.Event {
 		),
 	}
 
-	newKeys := map[string]bool{
-		AttributeKeyURI.String(): true,
-	}
 	for _, pair := range event.Changes {
-		if newKeys[pair.Key] {
-			continue
-		}
-
 		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
 		res = append(res, event)
@@ -245,20 +238,4 @@ func NewEventApproveToken(event EventAuthorizedOperator) sdk.Event {
 		res = res.AppendAttributes(attribute)
 	}
 	return res
-}
-
-func UpdateEventModified(event *EventModified) {
-	convert := map[string]string{
-		AttributeKeyURI.String():      AttributeKeyImageURI.String(),
-		AttributeKeyImageURI.String(): AttributeKeyURI.String(),
-	}
-	for _, change := range event.Changes {
-		key := change.Key
-		if converted, ok := convert[key]; ok {
-			// append new change
-			newChange := Attribute{Key: converted, Value: change.Value}
-			event.Changes = append(event.Changes, newChange)
-			return
-		}
-	}
 }

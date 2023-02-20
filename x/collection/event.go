@@ -285,14 +285,7 @@ func NewEventModifyCollection(event EventModifiedContract) sdk.Events {
 	}
 	res = append(res, head)
 
-	newKeys := map[string]bool{
-		AttributeKeyURI.String(): true,
-	}
 	for _, pair := range event.Changes {
-		if newKeys[pair.Key] {
-			continue
-		}
-
 		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
 		res = append(res, event)
@@ -740,20 +733,4 @@ func NewEventOperationRootChanged(event EventRootChanged) sdk.Event {
 		res = res.AppendAttributes(attribute)
 	}
 	return res
-}
-
-func UpdateEventModifiedContract(event *EventModifiedContract) {
-	convert := map[string]string{
-		AttributeKeyURI.String():        AttributeKeyBaseImgURI.String(),
-		AttributeKeyBaseImgURI.String(): AttributeKeyURI.String(),
-	}
-	for _, change := range event.Changes {
-		key := change.Key
-		if converted, ok := convert[key]; ok {
-			// append new change
-			newChange := Attribute{Key: converted, Value: change.Value}
-			event.Changes = append(event.Changes, newChange)
-			return
-		}
-	}
 }
