@@ -171,18 +171,11 @@ func TestNewEventModifyToken(t *testing.T) {
 	event := token.EventModified{
 		ContractId: str(),
 		Operator:   str(),
-		Changes: []token.Attribute{
-			{
-				Key:   token.AttributeKeyName.String(),
-				Value: str(),
-			},
-			{
-				Key:   token.AttributeKeyImageURI.String(),
-				Value: str(),
-			},
-		},
+		Changes: []token.Attribute{{
+			Key:   token.AttributeKeyName.String(),
+			Value: str(),
+		}},
 	}
-
 	legacies := token.NewEventModifyToken(event)
 	require.Greater(t, len(legacies), 1)
 

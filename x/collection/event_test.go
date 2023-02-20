@@ -344,18 +344,11 @@ func TestNewEventModifyCollection(t *testing.T) {
 	event := collection.EventModifiedContract{
 		ContractId: str(),
 		Operator:   str(),
-		Changes: []collection.Attribute{
-			{
-				Key:   collection.AttributeKeyName.String(),
-				Value: str(),
-			},
-			{
-				Key:   collection.AttributeKeyURI.String(),
-				Value: str(),
-			},
-		},
+		Changes: []collection.Attribute{{
+			Key:   collection.AttributeKeyName.String(),
+			Value: str(),
+		}},
 	}
-
 	legacies := collection.NewEventModifyCollection(event)
 	require.Greater(t, len(legacies), 1)
 
