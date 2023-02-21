@@ -759,6 +759,7 @@
     - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
+    - [Censorship](#lbm.foundation.v1.Censorship)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
@@ -772,6 +773,7 @@
     - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
     - [Vote](#lbm.foundation.v1.Vote)
   
+    - [CensorshipAuthority](#lbm.foundation.v1.CensorshipAuthority)
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
     - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
     - [VoteOption](#lbm.foundation.v1.VoteOption)
@@ -783,6 +785,7 @@
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
+    - [EventUpdateCensorship](#lbm.foundation.v1.EventUpdateCensorship)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
     - [EventUpdateParams](#lbm.foundation.v1.EventUpdateParams)
@@ -795,6 +798,8 @@
     - [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization)
   
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
+    - [QueryCensorshipsRequest](#lbm.foundation.v1.QueryCensorshipsRequest)
+    - [QueryCensorshipsResponse](#lbm.foundation.v1.QueryCensorshipsResponse)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
     - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
@@ -833,6 +838,8 @@
     - [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse)
     - [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal)
     - [MsgSubmitProposalResponse](#lbm.foundation.v1.MsgSubmitProposalResponse)
+    - [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship)
+    - [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse)
     - [MsgUpdateDecisionPolicy](#lbm.foundation.v1.MsgUpdateDecisionPolicy)
     - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
     - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
@@ -11375,6 +11382,22 @@ up to receive_limit from the treasury.
 
 
 
+<a name="lbm.foundation.v1.Censorship"></a>
+
+### Censorship
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  |  |
+| `authority` | [CensorshipAuthority](#lbm.foundation.v1.CensorshipAuthority) |  |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.DecisionPolicyWindows"></a>
 
 ### DecisionPolicyWindows
@@ -11471,7 +11494,6 @@ Params defines the parameters for the foundation module.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `foundation_tax` | [string](#string) |  |  |
-| `censored_msg_type_urls` | [string](#string) | repeated |  |
 
 
 
@@ -11599,6 +11621,19 @@ Vote represents a vote for a proposal.
 
 
  <!-- end messages -->
+
+
+<a name="lbm.foundation.v1.CensorshipAuthority"></a>
+
+### CensorshipAuthority
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CENSORSHIP_AUTHORITY_UNSPECIFIED | 0 | CENSORSHIP_AUTHORITY_UNSPECIFIED defines an invalid authority. |
+| CENSORSHIP_AUTHORITY_GOVERNANCE | 1 | CENSORSHIP_AUTHORITY_GOVERNANCE defines x/gov authority. |
+| CENSORSHIP_AUTHORITY_FOUNDATION | 2 | CENSORSHIP_AUTHORITY_FOUNDATION defines x/foundation authority. |
+
 
 
 <a name="lbm.foundation.v1.ProposalExecutorResult"></a>
@@ -11755,6 +11790,21 @@ EventSubmitProposal is an event emitted when a proposal is created.
 
 
 
+<a name="lbm.foundation.v1.EventUpdateCensorship"></a>
+
+### EventUpdateCensorship
+EventUpdateCensorship is emitted when a censorship information updated.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `censorship` | [Censorship](#lbm.foundation.v1.Censorship) |  |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.EventUpdateDecisionPolicy"></a>
 
 ### EventUpdateDecisionPolicy
@@ -11878,6 +11928,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
+| `censorships` | [Censorship](#lbm.foundation.v1.Censorship) | repeated |  |
 
 
 
@@ -11913,6 +11964,37 @@ GrantAuthorization defines authorization grant to grantee via route.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/foundation/v1/query.proto
+
+
+
+<a name="lbm.foundation.v1.QueryCensorshipsRequest"></a>
+
+### QueryCensorshipsRequest
+QueryCensorshipsRequest is the request type for the Query/Censorships RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryCensorshipsResponse"></a>
+
+### QueryCensorshipsResponse
+QueryCensorshipsResponse is the response type for the Query/Censorships RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `censorships` | [Censorship](#lbm.foundation.v1.Censorship) | repeated | authorizations is a list of grants granted for grantee. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
 
 
 
@@ -12264,6 +12346,7 @@ Query defines the gRPC querier service for foundation module.
 | `Vote` | [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse) | Vote queries a vote by proposal id and voter. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}|
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
+| `Censorships` | [QueryCensorshipsRequest](#lbm.foundation.v1.QueryCensorshipsRequest) | [QueryCensorshipsResponse](#lbm.foundation.v1.QueryCensorshipsResponse) | Censorships queries the censorship informations. | GET|/lbm/foundation/v1/censorships|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
 
  <!-- end services -->
@@ -12436,6 +12519,32 @@ MsgSubmitProposalResponse is the Msg/SubmitProposal response type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateCensorship"></a>
+
+### MsgUpdateCensorship
+MsgUpdateCensorship is the Msg/UpdateCensorship request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority over the target censorship. |
+| `censorship` | [Censorship](#lbm.foundation.v1.Censorship) |  | new censorship information |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateCensorshipResponse"></a>
+
+### MsgUpdateCensorshipResponse
+MsgUpdateCensorshipResponse is the Msg/UpdateCensorship response type.
 
 
 
@@ -12639,6 +12748,7 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
+| `UpdateCensorship` | [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship) | [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse) | UpdateCensorship updates censorship information. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
 
