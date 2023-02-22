@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/foundation"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/foundation"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
