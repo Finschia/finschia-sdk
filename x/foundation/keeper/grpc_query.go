@@ -194,6 +194,28 @@ func (s queryServer) TallyResult(c context.Context, req *foundation.QueryTallyRe
 	return &foundation.QueryTallyResultResponse{Tally: tally}, nil
 }
 
+func (s queryServer) Censorships(c context.Context, req *foundation.QueryCensorshipsRequest) (*foundation.QueryCensorshipsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var censorships []foundation.Censorship
+	ctx := sdk.UnwrapSDKContext(c)
+	store := ctx.KVStore(s.keeper.storeKey)
+	censorshipStore := prefix.NewStore(store, censorshipKeyPrefix)
+	pageRes, err := query.Paginate(censorshipStore, req.Pagination, func(key []byte, value []byte) error {
+		var censorship foundation.Censorship
+		s.keeper.cdc.MustUnmarshal(value, &censorship)
+		censorships = append(censorships, censorship)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &foundation.QueryCensorshipsResponse{Censorships: censorships, Pagination: pageRes}, nil
+}
+
 func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsRequest) (*foundation.QueryGrantsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

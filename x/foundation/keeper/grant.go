@@ -6,6 +6,86 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
+func (k Keeper) GetCensorship(ctx sdk.Context, msgTypeURL string) (*foundation.Censorship, error) {
+	store := ctx.KVStore(k.storeKey)
+	key := censorshipKey(msgTypeURL)
+	bz := store.Get(key)
+	if bz == nil {
+		return nil, sdkerrors.ErrNotFound.Wrap("censorship not found")
+	}
+
+	var censorship foundation.Censorship
+	k.cdc.MustUnmarshal(bz, &censorship)
+
+	return &censorship, nil
+}
+
+func (k Keeper) UpdateCensorship(ctx sdk.Context, censorship foundation.Censorship) error {
+	url := censorship.MsgTypeUrl
+
+	oldCensorship, err := k.GetCensorship(ctx, url)
+	if err != nil {
+		return err
+	}
+
+	newAuthority := censorship.Authority
+	oldAuthority := oldCensorship.Authority
+	if newAuthority >= oldAuthority {
+		return sdkerrors.ErrInvalidRequest.Wrapf("bad transition; %s -> %s over %s", oldAuthority, newAuthority, url)
+	}
+
+	// clean up relevant authorizations
+	if newAuthority == foundation.CensorshipAuthorityUnspecified {
+		var pruningGrants []foundation.GrantAuthorization
+		k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+			if authorization.MsgTypeURL() == url {
+				grant := foundation.GrantAuthorization{
+					Grantee: grantee.String(),
+				}.WithAuthorization(authorization)
+
+				pruningGrants = append(pruningGrants, *grant)
+			}
+			return false
+		})
+
+		for _, grant := range pruningGrants {
+			k.deleteAuthorization(ctx, sdk.MustAccAddressFromBech32(grant.Grantee), grant.GetAuthorization().MsgTypeURL())
+		}
+	}
+
+	k.SetCensorship(ctx, censorship)
+
+	return nil
+}
+
+func (k Keeper) SetCensorship(ctx sdk.Context, censorship foundation.Censorship) {
+	store := ctx.KVStore(k.storeKey)
+	key := censorshipKey(censorship.MsgTypeUrl)
+
+	if censorship.Authority == foundation.CensorshipAuthorityUnspecified {
+		store.Delete(key)
+		return
+	}
+
+	bz := k.cdc.MustMarshal(&censorship)
+	store.Set(key, bz)
+}
+
+func (k Keeper) iterateCensorships(ctx sdk.Context, fn func(censorship foundation.Censorship) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, censorshipKeyPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var censorship foundation.Censorship
+		k.cdc.MustUnmarshal(iterator.Value(), &censorship)
+
+		if stop := fn(censorship); stop {
+			break
+		}
+	}
+}
+
 func (k Keeper) Grant(ctx sdk.Context, grantee sdk.AccAddress, authorization foundation.Authorization) error {
 	msgTypeURL := authorization.MsgTypeURL()
 	if !k.IsCensoredMessage(ctx, msgTypeURL) {

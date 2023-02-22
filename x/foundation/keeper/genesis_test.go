@@ -153,6 +153,12 @@ func TestImportExportGenesis(t *testing.T) {
 			init: &foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority: foundation.CensorshipAuthorityFoundation,
+					},
+				},
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: stranger.String(),
@@ -163,6 +169,12 @@ func TestImportExportGenesis(t *testing.T) {
 			export: &foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority: foundation.CensorshipAuthorityFoundation,
+					},
+				},
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: stranger.String(),

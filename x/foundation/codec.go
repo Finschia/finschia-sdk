@@ -25,6 +25,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawFromTreasury{}, "lbm-sdk/MsgWithdrawFromTreasury")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMembers{}, "lbm-sdk/MsgUpdateMembers")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateDecisionPolicy{}, "lbm-sdk/MsgUpdateDecisionPolicy")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateCensorship{}, "lbm-sdk/MsgUpdateCensorship")
 	legacy.RegisterAminoMsg(cdc, &MsgGrant{}, "lbm-sdk/MsgGrant")
 	legacy.RegisterAminoMsg(cdc, &MsgRevoke{}, "lbm-sdk/MsgRevoke")
 
@@ -47,6 +48,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgVote{},
 		&MsgExec{},
 		&MsgLeaveFoundation{},
+		&MsgUpdateCensorship{},
 		&MsgGrant{},
 		&MsgRevoke{},
 	)

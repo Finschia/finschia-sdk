@@ -62,9 +62,11 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	s.keeper.SetParams(s.ctx, foundation.Params{
 		FoundationTax: sdk.OneDec(),
-		CensoredMsgTypeUrls: []string{
-			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		},
+	})
+
+	s.keeper.SetCensorship(s.ctx, foundation.Censorship{
+		MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		Authority: foundation.CensorshipAuthorityFoundation,
 	})
 
 	createAddress := func() sdk.AccAddress {

@@ -5,6 +5,55 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
+func (s *KeeperTestSuite) TestUpdateCensorship() {
+	ctx, _ := s.ctx.CacheContext()
+
+	// add a dummy url to censorship
+	msgTypeURL := sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil))
+	dummyURL := sdk.MsgTypeURL((*foundation.MsgFundTreasury)(nil))
+	for _, url := range []string{
+		msgTypeURL,
+		dummyURL,
+	} {
+		s.keeper.SetCensorship(ctx, foundation.Censorship{
+			MsgTypeUrl: url,
+			Authority: foundation.CensorshipAuthorityFoundation,
+		})
+	}
+
+	// check preconditions
+	s.Require().True(s.keeper.IsCensoredMessage(ctx, msgTypeURL))
+	_, err := s.keeper.GetAuthorization(ctx, s.stranger, msgTypeURL)
+	s.Require().NoError(err)
+
+	// test update censorship
+	removingCensorship := foundation.Censorship{
+		MsgTypeUrl: msgTypeURL,
+		Authority: foundation.CensorshipAuthorityUnspecified,
+	}
+	s.Require().NoError(removingCensorship.ValidateBasic())
+	err = s.keeper.UpdateCensorship(ctx, removingCensorship)
+	s.Require().NoError(err)
+
+	// check censorship
+	_, err = s.keeper.GetCensorship(ctx, msgTypeURL)
+	s.Require().Error(err)
+	s.Require().False(s.keeper.IsCensoredMessage(ctx, msgTypeURL))
+
+	// check authorizations
+	_, err = s.keeper.GetAuthorization(ctx, s.stranger, msgTypeURL)
+	s.Require().Error(err)
+
+	// 2. re-enable the removed censorship, which must fail
+	newCensorship := foundation.Censorship{
+		MsgTypeUrl: msgTypeURL,
+		Authority: foundation.CensorshipAuthorityGovernance,
+	}
+	s.Require().NoError(newCensorship.ValidateBasic())
+	err = s.keeper.UpdateCensorship(ctx, newCensorship)
+	s.Require().Error(err)
+}
+
 func (s *KeeperTestSuite) TestGrant() {
 	testCases := map[string]struct {
 		malleate func(ctx sdk.Context)
@@ -19,7 +68,10 @@ func (s *KeeperTestSuite) TestGrant() {
 		},
 		"not being censored": {
 			malleate: func(ctx sdk.Context) {
-				s.keeper.SetParams(ctx, foundation.Params{})
+				s.keeper.UpdateCensorship(ctx, foundation.Censorship{
+					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+					Authority: foundation.CensorshipAuthorityUnspecified,
+				})
 			},
 			grantee: s.members[0],
 			auth:    &foundation.ReceiveFromTreasuryAuthorization{},
@@ -96,7 +148,10 @@ func (s *KeeperTestSuite) TestAccept() {
 		},
 		"not being censored": {
 			malleate: func(ctx sdk.Context) {
-				s.keeper.SetParams(ctx, foundation.Params{})
+				s.keeper.UpdateCensorship(ctx, foundation.Censorship{
+					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+					Authority: foundation.CensorshipAuthorityUnspecified,
+				})
 			},
 			grantee: s.members[0],
 			msg: &foundation.MsgWithdrawFromTreasury{
