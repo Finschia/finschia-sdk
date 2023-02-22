@@ -283,3 +283,13 @@ message Pool {
   repeated cosmos.base.v1beta1.DecCoin treasury = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.DecCoins"];
 }
+
+// FoundationExecProposal is x/gov proposal to trigger the x/foundation messages on behalf of x/gov.
+message FoundationExecProposal {
+  string title       = 1;
+  string description = 2;
+
+  // x/foundation messages to execute
+  // all the signers must be x/gov authority.
+  repeated google.protobuf.Any messages = 3;
+}

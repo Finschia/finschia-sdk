@@ -761,6 +761,7 @@
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
     - [Censorship](#lbm.foundation.v1.Censorship)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
+    - [FoundationExecProposal](#lbm.foundation.v1.FoundationExecProposal)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
     - [MemberRequest](#lbm.foundation.v1.MemberRequest)
@@ -11410,6 +11411,23 @@ DecisionPolicyWindows defines the different windows for voting and execution.
 | `min_execution_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | min_execution_period is the minimum duration after the proposal submission where members can start sending MsgExec. This means that the window for sending a MsgExec transaction is: `[ submission + min_execution_period ; submission + voting_period + max_execution_period]` where max_execution_period is a app-specific config, defined in the keeper. If not set, min_execution_period will default to 0.
 
 Please make sure to set a `min_execution_period` that is smaller than `voting_period + max_execution_period`, or else the above execution window is empty, meaning that all proposals created with this decision policy won't be able to be executed. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.FoundationExecProposal"></a>
+
+### FoundationExecProposal
+FoundationExecProposal is x/gov proposal to trigger the x/foundation messages on behalf of x/gov.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | x/foundation messages to execute all the signers must be x/gov authority. |
 
 
 
