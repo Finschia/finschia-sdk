@@ -371,7 +371,14 @@ func NewQueryCmdCensorships() *cobra.Command {
 			}
 			queryClient := foundation.NewQueryClient(clientCtx)
 
-			censorships := foundation.QueryCensorshipsRequest{}
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			censorships := foundation.QueryCensorshipsRequest{
+				Pagination: pageReq,
+			}
 			res, err := queryClient.Censorships(context.Background(), &censorships)
 			if err != nil {
 				return err
@@ -382,6 +389,7 @@ func NewQueryCmdCensorships() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "censorships")
 
 	return cmd
 }
@@ -431,7 +439,7 @@ func NewQueryCmdGrants() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
+	flags.AddPaginationFlagsToCmd(cmd, "grants")
 
 	return cmd
 }
