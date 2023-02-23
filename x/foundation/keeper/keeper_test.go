@@ -22,10 +22,10 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
 
-	app         *simapp.SimApp
-	keeper      keeper.Keeper
-	queryServer foundation.QueryServer
-	msgServer   foundation.MsgServer
+	app             *simapp.SimApp
+	keeper          keeper.Keeper
+	queryServer     foundation.QueryServer
+	msgServer       foundation.MsgServer
 	proposalHandler govtypes.Handler
 
 	authority sdk.AccAddress
@@ -70,7 +70,7 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	s.keeper.SetCensorship(s.ctx, foundation.Censorship{
 		MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		Authority: foundation.CensorshipAuthorityFoundation,
+		Authority:  foundation.CensorshipAuthorityFoundation,
 	})
 
 	createAddress := func() sdk.AccAddress {

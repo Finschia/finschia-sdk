@@ -558,30 +558,30 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 
 func (s *KeeperTestSuite) TestMsgUpdateCensorship() {
 	testCases := map[string]struct {
-		authority sdk.AccAddress
-		censorship    foundation.Censorship
-		valid     bool
+		authority  sdk.AccAddress
+		censorship foundation.Censorship
+		valid      bool
 	}{
 		"valid request": {
 			authority: s.authority,
-			censorship:    foundation.Censorship{
+			censorship: foundation.Censorship{
 				MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-				Authority: foundation.CensorshipAuthorityGovernance,
+				Authority:  foundation.CensorshipAuthorityGovernance,
 			},
-			valid:     true,
+			valid: true,
 		},
 		"invalid authority": {
 			authority: s.stranger,
-			censorship:    foundation.Censorship{
+			censorship: foundation.Censorship{
 				MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-				Authority: foundation.CensorshipAuthorityGovernance,
+				Authority:  foundation.CensorshipAuthorityGovernance,
 			},
 		},
 		"enabling feature": {
 			authority: s.authority,
-			censorship:    foundation.Censorship{
+			censorship: foundation.Censorship{
 				MsgTypeUrl: sdk.MsgTypeURL((*testdata.TestMsg)(nil)),
-				Authority: foundation.CensorshipAuthorityFoundation,
+				Authority:  foundation.CensorshipAuthorityFoundation,
 			},
 		},
 	}
@@ -591,8 +591,8 @@ func (s *KeeperTestSuite) TestMsgUpdateCensorship() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &foundation.MsgUpdateCensorship{
-				Authority: tc.authority.String(),
-				Censorship:    tc.censorship,
+				Authority:  tc.authority.String(),
+				Censorship: tc.censorship,
 			}
 			res, err := s.msgServer.UpdateCensorship(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

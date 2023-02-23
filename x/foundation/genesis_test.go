@@ -82,7 +82,7 @@ func TestValidateGenesis(t *testing.T) {
 				Censorships: []foundation.Censorship{
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityFoundation,
+						Authority:  foundation.CensorshipAuthorityFoundation,
 					},
 				},
 				Authorizations: []foundation.GrantAuthorization{
@@ -278,10 +278,9 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid censorship": {
 			data: foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
-				Censorships: []foundation.Censorship{{
-				}},
+				Params:      foundation.DefaultParams(),
+				Foundation:  foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{{}},
 			},
 		},
 		"duplicate censorship": {
@@ -291,11 +290,11 @@ func TestValidateGenesis(t *testing.T) {
 				Censorships: []foundation.Censorship{
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityFoundation,
+						Authority:  foundation.CensorshipAuthorityFoundation,
 					},
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityGovernance,
+						Authority:  foundation.CensorshipAuthorityGovernance,
 					},
 				},
 			},
@@ -307,7 +306,7 @@ func TestValidateGenesis(t *testing.T) {
 				Censorships: []foundation.Censorship{
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityFoundation,
+						Authority:  foundation.CensorshipAuthorityFoundation,
 					},
 				},
 				Authorizations: []foundation.GrantAuthorization{{
@@ -333,7 +332,7 @@ func TestValidateGenesis(t *testing.T) {
 				Censorships: []foundation.Censorship{
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityFoundation,
+						Authority:  foundation.CensorshipAuthorityFoundation,
 					},
 				},
 				Authorizations: []foundation.GrantAuthorization{

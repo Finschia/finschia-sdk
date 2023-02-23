@@ -11,22 +11,22 @@ import (
 func (s *KeeperTestSuite) TestProposalHandler() {
 	testCases := map[string]struct {
 		malleate func(ctx sdk.Context)
-		msg sdk.Msg
-		valid   bool
-		require func(ctx sdk.Context)
+		msg      sdk.Msg
+		valid    bool
+		require  func(ctx sdk.Context)
 	}{
 		"valid": {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.SetCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityGovernance,
+					Authority:  foundation.CensorshipAuthorityGovernance,
 				})
 			},
 			msg: &foundation.MsgUpdateCensorship{
 				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityUnspecified,
+					Authority:  foundation.CensorshipAuthorityUnspecified,
 				},
 			},
 			valid: true,
@@ -38,14 +38,14 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.SetCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityGovernance,
+					Authority:  foundation.CensorshipAuthorityGovernance,
 				})
 			},
 			msg: &foundation.MsgUpdateCensorship{
 				Authority: s.keeper.GetAuthority(),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityUnspecified,
+					Authority:  foundation.CensorshipAuthorityUnspecified,
 				},
 			},
 		},
@@ -53,7 +53,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.SetCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityGovernance,
+					Authority:  foundation.CensorshipAuthorityGovernance,
 				})
 			},
 			msg: newMsgCreateDog("doge"),
@@ -62,7 +62,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.SetCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityGovernance,
+					Authority:  foundation.CensorshipAuthorityGovernance,
 				})
 			},
 			msg: testdata.NewTestMsg(authtypes.NewModuleAddress(govtypes.ModuleName)),
@@ -71,14 +71,14 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.SetCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityGovernance,
+					Authority:  foundation.CensorshipAuthorityGovernance,
 				})
 			},
 			msg: &foundation.MsgUpdateCensorship{
 				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityFoundation,
+					Authority:  foundation.CensorshipAuthorityFoundation,
 				},
 			},
 		},
@@ -87,7 +87,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityUnspecified,
+					Authority:  foundation.CensorshipAuthorityUnspecified,
 				},
 			},
 		},
@@ -100,8 +100,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 				tc.malleate(ctx)
 			}
 
-			proposal := &foundation.FoundationExecProposal{
-			}
+			proposal := &foundation.FoundationExecProposal{}
 			proposal.SetMessages([]sdk.Msg{tc.msg})
 
 			err := s.proposalHandler(ctx, proposal)
@@ -115,4 +114,3 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 		})
 	}
 }
-

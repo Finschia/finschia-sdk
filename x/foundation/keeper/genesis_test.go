@@ -156,7 +156,7 @@ func TestImportExportGenesis(t *testing.T) {
 				Censorships: []foundation.Censorship{
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityFoundation,
+						Authority:  foundation.CensorshipAuthorityFoundation,
 					},
 				},
 				Authorizations: []foundation.GrantAuthorization{
@@ -172,7 +172,7 @@ func TestImportExportGenesis(t *testing.T) {
 				Censorships: []foundation.Censorship{
 					{
 						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-						Authority: foundation.CensorshipAuthorityFoundation,
+						Authority:  foundation.CensorshipAuthorityFoundation,
 					},
 				},
 				Authorizations: []foundation.GrantAuthorization{

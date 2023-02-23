@@ -17,7 +17,7 @@ func (s *KeeperTestSuite) TestUpdateCensorship() {
 	} {
 		s.keeper.SetCensorship(ctx, foundation.Censorship{
 			MsgTypeUrl: url,
-			Authority: foundation.CensorshipAuthorityFoundation,
+			Authority:  foundation.CensorshipAuthorityFoundation,
 		})
 	}
 
@@ -29,7 +29,7 @@ func (s *KeeperTestSuite) TestUpdateCensorship() {
 	// test update censorship
 	removingCensorship := foundation.Censorship{
 		MsgTypeUrl: msgTypeURL,
-		Authority: foundation.CensorshipAuthorityUnspecified,
+		Authority:  foundation.CensorshipAuthorityUnspecified,
 	}
 	s.Require().NoError(removingCensorship.ValidateBasic())
 	err = s.keeper.UpdateCensorship(ctx, removingCensorship)
@@ -47,7 +47,7 @@ func (s *KeeperTestSuite) TestUpdateCensorship() {
 	// 2. re-enable the removed censorship, which must fail
 	newCensorship := foundation.Censorship{
 		MsgTypeUrl: msgTypeURL,
-		Authority: foundation.CensorshipAuthorityGovernance,
+		Authority:  foundation.CensorshipAuthorityGovernance,
 	}
 	s.Require().NoError(newCensorship.ValidateBasic())
 	err = s.keeper.UpdateCensorship(ctx, newCensorship)
@@ -70,7 +70,7 @@ func (s *KeeperTestSuite) TestGrant() {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.UpdateCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityUnspecified,
+					Authority:  foundation.CensorshipAuthorityUnspecified,
 				})
 			},
 			grantee: s.members[0],
@@ -150,7 +150,7 @@ func (s *KeeperTestSuite) TestAccept() {
 			malleate: func(ctx sdk.Context) {
 				s.keeper.UpdateCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					Authority: foundation.CensorshipAuthorityUnspecified,
+					Authority:  foundation.CensorshipAuthorityUnspecified,
 				})
 			},
 			grantee: s.members[0],
