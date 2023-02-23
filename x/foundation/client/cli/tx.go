@@ -168,11 +168,7 @@ func NewTxCmdUpdateParams() *cobra.Command {
 Example of the content of params-json:
 
 {
-  "foundation_tax": "0.1",
-  "censored_msg_type_urls": [
-    "/cosmos.staking.v1beta1.MsgCreateValidator",
-    "/lbm.foundation.v1.MsgWithdrawFromTreasury"
-  ]
+  "foundation_tax": "0.1"
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {

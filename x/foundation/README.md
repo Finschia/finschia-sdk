@@ -27,6 +27,7 @@ back these foundation-specific functionalities.
     * [Msg/WithdrawProposal](#msgwithdrawproposal)
     * [Msg/Vote](#msgvote)
     * [Msg/Exec](#msgexec)
+    * [Msg/UpdateCensorship](#msgupdatecensorship)
     * [Msg/Grant](#msggrant)
     * [Msg/Revoke](#msgrevoke)
     * [Msg/FundTreasury](#msgfundtreasury)
@@ -40,6 +41,7 @@ back these foundation-specific functionalities.
     * [EventWithdrawProposal](#eventwithdrawproposal)
     * [EventVote](#eventvote)
     * [EventExec](#eventexec)
+    * [EventUpdateCensorship](#eventupdatecensorship)
     * [EventGrant](#eventgrant)
     * [EventRevoke](#eventrevoke)
     * [EventFundTreasury](#eventfundedtreasury)
@@ -205,11 +207,19 @@ Proposals are pruned:
 
 whichever happens first.
 
-## Authorization
+## Censorship
 
 The foundation module defines interfaces of authorizations on messages to
 enforce_censorship_ on its execution. The other modules may deny the execution
 of the message based on the information in the foundation.
+
+A censorship has its target message type URL and authority which can trigger
+the messages which manipulate the relevant censorship information:
+
+* [Msg/UpdateCensorship](#msgupdatecensorship)
+* [Msg/Grant](#msggrant)
+* [Msg/Revoke](#msgrevoke)
+
 `Authorization` is an interface that must be implemented by a concrete
 authorization logic to validate and execute grants. `Authorization`s are
 extensible and can be defined for any Msg service method even outside of the
@@ -272,11 +282,6 @@ the genesis to make it work.
 
 The value of `FoundationTax` is the foundation tax rate.
 
-### CensoredMsgTypeUrls
-
-The `CensoredMsgTypeUrls` contains the urls of the messages under the
-censorship.
-
 ## FoundationInfo
 
 `FoundationInfo` contains the information relevant to the foundation.
@@ -328,13 +333,19 @@ proposal votes at the end of the voting period, and for pruning proposals at
 
 * Vote: `0x40 | BigEndian(ProposalId) | []byte(voter.Address) -> ProtocolBuffer(Vote)`.
 
+## Censorship
+
+Censorships are identified by its target message type URL.
+
+* Censorship: `0x20 | []byte(censorship.MsgTypeURL) -> ProtocolBuffer(Censorship)`
+
 ## Grant
 
 Grants are identified by combining grantee address and `Authorization` type
 (its target message type URL). Hence we only allow one grant for the (grantee,
 Authorization) tuple.
 
-* Grant: `0x20 | len(grant.Grantee) (1 byte) | []byte(grant.Grantee) | []byte(grant.Authorization.MsgTypeURL()) -> ProtocolBuffer(Authorization)`
+* Grant: `0x21 | len(grant.Grantee) (1 byte) | []byte(grant.Grantee) | []byte(grant.Authorization.MsgTypeURL()) -> ProtocolBuffer(Authorization)`
 
 # Msg Service
 
@@ -441,9 +452,32 @@ The messages that are part of this proposal won't be executed if:
 * the proposal has not been accepted by the decision policy.
 * the proposal has already been successfully executed.
 
+## Msg/UpdateCensorship
+
+A censorship information is updated by using the `MsgUpdateCensorship` message.
+One cannot introduce a censorship over a new message type URL by this message.
+
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/foundation/v1/tx.proto#L215-L222
+
+The authority of the following modules are candidates of censorship authority:
+
+* `CENSORSHIP_AUTHORITY_GOVERNANCE`: `x/gov`
+* `CENSORSHIP_AUTHORITY_FOUNDATION`: `x/foundation`
+
+One may specify `CENSORSHIP_AUTHORITY_UNSPECIFIED` to remove the censorship.
+
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/foundation/v1/tx.proto#L25-L34
+
+The message handling should fail if:
+
+* the authority is not the current censorship's authority.
+* corresponding enum value of the current censorship's authority is lesser than that of the provided censorship's authority.
+
+**Note:** Do NOT confuse with that of `x/authz`.
+
 ## Msg/Grant
 
-An authorization grant is created using the `MsgGrant` message.
+An authorization grant is created by using the `MsgGrant` message.
 If there is already a grant for the `(grantee, Authorization)` tuple, then the
 new grant overwrites the previous one. To update or extend an existing grant, a
 new grant with the same `(grantee, Authorization)` tuple should be created.
@@ -452,7 +486,7 @@ new grant with the same `(grantee, Authorization)` tuple should be created.
 
 The message handling should fail if:
 
-* the authority is not the module's authority.
+* the authority is not the current censorship's authority.
 * provided `Authorization` is not implemented.
 * `Authorization.MsgTypeURL()` is not defined in the router (there is no
   defined handler in the app router to handle that Msg types).
@@ -467,7 +501,7 @@ A grant can be removed with the `MsgRevoke` message.
 
 The message handling should fail if:
 
-* the authority is not the module's authority.
+* the authority is not the current censorship's authority.
 * provided `MsgTypeUrl` is empty.
 
 ## Msg/FundTreasury
@@ -560,6 +594,14 @@ foundation.
 | proposal_id   | {proposalId}    |
 | result        | {result}        |
 
+## EventUpdateCensorship
+
+`EventCensorship` is an event emitted when a censorship is updated.
+
+| Attribute Key | Attribute Value |
+|---------------|-----------------|
+| censorship    | {censorship}    |
+
 ## EventGrant
 
 `EventGrant` is an event emitted when an authorization is granted to a grantee.
@@ -630,9 +672,6 @@ Example Output:
 
 ```bash
 params:
-  censored_msg_type_urls:
-  - /cosmos.staking.v1beta1.MsgCreateValidator
-  - /lbm.foundation.v1.MsgWithdrawFromTreasury
   foundation_tax: "0.200000000000000000"
 ```
 
@@ -886,6 +925,33 @@ tally:
   yes_count: "0.000000000000000000"
 ```
 
+#### censorships
+
+The `censorships` command allows users to query for all the censorships.
+
+```bash
+simd query foundation censorships [flags]
+```
+
+Example:
+
+```bash
+simd query foundation censorships
+```
+
+Example Output:
+
+```bash
+censorships:
+- authority: CENSORSHIP_AUTHORITY_GOVERNANCE
+  msg_type_url: /cosmos.staking.v1beta1.MsgCreateValidator
+- authority: CENSORSHIP_AUTHORITY_FOUNDATION
+  msg_type_url: /lbm.foundation.v1.MsgWithdrawFromTreasury
+pagination:
+  next_key: null
+  total: "2"
+```
+
 #### grants
 
 The `grants` command allows users to query grants for a grantee. If the message
@@ -956,15 +1022,11 @@ Example:
 ```bash
 simd tx foundation update-params link1... \
     '{
-       "foundation_tax": "0.1",
-       "censored_msg_type_urls": [
-         "/cosmos.staking.v1beta1.MsgCreateValidator",
-         "/lbm.foundation.v1.MsgWithdrawFromTreasury"
-       ]
+       "foundation_tax": "0.1"
      }'
 ```
 
-**Note:** The signer is the module's authority.
+**Note:** The signer MUST be the module's authority.
 
 #### update-members
 
@@ -990,7 +1052,7 @@ simd tx foundation update-members link1... \
      ]'
 ```
 
-**Note:** The signer is the module's authority.
+**Note:** The signer MUST be the module's authority.
 
 #### update-decision-policy
 
@@ -1015,7 +1077,7 @@ simd tx foundation update-decision-policy link1... \
      }'
 ```
 
-**Note:** The signer is the module's authority.
+**Note:** The signer MUST be the module's authority.
 
 #### submit-proposal
 
@@ -1105,6 +1167,22 @@ Example:
 simd tx foundation leave-foundation link1...
 ```
 
+#### update-censorship
+
+The `update-censorship` command allows users to update a censorship information.
+
+```bash
+simd tx foundation update-censorship [authority] [msg-type-url] [new-authority] [flags]
+```
+
+Example:
+
+```bash
+simd tx foundation update-censorship link1.. /lbm.foundation.v1.MsgWithdrawFromTreasury CENSORSHIP_AUTHORITY_UNSPECIFIED
+```
+
+**Note:** The signer MUST be the current authority of the censorship.
+
 #### grant
 
 The `grant` command allows users to grant an authorization to a grantee.
@@ -1122,7 +1200,7 @@ simd tx foundation grant link1.. link1... \
      }'
 ```
 
-**Note:** The signer is the module's authority.
+**Note:** The signer MUST be the authority of the censorship.
 
 #### revoke
 
@@ -1138,7 +1216,7 @@ Example:
 simd tx foundation revoke link1.. link1... /lbm.foundation.v1.MsgWithdrawFromTreasury
 ```
 
-**Note:** The signer is the module's authority.
+**Note:** The signer MUST be the authority of the censorship.
 
 #### fund-treasury
 
@@ -1169,7 +1247,7 @@ Example:
 simd tx foundation withdraw-from-treasury link1.. link1... 1000stake
 ```
 
-**Note:** The signer is the module's authority.
+**Note:** The signer MUST be the module's authority.
 
 ## gRPC
 
@@ -1201,10 +1279,6 @@ Example Output:
 {
   "params": {
     "foundationTax": "200000000000000000"
-    "censoredMsgTypeUrls": [
-      "/cosmos.staking.v1beta1.MsgCreateValidator",
-      "/lbm.foundation.v1.MsgWithdrawFromTreasury"
-    ]
   }
 }
 ```
@@ -1492,6 +1566,41 @@ Example Output:
     "abstainCount": "0",
     "noCount": "1000000000000000000",
     "noWithVetoCount": "0"
+  }
+}
+```
+
+### Censorships
+
+The `Censorships` endpoint allows users to query for all the censorships.
+
+```bash
+lbm.foundation.v1.Query/Censorships
+```
+
+Example:
+
+```bash
+grpcurl -plaintext \
+    localhost:9090 lbm.foundation.v1.Query/Censorships
+```
+
+Example Output:
+
+```bash
+{
+  "censorships": [
+    {
+      "msgTypeUrl": "/cosmos.staking.v1beta1.MsgCreateValidator",
+      "authority": "CENSORSHIP_AUTHORITY_GOVERNANCE"
+    },
+    {
+      "msgTypeUrl": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
+      "authority": "CENSORSHIP_AUTHORITY_FOUNDATION"
+    }
+  ],
+  "pagination": {
+    "total": "2"
   }
 }
 ```
