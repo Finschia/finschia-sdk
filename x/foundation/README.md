@@ -210,7 +210,7 @@ whichever happens first.
 ## Censorship
 
 The foundation module defines interfaces of authorizations on messages to
-enforce_censorship_ on its execution. The other modules may deny the execution
+enforce _censorship_ on its execution. The other modules may deny the execution
 of the message based on the information in the foundation.
 
 A censorship has its target message type URL and authority which can trigger
