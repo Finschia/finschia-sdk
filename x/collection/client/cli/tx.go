@@ -61,6 +61,7 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdRevokePermission(),
 		NewTxCmdAuthorizeOperator(),
 		NewTxCmdRevokeOperator(),
+		NewTxCmdModify(),
 	)
 
 	return txCmd
