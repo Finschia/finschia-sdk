@@ -731,14 +731,13 @@ Example of the content of messages-json:
 [
   {
     "@type": "/lbm.foundation.v1.MsgUpdateCensorship",
-    "authority": "govaddr",
+    "authority": "addr1",
     "censorship": {
       "msg_type_url": "/cosmos.staking.v1beta1.MsgCreateValidator",
       "authority": "CENSORSHIP_AUTHORITY_UNSPECIFIED"
     }
   }
 ]
-
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
