@@ -36,21 +36,7 @@ func (k Keeper) UpdateCensorship(ctx sdk.Context, censorship foundation.Censorsh
 
 	// clean up relevant authorizations
 	if newAuthority == foundation.CensorshipAuthorityUnspecified {
-		var pruningGrants []foundation.GrantAuthorization
-		k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
-			if authorization.MsgTypeURL() == url {
-				grant := foundation.GrantAuthorization{
-					Grantee: grantee.String(),
-				}.WithAuthorization(authorization)
-
-				pruningGrants = append(pruningGrants, *grant)
-			}
-			return false
-		})
-
-		for _, grant := range pruningGrants {
-			k.deleteAuthorization(ctx, sdk.MustAccAddressFromBech32(grant.Grantee), grant.GetAuthorization().MsgTypeURL())
-		}
+		k.pruneAuthorizations(ctx, url)
 	}
 
 	k.SetCensorship(ctx, censorship)
@@ -127,6 +113,24 @@ func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL strin
 	}
 
 	return nil
+}
+
+func (k Keeper) pruneAuthorizations(ctx sdk.Context, msgTypeURL string) {
+	var pruning []foundation.GrantAuthorization
+	k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+		if authorization.MsgTypeURL() == msgTypeURL {
+			grant := foundation.GrantAuthorization{
+				Grantee: grantee.String(),
+			}.WithAuthorization(authorization)
+
+			pruning = append(pruning, *grant)
+		}
+		return false
+	})
+
+	for _, grant := range pruning {
+		k.deleteAuthorization(ctx, sdk.MustAccAddressFromBech32(grant.Grantee), grant.GetAuthorization().MsgTypeURL())
+	}
 }
 
 func (k Keeper) GetAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) (foundation.Authorization, error) {
