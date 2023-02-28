@@ -51,6 +51,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#890](https://github.com/line/lbm-sdk/pull/890) Map Ostracon:ErrTxInMap to lbm-sdk:ErrTxInMempoolCache
 * (x/collection) [\#894](https://github.com/line/lbm-sdk/pull/894) Change the default params of x/collection
 * (ante) [\#895](https://github.com/line/lbm-sdk/pull/895) Remove max gas validation
+* (x/collection,token) [\#900](https://github.com/line/lbm-sdk/pull/900) Add uri for MsgModify and deprecate the old ones
 * (x/foundation) [\#912](https://github.com/line/lbm-sdk/pull/912) Introduce censorship into x/foundation
 
 ### Bug Fixes
@@ -60,6 +61,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token,collection) [\#863](https://github.com/line/lbm-sdk/pull/863) Update x/collection,token proto
 * (x/collection,token) [\#866](https://github.com/line/lbm-sdk/pull/866) Do not create account on x/token,collection
 * (x/collection,token) [\#881](https://github.com/line/lbm-sdk/pull/881) Remove some x/token,collection queries on listable collections
+* (x/collection) [\#911](https://github.com/line/lbm-sdk/pull/911) Add missing command(TxCmdModify) for CLI
 
 ### Removed
 * [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below

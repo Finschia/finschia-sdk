@@ -409,10 +409,10 @@ func (m *MemberRequest) GetMetadata() string {
 
 // ThresholdDecisionPolicy is a decision policy where a proposal passes when it
 // satisfies the two following conditions:
-// 1. The sum of all `YES` voters' weights is greater or equal than the defined
-//    `threshold`.
-// 2. The voting and execution periods of the proposal respect the parameters
-//    given by `windows`.
+//  1. The sum of all `YES` voters' weights is greater or equal than the defined
+//     `threshold`.
+//  2. The voting and execution periods of the proposal respect the parameters
+//     given by `windows`.
 type ThresholdDecisionPolicy struct {
 	// threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed.
 	Threshold github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,1,opt,name=threshold,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"threshold"`
@@ -462,10 +462,10 @@ func (m *ThresholdDecisionPolicy) GetWindows() *DecisionPolicyWindows {
 
 // PercentageDecisionPolicy is a decision policy where a proposal passes when
 // it satisfies the two following conditions:
-// 1. The percentage of all `YES` voters' weights out of the total group weight
-//    is greater or equal than the given `percentage`.
-// 2. The voting and execution periods of the proposal respect the parameters
-//    given by `windows`.
+//  1. The percentage of all `YES` voters' weights out of the total group weight
+//     is greater or equal than the given `percentage`.
+//  2. The voting and execution periods of the proposal respect the parameters
+//     given by `windows`.
 type PercentageDecisionPolicy struct {
 	// percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed.
 	Percentage github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,1,opt,name=percentage,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"percentage"`

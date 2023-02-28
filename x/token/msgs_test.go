@@ -651,8 +651,8 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes: []token.Attribute{
-				{Key: token.AttributeKeyName.String(), Value: "hello"},
-				{Key: token.AttributeKeyName.String(), Value: "world"},
+				{Key: token.AttributeKeyImageURI.String(), Value: "hello"},
+				{Key: token.AttributeKeyURI.String(), Value: "world"},
 			},
 			err: token.ErrDuplicateChangesField,
 		},
