@@ -292,7 +292,7 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Attri
 		token.AttributeKeyName: func(name string) {
 			class.Name = name
 		},
-		token.AttributeKeyImageURI: func(uri string) {
+		token.AttributeKeyURI: func(uri string) {
 			class.Uri = uri
 		},
 		token.AttributeKeyMeta: func(meta string) {
