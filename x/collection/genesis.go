@@ -26,7 +26,7 @@ func ValidateGenesis(data GenesisState) error {
 		if err := validateName(contract.Name); err != nil {
 			return err
 		}
-		if err := validateBaseImgURI(contract.Uri); err != nil {
+		if err := validateURI(contract.Uri); err != nil {
 			return err
 		}
 		if err := validateMeta(contract.Meta); err != nil {

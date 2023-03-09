@@ -52,14 +52,15 @@ enum AttributeKey {
   option (gogoproto.goproto_enum_stringer) = false;
   option (gogoproto.goproto_enum_prefix)   = false;
 
-  ATTRIBUTE_KEY_UNSPECIFIED       = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
-  ATTRIBUTE_KEY_NAME              = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
-  ATTRIBUTE_KEY_META              = 2 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
-  ATTRIBUTE_KEY_CONTRACT_ID       = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
-  ATTRIBUTE_KEY_TOKEN_ID          = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenID"];
-  ATTRIBUTE_KEY_OWNER             = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
-  ATTRIBUTE_KEY_AMOUNT            = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
-  ATTRIBUTE_KEY_DECIMALS          = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
+  ATTRIBUTE_KEY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
+  ATTRIBUTE_KEY_NAME        = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
+  ATTRIBUTE_KEY_META        = 2 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
+  ATTRIBUTE_KEY_CONTRACT_ID = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
+  ATTRIBUTE_KEY_TOKEN_ID    = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenID"];
+  ATTRIBUTE_KEY_OWNER       = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
+  ATTRIBUTE_KEY_AMOUNT      = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
+  ATTRIBUTE_KEY_DECIMALS    = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
+  // deprecated: use ATTRIBUTE_KEY_URI
   ATTRIBUTE_KEY_BASE_IMG_URI      = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyBaseImgURI"];
   ATTRIBUTE_KEY_MINTABLE          = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
   ATTRIBUTE_KEY_TOKEN_TYPE        = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenType"];
@@ -72,6 +73,7 @@ enum AttributeKey {
   ATTRIBUTE_KEY_PROXY             = 17 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
   ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID = 18 [(gogoproto.enumvalue_customname) = "AttributeKeyOldRoot"];
   ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID = 19 [(gogoproto.enumvalue_customname) = "AttributeKeyNewRoot"];
+  ATTRIBUTE_KEY_URI               = 20 [(gogoproto.enumvalue_customname) = "AttributeKeyURI"];
 }
 
 // EventSent is emitted when tokens are transferred.
