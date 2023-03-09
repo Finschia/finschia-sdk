@@ -1835,7 +1835,7 @@ type MsgModify struct {
 	// Note: if token type is of FTs, the index cannot be empty.
 	TokenIndex string `protobuf:"bytes,4,opt,name=token_index,json=tokenIndex,proto3" json:"token_index,omitempty"`
 	// changes to apply.
-	// possible attribute keys on modifying collection: name, base_img_uri, meta.
+	// possible attribute keys on modifying collection: name, uri, base_img_uri (deprecated), meta.
 	// possible attribute keys on modifying token type and token: name, meta.
 	Changes []Attribute `protobuf:"bytes,5,rep,name=changes,proto3" json:"changes"`
 }
