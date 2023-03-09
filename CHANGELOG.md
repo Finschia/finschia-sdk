@@ -49,6 +49,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (cosmovisor) [\#792](https://github.com/line/lbm-sdk/pull/792) Use upstream's cosmovisor
 * (server) [\#821](https://github.com/line/lbm-sdk/pull/821) Get validator pubkey considering KMS
 * (client) [\#890](https://github.com/line/lbm-sdk/pull/890) Map Ostracon:ErrTxInMap to lbm-sdk:ErrTxInMempoolCache
+* (x/collection) [\#894](https://github.com/line/lbm-sdk/pull/894) Change the default params of x/collection
+* (ante) [\#895](https://github.com/line/lbm-sdk/pull/895) Remove max gas validation
+* (x/collection,token) [\#900](https://github.com/line/lbm-sdk/pull/900) Add uri for MsgModify and deprecate the old ones
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
@@ -57,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token,collection) [\#863](https://github.com/line/lbm-sdk/pull/863) Update x/collection,token proto
 * (x/collection,token) [\#866](https://github.com/line/lbm-sdk/pull/866) Do not create account on x/token,collection
 * (x/collection,token) [\#881](https://github.com/line/lbm-sdk/pull/881) Remove some x/token,collection queries on listable collections
+* (x/collection) [\#911](https://github.com/line/lbm-sdk/pull/911) Add missing command(TxCmdModify) for CLI
 
 ### Removed
 * [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
@@ -69,9 +73,11 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ostracon) [\#869](https://github.com/line/lbm-sdk/pull/869) apply changes to replace Ostracon proto message with Tendermint
 * (x/bank) [\#876](https://github.com/line/lbm-sdk/pull/876) Add `MultiSend` deactivation
 * (x/auth) [\#891](https://github.com/line/lbm-sdk/pull/891) deprecate `cosmos.tx.v1beta1.Service/GetBlockWithTxs` and add `lbm.tx.v1beta1.Service/GetBlockWithTxs` for lbm
+* (abci) [\#892](https://github.com/line/lbm-sdk/pull/892) remove the incompatible field `index=14` in `TxResponse`
 
 ### Build, CI
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process
 * (build) [\#872](https://github.com/line/lbm-sdk/pull/872) Retract v1.0.0
+* (ci, build) [\#901](https://github.com/line/lbm-sdk/pull/901) Update release pipeline to match non-wasm env
 
 ### Document Updates

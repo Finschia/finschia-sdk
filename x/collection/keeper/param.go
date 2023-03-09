@@ -20,7 +20,7 @@ func (k Keeper) GetParams(ctx sdk.Context) collection.Params {
 	return params
 }
 
-func (k Keeper) setParams(ctx sdk.Context, params collection.Params) {
+func (k Keeper) SetParams(ctx sdk.Context, params collection.Params) {
 	store := ctx.KVStore(k.storeKey)
 	key := paramsKey
 

@@ -35,6 +35,7 @@ func (r Result) GetEvents() Events {
 }
 
 // ABCIMessageLogs represents a slice of ABCIMessageLog.
+//
 //easyjson:json
 type ABCIMessageLogs []ABCIMessageLog
 
@@ -80,7 +81,6 @@ func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp 
 		Tx:        anyTx,
 		Timestamp: timestamp,
 		Events:    res.TxResult.Events,
-		Index:     res.Index,
 	}
 }
 

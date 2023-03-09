@@ -209,12 +209,6 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 	return app
 }
 
-// SetupWithEmptyStore setup a wasmd app instance with empty DB
-func SetupWithEmptyStore() *SimApp {
-	app, _ := setup(false, 0)
-	return app
-}
-
 type GenerateAccountStrategy func(int) []sdk.AccAddress
 
 // createRandomAccounts is a strategy used by addTestAddrs() in order to generated addresses in random order.
