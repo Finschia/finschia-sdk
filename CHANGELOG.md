@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
+* (proto) [\#923](https://github.com/line/lbm-sdk/pull/923) deprecate broadcast mode `block`
 
 ### Build, CI
 * (ci, build) [\#901](https://github.com/line/lbm-sdk/pull/901) Update release pipeline to match non-wasm env
