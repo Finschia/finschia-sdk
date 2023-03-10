@@ -15,6 +15,7 @@ import "cosmos_proto/cosmos.proto";
 message Params {
   string foundation_tax = 1
       [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
+  reserved 2; // previously used tag number for 'censored_msg_type_urls'.
 }
 
 message Censorship {
