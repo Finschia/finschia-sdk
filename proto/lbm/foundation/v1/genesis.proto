@@ -39,6 +39,8 @@ message GenesisState {
   Pool pool = 8 [(gogoproto.nullable) = false];
 
   reserved 9; // previously used tag number for 'gov_mint_left_count'.
+
+  repeated Censorship censorships = 10 [(gogoproto.nullable) = false];
 }
 
 // GrantAuthorization defines authorization grant to grantee via route.

@@ -18,7 +18,7 @@ func ensureMsgAuthz(msgs []sdk.Msg, authority sdk.AccAddress) error {
 		// but we prefer to loop through all GetSigners just to be sure.
 		for _, signer := range msg.GetSigners() {
 			if !authority.Equals(signer) {
-				return sdkerrors.ErrUnauthorized.Wrapf("msg does not have foundation authorization; expected %s, got %s", authority, signer)
+				return sdkerrors.ErrUnauthorized.Wrapf("bad signer; expected %s, got %s", authority, signer)
 			}
 		}
 	}

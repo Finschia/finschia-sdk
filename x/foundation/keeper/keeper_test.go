@@ -14,6 +14,7 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
@@ -21,10 +22,11 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
 
-	app         *simapp.SimApp
-	keeper      keeper.Keeper
-	queryServer foundation.QueryServer
-	msgServer   foundation.MsgServer
+	app             *simapp.SimApp
+	keeper          keeper.Keeper
+	queryServer     foundation.QueryServer
+	msgServer       foundation.MsgServer
+	proposalHandler govtypes.Handler
 
 	authority sdk.AccAddress
 	members   []sdk.AccAddress
@@ -60,11 +62,15 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
+	s.proposalHandler = keeper.NewFoundationProposalsHandler(s.keeper)
+
 	s.keeper.SetParams(s.ctx, foundation.Params{
 		FoundationTax: sdk.OneDec(),
-		CensoredMsgTypeUrls: []string{
-			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		},
+	})
+
+	s.keeper.SetCensorship(s.ctx, foundation.Censorship{
+		MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		Authority:  foundation.CensorshipAuthorityFoundation,
 	})
 
 	createAddress := func() sdk.AccAddress {

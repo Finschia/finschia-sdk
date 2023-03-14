@@ -65,6 +65,11 @@ service Query {
     option (google.api.http).get = "/lbm/foundation/v1/proposals/{proposal_id}/tally";
   };
 
+  // Censorships queries the censorship informations.
+  rpc Censorships(QueryCensorshipsRequest) returns (QueryCensorshipsResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/censorships";
+  }
+
   // Returns list of authorizations, granted to the grantee.
   rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/grants/{grantee}/{msg_type_url}";
@@ -195,6 +200,21 @@ message QueryTallyResultRequest {
 message QueryTallyResultResponse {
   // tally defines the requested tally.
   TallyResult tally = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryCensorshipsRequest is the request type for the Query/Censorships RPC method.
+message QueryCensorshipsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryCensorshipsResponse is the response type for the Query/Censorships RPC method.
+message QueryCensorshipsResponse {
+  // authorizations is a list of grants granted for grantee.
+  repeated Censorship censorships = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryGrantsRequest is the request type for the Query/Grants RPC method.

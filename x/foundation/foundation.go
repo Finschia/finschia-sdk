@@ -57,6 +57,20 @@ func validateVoteOption(option VoteOption) error {
 	return nil
 }
 
+func (c Censorship) ValidateBasic() error {
+	url := c.MsgTypeUrl
+	if len(url) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("empty msg type url")
+	}
+
+	authority := c.Authority
+	if _, found := CensorshipAuthority_name[int32(authority)]; !found {
+		return sdkerrors.ErrInvalidRequest.Wrapf("censorship authority %s over %s", authority, url)
+	}
+
+	return nil
+}
+
 func (p Params) ValidateBasic() error {
 	if err := validateRatio(p.FoundationTax, "tax rate"); err != nil {
 		return err
