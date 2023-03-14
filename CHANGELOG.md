@@ -52,6 +52,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#894](https://github.com/line/lbm-sdk/pull/894) Change the default params of x/collection
 * (ante) [\#895](https://github.com/line/lbm-sdk/pull/895) Remove max gas validation
 * (x/collection,token) [\#900](https://github.com/line/lbm-sdk/pull/900) Add uri for MsgModify and deprecate the old ones
+* (x/foundation) [\#912](https://github.com/line/lbm-sdk/pull/912) Introduce censorship into x/foundation
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type

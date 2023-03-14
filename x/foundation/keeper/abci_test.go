@@ -11,9 +11,6 @@ func (s *KeeperTestSuite) TestBeginBlocker() {
 
 	s.keeper.SetParams(ctx, foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.5"),
-		CensoredMsgTypeUrls: []string{
-			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		},
 	})
 
 	before := s.keeper.GetTreasury(ctx)

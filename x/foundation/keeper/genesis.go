@@ -37,6 +37,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 		k.setVote(ctx, vote)
 	}
 
+	for _, censorship := range data.Censorships {
+		k.SetCensorship(ctx, censorship)
+	}
+
 	for _, ga := range data.Authorizations {
 		grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
 		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
@@ -63,9 +67,20 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		PreviousProposalId: k.getPreviousProposalID(ctx),
 		Proposals:          proposals,
 		Votes:              votes,
+		Censorships:        k.GetCensorships(ctx),
 		Authorizations:     k.GetGrants(ctx),
 		Pool:               k.GetPool(ctx),
 	}
+}
+
+func (k Keeper) GetCensorships(ctx sdk.Context) []foundation.Censorship {
+	var censorships []foundation.Censorship
+	k.iterateCensorships(ctx, func(censorship foundation.Censorship) (stop bool) {
+		censorships = append(censorships, censorship)
+
+		return false
+	})
+	return censorships
 }
 
 func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {

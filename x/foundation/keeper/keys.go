@@ -19,7 +19,8 @@ var (
 	proposalByVPEndKeyPrefix = []byte{0x13}
 	voteKeyPrefix            = []byte{0x14}
 
-	grantKeyPrefix = []byte{0x20}
+	censorshipKeyPrefix = []byte{0x20}
+	grantKeyPrefix      = []byte{0x21}
 
 	poolKey = []byte{0x30}
 
@@ -114,6 +115,17 @@ func splitProposalByVPEndKey(key []byte) (vpEnd time.Time, id uint64) {
 	id = Uint64FromBytes(key[begin:])
 
 	return
+}
+
+// memberKey key for a specific member from the store
+func censorshipKey(url string) []byte {
+	prefix := censorshipKeyPrefix
+	key := make([]byte, len(prefix)+len(url))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], url)
+
+	return key
 }
 
 func grantKey(grantee sdk.AccAddress, url string) []byte {
