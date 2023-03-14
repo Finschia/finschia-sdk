@@ -15,6 +15,8 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 	"github.com/line/lbm-sdk/x/stakingplus/keeper"
+
+	foundationkeeper "github.com/line/lbm-sdk/x/foundation/keeper"
 )
 
 type KeeperTestSuite struct {
@@ -68,11 +70,11 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// allow Msg/CreateValidator
-	s.app.FoundationKeeper.SetCensorship(s.ctx, foundation.Censorship{
+	foundationkeeper.Impl(s.app.FoundationKeeper).SetCensorship(s.ctx, foundation.Censorship{
 		MsgTypeUrl: stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
 		Authority: foundation.CensorshipAuthorityFoundation,
 	})
-	err := s.app.FoundationKeeper.Grant(s.ctx, s.grantee, &stakingplus.CreateValidatorAuthorization{
+	err := foundationkeeper.Impl(s.app.FoundationKeeper).Grant(s.ctx, s.grantee, &stakingplus.CreateValidatorAuthorization{
 		ValidatorAddress: sdk.ValAddress(s.grantee).String(),
 	})
 	s.Require().NoError(err)
