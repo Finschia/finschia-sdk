@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"testing"
 
-	bip39 "github.com/cosmos/go-bip39"
+	"github.com/cosmos/go-bip39"
+	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/ostracon/libs/cli"
@@ -32,8 +33,9 @@ func Test_runAddCmdBasic(t *testing.T) {
 	kb, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, kbHome, mockIn)
 	require.NoError(t, err)
 
-	clientCtx := client.Context{}.WithKeyringDir(kbHome).WithInput(mockIn)
-	ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)
+	clientCtx := client.Context{}.WithKeyringDir(kbHome).WithInput(mockIn).WithKeyring(kb)
+	clientCtxPtr := &clientCtx
+	ctx := context.WithValue(context.Background(), client.ClientContextKey, clientCtxPtr)
 
 	t.Cleanup(func() {
 		_ = kb.Delete("keyname1")
@@ -62,7 +64,6 @@ func Test_runAddCmdBasic(t *testing.T) {
 	})
 
 	require.NoError(t, cmd.ExecuteContext(ctx))
-	require.Error(t, cmd.ExecuteContext(ctx))
 
 	mockIn.Reset("y\n")
 	require.NoError(t, cmd.ExecuteContext(ctx))
@@ -76,7 +77,81 @@ func Test_runAddCmdBasic(t *testing.T) {
 	})
 
 	require.NoError(t, cmd.ExecuteContext(ctx))
-	require.Error(t, cmd.ExecuteContext(ctx))
+
+	// In Multisig
+	tcs := []struct {
+		args []string
+		err  string
+	}{
+		{[]string{
+			"keyname1",
+			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+		},
+			"you cannot specify a new key as one of the names of the keys that make up a multisig",
+		},
+		{[]string{
+			"keyname-multi",
+			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname11"),
+		},
+			"part of the multisig target key does not exist",
+		},
+		{[]string{
+			"keyname-multi",
+			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+			fmt.Sprintf("--%s=%d", flagMultiSigThreshold, 3),
+		},
+			"threshold k of n multisignature",
+		},
+		{[]string{
+			"keyname-multi",
+			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+			fmt.Sprintf("--%s=%d", flagMultiSigThreshold, -1),
+		},
+			"threshold must be a positive integer",
+		},
+		{[]string{
+			"keyname-multi",
+			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+			fmt.Sprintf("--%s=%d", flagMultiSigThreshold, 2),
+		},
+			"",
+		},
+	}
+
+	for _, tc := range tcs {
+		cmd.SetArgs(tc.args)
+		if tc.err != "" {
+			require.Contains(t, cmd.ExecuteContext(ctx).Error(), tc.err)
+		} else {
+			require.NoError(t, cmd.ExecuteContext(ctx))
+		}
+
+		cmd.Flags().Visit(func(f *pflag.Flag) {
+			if f.Name == flagMultisig {
+				f.Value.(pflag.SliceValue).Replace([]string{})
+			}
+		})
+	}
 
 	cmd.SetArgs([]string{
 		"keyname5",
@@ -85,7 +160,7 @@ func Test_runAddCmdBasic(t *testing.T) {
 		fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
 		fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
 	})
-
+	mockIn.Reset("\n")
 	require.NoError(t, cmd.ExecuteContext(ctx))
 
 	// In recovery mode
@@ -262,7 +337,7 @@ func Test_runAddCmdDryRun(t *testing.T) {
 				_, err = kb.Key("testkey")
 				require.NoError(t, err)
 
-				out, err := ioutil.ReadAll(b)
+				out, err := io.ReadAll(b)
 				require.NoError(t, err)
 				require.Contains(t, string(out), "name: testkey")
 			} else {

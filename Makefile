@@ -68,6 +68,15 @@ else
   endif
 endif
 
+# VRF library selection
+ifeq (libsodium,$(findstring libsodium,$(LBM_BUILD_OPTIONS)))
+  CGO_ENABLED=1
+  BUILD_TAGS += gcc libsodium
+  LIBSODIUM_TARGET = libsodium
+  CGO_CFLAGS += "-I$(LIBSODIUM_OS)/include"
+  CGO_LDFLAGS += "-L$(LIBSODIUM_OS)/lib -lsodium"
+endif
+
 # secp256k1 implementation selection
 ifeq (libsecp256k1,$(findstring libsecp256k1,$(LBM_BUILD_OPTIONS)))
   CGO_ENABLED=1
@@ -115,7 +124,6 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
-	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 build-docker: go.sum $(BUILDDIR)/
 	docker build -t simapp:latest . --platform="linux/amd64" --build-arg ARCH=$(ARCH)
@@ -124,14 +132,14 @@ build-docker: go.sum $(BUILDDIR)/
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) LEDGER_ENABLED=false $(MAKE) build
 
-$(BUILD_TARGETS): go.sum $(BUILDDIR)/
-	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+$(BUILD_TARGETS): go.sum $(BUILDDIR)/ $(LIBSODIUM_TARGET)
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
 cosmovisor:
-	$(MAKE) -C cosmovisor cosmovisor
+	$(MAKE) -C tools/cosmovisor test
 
 .PHONY: build build-linux cosmovisor
 
@@ -357,9 +365,8 @@ lint-fix:
 .PHONY: lint lint-fix
 
 format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs goimports -w -local github.com/line/lbm-sdk
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
+	golangci-lint run --fix
 .PHONY: format
 
 ###############################################################################
@@ -411,8 +418,9 @@ proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then $(DOCKER) start -a $(containerProtoGen); else $(DOCKER) run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-			sh ./scripts/protocgen.sh; fi
+	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+		sh ./scripts/protocgen.sh; fi
+	@go mod tidy
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
@@ -437,7 +445,7 @@ proto-lint:
 proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
 
-TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.0-rc6/proto/tendermint
+TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.22/proto/tendermint
 GOGO_PROTO_URL      = https://raw.githubusercontent.com/regen-network/protobuf/cosmos
 COSMOS_PROTO_URL    = https://raw.githubusercontent.com/regen-network/cosmos-proto/master
 CONFIO_URL          = https://raw.githubusercontent.com/confio/ics23/v0.6.3
@@ -536,3 +544,92 @@ rosetta-data:
 	docker container rm data_dir_build
 
 .PHONY: rosetta-data
+
+###############################################################################
+###                                  tools                                  ###
+###############################################################################
+
+VRF_ROOT = $(shell pwd)/tools
+LIBSODIUM_ROOT = $(VRF_ROOT)/libsodium
+LIBSODIUM_OS = $(VRF_ROOT)/sodium/$(shell go env GOOS)_$(shell go env GOARCH)
+ifneq ($(TARGET_HOST), "")
+LIBSODIUM_HOST = "--host=$(TARGET_HOST)"
+endif
+
+libsodium:
+	@if [ ! -f $(LIBSODIUM_OS)/lib/libsodium.a ]; then \
+		rm -rf $(LIBSODIUM_ROOT) && \
+		mkdir $(LIBSODIUM_ROOT) && \
+		git submodule update --init --recursive && \
+		cd $(LIBSODIUM_ROOT) && \
+		./autogen.sh && \
+		./configure --disable-shared --prefix="$(LIBSODIUM_OS)" $(LIBSODIUM_HOST) && \
+		$(MAKE) && \
+		$(MAKE) install; \
+	fi
+.PHONY: libsodium
+
+###############################################################################
+###                                release                                  ###
+###############################################################################
+
+GORELEASER_CONFIG ?= .goreleaser.yml
+
+GORELEASER_BUILD_LDF = $(ldflags)
+GORELEASER_BUILD_LDF += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
+
+GORELEASER_SKIP_VALIDATE ?= false
+GORELEASER_DEBUG         ?= false
+GORELEASER_IMAGE         ?= line/goreleaserx-wasm:1.0.0-0.10.0
+GORELEASER_RELEASE       ?= false
+#GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
+GO_MOD_NAME              := github.com/line/lbm-sdk
+
+ifeq ($(GORELEASER_RELEASE),true)
+	GORELEASER_SKIP_VALIDATE := false
+	GORELEASER_SKIP_PUBLISH  := release --skip-publish=false
+else
+	GORELEASER_SKIP_PUBLISH  := --skip-publish=true
+	GORELEASER_SKIP_VALIDATE ?= false
+	GITHUB_TOKEN=
+endif
+
+ifeq ($(GORELEASER_MOUNT_CONFIG),true)
+	GORELEASER_IMAGE := -v $(HOME)/.docker/config.json:/root/.docker/config.json $(GORELEASER_IMAGE)
+endif
+
+release-snapshot:
+	docker run --rm \
+		-e BUILD_TAGS="$(build_tags)" \
+		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
+		-w /go/src/$(GO_MOD_NAME) \
+		$(GORELEASER_IMAGE) \
+		build --snapshot \
+		-f "$(GORELEASER_CONFIG)" \
+		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
+		--debug=$(GORELEASER_DEBUG) \
+		--rm-dist
+release:
+	docker run --rm \
+		-e BUILD_TAGS="$(build_tags)" \
+		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
+		-w /go/src/$(GO_MOD_NAME) \
+		$(GORELEASER_IMAGE) \
+		$(GORELEASER_SKIP_PUBLISH) \
+		-f "$(GORELEASER_CONFIG)" \
+		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
+		--skip-announce=true \
+		--debug=$(GORELEASER_DEBUG) \
+		--rm-dist
+
+build-static: go.sum
+	CGO_ENABLED=1 go build -mod=readonly -tags "$(build_tags)" -ldflags '$(GORELEASER_BUILD_LDF)' -trimpath -o ./build/ ./...
+
+.PHONY: release-snapshot release build-static

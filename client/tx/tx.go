@@ -5,19 +5,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/spf13/pflag"
 
 	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/input"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authsigning "github.com/line/lbm-sdk/x/auth/signing"
@@ -147,75 +144,6 @@ func BroadcastTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 	return clientCtx.PrintProto(res)
 }
 
-// WriteGeneratedTxResponse writes a generated unsigned transaction to the
-// provided http.ResponseWriter. It will simulate gas costs if requested by the
-// BaseReq. Upon any error, the error will be written to the http.ResponseWriter.
-// Note that this function returns the legacy StdTx Amino JSON format for compatibility
-// with legacy clients.
-// Deprecated: We are removing Amino soon.
-func WriteGeneratedTxResponse(
-	clientCtx client.Context, w http.ResponseWriter, br rest.BaseReq, msgs ...sdk.Msg,
-) {
-	gasAdj, ok := rest.ParseFloat64OrReturnBadRequest(w, br.GasAdjustment, flags.DefaultGasAdjustment)
-	if !ok {
-		return
-	}
-
-	gasSetting, err := flags.ParseGasSetting(br.Gas)
-	if rest.CheckBadRequestError(w, err) {
-		return
-	}
-
-	txf := Factory{fees: br.Fees, gasPrices: br.GasPrices}.
-		WithAccountNumber(br.AccountNumber).
-		WithSequence(br.Sequence).
-		WithGas(gasSetting.Gas).
-		WithGasAdjustment(gasAdj).
-		WithMemo(br.Memo).
-		WithChainID(br.ChainID).
-		WithSimulateAndExecute(br.Simulate).
-		WithTxConfig(clientCtx.TxConfig).
-		WithTimeoutHeight(br.TimeoutHeight)
-
-	if br.Simulate || gasSetting.Simulate {
-		if gasAdj < 0 {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, sdkerrors.ErrorInvalidGasAdjustment.Error())
-			return
-		}
-
-		_, adjusted, err := CalculateGas(clientCtx, txf, msgs...)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
-
-		txf = txf.WithGas(adjusted)
-
-		if br.Simulate {
-			rest.WriteSimulationResponse(w, clientCtx.LegacyAmino, txf.Gas())
-			return
-		}
-	}
-
-	tx, err := BuildUnsignedTx(txf, msgs...)
-	if rest.CheckBadRequestError(w, err) {
-		return
-	}
-
-	stdTx, err := ConvertTxToStdTx(clientCtx.LegacyAmino, tx.GetTx())
-	if rest.CheckInternalServerError(w, err) {
-		return
-	}
-
-	output, err := clientCtx.LegacyAmino.MarshalJSON(stdTx)
-	if rest.CheckInternalServerError(w, err) {
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(output)
-}
-
 // BuildUnsignedTx builds a transaction to be signed given a set of messages. The
 // transaction is initially created via the provided factory's generator. Once
 // created, the fee, memo, and messages are set.
@@ -317,11 +245,41 @@ func SignWithPrivKey(
 	return sigV2, nil
 }
 
-func checkMultipleSigners(mode signing.SignMode, tx authsigning.Tx) error {
-	if mode == signing.SignMode_SIGN_MODE_DIRECT &&
-		len(tx.GetSigners()) > 1 {
-		return sdkerrors.Wrap(sdkerrors.ErrNotSupported, "Signing in DIRECT mode is only supported for transactions with one signer only")
+// countDirectSigners counts the number of DIRECT signers in a signature data.
+func countDirectSigners(data signing.SignatureData) int {
+	switch data := data.(type) {
+	case *signing.SingleSignatureData:
+		if data.SignMode == signing.SignMode_SIGN_MODE_DIRECT {
+			return 1
+		}
+
+		return 0
+	case *signing.MultiSignatureData:
+		directSigners := 0
+		for _, d := range data.Signatures {
+			directSigners += countDirectSigners(d)
+		}
+
+		return directSigners
+	default:
+		panic("unreachable case")
 	}
+}
+
+// checkMultipleSigners checks that there can be maximum one DIRECT signer in a tx.
+func checkMultipleSigners(tx authsigning.Tx) error {
+	directSigners := 0
+	sigsV2, err := tx.GetSignaturesV2()
+	if err != nil {
+		return err
+	}
+	for _, sig := range sigsV2 {
+		directSigners += countDirectSigners(sig.Data)
+		if directSigners > 1 {
+			return sdkerrors.ErrNotSupported.Wrap("txs signed with CLI can have maximum 1 DIRECT signer")
+		}
+	}
+
 	return nil
 }
 
@@ -340,9 +298,6 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 	if signMode == signing.SignMode_SIGN_MODE_UNSPECIFIED {
 		// use the SignModeHandler's default mode if unspecified
 		signMode = txf.txConfig.SignModeHandler().DefaultMode()
-	}
-	if err := checkMultipleSigners(signMode, txBuilder.GetTx()); err != nil {
-		return err
 	}
 
 	key, err := txf.keybase.Key(name)
@@ -373,6 +328,7 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 		Data:     &sigData,
 		Sequence: txf.Sequence(),
 	}
+
 	var prevSignatures []signing.SignatureV2
 	if !overwriteSig {
 		prevSignatures, err = txBuilder.GetTx().GetSignaturesV2()
@@ -380,7 +336,18 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 			return err
 		}
 	}
-	if err := txBuilder.SetSignatures(sig); err != nil {
+	// Overwrite or append signer infos.
+	var sigs []signing.SignatureV2
+	if overwriteSig {
+		sigs = []signing.SignatureV2{sig}
+	} else {
+		sigs = append(prevSignatures, sig)
+	}
+	if err := txBuilder.SetSignatures(sigs...); err != nil {
+		return err
+	}
+
+	if err := checkMultipleSigners(txBuilder.GetTx()); err != nil {
 		return err
 	}
 

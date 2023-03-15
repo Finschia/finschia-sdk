@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/feegrant"
 )
 
@@ -131,4 +132,32 @@ func TestMsgRevokeAllowance(t *testing.T) {
 			require.Error(t, err)
 		}
 	}
+}
+
+func TestAminoJSON(t *testing.T) {
+	tx := legacytx.StdTx{}
+	var msg legacytx.LegacyMsg
+	allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{SpendLimit: sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(100)))})
+	require.NoError(t, err)
+
+	// Amino JSON encoding has changed in feegrant since v0.46.
+	// Before, it was outputting something like:
+	// `{"account_number":"1","chain_id":"foo","fee":{"amount":[],"gas":"0"},"memo":"memo","msgs":[{"allowance":{"spend_limit":[{"amount":"100","denom":"foo"}]},"grantee":"link1def","granter":"link1abc"}],"sequence":"1","timeout_height":"1"}`
+	//
+	// This was a bug. Now, it's as below, See how there's `type` & `value` fields.
+	// ref: https://github.com/cosmos/cosmos-sdk/issues/11190
+	// ref: https://github.com/cosmos/cosmjs/issues/1026
+	msg = &feegrant.MsgGrantAllowance{Granter: "link1abc", Grantee: "link1def", Allowance: allowanceAny}
+	tx.Msgs = []sdk.Msg{msg}
+	require.Equal(t,
+		`{"account_number":"1","chain_id":"foo","fee":{"amount":[],"gas":"0"},"memo":"memo","msgs":[{"type":"cosmos-sdk/MsgGrantAllowance","value":{"allowance":{"type":"cosmos-sdk/BasicAllowance","value":{"spend_limit":[{"amount":"100","denom":"foo"}]}},"grantee":"link1def","granter":"link1abc"}}],"sequence":"1","timeout_height":"1"}`,
+		string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{msg}, "memo")),
+	)
+
+	msg = &feegrant.MsgRevokeAllowance{Granter: "link1abc", Grantee: "link1def"}
+	tx.Msgs = []sdk.Msg{msg}
+	require.Equal(t,
+		`{"account_number":"1","chain_id":"foo","fee":{"amount":[],"gas":"0"},"memo":"memo","msgs":[{"type":"cosmos-sdk/MsgRevokeAllowance","value":{"grantee":"link1def","granter":"link1abc"}}],"sequence":"1","timeout_height":"1"}`,
+		string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{msg}, "memo")),
+	)
 }

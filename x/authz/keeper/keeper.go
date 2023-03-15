@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
 
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/baseapp"
@@ -74,13 +76,17 @@ func (k Keeper) update(ctx sdk.Context, grantee sdk.AccAddress, granter sdk.AccA
 // grants from the message signer to the grantee.
 func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []sdk.Msg) ([][]byte, error) {
 	results := make([][]byte, len(msgs))
+
 	for i, msg := range msgs {
 		signers := msg.GetSigners()
 		if len(signers) != 1 {
 			return nil, sdkerrors.ErrInvalidRequest.Wrap("authorization can be given to msg with only one signer")
 		}
+
 		granter := signers[0]
-		// if granter != grantee then check authorization.Accept, otherwise we implicitly accept.
+
+		// If granter != grantee then check authorization.Accept, otherwise we
+		// implicitly accept.
 		if !granter.Equals(grantee) {
 			authorization, _ := k.GetCleanAuthorization(ctx, grantee, granter, sdk.MsgTypeURL(msg))
 			if authorization == nil {
@@ -90,6 +96,7 @@ func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []
 			if err != nil {
 				return nil, err
 			}
+
 			if resp.Delete {
 				err = k.DeleteGrant(ctx, grantee, granter, sdk.MsgTypeURL(msg))
 			} else if resp.Updated != nil {
@@ -98,6 +105,7 @@ func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []
 			if err != nil {
 				return nil, err
 			}
+
 			if !resp.Accept {
 				return nil, sdkerrors.ErrUnauthorized
 			}
@@ -112,14 +120,19 @@ func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []
 		if err != nil {
 			return nil, sdkerrors.Wrapf(err, "failed to execute message; message %v", msg)
 		}
+
 		results[i] = msgResp.Data
 
 		// emit the events from the dispatched actions
 		events := msgResp.Events
 		sdkEvents := make([]sdk.Event, 0, len(events))
-		for i := 0; i < len(events); i++ {
-			sdkEvents = append(sdkEvents, sdk.Event(events[i]))
+		for _, event := range events {
+			e := event
+			e.Attributes = append(e.Attributes, abci.EventAttribute{Key: []byte("authz_msg_index"), Value: []byte(strconv.Itoa(i))})
+
+			sdkEvents = append(sdkEvents, sdk.Event(e))
 		}
+
 		ctx.EventManager().EmitEvents(sdkEvents)
 	}
 
@@ -132,7 +145,7 @@ func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []
 func (k Keeper) SaveGrant(ctx sdk.Context, grantee, granter sdk.AccAddress, authorization authz.Authorization, expiration time.Time) error {
 	store := ctx.KVStore(k.storeKey)
 
-	grant, err := authz.NewGrant(authorization, expiration)
+	grant, err := authz.NewGrant(ctx.BlockTime(), authorization, expiration)
 	if err != nil {
 		return err
 	}
@@ -233,6 +246,10 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *authz.GenesisState {
 // InitGenesis new authz genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *authz.GenesisState) {
 	for _, entry := range data.Authorization {
+		if entry.Expiration.Before(ctx.BlockTime()) {
+			continue
+		}
+
 		grantee := sdk.MustAccAddressFromBech32(entry.Grantee)
 		granter := sdk.MustAccAddressFromBech32(entry.Granter)
 		a, ok := entry.Authorization.GetCachedValue().(authz.Authorization)

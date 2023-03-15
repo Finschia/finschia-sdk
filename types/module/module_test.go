@@ -8,7 +8,6 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 
 	"github.com/golang/mock/gomock"
-	"github.com/gorilla/mux"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
@@ -38,7 +37,6 @@ func TestBasicManager(t *testing.T) {
 	mockAppModuleBasic1.EXPECT().Name().AnyTimes().Return("mockAppModuleBasic1")
 	mockAppModuleBasic1.EXPECT().DefaultGenesis(gomock.Eq(cdc)).Times(1).Return(json.RawMessage(``))
 	mockAppModuleBasic1.EXPECT().ValidateGenesis(gomock.Eq(cdc), gomock.Eq(nil), gomock.Eq(wantDefaultGenesis["mockAppModuleBasic1"])).Times(1).Return(errFoo)
-	mockAppModuleBasic1.EXPECT().RegisterRESTRoutes(gomock.Eq(client.Context{}), gomock.Eq(&mux.Router{})).Times(1)
 	mockAppModuleBasic1.EXPECT().RegisterLegacyAminoCodec(gomock.Eq(legacyAmino)).Times(1)
 	mockAppModuleBasic1.EXPECT().RegisterInterfaces(gomock.Eq(interfaceRegistry)).Times(1)
 	mockAppModuleBasic1.EXPECT().GetTxCmd().Times(1).Return(nil)
@@ -56,8 +54,6 @@ func TestBasicManager(t *testing.T) {
 	require.Equal(t, map[string]string(nil), data)
 
 	require.True(t, errors.Is(errFoo, mm.ValidateGenesis(cdc, nil, wantDefaultGenesis)))
-
-	mm.RegisterRESTRoutes(client.Context{}, &mux.Router{})
 
 	mockCmd := &cobra.Command{Use: "root"}
 	mm.AddTxCommands(mockCmd)
@@ -82,8 +78,6 @@ func TestGenesisOnlyAppModule(t *testing.T) {
 
 	// no-op
 	goam.RegisterInvariants(mockInvariantRegistry)
-	goam.BeginBlock(sdk.Context{}, abci.RequestBeginBlock{})
-	require.Equal(t, []abci.ValidatorUpdate{}, goam.EndBlock(sdk.Context{}, abci.RequestEndBlock{}))
 }
 
 func TestManagerOrderSetters(t *testing.T) {
@@ -211,7 +205,8 @@ func TestManager_InitGenesis(t *testing.T) {
 	// test panic
 	genesisData = map[string]json.RawMessage{
 		"module1": json.RawMessage(`{"key": "value"}`),
-		"module2": json.RawMessage(`{"key": "value"}`)}
+		"module2": json.RawMessage(`{"key": "value"}`),
+	}
 	mockAppModule1.EXPECT().InitGenesis(gomock.Eq(ctx), gomock.Eq(cdc), gomock.Eq(genesisData["module1"])).Times(1).Return([]abci.ValidatorUpdate{{}})
 	mockAppModule2.EXPECT().InitGenesis(gomock.Eq(ctx), gomock.Eq(cdc), gomock.Eq(genesisData["module2"])).Times(1).Return([]abci.ValidatorUpdate{{}})
 	require.Panics(t, func() { mm.InitGenesis(ctx, cdc, genesisData) })
@@ -237,7 +232,8 @@ func TestManager_ExportGenesis(t *testing.T) {
 
 	want := map[string]json.RawMessage{
 		"module1": json.RawMessage(`{"key1": "value1"}`),
-		"module2": json.RawMessage(`{"key2": "value2"}`)}
+		"module2": json.RawMessage(`{"key2": "value2"}`),
+	}
 	require.Equal(t, want, mm.ExportGenesis(ctx, cdc))
 }
 

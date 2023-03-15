@@ -2,21 +2,21 @@ package tx
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/client/grpc/tmservice"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-
 	gogogrpc "github.com/gogo/protobuf/grpc"
-	"github.com/golang/protobuf/proto" // nolint: staticcheck
+	"github.com/golang/protobuf/proto" //nolint: staticcheck
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/grpc/tmservice"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	pagination "github.com/line/lbm-sdk/types/query"
 	txtypes "github.com/line/lbm-sdk/types/tx"
 )
@@ -119,7 +119,7 @@ func (s txServer) Simulate(ctx context.Context, req *txtypes.SimulateRequest) (*
 
 	gasInfo, result, err := s.simulate(txBytes)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Unknown, "%v With gas wanted: '%d' and gas used: '%d' ", err, gasInfo.GasWanted, gasInfo.GasUsed)
 	}
 
 	return &txtypes.SimulateResponse{
@@ -134,8 +134,11 @@ func (s txServer) GetTx(ctx context.Context, req *txtypes.GetTxRequest) (*txtype
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 
-	if len(req.Hash) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "tx hash cannot be empty")
+	if n := len(req.Hash); n != sha256.Size*2 {
+		if n == 0 {
+			return nil, status.Error(codes.InvalidArgument, "tx hash cannot be empty")
+		}
+		return nil, status.Error(codes.InvalidArgument, "The length of tx hash must be 64")
 	}
 
 	// TODO We should also check the proof flag in gRPC header.
@@ -236,7 +239,6 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 			Total: blockTxsLn,
 		},
 	}, nil
-
 }
 
 func (s txServer) BroadcastTx(ctx context.Context, req *txtypes.BroadcastTxRequest) (*txtypes.BroadcastTxResponse, error) {
@@ -259,7 +261,9 @@ func RegisterTxService(
 // RegisterGRPCGatewayRoutes mounts the tx service's GRPC-gateway routes on the
 // given Mux.
 func RegisterGRPCGatewayRoutes(clientConn gogogrpc.ClientConn, mux *runtime.ServeMux) {
-	txtypes.RegisterServiceHandlerClient(context.Background(), mux, txtypes.NewServiceClient(clientConn))
+	if err := txtypes.RegisterServiceHandlerClient(context.Background(), mux, txtypes.NewServiceClient(clientConn)); err != nil {
+		panic(err)
+	}
 }
 
 func parseOrderBy(orderBy txtypes.OrderBy) string {

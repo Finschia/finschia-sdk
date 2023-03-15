@@ -8,6 +8,7 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
+//nolint:golint
 type Any struct {
 	// A URL/resource name that uniquely identifies the type of the serialized
 	// protocol buffer message. This string must contain at least
@@ -37,19 +38,14 @@ type Any struct {
 	// Schemes other than `http`, `https` (or the empty scheme) might be
 	// used with implementation specific semantics.
 
-	// nolint
 	TypeUrl string `protobuf:"bytes,1,opt,name=type_url,json=typeUrl,proto3" json:"type_url,omitempty"`
 	// Must be a valid serialized protocol buffer of the above specified type.
 	Value []byte `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 
-	// nolint
+	// If you change XXX_ to XXX, an error occurs in the part referring to google/protobuf/any.proto, so add the nolint flag.
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-
-	// nolint
-	XXX_unrecognized []byte `json:"-"`
-
-	// nolint
-	XXX_sizecache int32 `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 
 	cachedValue interface{}
 

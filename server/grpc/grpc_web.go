@@ -27,7 +27,7 @@ func StartGRPCWeb(grpcSrv *grpc.Server, config config.Config) (*http.Server, err
 	grpcWebSrv := &http.Server{
 		Addr:              config.GRPCWeb.Address,
 		Handler:           wrappedServer,
-		ReadHeaderTimeout: 0, // Added to fix lint error
+		ReadHeaderTimeout: 500 * time.Millisecond,
 	}
 
 	errCh := make(chan error)

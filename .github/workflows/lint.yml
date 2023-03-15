@@ -9,17 +9,19 @@ on:
   push:
     branches:
       - main
+      - rc*/*
+      - release/*
 jobs:
   golangci:
     name: golangci-lint
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - uses: actions/setup-go@v3.3.0
+      - uses: actions/setup-go@v3.5.0
         with:
           go-version: 1.18
       - uses: actions/checkout@v3
-      - uses: technote-space/get-diff-action@v6.1.0
+      - uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |
             **/**.go

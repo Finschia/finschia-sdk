@@ -11,9 +11,9 @@ import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "lbm/foundation/v1/foundation.proto";
 
-// EventUpdateFoundationParams is emitted after updating foundation parameters.
-message EventUpdateFoundationParams {
-  Params params = 1;
+// EventUpdateParams is emitted after updating foundation parameters.
+message EventUpdateParams {
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 // EventFundTreasury is an event emitted when one funds the treasury.
@@ -23,7 +23,7 @@ message EventFundTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+// EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 message EventWithdrawFromTreasury {
   string   to                              = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
@@ -32,7 +32,7 @@ message EventWithdrawFromTreasury {
 
 // EventUpdateMembers is an event emitted when the members have been updated.
 message EventUpdateMembers {
-  repeated Member member_updates = 1 [(gogoproto.nullable) = false];
+  repeated MemberRequest member_updates = 1 [(gogoproto.nullable) = false];
 }
 
 // EventUpdateDecisionPolicy is an event emitted when the decision policy have been updated.
@@ -65,6 +65,9 @@ message EventExec {
 
   // result is the proposal execution result.
   ProposalExecutorResult result = 2;
+
+  // logs contains error logs in case the execution result is FAILURE.
+  string logs = 3;
 }
 
 // EventLeaveFoundation is an event emitted when a foundation member leaves the foundation.
@@ -75,19 +78,23 @@ message EventLeaveFoundation {
 
 // EventGrant is emitted on Msg/Grant
 message EventGrant {
-  string granter = 1;
   // the address of the grantee.
-  string grantee = 2;
+  string grantee = 1;
   // authorization granted.
-  google.protobuf.Any authorization = 3
+  google.protobuf.Any authorization = 2
       [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
 }
 
 // EventRevoke is emitted on Msg/Revoke
 message EventRevoke {
-  string granter = 1;
   // address of the grantee.
-  string grantee = 2;
+  string grantee = 1;
   // message type url for which an autorization is revoked.
-  string msg_type_url = 3;
+  string msg_type_url = 2;
+}
+
+// EventGovMint is an event emitted when the minter mint coins to the treasury.
+message EventGovMint {
+  repeated cosmos.base.v1beta1.Coin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }

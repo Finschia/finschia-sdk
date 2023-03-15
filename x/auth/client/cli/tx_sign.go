@@ -90,6 +90,29 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 		}
 		scanner := authclient.NewBatchScanner(txCfg, infile)
 
+		if !clientCtx.Offline {
+			if ms == "" {
+				from, err := cmd.Flags().GetString(flags.FlagFrom)
+				if err != nil {
+					return err
+				}
+
+				addr, _, _, err := client.GetFromFields(txFactory.Keybase(), from, clientCtx.GenerateOnly)
+				if err != nil {
+					return err
+				}
+
+				acc, err := txFactory.AccountRetriever().GetAccount(clientCtx, addr)
+				if err != nil {
+					return err
+				}
+
+				txFactory = txFactory.WithAccountNumber(acc.GetAccountNumber()).WithSequence(acc.GetSequence())
+			} else {
+				txFactory = txFactory.WithAccountNumber(0).WithSequence(0)
+			}
+		}
+
 		for sequence := txFactory.Sequence(); scanner.Scan(); sequence++ {
 			unsignedStdTx := scanner.Tx()
 			txFactory = txFactory.WithSequence(sequence)
@@ -145,7 +168,7 @@ func setOutputFile(cmd *cobra.Command) (func(), error) {
 		return func() {}, nil
 	}
 
-	fp, err := os.OpenFile(outputDoc, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	fp, err := os.OpenFile(outputDoc, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o644)
 	if err != nil {
 		return func() {}, err
 	}
@@ -288,7 +311,7 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 			return nil
 		}
 
-		fp, err := os.OpenFile(outputDoc, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+		fp, err := os.OpenFile(outputDoc, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o644)
 		if err != nil {
 			return err
 		}

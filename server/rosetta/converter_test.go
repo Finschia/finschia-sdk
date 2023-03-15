@@ -137,7 +137,6 @@ func (s *ConverterTestSuite) TestFromRosettaOpsToTxSuccess() {
 
 	s.Require().Equal(getMsgs[0], msg1)
 	s.Require().Equal(getMsgs[1], msg2)
-
 }
 
 func (s *ConverterTestSuite) TestFromRosettaOpsToTxErrors() {
@@ -159,9 +158,7 @@ func (s *ConverterTestSuite) TestFromRosettaOpsToTxErrors() {
 		_, err := s.c.ToSDK().UnsignedTx([]*rosettatypes.Operation{op})
 
 		s.Require().ErrorIs(err, crgerrs.ErrBadArgument)
-
 	})
-
 }
 
 func (s *ConverterTestSuite) TestMsgToMetaMetaToMsg() {
@@ -182,7 +179,6 @@ func (s *ConverterTestSuite) TestMsgToMetaMetaToMsg() {
 }
 
 func (s *ConverterTestSuite) TestSignedTx() {
-
 	s.Run("success", func() {
 		const payloadsJSON = `[{"hex_bytes":"82ccce81a3e4a7272249f0e25c3037a316ee2acce76eb0c25db00ef6634a4d57303b2420edfdb4c9a635ad8851fe5c7a9379b7bc2baadc7d74f7e76ac97459b5","public_key":{"curve_type":"secp256k1","hex_bytes":"0377365794209eab396f74316bb32ecb507c0e3788c14edf164f96b25cc4ef6241"},"signature_type":"ecdsa","signing_payload":{"account_identifier":{"address":"link16w0dvlaqn4rwypg9uz6q8xd7x444huhumccpun"},"address":"link16w0dvlaqn4rwypg9uz6q8xd7x444huhumccpun","hex_bytes":"ea43c4019ee3c888a7f99acb57513f708bb8915bc84e914cf4ecbd08ab2d9e51","signature_type":"ecdsa"}}]`
 		const expectedSignedTxHex = "0a8a010a87010a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412670a2b6c696e6b3136773064766c61716e34727779706739757a36713878643778343434687568756d636370756e122b6c696e6b316c33757538657364636c6a3876706a72757737357535666a34773479746475396e6c6b6538721a0b0a057374616b651202313612640a500a460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a210377365794209eab396f74316bb32ecb507c0e3788c14edf164f96b25cc4ef624112040a02087f180112100a0a0a057374616b6512013110c09a0c1a4082ccce81a3e4a7272249f0e25c3037a316ee2acce76eb0c25db00ef6634a4d57303b2420edfdb4c9a635ad8851fe5c7a9379b7bc2baadc7d74f7e76ac97459b5"
@@ -336,7 +332,6 @@ func (s *ConverterTestSuite) TestSigningComponents() {
 			})
 		s.Require().NoError(err)
 	})
-
 }
 
 func (s *ConverterTestSuite) TestBalanceOps() {

@@ -6,55 +6,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
-
-// handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
-func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundation.UpdateFoundationParamsProposal) error {
-	// TODO: validate param changes
-	params := p.Params
-	k.SetParams(ctx, params)
-
-	if !params.Enabled {
-		k.Cleanup(ctx)
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
-		Params: params,
-	}); err != nil {
-		panic(err)
-	}
-
-	return nil
-}
-
-// handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
-func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundation.UpdateValidatorAuthsProposal) error {
-	for _, auth := range p.Auths {
-		valAddr, err := sdk.ValAddressFromBech32(auth.OperatorAddress)
-		grantee := sdk.AccAddress(valAddr)
-
-		if err != nil {
-			return err
-		}
-		if auth.CreationAllowed {
-			authorization := &stakingplus.CreateValidatorAuthorization{
-				ValidatorAddress: auth.OperatorAddress,
-			}
-
-			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {
-				return err
-			}
-		} else {
-			if err := k.Revoke(ctx, govtypes.ModuleName, grantee, stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()); err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
-}
 
 func (k Keeper) newProposalID(ctx sdk.Context) uint64 {
 	id := k.getPreviousProposalID(ctx) + 1
@@ -77,18 +29,21 @@ func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
 	store.Set(previousProposalIDKey, Uint64ToBytes(id))
 }
 
-func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
+func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (*uint64, error) {
 	if err := validateMetadata(metadata, k.config); err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
-	operator, err := sdk.AccAddressFromBech32(foundationInfo.Operator)
-	if err != nil {
-		return 0, err
+	authority := sdk.MustAccAddressFromBech32(k.GetAuthority())
+	if err := ensureMsgAuthz(msgs, authority); err != nil {
+		return nil, err
 	}
-	if err := ensureMsgAuthz(msgs, operator); err != nil {
-		return 0, err
+
+	// Prevent proposal that can not succeed.
+	policy := foundationInfo.GetDecisionPolicy()
+	if err := policy.Validate(foundationInfo, k.config); err != nil {
+		return nil, err
 	}
 
 	id := k.newProposalID(ctx)
@@ -98,20 +53,19 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 		Proposers:         proposers,
 		SubmitTime:        ctx.BlockTime(),
 		FoundationVersion: foundationInfo.Version,
-		Result:            foundation.PROPOSAL_RESULT_UNFINALIZED,
 		Status:            foundation.PROPOSAL_STATUS_SUBMITTED,
 		ExecutorResult:    foundation.PROPOSAL_EXECUTOR_RESULT_NOT_RUN,
-		VotingPeriodEnd:   ctx.BlockTime().Add(foundationInfo.GetDecisionPolicy().GetVotingPeriod()),
+		VotingPeriodEnd:   ctx.BlockTime().Add(policy.GetVotingPeriod()),
 		FinalTallyResult:  foundation.DefaultTallyResult(),
 	}
 	if err := proposal.SetMsgs(msgs); err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	k.setProposal(ctx, proposal)
 	k.addProposalToVPEndQueue(ctx, proposal)
 
-	return id, nil
+	return &id, nil
 }
 
 func (k Keeper) WithdrawProposal(ctx sdk.Context, proposalID uint64) error {
@@ -159,7 +113,7 @@ func (k Keeper) abortOldProposals(ctx sdk.Context) {
 	latestVersion := k.GetFoundationInfo(ctx).Version
 
 	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
-		if proposal.FoundationVersion != latestVersion-1 {
+		if proposal.FoundationVersion == latestVersion {
 			return true
 		}
 
@@ -205,25 +159,39 @@ func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn f
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		var proposal foundation.Proposal
-		k.cdc.MustUnmarshal(iter.Value(), &proposal)
+		_, id := splitProposalByVPEndKey(iter.Key())
 
-		if fn(proposal) {
+		proposal, err := k.GetProposal(ctx, id)
+		if err != nil {
+			panic(err)
+		}
+
+		if fn(*proposal) {
 			break
 		}
 	}
 }
 
 func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
+	var proposals []foundation.Proposal
 	k.iterateProposalsByVPEnd(ctx, ctx.BlockTime(), func(proposal foundation.Proposal) (stop bool) {
+		proposals = append(proposals, proposal)
+		return false
+	})
+
+	for _, proposal := range proposals {
+		proposal := proposal
+
+		if proposal.Status == foundation.PROPOSAL_STATUS_ABORTED || proposal.Status == foundation.PROPOSAL_STATUS_WITHDRAWN {
+			k.pruneProposal(ctx, proposal)
+			continue
+		}
+
 		if err := k.doTallyAndUpdate(ctx, &proposal); err != nil {
 			panic(err)
 		}
-
 		k.setProposal(ctx, proposal)
-
-		return false
-	})
+	}
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, error) {
@@ -256,13 +224,13 @@ func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {
 
 func (k Keeper) addProposalToVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Set(key, []byte{})
 }
 
 func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Delete(key)
 }
 
