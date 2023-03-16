@@ -4,9 +4,9 @@ import (
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper/internal"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 type Keeper interface {

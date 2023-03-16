@@ -13,8 +13,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/foundation/keeper/internal"
 	keeper "github.com/line/lbm-sdk/x/foundation/keeper"
+	"github.com/line/lbm-sdk/x/foundation/keeper/internal"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
