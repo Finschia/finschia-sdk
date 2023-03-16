@@ -84,3 +84,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci, build) [\#901](https://github.com/line/lbm-sdk/pull/901) Update release pipeline to match non-wasm env
 
 ### Document Updates
+* (x/foundation) [\#934](https://github.com/line/lbm-sdk/pull/934) Update permlinks in x/foundation documents

@@ -457,7 +457,7 @@ The messages that are part of this proposal won't be executed if:
 A censorship information is updated by using the `MsgUpdateCensorship` message.
 One cannot introduce a censorship over a new message type URL by this message.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/foundation/v1/tx.proto#L215-L222
++++ https://github.com/line/lbm-sdk/blob/d9428ec5d825dfd9964f510e32bd03a01adade8c/proto/lbm/foundation/v1/tx.proto#L215-L222
 
 The authority of the following modules are candidates of censorship authority:
 
@@ -466,7 +466,7 @@ The authority of the following modules are candidates of censorship authority:
 
 One may specify `CENSORSHIP_AUTHORITY_UNSPECIFIED` to remove the censorship.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/foundation/v1/tx.proto#L25-L34
++++ https://github.com/line/lbm-sdk/blob/d9428ec5d825dfd9964f510e32bd03a01adade8c/proto/lbm/foundation/v1/tx.proto#L25-L34
 
 The message handling should fail if:
 
