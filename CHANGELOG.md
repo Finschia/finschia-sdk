@@ -62,6 +62,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection,token) [\#866](https://github.com/line/lbm-sdk/pull/866) Do not create account on x/token,collection
 * (x/collection,token) [\#881](https://github.com/line/lbm-sdk/pull/881) Remove some x/token,collection queries on listable collections
 * (x/collection) [\#911](https://github.com/line/lbm-sdk/pull/911) Add missing command(TxCmdModify) for CLI
+* (x/foundation) [\#922](https://github.com/line/lbm-sdk/pull/922) Propagate events in x/foundation through sdk.Results
 
 ### Removed
 * [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
