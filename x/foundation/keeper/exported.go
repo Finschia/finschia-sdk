@@ -9,7 +9,15 @@ import (
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
-type Keeper struct {
+type Keeper interface {
+	GetAuthority() string
+	Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error
+
+	InitGenesis(ctx sdk.Context, gs *foundation.GenesisState) error
+	ExportGenesis(ctx sdk.Context) *foundation.GenesisState
+}
+
+type keeper struct {
 	impl internal.Keeper
 }
 
@@ -23,7 +31,7 @@ func NewKeeper(
 	config foundation.Config,
 	authority string,
 ) Keeper {
-	return Keeper{
+	return &keeper{
 		impl: internal.NewKeeper(
 			cdc,
 			key,
@@ -38,42 +46,48 @@ func NewKeeper(
 }
 
 // GetAuthority returns the x/foundation module's authority.
-func (k Keeper) GetAuthority() string {
+func (k keeper) GetAuthority() string {
 	return k.impl.GetAuthority()
 }
 
-func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
+func (k keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
 	return k.impl.Accept(ctx, grantee, msg)
 }
 
-func (k Keeper) InitGenesis(ctx sdk.Context, gs *foundation.GenesisState) error {
+func (k keeper) InitGenesis(ctx sdk.Context, gs *foundation.GenesisState) error {
 	return k.impl.InitGenesis(ctx, gs)
 }
 
-func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
+func (k keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 	return k.impl.ExportGenesis(ctx)
 }
 
 func NewMsgServer(k Keeper) foundation.MsgServer {
-	return internal.NewMsgServer(k.impl)
+	impl := k.(*keeper).impl
+	return internal.NewMsgServer(impl)
 }
 
 func NewQueryServer(k Keeper) foundation.QueryServer {
-	return internal.NewQueryServer(k.impl)
+	impl := k.(*keeper).impl
+	return internal.NewQueryServer(impl)
 }
 
 func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
-	internal.RegisterInvariants(ir, k.impl)
+	impl := k.(*keeper).impl
+	internal.RegisterInvariants(ir, impl)
 }
 
 func BeginBlocker(ctx sdk.Context, k Keeper) {
-	internal.BeginBlocker(ctx, k.impl)
+	impl := k.(*keeper).impl
+	internal.BeginBlocker(ctx, impl)
 }
 
 func EndBlocker(ctx sdk.Context, k Keeper) {
-	internal.EndBlocker(ctx, k.impl)
+	impl := k.(*keeper).impl
+	internal.EndBlocker(ctx, impl)
 }
 
 func NewFoundationProposalsHandler(k Keeper) govtypes.Handler {
-	return internal.NewFoundationProposalsHandler(k.impl)
+	impl := k.(*keeper).impl
+	return internal.NewFoundationProposalsHandler(impl)
 }
