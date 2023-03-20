@@ -31,8 +31,6 @@ type Keeper struct {
 	// - MsgUpdateParams
 	// - MsgUpdateDecisionPolicy
 	// - MsgUpdateMembers
-	// - MsgGrant
-	// - MsgRevoke
 	// - MsgWithdrawFromTreasury
 	//
 	// Typically, this should be the x/foundation module account.

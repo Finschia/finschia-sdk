@@ -10,6 +10,7 @@ import (
 
 func (s *KeeperTestSuite) TestMsgUpdateParams() {
 	testCases := map[string]struct {
+		malleate  func(ctx sdk.Context)
 		authority sdk.AccAddress
 		params    foundation.Params
 		valid     bool
@@ -23,13 +24,15 @@ func (s *KeeperTestSuite) TestMsgUpdateParams() {
 			authority: s.stranger,
 			params:    foundation.DefaultParams(),
 		},
-		"enabling feature": {
+		"enabling foundation tax": {
+			malleate: func(ctx sdk.Context) {
+				s.keeper.SetParams(ctx, foundation.Params{
+					FoundationTax: sdk.ZeroDec(),
+				})
+			},
 			authority: s.authority,
 			params: foundation.Params{
-				FoundationTax: sdk.ZeroDec(),
-				CensoredMsgTypeUrls: []string{
-					sdk.MsgTypeURL((*testdata.TestMsg)(nil)),
-				},
+				FoundationTax: sdk.OneDec(),
 			},
 		},
 	}
@@ -37,6 +40,9 @@ func (s *KeeperTestSuite) TestMsgUpdateParams() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
 			req := &foundation.MsgUpdateParams{
 				Authority: tc.authority.String(),
@@ -540,6 +546,55 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 				Address: tc.address.String(),
 			}
 			res, err := s.msgServer.LeaveFoundation(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgUpdateCensorship() {
+	testCases := map[string]struct {
+		authority  sdk.AccAddress
+		censorship foundation.Censorship
+		valid      bool
+	}{
+		"valid request": {
+			authority: s.authority,
+			censorship: foundation.Censorship{
+				MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+				Authority:  foundation.CensorshipAuthorityGovernance,
+			},
+			valid: true,
+		},
+		"invalid authority": {
+			authority: s.stranger,
+			censorship: foundation.Censorship{
+				MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+				Authority:  foundation.CensorshipAuthorityGovernance,
+			},
+		},
+		"enabling feature": {
+			authority: s.authority,
+			censorship: foundation.Censorship{
+				MsgTypeUrl: sdk.MsgTypeURL((*testdata.TestMsg)(nil)),
+				Authority:  foundation.CensorshipAuthorityFoundation,
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &foundation.MsgUpdateCensorship{
+				Authority:  tc.authority.String(),
+				Censorship: tc.censorship,
+			}
+			res, err := s.msgServer.UpdateCensorship(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

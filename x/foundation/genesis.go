@@ -141,9 +141,31 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	seenURLs := map[string]bool{}
+	for _, censorship := range data.Censorships {
+		if err := censorship.ValidateBasic(); err != nil {
+			return err
+		}
+		if censorship.Authority == CensorshipAuthorityUnspecified {
+			return sdkerrors.ErrInvalidRequest.Wrap("authority unspecified")
+		}
+
+		url := censorship.MsgTypeUrl
+		if seenURLs[url] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate censorship over %s", url)
+		}
+		seenURLs[url] = true
+	}
+
 	for _, ga := range data.Authorizations {
-		if ga.GetAuthorization() == nil {
+		auth := ga.GetAuthorization()
+		if auth == nil {
 			return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+		}
+
+		url := auth.MsgTypeURL()
+		if !seenURLs[url] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("no censorship over %s", url)
 		}
 
 		if _, err := sdk.AccAddressFromBech32(ga.Grantee); err != nil {

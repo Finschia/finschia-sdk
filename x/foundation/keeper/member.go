@@ -3,7 +3,9 @@ package keeper
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func validateMetadata(metadata string, config foundation.Config) error {
@@ -155,6 +157,23 @@ func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
 func (k Keeper) validateAuthority(authority string) error {
 	if authority != k.authority {
 		return sdkerrors.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", k.authority, authority)
+	}
+
+	return nil
+}
+
+func (k Keeper) validateCensorshipAuthority(ctx sdk.Context, msgTypeURL string, authority string) error {
+	censorship, err := k.GetCensorship(ctx, msgTypeURL)
+	if err != nil {
+		return err
+	}
+
+	authorityAddrs := map[foundation.CensorshipAuthority]string{
+		foundation.CensorshipAuthorityGovernance: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		foundation.CensorshipAuthorityFoundation: k.authority,
+	}
+	if expected := authorityAddrs[censorship.Authority]; authority != expected {
+		return sdkerrors.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", expected, authority)
 	}
 
 	return nil

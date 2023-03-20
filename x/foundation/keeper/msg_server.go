@@ -275,14 +275,37 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 	return &foundation.MsgLeaveFoundationResponse{}, nil
 }
 
-func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
+func (s msgServer) UpdateCensorship(c context.Context, req *foundation.MsgUpdateCensorship) (*foundation.MsgUpdateCensorshipResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateAuthority(req.Authority); err != nil {
+	url := req.Censorship.MsgTypeUrl
+	if err := s.keeper.validateCensorshipAuthority(ctx, url, req.Authority); err != nil {
 		return nil, err
 	}
 
+	if err := s.keeper.UpdateCensorship(ctx, req.Censorship); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateCensorship{
+		Censorship: req.Censorship,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgUpdateCensorshipResponse{}, nil
+}
+
+func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
 	authorization := req.GetAuthorization()
+
+	url := authorization.MsgTypeURL()
+	if err := s.keeper.validateCensorshipAuthority(ctx, url, req.Authority); err != nil {
+		return nil, err
+	}
+
 	grantee := sdk.MustAccAddressFromBech32(req.Grantee)
 	if err := s.keeper.Grant(ctx, grantee, authorization); err != nil {
 		return nil, err
@@ -294,7 +317,8 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateAuthority(req.Authority); err != nil {
+	url := req.MsgTypeUrl
+	if err := s.keeper.validateCensorshipAuthority(ctx, url, req.Authority); err != nil {
 		return nil, err
 	}
 

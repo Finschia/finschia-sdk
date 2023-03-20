@@ -68,11 +68,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// allow Msg/CreateValidator
-	s.app.FoundationKeeper.SetParams(s.ctx, foundation.Params{
-		FoundationTax: sdk.ZeroDec(),
-		CensoredMsgTypeUrls: []string{
-			stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
-		},
+	s.app.FoundationKeeper.SetCensorship(s.ctx, foundation.Censorship{
+		MsgTypeUrl: stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
+		Authority: foundation.CensorshipAuthorityFoundation,
 	})
 	err := s.app.FoundationKeeper.Grant(s.ctx, s.grantee, &stakingplus.CreateValidatorAuthorization{
 		ValidatorAddress: sdk.ValAddress(s.grantee).String(),

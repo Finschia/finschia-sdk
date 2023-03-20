@@ -34,7 +34,6 @@ func TestDefaultGenesisState(t *testing.T) {
 	require.NoError(t, foundation.ValidateGenesis(*gs))
 
 	require.True(t, gs.Params.FoundationTax.IsZero())
-	require.Empty(t, gs.Params.CensoredMsgTypeUrls)
 
 	require.EqualValues(t, 1, gs.Foundation.Version)
 	require.True(t, gs.Foundation.TotalWeight.IsZero())
@@ -44,6 +43,7 @@ func TestDefaultGenesisState(t *testing.T) {
 	require.Empty(t, gs.Proposals)
 	require.Empty(t, gs.Votes)
 
+	require.Empty(t, gs.Censorships)
 	require.Empty(t, gs.Authorizations)
 }
 
@@ -75,10 +75,16 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			valid: true,
 		},
-		"authorizations": {
+		"censorships": {
 			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority:  foundation.CensorshipAuthorityFoundation,
+					},
+				},
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: createAddress().String(),
@@ -270,19 +276,65 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
+		"invalid censorship": {
+			data: foundation.GenesisState{
+				Params:      foundation.DefaultParams(),
+				Foundation:  foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{{}},
+			},
+		},
+		"duplicate censorship": {
+			data: foundation.GenesisState{
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority:  foundation.CensorshipAuthorityFoundation,
+					},
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority:  foundation.CensorshipAuthorityGovernance,
+					},
+				},
+			},
+		},
 		"invalid authorization": {
 			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority:  foundation.CensorshipAuthorityFoundation,
+					},
+				},
 				Authorizations: []foundation.GrantAuthorization{{
 					Grantee: createAddress().String(),
 				}},
+			},
+		},
+		"no censorship": {
+			data: foundation.GenesisState{
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Grantee: createAddress().String(),
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+				},
 			},
 		},
 		"invalid grantee": {
 			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
+				Censorships: []foundation.Censorship{
+					{
+						MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+						Authority:  foundation.CensorshipAuthorityFoundation,
+					},
+				},
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},

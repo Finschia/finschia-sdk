@@ -18,7 +18,7 @@ func ensureMsgAuthz(msgs []sdk.Msg, authority sdk.AccAddress) error {
 		// but we prefer to loop through all GetSigners just to be sure.
 		for _, signer := range msg.GetSigners() {
 			if !authority.Equals(signer) {
-				return sdkerrors.ErrUnauthorized.Wrapf("msg does not have foundation authorization; expected %s, got %s", authority, signer)
+				return sdkerrors.ErrUnauthorized.Wrapf("bad signer; expected %s, got %s", authority, signer)
 			}
 		}
 	}
@@ -50,13 +50,18 @@ func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 		// Caching context so that we don't update the store in case of failure.
 		ctx, flush := ctx.CacheContext()
 
-		if _, err = k.doExecuteMsgs(ctx, *proposal); err != nil {
+		if results, err := k.doExecuteMsgs(ctx, *proposal); err != nil {
 			proposal.ExecutorResult = foundation.PROPOSAL_EXECUTOR_RESULT_FAILURE
 			logs = fmt.Sprintf("proposal execution failed on proposal %d, because of error %s", proposalID, err.Error())
 			logger.Info("proposal execution failed", "cause", err, "proposalID", proposal.Id)
 		} else {
 			proposal.ExecutorResult = foundation.PROPOSAL_EXECUTOR_RESULT_SUCCESS
 			flush()
+
+			for _, res := range results {
+				// NOTE: The sdk msg handler creates a new EventManager, so events must be correctly propagated back to the current context
+				ctx.EventManager().EmitEvents(res.GetEvents())
+			}
 		}
 	}
 

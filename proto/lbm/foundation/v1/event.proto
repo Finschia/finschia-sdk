@@ -76,6 +76,11 @@ message EventLeaveFoundation {
   string address = 1;
 }
 
+// EventUpdateCensorship is emitted when a censorship information updated.
+message EventUpdateCensorship {
+  Censorship censorship = 1 [(gogoproto.nullable) = false];
+}
+
 // EventGrant is emitted on Msg/Grant
 message EventGrant {
   // the address of the grantee.

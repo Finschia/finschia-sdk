@@ -46,6 +46,9 @@ service Msg {
   // LeaveFoundation allows a member to leave the foundation.
   rpc LeaveFoundation(MsgLeaveFoundation) returns (MsgLeaveFoundationResponse);
 
+  // UpdateCensorship updates censorship information.
+  rpc UpdateCensorship(MsgUpdateCensorship) returns (MsgUpdateCensorshipResponse);
+
   // Grant grants the provided authorization to the grantee with authority of
   // the foundation. If there is already a grant for the given
   // (grantee, Authorization) tuple, then the grant will be overwritten.
@@ -208,6 +211,18 @@ message MsgLeaveFoundation {
 
 // MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
 message MsgLeaveFoundationResponse {}
+
+// MsgUpdateCensorship is the Msg/UpdateCensorship request type.
+message MsgUpdateCensorship {
+  // authority over the target censorship.
+  string authority = 1;
+
+  // new censorship information
+  Censorship censorship = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateCensorshipResponse is the Msg/UpdateCensorship response type.
+message MsgUpdateCensorshipResponse {}
 
 // MsgGrant is the Msg/Grant request type.
 // on behalf of the foundation.
