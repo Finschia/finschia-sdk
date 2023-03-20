@@ -29,9 +29,6 @@ func (s *IntegrationTestSuite) TestGRPCParams() {
 			&foundation.QueryParamsResponse{
 				Params: foundation.Params{
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
-					CensoredMsgTypeUrls: []string{
-						sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					},
 				},
 			},
 		},

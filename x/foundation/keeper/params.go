@@ -24,42 +24,8 @@ func (k Keeper) UpdateParams(ctx sdk.Context, params foundation.Params) error {
 		return sdkerrors.ErrInvalidRequest.Wrap("foundation tax has been already disabled")
 	}
 
-	// for the cleaning up
-	urlRemoved := map[string]bool{}
-	for _, url := range k.GetParams(ctx).CensoredMsgTypeUrls {
-		urlRemoved[url] = true
-	}
-
-	// not allowed to add additional censored messages
-	for _, url := range params.CensoredMsgTypeUrls {
-		if !urlRemoved[url] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("adding a new msg type url of %s", url)
-		}
-		urlRemoved[url] = false
-	}
-
-	// clean up relevant authorizations
-	for url, removed := range urlRemoved {
-		url := url
-
-		if !removed {
-			continue
-		}
-
-		var grantees []sdk.AccAddress
-		k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
-			if authorization.MsgTypeURL() == url {
-				grantees = append(grantees, grantee)
-			}
-			return false
-		})
-
-		for _, grantee := range grantees {
-			k.deleteAuthorization(ctx, grantee, url)
-		}
-	}
-
 	k.SetParams(ctx, params)
+
 	return nil
 }
 
@@ -79,11 +45,6 @@ func (k Keeper) GetFoundationTax(ctx sdk.Context) sdk.Dec {
 }
 
 func (k Keeper) IsCensoredMessage(ctx sdk.Context, msgTypeURL string) bool {
-	params := k.GetParams(ctx)
-	for _, censoredURL := range params.CensoredMsgTypeUrls {
-		if msgTypeURL == censoredURL {
-			return true
-		}
-	}
-	return false
+	_, err := k.GetCensorship(ctx, msgTypeURL)
+	return err == nil
 }

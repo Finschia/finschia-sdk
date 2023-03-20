@@ -13,6 +13,8 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
+	govcli "github.com/line/lbm-sdk/x/gov/client/cli"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags
@@ -166,11 +168,7 @@ func NewTxCmdUpdateParams() *cobra.Command {
 Example of the content of params-json:
 
 {
-  "foundation_tax": "0.1",
-  "censored_msg_type_urls": [
-    "/cosmos.staking.v1beta1.MsgCreateValidator",
-    "/lbm.foundation.v1.MsgWithdrawFromTreasury"
-  ]
+  "foundation_tax": "0.1"
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -714,5 +712,82 @@ func NewTxCmdRevoke() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewProposalCmdFoundationExecProposal returns a CLI command handler for
+// creating a foundation exec proposal governance transaction.
+func NewProposalCmdFoundationExec() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "foundation-exec [messages-json]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Submit a foundation exec proposal",
+		Long: `
+Parameters:
+    messages-json: messages in json format that will be executed if the proposal is accepted.
+
+Example of the content of messages-json:
+
+[
+  {
+    "@type": "/lbm.foundation.v1.MsgUpdateCensorship",
+    "authority": "addr1",
+    "censorship": {
+      "msg_type_url": "/cosmos.staking.v1beta1.MsgCreateValidator",
+      "authority": "CENSORSHIP_AUTHORITY_UNSPECIFIED"
+    }
+  }
+]
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			from := clientCtx.GetFromAddress()
+
+			title, err := cmd.Flags().GetString(govcli.FlagTitle)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(govcli.FlagDescription)
+			if err != nil {
+				return err
+			}
+
+			messages, err := parseMsgs(clientCtx.Codec, args[0])
+			if err != nil {
+				return err
+			}
+
+			content := foundation.NewFoundationExecProposal(title, description, messages)
+
+			depositStr, err := cmd.Flags().GetString(govcli.FlagDeposit)
+			if err != nil {
+				return err
+			}
+			deposit, err := sdk.ParseCoinsNormalized(depositStr)
+			if err != nil {
+				return err
+			}
+
+			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
+			if err != nil {
+				return err
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")
+	cmd.Flags().String(govcli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(govcli.FlagDeposit, "", "deposit of proposal")
+
 	return cmd
 }

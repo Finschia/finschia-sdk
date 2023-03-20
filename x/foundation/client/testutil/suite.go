@@ -56,12 +56,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	var foundationData foundation.GenesisState
 	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[foundation.ModuleName], &foundationData))
 
-	// enable foundation
+	// enable foundation tax
 	params := foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.2"),
-		CensoredMsgTypeUrls: []string{
-			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		},
 	}
 	foundationData.Params = params
 
@@ -92,6 +89,15 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		},
 	})
 	foundationData.Foundation = info
+
+	// enable censorship
+	censorships := []foundation.Censorship{
+		{
+			MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+			Authority:  foundation.CensorshipAuthorityFoundation,
+		},
+	}
+	foundationData.Censorships = censorships
 
 	treasuryReceivers := []sdk.AccAddress{s.stranger, s.leavingMember}
 	for _, receiver := range treasuryReceivers {
