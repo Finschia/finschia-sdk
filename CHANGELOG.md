@@ -54,6 +54,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection,token) [\#900](https://github.com/line/lbm-sdk/pull/900) Add uri for MsgModify and deprecate the old ones
 * (x/foundation) [\#912](https://github.com/line/lbm-sdk/pull/912) Introduce censorship into x/foundation
 * (x/foundation) [\#933](https://github.com/line/lbm-sdk/pull/933) Clean up x/foundation apis
+* (x/collection) [\#938](https://github.com/line/lbm-sdk/pull/938) Add progress log into x/collection import-genesis
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
