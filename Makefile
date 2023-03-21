@@ -152,6 +152,7 @@ mocks: $(MOCKS_DIR)
 	mockgen -source=types/handler.go -package mocks -destination tests/mocks/types_handler.go
 	mockgen -package mocks -destination tests/mocks/grpc_server.go github.com/gogo/protobuf/grpc Server
 	mockgen -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/line/ostracon/libs/log Logger
+	mockgen -source=x/stakingplus/expected_keepers.go -package testutil -destination x/stakingplus/testutil/expected_keepers_mocks.go
 .PHONY: mocks
 
 $(MOCKS_DIR):
