@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"github.com/line/ostracon/libs/log"
+
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
@@ -29,6 +31,11 @@ func NewKeeper(
 		storeKey:    key,
 		cdc:         cdc,
 	}
+}
+
+// Logger returns a module-specific logger.
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", "x/"+collection.ModuleName)
 }
 
 func ValidateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {

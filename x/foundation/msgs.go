@@ -445,6 +445,42 @@ func (m MsgLeaveFoundation) GetSignBytes() []byte {
 	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
+var _ sdk.Msg = (*MsgUpdateCensorship)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgUpdateCensorship) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
+	}
+
+	if err := m.Censorship.ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgUpdateCensorship) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgUpdateCensorship) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgUpdateCensorship) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgUpdateCensorship) GetSignBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgGrant)(nil)
 
 // ValidateBasic implements Msg.

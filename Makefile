@@ -152,6 +152,7 @@ mocks: $(MOCKS_DIR)
 	mockgen -source=types/handler.go -package mocks -destination tests/mocks/types_handler.go
 	mockgen -package mocks -destination tests/mocks/grpc_server.go github.com/gogo/protobuf/grpc Server
 	mockgen -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/line/ostracon/libs/log Logger
+	mockgen -source=x/stakingplus/expected_keepers.go -package testutil -destination x/stakingplus/testutil/expected_keepers_mocks.go
 .PHONY: mocks
 
 $(MOCKS_DIR):
@@ -576,14 +577,12 @@ libsodium:
 GORELEASER_CONFIG ?= .goreleaser.yml
 
 GORELEASER_BUILD_LDF = $(ldflags)
-GORELEASER_BUILD_LDF += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
 GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
 GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
-GORELEASER_IMAGE         ?= line/goreleaserx-wasm:1.0.0-0.10.0
+GORELEASER_IMAGE         ?= line/goreleaserx:1.13.1-1.19.3
 GORELEASER_RELEASE       ?= false
-#GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
 GO_MOD_NAME              := github.com/line/lbm-sdk
 
 ifeq ($(GORELEASER_RELEASE),true)
@@ -613,6 +612,7 @@ release-snapshot:
 		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
 		--debug=$(GORELEASER_DEBUG) \
 		--rm-dist
+
 release:
 	docker run --rm \
 		-e BUILD_TAGS="$(build_tags)" \
@@ -629,7 +629,4 @@ release:
 		--debug=$(GORELEASER_DEBUG) \
 		--rm-dist
 
-build-static: go.sum
-	CGO_ENABLED=1 go build -mod=readonly -tags "$(build_tags)" -ldflags '$(GORELEASER_BUILD_LDF)' -trimpath -o ./build/ ./...
-
-.PHONY: release-snapshot release build-static
+.PHONY: release-snapshot release

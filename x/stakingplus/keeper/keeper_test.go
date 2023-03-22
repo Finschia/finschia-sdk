@@ -1,20 +1,23 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 	"github.com/line/lbm-sdk/x/stakingplus/keeper"
+	"github.com/line/lbm-sdk/x/stakingplus/testutil"
 )
 
 type KeeperTestSuite struct {
@@ -32,12 +35,15 @@ type KeeperTestSuite struct {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
+	ctrl := gomock.NewController(s.T())
+	foundationKeeper := testutil.NewMockFoundationKeeper(ctrl)
+
 	checkTx := false
 	s.app = simapp.Setup(checkTx)
 	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
 	s.keeper = s.app.StakingKeeper
 
-	s.msgServer = keeper.NewMsgServerImpl(s.keeper, s.app.FoundationKeeper)
+	s.msgServer = keeper.NewMsgServerImpl(s.keeper, foundationKeeper)
 
 	createAddress := func() sdk.AccAddress {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -67,19 +73,43 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	// allow Msg/CreateValidator
-	s.app.FoundationKeeper.SetParams(s.ctx, foundation.Params{
-		FoundationTax: sdk.ZeroDec(),
-		CensoredMsgTypeUrls: []string{
-			stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
-		},
-	})
-	err := s.app.FoundationKeeper.Grant(s.ctx, s.grantee, &stakingplus.CreateValidatorAuthorization{
-		ValidatorAddress: sdk.ValAddress(s.grantee).String(),
-	})
-	s.Require().NoError(err)
+	// approve Msg/CreateValidator to grantee
+	foundationKeeper.
+		EXPECT().
+		Accept(gomock.Any(), s.grantee, NewCreateValidatorAuthorizationMatcher(s.grantee)).
+		Return(nil)
+	foundationKeeper.
+		EXPECT().
+		Accept(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(sdkerrors.ErrUnauthorized)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+type CreateValidatorAuthorizationMatcher struct {
+	authz stakingplus.CreateValidatorAuthorization
+}
+
+func NewCreateValidatorAuthorizationMatcher(grantee sdk.AccAddress) *CreateValidatorAuthorizationMatcher {
+	return &CreateValidatorAuthorizationMatcher{
+		authz: stakingplus.CreateValidatorAuthorization{
+			ValidatorAddress: sdk.ValAddress(grantee).String(),
+		},
+	}
+}
+
+func (c CreateValidatorAuthorizationMatcher) Matches(x interface{}) bool {
+	msg, ok := x.(sdk.Msg)
+	if !ok {
+		return false
+	}
+
+	resp, err := c.authz.Accept(sdk.Context{}, msg)
+	return resp.Accept && (err == nil)
+}
+
+func (c CreateValidatorAuthorizationMatcher) String() string {
+	return fmt.Sprintf("grants %s to %s", c.authz.MsgTypeURL(), c.authz.ValidatorAddress)
 }

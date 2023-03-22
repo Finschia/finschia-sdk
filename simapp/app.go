@@ -70,6 +70,7 @@ import (
 	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
 	"github.com/line/lbm-sdk/x/foundation"
+	foundationclient "github.com/line/lbm-sdk/x/foundation/client"
 	foundationkeeper "github.com/line/lbm-sdk/x/foundation/keeper"
 	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/genutil"
@@ -129,6 +130,7 @@ var (
 			distrclient.ProposalHandler,
 			upgradeclient.ProposalHandler,
 			upgradeclient.CancelProposalHandler,
+			foundationclient.ProposalHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -333,7 +335,8 @@ func NewSimApp(
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,

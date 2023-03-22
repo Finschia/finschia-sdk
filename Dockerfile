@@ -30,20 +30,11 @@ COPY ./go.mod /go/src/github.com/line/lbm-sdk/go.mod
 COPY ./go.sum /go/src/github.com/line/lbm-sdk/go.sum
 RUN go mod download
 
-# See https://github.com/line/wasmvm/releases
-# See https://github.com/line/wasmvm/releases
-ADD https://github.com/line/wasmvm/releases/download/v1.0.0-0.10.0/libwasmvm_static.x86_64.a /lib/libwasmvm_static.x86_64.a
-ADD https://github.com/line/wasmvm/releases/download/v1.0.0-0.10.0/libwasmvm_static.aarch64.a /lib/libwasmvm_static.aarch64.a
-RUN sha256sum /lib/libwasmvm_static.aarch64.a | grep bc3db72ba32f34ad88ceb1d20479411bd7f50ccd6a5ca50cc8ca462a561e6189
-RUN sha256sum /lib/libwasmvm_static.x86_64.a | grep 352fa5de5f9dba66f0a38082541d3e63e21394fee3e577ea35e0906294c61276
-
-RUN ln -s /lib/libwasmvm_static.${ARCH}.a /usr/lib/libwasmvm_static.a
-
 # Add source files
 COPY . .
 
 # install simapp, remove packages
-RUN BUILD_TAGS=static make build CGO_ENABLED=1
+RUN make build CGO_ENABLED=1
 
 # Final image
 FROM alpine:edge

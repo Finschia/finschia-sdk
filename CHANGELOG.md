@@ -40,14 +40,23 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 
 ### Improvements
+* (x/collection,token) [\#900](https://github.com/line/lbm-sdk/pull/900) Add uri for MsgModify and deprecate the old ones
+* (x/foundation) [\#912](https://github.com/line/lbm-sdk/pull/912) Introduce censorship into x/foundation
+* (x/foundation) [\#933](https://github.com/line/lbm-sdk/pull/933) Clean up x/foundation apis
+* (x/collection) [\#938](https://github.com/line/lbm-sdk/pull/938) Add progress log into x/collection import-genesis
 
 ### Bug Fixes
 * (swagger) [\#898](https://github.com/line/lbm-sdk/pull/898) fix a bug not added `lbm.tx.v1beta1.Service/GetBlockWithTxs` in swagger
+* (x/collection) [\#911](https://github.com/line/lbm-sdk/pull/911) Add missing command(TxCmdModify) for CLI
+* (x/foundation) [\#922](https://github.com/line/lbm-sdk/pull/922) Propagate events in x/foundation through sdk.Results
 
 ### Removed
 
 ### Breaking Changes
+* (proto) [\#923](https://github.com/line/lbm-sdk/pull/923) deprecate broadcast mode `block`
 
 ### Build, CI
+* (ci, build) [\#901](https://github.com/line/lbm-sdk/pull/901) Update release pipeline to match non-wasm env
 
 ### Document Updates
+* (x/foundation) [\#934](https://github.com/line/lbm-sdk/pull/934) Update permlinks in x/foundation documents

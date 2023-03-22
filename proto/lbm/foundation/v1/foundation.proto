@@ -15,7 +15,23 @@ import "cosmos_proto/cosmos.proto";
 message Params {
   string foundation_tax = 1
       [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
-  repeated string censored_msg_type_urls = 2;
+  reserved 2; // previously used tag number for 'censored_msg_type_urls'.
+}
+
+message Censorship {
+  string              msg_type_url = 1;
+  CensorshipAuthority authority    = 2;
+}
+
+enum CensorshipAuthority {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // CENSORSHIP_AUTHORITY_UNSPECIFIED defines an invalid authority.
+  CENSORSHIP_AUTHORITY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "CensorshipAuthorityUnspecified"];
+  // CENSORSHIP_AUTHORITY_GOVERNANCE defines x/gov authority.
+  CENSORSHIP_AUTHORITY_GOVERNANCE = 1 [(gogoproto.enumvalue_customname) = "CensorshipAuthorityGovernance"];
+  // CENSORSHIP_AUTHORITY_FOUNDATION defines x/foundation authority.
+  CENSORSHIP_AUTHORITY_FOUNDATION = 2 [(gogoproto.enumvalue_customname) = "CensorshipAuthorityFoundation"];
 }
 
 // Member represents a foundation member with an account address and metadata.
@@ -267,4 +283,14 @@ message Vote {
 message Pool {
   repeated cosmos.base.v1beta1.DecCoin treasury = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.DecCoins"];
+}
+
+// FoundationExecProposal is x/gov proposal to trigger the x/foundation messages on behalf of x/gov.
+message FoundationExecProposal {
+  string title       = 1;
+  string description = 2;
+
+  // x/foundation messages to execute
+  // all the signers must be x/gov authority.
+  repeated google.protobuf.Any messages = 3;
 }

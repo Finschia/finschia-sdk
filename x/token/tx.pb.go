@@ -888,7 +888,7 @@ type MsgModify struct {
 	// the address of the grantee which must have modify permission.
 	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
 	// changes to apply.
-	// possible attribute keys are: name, img_uri, meta
+	// possible attribute keys are: name, uri, img_uri (deprecated), meta
 	Changes []Attribute `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
 }
 
