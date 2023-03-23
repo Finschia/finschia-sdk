@@ -33,7 +33,7 @@ require (
 	github.com/line/ostracon v1.0.9
 	github.com/magiconair/properties v1.8.7
 	github.com/mailru/easyjson v0.7.7
-	github.com/mattn/go-isatty v0.0.17
+	github.com/mattn/go-isatty v0.0.18
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.14.0
 	github.com/prometheus/common v0.42.0
