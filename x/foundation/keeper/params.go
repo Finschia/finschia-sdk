@@ -41,7 +41,7 @@ func (k Keeper) UpdateParams(ctx sdk.Context, params foundation.Params) error {
 	}
 
 	// clean up relevant authorizations
-	// sort it for the determinism (#)
+	// sort it for the determinism (line/lbm-sdk#943)
 	urlRemovedSorted := make([]string, 0, len(urlRemoved))
 	for url, removed := range urlRemoved {
 		if !removed {
