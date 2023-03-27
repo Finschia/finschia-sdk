@@ -52,6 +52,8 @@ func (k Keeper) UpdateParams(ctx sdk.Context, params foundation.Params) error {
 	sort.Strings(urlRemovedSorted)
 
 	for _, url := range urlRemovedSorted {
+		url := url
+
 		var grantees []sdk.AccAddress
 		k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 			if authorization.MsgTypeURL() == url {
