@@ -15,16 +15,15 @@ func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
 
 	// calculate the tax
 	taxRatio := k.GetFoundationTax(ctx)
-	tax := feesCollected.MulDecTruncate(taxRatio)
+	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
 
 	// update foundation treasury
 	pool := k.GetPool(ctx)
-	pool.Treasury = pool.Treasury.Add(tax...)
+	pool.Treasury = pool.Treasury.Add(sdk.NewDecCoinsFromCoins(tax...)...)
 	k.SetPool(ctx, pool)
 
 	// collect tax to the foundation treasury
-	amount, _ := tax.TruncateDecimal()
-	if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, foundation.TreasuryName, amount); err != nil {
+	if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, foundation.TreasuryName, tax); err != nil {
 		return err
 	}
 
