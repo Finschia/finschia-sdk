@@ -60,3 +60,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Document Updates
 * (x/foundation) [\#934](https://github.com/line/lbm-sdk/pull/934) Update permlinks in x/foundation documents
+* (x/collection,token) [\#944](https://github.com/line/lbm-sdk/pull/944) Update comments in the x/token,collection events proto
