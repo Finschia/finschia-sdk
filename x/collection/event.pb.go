@@ -1075,6 +1075,7 @@ type EventModifiedContract struct {
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
 	// changes of the attributes applied.
 	// possible attribute keys are same as those of MsgModify.
+	// deprecated "base_img_uri" has been replaced by "uri" in the events.
 	Changes []Attribute `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
 }
 

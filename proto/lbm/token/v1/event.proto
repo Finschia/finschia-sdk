@@ -182,5 +182,6 @@ message EventModified {
   string operator = 2;
   // changes on the metadata of the class.
   // possible attribute keys are same as those of MsgModify.
+  // deprecated "img_uri" has been replaced by "uri" in the events.
   repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }

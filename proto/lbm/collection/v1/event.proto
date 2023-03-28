@@ -249,6 +249,7 @@ message EventModifiedContract {
   string operator = 2;
   // changes of the attributes applied.
   // possible attribute keys are same as those of MsgModify.
+  // deprecated "base_img_uri" has been replaced by "uri" in the events.
   repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }
 
