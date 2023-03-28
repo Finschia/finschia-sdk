@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"sort"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
@@ -39,12 +41,18 @@ func (k Keeper) UpdateParams(ctx sdk.Context, params foundation.Params) error {
 	}
 
 	// clean up relevant authorizations
+	// sort it for the determinism (line/lbm-sdk#943)
+	urlRemovedSorted := make([]string, 0, len(urlRemoved))
 	for url, removed := range urlRemoved {
-		url := url
-
 		if !removed {
 			continue
 		}
+		urlRemovedSorted = append(urlRemovedSorted, url)
+	}
+	sort.Strings(urlRemovedSorted)
+
+	for _, url := range urlRemovedSorted {
+		url := url
 
 		var grantees []sdk.AccAddress
 		k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {

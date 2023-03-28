@@ -42,6 +42,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 
 ### Bug Fixes
+* (x/foundation) [#943](https://github.com/line/lbm-sdk/pull/943) Sort removed urls in x/foundation Msg/UpdateParams
 
 ### Breaking Changes
 
