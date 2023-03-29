@@ -6,26 +6,16 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
-	// fetch and clear the collected fees for the fund, since this is
-	// called in BeginBlock, collected fees will be from the previous block
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
-	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+func (k Keeper) CollectFoundationTax(ctx sdk.Context, from sdk.AccAddress) error {
+	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, from)
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// calculate the tax
 	taxRatio := k.GetFoundationTax(ctx)
 	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
 
-	// update foundation treasury
-	pool := k.GetPool(ctx)
-	pool.Treasury = pool.Treasury.Add(sdk.NewDecCoinsFromCoins(tax...)...)
-	k.SetPool(ctx, pool)
-
-	// collect tax to the foundation treasury
-	if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, foundation.TreasuryName, tax); err != nil {
-		return err
-	}
+	// collect the tax
+	k.FundTreasury(ctx, from, tax)
 
 	return nil
 }
