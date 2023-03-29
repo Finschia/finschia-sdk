@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (swagger) [\#898](https://github.com/line/lbm-sdk/pull/898) fix a bug not added `lbm.tx.v1beta1.Service/GetBlockWithTxs` in swagger
 * (x/collection) [\#911](https://github.com/line/lbm-sdk/pull/911) Add missing command(TxCmdModify) for CLI
 * (x/foundation) [\#922](https://github.com/line/lbm-sdk/pull/922) Propagate events in x/foundation through sdk.Results
+* (x/foundation) [\#946](https://github.com/line/lbm-sdk/pull/946) Fix broken x/foundation invariant on treasury
 
 ### Removed
 
