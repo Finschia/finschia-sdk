@@ -22,6 +22,9 @@ func (s *KeeperTestSuite) TestBeginBlocker() {
 	internal.BeginBlocker(ctx, s.impl)
 
 	tax := sdk.NewDecFromInt(s.balance).MulTruncate(taxRatio).TruncateInt()
+	// ensure the behavior does not change
+	s.Require().Equal(sdk.NewInt(121932631), tax)
+
 	expectedAfter := s.balance.Add(tax)
 	after := s.impl.GetTreasury(ctx)
 	s.Require().Equal(1, len(after))
