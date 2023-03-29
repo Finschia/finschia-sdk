@@ -7,24 +7,16 @@ import (
 )
 
 func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
-	// fetch and clear the collected fees for the fund, since this is
-	// called in BeginBlock, collected fees will be from the previous block
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
-	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName).GetAddress()
+	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector)
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// calculate the tax
 	taxRatio := k.GetFoundationTax(ctx)
-	tax := feesCollected.MulDecTruncate(taxRatio)
+	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
 
-	// update foundation treasury
-	pool := k.GetPool(ctx)
-	pool.Treasury = pool.Treasury.Add(tax...)
-	k.SetPool(ctx, pool)
-
-	// collect tax to the foundation treasury
-	amount, _ := tax.TruncateDecimal()
-	if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, foundation.TreasuryName, amount); err != nil {
+	// collect the tax
+	if err := k.FundTreasury(ctx, feeCollector, tax); err != nil {
 		return err
 	}
 

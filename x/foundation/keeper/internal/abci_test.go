@@ -9,8 +9,9 @@ import (
 func (s *KeeperTestSuite) TestBeginBlocker() {
 	ctx, _ := s.ctx.CacheContext()
 
+	taxRatio := sdk.MustNewDecFromStr("0.123456789")
 	s.impl.SetParams(ctx, foundation.Params{
-		FoundationTax: sdk.MustNewDecFromStr("0.5"),
+		FoundationTax: taxRatio,
 	})
 
 	before := s.impl.GetTreasury(ctx)
@@ -20,10 +21,14 @@ func (s *KeeperTestSuite) TestBeginBlocker() {
 	// collect
 	internal.BeginBlocker(ctx, s.impl)
 
+	tax := sdk.NewDecFromInt(s.balance).MulTruncate(taxRatio).TruncateInt()
+	// ensure the behavior does not change
+	s.Require().Equal(sdk.NewInt(121932631), tax)
+
+	expectedAfter := s.balance.Add(tax)
 	after := s.impl.GetTreasury(ctx)
 	s.Require().Equal(1, len(after))
-	// s.balance + s.balance * 0.5
-	s.Require().Equal(sdk.NewDecFromInt(s.balance.Add(s.balance.Quo(sdk.NewInt(2)))), after[0].Amount)
+	s.Require().Equal(sdk.NewDecFromInt(expectedAfter), after[0].Amount)
 }
 
 func (s *KeeperTestSuite) TestEndBlocker() {
