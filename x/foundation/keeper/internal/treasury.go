@@ -15,7 +15,9 @@ func (k Keeper) CollectFoundationTax(ctx sdk.Context, from sdk.AccAddress) error
 	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
 
 	// collect the tax
-	k.FundTreasury(ctx, from, tax)
+	if err := k.FundTreasury(ctx, from, tax); err != nil {
+		return err
+	}
 
 	return nil
 }
