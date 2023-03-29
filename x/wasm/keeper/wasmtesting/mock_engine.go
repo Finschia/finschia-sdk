@@ -3,6 +3,7 @@ package wasmtesting
 import (
 	"bytes"
 	"crypto/sha256"
+	"fmt"
 
 	"github.com/line/ostracon/libs/rand"
 	wasmvm "github.com/line/wasmvm"
@@ -21,6 +22,7 @@ type MockWasmer struct {
 	AnalyzeCodeFn       func(codeID wasmvm.Checksum) (*wasmvmtypes.AnalysisReport, error)
 	InstantiateFn       func(codeID wasmvm.Checksum, env wasmvmtypes.Env, info wasmvmtypes.MessageInfo, initMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error)
 	ExecuteFn           func(codeID wasmvm.Checksum, env wasmvmtypes.Env, info wasmvmtypes.MessageInfo, executeMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error)
+	CallCallablePointFn func(name []byte, checksum wasmvm.Checksum, isReadonly bool, callstack []byte, env wasmvmtypes.Env, args []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, wasmvmtypes.Events, wasmvmtypes.EventAttributes, uint64, error)
 	QueryFn             func(codeID wasmvm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, uint64, error)
 	MigrateFn           func(codeID wasmvm.Checksum, env wasmvmtypes.Env, migrateMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error)
 	SudoFn              func(codeID wasmvm.Checksum, env wasmvmtypes.Env, sudoMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error)
@@ -107,6 +109,14 @@ func (m *MockWasmer) Execute(codeID wasmvm.Checksum, env wasmvmtypes.Env, info w
 		panic("not supposed to be called!")
 	}
 	return m.ExecuteFn(codeID, env, info, executeMsg, store, goapi, querier, gasMeter, gasLimit, deserCost)
+}
+
+func (m *MockWasmer) CallCallablePoint(name []byte, checksum wasmvm.Checksum, isReadonly bool, callstack []byte, env wasmvmtypes.Env, argsEv []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, wasmvmtypes.Events, wasmvmtypes.EventAttributes, uint64, error) {
+	if m.CallCallablePointFn == nil {
+		panic("not supposed to be called!")
+	}
+	fmt.Println("MockWasmer CallCallablePoint Called")
+	return m.CallCallablePointFn(name, checksum, isReadonly, callstack, env, argsEv, store, goapi, querier, gasMeter, gasLimit, deserCost)
 }
 
 func (m *MockWasmer) Query(codeID wasmvm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, uint64, error) {

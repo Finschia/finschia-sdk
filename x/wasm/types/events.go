@@ -2,13 +2,16 @@ package types
 
 const (
 	// WasmModuleEventType is stored with any contract TX that returns non empty EventAttributes
-	WasmModuleEventType = "wasm"
+	WasmModuleEventType                 = "wasm"
+	WasmModuleEventTypeForCallablePoint = "wasm-callable_point"
 	// CustomContractEventPrefix contracts can create custom events. To not mix them with other system events they got the `wasm-` prefix.
-	CustomContractEventPrefix = "wasm-"
+	CustomContractEventPrefix                 = "wasm-"
+	CustomContractEventPrefixForCallablePoint = "wasm-callable_point-"
 
 	EventTypeStoreCode         = "store_code"
 	EventTypeInstantiate       = "instantiate"
 	EventTypeExecute           = "execute"
+	EventTypeCallablePoint     = "callable_point"
 	EventTypeMigrate           = "migrate"
 	EventTypeUpdateAdmin       = "update_admin"
 	EventTypeClearAdmin        = "clear_admin"

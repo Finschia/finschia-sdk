@@ -16,6 +16,7 @@ type decoratedKeeper interface {
 	pinCode(ctx sdk.Context, codeID uint64) error
 	unpinCode(ctx sdk.Context, codeID uint64) error
 	execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
+	callCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddress, argsEv []byte, funcNameWithCallablePoint string) ([]byte, error)
 	Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error)
 	setContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra types.ContractInfoExtension) error
 	setAccessConfig(ctx sdk.Context, codeID uint64, config types.AccessConfig) error
@@ -51,6 +52,10 @@ func (p PermissionedKeeper) Instantiate(ctx sdk.Context, codeID uint64, creator,
 
 func (p PermissionedKeeper) Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error) {
 	return p.nested.execute(ctx, contractAddress, caller, msg, coins)
+}
+
+func (p PermissionedKeeper) CallCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddress, argsEv []byte, funcNameWithCallablePoint string) ([]byte, error) {
+	return p.nested.callCallablePoint(ctx, contractAddress, argsEv, funcNameWithCallablePoint)
 }
 
 func (p PermissionedKeeper) Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte) ([]byte, error) {

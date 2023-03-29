@@ -23,6 +23,16 @@ func newWasmModuleEvent(customAttributes []wasmvmtypes.EventAttribute, contractA
 	return sdk.Events{sdk.NewEvent(types.WasmModuleEventType, attrs...)}, nil
 }
 
+func newWasmModuleEventForCallablePoint(customAttributes []wasmvmtypes.EventAttribute, contractAddr sdk.AccAddress) (sdk.Events, error) {
+	attrs, err := contractSDKEventAttributes(customAttributes, contractAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	// each wasm invocation always returns one sdk.Event
+	return sdk.Events{sdk.NewEvent(types.WasmModuleEventTypeForCallablePoint, attrs...)}, nil
+}
+
 const eventTypeMinLength = 2
 
 // newCustomEvents converts wasmvm events from a contract response to sdk type events
@@ -38,6 +48,22 @@ func newCustomEvents(evts wasmvmtypes.Events, contractAddr sdk.AccAddress) (sdk.
 			return nil, err
 		}
 		events = append(events, sdk.NewEvent(fmt.Sprintf("%s%s", types.CustomContractEventPrefix, typ), attributes...))
+	}
+	return events, nil
+}
+
+func newCustomEventsForCallablePoint(evts wasmvmtypes.Events, contractAddr sdk.AccAddress) (sdk.Events, error) {
+	events := make(sdk.Events, 0, len(evts))
+	for _, e := range evts {
+		typ := strings.TrimSpace(e.Type)
+		if len(typ) <= eventTypeMinLength {
+			return nil, sdkerrors.Wrap(types.ErrInvalidEvent, fmt.Sprintf("Event type too short: '%s'", typ))
+		}
+		attributes, err := contractSDKEventAttributes(e.Attributes, contractAddr)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, sdk.NewEvent(fmt.Sprintf("%s%s", types.CustomContractEventPrefixForCallablePoint, typ), attributes...))
 	}
 	return events, nil
 }

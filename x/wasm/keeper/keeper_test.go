@@ -32,10 +32,16 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	e, err := ioutil.ReadFile("./testdata/events.wasm")
+	if err != nil {
+		panic(err)
+	}
 	hackatomWasm = b
+	eventsWasm = e
 }
 
 var hackatomWasm []byte
+var eventsWasm []byte
 
 const SupportedFeatures = "iterator,staking,stargate"
 
@@ -641,6 +647,102 @@ func TestExecute(t *testing.T) {
 	expEvt := sdk.NewEvent("execute",
 		sdk.NewAttribute("_contract_address", addr.String()))
 	assert.Equal(t, expEvt, em.Events()[3], prettyEvents(t, em.Events()))
+
+	t.Logf("Duration: %v (%d gas)\n", diff, gasAfter-gasBefore)
+}
+
+func TestCallCallablePoint(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit.Add(deposit...)...)
+
+	contractID, err := keeper.Create(ctx, creator, eventsWasm, nil)
+	require.NoError(t, err)
+
+	_, _, bob := keyPubAddr()
+	initMsgBz := []byte(`{}`)
+
+	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract 3", deposit)
+	require.NoError(t, err)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", addr.String())
+
+	// ensure bob doesn't exist
+	bobAcct := accKeeper.GetAccount(ctx, bob)
+	require.Nil(t, bobAcct)
+
+	// ensure funder has reduced balance
+	creatorAcct := accKeeper.GetAccount(ctx, creator)
+	require.NotNil(t, creatorAcct)
+	// we started at 2*deposit, should have spent one above
+	assert.Equal(t, deposit, bankKeeper.GetAllBalances(ctx, creatorAcct.GetAddress()))
+
+	// ensure contract has updated balance
+	contractAcct := accKeeper.GetAccount(ctx, addr)
+	require.NotNil(t, contractAcct)
+	assert.Equal(t, deposit, bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()))
+
+	// verifier can execute, and get proper gas amount
+	start := time.Now()
+	gasBefore := ctx.GasMeter().GasConsumed()
+	em := sdk.NewEventManager()
+	// when
+	var callableFuncName string
+	callableFuncName = "add_events_dyn"
+	eventsIn := wasmvmtypes.Events{
+		wasmvmtypes.Event{
+			Type: "ty1",
+			Attributes: wasmvmtypes.EventAttributes{
+				wasmvmtypes.EventAttribute{
+					Key:   "alice",
+					Value: "101010",
+				},
+				wasmvmtypes.EventAttribute{
+					Key:   "bob",
+					Value: "42",
+				},
+			},
+		},
+		wasmvmtypes.Event{
+			Type: "ty2",
+			Attributes: wasmvmtypes.EventAttributes{
+				wasmvmtypes.EventAttribute{
+					Key:   "ALICE",
+					Value: "42",
+				},
+				wasmvmtypes.EventAttribute{
+					Key:   "BOB",
+					Value: "101010",
+				},
+			},
+		},
+	}
+	eventsInBin, err := eventsIn.MarshalJSON()
+	argsEv := [][]byte{eventsInBin}
+	argsEvBin, err := json.Marshal(argsEv)
+	require.NoError(t, err)
+
+	res, err := keepers.ContractKeeper.CallCallablePoint(ctx.WithEventManager(em), addr, argsEvBin, callableFuncName)
+	diff := time.Now().Sub(start)
+	require.NoError(t, err)
+	require.NotNil(t, res)
+
+	// confirm emit events
+	require.Equal(t, "callable_point", em.Events()[0].Type)
+	require.Equal(t, "wasm-callable_point-ty1", em.Events()[1].Type)
+	require.Equal(t, "wasm-callable_point-ty2", em.Events()[2].Type)
+
+	// make sure gas is properly deducted from ctx
+	gasAfter := ctx.GasMeter().GasConsumed()
+	if types.EnableGasVerification {
+		require.Equal(t, uint64(0xfd87), gasAfter-gasBefore)
+	}
+
+	// ensure that no coins have been sent
+	contractAcct = accKeeper.GetAccount(ctx, addr)
+	require.NotNil(t, contractAcct)
+	assert.Equal(t, deposit, bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()))
 
 	t.Logf("Duration: %v (%d gas)\n", diff, gasAfter-gasBefore)
 }
