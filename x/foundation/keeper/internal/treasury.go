@@ -6,8 +6,9 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-func (k Keeper) CollectFoundationTax(ctx sdk.Context, from sdk.AccAddress) error {
-	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, from)
+func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName).GetAddress()
+	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector)
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// calculate the tax
@@ -15,7 +16,7 @@ func (k Keeper) CollectFoundationTax(ctx sdk.Context, from sdk.AccAddress) error
 	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
 
 	// collect the tax
-	if err := k.FundTreasury(ctx, from, tax); err != nil {
+	if err := k.FundTreasury(ctx, feeCollector, tax); err != nil {
 		return err
 	}
 

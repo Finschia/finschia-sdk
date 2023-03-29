@@ -13,8 +13,7 @@ import (
 func BeginBlocker(ctx sdk.Context, k Keeper) {
 	defer telemetry.ModuleMeasureSince(foundation.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName).GetAddress()
-	if err := k.CollectFoundationTax(ctx, feeCollector); err != nil {
+	if err := k.CollectFoundationTax(ctx); err != nil {
 		panic(err)
 	}
 }
