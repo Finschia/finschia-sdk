@@ -23,8 +23,6 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
 
-	app *simapp.SimApp
-
 	bankKeeper foundation.BankKeeper
 	keeper     keeper.Keeper
 	impl       internal.Keeper
@@ -57,19 +55,19 @@ func newMsgCreateDog(name string) sdk.Msg {
 
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
-	s.app = simapp.Setup(checkTx)
-	testdata.RegisterInterfaces(s.app.InterfaceRegistry())
-	testdata.RegisterMsgServer(s.app.MsgServiceRouter(), testdata.MsgServerImpl{})
+	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+	testdata.RegisterMsgServer(app.MsgServiceRouter(), testdata.MsgServerImpl{})
 
-	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
-	s.bankKeeper = s.app.BankKeeper
-	s.keeper = s.app.FoundationKeeper
+	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	s.bankKeeper = app.BankKeeper
+	s.keeper = app.FoundationKeeper
 	s.impl = internal.NewKeeper(
-		s.app.AppCodec(),
-		s.app.GetKey(foundation.ModuleName),
-		s.app.MsgServiceRouter(),
-		s.app.AccountKeeper,
-		s.app.BankKeeper,
+		app.AppCodec(),
+		app.GetKey(foundation.ModuleName),
+		app.MsgServiceRouter(),
+		app.AccountKeeper,
+		app.BankKeeper,
 		authtypes.FeeCollectorName,
 		foundation.DefaultConfig(),
 		foundation.DefaultAuthority().String(),
@@ -116,8 +114,8 @@ func (s *KeeperTestSuite) SetupTest() {
 	})
 	holders := []sdk.AccAddress{
 		s.stranger,
-		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
-		s.app.AccountKeeper.GetModuleAccount(s.ctx, authtypes.FeeCollectorName).GetAddress(),
+		app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
+		app.AccountKeeper.GetModuleAccount(s.ctx, authtypes.FeeCollectorName).GetAddress(),
 	}
 	for _, holder := range holders {
 		amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
@@ -127,11 +125,11 @@ func (s *KeeperTestSuite) SetupTest() {
 		// because x/bank already has dependency on x/mint, and we must have dependency
 		// on x/bank, it's OK to use x/mint here.
 		minterName := minttypes.ModuleName
-		err := s.app.BankKeeper.MintCoins(s.ctx, minterName, amount)
+		err := app.BankKeeper.MintCoins(s.ctx, minterName, amount)
 		s.Require().NoError(err)
 
-		minter := s.app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
-		err = s.app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
+		minter := app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
+		err = app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
 		s.Require().NoError(err)
 	}
 
