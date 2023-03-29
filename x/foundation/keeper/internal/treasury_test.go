@@ -2,6 +2,8 @@ package internal_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/foundation"
 )
 
 func (s *KeeperTestSuite) TestFundTreasury() {
@@ -32,13 +34,16 @@ func (s *KeeperTestSuite) TestFundTreasury() {
 			}
 			s.Require().NoError(err)
 
-			after := s.impl.GetTreasury(ctx)
-			s.Require().Equal(before.Add(sdk.NewDecCoinsFromCoins(amount...)...), after)
+			expectedAfter := before.Add(sdk.NewDecCoinsFromCoins(amount...)...)
+			poolAfter := s.impl.GetTreasury(ctx)
+			s.Require().Equal(sdk.NewDecCoins(expectedAfter...), sdk.NewDecCoins(poolAfter...))
+			balanceAfter := sdk.NewDecCoinsFromCoins(s.bankKeeper.GetAllBalances(ctx, authtypes.NewModuleAddress(foundation.TreasuryName))...)
+			s.Require().Equal(sdk.NewDecCoins(expectedAfter...), sdk.NewDecCoins(balanceAfter...))
 		})
 	}
 }
 
-func (s *KeeperTestSuite) TestWithDrawFromTreasury() {
+func (s *KeeperTestSuite) TestWithdrawFromTreasury() {
 	testCases := map[string]struct {
 		amount sdk.Int
 		valid  bool
@@ -66,8 +71,11 @@ func (s *KeeperTestSuite) TestWithDrawFromTreasury() {
 			}
 			s.Require().NoError(err)
 
-			after := s.impl.GetTreasury(ctx)
-			s.Require().Equal(before.Sub(sdk.NewDecCoinsFromCoins(amount...)), after)
+			expectedAfter := before.Sub(sdk.NewDecCoinsFromCoins(amount...))
+			poolAfter := s.impl.GetTreasury(ctx)
+			s.Require().Equal(sdk.NewDecCoins(expectedAfter...), sdk.NewDecCoins(poolAfter...))
+			balanceAfter := sdk.NewDecCoinsFromCoins(s.bankKeeper.GetAllBalances(ctx, authtypes.NewModuleAddress(foundation.TreasuryName))...)
+			s.Require().Equal(sdk.NewDecCoins(expectedAfter...), sdk.NewDecCoins(balanceAfter...))
 		})
 	}
 }

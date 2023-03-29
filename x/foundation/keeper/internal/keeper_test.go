@@ -23,9 +23,12 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
 
-	app             *simapp.SimApp
-	keeper          keeper.Keeper
-	impl            internal.Keeper
+	app *simapp.SimApp
+
+	bankKeeper foundation.BankKeeper
+	keeper     keeper.Keeper
+	impl       internal.Keeper
+
 	queryServer     foundation.QueryServer
 	msgServer       foundation.MsgServer
 	proposalHandler govtypes.Handler
@@ -59,6 +62,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	testdata.RegisterMsgServer(s.app.MsgServiceRouter(), testdata.MsgServerImpl{})
 
 	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	s.bankKeeper = s.app.BankKeeper
 	s.keeper = s.app.FoundationKeeper
 	s.impl = internal.NewKeeper(
 		s.app.AppCodec(),
@@ -106,7 +110,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	s.impl.SetFoundationInfo(s.ctx, info)
 
-	s.balance = sdk.NewInt(1000000)
+	s.balance = sdk.NewInt(987654321)
 	s.impl.SetPool(s.ctx, foundation.Pool{
 		Treasury: sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 	})
