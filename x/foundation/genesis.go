@@ -44,11 +44,18 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 		return err
 	}
 
+	for _, p := range data.Proposals {
+		if err := p.UnpackInterfaces(unpacker); err != nil {
+			return err
+		}
+	}
+
 	for _, ga := range data.Authorizations {
 		if err := ga.UnpackInterfaces(unpacker); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
