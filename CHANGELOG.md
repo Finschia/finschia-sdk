@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#911](https://github.com/line/lbm-sdk/pull/911) Add missing command(TxCmdModify) for CLI
 * (x/foundation) [\#922](https://github.com/line/lbm-sdk/pull/922) Propagate events in x/foundation through sdk.Results
 * (x/foundation) [\#946](https://github.com/line/lbm-sdk/pull/946) Fix broken x/foundation invariant on treasury
+* (x/foundation) [\#947](https://github.com/line/lbm-sdk/pull/947) Unpack proposals in x/foundation import-genesis
 
 ### Removed
 
