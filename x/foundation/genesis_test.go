@@ -50,7 +50,7 @@ func TestDefaultGenesisState(t *testing.T) {
 }
 
 func TestValidateGenesis(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 4)
+	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(fmt.Sprint(i))
 	}
@@ -423,7 +423,6 @@ func TestValidateGenesis(t *testing.T) {
 				return
 			}
 			require.NoError(t, err)
-
 		})
 	}
 }
