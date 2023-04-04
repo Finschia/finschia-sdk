@@ -64,6 +64,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
 * (x/ibc) [\#651](https://github.com/line/lbm-sdk/pull/651) feat: update x/ibc to support github.com/cosmos/ibc-go@v3.0.0
 * (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
+* (x/wasm) [\#948](https://github.com/line/lbm-sdk/pull/948) feat: Implement CallCallablePoint Function to wasm Keeper
 
 ### Improvements
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
