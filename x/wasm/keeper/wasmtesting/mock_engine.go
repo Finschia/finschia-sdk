@@ -3,8 +3,6 @@ package wasmtesting
 import (
 	"bytes"
 	"crypto/sha256"
-	"fmt"
-
 	"github.com/line/ostracon/libs/rand"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
@@ -115,7 +113,6 @@ func (m *MockWasmer) CallCallablePoint(name []byte, checksum wasmvm.Checksum, is
 	if m.CallCallablePointFn == nil {
 		panic("not supposed to be called!")
 	}
-	fmt.Println("MockWasmer CallCallablePoint Called")
 	return m.CallCallablePointFn(name, checksum, isReadonly, callstack, env, argsEv, store, goapi, querier, gasMeter, gasLimit, deserCost)
 }
 
