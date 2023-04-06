@@ -3,6 +3,7 @@ package wasmtesting
 import (
 	"bytes"
 	"crypto/sha256"
+
 	"github.com/line/ostracon/libs/rand"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
