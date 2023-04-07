@@ -29,7 +29,7 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 			postTest: func(res *collection.QueryBalanceResponse) {
 				expected := collection.Coin{
 					TokenId: tokenID,
-					Amount: s.balance,
+					Amount:  s.balance,
 				}
 				s.Require().Equal(expected, res.Balance)
 			},
@@ -42,7 +42,7 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 			postTest: func(res *collection.QueryBalanceResponse) {
 				expected := collection.Coin{
 					TokenId: "deadbeefdeadbeef",
-					Amount: sdk.ZeroInt(),
+					Amount:  sdk.ZeroInt(),
 				}
 				s.Require().Equal(expected, res.Balance)
 			},

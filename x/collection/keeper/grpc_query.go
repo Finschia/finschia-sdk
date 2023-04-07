@@ -17,15 +17,33 @@ import (
 )
 
 type queryServer struct {
-	keeper Keeper
+	keeper     Keeper
+	authKeeper collection.AuthKeeper
 }
 
 // NewQueryServer returns an implementation of the token QueryServer interface
 // for the provided Keeper.
-func NewQueryServer(keeper Keeper) collection.QueryServer {
+func NewQueryServer(keeper Keeper, authKeeper collection.AuthKeeper) collection.QueryServer {
 	return &queryServer{
-		keeper: keeper,
+		keeper:     keeper,
+		authKeeper: authKeeper,
 	}
+}
+
+func (s queryServer) validateAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
+	if !s.authKeeper.HasAccount(ctx, addr) {
+		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
+	}
+
+	return nil
+}
+
+func (s queryServer) validateCollectionGRPC(ctx sdk.Context, id string) error {
+	if _, err := s.keeper.GetContract(ctx, id); err != nil {
+		return status.Error(codes.NotFound, err.Error())
+	}
+
+	return nil
 }
 
 var _ collection.QueryServer = queryServer{}
@@ -50,6 +68,15 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateAccountGRPC(ctx, addr); err != nil {
+		return nil, err
+	}
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
 	coin := collection.Coin{
 		TokenId: req.TokenId,
@@ -113,8 +140,13 @@ func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRe
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
@@ -137,8 +169,13 @@ func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRe
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
@@ -161,8 +198,13 @@ func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequ
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
@@ -184,8 +226,13 @@ func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupply
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
@@ -207,8 +254,13 @@ func (s queryServer) NFTMinted(c context.Context, req *collection.QueryNFTMinted
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
@@ -230,8 +282,13 @@ func (s queryServer) NFTBurnt(c context.Context, req *collection.QueryNFTBurntRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
@@ -250,7 +307,7 @@ func (s queryServer) Contract(c context.Context, req *collection.QueryContractRe
 	ctx := sdk.UnwrapSDKContext(c)
 	contract, err := s.keeper.GetContract(ctx, req.ContractId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	return &collection.QueryContractResponse{Contract: *contract}, nil
@@ -271,9 +328,14 @@ func (s queryServer) TokenClassTypeName(c context.Context, req *collection.Query
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, req.ClassId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	name := proto.MessageName(class)
 
@@ -297,12 +359,12 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 	ctx := sdk.UnwrapSDKContext(c)
 	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	nftClass, ok := class.(*collection.NFTClass)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID)
+		return nil, status.Error(codes.NotFound, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID).Error())
 	}
 
 	tokenType := collection.TokenType{
@@ -372,7 +434,7 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 	ctx := sdk.UnwrapSDKContext(c)
 	legacyToken, err := s.getToken(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	any, err := codectypes.NewAnyWithValue(legacyToken)
@@ -397,8 +459,13 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	root := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
@@ -424,8 +491,13 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
@@ -455,8 +527,13 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
+	}
+
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	store := ctx.KVStore(s.keeper.storeKey)
@@ -494,6 +571,15 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateAccountGRPC(ctx, granteeAddr); err != nil {
+		return nil, err
+	}
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	store := ctx.KVStore(s.keeper.storeKey)
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, granteeAddr))
 	var grants []collection.Grant
@@ -531,6 +617,18 @@ func (s queryServer) IsOperatorFor(c context.Context, req *collection.QueryIsOpe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateAccountGRPC(ctx, operator); err != nil {
+		return nil, err
+	}
+	if err := s.validateAccountGRPC(ctx, holder); err != nil {
+		return nil, err
+	}
+
+	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, holder, operator)
 	authorized := (err == nil)
 

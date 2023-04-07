@@ -385,7 +385,7 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
-		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
+		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper, app.AccountKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 	)
 
