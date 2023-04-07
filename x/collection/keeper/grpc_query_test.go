@@ -704,7 +704,16 @@ func (s *KeeperTestSuite) TestQueryParent() {
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryParentResponse) {
+				s.Require().NotNil(res)
 				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Parent.TokenId)
+			},
+		},
+		"valid request with no parent": {
+			contractID: s.contractID,
+			tokenID:    collection.NewNFTID(s.nftClassID, 1),
+			valid:      true,
+			postTest: func(res *collection.QueryParentResponse) {
+				s.Require().Nil(res)
 			},
 		},
 		"invalid contract id": {
@@ -716,10 +725,6 @@ func (s *KeeperTestSuite) TestQueryParent() {
 		"no such a token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
-		},
-		"no parent": {
-			contractID: s.contractID,
-			tokenID:    collection.NewNFTID(s.nftClassID, 1),
 		},
 	}
 
@@ -735,7 +740,6 @@ func (s *KeeperTestSuite) TestQueryParent() {
 				return
 			}
 			s.Require().NoError(err)
-			s.Require().NotNil(res)
 			tc.postTest(res)
 		})
 	}
