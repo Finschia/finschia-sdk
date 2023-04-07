@@ -27,7 +27,23 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryBalanceResponse) {
-				expected := collection.NewCoin(tokenID, s.balance)
+				expected := collection.Coin{
+					TokenId: tokenID,
+					Amount: s.balance,
+				}
+				s.Require().Equal(expected, res.Balance)
+			},
+		},
+		"valid request with zero amount": {
+			contractID: s.contractID,
+			address:    s.vendor,
+			tokenID:    "deadbeefdeadbeef",
+			valid:      true,
+			postTest: func(res *collection.QueryBalanceResponse) {
+				expected := collection.Coin{
+					TokenId: "deadbeefdeadbeef",
+					Amount: sdk.ZeroInt(),
+				}
 				s.Require().Equal(expected, res.Balance)
 			},
 		},

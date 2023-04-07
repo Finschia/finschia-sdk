@@ -51,6 +51,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#922](https://github.com/line/lbm-sdk/pull/922) Propagate events in x/foundation through sdk.Results
 * (x/foundation) [\#946](https://github.com/line/lbm-sdk/pull/946) Fix broken x/foundation invariant on treasury
 * (x/foundation) [\#947](https://github.com/line/lbm-sdk/pull/947) Unpack proposals in x/foundation import-genesis
+* (x/collection) [\#953](https://github.com/line/lbm-sdk/pull/953) Allow zero amount of coin in x/collection Query/Balance
 * (x/collection) [\#954](https://github.com/line/lbm-sdk/pull/954) Remove duplicated events in x/collection Msg/Modify
 
 ### Removed
