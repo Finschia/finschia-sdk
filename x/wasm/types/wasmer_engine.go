@@ -65,6 +65,22 @@ type WasmerEngine interface {
 		deserCost wasmvmtypes.UFraction,
 	) (*wasmvmtypes.Response, uint64, error)
 
+	// Execute the collable_point function of the callee contract.
+	CallCallablePoint(
+		name []byte,
+		code wasmvm.Checksum,
+		isReadonly bool,
+		caller []byte,
+		env wasmvmtypes.Env,
+		argsEv []byte,
+		store wasmvm.KVStore,
+		goapi wasmvm.GoAPI,
+		querier wasmvm.Querier,
+		gasMeter wasmvm.GasMeter,
+		gasLimit uint64,
+		deserCost wasmvmtypes.UFraction,
+	) ([]byte, wasmvmtypes.Events, wasmvmtypes.EventAttributes, uint64, error)
+
 	// Query allows a client to execute a contract-specific query. If the result is not empty, it should be
 	// valid json-encoded data to return to the client.
 	// The meaning of path and data can be determined by the code. Path is the suffix of the abci.QueryRequest.Path

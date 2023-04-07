@@ -92,6 +92,7 @@ type wasmQueryKeeper interface {
 	contractMetaDataSource
 	QueryRaw(ctx sdk.Context, contractAddress sdk.AccAddress, key []byte) []byte
 	QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []byte) ([]byte, error)
+	QueryCallablePoint(ctx sdk.Context, contractAddr sdk.AccAddress, callablePoint []byte, callablePointArgs []byte) ([]byte, error)
 	IsPinnedCode(ctx sdk.Context, codeID uint64) bool
 }
 
@@ -516,7 +517,26 @@ func WasmQuerier(k wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtypes.W
 				IBCPort: info.IBCPortID,
 			}
 			return json.Marshal(res)
+		case request.CallablePoint != nil:
+			addr, err := sdk.AccAddressFromBech32(request.CallablePoint.ContractAddr)
+			if err != nil {
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Smart.ContractAddr)
+			}
+			funcName := types.RawContractMessage(request.CallablePoint.CallablePoint)
+			funcArgs := types.RawContractMessage(request.CallablePoint.CallablePointArgs)
+			if err := funcName.ValidateBasic(); err != nil {
+				return nil, sdkerrors.Wrap(err, "json msg")
+			}
+			if err := funcArgs.ValidateBasic(); err != nil {
+				return nil, sdkerrors.Wrap(err, "json msg")
+			}
+
+			k.QueryCallablePoint(ctx, addr, funcName, funcArgs)
+			var res []byte
+			return res, nil
+
 		}
+
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown WasmQuery variant"}
 	}
 }

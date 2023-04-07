@@ -26,6 +26,8 @@ import (
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/ioutils"
 	"github.com/line/lbm-sdk/x/wasm/types"
+
+	"encoding/json"
 )
 
 // contractMemoryLimit is the memory limit of each contract execution (in MiB)
@@ -710,6 +712,45 @@ func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []b
 	env := types.NewEnv(ctx, contractAddr)
 	wasmStore := types.NewWasmStore(prefixStore)
 	queryResult, gasUsed, qErr := k.wasmVM.Query(codeInfo.CodeHash, env, req, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), k.runtimeGasForContract(ctx), costJSONDeserialization)
+	k.consumeRuntimeGas(ctx, gasUsed)
+	if qErr != nil {
+		return nil, sdkerrors.Wrap(types.ErrQueryFailed, qErr.Error())
+	}
+	return queryResult, nil
+}
+
+func (k Keeper) QueryCallablePoint(ctx sdk.Context, contractAddr sdk.AccAddress, callablePoint []byte, callablePointArgs []byte) ([]byte, error) {
+	defer func(begin time.Time) { k.metrics.QuerySmartElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
+
+	// checks and increase query stack size
+	ctx, err := checkAndIncreaseQueryStackSize(ctx, k.maxQueryStackSize)
+	if err != nil {
+		return nil, err
+	}
+
+	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	callablePointQuerySetupCosts := k.instantiateContractCosts(k.gasRegister, ctx, k.IsPinnedCode(ctx, contractInfo.CodeID), len(callablePoint))
+	ctx.GasMeter().ConsumeGas(callablePointQuerySetupCosts, "Loading CosmWasm module: callable point")
+
+	// prepare querier
+	querier := k.newQueryHandler(ctx, contractAddr)
+
+	env := types.NewEnv(ctx, contractAddr)
+	wasmStore := types.NewWasmStore(prefixStore)
+
+	callablePointBin, err := json.Marshal(callablePoint)
+
+	empty := []wasmvmtypes.HumanAddress{}
+	emptyBin, err := json.Marshal(empty)
+	if err != nil {
+		panic(fmt.Sprintf("failed to marshal JSON: %s", err))
+	}
+
+	queryResult, _, _, gasUsed, qErr := k.wasmVM.CallCallablePoint(callablePointBin, codeInfo.CodeHash, true, emptyBin, env, callablePointArgs, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), k.runtimeGasForContract(ctx), costJSONDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 	if qErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrQueryFailed, qErr.Error())

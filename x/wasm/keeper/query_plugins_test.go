@@ -473,10 +473,11 @@ func TestQueryErrors(t *testing.T) {
 }
 
 type mockWasmQueryKeeper struct {
-	GetContractInfoFn func(ctx sdk.Context, contractAddress sdk.AccAddress) *types.ContractInfo
-	QueryRawFn        func(ctx sdk.Context, contractAddress sdk.AccAddress, key []byte) []byte
-	QuerySmartFn      func(ctx sdk.Context, contractAddr sdk.AccAddress, req types.RawContractMessage) ([]byte, error)
-	IsPinnedCodeFn    func(ctx sdk.Context, codeID uint64) bool
+	GetContractInfoFn    func(ctx sdk.Context, contractAddress sdk.AccAddress) *types.ContractInfo
+	QueryRawFn           func(ctx sdk.Context, contractAddress sdk.AccAddress, key []byte) []byte
+	QuerySmartFn         func(ctx sdk.Context, contractAddr sdk.AccAddress, req types.RawContractMessage) ([]byte, error)
+	QueryCallablePointFn func(ctx sdk.Context, contractAddr sdk.AccAddress, callablePointName []byte, callablePointArgs []byte) ([]byte, error)
+	IsPinnedCodeFn       func(ctx sdk.Context, codeID uint64) bool
 }
 
 func (m mockWasmQueryKeeper) GetContractInfo(ctx sdk.Context, contractAddress sdk.AccAddress) *types.ContractInfo {
@@ -498,6 +499,13 @@ func (m mockWasmQueryKeeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAdd
 		panic("not expected to be called")
 	}
 	return m.QuerySmartFn(ctx, contractAddr, req)
+}
+
+func (m mockWasmQueryKeeper) QueryCallablePoint(ctx sdk.Context, contractAddr sdk.AccAddress, callablePointName []byte, callablePointArgs []byte) ([]byte, error) {
+	if m.QueryCallablePointFn == nil {
+		panic("not expected to be called")
+	}
+	return m.QueryCallablePointFn(ctx, contractAddr, callablePointName, callablePointArgs)
 }
 
 func (m mockWasmQueryKeeper) IsPinnedCode(ctx sdk.Context, codeID uint64) bool {
