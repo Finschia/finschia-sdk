@@ -339,14 +339,6 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 
 	k.setContract(ctx, *contract)
 
-	event := collection.EventModifiedContract{
-		ContractId: contractID,
-		Operator:   operator.String(),
-		Changes:    changes,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
 	return nil
 }
 
@@ -380,15 +372,6 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 
 	k.setTokenClass(ctx, contractID, class)
 
-	event := collection.EventModifiedTokenClass{
-		ContractId: contractID,
-		TokenType:  class.GetId(),
-		Operator:   operator.String(),
-		Changes:    changes,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
 	return nil
 }
 
@@ -413,15 +396,6 @@ func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, op
 
 	k.setNFT(ctx, contractID, *token)
 
-	event := collection.EventModifiedNFT{
-		ContractId: contractID,
-		TokenId:    tokenID,
-		Operator:   operator.String(),
-		Changes:    changes,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
 	return nil
 }
 
