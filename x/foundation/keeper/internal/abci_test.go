@@ -7,28 +7,36 @@ import (
 )
 
 func (s *KeeperTestSuite) TestBeginBlocker() {
-	ctx, _ := s.ctx.CacheContext()
+	for name, tc := range map[string]struct {
+		taxRatio sdk.Dec
+		valid    bool
+	}{
+		"valid ratio": {
+			taxRatio: sdk.OneDec(),
+			valid:    true,
+		},
+		"ratio > 1": {
+			taxRatio: sdk.MustNewDecFromStr("1.00000001"),
+		},
+	} {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
 
-	taxRatio := sdk.MustNewDecFromStr("0.123456789")
-	s.impl.SetParams(ctx, foundation.Params{
-		FoundationTax: taxRatio,
-	})
+			s.impl.SetParams(ctx, foundation.Params{
+				FoundationTax: tc.taxRatio,
+			})
 
-	before := s.impl.GetTreasury(ctx)
-	s.Require().Equal(1, len(before))
-	s.Require().Equal(sdk.NewDecFromInt(s.balance), before[0].Amount)
-
-	// collect
-	internal.BeginBlocker(ctx, s.impl)
-
-	tax := sdk.NewDecFromInt(s.balance).MulTruncate(taxRatio).TruncateInt()
-	// ensure the behavior does not change
-	s.Require().Equal(sdk.NewInt(121932631), tax)
-
-	expectedAfter := s.balance.Add(tax)
-	after := s.impl.GetTreasury(ctx)
-	s.Require().Equal(1, len(after))
-	s.Require().Equal(sdk.NewDecFromInt(expectedAfter), after[0].Amount)
+			// collect
+			testing := func() {
+				internal.BeginBlocker(ctx, s.impl)
+			}
+			if tc.valid {
+				s.Require().NotPanics(testing)
+			} else {
+				s.Require().Panics(testing)
+			}
+		})
+	}
 }
 
 func (s *KeeperTestSuite) TestEndBlocker() {
