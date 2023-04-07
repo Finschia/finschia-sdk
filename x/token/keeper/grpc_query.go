@@ -14,18 +14,36 @@ import (
 )
 
 type queryServer struct {
-	keeper Keeper
+	keeper     Keeper
+	authKeeper token.AuthKeeper
 }
 
 // NewQueryServer returns an implementation of the token QueryServer interface
 // for the provided Keeper.
-func NewQueryServer(keeper Keeper) token.QueryServer {
+func NewQueryServer(keeper Keeper, authKeeper token.AuthKeeper) token.QueryServer {
 	return &queryServer{
-		keeper: keeper,
+		keeper:     keeper,
+		authKeeper: authKeeper,
 	}
 }
 
 var _ token.QueryServer = queryServer{}
+
+func (s queryServer) validateAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
+	if !s.authKeeper.HasAccount(ctx, addr) {
+		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
+	}
+
+	return nil
+}
+
+func (s queryServer) validateClassGRPC(ctx sdk.Context, id string) error {
+	if _, err := s.keeper.GetClass(ctx, id); err != nil {
+		return status.Error(codes.NotFound, err.Error())
+	}
+
+	return nil
+}
 
 // Balance queries the number of tokens of a given class owned by the owner.
 func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) (*token.QueryBalanceResponse, error) {
@@ -42,6 +60,11 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateAccountGRPC(ctx, addr); err != nil {
+		return nil, err
+	}
+
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr)
 
 	return &token.QueryBalanceResponse{Amount: balance}, nil
@@ -58,10 +81,11 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// daphne compat.
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+
+	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId)
 
 	return &token.QuerySupplyResponse{Amount: supply}, nil
@@ -78,10 +102,11 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// daphne compat.
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+
+	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId)
 
 	return &token.QueryMintedResponse{Amount: minted}, nil
@@ -98,10 +123,11 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// daphne compat.
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+
+	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId)
 
 	return &token.QueryBurntResponse{Amount: burnt}, nil
@@ -120,7 +146,7 @@ func (s queryServer) Contract(c context.Context, req *token.QueryContractRequest
 	ctx := sdk.UnwrapSDKContext(c)
 	class, err := s.keeper.GetClass(ctx, req.ContractId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	return &token.QueryContractResponse{Contract: *class}, nil
@@ -140,6 +166,15 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateAccountGRPC(ctx, grantee); err != nil {
+		return nil, err
+	}
+
+	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	store := ctx.KVStore(s.keeper.storeKey)
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, grantee))
 	var grants []token.Grant
@@ -176,6 +211,18 @@ func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperator
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateAccountGRPC(ctx, operator); err != nil {
+		return nil, err
+	}
+	if err := s.validateAccountGRPC(ctx, holder); err != nil {
+		return nil, err
+	}
+
+	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, holder, operator)
 	authorized := err == nil
 
