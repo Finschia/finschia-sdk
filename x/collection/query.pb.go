@@ -1388,7 +1388,6 @@ func (m *QueryParentRequest) GetTokenId() string {
 // QueryParentResponse is the response type for the Query/Parent RPC method.
 type QueryParentResponse struct {
 	// parent is the information of the parent token.
-	// if there is no parent for the token, it would return nil.
 	Parent NFT `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent"`
 }
 
