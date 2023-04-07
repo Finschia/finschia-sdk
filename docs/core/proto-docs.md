@@ -10461,7 +10461,7 @@ QueryParentResponse is the response type for the Query/Parent RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. if there is no parent for the token, it would return nil. |
+| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. |
 
 
 

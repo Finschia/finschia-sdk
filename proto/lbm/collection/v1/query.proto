@@ -310,7 +310,6 @@ message QueryParentRequest {
 // QueryParentResponse is the response type for the Query/Parent RPC method.
 message QueryParentResponse {
   // parent is the information of the parent token.
-  // if there is no parent for the token, it would return nil.
   NFT parent = 1 [(gogoproto.nullable) = false];
 }
 
