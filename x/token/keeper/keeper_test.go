@@ -57,7 +57,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.TokenKeeper
 
-	s.queryServer = keeper.NewQueryServer(s.keeper)
+	s.queryServer = keeper.NewQueryServer(s.keeper, app.AccountKeeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
 	addresses := []*sdk.AccAddress{
@@ -68,6 +68,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 	for i, address := range createRandomAccounts(len(addresses)) {
 		*addresses[i] = address
+
+		acc := app.AccountKeeper.NewAccountWithAddress(s.ctx, address)
+		app.AccountKeeper.SetAccount(s.ctx, acc)
 	}
 
 	s.balance = sdk.NewInt(1000)

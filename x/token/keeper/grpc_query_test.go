@@ -31,6 +31,10 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 		"invalid address": {
 			contractID: s.contractID,
 		},
+		"address not found": {
+			contractID: s.contractID,
+			address:    sdk.AccAddress("notfound"),
+		},
 	}
 
 	for name, tc := range testCases {
@@ -237,6 +241,14 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 		"invalid grantee": {
 			contractID: s.contractID,
 		},
+		"class not found": {
+			contractID: "fee1dead",
+			grantee:    s.vendor,
+		},
+		"grantee not found": {
+			contractID: s.contractID,
+			grantee:    sdk.AccAddress("notfound"),
+		},
 	}
 
 	for name, tc := range testCases {
@@ -289,6 +301,21 @@ func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 		"invalid holder": {
 			contractID: s.contractID,
 			operator:   s.operator,
+		},
+		"class not found": {
+			contractID: "fee1dead",
+			operator:   s.operator,
+			holder:     s.vendor,
+		},
+		"operator not found": {
+			contractID: s.contractID,
+			operator:   sdk.AccAddress("notfound"),
+			holder:     s.customer,
+		},
+		"holder not found": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			holder:     sdk.AccAddress("notfound"),
 		},
 	}
 

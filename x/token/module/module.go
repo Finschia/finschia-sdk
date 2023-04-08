@@ -78,13 +78,15 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper     keeper.Keeper
+	authKeeper token.AuthKeeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, authKeeper token.AuthKeeper) AppModule {
 	return AppModule{
-		keeper: keeper,
+		keeper:     keeper,
+		authKeeper: authKeeper,
 	}
 }
 
@@ -106,7 +108,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	token.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
-	token.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
+	token.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper, am.authKeeper))
 
 	// m := keeper.NewMigrator(am.keeper)
 	// migrations := map[uint64]func(sdk.Context) error{}
