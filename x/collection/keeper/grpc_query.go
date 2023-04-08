@@ -46,6 +46,32 @@ func (s queryServer) validateCollectionGRPC(ctx sdk.Context, id string) error {
 	return nil
 }
 
+func (s queryServer) validateFTClassGRPC(ctx sdk.Context, contractID, classID string) error {
+	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
+	if err != nil {
+		return status.Error(codes.NotFound, err.Error())
+	}
+
+	_, ok := class.(*collection.FTClass)
+	if !ok {
+		return status.Error(codes.NotFound, sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID).Error())
+	}
+	return nil
+}
+
+func (s queryServer) validateNFTClassGRPC(ctx sdk.Context, contractID, classID string) error {
+	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
+	if err != nil {
+		return status.Error(codes.NotFound, err.Error())
+	}
+
+	_, ok := class.(*collection.NFTClass)
+	if !ok {
+		return status.Error(codes.NotFound, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID).Error())
+	}
+	return nil
+}
+
 var _ collection.QueryServer = queryServer{}
 
 // Balance queries the number of tokens of a given token id owned by the owner.
@@ -145,9 +171,10 @@ func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRe
 		return nil, err
 	}
 
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	if err := s.validateFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+		return nil, err
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTSupplyResponse{Supply: supply}, nil
@@ -174,9 +201,10 @@ func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRe
 		return nil, err
 	}
 
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	if err := s.validateFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+		return nil, err
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTMintedResponse{Minted: minted}, nil
@@ -203,9 +231,10 @@ func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequ
 		return nil, err
 	}
 
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	if err := s.validateFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+		return nil, err
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTBurntResponse{Burnt: burnt}, nil
@@ -231,9 +260,10 @@ func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupply
 		return nil, err
 	}
 
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	if err := s.validateNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+		return nil, err
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTSupplyResponse{Supply: supply}, nil
@@ -259,9 +289,10 @@ func (s queryServer) NFTMinted(c context.Context, req *collection.QueryNFTMinted
 		return nil, err
 	}
 
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	if err := s.validateNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+		return nil, err
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTMintedResponse{Minted: minted}, nil
@@ -287,9 +318,10 @@ func (s queryServer) NFTBurnt(c context.Context, req *collection.QueryNFTBurntRe
 		return nil, err
 	}
 
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	if err := s.validateNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+		return nil, err
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTBurntResponse{Burnt: burnt}, nil
