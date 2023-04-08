@@ -326,17 +326,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
 			&collection.QueryNFTSupplyResponse{
-				Supply: s.balance.Mul(sdk.NewInt(4)),
+				Supply: sdk.NewInt(24),
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 				"extra",
 			},
 			false,
@@ -352,7 +352,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.ftClassID,
+				s.nftClassID,
 			},
 			false,
 			nil,
@@ -401,17 +401,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
 			&collection.QueryNFTMintedResponse{
-				Minted: s.balance.Mul(sdk.NewInt(5)),
+				Minted: sdk.NewInt(24),
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 				"extra",
 			},
 			false,
@@ -427,7 +427,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.ftClassID,
+				s.nftClassID,
 			},
 			false,
 			nil,
@@ -476,17 +476,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
 			&collection.QueryNFTBurntResponse{
-				Burnt: s.balance,
+				Burnt: sdk.ZeroInt(),
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 				"extra",
 			},
 			false,
@@ -502,7 +502,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.ftClassID,
+				s.nftClassID,
 			},
 			false,
 			nil,
