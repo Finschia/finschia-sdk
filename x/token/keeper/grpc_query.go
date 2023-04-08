@@ -29,7 +29,7 @@ func NewQueryServer(keeper Keeper, authKeeper token.AuthKeeper) token.QueryServe
 
 var _ token.QueryServer = queryServer{}
 
-func (s queryServer) validateAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
+func (s queryServer) validateExistenceOfAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
 	if !s.authKeeper.HasAccount(ctx, addr) {
 		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
 	}
@@ -37,7 +37,7 @@ func (s queryServer) validateAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) e
 	return nil
 }
 
-func (s queryServer) validateClassGRPC(ctx sdk.Context, id string) error {
+func (s queryServer) validateExistenceOfClassGRPC(ctx sdk.Context, id string) error {
 	if _, err := s.keeper.GetClass(ctx, id); err != nil {
 		return status.Error(codes.NotFound, err.Error())
 	}
@@ -61,7 +61,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateAccountGRPC(ctx, addr); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, addr); err != nil {
 		return nil, err
 	}
 
@@ -82,7 +82,7 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -103,7 +103,7 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -124,7 +124,7 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -167,11 +167,11 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateAccountGRPC(ctx, grantee); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, grantee); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -212,14 +212,14 @@ func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperator
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateAccountGRPC(ctx, operator); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, operator); err != nil {
 		return nil, err
 	}
-	if err := s.validateAccountGRPC(ctx, holder); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, holder); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateClassGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 

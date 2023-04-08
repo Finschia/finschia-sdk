@@ -30,7 +30,7 @@ func NewQueryServer(keeper Keeper, authKeeper collection.AuthKeeper) collection.
 	}
 }
 
-func (s queryServer) validateAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
+func (s queryServer) validateExistenceOfAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
 	if !s.authKeeper.HasAccount(ctx, addr) {
 		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
 	}
@@ -38,7 +38,7 @@ func (s queryServer) validateAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) e
 	return nil
 }
 
-func (s queryServer) validateCollectionGRPC(ctx sdk.Context, id string) error {
+func (s queryServer) validateExistenceOfCollectionGRPC(ctx sdk.Context, id string) error {
 	if _, err := s.keeper.GetContract(ctx, id); err != nil {
 		return status.Error(codes.NotFound, err.Error())
 	}
@@ -46,7 +46,7 @@ func (s queryServer) validateCollectionGRPC(ctx sdk.Context, id string) error {
 	return nil
 }
 
-func (s queryServer) validateFTClassGRPC(ctx sdk.Context, contractID, classID string) error {
+func (s queryServer) validateExistenceOfFTClassGRPC(ctx sdk.Context, contractID, classID string) error {
 	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
 		return status.Error(codes.NotFound, err.Error())
@@ -59,7 +59,7 @@ func (s queryServer) validateFTClassGRPC(ctx sdk.Context, contractID, classID st
 	return nil
 }
 
-func (s queryServer) validateNFTClassGRPC(ctx sdk.Context, contractID, classID string) error {
+func (s queryServer) validateExistenceOfNFTClassGRPC(ctx sdk.Context, contractID, classID string) error {
 	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
 		return status.Error(codes.NotFound, err.Error())
@@ -95,11 +95,11 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateAccountGRPC(ctx, addr); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, addr); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -167,11 +167,11 @@ func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+	if err := s.validateExistenceOfFTClassGRPC(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
 
@@ -197,11 +197,11 @@ func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+	if err := s.validateExistenceOfFTClassGRPC(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
 
@@ -227,11 +227,11 @@ func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequ
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+	if err := s.validateExistenceOfFTClassGRPC(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
 
@@ -256,11 +256,11 @@ func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupply
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+	if err := s.validateExistenceOfNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
 
@@ -285,11 +285,11 @@ func (s queryServer) NFTMinted(c context.Context, req *collection.QueryNFTMinted
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+	if err := s.validateExistenceOfNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
 
@@ -314,11 +314,11 @@ func (s queryServer) NFTBurnt(c context.Context, req *collection.QueryNFTBurntRe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
+	if err := s.validateExistenceOfNFTClassGRPC(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
 
@@ -361,7 +361,7 @@ func (s queryServer) TokenClassTypeName(c context.Context, req *collection.Query
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -492,7 +492,7 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -524,7 +524,7 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -560,7 +560,7 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -604,11 +604,11 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateAccountGRPC(ctx, granteeAddr); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, granteeAddr); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -650,14 +650,14 @@ func (s queryServer) IsOperatorFor(c context.Context, req *collection.QueryIsOpe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateAccountGRPC(ctx, operator); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, operator); err != nil {
 		return nil, err
 	}
-	if err := s.validateAccountGRPC(ctx, holder); err != nil {
+	if err := s.validateExistenceOfAccountGRPC(ctx, holder); err != nil {
 		return nil, err
 	}
 
-	if err := s.validateCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
