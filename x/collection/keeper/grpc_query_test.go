@@ -64,11 +64,6 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 			address:    sdk.AccAddress("notfound"),
 			tokenID:    tokenID,
 		},
-		"collection not found": {
-			contractID: "deadbeef",
-			address:    s.vendor,
-			tokenID:    tokenID,
-		},
 	}
 
 	for name, tc := range testCases {

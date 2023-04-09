@@ -99,10 +99,6 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 		return nil, err
 	}
 
-	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
 	coin := collection.Coin{
 		TokenId: req.TokenId,
