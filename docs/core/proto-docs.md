@@ -683,6 +683,8 @@
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
     - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
+    - [QueryHasParentRequest](#lbm.collection.v1.QueryHasParentRequest)
+    - [QueryHasParentResponse](#lbm.collection.v1.QueryHasParentResponse)
     - [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest)
     - [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse)
     - [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest)
@@ -10279,6 +10281,37 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 
 
 
+<a name="lbm.collection.v1.QueryHasParentRequest"></a>
+
+### QueryHasParentRequest
+QueryHasParentRequest is the request type for the Query/HasParent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated wit the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryHasParentResponse"></a>
+
+### QueryHasParentResponse
+QueryHasParentResponse is the response type for the Query/HasParent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `has_parent` | [bool](#bool) |  | parent is the information of the parent token. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryHoldersByOperatorRequest"></a>
 
 ### QueryHoldersByOperatorRequest
@@ -10624,6 +10657,7 @@ Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
+| `HasParent` | [QueryHasParentRequest](#lbm.collection.v1.QueryHasParentRequest) | [QueryHasParentResponse](#lbm.collection.v1.QueryHasParentResponse) | HasParent queries whether a given nft has its parent. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|

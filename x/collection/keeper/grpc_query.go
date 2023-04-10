@@ -509,6 +509,42 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	return &collection.QueryRootResponse{Root: *token}, nil
 }
 
+func (s queryServer) HasParent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateNFTID(req.TokenId); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
+	if err != nil {
+		panic(err)
+	}
+
+	return &collection.QueryParentResponse{Parent: *token}, nil
+}
+
 func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
