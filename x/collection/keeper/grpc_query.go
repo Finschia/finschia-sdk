@@ -534,7 +534,7 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
