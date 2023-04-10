@@ -451,7 +451,7 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	return data, nil
 }
 
-func (k Keeper) callCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddress, argsEv []byte, funcNameWithCallablePoint string) ([]byte, error) {
+func (k Keeper) executeCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddress, argsEv []byte, callablePointName string) ([]byte, error) {
 	defer func(begin time.Time) { k.metrics.ExecuteElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
@@ -471,7 +471,7 @@ func (k Keeper) callCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddres
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
 
-	funcNameWithCallablePointBin, err := json.Marshal(funcNameWithCallablePoint)
+	funcNameWithCallablePointBin, err := json.Marshal(callablePointName)
 	if err != nil {
 		panic(fmt.Sprintf("failed to marshal JSON: %s", err))
 	}

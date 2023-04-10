@@ -36,7 +36,7 @@ type ContractOpsKeeper interface {
 	// Execute executes the contract instance
 	Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
 
-	CallCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddress, argsEv []byte, funcNameWithCallablePoint string) ([]byte, error)
+	ExecuteCallablePoint(ctx sdk.Context, contractAddress sdk.AccAddress, argsEv []byte, funcNameWithCallablePoint string) ([]byte, error)
 
 	// Migrate allows to upgrade a contract to a new code with data migration.
 	Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte) ([]byte, error)

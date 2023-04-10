@@ -723,7 +723,7 @@ func TestCallCallablePoint(t *testing.T) {
 	argsEvBin, err := json.Marshal(argsEv)
 	require.NoError(t, err)
 
-	res, err := keepers.ContractKeeper.CallCallablePoint(ctx.WithEventManager(em), addr, argsEvBin, callableFuncName)
+	res, err := keepers.ContractKeeper.ExecuteCallablePoint(ctx.WithEventManager(em), addr, argsEvBin, callableFuncName)
 	diff := time.Now().Sub(start)
 	require.NoError(t, err)
 	require.NotNil(t, res)
