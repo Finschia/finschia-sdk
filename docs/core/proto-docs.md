@@ -10305,7 +10305,7 @@ QueryHasParentResponse is the response type for the Query/HasParent RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `has_parent` | [bool](#bool) |  | parent is the information of the parent token. |
+| `has_parent` | [bool](#bool) |  | whether the token has its parent. |
 
 
 

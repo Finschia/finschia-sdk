@@ -1387,7 +1387,7 @@ func (m *QueryHasParentRequest) GetTokenId() string {
 
 // QueryHasParentResponse is the response type for the Query/HasParent RPC method.
 type QueryHasParentResponse struct {
-	// parent is the information of the parent token.
+	// whether the token has its parent.
 	HasParent bool `protobuf:"varint,1,opt,name=has_parent,json=hasParent,proto3" json:"has_parent,omitempty"`
 }
 

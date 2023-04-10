@@ -27541,7 +27541,7 @@ paths:
               has_parent:
                 type: boolean
                 format: boolean
-                description: parent is the information of the parent token.
+                description: whether the token has its parent.
             description: >-
               QueryHasParentResponse is the response type for the
               Query/HasParent RPC method.
@@ -51640,7 +51640,7 @@ definitions:
       has_parent:
         type: boolean
         format: boolean
-        description: parent is the information of the parent token.
+        description: whether the token has its parent.
     description: >-
       QueryHasParentResponse is the response type for the Query/HasParent RPC
       method.

@@ -314,7 +314,7 @@ message QueryHasParentRequest {
 
 // QueryHasParentResponse is the response type for the Query/HasParent RPC method.
 message QueryHasParentResponse {
-  // parent is the information of the parent token.
+  // whether the token has its parent.
   bool has_parent = 1;
 }
 
