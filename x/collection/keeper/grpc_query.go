@@ -509,7 +509,7 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	return &collection.QueryRootResponse{Root: *token}, nil
 }
 
-func (s queryServer) HasParent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
+func (s queryServer) HasParent(c context.Context, req *collection.QueryHasParentRequest) (*collection.QueryHasParentResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -532,17 +532,8 @@ func (s queryServer) HasParent(c context.Context, req *collection.QueryParentReq
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
-	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
-	if err != nil {
-		return nil, err
-	}
-
-	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
-	if err != nil {
-		panic(err)
-	}
-
-	return &collection.QueryParentResponse{Parent: *token}, nil
+	_, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	return &collection.QueryHasParentResponse{HasParent: (err == nil)}, nil
 }
 
 func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {

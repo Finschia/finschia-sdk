@@ -773,6 +773,69 @@ func (s *KeeperTestSuite) TestQueryRoot() {
 	}
 }
 
+func (s *KeeperTestSuite) TestQueryHasParent() {
+	// empty request
+	_, err := s.queryServer.HasParent(s.goCtx, nil)
+	s.Require().Error(err)
+
+	tokenID := collection.NewNFTID(s.nftClassID, 2)
+	testCases := map[string]struct {
+		contractID string
+		tokenID    string
+		valid      bool
+		postTest   func(res *collection.QueryHasParentResponse)
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			tokenID:    tokenID,
+			valid:      true,
+			postTest: func(res *collection.QueryHasParentResponse) {
+				s.Require().NotNil(res)
+				s.Require().Equal(true, res.HasParent)
+			},
+		},
+		"valid request with no parent": {
+			contractID: s.contractID,
+			tokenID:    collection.NewNFTID(s.nftClassID, 1),
+			valid:      true,
+			postTest: func(res *collection.QueryHasParentResponse) {
+				s.Require().NotNil(res)
+				s.Require().Equal(false, res.HasParent)
+			},
+		},
+		"invalid contract id": {
+			tokenID: tokenID,
+		},
+		"invalid token id": {
+			contractID: s.contractID,
+		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    tokenID,
+		},
+		"token not found": {
+			contractID: s.contractID,
+			tokenID:    collection.NewNFTID("deadbeef", 1),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &collection.QueryHasParentRequest{
+				ContractId: tc.contractID,
+				TokenId:    tc.tokenID,
+			}
+			res, err := s.queryServer.HasParent(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			tc.postTest(res)
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestQueryParent() {
 	// empty request
 	_, err := s.queryServer.Parent(s.goCtx, nil)
