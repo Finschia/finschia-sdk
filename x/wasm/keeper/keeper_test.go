@@ -651,7 +651,7 @@ func TestExecute(t *testing.T) {
 	t.Logf("Duration: %v (%d gas)\n", diff, gasAfter-gasBefore)
 }
 
-func TestCallCallablePoint(t *testing.T) {
+func TestExecuteCallablePoint(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
 
