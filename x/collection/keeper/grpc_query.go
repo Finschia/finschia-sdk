@@ -509,32 +509,27 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	return &collection.QueryRootResponse{Root: *token}, nil
 }
 
-func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	if err := collection.ValidateNFTID(req.TokenId); err != nil {
-		return nil, err
-	}
-
+func (s queryServer) HasParent(c context.Context, req *collection.QueryHasParentRequest) (*collection.QueryHasParentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
+	if err := s.validateGetParentVariants(ctx, req); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
+	_, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	return &collection.QueryHasParentResponse{HasParent: (err == nil)}, nil
+}
+
+func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateGetParentVariants(ctx, req); err != nil {
+		return nil, err
 	}
 
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, nil
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
@@ -543,6 +538,35 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 	}
 
 	return &collection.QueryParentResponse{Parent: *token}, nil
+}
+
+type parentRequest interface {
+	GetContractId() string
+	GetTokenId() string
+}
+
+func (s queryServer) validateGetParentVariants(ctx sdk.Context, req parentRequest) error {
+	if req == nil {
+		return status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := collection.ValidateContractID(req.GetContractId()); err != nil {
+		return err
+	}
+
+	if err := collection.ValidateNFTID(req.GetTokenId()); err != nil {
+		return err
+	}
+
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.GetContractId()); err != nil {
+		return err
+	}
+
+	if err := s.keeper.hasNFT(ctx, req.GetContractId(), req.GetTokenId()); err != nil {
+		return status.Error(codes.NotFound, err.Error())
+	}
+
+	return nil
 }
 
 func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRequest) (*collection.QueryChildrenResponse, error) {
