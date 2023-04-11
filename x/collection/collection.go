@@ -28,8 +28,8 @@ func (x LegacyPermission) String() string {
 func DefaultNextClassIDs(contractID string) NextClassIDs {
 	return NextClassIDs{
 		ContractId:  contractID,
-		Fungible:    sdk.NewUint(0),
-		NonFungible: sdk.NewUint(1 << 28), // "10000000"
+		Fungible:    sdk.NewUint(1),
+		NonFungible: sdk.NewUint(1 << 28).Incr(), // "10000000 + 1"
 	}
 }
 
