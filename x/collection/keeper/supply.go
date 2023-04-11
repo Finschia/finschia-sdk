@@ -26,15 +26,12 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		Grantee:    creator.String(),
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenHead(eventGrant))
-	for _, permission := range collection.Permission_value {
-		p := collection.Permission(permission)
-		if p == collection.PermissionUnspecified {
-			continue
-		}
+	for i := 1; i < len(collection.Permission_value); i++ {
+		p := collection.Permission(i)
 
 		eventGrant.Permission = p
 		ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenBody(eventGrant))
-		k.Grant(ctx, contractID, []byte{}, creator, collection.Permission(permission))
+		k.Grant(ctx, contractID, []byte{}, creator, p)
 	}
 
 	return contractID
