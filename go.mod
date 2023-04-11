@@ -31,7 +31,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.12.1-0.20220721211354-060cc04fc18b
 	github.com/line/ostracon v1.0.7
-	github.com/line/wasmvm v1.0.0-0.10.0
+	github.com/line/wasmvm v1.1.1-0.11.1.0.20230411020707-2c416761ae1a
 	github.com/magiconair/properties v1.8.7
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.17
@@ -138,6 +138,5 @@ replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/jhump/protoreflect => github.com/jhump/protoreflect v1.10.3
 
-	github.com/line/wasmvm => github.com/da1suk8/wasmvm v1.1.1-0.11.1.0.20230331151137-5b08ed3d220a
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
