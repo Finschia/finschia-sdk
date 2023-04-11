@@ -114,10 +114,14 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	foundation.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
 
 	// m := keeper.NewMigrator(am.keeper)
-	// migrations := map[uint64]func(sdk.Context) error{}
-	// for ver, handler := range migrations {
-	// 	if err := cfg.RegisterMigration(foundation.ModuleName, ver, handler); err != nil {
-	// 		panic(fmt.Sprintf("failed to migrate x/%s from version %d to %d: %v", foundation.ModuleName, ver, ver+1, err))
+	// migrations := []struct{
+	// 	ver uint64
+	// 	handler func(sdk.Context) error
+	// }{
+	// }
+	// for _, mig := range migrations {
+	// 	if err := cfg.RegisterMigration(foundation.ModuleName, mig.ver, mig.handler); err != nil {
+	// 		panic(fmt.Sprintf("failed to migrate x/%s from version %d to %d: %v", foundation.ModuleName, mig.ver, mig.ver+1, err))
 	// 	}
 	// }
 }
