@@ -51,6 +51,7 @@ func (s *KeeperTestSuite) TestMsgSendFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -117,6 +118,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -175,6 +177,7 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -254,6 +257,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -305,6 +309,7 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -356,6 +361,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -388,6 +394,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 			}
 
 			s.Require().NotNil(res)
+
 			// if s.deterministic {
 			// 	s.Require().Equal(tc.events, ctx.EventManager().Events())
 			// }
@@ -446,6 +453,7 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -492,6 +500,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -555,6 +564,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -618,6 +628,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -680,6 +691,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -755,6 +767,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -833,6 +846,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -926,6 +940,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1004,6 +1019,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1060,6 +1076,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1111,6 +1128,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1163,6 +1181,7 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1215,6 +1234,7 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1279,6 +1299,7 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -1337,6 +1358,7 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}

@@ -58,7 +58,9 @@ func (s *KeeperTestSuite) TestMsgUpdateParams() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -96,7 +98,9 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -151,7 +155,9 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -210,7 +216,9 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -262,7 +270,9 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -352,7 +362,9 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -403,7 +415,9 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -496,7 +510,9 @@ func (s *KeeperTestSuite) TestMsgVote() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -548,7 +564,9 @@ func (s *KeeperTestSuite) TestMsgExec() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -605,7 +623,9 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -659,7 +679,9 @@ func (s *KeeperTestSuite) TestMsgUpdateCensorship() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -711,7 +733,9 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -761,7 +785,9 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 				return
 			}
 			s.Require().NoError(err)
+
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}

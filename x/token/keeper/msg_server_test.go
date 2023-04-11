@@ -49,6 +49,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -113,6 +114,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -164,6 +166,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -215,6 +218,7 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -252,6 +256,7 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -308,6 +313,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -359,6 +365,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -407,6 +414,7 @@ func (s *KeeperTestSuite) TestMsgMint() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -454,6 +462,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -506,6 +515,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
@@ -553,6 +563,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			}
 
 			s.Require().NotNil(res)
+
 			if s.deterministic {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 			}
