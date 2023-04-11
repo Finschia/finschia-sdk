@@ -26,6 +26,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		Grantee:    creator.String(),
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenHead(eventGrant))
+	// 0 is "unspecified"
 	for i := 1; i < len(collection.Permission_value); i++ {
 		p := collection.Permission(i)
 
