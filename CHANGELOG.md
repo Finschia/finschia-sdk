@@ -30,6 +30,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.46.0...HEAD)
 
+The CHANGELOG of these dynamic link will be categorized when dealing with https://github.com/line/lbm-sdk/issues/950  
+It is intentionally under Unreleased now
+
 * (x/wasm) [\#835](https://github.com/line/lbm-sdk/pull/835) add calculate instantiate cost function into get contract env api
 * (global) [\#764](https://github.com/line/lbm-sdk/pull/764) update dependencies of packages in dynamic link branch
 * (x/wasm) [\#669](https://github.com/line/lbm-sdk/pull/669) update wasmvm and update contracts for tests
