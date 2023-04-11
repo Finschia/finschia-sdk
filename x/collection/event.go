@@ -2,6 +2,7 @@ package collection
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -33,6 +34,18 @@ func AttributeKeyFromString(name string) AttributeKey {
 	return AttributeKey(AttributeKey_value[attributeKeyName])
 }
 
+func sortedAttributeKeys(m map[AttributeKey]string) []AttributeKey {
+	keys := make([]AttributeKey, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+	return keys
+}
+
 // Deprecated: use EventCreatedContract.
 func NewEventCreateCollection(event EventCreatedContract) sdk.Event {
 	eventType := EventTypeCreateCollection.String()
@@ -46,7 +59,8 @@ func NewEventCreateCollection(event EventCreatedContract) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -70,7 +84,8 @@ func NewEventIssueFT(event EventCreatedFTClass, to sdk.AccAddress, amount sdk.In
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -88,7 +103,8 @@ func NewEventIssueNFT(event EventCreatedNFTClass) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -106,7 +122,8 @@ func NewEventMintFT(event EventMintedFT) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -129,7 +146,8 @@ func NewEventMintNFT(event EventMintedNFT) sdk.Events {
 			AttributeKeyName:    token.Name,
 			AttributeKeyMeta:    token.Meta,
 		}
-		for key, value := range attributes {
+		for _, key := range sortedAttributeKeys(attributes) {
+			value := attributes[key]
 			attribute := sdk.NewAttribute(key.String(), value)
 			e = e.AppendAttributes(attribute)
 		}
@@ -161,7 +179,8 @@ func NewEventBurnFT(event EventBurned) *sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -189,7 +208,8 @@ func NewEventBurnNFT(event EventBurned) sdk.Events {
 		AttributeKeyFrom:       event.From,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -226,7 +246,8 @@ func NewEventBurnFTFrom(event EventBurned) *sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -255,7 +276,8 @@ func NewEventBurnNFTFrom(event EventBurned) sdk.Events {
 		AttributeKeyFrom:       event.From,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -279,7 +301,8 @@ func NewEventModifyCollection(event EventModifiedContract) sdk.Events {
 		AttributeKeyContractID: event.ContractId,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -303,7 +326,8 @@ func NewEventModifyTokenType(event EventModifiedTokenClass) sdk.Events {
 		AttributeKeyTokenType:  event.TokenType,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -328,7 +352,8 @@ func NewEventModifyTokenOfFTClass(event EventModifiedTokenClass) sdk.Events {
 		AttributeKeyTokenID:    tokenID,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -352,7 +377,8 @@ func NewEventModifyTokenOfNFT(event EventModifiedNFT) sdk.Events {
 		AttributeKeyTokenID:    event.TokenId,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -388,7 +414,8 @@ func NewEventTransferFT(event EventSent) *sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -417,7 +444,8 @@ func NewEventTransferNFT(event EventSent) sdk.Events {
 		AttributeKeyTo:         event.To,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -454,7 +482,8 @@ func NewEventTransferFTFrom(event EventSent) *sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -484,7 +513,8 @@ func NewEventTransferNFTFrom(event EventSent) sdk.Events {
 		AttributeKeyTo:         event.To,
 	}
 	head := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
@@ -511,7 +541,8 @@ func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -530,7 +561,8 @@ func NewEventGrantPermTokenHead(event EventGranted) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -545,7 +577,8 @@ func NewEventGrantPermTokenBody(event EventGranted) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -562,7 +595,8 @@ func NewEventRevokePermToken(event EventRenounced) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -579,7 +613,8 @@ func NewEventApproveCollection(event EventAuthorizedOperator) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -596,7 +631,8 @@ func NewEventDisapproveCollection(event EventRevokedOperator) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -617,7 +653,8 @@ func NewEventAttachToken(event EventAttached, newRoot string) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -637,7 +674,8 @@ func NewEventDetachToken(event EventDetached, oldRoot string) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -659,7 +697,8 @@ func NewEventAttachFrom(event EventAttached, newRoot string) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -680,7 +719,8 @@ func NewEventDetachFrom(event EventDetached, oldRoot string) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -696,7 +736,8 @@ func NewEventOperationTransferNFT(event EventOwnerChanged) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -712,7 +753,8 @@ func NewEventOperationBurnNFT(contractID string, tokenID string) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -728,7 +770,8 @@ func NewEventOperationRootChanged(event EventRootChanged) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
