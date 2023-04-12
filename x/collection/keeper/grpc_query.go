@@ -134,7 +134,7 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 		return nil
 	})
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, err
 	}
 
 	return &collection.QueryAllBalancesResponse{Balances: balances, Pagination: pageRes}, nil
@@ -596,7 +596,7 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 		return nil
 	})
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, err
 	}
 
 	return &collection.QueryChildrenResponse{Children: children, Pagination: pageRes}, nil
@@ -634,7 +634,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 		return nil
 	})
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, err
 	}
 
 	return &collection.QueryGranteeGrantsResponse{Grants: grants, Pagination: pageRes}, nil
@@ -699,7 +699,7 @@ func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryH
 		return nil
 	})
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, err
 	}
 
 	return &collection.QueryHoldersByOperatorResponse{Holders: holders, Pagination: pageRes}, nil
