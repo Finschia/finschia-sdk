@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#955](https://github.com/line/lbm-sdk/pull/955) Return nil where the parent not exists in x/collection Query/Parent
 * (x/collection) [\#959](https://github.com/line/lbm-sdk/pull/959) Revert #955 and add Query/HasParent into x/collection
 * (x/collection) [\#960](https://github.com/line/lbm-sdk/pull/960) Fix default next class ids of x/collection
+* (x/collection) [\#961](https://github.com/line/lbm-sdk/pull/961) Do not loop enum in x/collection
 
 ### Removed
 
