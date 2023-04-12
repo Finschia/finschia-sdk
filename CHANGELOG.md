@@ -54,7 +54,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#953](https://github.com/line/lbm-sdk/pull/953) Allow zero amount of coin in x/collection Query/Balance
 * (x/collection) [\#954](https://github.com/line/lbm-sdk/pull/954) Remove duplicated events in x/collection Msg/Modify
 * (x/collection) [\#955](https://github.com/line/lbm-sdk/pull/955) Return nil where the parent not exists in x/collection Query/Parent
-* (x/collection) [\#957](https://github.com/line/lbm-sdk/pull/957) Do not check existence of collection in Query/Balance
 
 ### Removed
 
