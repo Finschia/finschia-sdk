@@ -500,6 +500,10 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 }
 
 func (s queryServer) HasParent(c context.Context, req *collection.QueryHasParentRequest) (*collection.QueryHasParentResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.validateGetParentVariants(ctx, req); err != nil {
@@ -511,6 +515,10 @@ func (s queryServer) HasParent(c context.Context, req *collection.QueryHasParent
 }
 
 func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.validateGetParentVariants(ctx, req); err != nil {
@@ -536,10 +544,6 @@ type parentRequest interface {
 }
 
 func (s queryServer) validateGetParentVariants(ctx sdk.Context, req parentRequest) error {
-	if req == nil {
-		return status.Error(codes.InvalidArgument, "empty request")
-	}
-
 	if err := collection.ValidateContractID(req.GetContractId()); err != nil {
 		return status.Error(codes.InvalidArgument, err.Error())
 	}

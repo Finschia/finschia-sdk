@@ -355,6 +355,10 @@ func (s *KeeperTestSuite) TestQueryHoldersByOperator() {
 		"invalid operator": {
 			contractID: s.contractID,
 		},
+		"class not found": {
+			contractID: "fee1dead",
+			operator:   s.operator,
+		},
 	}
 
 	for name, tc := range testCases {
