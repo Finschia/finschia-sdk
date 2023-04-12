@@ -652,6 +652,11 @@ func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryH
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	store := ctx.KVStore(s.keeper.storeKey)
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
 	var holders []string

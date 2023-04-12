@@ -1039,6 +1039,10 @@ func (s *KeeperTestSuite) TestQueryHoldersByOperator() {
 		"invalid operator": {
 			contractID: s.contractID,
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			operator:   s.operator,
+		},
 	}
 
 	for name, tc := range testCases {
