@@ -17,25 +17,15 @@ import (
 )
 
 type queryServer struct {
-	keeper     Keeper
-	authKeeper collection.AuthKeeper
+	keeper Keeper
 }
 
 // NewQueryServer returns an implementation of the token QueryServer interface
 // for the provided Keeper.
-func NewQueryServer(keeper Keeper, authKeeper collection.AuthKeeper) collection.QueryServer {
+func NewQueryServer(keeper Keeper) collection.QueryServer {
 	return &queryServer{
-		keeper:     keeper,
-		authKeeper: authKeeper,
+		keeper: keeper,
 	}
-}
-
-func (s queryServer) validateExistenceOfAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
-	if !s.authKeeper.HasAccount(ctx, addr) {
-		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
-	}
-
-	return nil
 }
 
 func (s queryServer) validateExistenceOfCollectionGRPC(ctx sdk.Context, id string) error {
@@ -94,15 +84,6 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, addr); err != nil {
-		return nil, err
-	}
-
-	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
 	coin := collection.Coin{
 		TokenId: req.TokenId,
@@ -604,10 +585,6 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateExistenceOfAccountGRPC(ctx, granteeAddr); err != nil {
-		return nil, err
-	}
-
 	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
@@ -649,13 +626,6 @@ func (s queryServer) IsOperatorFor(c context.Context, req *collection.QueryIsOpe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, operator); err != nil {
-		return nil, err
-	}
-	if err := s.validateExistenceOfAccountGRPC(ctx, holder); err != nil {
-		return nil, err
-	}
 
 	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
 		return nil, err

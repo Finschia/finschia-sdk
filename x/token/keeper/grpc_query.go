@@ -14,28 +14,18 @@ import (
 )
 
 type queryServer struct {
-	keeper     Keeper
-	authKeeper token.AuthKeeper
+	keeper Keeper
 }
 
 // NewQueryServer returns an implementation of the token QueryServer interface
 // for the provided Keeper.
-func NewQueryServer(keeper Keeper, authKeeper token.AuthKeeper) token.QueryServer {
+func NewQueryServer(keeper Keeper) token.QueryServer {
 	return &queryServer{
-		keeper:     keeper,
-		authKeeper: authKeeper,
+		keeper: keeper,
 	}
 }
 
 var _ token.QueryServer = queryServer{}
-
-func (s queryServer) validateExistenceOfAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
-	if !s.authKeeper.HasAccount(ctx, addr) {
-		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
-	}
-
-	return nil
-}
 
 func (s queryServer) validateExistenceOfClassGRPC(ctx sdk.Context, id string) error {
 	if _, err := s.keeper.GetClass(ctx, id); err != nil {
@@ -60,11 +50,6 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, addr); err != nil {
-		return nil, err
-	}
-
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr)
 
 	return &token.QueryBalanceResponse{Amount: balance}, nil
@@ -167,10 +152,6 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.validateExistenceOfAccountGRPC(ctx, grantee); err != nil {
-		return nil, err
-	}
-
 	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
 	}
@@ -211,13 +192,6 @@ func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperator
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, operator); err != nil {
-		return nil, err
-	}
-	if err := s.validateExistenceOfAccountGRPC(ctx, holder); err != nil {
-		return nil, err
-	}
 
 	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err

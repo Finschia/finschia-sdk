@@ -10,8 +10,4 @@ type (
 		NewID(ctx sdk.Context) string
 		HasID(ctx sdk.Context, id string) bool
 	}
-
-	AuthKeeper interface {
-		HasAccount(sdk.Context, sdk.AccAddress) bool
-	}
 )
