@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#912](https://github.com/line/lbm-sdk/pull/912) Introduce censorship into x/foundation
 * (x/foundation) [\#933](https://github.com/line/lbm-sdk/pull/933) Clean up x/foundation apis
 * (x/collection) [\#938](https://github.com/line/lbm-sdk/pull/938) Add progress log into x/collection import-genesis
+* (x/foundation) [\#952](https://github.com/line/lbm-sdk/pull/952) Address generation of the empty coins in x/foundation
 
 ### Bug Fixes
 * (swagger) [\#898](https://github.com/line/lbm-sdk/pull/898) fix a bug not added `lbm.tx.v1beta1.Service/GetBlockWithTxs` in swagger
@@ -54,6 +55,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#953](https://github.com/line/lbm-sdk/pull/953) Allow zero amount of coin in x/collection Query/Balance
 * (x/collection) [\#954](https://github.com/line/lbm-sdk/pull/954) Remove duplicated events in x/collection Msg/Modify
 * (x/collection) [\#955](https://github.com/line/lbm-sdk/pull/955) Return nil where the parent not exists in x/collection Query/Parent
+* (x/collection) [\#959](https://github.com/line/lbm-sdk/pull/959) Revert #955 and add Query/HasParent into x/collection
+* (x/collection) [\#960](https://github.com/line/lbm-sdk/pull/960) Fix default next class ids of x/collection
+* (x/collection) [\#961](https://github.com/line/lbm-sdk/pull/961) Do not loop enum in x/collection
 
 ### Removed
 

@@ -90,14 +90,6 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper, am.fk))
 	querier := stakingkeeper.Querier{Keeper: am.keeper}
 	stakingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
-
-	// m := keeper.NewMigrator(am.keeper)
-	// migrations := map[uint64]func(sdk.Context) error{}
-	// for ver, handler := range migrations {
-	// 	if err := cfg.RegisterMigration(foundation.ModuleName, ver, handler); err != nil {
-	// 		panic(fmt.Sprintf("failed to migrate x/%s from version %d to %d: %v", stakingplus.ModuleName, ver, ver+1, err))
-	// 	}
-	// }
 }
 
 // InitGenesis performs genesis initialization for the stakingplus module. It returns

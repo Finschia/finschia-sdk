@@ -80,6 +80,11 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
   }
 
+  // HasParent queries whether a given nft has its parent.
+  rpc HasParent(QueryHasParentRequest) returns (QueryHasParentResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent";
+  }
+
   // Parent queries the parent of a given nft.
   rpc Parent(QueryParentRequest) returns (QueryParentResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent";
@@ -297,6 +302,20 @@ message QueryRootResponse {
   // root is the information of the root token.
   // it would return itself if it's the root token.
   NFT root = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryHasParentRequest is the request type for the Query/HasParent RPC method.
+message QueryHasParentRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated wit the non-fungible token.
+  string token_id = 2;
+}
+
+// QueryHasParentResponse is the response type for the Query/HasParent RPC method.
+message QueryHasParentResponse {
+  // whether the token has its parent.
+  bool has_parent = 1;
 }
 
 // QueryParentRequest is the request type for the Query/Parent RPC method.
