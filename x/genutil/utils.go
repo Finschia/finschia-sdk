@@ -34,7 +34,6 @@ func ExportGenesisFileWithTime(
 	genFile, chainID string, validators []octypes.GenesisValidator,
 	appState json.RawMessage, genTime time.Time,
 ) error {
-
 	genDoc := octypes.GenesisDoc{
 		GenesisTime: genTime,
 		ChainID:     chainID,

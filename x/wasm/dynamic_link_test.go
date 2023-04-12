@@ -408,7 +408,7 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 	}
 	queryReq := abci.RequestQuery{Data: []byte(`{"mul":{"value":2}}`)}
 	_, qErr := q(data.ctx, queryPath, queryReq)
-	assert.ErrorContains(t, qErr, "Must not call a writing storage function in this context.")
+	assert.ErrorContains(t, qErr, "It is not possible to inherit from read-only permission to read-write permission")
 }
 
 // This tests callee_panic in dynamic call fails

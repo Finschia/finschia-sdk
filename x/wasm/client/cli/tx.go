@@ -3,8 +3,9 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"strconv"
+
+	"github.com/line/lbm-sdk/internal/os"
 
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
@@ -82,7 +83,7 @@ func StoreCodeCmd() *cobra.Command {
 }
 
 func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet) (types.MsgStoreCode, error) {
-	wasm, err := ioutil.ReadFile(file)
+	wasm, err := os.ReadFileWithSizeLimit(file, int64(types.MaxWasmSize))
 	if err != nil {
 		return types.MsgStoreCode{}, err
 	}
@@ -264,7 +265,7 @@ func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 }
 
 func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sender sdk.AccAddress, flags *flag.FlagSet) (lbmtypes.MsgStoreCodeAndInstantiateContract, error) {
-	wasm, err := ioutil.ReadFile(file)
+	wasm, err := os.ReadFileWithSizeLimit(file, int64(types.MaxWasmSize))
 	if err != nil {
 		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, err
 	}

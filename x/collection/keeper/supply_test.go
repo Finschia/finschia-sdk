@@ -199,11 +199,18 @@ func (s *KeeperTestSuite) TestModifyContract() {
 			ctx, _ := s.ctx.CacheContext()
 
 			err := s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
-			if contractID == s.contractID {
-				s.Require().NoError(err)
-			} else {
+			if contractID != s.contractID {
 				s.Require().Error(err)
+				return
 			}
+			s.Require().NoError(err)
+
+			contract, err := s.keeper.GetContract(ctx, contractID)
+			s.Require().NoError(err)
+
+			s.Require().Equal(changes[0].Value, contract.Name)
+			s.Require().Equal(changes[1].Value, contract.BaseImgUri)
+			s.Require().Equal(changes[2].Value, contract.Meta)
 		})
 	}
 }
@@ -229,11 +236,20 @@ func (s *KeeperTestSuite) TestModifyTokenClass() {
 				ctx, _ := s.ctx.CacheContext()
 
 				err := s.keeper.ModifyTokenClass(ctx, contractID, classID, s.vendor, changes)
-				if contractID == s.contractID && classID == s.nftClassID {
-					s.Require().NoError(err)
-				} else {
+				if contractID != s.contractID || classID != s.nftClassID {
 					s.Require().Error(err)
+					return
 				}
+				s.Require().NoError(err)
+
+				class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
+				s.Require().NoError(err)
+
+				nftClass, ok := class.(*collection.NFTClass)
+				s.Require().True(ok)
+
+				s.Require().Equal(changes[0].Value, nftClass.Name)
+				s.Require().Equal(changes[1].Value, nftClass.Meta)
 			})
 		}
 	}
@@ -261,11 +277,17 @@ func (s *KeeperTestSuite) TestModifyNFT() {
 				ctx, _ := s.ctx.CacheContext()
 
 				err := s.keeper.ModifyNFT(ctx, contractID, tokenID, s.vendor, changes)
-				if contractID == s.contractID && tokenID == validTokenID {
-					s.Require().NoError(err)
-				} else {
+				if contractID != s.contractID || tokenID != validTokenID {
 					s.Require().Error(err)
+					return
 				}
+				s.Require().NoError(err)
+
+				nft, err := s.keeper.GetNFT(ctx, contractID, tokenID)
+				s.Require().NoError(err)
+
+				s.Require().Equal(changes[0].Value, nft.Name)
+				s.Require().Equal(changes[1].Value, nft.Meta)
 			})
 		}
 	}

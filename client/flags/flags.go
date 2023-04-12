@@ -117,8 +117,8 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagKeyringBackend, DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test|memory)")
 	cmd.Flags().String(FlagSignMode, "", "Choose sign mode (direct|amino-json), this is an advanced feature")
 	cmd.Flags().Uint64(FlagTimeoutHeight, 0, "Set a block timeout height to prevent the tx from being committed past a certain height")
-	cmd.Flags().String(FlagPrivKeyType, DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
-		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
+	cmd.Flags().String(FlagPrivKeyType, DefaultPrivKeyType, "specify validator's private key type (currently only ed25519 is supported).\n"+
+		"This option affects the priv_key.type setting in priv_validator_key.json")
 	cmd.Flags().String(FlagFeeAccount, "", "Fee account pays fees for the transaction instead of deducting from the signer")
 
 	// --gas can accept integers and "auto"

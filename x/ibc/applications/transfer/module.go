@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
-	abci "github.com/line/ostracon/abci/types"
-	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/client/cli"
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
@@ -64,13 +64,11 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	return gs.Validate()
 }
 
-// RegisterRESTRoutes implements AppModuleBasic interface
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-}
-
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the ibc-transfer module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 // GetTxCmd implements AppModuleBasic interface

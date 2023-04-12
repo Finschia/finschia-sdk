@@ -8,7 +8,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	wasmtype "github.com/line/lbm-sdk/x/wasm/types"
 	wasmvm "github.com/line/wasmvm"
-	wasmvmapi "github.com/line/wasmvm/api"
+
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -85,7 +85,7 @@ func TestAPIGetContractEnv(t *testing.T) {
 
 	t.Run("succeed", func(t *testing.T) {
 		// omitted value is MultipliedGasMeter. It is not tested here.
-		env, cache, store, querier, _, hash, instantiateCost, gas, err := api.GetContractEnv(contractAddr.String(), uint64(msgLen))
+		env, _, store, querier, _, _, instantiateCost, gas, err := api.GetContractEnv(contractAddr.String(), uint64(msgLen))
 
 		require.NoError(t, err)
 
@@ -93,9 +93,6 @@ func TestAPIGetContractEnv(t *testing.T) {
 		assert.Equal(t, uint64(ctx.BlockTime().UnixNano()), env.Block.Time)
 		assert.Equal(t, ctx.ChainID(), env.Block.ChainID)
 		assert.Equal(t, contractAddr.String(), env.Contract.Address)
-
-		code, err := wasmvmapi.GetCode(*cache, hash)
-		assert.Equal(t, numberWasm, code)
 
 		// "number" comes from https://github.com/line/cosmwasm/blob/d08b5a59115cc3d28f375b7425b902bfd1dac6a4/contracts/number/src/contract.rs#L9
 		assert.Equal(t, []byte{uint8(0), uint8(0), uint8(0), uint8(value)}, store.Get([]byte("number")))

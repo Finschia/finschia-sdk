@@ -33,12 +33,10 @@ func NewSendTxCmd() *cobra.Command {
 ignored as it is implied from [from_key_or_address].`,
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.Flags().Set(flags.FlagFrom, args[0])
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
+			if err := cmd.Flags().Set(flags.FlagFrom, args[0]); err != nil {
 				return err
 			}
-			toAddr, err := sdk.AccAddressFromBech32(args[1])
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -48,7 +46,14 @@ ignored as it is implied from [from_key_or_address].`,
 				return err
 			}
 
-			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins)
+			msg := &types.MsgSend{
+				FromAddress: clientCtx.GetFromAddress().String(),
+				ToAddress:   args[1],
+				Amount:      coins,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

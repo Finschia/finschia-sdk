@@ -20,11 +20,11 @@ import (
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/rest"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
@@ -356,7 +356,8 @@ func (s IntegrationTestSuite) TestGetTx_GRPC() {
 	}{
 		{"nil request", nil, true, "request cannot be nil"},
 		{"empty request", &tx.GetTxRequest{}, true, "tx hash cannot be empty"},
-		{"request with dummy hash", &tx.GetTxRequest{Hash: "deadbeef"}, true, "code = NotFound desc = tx not found: deadbeef"},
+		{"request with dummy hash of wrong length", &tx.GetTxRequest{Hash: "deadbeef"}, true, "The length of tx hash must be 64"},
+		{"request with dummy hash of correct length but invalid", &tx.GetTxRequest{Hash: "2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"}, true, "tx not found: 2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"},
 		{"good request", &tx.GetTxRequest{Hash: s.txRes.TxHash}, false, ""},
 	}
 	for _, tc := range testCases {
@@ -388,9 +389,14 @@ func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
 			true, "tx hash cannot be empty",
 		},
 		{
-			"dummy hash",
+			"dummy hash of wrong length",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", val.APIAddress, "deadbeef"),
-			true, "code = NotFound desc = tx not found: deadbeef",
+			true, "The length of tx hash must be 64",
+		},
+		{
+			"dummy hash of correct length but invalid",
+			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", val.APIAddress, "2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"),
+			true, "tx not found: 2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02",
 		},
 		{
 			"good hash",

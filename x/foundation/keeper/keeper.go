@@ -7,8 +7,6 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 // Keeper defines the foundation module Keeper
@@ -22,60 +20,63 @@ type Keeper struct {
 	router *baseapp.MsgServiceRouter
 
 	// keepers
-	authKeeper    foundation.AuthKeeper
-	bankKeeper    foundation.BankKeeper
-	stakingKeeper foundation.StakingKeeper
+	authKeeper foundation.AuthKeeper
+	bankKeeper foundation.BankKeeper
 
 	feeCollectorName string
 
 	config foundation.Config
+
+	// The address capable of executing privileged messages, including:
+	// - MsgUpdateParams
+	// - MsgUpdateDecisionPolicy
+	// - MsgUpdateMembers
+	// - MsgGrant
+	// - MsgRevoke
+	// - MsgWithdrawFromTreasury
+	// - MsgGovMint
+	//
+	// Typically, this should be the x/foundation module account.
+	authority string
 }
 
-// NewKeeper returns a foundation keeper. It handles:
-// - updating validator auths.
-//
-// CONTRACT: the parameter Subspace must have the param key table already initialized
 func NewKeeper(
 	cdc codec.Codec,
 	key sdk.StoreKey,
 	router *baseapp.MsgServiceRouter,
 	authKeeper foundation.AuthKeeper,
 	bankKeeper foundation.BankKeeper,
-	stakingKeeper foundation.StakingKeeper,
 	feeCollectorName string,
 	config foundation.Config,
+	authority string,
 ) Keeper {
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic("authority is not a valid acc address")
+	}
+
+	// authority is x/foundation module account for now.
+	if authority != foundation.DefaultAuthority().String() {
+		panic("x/foundation authority must be the module account")
+	}
+
 	return Keeper{
 		cdc:              cdc,
 		storeKey:         key,
 		router:           router,
 		authKeeper:       authKeeper,
 		bankKeeper:       bankKeeper,
-		stakingKeeper:    stakingKeeper,
 		feeCollectorName: feeCollectorName,
 		config:           config,
+		authority:        authority,
 	}
+}
+
+// GetAuthority returns the x/foundation module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
 }
 
 // Logger returns a module-specific logger.
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+foundation.ModuleName)
-}
-
-// Cleaning up the states
-func (k Keeper) Cleanup(ctx sdk.Context) {
-	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
-	var createValidatorGrantees []sdk.AccAddress
-	k.iterateAuthorizations(ctx, func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
-		if authorization.MsgTypeURL() == msgTypeURL {
-			createValidatorGrantees = append(createValidatorGrantees, grantee)
-		}
-		return false
-	})
-
-	for _, grantee := range createValidatorGrantees {
-		if err := k.Revoke(ctx, govtypes.ModuleName, grantee, msgTypeURL); err != nil {
-			panic(err)
-		}
-	}
 }

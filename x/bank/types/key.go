@@ -29,12 +29,6 @@ var (
 	DenomMetadataPrefix = []byte{0x1}
 )
 
-// DenomMetadataKey returns the denomination metadata key.
-func DenomMetadataKey(denom string) []byte {
-	d := []byte(denom)
-	return append(DenomMetadataPrefix, d...)
-}
-
 // AddressFromBalancesStore returns an account address from a balances prefix
 // store. The key must not contain the prefix BalancesPrefix as the prefix store
 // iterator discards the actual prefix.
@@ -56,4 +50,10 @@ func AddressFromBalancesStore(key []byte) (sdk.AccAddress, error) {
 // CreateAccountBalancesPrefix creates the prefix for an account's balances.
 func CreateAccountBalancesPrefix(addr []byte) []byte {
 	return append(BalancesPrefix, address.MustLengthPrefix(addr)...)
+}
+
+// CreatePrefixedAccountStoreKey returns the key for the given account and denomination.
+// This method can be used when performing an ABCI query for the balance of an account.
+func CreatePrefixedAccountStoreKey(addr []byte, denom []byte) []byte {
+	return append(CreateAccountBalancesPrefix(addr), denom...)
 }

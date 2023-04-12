@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 
 	wasmvm "github.com/line/wasmvm"
@@ -146,11 +146,11 @@ func GetCmdListContractByCode() *cobra.Command {
 // GetCmdQueryCode returns the bytecode for a given contract
 func GetCmdQueryCode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "code [code_id] [output filename]",
-		Short:   "Downloads wasm bytecode for given code id",
-		Long:    "Downloads wasm bytecode for given code id",
+		Use:     "code [code_id]",
+		Short:   "Downloads wasm bytecode for given code id to the current directory",
+		Long:    "Downloads wasm bytecode for given code id to the current directory as `contract-[code_id].wasm`",
 		Aliases: []string{"source-code", "source"},
-		Args:    cobra.ExactArgs(2),
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -176,8 +176,9 @@ func GetCmdQueryCode() *cobra.Command {
 				return fmt.Errorf("contract not found")
 			}
 
-			fmt.Printf("Downloading wasm code to %s\n", args[1])
-			return ioutil.WriteFile(args[1], res.Data, 0600)
+			fileName := "contract-" + strconv.FormatUint(codeID, 10) + ".wasm"
+			fmt.Printf("Downloading wasm code to %s\n", fileName)
+			return os.WriteFile(fileName, res.Data, 0600)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
@@ -537,7 +538,9 @@ func withPageKeyDecoded(flagSet *flag.FlagSet) *flag.FlagSet {
 	if err != nil {
 		panic(err.Error())
 	}
-	flagSet.Set(flags.FlagPageKey, string(raw))
+	if err = flagSet.Set(flags.FlagPageKey, string(raw)); err != nil {
+		panic(err.Error())
+	}
 	return flagSet
 }
 

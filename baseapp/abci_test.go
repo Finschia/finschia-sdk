@@ -1,6 +1,7 @@
 package baseapp
 
 import (
+	"encoding/json"
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
@@ -98,6 +99,15 @@ func TestGetBlockRentionHeight(t *testing.T) {
 			commitHeight: 499000,
 			expected:     0,
 		},
+		"iavl disable fast node": {
+			bapp: NewBaseApp(
+				name, logger, db, nil,
+				SetIAVLDisableFastNode(true),
+			),
+			maxAgeBlocks: 0,
+			commitHeight: 499000,
+			expected:     0,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -158,5 +168,78 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 				require.NoError(t, err)
 			}
 		})
+	}
+}
+
+// Test and ensure that consensus params has been updated.
+// See:
+// - https://github.com/line/lbm-sdk/pull/673
+func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
+	t.Parallel()
+
+	logger := defaultLogger()
+	db := dbm.NewMemDB()
+	name := t.Name()
+	app := NewBaseApp(name, logger, db, nil)
+	app.SetParamStore(&paramStore{db: dbm.NewMemDB()})
+	app.InitChain(abci.RequestInitChain{
+		ConsensusParams: &abci.ConsensusParams{
+			Block: &abci.BlockParams{
+				MaxGas: -1,
+			},
+		},
+	})
+	app.init()
+
+	// set block params
+	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: 1}})
+	ctx := app.deliverState.ctx
+	maxGas := int64(123456789)
+	app.paramStore.Set(ctx, ParamStoreKeyBlockParams,
+		&abci.BlockParams{
+			MaxGas: maxGas,
+		})
+	app.Commit()
+
+	// confirm consensus params updated into the context
+	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: 2}})
+	newCtx := app.getContextForTx(app.checkState, []byte{})
+	require.Equal(t, maxGas, newCtx.ConsensusParams().Block.MaxGas)
+}
+
+type paramStore struct {
+	db *dbm.MemDB
+}
+
+func (ps *paramStore) Set(_ sdk.Context, key []byte, value interface{}) {
+	bz, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+
+	ps.db.Set(key, bz)
+}
+
+func (ps *paramStore) Has(_ sdk.Context, key []byte) bool {
+	ok, err := ps.db.Has(key)
+	if err != nil {
+		panic(err)
+	}
+
+	return ok
+}
+
+func (ps *paramStore) Get(_ sdk.Context, key []byte, ptr interface{}) {
+	bz, err := ps.db.Get(key)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(bz) == 0 {
+		return
+	}
+
+	if err := json.Unmarshal(bz, ptr); err != nil {
+		panic(err)
 	}
 }

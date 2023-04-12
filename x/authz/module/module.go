@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -48,7 +47,9 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 }
 
 // RegisterLegacyAminoCodec registers the authz module's types for the given codec.
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	authz.RegisterLegacyAminoCodec(cdc)
+}
 
 // RegisterInterfaces registers the authz module's interface types
 func (AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -71,13 +72,11 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config sdkclient.TxEn
 	return authz.ValidateGenesis(data)
 }
 
-// RegisterRESTRoutes registers the REST routes for the authz module.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx sdkclient.Context, r *mux.Router) {
-}
-
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the authz module.
 func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx sdkclient.Context, mux *runtime.ServeMux) {
-	authz.RegisterQueryHandlerClient(context.Background(), mux, authz.NewQueryClient(clientCtx))
+	if err := authz.RegisterQueryHandlerClient(context.Background(), mux, authz.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 // GetQueryCmd returns the cli query commands for the authz module
@@ -155,11 +154,6 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {}
-
-// EndBlock does nothing
-func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return []abci.ValidatorUpdate{}
-}
 
 // ____________________________________________________________________________
 

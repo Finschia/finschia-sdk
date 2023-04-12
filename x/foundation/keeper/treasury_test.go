@@ -22,13 +22,18 @@ func (s *KeeperTestSuite) TestFundTreasury() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
+			before := s.keeper.GetTreasury(ctx)
+
 			amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount))
 			err := s.keeper.FundTreasury(ctx, s.stranger, amount)
-			if tc.valid {
-				s.Require().NoError(err)
-			} else {
+			if !tc.valid {
 				s.Require().Error(err)
+				return
 			}
+			s.Require().NoError(err)
+
+			after := s.keeper.GetTreasury(ctx)
+			s.Require().Equal(before.Add(sdk.NewDecCoinsFromCoins(amount...)...), after)
 		})
 	}
 }
@@ -51,13 +56,18 @@ func (s *KeeperTestSuite) TestWithDrawFromTreasury() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
+			before := s.keeper.GetTreasury(ctx)
+
 			amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount))
 			err := s.keeper.WithdrawFromTreasury(ctx, s.stranger, amount)
-			if tc.valid {
-				s.Require().NoError(err)
-			} else {
+			if !tc.valid {
 				s.Require().Error(err)
+				return
 			}
+			s.Require().NoError(err)
+
+			after := s.keeper.GetTreasury(ctx)
+			s.Require().Equal(before.Sub(sdk.NewDecCoinsFromCoins(amount...)), after)
 		})
 	}
 }

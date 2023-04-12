@@ -2,8 +2,11 @@ package tmservice_test
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"testing"
+
+	"github.com/line/ostracon/libs/bytes"
 
 	"github.com/stretchr/testify/suite"
 
@@ -11,8 +14,8 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/rest"
 	qtypes "github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/version"
 )
 
@@ -75,13 +78,44 @@ func (s IntegrationTestSuite) TestQuerySyncing() {
 
 func (s IntegrationTestSuite) TestQueryLatestBlock() {
 	val := s.network.Validators[0]
-
 	_, err := s.queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
 	s.Require().NoError(err)
 
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blocks/latest", val.APIAddress))
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetLatestBlockResponse
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+}
+
+func (s IntegrationTestSuite) TestQueryBlockByHash() {
+	val := s.network.Validators[0]
+	node, _ := val.ClientCtx.GetNode()
+	blk, _ := node.Block(context.Background(), nil)
+	blkhash := blk.BlockID.Hash
+
+	tcs := []struct {
+		hash  bytes.HexBytes
+		isErr bool
+		err   string
+	}{
+		{blkhash, false, ""},
+		{bytes.HexBytes("wrong hash"), true, "the length of block hash must be 32: invalid request"},
+		{bytes.HexBytes(""), true, "block hash cannot be empty"},
+	}
+
+	for _, tc := range tcs {
+		_, err := s.queryClient.GetBlockByHash(context.Background(), &tmservice.GetBlockByHashRequest{Hash: tc.hash})
+		if tc.isErr {
+			s.Require().Error(err)
+			s.Require().Contains(err.Error(), tc.err)
+		} else {
+			s.Require().NoError(err)
+		}
+	}
+
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/block/%s", val.APIAddress, base64.URLEncoding.EncodeToString(blkhash)))
+	s.Require().NoError(err)
+	var blockInfoRes tmservice.GetBlockByHashResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
 }
 
@@ -120,7 +154,7 @@ func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {
 	s.Require().Equal(true, ok)
 	s.Require().Equal(content, val.PubKey)
 
-	//with pagination
+	// with pagination
 	_, err = s.queryClient.GetLatestValidatorSet(context.Background(), &tmservice.GetLatestValidatorSetRequest{Pagination: &qtypes.PageRequest{
 		Offset: 0,
 		Limit:  10,

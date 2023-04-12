@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -49,9 +48,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	return foundation.ValidateGenesis(data)
 }
 
-// RegisterRESTRoutes registers all REST query handlers
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, r *mux.Router) {}
-
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the foundation module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	if err := foundation.RegisterQueryHandlerClient(context.Background(), mux, foundation.NewQueryClient(clientCtx)); err != nil {
@@ -81,20 +77,20 @@ var _ module.AppModule = AppModule{}
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
-	stakingKeeper foundation.StakingKeeper
+	keeper keeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, stk foundation.StakingKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
-		keeper:        keeper,
-		stakingKeeper: stk,
+		keeper: keeper,
 	}
 }
 
 // RegisterInvariants does nothing, there are no invariants to enforce
-func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
+	keeper.RegisterInvariants(ir, am.keeper)
+}
 
 // Route is empty, as we do not handle Messages (just proposals)
 func (AppModule) Route() sdk.Route { return sdk.Route{} }
@@ -127,7 +123,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState foundation.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
-	if err := am.keeper.InitGenesis(ctx, am.stakingKeeper, &genesisState); err != nil {
+	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
 		panic(err)
 	}
 	return []abci.ValidatorUpdate{}

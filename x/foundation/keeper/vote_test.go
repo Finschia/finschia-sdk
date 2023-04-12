@@ -8,6 +8,10 @@ import (
 )
 
 func (s *KeeperTestSuite) TestVote() {
+	// no such a vote
+	_, err := s.keeper.GetVote(s.ctx, s.nextProposal, s.members[0])
+	s.Require().Error(err)
+
 	testCases := map[string]struct {
 		proposalID uint64
 		voter      sdk.AccAddress
@@ -33,8 +37,13 @@ func (s *KeeperTestSuite) TestVote() {
 			voter:      s.members[0],
 			option:     foundation.VOTE_OPTION_YES,
 		},
+		"no such a proposal": {
+			proposalID: s.nextProposal,
+			voter:      s.members[0],
+			option:     foundation.VOTE_OPTION_YES,
+		},
 		"inactive proposal": {
-			proposalID: s.abortedProposal,
+			proposalID: s.withdrawnProposal,
 			voter:      s.members[0],
 			option:     foundation.VOTE_OPTION_YES,
 		},
@@ -64,11 +73,14 @@ func (s *KeeperTestSuite) TestVote() {
 				Metadata:   tc.metadata,
 			}
 			err := s.keeper.Vote(ctx, vote)
-			if tc.valid {
-				s.Require().NoError(err)
-			} else {
+			if !tc.valid {
 				s.Require().Error(err)
+				return
 			}
+			s.Require().NoError(err)
+
+			_, err = s.keeper.GetVote(ctx, vote.ProposalId, sdk.MustAccAddressFromBech32(vote.Voter))
+			s.Require().NoError(err)
 		})
 	}
 }

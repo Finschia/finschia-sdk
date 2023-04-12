@@ -10,6 +10,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/testdata"
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
@@ -27,10 +28,13 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	operator      sdk.AccAddress
-	comingMember  sdk.AccAddress
-	leavingMember sdk.AccAddress
-	stranger      sdk.AccAddress
+	authority       sdk.AccAddress
+	comingMember    sdk.AccAddress
+	leavingMember   sdk.AccAddress
+	permanentMember sdk.AccAddress
+	stranger        sdk.AccAddress
+
+	proposalID uint64
 }
 
 var commonArgs = []string{
@@ -45,6 +49,7 @@ func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
+	testdata.RegisterInterfaces(s.cfg.InterfaceRegistry)
 
 	genesisState := s.cfg.GenesisState
 
@@ -52,41 +57,51 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[foundation.ModuleName], &foundationData))
 
 	// enable foundation
-	params := &foundation.Params{
-		Enabled:       true,
+	params := foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.2"),
+		CensoredMsgTypeUrls: []string{
+			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		},
 	}
 	foundationData.Params = params
 
-	var operatorMnemonic string
-	operatorMnemonic, s.operator = s.createMnemonic("operator")
-	info := &foundation.FoundationInfo{
-		Operator: s.operator.String(),
-		Version:  1,
-	}
-	err := info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
-		Threshold: sdk.OneDec(),
-		Windows: &foundation.DecisionPolicyWindows{
-			VotingPeriod: time.Hour,
-		},
-	})
-	s.Require().NoError(err)
-	foundationData.Foundation = info
+	foundationData.GovMintLeftCount = 1
 
 	var strangerMnemonic string
 	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
 	var leavingMemberMnemonic string
 	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
+	var permanentMemberMnemonic string
+	permanentMemberMnemonic, s.permanentMember = s.createMnemonic("permanentmember")
 
-	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}
-	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
-	for i, grantee := range grantees {
+	foundationData.Members = []foundation.Member{
+		{
+			Address:  s.leavingMember.String(),
+			Metadata: "leaving member",
+		},
+		{
+			Address:  s.permanentMember.String(),
+			Metadata: "permanent member",
+		},
+	}
+
+	info := foundation.DefaultFoundation()
+	info.TotalWeight = sdk.NewDecFromInt(sdk.NewInt(int64(len(foundationData.Members))))
+	info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
+		Threshold: sdk.OneDec(),
+		Windows: &foundation.DecisionPolicyWindows{
+			VotingPeriod: 7 * 24 * time.Hour,
+		},
+	})
+	foundationData.Foundation = info
+
+	treasuryReceivers := []sdk.AccAddress{s.stranger, s.leavingMember}
+	for _, receiver := range treasuryReceivers {
 		ga := foundation.GrantAuthorization{
-			Granter: foundation.ModuleName,
-			Grantee: grantee.String(),
+			Grantee: receiver.String(),
 		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
 		s.Require().NotNil(ga)
-		foundationData.Authorizations[i] = *ga
+		foundationData.Authorizations = append(foundationData.Authorizations, *ga)
 	}
 
 	foundationDataBz, err := s.cfg.Codec.MarshalJSON(&foundationData)
@@ -102,18 +117,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	var comingMemberMnemonic string
 	comingMemberMnemonic, s.comingMember = s.createMnemonic("comingmember")
 
-	s.createAccount("operator", operatorMnemonic)
+	s.authority = foundation.DefaultAuthority()
 	s.createAccount("stranger", strangerMnemonic)
 	s.createAccount("comingmember", comingMemberMnemonic)
 	s.createAccount("leavingmember", leavingMemberMnemonic)
+	s.createAccount("permanentmember", permanentMemberMnemonic)
 
-	s.addMembers([]sdk.AccAddress{s.leavingMember})
-	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
-		Operator: s.operator.String(),
-		To:       s.network.Validators[0].Address.String(),
-		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
-	}, false)
-	s.vote(id, []sdk.AccAddress{s.network.Validators[0].Address, s.leavingMember})
+	s.proposalID = s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	s.vote(s.proposalID, []sdk.AccAddress{s.leavingMember, s.permanentMember})
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	s.setupHeight, err = s.network.LatestHeight()
@@ -127,41 +138,10 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 // submit a proposal
-func (s *IntegrationTestSuite) addMembers(members []sdk.AccAddress) {
-	val := s.network.Validators[0]
-
-	updates := make([]json.RawMessage, len(members))
-	for i, member := range members {
-		update := foundation.Member{
-			Address:       member.String(),
-			Participating: true,
-		}
-		bz, err := s.cfg.Codec.MarshalJSON(&update)
-		s.Require().NoError(err)
-
-		updates[i] = bz
-	}
-	updateArg, err := json.Marshal(updates)
-	s.Require().NoError(err)
-
-	args := append([]string{
-		s.operator.String(),
-		string(updateArg),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.operator),
-	}, commonArgs...)
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdUpdateMembers(), args)
-	s.Require().NoError(err)
-
-	var res sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().EqualValues(0, res.Code, out.String())
-}
-
-// submit a proposal
 func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 	val := s.network.Validators[0]
 
-	proposers := []string{val.Address.String()}
+	proposers := []string{s.permanentMember.String()}
 	proposersBz, err := json.Marshal(&proposers)
 	s.Require().NoError(err)
 
@@ -178,7 +158,7 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().EqualValues(0, res.Code, out.String())
+	s.Require().Zero(res.Code, out.String())
 
 	events := res.Logs[0].Events
 	proposalEvent, _ := sdk.TypedEventToEvent(&foundation.EventSubmitProposal{})
@@ -209,7 +189,7 @@ func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) 
 
 		var res sdk.TxResponse
 		s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-		s.Require().EqualValues(0, res.Code, out.String())
+		s.Require().Zero(res.Code, out.String())
 	}
 }
 
@@ -252,5 +232,5 @@ func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().EqualValues(0, res.Code, out.String())
+	s.Require().Zero(res.Code, out.String())
 }

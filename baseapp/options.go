@@ -6,11 +6,10 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/cache"
-
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"
 	"github.com/line/lbm-sdk/store"
+	"github.com/line/lbm-sdk/store/cache"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -64,6 +63,11 @@ func SetIAVLCacheSize(size int) func(*BaseApp) {
 	return func(bapp *BaseApp) { bapp.cms.SetIAVLCacheSize(size) }
 }
 
+// SetIAVLDisableFastNode enables(false)/disables(true) fast node usage from the IAVL store.
+func SetIAVLDisableFastNode(disable bool) func(*BaseApp) {
+	return func(bapp *BaseApp) { bapp.cms.SetIAVLDisableFastNode(disable) }
+}
+
 // SetInterBlockCache provides a BaseApp option function that sets the
 // inter-block cache.
 func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
@@ -83,6 +87,10 @@ func SetSnapshotKeepRecent(keepRecent uint32) func(*BaseApp) {
 // SetSnapshotStore sets the snapshot store.
 func SetSnapshotStore(snapshotStore *snapshots.Store) func(*BaseApp) {
 	return func(app *BaseApp) { app.SetSnapshotStore(snapshotStore) }
+}
+
+func SetChanCheckTxSize(size uint) func(*BaseApp) {
+	return func(app *BaseApp) { app.SetChanCheckTxSize(size) }
 }
 
 func (app *BaseApp) SetName(name string) {
@@ -245,10 +253,28 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
 }
 
+func (app *BaseApp) SetChanCheckTxSize(chanCheckTxSize uint) {
+	if app.sealed {
+		panic("SetChanCheckTxSize() on sealed BaseApp")
+	}
+	app.chCheckTxSize = chanCheckTxSize
+}
+
 func MetricsProvider(prometheus bool) cache.MetricsProvider {
 	namespace := "app"
 	if prometheus {
 		return cache.PrometheusMetricsProvider(namespace)
 	}
 	return cache.NopMetricsProvider()
+}
+
+// SetStreamingService is used to set a streaming service into the BaseApp hooks and load the listeners into the multistore
+func (app *BaseApp) SetStreamingService(s StreamingService) {
+	// add the listeners for each StoreKey
+	for key, lis := range s.Listeners() {
+		app.cms.AddListeners(key, lis)
+	}
+	// register the StreamingService within the BaseApp
+	// BaseApp will pass BeginBlock, DeliverTx, and EndBlock requests and responses to the streaming services to update their ABCI context
+	app.abciListeners = append(app.abciListeners, s)
 }

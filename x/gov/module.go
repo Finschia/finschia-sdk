@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -22,7 +21,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	govclient "github.com/line/lbm-sdk/x/gov/client"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
-	"github.com/line/lbm-sdk/x/gov/client/rest"
 	"github.com/line/lbm-sdk/x/gov/keeper"
 	"github.com/line/lbm-sdk/x/gov/simulation"
 	"github.com/line/lbm-sdk/x/gov/types"
@@ -73,19 +71,11 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	return types.ValidateGenesis(&data)
 }
 
-// RegisterRESTRoutes registers the REST routes for the gov module.
-func (a AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	proposalRESTHandlers := make([]rest.ProposalRESTHandler, 0, len(a.proposalHandlers))
-	for _, proposalHandler := range a.proposalHandlers {
-		proposalRESTHandlers = append(proposalRESTHandlers, proposalHandler.RESTHandler(clientCtx))
-	}
-
-	rest.RegisterHandlers(clientCtx, rtr, proposalRESTHandlers)
-}
-
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the gov module.
 func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 // GetTxCmd returns the root tx command for the gov module.
@@ -181,9 +171,6 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return 1 }
-
-// BeginBlock performs a no-op.
-func (AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
 // EndBlock returns the end blocker for the gov module. It returns no validator
 // updates.

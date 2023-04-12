@@ -87,7 +87,7 @@ func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress, tok
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // owner
 func ownerKey(contractID string, tokenID string) []byte {
 	prefix := ownerKeyPrefixByContractID(contractID)
@@ -114,7 +114,7 @@ func ownerKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // nft
 func nftKey(contractID string, tokenID string) []byte {
 	prefix := nftKeyPrefixByContractID(contractID)
@@ -152,7 +152,7 @@ func splitNFTKey(key []byte) (contractID string, tokenID string) {
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // parent
 func parentKey(contractID string, tokenID string) []byte {
 	prefix := parentKeyPrefixByContractID(contractID)
@@ -190,7 +190,7 @@ func splitParentKey(key []byte) (contractID string, tokenID string) {
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // child
 func childKey(contractID string, tokenID, childID string) []byte {
 	prefix := childKeyPrefixByTokenID(contractID, tokenID)
@@ -248,7 +248,7 @@ func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 func contractKey(contractID string) []byte {
 	key := make([]byte, len(contractKeyPrefix)+len(contractID))
 
@@ -328,7 +328,7 @@ func nextClassIDKey(contractID string) []byte {
 	return key
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 func authorizationKey(contractID string, operator, holder sdk.AccAddress) []byte {
 	prefix := authorizationKeyPrefixByOperator(contractID, operator)
 	key := make([]byte, len(prefix)+len(holder))
@@ -385,7 +385,7 @@ func splitAuthorizationKey(key []byte) (contractID string, operator, holder sdk.
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 func grantKey(contractID string, grantee sdk.AccAddress, permission collection.Permission) []byte {
 	prefix := grantKeyPrefixByGrantee(contractID, grantee)
 	key := make([]byte, len(prefix)+1)
@@ -442,7 +442,7 @@ func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permi
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // statistics
 func statisticKey(keyPrefix []byte, contractID string, classID string) []byte {
 	prefix := statisticKeyPrefixByContractID(keyPrefix, contractID)
@@ -480,7 +480,7 @@ func splitStatisticKey(keyPrefix, key []byte) (contractID string, classID string
 	return
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // legacy keys
 func legacyTokenKey(contractID string, tokenID string) []byte {
 	prefix := legacyTokenKeyPrefixByContractID(contractID)

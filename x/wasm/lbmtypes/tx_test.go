@@ -1,6 +1,8 @@
 package lbmtypes
 
 import (
+	"encoding/hex"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,6 +11,10 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	wasmTypes "github.com/line/lbm-sdk/x/wasm/types"
 )
+
+func NewMsgStoreCodeAndInstantiateContract(fromAddr sdk.AccAddress) *MsgStoreCodeAndInstantiateContract {
+	return &MsgStoreCodeAndInstantiateContract{Sender: fromAddr.String()}
+}
 
 func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 	bad, err := sdk.AccAddressFromHex("012345")
@@ -121,4 +127,10 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestNewMsgStoreCodeAndInstantiateContractGetSigners(t *testing.T) {
+	res := NewMsgStoreCodeAndInstantiateContract(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
 }

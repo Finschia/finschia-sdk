@@ -5,7 +5,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"math/rand"
+	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -56,7 +57,7 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 }
 
 func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp, GenesisState) {
-	randDir, _ := ioutil.TempDir(DefaultNodeHome, "")
+	randDir, _ := os.MkdirTemp(DefaultNodeHome, "")
 	snapshotDir := filepath.Join(randDir, "data", "snapshots")
 	snapshotDB := dbm.NewMemDB()
 
@@ -389,8 +390,8 @@ func SignCheckDeliver(
 	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header ocproto.Header, msgs []sdk.Msg,
 	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
 ) (sdk.GasInfo, *sdk.Result, error) {
-
-	tx, err := helpers.GenTx(
+	tx, err := helpers.GenSignedMockTx(
+		rand.New(rand.NewSource(time.Now().UnixNano())),
 		txCfg,
 		msgs,
 		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 0)},
@@ -479,7 +480,8 @@ func GenSequenceOfTxs(txGen client.TxConfig, msgs []sdk.Msg, accNums []uint64, i
 	txs := make([]sdk.Tx, numToGenerate)
 	var err error
 	for i := 0; i < numToGenerate; i++ {
-		txs[i], err = helpers.GenTx(
+		txs[i], err = helpers.GenSignedMockTx(
+			rand.New(rand.NewSource(time.Now().UnixNano())),
 			txGen,
 			msgs,
 			sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 0)},

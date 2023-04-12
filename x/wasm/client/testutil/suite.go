@@ -2,7 +2,7 @@ package testutil
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/line/lbm-sdk/client/flags"
@@ -56,7 +56,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	// add inactive contract to genesis
 	var wasmData types.GenesisState
 	genesisState := s.cfg.GenesisState
-	genesisData, err := ioutil.ReadFile("./testdata/wasm_genesis.json")
+	genesisData, err := os.ReadFile("./testdata/wasm_genesis.json")
 	s.Require().NoError(err)
 	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisData, &wasmData))
 	wasmDataBz, err := s.cfg.Codec.MarshalJSON(&wasmData)
@@ -99,7 +99,7 @@ func (s *IntegrationTestSuite) deployContract() string {
 	val := s.network.Validators[0]
 
 	wasmPath := "../../keeper/testdata/hackatom.wasm"
-	_, err := ioutil.ReadFile(wasmPath)
+	_, err := os.ReadFile(wasmPath)
 	s.Require().NoError(err)
 
 	args := append([]string{

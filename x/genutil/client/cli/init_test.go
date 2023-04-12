@@ -86,6 +86,59 @@ func TestInitCmd(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestPrivKeyTypeSupports(t *testing.T) {
+	tests := []struct {
+		privKeyType string
+		shouldErr   bool
+	}{
+		{
+			privKeyType: "Ed25519",
+			shouldErr:   false,
+		},
+		{
+			privKeyType: "Composite",
+			shouldErr:   true,
+		},
+		{
+			privKeyType: "Lamport",
+			shouldErr:   true,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.privKeyType, func(t *testing.T) {
+			home := t.TempDir()
+			logger := log.NewNopLogger()
+			cfg, err := genutiltest.CreateDefaultTendermintConfig(home)
+			require.NoError(t, err)
+			cfg.PrivKeyType = tt.privKeyType
+
+			serverCtx := server.NewContext(viper.New(), cfg, logger)
+			interfaceRegistry := types.NewInterfaceRegistry()
+			marshaler := codec.NewProtoCodec(interfaceRegistry)
+			clientCtx := client.Context{}.
+				WithCodec(marshaler).
+				WithLegacyAmino(makeCodec()).
+				WithHomeDir(home)
+
+			ctx := context.Background()
+			ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+			ctx = context.WithValue(ctx, server.ServerContextKey, serverCtx)
+
+			cmd := genutilcli.InitCmd(testMbm, home)
+			cmd.SetArgs([]string{"alice"})
+
+			if tt.shouldErr {
+				err := cmd.ExecuteContext(ctx)
+				require.EqualError(t, err, fmt.Sprintf("unsupported priv_key_type: \"%s\"", tt.privKeyType))
+			} else {
+				require.NoError(t, cmd.ExecuteContext(ctx))
+			}
+		})
+	}
 
 }
 
@@ -211,7 +264,7 @@ func TestInitNodeValidatorFiles(t *testing.T) {
 
 // custom tx codec
 func makeCodec() *codec.LegacyAmino {
-	var cdc = codec.NewLegacyAmino()
+	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
 	cryptocodec.RegisterCrypto(cdc)
 	return cdc

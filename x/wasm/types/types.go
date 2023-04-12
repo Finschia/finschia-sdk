@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/gogo/protobuf/proto"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"

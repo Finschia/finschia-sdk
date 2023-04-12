@@ -31,7 +31,7 @@ service Service {
   }
   // GetBlockByHash queries block for given hash.
   rpc GetBlockByHash(GetBlockByHashRequest) returns (GetBlockByHashResponse) {
-    option (google.api.http).get = "/lbm/base/ostracon/v1/blocks/{hash}";
+    option (google.api.http).get = "/lbm/base/ostracon/v1/block/{hash}";
   }
   // GetBlockResultsByHeight queries block results for given height.
   rpc GetBlockResultsByHeight(GetBlockResultsByHeightRequest) returns (GetBlockResultsByHeightResponse) {

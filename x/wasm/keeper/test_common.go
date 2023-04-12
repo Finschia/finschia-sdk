@@ -4,17 +4,18 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
@@ -554,7 +555,7 @@ func StoreIBCReflectContract(t testing.TB, ctx sdk.Context, keepers TestKeepers)
 }
 
 func StoreReflectContract(t testing.TB, ctx sdk.Context, keepers TestKeepers) uint64 {
-	wasmCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	wasmCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 
 	_, _, creatorAddr := keyPubAddr()
@@ -568,7 +569,7 @@ func StoreExampleContract(t testing.TB, ctx sdk.Context, keepers TestKeepers, wa
 	creator, _, creatorAddr := keyPubAddr()
 	fundAccounts(t, ctx, keepers.AccountKeeper, keepers.BankKeeper, creatorAddr, anyAmount)
 
-	wasmCode, err := ioutil.ReadFile(wasmFile)
+	wasmCode, err := os.ReadFile(wasmFile)
 	require.NoError(t, err)
 
 	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, nil)

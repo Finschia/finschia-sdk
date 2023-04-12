@@ -1,679 +1,9 @@
 swagger: '2.0'
 info:
-  title: LBM SDK - Legacy REST and gRPC Gateway docs
+  title: LBM SDK - gRPC Gateway docs
   description: 'A REST interface for state queries, legacy transactions'
   version: 1.0.0
 paths:
-  /node_info:
-    get:
-      description: Information about the connected node
-      summary: The properties of the connected node
-      tags:
-        - Gaia REST
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Node status
-          schema:
-            type: object
-            properties:
-              application_version:
-                properties:
-                  build_tags:
-                    type: string
-                  client_name:
-                    type: string
-                  commit:
-                    type: string
-                  go:
-                    type: string
-                  name:
-                    type: string
-                  server_name:
-                    type: string
-                  version:
-                    type: string
-              node_info:
-                properties:
-                  id:
-                    type: string
-                  moniker:
-                    type: string
-                    example: validator-name
-                  protocol_version:
-                    properties:
-                      p2p:
-                        type: string
-                        example: 7
-                      block:
-                        type: string
-                        example: 10
-                      app:
-                        type: string
-                        example: 0
-                  network:
-                    type: string
-                    example: gaia-2
-                  channels:
-                    type: string
-                  listen_addr:
-                    type: string
-                    example: '192.168.56.1:26656'
-                  version:
-                    description: Tendermint version
-                    type: string
-                    example: 0.15.0
-                  other:
-                    description: more information on versions
-                    type: object
-                    properties:
-                      tx_index:
-                        type: string
-                        example: 'on'
-                      rpc_address:
-                        type: string
-                        example: 'tcp://0.0.0.0:26657'
-        '500':
-          description: Failed to query node status
-  /syncing:
-    get:
-      summary: Syncing state of node
-      tags:
-        - Tendermint RPC
-      description: Get if the node is currently syning with other nodes
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Node syncing status
-          schema:
-            type: object
-            properties:
-              syncing:
-                type: boolean
-        '500':
-          description: Server internal error
-  /blocks/latest:
-    get:
-      summary: Get the latest block
-      tags:
-        - Tendermint RPC
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: The latest block
-          schema:
-            type: object
-            properties:
-              block_meta:
-                type: object
-                properties:
-                  header:
-                    type: object
-                    properties:
-                      chain_id:
-                        type: string
-                        example: cosmoshub-2
-                      height:
-                        type: number
-                        example: 1
-                      time:
-                        type: string
-                        example: '2017-12-30T05:53:09.287+01:00'
-                      num_txs:
-                        type: number
-                        example: 0
-                      last_block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                          parts:
-                            type: object
-                            properties:
-                              total:
-                                type: number
-                                example: 0
-                              hash:
-                                type: string
-                                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      total_txs:
-                        type: number
-                        example: 35
-                      last_commit_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      data_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      next_validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      consensus_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      app_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      last_results_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      evidence_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      proposer_address:
-                        type: string
-                        description: bech32 encoded address
-                        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-                      version:
-                        type: object
-                        properties:
-                          block:
-                            type: string
-                            example: 10
-                          app:
-                            type: string
-                            example: 0
-                  block_id:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      parts:
-                        type: object
-                        properties:
-                          total:
-                            type: number
-                            example: 0
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              block:
-                type: object
-                properties:
-                  header:
-                    type: object
-                    properties:
-                      chain_id:
-                        type: string
-                        example: cosmoshub-2
-                      height:
-                        type: number
-                        example: 1
-                      time:
-                        type: string
-                        example: '2017-12-30T05:53:09.287+01:00'
-                      num_txs:
-                        type: number
-                        example: 0
-                      last_block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                          parts:
-                            type: object
-                            properties:
-                              total:
-                                type: number
-                                example: 0
-                              hash:
-                                type: string
-                                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      total_txs:
-                        type: number
-                        example: 35
-                      last_commit_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      data_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      next_validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      consensus_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      app_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      last_results_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      evidence_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      proposer_address:
-                        type: string
-                        description: bech32 encoded address
-                        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-                      version:
-                        type: object
-                        properties:
-                          block:
-                            type: string
-                            example: 10
-                          app:
-                            type: string
-                            example: 0
-                  txs:
-                    type: array
-                    items:
-                      type: string
-                  evidence:
-                    type: array
-                    items:
-                      type: string
-                  last_commit:
-                    type: object
-                    properties:
-                      block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                          parts:
-                            type: object
-                            properties:
-                              total:
-                                type: number
-                                example: 0
-                              hash:
-                                type: string
-                                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      precommits:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            validator_address:
-                              type: string
-                            validator_index:
-                              type: string
-                              example: '0'
-                            height:
-                              type: string
-                              example: '0'
-                            round:
-                              type: string
-                              example: '0'
-                            timestamp:
-                              type: string
-                              example: '2017-12-30T05:53:09.287+01:00'
-                            type:
-                              type: number
-                              example: 2
-                            block_id:
-                              type: object
-                              properties:
-                                hash:
-                                  type: string
-                                  example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                                parts:
-                                  type: object
-                                  properties:
-                                    total:
-                                      type: number
-                                      example: 0
-                                    hash:
-                                      type: string
-                                      example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                            signature:
-                              type: string
-                              example: >-
-                                7uTC74QlknqYWEwg7Vn6M8Om7FuZ0EO4bjvuj6rwH1mTUJrRuMMZvAAqT9VjNgP0RA/TDp6u/92AqrZfXJSpBQ==
-        '500':
-          description: Server internal error
-  '/blocks/{height}':
-    get:
-      summary: Get a block at a certain height
-      tags:
-        - Tendermint RPC
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: height
-          description: Block height
-          required: true
-          type: number
-          x-example: 1
-      responses:
-        '200':
-          description: The block at a specific height
-          schema:
-            type: object
-            properties:
-              block_meta:
-                type: object
-                properties:
-                  header:
-                    type: object
-                    properties:
-                      chain_id:
-                        type: string
-                        example: cosmoshub-2
-                      height:
-                        type: number
-                        example: 1
-                      time:
-                        type: string
-                        example: '2017-12-30T05:53:09.287+01:00'
-                      num_txs:
-                        type: number
-                        example: 0
-                      last_block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                          parts:
-                            type: object
-                            properties:
-                              total:
-                                type: number
-                                example: 0
-                              hash:
-                                type: string
-                                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      total_txs:
-                        type: number
-                        example: 35
-                      last_commit_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      data_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      next_validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      consensus_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      app_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      last_results_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      evidence_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      proposer_address:
-                        type: string
-                        description: bech32 encoded address
-                        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-                      version:
-                        type: object
-                        properties:
-                          block:
-                            type: string
-                            example: 10
-                          app:
-                            type: string
-                            example: 0
-                  block_id:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      parts:
-                        type: object
-                        properties:
-                          total:
-                            type: number
-                            example: 0
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              block:
-                type: object
-                properties:
-                  header:
-                    type: object
-                    properties:
-                      chain_id:
-                        type: string
-                        example: cosmoshub-2
-                      height:
-                        type: number
-                        example: 1
-                      time:
-                        type: string
-                        example: '2017-12-30T05:53:09.287+01:00'
-                      num_txs:
-                        type: number
-                        example: 0
-                      last_block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                          parts:
-                            type: object
-                            properties:
-                              total:
-                                type: number
-                                example: 0
-                              hash:
-                                type: string
-                                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      total_txs:
-                        type: number
-                        example: 35
-                      last_commit_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      data_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      next_validators_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      consensus_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      app_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      last_results_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      evidence_hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      proposer_address:
-                        type: string
-                        description: bech32 encoded address
-                        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-                      version:
-                        type: object
-                        properties:
-                          block:
-                            type: string
-                            example: 10
-                          app:
-                            type: string
-                            example: 0
-                  txs:
-                    type: array
-                    items:
-                      type: string
-                  evidence:
-                    type: array
-                    items:
-                      type: string
-                  last_commit:
-                    type: object
-                    properties:
-                      block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                          parts:
-                            type: object
-                            properties:
-                              total:
-                                type: number
-                                example: 0
-                              hash:
-                                type: string
-                                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                      precommits:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            validator_address:
-                              type: string
-                            validator_index:
-                              type: string
-                              example: '0'
-                            height:
-                              type: string
-                              example: '0'
-                            round:
-                              type: string
-                              example: '0'
-                            timestamp:
-                              type: string
-                              example: '2017-12-30T05:53:09.287+01:00'
-                            type:
-                              type: number
-                              example: 2
-                            block_id:
-                              type: object
-                              properties:
-                                hash:
-                                  type: string
-                                  example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                                parts:
-                                  type: object
-                                  properties:
-                                    total:
-                                      type: number
-                                      example: 0
-                                    hash:
-                                      type: string
-                                      example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                            signature:
-                              type: string
-                              example: >-
-                                7uTC74QlknqYWEwg7Vn6M8Om7FuZ0EO4bjvuj6rwH1mTUJrRuMMZvAAqT9VjNgP0RA/TDp6u/92AqrZfXJSpBQ==
-        '400':
-          description: Invalid height
-        '404':
-          description: Request block height doesn't
-        '500':
-          description: Server internal error
-  /validatorsets/latest:
-    get:
-      summary: Get the latest validator set
-      tags:
-        - Tendermint RPC
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: The validator set at the latest block height
-          schema:
-            type: object
-            properties:
-              block_height:
-                type: string
-              validators:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    address:
-                      type: string
-                      description: bech32 encoded address
-                      example: cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l
-                    pub_key:
-                      type: string
-                      example: >-
-                        cosmosvalconspub1zcjduepq0vu2zgkgk49efa0nqwzndanq5m4c7pa3u4apz4g2r9gspqg6g9cs3k9cuf
-                    voting_power:
-                      type: string
-                      example: '1000'
-                    proposer_priority:
-                      type: string
-                      example: '1000'
-        '500':
-          description: Server internal error
-  '/validatorsets/{height}':
-    get:
-      summary: Get a validator set a certain height
-      tags:
-        - Tendermint RPC
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: height
-          description: Block height
-          required: true
-          type: number
-          x-example: 1
-      responses:
-        '200':
-          description: The validator set at a specific block height
-          schema:
-            type: object
-            properties:
-              block_height:
-                type: string
-              validators:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    address:
-                      type: string
-                      description: bech32 encoded address
-                      example: cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l
-                    pub_key:
-                      type: string
-                      example: >-
-                        cosmosvalconspub1zcjduepq0vu2zgkgk49efa0nqwzndanq5m4c7pa3u4apz4g2r9gspqg6g9cs3k9cuf
-                    voting_power:
-                      type: string
-                      example: '1000'
-                    proposer_priority:
-                      type: string
-                      example: '1000'
-        '400':
-          description: Invalid height
-        '404':
-          description: Block at height not available
-        '500':
-          description: Server internal error
   /cosmos/auth/v1beta1/accounts:
     get:
       summary: Accounts returns all the existing accounts
@@ -1513,6 +843,386 @@ paths:
       parameters:
         - name: address
           description: address defines the address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/cosmos/auth/v1beta1/module_accounts/{name}':
+    get:
+      summary: ModuleAccountByName returns the module account info by module name
+      operationId: ModuleAccountByName
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              account:
+                type: object
+                properties:
+                  type_url:
+                    type: string
+                    description: >-
+                      A URL/resource name that uniquely identifies the type of
+                      the serialized
+
+                      protocol buffer message. This string must contain at least
+
+                      one "/" character. The last segment of the URL's path must
+                      represent
+
+                      the fully qualified name of the type (as in
+
+                      `path/google.protobuf.Duration`). The name should be in a
+                      canonical form
+
+                      (e.g., leading "." is not accepted).
+
+
+                      In practice, teams usually precompile into the binary all
+                      types that they
+
+                      expect it to use in the context of Any. However, for URLs
+                      which use the
+
+                      scheme `http`, `https`, or no scheme, one can optionally
+                      set up a type
+
+                      server that maps type URLs to message definitions as
+                      follows:
+
+
+                      * If no scheme is provided, `https` is assumed.
+
+                      * An HTTP GET on the URL must yield a
+                      [google.protobuf.Type][]
+                        value in binary format, or produce an error.
+                      * Applications are allowed to cache lookup results based
+                      on the
+                        URL, or have them precompiled into a binary to avoid any
+                        lookup. Therefore, binary compatibility needs to be preserved
+                        on changes to types. (Use versioned type names to manage
+                        breaking changes.)
+
+                      Note: this functionality is not currently available in the
+                      official
+
+                      protobuf release, and it is not used for type URLs
+                      beginning with
+
+                      type.googleapis.com.
+
+
+                      Schemes other than `http`, `https` (or the empty scheme)
+                      might be
+
+                      used with implementation specific semantics.
+                  value:
+                    type: string
+                    format: byte
+                    description: >-
+                      Must be a valid serialized protocol buffer of the above
+                      specified type.
+                description: >-
+                  `Any` contains an arbitrary serialized protocol buffer message
+                  along with a
+
+                  URL that describes the type of the serialized message.
+
+
+                  Protobuf library provides support to pack/unpack Any values in
+                  the form
+
+                  of utility functions or additional generated methods of the
+                  Any type.
+
+
+                  Example 1: Pack and unpack a message in C++.
+
+                      Foo foo = ...;
+                      Any any;
+                      any.PackFrom(foo);
+                      ...
+                      if (any.UnpackTo(&foo)) {
+                        ...
+                      }
+
+                  Example 2: Pack and unpack a message in Java.
+
+                      Foo foo = ...;
+                      Any any = Any.pack(foo);
+                      ...
+                      if (any.is(Foo.class)) {
+                        foo = any.unpack(Foo.class);
+                      }
+
+                   Example 3: Pack and unpack a message in Python.
+
+                      foo = Foo(...)
+                      any = Any()
+                      any.Pack(foo)
+                      ...
+                      if any.Is(Foo.DESCRIPTOR):
+                        any.Unpack(foo)
+                        ...
+
+                   Example 4: Pack and unpack a message in Go
+
+                       foo := &pb.Foo{...}
+                       any, err := ptypes.MarshalAny(foo)
+                       ...
+                       foo := &pb.Foo{}
+                       if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                         ...
+                       }
+
+                  The pack methods provided by protobuf library will by default
+                  use
+
+                  'type.googleapis.com/full.type.name' as the type URL and the
+                  unpack
+
+                  methods only use the fully qualified type name after the last
+                  '/'
+
+                  in the type URL, for example "foo.bar.com/x/y.z" will yield
+                  type
+
+                  name "y.z".
+
+
+
+                  JSON
+
+                  ====
+
+                  The JSON representation of an `Any` value uses the regular
+
+                  representation of the deserialized, embedded message, with an
+
+                  additional field `@type` which contains the type URL. Example:
+
+                      package google.profile;
+                      message Person {
+                        string first_name = 1;
+                        string last_name = 2;
+                      }
+
+                      {
+                        "@type": "type.googleapis.com/google.profile.Person",
+                        "firstName": <string>,
+                        "lastName": <string>
+                      }
+
+                  If the embedded message type is well-known and has a custom
+                  JSON
+
+                  representation, that representation will be embedded adding a
+                  field
+
+                  `value` which holds the custom JSON in addition to the `@type`
+
+                  field. Example (for message [google.protobuf.Duration][]):
+
+                      {
+                        "@type": "type.googleapis.com/google.protobuf.Duration",
+                        "value": "1.212s"
+                      }
+            description: >-
+              QueryModuleAccountByNameResponse is the response type for the
+              Query/ModuleAccountByName RPC method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: name
           in: path
           required: true
           type: string
@@ -2648,6 +2358,786 @@ paths:
           type: string
       tags:
         - Query
+  '/lbm/base/ostracon/v1/block/{hash}':
+    get:
+      summary: GetBlockByHash queries block for given hash.
+      operationId: GetBlockByHash
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              block_id:
+                type: object
+                properties:
+                  hash:
+                    type: string
+                    format: byte
+                  part_set_header:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        format: int64
+                      hash:
+                        type: string
+                        format: byte
+                    title: PartsetHeader
+                title: BlockID
+              block:
+                type: object
+                properties:
+                  header:
+                    type: object
+                    properties:
+                      version:
+                        title: basic block info
+                        type: object
+                        properties:
+                          block:
+                            type: string
+                            format: uint64
+                          app:
+                            type: string
+                            format: uint64
+                        description: >-
+                          Consensus captures the consensus rules for processing
+                          a block in the blockchain,
+
+                          including all blockchain data structures and the rules
+                          of the application's
+
+                          state transition machine.
+                      chain_id:
+                        type: string
+                      height:
+                        type: string
+                        format: int64
+                      time:
+                        type: string
+                        format: date-time
+                      last_block_id:
+                        type: object
+                        properties:
+                          hash:
+                            type: string
+                            format: byte
+                          part_set_header:
+                            type: object
+                            properties:
+                              total:
+                                type: integer
+                                format: int64
+                              hash:
+                                type: string
+                                format: byte
+                            title: PartsetHeader
+                        title: BlockID
+                      last_commit_hash:
+                        type: string
+                        format: byte
+                        title: hashes of block data
+                      data_hash:
+                        type: string
+                        format: byte
+                      validators_hash:
+                        type: string
+                        format: byte
+                        title: hashes from the app output from the prev block
+                      next_validators_hash:
+                        type: string
+                        format: byte
+                      consensus_hash:
+                        type: string
+                        format: byte
+                      app_hash:
+                        type: string
+                        format: byte
+                      last_results_hash:
+                        type: string
+                        format: byte
+                      evidence_hash:
+                        type: string
+                        format: byte
+                        title: consensus info
+                      proposer_address:
+                        type: string
+                        format: byte
+                    description: Header defines the structure of a Tendermint block header.
+                  data:
+                    type: object
+                    properties:
+                      txs:
+                        type: array
+                        items:
+                          type: string
+                          format: byte
+                        description: >-
+                          Txs that will be applied by state @ block.Height+1.
+
+                          NOTE: not all txs here are valid.  We're just agreeing
+                          on the order first.
+
+                          This means that block.AppHash does not include these
+                          txs.
+                    title: >-
+                      Data contains the set of transactions included in the
+                      block
+                  evidence:
+                    type: object
+                    properties:
+                      evidence:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            duplicate_vote_evidence:
+                              type: object
+                              properties:
+                                vote_a:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      enum:
+                                        - SIGNED_MSG_TYPE_UNKNOWN
+                                        - SIGNED_MSG_TYPE_PREVOTE
+                                        - SIGNED_MSG_TYPE_PRECOMMIT
+                                        - SIGNED_MSG_TYPE_PROPOSAL
+                                      default: SIGNED_MSG_TYPE_UNKNOWN
+                                      description: >-
+                                        SignedMsgType is a type of signed
+                                        message in the consensus.
+
+                                         - SIGNED_MSG_TYPE_PREVOTE: Votes
+                                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+                                    height:
+                                      type: string
+                                      format: int64
+                                    round:
+                                      type: integer
+                                      format: int32
+                                    block_id:
+                                      type: object
+                                      properties:
+                                        hash:
+                                          type: string
+                                          format: byte
+                                        part_set_header:
+                                          type: object
+                                          properties:
+                                            total:
+                                              type: integer
+                                              format: int64
+                                            hash:
+                                              type: string
+                                              format: byte
+                                          title: PartsetHeader
+                                      title: BlockID
+                                    timestamp:
+                                      type: string
+                                      format: date-time
+                                    validator_address:
+                                      type: string
+                                      format: byte
+                                    validator_index:
+                                      type: integer
+                                      format: int32
+                                    signature:
+                                      type: string
+                                      format: byte
+                                  description: >-
+                                    Vote represents a prevote, precommit, or
+                                    commit vote from validators for
+
+                                    consensus.
+                                vote_b:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      enum:
+                                        - SIGNED_MSG_TYPE_UNKNOWN
+                                        - SIGNED_MSG_TYPE_PREVOTE
+                                        - SIGNED_MSG_TYPE_PRECOMMIT
+                                        - SIGNED_MSG_TYPE_PROPOSAL
+                                      default: SIGNED_MSG_TYPE_UNKNOWN
+                                      description: >-
+                                        SignedMsgType is a type of signed
+                                        message in the consensus.
+
+                                         - SIGNED_MSG_TYPE_PREVOTE: Votes
+                                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
+                                    height:
+                                      type: string
+                                      format: int64
+                                    round:
+                                      type: integer
+                                      format: int32
+                                    block_id:
+                                      type: object
+                                      properties:
+                                        hash:
+                                          type: string
+                                          format: byte
+                                        part_set_header:
+                                          type: object
+                                          properties:
+                                            total:
+                                              type: integer
+                                              format: int64
+                                            hash:
+                                              type: string
+                                              format: byte
+                                          title: PartsetHeader
+                                      title: BlockID
+                                    timestamp:
+                                      type: string
+                                      format: date-time
+                                    validator_address:
+                                      type: string
+                                      format: byte
+                                    validator_index:
+                                      type: integer
+                                      format: int32
+                                    signature:
+                                      type: string
+                                      format: byte
+                                  description: >-
+                                    Vote represents a prevote, precommit, or
+                                    commit vote from validators for
+
+                                    consensus.
+                                total_voting_power:
+                                  type: string
+                                  format: int64
+                                validator_power:
+                                  type: string
+                                  format: int64
+                                timestamp:
+                                  type: string
+                                  format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
+                              description: >-
+                                DuplicateVoteEvidence contains evidence of a
+                                validator signed two conflicting votes.
+                            light_client_attack_evidence:
+                              type: object
+                              properties:
+                                conflicting_block:
+                                  type: object
+                                  properties:
+                                    signed_header:
+                                      type: object
+                                      properties:
+                                        header:
+                                          type: object
+                                          properties:
+                                            version:
+                                              title: basic block info
+                                              type: object
+                                              properties:
+                                                block:
+                                                  type: string
+                                                  format: uint64
+                                                app:
+                                                  type: string
+                                                  format: uint64
+                                              description: >-
+                                                Consensus captures the consensus rules
+                                                for processing a block in the
+                                                blockchain,
+
+                                                including all blockchain data structures
+                                                and the rules of the application's
+
+                                                state transition machine.
+                                            chain_id:
+                                              type: string
+                                            height:
+                                              type: string
+                                              format: int64
+                                            time:
+                                              type: string
+                                              format: date-time
+                                            last_block_id:
+                                              type: object
+                                              properties:
+                                                hash:
+                                                  type: string
+                                                  format: byte
+                                                part_set_header:
+                                                  type: object
+                                                  properties:
+                                                    total:
+                                                      type: integer
+                                                      format: int64
+                                                    hash:
+                                                      type: string
+                                                      format: byte
+                                                  title: PartsetHeader
+                                              title: BlockID
+                                            last_commit_hash:
+                                              type: string
+                                              format: byte
+                                              title: hashes of block data
+                                            data_hash:
+                                              type: string
+                                              format: byte
+                                            validators_hash:
+                                              type: string
+                                              format: byte
+                                              title: >-
+                                                hashes from the app output from the prev
+                                                block
+                                            next_validators_hash:
+                                              type: string
+                                              format: byte
+                                            consensus_hash:
+                                              type: string
+                                              format: byte
+                                            app_hash:
+                                              type: string
+                                              format: byte
+                                            last_results_hash:
+                                              type: string
+                                              format: byte
+                                            evidence_hash:
+                                              type: string
+                                              format: byte
+                                              title: consensus info
+                                            proposer_address:
+                                              type: string
+                                              format: byte
+                                          description: >-
+                                            Header defines the structure of a
+                                            Tendermint block header.
+                                        commit:
+                                          type: object
+                                          properties:
+                                            height:
+                                              type: string
+                                              format: int64
+                                            round:
+                                              type: integer
+                                              format: int32
+                                            block_id:
+                                              type: object
+                                              properties:
+                                                hash:
+                                                  type: string
+                                                  format: byte
+                                                part_set_header:
+                                                  type: object
+                                                  properties:
+                                                    total:
+                                                      type: integer
+                                                      format: int64
+                                                    hash:
+                                                      type: string
+                                                      format: byte
+                                                  title: PartsetHeader
+                                              title: BlockID
+                                            signatures:
+                                              type: array
+                                              items:
+                                                type: object
+                                                properties:
+                                                  block_id_flag:
+                                                    type: string
+                                                    enum:
+                                                      - BLOCK_ID_FLAG_UNKNOWN
+                                                      - BLOCK_ID_FLAG_ABSENT
+                                                      - BLOCK_ID_FLAG_COMMIT
+                                                      - BLOCK_ID_FLAG_NIL
+                                                    default: BLOCK_ID_FLAG_UNKNOWN
+                                                    title: >-
+                                                      BlockIdFlag indicates which BlcokID the
+                                                      signature is for
+                                                  validator_address:
+                                                    type: string
+                                                    format: byte
+                                                  timestamp:
+                                                    type: string
+                                                    format: date-time
+                                                  signature:
+                                                    type: string
+                                                    format: byte
+                                                description: >-
+                                                  CommitSig is a part of the Vote included
+                                                  in a Commit.
+                                          description: >-
+                                            Commit contains the evidence that a
+                                            block was committed by a set of
+                                            validators.
+                                    validator_set:
+                                      type: object
+                                      properties:
+                                        validators:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              address:
+                                                type: string
+                                                format: byte
+                                              pub_key:
+                                                type: object
+                                                properties:
+                                                  ed25519:
+                                                    type: string
+                                                    format: byte
+                                                  secp256k1:
+                                                    type: string
+                                                    format: byte
+                                                title: >-
+                                                  PublicKey defines the keys available for
+                                                  use with Ostracon Validators
+                                              voting_power:
+                                                type: string
+                                                format: int64
+                                              proposer_priority:
+                                                type: string
+                                                format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
+                                        proposer:
+                                          type: object
+                                          properties:
+                                            address:
+                                              type: string
+                                              format: byte
+                                            pub_key:
+                                              type: object
+                                              properties:
+                                                ed25519:
+                                                  type: string
+                                                  format: byte
+                                                secp256k1:
+                                                  type: string
+                                                  format: byte
+                                              title: >-
+                                                PublicKey defines the keys available for
+                                                use with Ostracon Validators
+                                            voting_power:
+                                              type: string
+                                              format: int64
+                                            proposer_priority:
+                                              type: string
+                                              format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
+                                        total_voting_power:
+                                          type: string
+                                          format: int64
+                                common_height:
+                                  type: string
+                                  format: int64
+                                byzantine_validators:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      address:
+                                        type: string
+                                        format: byte
+                                      pub_key:
+                                        type: object
+                                        properties:
+                                          ed25519:
+                                            type: string
+                                            format: byte
+                                          secp256k1:
+                                            type: string
+                                            format: byte
+                                        title: >-
+                                          PublicKey defines the keys available for
+                                          use with Ostracon Validators
+                                      voting_power:
+                                        type: string
+                                        format: int64
+                                      proposer_priority:
+                                        type: string
+                                        format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
+                                total_voting_power:
+                                  type: string
+                                  format: int64
+                                timestamp:
+                                  type: string
+                                  format: date-time
+                              description: >-
+                                LightClientAttackEvidence contains evidence of a
+                                set of validators attempting to mislead a light
+                                client.
+                  last_commit:
+                    type: object
+                    properties:
+                      height:
+                        type: string
+                        format: int64
+                      round:
+                        type: integer
+                        format: int32
+                      block_id:
+                        type: object
+                        properties:
+                          hash:
+                            type: string
+                            format: byte
+                          part_set_header:
+                            type: object
+                            properties:
+                              total:
+                                type: integer
+                                format: int64
+                              hash:
+                                type: string
+                                format: byte
+                            title: PartsetHeader
+                        title: BlockID
+                      signatures:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            block_id_flag:
+                              type: string
+                              enum:
+                                - BLOCK_ID_FLAG_UNKNOWN
+                                - BLOCK_ID_FLAG_ABSENT
+                                - BLOCK_ID_FLAG_COMMIT
+                                - BLOCK_ID_FLAG_NIL
+                              default: BLOCK_ID_FLAG_UNKNOWN
+                              title: >-
+                                BlockIdFlag indicates which BlcokID the
+                                signature is for
+                            validator_address:
+                              type: string
+                              format: byte
+                            timestamp:
+                              type: string
+                              format: date-time
+                            signature:
+                              type: string
+                              format: byte
+                          description: >-
+                            CommitSig is a part of the Vote included in a
+                            Commit.
+                    description: >-
+                      Commit contains the evidence that a block was committed by
+                      a set of validators.
+            description: >-
+              GetBlockByHashResponse is the response type for the
+              Query/GetBlockByHash RPC method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          type: string
+          format: byte
+      tags:
+        - Service
   '/lbm/base/ostracon/v1/blockresults/{height}':
     get:
       summary: GetBlockResultsByHeight queries block results for given height.
@@ -3856,786 +4346,6 @@ paths:
                           "@type": "type.googleapis.com/google.protobuf.Duration",
                           "value": "1.212s"
                         }
-      tags:
-        - Service
-  '/lbm/base/ostracon/v1/blocks/{hash}':
-    get:
-      summary: GetBlockByHash queries block for given hash.
-      operationId: GetBlockByHash
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    format: byte
-                  part_set_header:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                        format: int64
-                      hash:
-                        type: string
-                        format: byte
-                    title: PartsetHeader
-                title: BlockID
-              block:
-                type: object
-                properties:
-                  header:
-                    type: object
-                    properties:
-                      version:
-                        title: basic block info
-                        type: object
-                        properties:
-                          block:
-                            type: string
-                            format: uint64
-                          app:
-                            type: string
-                            format: uint64
-                        description: >-
-                          Consensus captures the consensus rules for processing
-                          a block in the blockchain,
-
-                          including all blockchain data structures and the rules
-                          of the application's
-
-                          state transition machine.
-                      chain_id:
-                        type: string
-                      height:
-                        type: string
-                        format: int64
-                      time:
-                        type: string
-                        format: date-time
-                      last_block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            format: byte
-                          part_set_header:
-                            type: object
-                            properties:
-                              total:
-                                type: integer
-                                format: int64
-                              hash:
-                                type: string
-                                format: byte
-                            title: PartsetHeader
-                        title: BlockID
-                      last_commit_hash:
-                        type: string
-                        format: byte
-                        title: hashes of block data
-                      data_hash:
-                        type: string
-                        format: byte
-                      validators_hash:
-                        type: string
-                        format: byte
-                        title: hashes from the app output from the prev block
-                      next_validators_hash:
-                        type: string
-                        format: byte
-                      consensus_hash:
-                        type: string
-                        format: byte
-                      app_hash:
-                        type: string
-                        format: byte
-                      last_results_hash:
-                        type: string
-                        format: byte
-                      evidence_hash:
-                        type: string
-                        format: byte
-                        title: consensus info
-                      proposer_address:
-                        type: string
-                        format: byte
-                    description: Header defines the structure of a Tendermint block header.
-                  data:
-                    type: object
-                    properties:
-                      txs:
-                        type: array
-                        items:
-                          type: string
-                          format: byte
-                        description: >-
-                          Txs that will be applied by state @ block.Height+1.
-
-                          NOTE: not all txs here are valid.  We're just agreeing
-                          on the order first.
-
-                          This means that block.AppHash does not include these
-                          txs.
-                    title: >-
-                      Data contains the set of transactions included in the
-                      block
-                  evidence:
-                    type: object
-                    properties:
-                      evidence:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            duplicate_vote_evidence:
-                              type: object
-                              properties:
-                                vote_a:
-                                  type: object
-                                  properties:
-                                    type:
-                                      type: string
-                                      enum:
-                                        - SIGNED_MSG_TYPE_UNKNOWN
-                                        - SIGNED_MSG_TYPE_PREVOTE
-                                        - SIGNED_MSG_TYPE_PRECOMMIT
-                                        - SIGNED_MSG_TYPE_PROPOSAL
-                                      default: SIGNED_MSG_TYPE_UNKNOWN
-                                      description: >-
-                                        SignedMsgType is a type of signed
-                                        message in the consensus.
-
-                                         - SIGNED_MSG_TYPE_PREVOTE: Votes
-                                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-                                    height:
-                                      type: string
-                                      format: int64
-                                    round:
-                                      type: integer
-                                      format: int32
-                                    block_id:
-                                      type: object
-                                      properties:
-                                        hash:
-                                          type: string
-                                          format: byte
-                                        part_set_header:
-                                          type: object
-                                          properties:
-                                            total:
-                                              type: integer
-                                              format: int64
-                                            hash:
-                                              type: string
-                                              format: byte
-                                          title: PartsetHeader
-                                      title: BlockID
-                                    timestamp:
-                                      type: string
-                                      format: date-time
-                                    validator_address:
-                                      type: string
-                                      format: byte
-                                    validator_index:
-                                      type: integer
-                                      format: int32
-                                    signature:
-                                      type: string
-                                      format: byte
-                                  description: >-
-                                    Vote represents a prevote, precommit, or
-                                    commit vote from validators for
-
-                                    consensus.
-                                vote_b:
-                                  type: object
-                                  properties:
-                                    type:
-                                      type: string
-                                      enum:
-                                        - SIGNED_MSG_TYPE_UNKNOWN
-                                        - SIGNED_MSG_TYPE_PREVOTE
-                                        - SIGNED_MSG_TYPE_PRECOMMIT
-                                        - SIGNED_MSG_TYPE_PROPOSAL
-                                      default: SIGNED_MSG_TYPE_UNKNOWN
-                                      description: >-
-                                        SignedMsgType is a type of signed
-                                        message in the consensus.
-
-                                         - SIGNED_MSG_TYPE_PREVOTE: Votes
-                                         - SIGNED_MSG_TYPE_PROPOSAL: Proposals
-                                    height:
-                                      type: string
-                                      format: int64
-                                    round:
-                                      type: integer
-                                      format: int32
-                                    block_id:
-                                      type: object
-                                      properties:
-                                        hash:
-                                          type: string
-                                          format: byte
-                                        part_set_header:
-                                          type: object
-                                          properties:
-                                            total:
-                                              type: integer
-                                              format: int64
-                                            hash:
-                                              type: string
-                                              format: byte
-                                          title: PartsetHeader
-                                      title: BlockID
-                                    timestamp:
-                                      type: string
-                                      format: date-time
-                                    validator_address:
-                                      type: string
-                                      format: byte
-                                    validator_index:
-                                      type: integer
-                                      format: int32
-                                    signature:
-                                      type: string
-                                      format: byte
-                                  description: >-
-                                    Vote represents a prevote, precommit, or
-                                    commit vote from validators for
-
-                                    consensus.
-                                total_voting_power:
-                                  type: string
-                                  format: int64
-                                validator_power:
-                                  type: string
-                                  format: int64
-                                timestamp:
-                                  type: string
-                                  format: date-time
-                                voting_weight:
-                                  type: string
-                                  format: int64
-                                  title: '*** Ostracon Extended Fields ***'
-                              description: >-
-                                DuplicateVoteEvidence contains evidence of a
-                                validator signed two conflicting votes.
-                            light_client_attack_evidence:
-                              type: object
-                              properties:
-                                conflicting_block:
-                                  type: object
-                                  properties:
-                                    signed_header:
-                                      type: object
-                                      properties:
-                                        header:
-                                          type: object
-                                          properties:
-                                            version:
-                                              title: basic block info
-                                              type: object
-                                              properties:
-                                                block:
-                                                  type: string
-                                                  format: uint64
-                                                app:
-                                                  type: string
-                                                  format: uint64
-                                              description: >-
-                                                Consensus captures the consensus rules
-                                                for processing a block in the
-                                                blockchain,
-
-                                                including all blockchain data structures
-                                                and the rules of the application's
-
-                                                state transition machine.
-                                            chain_id:
-                                              type: string
-                                            height:
-                                              type: string
-                                              format: int64
-                                            time:
-                                              type: string
-                                              format: date-time
-                                            last_block_id:
-                                              type: object
-                                              properties:
-                                                hash:
-                                                  type: string
-                                                  format: byte
-                                                part_set_header:
-                                                  type: object
-                                                  properties:
-                                                    total:
-                                                      type: integer
-                                                      format: int64
-                                                    hash:
-                                                      type: string
-                                                      format: byte
-                                                  title: PartsetHeader
-                                              title: BlockID
-                                            last_commit_hash:
-                                              type: string
-                                              format: byte
-                                              title: hashes of block data
-                                            data_hash:
-                                              type: string
-                                              format: byte
-                                            validators_hash:
-                                              type: string
-                                              format: byte
-                                              title: >-
-                                                hashes from the app output from the prev
-                                                block
-                                            next_validators_hash:
-                                              type: string
-                                              format: byte
-                                            consensus_hash:
-                                              type: string
-                                              format: byte
-                                            app_hash:
-                                              type: string
-                                              format: byte
-                                            last_results_hash:
-                                              type: string
-                                              format: byte
-                                            evidence_hash:
-                                              type: string
-                                              format: byte
-                                              title: consensus info
-                                            proposer_address:
-                                              type: string
-                                              format: byte
-                                          description: >-
-                                            Header defines the structure of a
-                                            Tendermint block header.
-                                        commit:
-                                          type: object
-                                          properties:
-                                            height:
-                                              type: string
-                                              format: int64
-                                            round:
-                                              type: integer
-                                              format: int32
-                                            block_id:
-                                              type: object
-                                              properties:
-                                                hash:
-                                                  type: string
-                                                  format: byte
-                                                part_set_header:
-                                                  type: object
-                                                  properties:
-                                                    total:
-                                                      type: integer
-                                                      format: int64
-                                                    hash:
-                                                      type: string
-                                                      format: byte
-                                                  title: PartsetHeader
-                                              title: BlockID
-                                            signatures:
-                                              type: array
-                                              items:
-                                                type: object
-                                                properties:
-                                                  block_id_flag:
-                                                    type: string
-                                                    enum:
-                                                      - BLOCK_ID_FLAG_UNKNOWN
-                                                      - BLOCK_ID_FLAG_ABSENT
-                                                      - BLOCK_ID_FLAG_COMMIT
-                                                      - BLOCK_ID_FLAG_NIL
-                                                    default: BLOCK_ID_FLAG_UNKNOWN
-                                                    title: >-
-                                                      BlockIdFlag indicates which BlcokID the
-                                                      signature is for
-                                                  validator_address:
-                                                    type: string
-                                                    format: byte
-                                                  timestamp:
-                                                    type: string
-                                                    format: date-time
-                                                  signature:
-                                                    type: string
-                                                    format: byte
-                                                description: >-
-                                                  CommitSig is a part of the Vote included
-                                                  in a Commit.
-                                          description: >-
-                                            Commit contains the evidence that a
-                                            block was committed by a set of
-                                            validators.
-                                    validator_set:
-                                      type: object
-                                      properties:
-                                        validators:
-                                          type: array
-                                          items:
-                                            type: object
-                                            properties:
-                                              address:
-                                                type: string
-                                                format: byte
-                                              pub_key:
-                                                type: object
-                                                properties:
-                                                  ed25519:
-                                                    type: string
-                                                    format: byte
-                                                  secp256k1:
-                                                    type: string
-                                                    format: byte
-                                                title: >-
-                                                  PublicKey defines the keys available for
-                                                  use with Ostracon Validators
-                                              voting_power:
-                                                type: string
-                                                format: int64
-                                              proposer_priority:
-                                                type: string
-                                                format: int64
-                                              voting_weight:
-                                                type: string
-                                                format: int64
-                                                title: '*** Ostracon Extended Fields ***'
-                                        proposer:
-                                          type: object
-                                          properties:
-                                            address:
-                                              type: string
-                                              format: byte
-                                            pub_key:
-                                              type: object
-                                              properties:
-                                                ed25519:
-                                                  type: string
-                                                  format: byte
-                                                secp256k1:
-                                                  type: string
-                                                  format: byte
-                                              title: >-
-                                                PublicKey defines the keys available for
-                                                use with Ostracon Validators
-                                            voting_power:
-                                              type: string
-                                              format: int64
-                                            proposer_priority:
-                                              type: string
-                                              format: int64
-                                            voting_weight:
-                                              type: string
-                                              format: int64
-                                              title: '*** Ostracon Extended Fields ***'
-                                        total_voting_power:
-                                          type: string
-                                          format: int64
-                                common_height:
-                                  type: string
-                                  format: int64
-                                byzantine_validators:
-                                  type: array
-                                  items:
-                                    type: object
-                                    properties:
-                                      address:
-                                        type: string
-                                        format: byte
-                                      pub_key:
-                                        type: object
-                                        properties:
-                                          ed25519:
-                                            type: string
-                                            format: byte
-                                          secp256k1:
-                                            type: string
-                                            format: byte
-                                        title: >-
-                                          PublicKey defines the keys available for
-                                          use with Ostracon Validators
-                                      voting_power:
-                                        type: string
-                                        format: int64
-                                      proposer_priority:
-                                        type: string
-                                        format: int64
-                                      voting_weight:
-                                        type: string
-                                        format: int64
-                                        title: '*** Ostracon Extended Fields ***'
-                                total_voting_power:
-                                  type: string
-                                  format: int64
-                                timestamp:
-                                  type: string
-                                  format: date-time
-                              description: >-
-                                LightClientAttackEvidence contains evidence of a
-                                set of validators attempting to mislead a light
-                                client.
-                  last_commit:
-                    type: object
-                    properties:
-                      height:
-                        type: string
-                        format: int64
-                      round:
-                        type: integer
-                        format: int32
-                      block_id:
-                        type: object
-                        properties:
-                          hash:
-                            type: string
-                            format: byte
-                          part_set_header:
-                            type: object
-                            properties:
-                              total:
-                                type: integer
-                                format: int64
-                              hash:
-                                type: string
-                                format: byte
-                            title: PartsetHeader
-                        title: BlockID
-                      signatures:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            block_id_flag:
-                              type: string
-                              enum:
-                                - BLOCK_ID_FLAG_UNKNOWN
-                                - BLOCK_ID_FLAG_ABSENT
-                                - BLOCK_ID_FLAG_COMMIT
-                                - BLOCK_ID_FLAG_NIL
-                              default: BLOCK_ID_FLAG_UNKNOWN
-                              title: >-
-                                BlockIdFlag indicates which BlcokID the
-                                signature is for
-                            validator_address:
-                              type: string
-                              format: byte
-                            timestamp:
-                              type: string
-                              format: date-time
-                            signature:
-                              type: string
-                              format: byte
-                          description: >-
-                            CommitSig is a part of the Vote included in a
-                            Commit.
-                    description: >-
-                      Commit contains the evidence that a block was committed by
-                      a set of validators.
-            description: >-
-              GetBlockByHashResponse is the response type for the
-              Query/GetBlockByHash RPC method.
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: hash
-          in: path
-          required: true
-          type: string
-          format: byte
       tags:
         - Service
   '/lbm/base/ostracon/v1/blocks/{height}':
@@ -33584,11 +33294,6 @@ paths:
                 description: info is the FoundationInfo for the foundation.
                 type: object
                 properties:
-                  operator:
-                    type: string
-                    description: >-
-                      operator is the account address of the foundation's
-                      operator.
                   version:
                     type: string
                     format: uint64
@@ -33888,12 +33593,6 @@ paths:
                     address:
                       type: string
                       description: address is the member's account address.
-                    participating:
-                      type: boolean
-                      format: boolean
-                      description: >-
-                        participating is the flag which allows one to remove the
-                        member by setting the flag to false.
                     metadata:
                       type: string
                       description: >-
@@ -34194,12 +33893,6 @@ paths:
                   address:
                     type: string
                     description: address is the member's account address.
-                  participating:
-                    type: boolean
-                    format: boolean
-                    description: >-
-                      participating is the flag which allows one to remove the
-                      member by setting the flag to false.
                   metadata:
                     type: string
                     description: >-
@@ -34409,6 +34102,212 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
+  /lbm/foundation/v1/gov_mint:
+    get:
+      summary: GovMint queries the left count of gov mint.
+      operationId: GovMint
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              leftCount:
+                type: integer
+                format: int64
+                description: leftCount is the left count of GovMint.
+            description: QueryGovMintResponse is the Query/GovMint response type.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
       tags:
         - Query
   '/lbm/foundation/v1/grants/{grantee}/{msg_type_url}':
@@ -34894,11 +34793,12 @@ paths:
               params:
                 type: object
                 properties:
-                  enabled:
-                    type: boolean
-                    format: boolean
                   foundation_tax:
                     type: string
+                  censored_msg_type_urls:
+                    type: array
+                    items:
+                      type: string
                 description: Params defines the parameters for the foundation module.
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
@@ -35146,24 +35046,11 @@ paths:
                       enum:
                         - PROPOSAL_STATUS_UNSPECIFIED
                         - PROPOSAL_STATUS_SUBMITTED
-                        - PROPOSAL_STATUS_CLOSED
+                        - PROPOSAL_STATUS_ACCEPTED
+                        - PROPOSAL_STATUS_REJECTED
                         - PROPOSAL_STATUS_ABORTED
                         - PROPOSAL_STATUS_WITHDRAWN
                       default: PROPOSAL_STATUS_UNSPECIFIED
-                    result:
-                      description: >-
-                        result is the final result based on the votes and
-                        election rule. Initial value is unfinalized.
-
-                        The result is persisted so that clients can always rely
-                        on this state and not have to replicate the logic.
-                      type: string
-                      enum:
-                        - PROPOSAL_RESULT_UNSPECIFIED
-                        - PROPOSAL_RESULT_UNFINALIZED
-                        - PROPOSAL_RESULT_ACCEPTED
-                        - PROPOSAL_RESULT_REJECTED
-                      default: PROPOSAL_RESULT_UNSPECIFIED
                     final_tally_result:
                       description: >-
                         final_tally_result contains the sums of all votes for
@@ -35731,24 +35618,11 @@ paths:
                     enum:
                       - PROPOSAL_STATUS_UNSPECIFIED
                       - PROPOSAL_STATUS_SUBMITTED
-                      - PROPOSAL_STATUS_CLOSED
+                      - PROPOSAL_STATUS_ACCEPTED
+                      - PROPOSAL_STATUS_REJECTED
                       - PROPOSAL_STATUS_ABORTED
                       - PROPOSAL_STATUS_WITHDRAWN
                     default: PROPOSAL_STATUS_UNSPECIFIED
-                  result:
-                    description: >-
-                      result is the final result based on the votes and election
-                      rule. Initial value is unfinalized.
-
-                      The result is persisted so that clients can always rely on
-                      this state and not have to replicate the logic.
-                    type: string
-                    enum:
-                      - PROPOSAL_RESULT_UNSPECIFIED
-                      - PROPOSAL_RESULT_UNFINALIZED
-                      - PROPOSAL_RESULT_ACCEPTED
-                      - PROPOSAL_RESULT_REJECTED
-                    default: PROPOSAL_RESULT_UNSPECIFIED
                   final_tally_result:
                     description: >-
                       final_tally_result contains the sums of all votes for this
@@ -37003,10 +36877,11 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    Coin defines a token with a denomination and an amount.
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
 
 
-                    NOTE: The amount field is an Int which implements the custom
+                    NOTE: The amount field is an Dec which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -45166,640 +45041,49 @@ paths:
           type: string
       tags:
         - Query
-securityDefinitions:
-  kms:
-    type: basic
-definitions:
-  CheckTxResult:
-    type: object
-    properties:
-      code:
-        type: integer
-      data:
-        type: string
-      gas_used:
-        type: integer
-      gas_wanted:
-        type: integer
-      info:
-        type: string
-      log:
-        type: string
-      tags:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
-    example:
-      code: 0
-      data: data
-      log: log
-      gas_used: 5000
-      gas_wanted: 10000
-      info: info
-      tags:
-        - ''
-        - ''
-  DeliverTxResult:
-    type: object
-    properties:
-      code:
-        type: integer
-      data:
-        type: string
-      gas_used:
-        type: integer
-      gas_wanted:
-        type: integer
-      info:
-        type: string
-      log:
-        type: string
-      tags:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
-    example:
-      code: 5
-      data: data
-      log: log
-      gas_used: 5000
-      gas_wanted: 10000
-      info: info
-      tags:
-        - ''
-        - ''
-  KVPair:
-    type: object
-    properties:
-      key:
-        type: string
-      value:
-        type: string
-  Msg:
-    type: string
-  Address:
-    type: string
-    description: bech32 encoded address
-    example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-  ValidatorAddress:
-    type: string
-    description: bech32 encoded address
-    example: cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l
-  Coin:
-    type: object
-    properties:
-      denom:
-        type: string
-        example: stake
-      amount:
-        type: string
-        example: '50'
-  Hash:
-    type: string
-    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-  BlockID:
-    type: object
-    properties:
-      hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      parts:
-        type: object
-        properties:
-          total:
-            type: number
-            example: 0
-          hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-  BlockHeader:
-    type: object
-    properties:
-      chain_id:
-        type: string
-        example: cosmoshub-2
-      height:
-        type: number
-        example: 1
-      time:
-        type: string
-        example: '2017-12-30T05:53:09.287+01:00'
-      num_txs:
-        type: number
-        example: 0
-      last_block_id:
-        type: object
-        properties:
-          hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          parts:
+  /cosmos/base/node/v1beta1/config:
+    get:
+      summary: Config queries for the operator configuration.
+      operationId: Config
+      responses:
+        '200':
+          description: A successful response.
+          schema:
             type: object
             properties:
-              total:
-                type: number
-                example: 0
-              hash:
+              minimum_gas_price:
                 type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      total_txs:
-        type: number
-        example: 35
-      last_commit_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      data_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      validators_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      next_validators_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      consensus_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      app_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      last_results_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      evidence_hash:
-        type: string
-        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      proposer_address:
-        type: string
-        description: bech32 encoded address
-        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-      version:
-        type: object
-        properties:
-          block:
-            type: string
-            example: 10
-          app:
-            type: string
-            example: 0
-  Block:
-    type: object
-    properties:
-      header:
-        type: object
-        properties:
-          chain_id:
-            type: string
-            example: cosmoshub-2
-          height:
-            type: number
-            example: 1
-          time:
-            type: string
-            example: '2017-12-30T05:53:09.287+01:00'
-          num_txs:
-            type: number
-            example: 0
-          last_block_id:
+            description: >-
+              ConfigResponse defines the response structure for the Config gRPC
+              query.
+        default:
+          description: An unexpected error response
+          schema:
             type: object
             properties:
-              hash:
+              error:
                 type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              parts:
-                type: object
-                properties:
-                  total:
-                    type: number
-                    example: 0
-                  hash:
-                    type: string
-                    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          total_txs:
-            type: number
-            example: 35
-          last_commit_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          data_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          validators_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          next_validators_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          consensus_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          app_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          last_results_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          evidence_hash:
-            type: string
-            example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          proposer_address:
-            type: string
-            description: bech32 encoded address
-            example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-          version:
-            type: object
-            properties:
-              block:
+              code:
+                type: integer
+                format: int32
+              message:
                 type: string
-                example: 10
-              app:
-                type: string
-                example: 0
-      txs:
-        type: array
-        items:
-          type: string
-      evidence:
-        type: array
-        items:
-          type: string
-      last_commit:
-        type: object
-        properties:
-          block_id:
-            type: object
-            properties:
-              hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              parts:
-                type: object
-                properties:
-                  total:
-                    type: number
-                    example: 0
-                  hash:
-                    type: string
-                    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-          precommits:
-            type: array
-            items:
-              type: object
-              properties:
-                validator_address:
-                  type: string
-                validator_index:
-                  type: string
-                  example: '0'
-                height:
-                  type: string
-                  example: '0'
-                round:
-                  type: string
-                  example: '0'
-                timestamp:
-                  type: string
-                  example: '2017-12-30T05:53:09.287+01:00'
-                type:
-                  type: number
-                  example: 2
-                block_id:
-                  type: object
-                  properties:
-                    hash:
-                      type: string
-                      example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                    parts:
-                      type: object
-                      properties:
-                        total:
-                          type: number
-                          example: 0
-                        hash:
-                          type: string
-                          example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                signature:
-                  type: string
-                  example: >-
-                    7uTC74QlknqYWEwg7Vn6M8Om7FuZ0EO4bjvuj6rwH1mTUJrRuMMZvAAqT9VjNgP0RA/TDp6u/92AqrZfXJSpBQ==
-  BlockQuery:
-    type: object
-    properties:
-      block_meta:
-        type: object
-        properties:
-          header:
-            type: object
-            properties:
-              chain_id:
-                type: string
-                example: cosmoshub-2
-              height:
-                type: number
-                example: 1
-              time:
-                type: string
-                example: '2017-12-30T05:53:09.287+01:00'
-              num_txs:
-                type: number
-                example: 0
-              last_block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                  parts:
-                    type: object
-                    properties:
-                      total:
-                        type: number
-                        example: 0
-                      hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              total_txs:
-                type: number
-                example: 35
-              last_commit_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              data_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              validators_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              next_validators_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              consensus_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              app_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              last_results_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              evidence_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              proposer_address:
-                type: string
-                description: bech32 encoded address
-                example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-              version:
-                type: object
-                properties:
-                  block:
-                    type: string
-                    example: 10
-                  app:
-                    type: string
-                    example: 0
-          block_id:
-            type: object
-            properties:
-              hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              parts:
-                type: object
-                properties:
-                  total:
-                    type: number
-                    example: 0
-                  hash:
-                    type: string
-                    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-      block:
-        type: object
-        properties:
-          header:
-            type: object
-            properties:
-              chain_id:
-                type: string
-                example: cosmoshub-2
-              height:
-                type: number
-                example: 1
-              time:
-                type: string
-                example: '2017-12-30T05:53:09.287+01:00'
-              num_txs:
-                type: number
-                example: 0
-              last_block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                  parts:
-                    type: object
-                    properties:
-                      total:
-                        type: number
-                        example: 0
-                      hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              total_txs:
-                type: number
-                example: 35
-              last_commit_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              data_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              validators_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              next_validators_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              consensus_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              app_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              last_results_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              evidence_hash:
-                type: string
-                example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              proposer_address:
-                type: string
-                description: bech32 encoded address
-                example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
-              version:
-                type: object
-                properties:
-                  block:
-                    type: string
-                    example: 10
-                  app:
-                    type: string
-                    example: 0
-          txs:
-            type: array
-            items:
-              type: string
-          evidence:
-            type: array
-            items:
-              type: string
-          last_commit:
-            type: object
-            properties:
-              block_id:
-                type: object
-                properties:
-                  hash:
-                    type: string
-                    example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                  parts:
-                    type: object
-                    properties:
-                      total:
-                        type: number
-                        example: 0
-                      hash:
-                        type: string
-                        example: EE5F3404034C524501629B56E0DDC38FAD651F04
-              precommits:
+              details:
                 type: array
                 items:
                   type: object
                   properties:
-                    validator_address:
+                    type_url:
                       type: string
-                    validator_index:
+                    value:
                       type: string
-                      example: '0'
-                    height:
-                      type: string
-                      example: '0'
-                    round:
-                      type: string
-                      example: '0'
-                    timestamp:
-                      type: string
-                      example: '2017-12-30T05:53:09.287+01:00'
-                    type:
-                      type: number
-                      example: 2
-                    block_id:
-                      type: object
-                      properties:
-                        hash:
-                          type: string
-                          example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                        parts:
-                          type: object
-                          properties:
-                            total:
-                              type: number
-                              example: 0
-                            hash:
-                              type: string
-                              example: EE5F3404034C524501629B56E0DDC38FAD651F04
-                    signature:
-                      type: string
-                      example: >-
-                        7uTC74QlknqYWEwg7Vn6M8Om7FuZ0EO4bjvuj6rwH1mTUJrRuMMZvAAqT9VjNgP0RA/TDp6u/92AqrZfXJSpBQ==
-  BaseReq:
-    type: object
-    properties:
-      from:
-        type: string
-        example: cosmos1g9ahr6xhht5rmqven628nklxluzyv8z9jqjcmc
-        description: Sender address or Keybase name to generate a transaction
-      memo:
-        type: string
-        example: "Sent via Cosmos Voyager \U0001F680"
-      chain_id:
-        type: string
-        example: Cosmos-Hub
-      account_number:
-        type: string
-        example: '0'
-      sequence:
-        type: string
-        example: '1'
-      gas:
-        type: string
-        example: '200000'
-      gas_adjustment:
-        type: string
-        example: '1.2'
-      fees:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-              example: stake
-            amount:
-              type: string
-              example: '50'
-      simulate:
-        type: boolean
-        example: false
-        description: >-
-          Estimate gas for a transaction (cannot be used in conjunction with
-          generate_only)
-  TendermintValidator:
-    type: object
-    properties:
-      address:
-        type: string
-        description: bech32 encoded address
-        example: cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l
-      pub_key:
-        type: string
-        example: >-
-          cosmosvalconspub1zcjduepq0vu2zgkgk49efa0nqwzndanq5m4c7pa3u4apz4g2r9gspqg6g9cs3k9cuf
-      voting_power:
-        type: string
-        example: '1000'
-      proposer_priority:
-        type: string
-        example: '1000'
-  PublicKey:
-    type: object
-    properties:
-      type:
-        type: string
-      value:
-        type: string
-  SigningInfo:
-    type: object
-    properties:
-      start_height:
-        type: string
-      index_offset:
-        type: string
-      jailed_until:
-        type: string
-      missed_blocks_counter:
-        type: string
+                      format: byte
+      tags:
+        - Service
+securityDefinitions:
+  kms:
+    type: basic
+definitions:
   cosmos.auth.v1beta1.Params:
     type: object
     properties:
@@ -46176,6 +45460,171 @@ definitions:
 
 
       Since: cosmos-sdk 0.43
+  cosmos.auth.v1beta1.QueryModuleAccountByNameResponse:
+    type: object
+    properties:
+      account:
+        type: object
+        properties:
+          type_url:
+            type: string
+            description: >-
+              A URL/resource name that uniquely identifies the type of the
+              serialized
+
+              protocol buffer message. This string must contain at least
+
+              one "/" character. The last segment of the URL's path must
+              represent
+
+              the fully qualified name of the type (as in
+
+              `path/google.protobuf.Duration`). The name should be in a
+              canonical form
+
+              (e.g., leading "." is not accepted).
+
+
+              In practice, teams usually precompile into the binary all types
+              that they
+
+              expect it to use in the context of Any. However, for URLs which
+              use the
+
+              scheme `http`, `https`, or no scheme, one can optionally set up a
+              type
+
+              server that maps type URLs to message definitions as follows:
+
+
+              * If no scheme is provided, `https` is assumed.
+
+              * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                value in binary format, or produce an error.
+              * Applications are allowed to cache lookup results based on the
+                URL, or have them precompiled into a binary to avoid any
+                lookup. Therefore, binary compatibility needs to be preserved
+                on changes to types. (Use versioned type names to manage
+                breaking changes.)
+
+              Note: this functionality is not currently available in the
+              official
+
+              protobuf release, and it is not used for type URLs beginning with
+
+              type.googleapis.com.
+
+
+              Schemes other than `http`, `https` (or the empty scheme) might be
+
+              used with implementation specific semantics.
+          value:
+            type: string
+            format: byte
+            description: >-
+              Must be a valid serialized protocol buffer of the above specified
+              type.
+        description: >-
+          `Any` contains an arbitrary serialized protocol buffer message along
+          with a
+
+          URL that describes the type of the serialized message.
+
+
+          Protobuf library provides support to pack/unpack Any values in the
+          form
+
+          of utility functions or additional generated methods of the Any type.
+
+
+          Example 1: Pack and unpack a message in C++.
+
+              Foo foo = ...;
+              Any any;
+              any.PackFrom(foo);
+              ...
+              if (any.UnpackTo(&foo)) {
+                ...
+              }
+
+          Example 2: Pack and unpack a message in Java.
+
+              Foo foo = ...;
+              Any any = Any.pack(foo);
+              ...
+              if (any.is(Foo.class)) {
+                foo = any.unpack(Foo.class);
+              }
+
+           Example 3: Pack and unpack a message in Python.
+
+              foo = Foo(...)
+              any = Any()
+              any.Pack(foo)
+              ...
+              if any.Is(Foo.DESCRIPTOR):
+                any.Unpack(foo)
+                ...
+
+           Example 4: Pack and unpack a message in Go
+
+               foo := &pb.Foo{...}
+               any, err := ptypes.MarshalAny(foo)
+               ...
+               foo := &pb.Foo{}
+               if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                 ...
+               }
+
+          The pack methods provided by protobuf library will by default use
+
+          'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+          methods only use the fully qualified type name after the last '/'
+
+          in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+          name "y.z".
+
+
+
+          JSON
+
+          ====
+
+          The JSON representation of an `Any` value uses the regular
+
+          representation of the deserialized, embedded message, with an
+
+          additional field `@type` which contains the type URL. Example:
+
+              package google.profile;
+              message Person {
+                string first_name = 1;
+                string last_name = 2;
+              }
+
+              {
+                "@type": "type.googleapis.com/google.profile.Person",
+                "firstName": <string>,
+                "lastName": <string>
+              }
+
+          If the embedded message type is well-known and has a custom JSON
+
+          representation, that representation will be embedded adding a field
+
+          `value` which holds the custom JSON in addition to the `@type`
+
+          field. Example (for message [google.protobuf.Duration][]):
+
+              {
+                "@type": "type.googleapis.com/google.protobuf.Duration",
+                "value": "1.212s"
+              }
+    description: >-
+      QueryModuleAccountByNameResponse is the response type for the
+      Query/ModuleAccountByName RPC method.
   cosmos.auth.v1beta1.QueryParamsResponse:
     type: object
     properties:
@@ -68521,9 +67970,6 @@ definitions:
   lbm.foundation.v1.FoundationInfo:
     type: object
     properties:
-      operator:
-        type: string
-        description: operator is the account address of the foundation's operator.
       version:
         type: string
         format: uint64
@@ -68612,12 +68058,6 @@ definitions:
       address:
         type: string
         description: address is the member's account address.
-      participating:
-        type: boolean
-        format: boolean
-        description: >-
-          participating is the flag which allows one to remove the member by
-          setting the flag to false.
       metadata:
         type: string
         description: metadata is any arbitrary metadata to attached to the member.
@@ -68631,11 +68071,12 @@ definitions:
   lbm.foundation.v1.Params:
     type: object
     properties:
-      enabled:
-        type: boolean
-        format: boolean
       foundation_tax:
         type: string
+      censored_msg_type_urls:
+        type: array
+        items:
+          type: string
     description: Params defines the parameters for the foundation module.
   lbm.foundation.v1.Proposal:
     type: object
@@ -68673,24 +68114,11 @@ definitions:
         enum:
           - PROPOSAL_STATUS_UNSPECIFIED
           - PROPOSAL_STATUS_SUBMITTED
-          - PROPOSAL_STATUS_CLOSED
+          - PROPOSAL_STATUS_ACCEPTED
+          - PROPOSAL_STATUS_REJECTED
           - PROPOSAL_STATUS_ABORTED
           - PROPOSAL_STATUS_WITHDRAWN
         default: PROPOSAL_STATUS_UNSPECIFIED
-      result:
-        description: >-
-          result is the final result based on the votes and election rule.
-          Initial value is unfinalized.
-
-          The result is persisted so that clients can always rely on this state
-          and not have to replicate the logic.
-        type: string
-        enum:
-          - PROPOSAL_RESULT_UNSPECIFIED
-          - PROPOSAL_RESULT_UNFINALIZED
-          - PROPOSAL_RESULT_ACCEPTED
-          - PROPOSAL_RESULT_REJECTED
-        default: PROPOSAL_RESULT_UNSPECIFIED
       final_tally_result:
         description: >-
           final_tally_result contains the sums of all votes for this
@@ -68934,27 +68362,13 @@ definitions:
        - PROPOSAL_EXECUTOR_RESULT_NOT_RUN: We have not yet run the executor.
        - PROPOSAL_EXECUTOR_RESULT_SUCCESS: The executor was successful and proposed action updated state.
        - PROPOSAL_EXECUTOR_RESULT_FAILURE: The executor returned an error and proposed action didn't update state.
-  lbm.foundation.v1.ProposalResult:
-    type: string
-    enum:
-      - PROPOSAL_RESULT_UNSPECIFIED
-      - PROPOSAL_RESULT_UNFINALIZED
-      - PROPOSAL_RESULT_ACCEPTED
-      - PROPOSAL_RESULT_REJECTED
-    default: PROPOSAL_RESULT_UNSPECIFIED
-    description: |-
-      ProposalResult defines types of proposal results.
-
-       - PROPOSAL_RESULT_UNSPECIFIED: An empty value is invalid and not allowed
-       - PROPOSAL_RESULT_UNFINALIZED: Until a final tally has happened the status is unfinalized
-       - PROPOSAL_RESULT_ACCEPTED: Final result of the tally
-       - PROPOSAL_RESULT_REJECTED: Final result of the tally
   lbm.foundation.v1.ProposalStatus:
     type: string
     enum:
       - PROPOSAL_STATUS_UNSPECIFIED
       - PROPOSAL_STATUS_SUBMITTED
-      - PROPOSAL_STATUS_CLOSED
+      - PROPOSAL_STATUS_ACCEPTED
+      - PROPOSAL_STATUS_REJECTED
       - PROPOSAL_STATUS_ABORTED
       - PROPOSAL_STATUS_WITHDRAWN
     default: PROPOSAL_STATUS_UNSPECIFIED
@@ -68962,11 +68376,15 @@ definitions:
       ProposalStatus defines proposal statuses.
 
        - PROPOSAL_STATUS_UNSPECIFIED: An empty value is invalid and not allowed.
-       - PROPOSAL_STATUS_SUBMITTED: Initial status of a proposal when persisted.
-       - PROPOSAL_STATUS_CLOSED: Final status of a proposal when the final tally was executed.
-       - PROPOSAL_STATUS_ABORTED: Final status of a proposal when the group was modified before the final tally.
-       - PROPOSAL_STATUS_WITHDRAWN: A proposal can be deleted before the voting start time by the owner. When this happens the final status
-      is Withdrawn.
+       - PROPOSAL_STATUS_SUBMITTED: Initial status of a proposal when submitted.
+       - PROPOSAL_STATUS_ACCEPTED: Final status of a proposal when the final tally is done and the outcome
+      passes the foundation's decision policy.
+       - PROPOSAL_STATUS_REJECTED: Final status of a proposal when the final tally is done and the outcome
+      is rejected by the foundation's decision policy.
+       - PROPOSAL_STATUS_ABORTED: Final status of a proposal when the decision policy is modified before the
+      final tally.
+       - PROPOSAL_STATUS_WITHDRAWN: A proposal can be withdrawn before the voting start time by the owner.
+      When this happens the final status is Withdrawn.
   lbm.foundation.v1.QueryFoundationInfoResponse:
     type: object
     properties:
@@ -68974,9 +68392,6 @@ definitions:
         description: info is the FoundationInfo for the foundation.
         type: object
         properties:
-          operator:
-            type: string
-            description: operator is the account address of the foundation's operator.
           version:
             type: string
             format: uint64
@@ -69060,6 +68475,14 @@ definitions:
                   Must be a valid serialized protocol buffer of the above
                   specified type.
     description: QueryFoundationInfoResponse is the Query/FoundationInfo response type.
+  lbm.foundation.v1.QueryGovMintResponse:
+    type: object
+    properties:
+      leftCount:
+        type: integer
+        format: int64
+        description: leftCount is the left count of GovMint.
+    description: QueryGovMintResponse is the Query/GovMint response type.
   lbm.foundation.v1.QueryGrantsResponse:
     type: object
     properties:
@@ -69256,12 +68679,6 @@ definitions:
           address:
             type: string
             description: address is the member's account address.
-          participating:
-            type: boolean
-            format: boolean
-            description: >-
-              participating is the flag which allows one to remove the member by
-              setting the flag to false.
           metadata:
             type: string
             description: metadata is any arbitrary metadata to attached to the member.
@@ -69284,12 +68701,6 @@ definitions:
             address:
               type: string
               description: address is the member's account address.
-            participating:
-              type: boolean
-              format: boolean
-              description: >-
-                participating is the flag which allows one to remove the member
-                by setting the flag to false.
             metadata:
               type: string
               description: metadata is any arbitrary metadata to attached to the member.
@@ -69326,11 +68737,12 @@ definitions:
       params:
         type: object
         properties:
-          enabled:
-            type: boolean
-            format: boolean
           foundation_tax:
             type: string
+          censored_msg_type_urls:
+            type: array
+            items:
+              type: string
         description: Params defines the parameters for the foundation module.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
   lbm.foundation.v1.QueryProposalResponse:
@@ -69374,24 +68786,11 @@ definitions:
             enum:
               - PROPOSAL_STATUS_UNSPECIFIED
               - PROPOSAL_STATUS_SUBMITTED
-              - PROPOSAL_STATUS_CLOSED
+              - PROPOSAL_STATUS_ACCEPTED
+              - PROPOSAL_STATUS_REJECTED
               - PROPOSAL_STATUS_ABORTED
               - PROPOSAL_STATUS_WITHDRAWN
             default: PROPOSAL_STATUS_UNSPECIFIED
-          result:
-            description: >-
-              result is the final result based on the votes and election rule.
-              Initial value is unfinalized.
-
-              The result is persisted so that clients can always rely on this
-              state and not have to replicate the logic.
-            type: string
-            enum:
-              - PROPOSAL_RESULT_UNSPECIFIED
-              - PROPOSAL_RESULT_UNFINALIZED
-              - PROPOSAL_RESULT_ACCEPTED
-              - PROPOSAL_RESULT_REJECTED
-            default: PROPOSAL_RESULT_UNSPECIFIED
           final_tally_result:
             description: >-
               final_tally_result contains the sums of all votes for this
@@ -69672,24 +69071,11 @@ definitions:
               enum:
                 - PROPOSAL_STATUS_UNSPECIFIED
                 - PROPOSAL_STATUS_SUBMITTED
-                - PROPOSAL_STATUS_CLOSED
+                - PROPOSAL_STATUS_ACCEPTED
+                - PROPOSAL_STATUS_REJECTED
                 - PROPOSAL_STATUS_ABORTED
                 - PROPOSAL_STATUS_WITHDRAWN
               default: PROPOSAL_STATUS_UNSPECIFIED
-            result:
-              description: >-
-                result is the final result based on the votes and election rule.
-                Initial value is unfinalized.
-
-                The result is persisted so that clients can always rely on this
-                state and not have to replicate the logic.
-              type: string
-              enum:
-                - PROPOSAL_RESULT_UNSPECIFIED
-                - PROPOSAL_RESULT_UNFINALIZED
-                - PROPOSAL_RESULT_ACCEPTED
-                - PROPOSAL_RESULT_REJECTED
-              default: PROPOSAL_RESULT_UNSPECIFIED
             final_tally_result:
               description: >-
                 final_tally_result contains the sums of all votes for this
@@ -69982,9 +69368,9 @@ definitions:
             amount:
               type: string
           description: |-
-            Coin defines a token with a denomination and an amount.
+            DecCoin defines a token with a denomination and a decimal amount.
 
-            NOTE: The amount field is an Int which implements the custom method
+            NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
     description: |-
       QueryTreasuryResponse is the response type for the
@@ -71847,3 +71233,9 @@ definitions:
     description: >-
       QueryInactiveContractsResponse is the response type for the
       Query/InactiveContract RPC method.
+  cosmos.base.node.v1beta1.ConfigResponse:
+    type: object
+    properties:
+      minimum_gas_price:
+        type: string
+    description: ConfigResponse defines the response structure for the Config gRPC query.

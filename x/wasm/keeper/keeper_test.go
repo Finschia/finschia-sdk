@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"math"
+	"os"
 	"testing"
 	"time"
 
@@ -28,7 +28,7 @@ import (
 
 // When migrated to go 1.16, embed package should be used instead.
 func init() {
-	b, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	b, err := os.ReadFile("./testdata/hackatom.wasm")
 	if err != nil {
 		panic(err)
 	}
@@ -348,7 +348,7 @@ func TestCreateWithGzippedPayload(t *testing.T) {
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm.gzip")
+	wasmCode, err := os.ReadFile("./testdata/hackatom.wasm.gzip")
 	require.NoError(t, err, "reading gzipped WASM code")
 
 	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
@@ -390,7 +390,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x18c06), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x18c0a), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -512,6 +512,7 @@ func TestInstantiateWithPermissions(t *testing.T) {
 			srcActor:      myAddr,
 		},
 		"onlyAddress with non matching address": {
+			srcActor:      myAddr,
 			srcPermission: types.AccessTypeOnlyAddress.With(otherAddr),
 			expError:      sdkerrors.ErrUnauthorized,
 		},
@@ -623,7 +624,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x16f9c), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x16fa0), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -1084,7 +1085,7 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, deposit.Add(deposit...)...)
 	fred := keepers.Faucet.NewFundedAccount(ctx, sdk.NewInt64Coin("denom", 5000))
 
-	burnerCode, err := ioutil.ReadFile("./testdata/burner.wasm")
+	burnerCode, err := os.ReadFile("./testdata/burner.wasm")
 	require.NoError(t, err)
 
 	originalContractID, err := keeper.Create(ctx, creator, hackatomWasm, nil)
@@ -1469,7 +1470,7 @@ func TestExecuteManualInactiveContractFailure(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 	fred := keepers.Faucet.NewFundedAccount(ctx, topUp...)
 
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	wasmCode, err := os.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
@@ -1926,4 +1927,41 @@ func TestIterateInactiveContracts(t *testing.T) {
 	assert.Equal(t, 2, len(inactiveContracts))
 	expectList := []sdk.AccAddress{example1.Contract, example2.Contract}
 	assert.ElementsMatch(t, expectList, inactiveContracts)
+}
+
+func TestKeeper_GetByteCode(t *testing.T) {
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.ContractKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
+
+	em := sdk.NewEventManager()
+	_, err := keeper.Create(ctx.WithEventManager(em), creator, hackatomWasm, nil)
+	require.NoError(t, err)
+
+	tests := []struct {
+		name    string
+		codeID  uint64
+		want    []byte
+		wantErr bool
+		expErr  *sdkerrors.Error
+	}{
+		{name: "success", codeID: 1, want: hackatomWasm, wantErr: false, expErr: nil},
+		{name: "not found contract", codeID: 42, want: nil, wantErr: true, expErr: types.ErrNotFound},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := keepers.WasmKeeper.GetByteCode(ctx, tt.codeID)
+			if tt.wantErr {
+				require.Equal(t, err, tt.expErr)
+				return
+			}
+			require.NoError(t, err)
+			require.Equal(t, tt.want, got)
+
+		})
+	}
 }

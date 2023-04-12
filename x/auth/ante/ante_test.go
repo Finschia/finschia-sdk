@@ -480,7 +480,7 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 		{
 			"signer as enough funds, should pass",
 			func() {
-				accNums = []uint64{8}
+				accNums = []uint64{7}
 				modAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, types.FeeCollectorName)
 
 				suite.Require().True(suite.app.BankKeeper.GetAllBalances(suite.ctx, modAcc.GetAddress()).Empty())
@@ -945,7 +945,8 @@ func TestCountSubkeys(t *testing.T) {
 	multiLevelSubKey1 := kmultisig.NewLegacyAminoPubKey(4, genPubKeys(5))
 	multiLevelSubKey2 := kmultisig.NewLegacyAminoPubKey(4, genPubKeys(5))
 	multiLevelMultiKey := kmultisig.NewLegacyAminoPubKey(2, []cryptotypes.PubKey{
-		multiLevelSubKey1, multiLevelSubKey2, secp256k1.GenPrivKey().PubKey()})
+		multiLevelSubKey1, multiLevelSubKey2, secp256k1.GenPrivKey().PubKey(),
+	})
 	type args struct {
 		pub cryptotypes.PubKey
 	}

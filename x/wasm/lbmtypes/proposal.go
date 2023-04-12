@@ -22,8 +22,6 @@ var EnableAllProposals = append([]wasmtypes.ProposalType{
 func init() {
 	govtypes.RegisterProposalType(string(ProposalTypeDeactivateContract))
 	govtypes.RegisterProposalType(string(ProposalTypeActivateContract))
-	govtypes.RegisterProposalTypeCodec(&DeactivateContractProposal{}, "wasm/DeactivateContractProposal")
-	govtypes.RegisterProposalTypeCodec(&ActivateContractProposal{}, "wasm/ActivateContractProposal")
 }
 
 func (p DeactivateContractProposal) GetTitle() string { return p.Title }

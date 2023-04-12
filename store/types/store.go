@@ -98,7 +98,6 @@ func (s *StoreUpgrades) RenamedFrom(key string) string {
 		}
 	}
 	return ""
-
 }
 
 type MultiStore interface {
@@ -191,6 +190,12 @@ type CommitMultiStore interface {
 
 	// SetIAVLCacheSize sets the cache size of the IAVL tree.
 	SetIAVLCacheSize(size int)
+
+	// SetIAVLDisableFastNode enables/disables fastnode feature on iavl.
+	SetIAVLDisableFastNode(disable bool)
+
+	// RollbackToVersion rollback the db to specific version(height).
+	RollbackToVersion(version int64) error
 }
 
 //---------subsp-------------------------------
@@ -200,7 +205,7 @@ type CommitMultiStore interface {
 type KVStore interface {
 	Store
 
-	// Get returns nil iff key doesn't exist. Panics on nil key.
+	// Get returns nil if key doesn't exist. Panics on nil key.
 	Get(key []byte) []byte
 
 	// Has checks if a key exists. Panics on nil key.
