@@ -45,6 +45,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#933](https://github.com/line/lbm-sdk/pull/933) Clean up x/foundation apis
 * (x/collection) [\#938](https://github.com/line/lbm-sdk/pull/938) Add progress log into x/collection import-genesis
 * (x/foundation) [\#952](https://github.com/line/lbm-sdk/pull/952) Address generation of the empty coins in x/foundation
+* (x/collection,token,foundation) [\#963](https://github.com/line/lbm-sdk/pull/963) Check event determinism on original modules
 
 ### Bug Fixes
 * (swagger) [\#898](https://github.com/line/lbm-sdk/pull/898) fix a bug not added `lbm.tx.v1beta1.Service/GetBlockWithTxs` in swagger

@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -32,6 +33,18 @@ func AttributeKeyFromString(name string) AttributeKey {
 	return AttributeKey(AttributeKey_value[attributeKeyName])
 }
 
+func sortedAttributeKeys(m map[AttributeKey]string) []AttributeKey {
+	keys := make([]AttributeKey, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+	return keys
+}
+
 func NewEventIssueToken(event EventIssued, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueToken.String()
 	attributes := map[AttributeKey]string{
@@ -49,7 +62,8 @@ func NewEventIssueToken(event EventIssued, to sdk.AccAddress, amount sdk.Int) sd
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -66,7 +80,8 @@ func NewEventMintToken(event EventMinted) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -82,7 +97,8 @@ func NewEventBurnToken(event EventBurned) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -99,7 +115,8 @@ func NewEventBurnTokenFrom(event EventBurned) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -132,7 +149,8 @@ func NewEventTransfer(event EventSent) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -150,7 +168,8 @@ func NewEventTransferFrom(event EventSent) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -168,7 +187,8 @@ func NewEventGrantPermToken(event EventGranted) sdk.Event {
 		attributes[AttributeKeyFrom] = event.Granter
 	}
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -187,7 +207,8 @@ func NewEventGrantPermTokenHead(event EventGranted) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -201,7 +222,8 @@ func NewEventGrantPermTokenBody(event EventGranted) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -217,7 +239,8 @@ func NewEventRevokePermToken(event EventRenounced) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
@@ -233,7 +256,8 @@ func NewEventApproveToken(event EventAuthorizedOperator) sdk.Event {
 	}
 
 	res := sdk.NewEvent(eventType)
-	for key, value := range attributes {
+	for _, key := range sortedAttributeKeys(attributes) {
+		value := attributes[key]
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}

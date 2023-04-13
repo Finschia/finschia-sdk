@@ -1,6 +1,7 @@
 package internal_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -21,6 +22,9 @@ import (
 
 type KeeperTestSuite struct {
 	suite.Suite
+
+	deterministic bool
+
 	ctx sdk.Context
 
 	bankKeeper foundation.BankKeeper
@@ -50,6 +54,32 @@ func newMsgCreateDog(name string) sdk.Msg {
 		Dog: &testdata.Dog{
 			Name: name,
 		},
+	}
+}
+
+func (s *KeeperTestSuite) createAddresses(accNum int) []sdk.AccAddress {
+	if s.deterministic {
+		addresses := make([]sdk.AccAddress, accNum)
+		for i := range addresses {
+			addresses[i] = sdk.AccAddress(fmt.Sprintf("address%d", i))
+		}
+		return addresses
+	} else {
+		seenAddresses := make(map[string]bool, accNum)
+		addresses := make([]sdk.AccAddress, accNum)
+		for i := range addresses {
+			var address sdk.AccAddress
+			for {
+				pk := secp256k1.GenPrivKey().PubKey()
+				address = sdk.AccAddress(pk.Address())
+				if !seenAddresses[address.String()] {
+					seenAddresses[address.String()] = true
+					break
+				}
+			}
+			addresses[i] = address
+		}
+		return addresses
 	}
 }
 
@@ -87,20 +117,18 @@ func (s *KeeperTestSuite) SetupTest() {
 		Authority:  foundation.CensorshipAuthorityFoundation,
 	})
 
-	createAddress := func() sdk.AccAddress {
-		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
 	s.authority = sdk.MustAccAddressFromBech32(s.impl.GetAuthority())
-	s.members = make([]sdk.AccAddress, 10)
+
+	numMembers := 10
+	addresses := s.createAddresses(numMembers + 1)
+	s.members = addresses[:numMembers]
 	for i := range s.members {
-		s.members[i] = createAddress()
 		member := foundation.Member{
 			Address: s.members[i].String(),
 		}
 		s.impl.SetMember(s.ctx, member)
 	}
-	s.stranger = createAddress()
+	s.stranger = addresses[len(addresses)-1]
 
 	info := foundation.DefaultFoundation()
 	info.TotalWeight = sdk.NewDec(int64(len(s.members)))
@@ -212,7 +240,12 @@ func (s *KeeperTestSuite) SetupTest() {
 }
 
 func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
+	for _, deterministic := range []bool{
+		false,
+		true,
+	} {
+		suite.Run(t, &KeeperTestSuite{deterministic: deterministic})
+	}
 }
 
 func TestNewKeeper(t *testing.T) {
