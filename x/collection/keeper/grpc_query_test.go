@@ -681,6 +681,10 @@ func (s *KeeperTestSuite) TestQueryToken() {
 		"invalid token id": {
 			contractID: s.contractID,
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    ftTokenID,
+		},
 		"no such a fungible token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewFTID("00bab10c"),
