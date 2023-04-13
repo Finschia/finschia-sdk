@@ -78,15 +78,13 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 type AppModule struct {
 	AppModuleBasic
 
-	keeper     keeper.Keeper
-	authKeeper collection.AuthKeeper
+	keeper keeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, authKeeper collection.AuthKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
-		keeper:     keeper,
-		authKeeper: authKeeper,
+		keeper: keeper,
 	}
 }
 
@@ -108,7 +106,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	collection.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
-	collection.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper, am.authKeeper))
+	collection.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
 }
 
 // InitGenesis performs genesis initialization for the collection module. It returns

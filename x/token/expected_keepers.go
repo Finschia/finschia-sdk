@@ -13,8 +13,4 @@ type (
 		InitGenesis(ctx sdk.Context, data *ClassGenesisState)
 		ExportGenesis(ctx sdk.Context) *ClassGenesisState
 	}
-
-	AuthKeeper interface {
-		HasAccount(ctx sdk.Context, addr sdk.AccAddress) bool
-	}
 )

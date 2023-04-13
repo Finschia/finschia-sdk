@@ -14,28 +14,18 @@ import (
 )
 
 type queryServer struct {
-	keeper     Keeper
-	authKeeper token.AuthKeeper
+	keeper Keeper
 }
 
 // NewQueryServer returns an implementation of the token QueryServer interface
 // for the provided Keeper.
-func NewQueryServer(keeper Keeper, authKeeper token.AuthKeeper) token.QueryServer {
+func NewQueryServer(keeper Keeper) token.QueryServer {
 	return &queryServer{
-		keeper:     keeper,
-		authKeeper: authKeeper,
+		keeper: keeper,
 	}
 }
 
 var _ token.QueryServer = queryServer{}
-
-func (s queryServer) validateExistenceOfAccountGRPC(ctx sdk.Context, addr sdk.AccAddress) error {
-	if !s.authKeeper.HasAccount(ctx, addr) {
-		return status.Error(codes.NotFound, sdkerrors.ErrUnknownAddress.Wrap(addr.String()).Error())
-	}
-
-	return nil
-}
 
 func (s queryServer) validateExistenceOfClassGRPC(ctx sdk.Context, id string) error {
 	if _, err := s.keeper.GetClass(ctx, id); err != nil {
@@ -45,6 +35,15 @@ func (s queryServer) validateExistenceOfClassGRPC(ctx sdk.Context, id string) er
 	return nil
 }
 
+func (s queryServer) addressFromBech32GRPC(address string, context string) (sdk.AccAddress, error) {
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress.Wrap(address), context).Error())
+	}
+
+	return addr, nil
+}
+
 // Balance queries the number of tokens of a given class owned by the owner.
 func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) (*token.QueryBalanceResponse, error) {
 	if req == nil {
@@ -52,19 +51,14 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	addr, err := s.addressFromBech32GRPC(req.Address, "address")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, addr); err != nil {
-		return nil, err
-	}
-
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr)
 
 	return &token.QueryBalanceResponse{Amount: balance}, nil
@@ -77,7 +71,7 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -98,7 +92,7 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -119,7 +113,7 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -140,7 +134,7 @@ func (s queryServer) Contract(c context.Context, req *token.QueryContractRequest
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -158,18 +152,14 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	grantee, err := s.addressFromBech32GRPC(req.Grantee, "grantee")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, grantee); err != nil {
-		return nil, err
-	}
 
 	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
@@ -199,25 +189,18 @@ func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperator
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := s.addressFromBech32GRPC(req.Operator, "operator")
 	if err != nil {
 		return nil, err
 	}
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
+	holder, err := s.addressFromBech32GRPC(req.Holder, "holder")
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfAccountGRPC(ctx, operator); err != nil {
-		return nil, err
-	}
-	if err := s.validateExistenceOfAccountGRPC(ctx, holder); err != nil {
-		return nil, err
-	}
 
 	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
 		return nil, err
@@ -235,14 +218,19 @@ func (s queryServer) HoldersByOperator(c context.Context, req *token.QueryHolder
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := s.addressFromBech32GRPC(req.Operator, "operator")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator: %s", req.Operator)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	store := ctx.KVStore(s.keeper.storeKey)
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
 	var holders []string
