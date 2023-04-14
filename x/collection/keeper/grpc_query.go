@@ -379,6 +379,11 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
 	if err != nil {
 		return nil, status.Error(codes.NotFound, err.Error())
@@ -454,6 +459,11 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.validateExistenceOfCollectionGRPC(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	legacyToken, err := s.getToken(ctx, req.ContractId, req.TokenId)
 	if err != nil {
 		return nil, status.Error(codes.NotFound, err.Error())
