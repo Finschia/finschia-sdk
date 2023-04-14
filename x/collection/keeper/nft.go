@@ -125,7 +125,6 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 			From:       subject,
 			To:         root,
 		}
-		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
 		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 			panic(err)
 		}
@@ -164,7 +163,6 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 			From:       root,
 			To:         subject,
 		}
-		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
 		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 			panic(err)
 		}

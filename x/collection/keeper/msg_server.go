@@ -45,7 +45,6 @@ func (s msgServer) SendFT(c context.Context, req *collection.MsgSendFT) (*collec
 		To:         req.To,
 		Amount:     req.Amount,
 	}
-	ctx.EventManager().EmitEvent(*collection.NewEventTransferFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -80,7 +79,6 @@ func (s msgServer) OperatorSendFT(c context.Context, req *collection.MsgOperator
 		To:         req.To,
 		Amount:     req.Amount,
 	}
-	ctx.EventManager().EmitEvent(*collection.NewEventTransferFTFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -113,7 +111,12 @@ func (s msgServer) SendNFT(c context.Context, req *collection.MsgSendNFT) (*coll
 		}
 	}
 
-	// emit legacy events
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
+
+	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
+		panic(err)
+	}
+
 	event := collection.EventSent{
 		ContractId: req.ContractId,
 		Operator:   req.From,
@@ -121,14 +124,6 @@ func (s msgServer) SendNFT(c context.Context, req *collection.MsgSendNFT) (*coll
 		To:         req.To,
 		Amount:     amount,
 	}
-	ctx.EventManager().EmitEvents(collection.NewEventTransferNFT(event))
-
-	toAddr := sdk.MustAccAddressFromBech32(req.To)
-
-	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
-		panic(err)
-	}
-
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -166,7 +161,12 @@ func (s msgServer) OperatorSendNFT(c context.Context, req *collection.MsgOperato
 		}
 	}
 
-	// emit legacy events
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
+
+	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
+		panic(err)
+	}
+
 	event := collection.EventSent{
 		ContractId: req.ContractId,
 		Operator:   req.Operator,
@@ -174,14 +174,6 @@ func (s msgServer) OperatorSendNFT(c context.Context, req *collection.MsgOperato
 		To:         req.To,
 		Amount:     amount,
 	}
-	ctx.EventManager().EmitEvents(collection.NewEventTransferNFTFrom(event))
-
-	toAddr := sdk.MustAccAddressFromBech32(req.To)
-
-	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
-		panic(err)
-	}
-
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -292,7 +284,6 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
-	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, toAddr, req.Amount))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -344,7 +335,6 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 		Name:       class.Name,
 		Meta:       class.Meta,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventIssueNFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -384,7 +374,6 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 		To:         req.To,
 		Amount:     req.Amount,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventMintFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -418,7 +407,6 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 		To:         req.To,
 		Tokens:     tokens,
 	}
-	ctx.EventManager().EmitEvents(collection.NewEventMintNFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -453,9 +441,6 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		Operator:   req.From,
 		From:       req.From,
 		Amount:     burnt,
-	}
-	if e := collection.NewEventBurnFT(event); e != nil {
-		ctx.EventManager().EmitEvent(*e)
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
@@ -493,9 +478,6 @@ func (s msgServer) OperatorBurnFT(c context.Context, req *collection.MsgOperator
 		From:       req.From,
 		Amount:     burnt,
 	}
-	if e := collection.NewEventBurnFTFrom(event); e != nil {
-		ctx.EventManager().EmitEvent(*e)
-	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -532,22 +514,18 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		}
 	}
 
-	// legacy: emit events against the original request.
-	event := collection.EventBurned{
-		ContractId: req.ContractId,
-		Operator:   req.From,
-		From:       req.From,
-		Amount:     coins,
-	}
-	ctx.EventManager().EmitEvents(collection.NewEventBurnNFT(event))
-
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, coins)
 	if err != nil {
 		panic(err)
 	}
 
 	// emit events against all burnt tokens.
-	event.Amount = burnt
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		From:       req.From,
+		Amount:     burnt,
+	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -589,22 +567,18 @@ func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperato
 		}
 	}
 
-	// legacy: emit events against the original request.
-	event := collection.EventBurned{
-		ContractId: req.ContractId,
-		Operator:   req.Operator,
-		From:       req.From,
-		Amount:     coins,
-	}
-	ctx.EventManager().EmitEvents(collection.NewEventBurnNFTFrom(event))
-
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, coins)
 	if err != nil {
 		panic(err)
 	}
 
 	// emit events against all burnt tokens.
-	event.Amount = burnt
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		From:       req.From,
+		Amount:     burnt,
+	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -648,7 +622,6 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 						TokenId:    tokenID,
 						Changes:    changes,
 					}
-					ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfNFT(event))
 					if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 						panic(err)
 					}
@@ -663,8 +636,6 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 					Changes:    changes,
 					TypeName:   proto.MessageName(&collection.FTClass{}),
 				}
-
-				ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfFTClass(event))
 				if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 					panic(err)
 				}
@@ -679,7 +650,6 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				Changes:    changes,
 				TypeName:   proto.MessageName(&collection.NFTClass{}),
 			}
-			ctx.EventManager().EmitEvents(collection.NewEventModifyTokenType(event))
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 				panic(err)
 			}
@@ -692,7 +662,6 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				Operator:   operator.String(),
 				Changes:    changes,
 			}
-			ctx.EventManager().EmitEvents(collection.NewEventModifyCollection(event))
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 				panic(err)
 			}
@@ -725,16 +694,8 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 		return nil, collection.ErrTokenNoPermission.Wrapf("%s is not authorized for %s", granter, permission)
 	}
 
-	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
-
-	event := collection.EventGranted{
-		ContractId: req.ContractId,
-		Granter:    granter.String(),
-		Grantee:    grantee.String(),
-		Permission: permission,
-	}
-	ctx.EventManager().EmitEvent(collection.NewEventGrantPermToken(event))
 	// it emits typed event inside s.keeper.Grant()
+	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
 	return &collection.MsgGrantPermissionResponse{}, nil
 }
@@ -753,15 +714,8 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 		return nil, collection.ErrTokenNoPermission.Wrapf("%s is not authorized for %s", grantee, permission)
 	}
 
-	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
-
-	event := collection.EventRenounced{
-		ContractId: req.ContractId,
-		Grantee:    grantee.String(),
-		Permission: permission,
-	}
-	ctx.EventManager().EmitEvent(collection.NewEventRevokePermToken(event))
 	// it emits typed event inside s.keeper.Abandon()
+	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
 	return &collection.MsgRevokePermissionResponse{}, nil
 }
@@ -780,8 +734,6 @@ func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collec
 		Subject:    req.TokenId,
 		Target:     req.ToTokenId,
 	}
-	newRoot := s.keeper.GetRoot(ctx, req.ContractId, req.ToTokenId)
-	ctx.EventManager().EmitEvent(collection.NewEventAttachToken(event, newRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -806,7 +758,6 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
 		return nil, err
 	}
-	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
@@ -820,7 +771,6 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 		Subject:        req.TokenId,
 		PreviousParent: *parent,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventDetachToken(event, oldRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -855,8 +805,6 @@ func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperator
 		Subject:    req.TokenId,
 		Target:     req.ToTokenId,
 	}
-	newRoot := s.keeper.GetRoot(ctx, req.ContractId, req.ToTokenId)
-	ctx.EventManager().EmitEvent(collection.NewEventAttachFrom(event, newRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -886,7 +834,6 @@ func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperator
 	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
 		return nil, err
 	}
-	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
@@ -900,7 +847,6 @@ func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperator
 		Subject:        req.TokenId,
 		PreviousParent: *parent,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventDetachFrom(event, oldRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}

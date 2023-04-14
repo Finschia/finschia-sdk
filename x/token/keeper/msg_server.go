@@ -43,7 +43,6 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 		To:         req.To,
 		Amount:     req.Amount,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventTransfer(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -78,7 +77,6 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 		To:         req.To,
 		Amount:     req.Amount,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventTransferFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -132,7 +130,6 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 		Holder:     req.Holder,
 		Operator:   req.Operator,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -176,14 +173,6 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
-	event := token.EventGranted{
-		ContractId: req.ContractId,
-		Granter:    req.From,
-		Grantee:    req.To,
-		Permission: permission,
-	}
-	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event))
-
 	return &token.MsgGrantPermissionResponse{}, nil
 }
 
@@ -202,13 +191,6 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
-
-	event := token.EventRenounced{
-		ContractId: req.ContractId,
-		Grantee:    req.From,
-		Permission: permission,
-	}
-	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event))
 
 	return &token.MsgRevokePermissionResponse{}, nil
 }
