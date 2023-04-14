@@ -9695,8 +9695,8 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
 | ATTRIBUTE_KEY_META | 2 |  |
-| ATTRIBUTE_KEY_BASE_IMG_URI | 8 | ATTRIBUTE_KEY_CONTRACT_ID = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"]; ATTRIBUTE_KEY_TOKEN_ID = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenID"]; ATTRIBUTE_KEY_OWNER = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"]; ATTRIBUTE_KEY_AMOUNT = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"]; ATTRIBUTE_KEY_DECIMALS = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"]; deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_URI | 20 | ATTRIBUTE_KEY_MINTABLE = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"]; ATTRIBUTE_KEY_TOKEN_TYPE = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenType"]; ATTRIBUTE_KEY_FROM = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"]; ATTRIBUTE_KEY_TO = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"]; ATTRIBUTE_KEY_PERM = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"]; ATTRIBUTE_KEY_TO_TOKEN_ID = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyToTokenID"]; ATTRIBUTE_KEY_FROM_TOKEN_ID = 15 [(gogoproto.enumvalue_customname) = "AttributeKeyFromTokenID"]; ATTRIBUTE_KEY_APPROVER = 16 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"]; ATTRIBUTE_KEY_PROXY = 17 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"]; ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID = 18 [(gogoproto.enumvalue_customname) = "AttributeKeyOldRoot"]; ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID = 19 [(gogoproto.enumvalue_customname) = "AttributeKeyNewRoot"]; |
+| ATTRIBUTE_KEY_BASE_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
+| ATTRIBUTE_KEY_URI | 20 |  |
 
 
  <!-- end enums -->
@@ -13105,9 +13105,9 @@ AttributeKey enumerates the valid attribute keys on x/token.
 | ---- | ------ | ----------- |
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
-| ATTRIBUTE_KEY_META | 3 | ATTRIBUTE_KEY_SYMBOL = 2 [(gogoproto.enumvalue_customname) = "AttributeKeySymbol"]; |
-| ATTRIBUTE_KEY_IMG_URI | 8 | ATTRIBUTE_KEY_CONTRACT_ID = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"]; ATTRIBUTE_KEY_OWNER = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"]; ATTRIBUTE_KEY_AMOUNT = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"]; ATTRIBUTE_KEY_DECIMALS = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"]; deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_URI | 15 | ATTRIBUTE_KEY_MINTABLE = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"]; ATTRIBUTE_KEY_FROM = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"]; ATTRIBUTE_KEY_TO = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"]; ATTRIBUTE_KEY_PERM = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"]; ATTRIBUTE_KEY_APPROVER = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"]; ATTRIBUTE_KEY_PROXY = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"]; |
+| ATTRIBUTE_KEY_META | 3 |  |
+| ATTRIBUTE_KEY_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
+| ATTRIBUTE_KEY_URI | 15 |  |
 
 
  <!-- end enums -->

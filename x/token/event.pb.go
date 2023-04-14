@@ -30,21 +30,10 @@ type AttributeKey int32
 const (
 	AttributeKeyUnspecified AttributeKey = 0
 	AttributeKeyName        AttributeKey = 1
-	// ATTRIBUTE_KEY_SYMBOL      = 2 [(gogoproto.enumvalue_customname) = "AttributeKeySymbol"];
-	AttributeKeyMeta AttributeKey = 3
-	// ATTRIBUTE_KEY_CONTRACT_ID = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
-	// ATTRIBUTE_KEY_OWNER       = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
-	// ATTRIBUTE_KEY_AMOUNT      = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
-	// ATTRIBUTE_KEY_DECIMALS    = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
+	AttributeKeyMeta        AttributeKey = 3
 	// deprecated: use ATTRIBUTE_KEY_URI
 	AttributeKeyImageURI AttributeKey = 8
-	// ATTRIBUTE_KEY_MINTABLE = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
-	// ATTRIBUTE_KEY_FROM     = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
-	// ATTRIBUTE_KEY_TO       = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
-	// ATTRIBUTE_KEY_PERM     = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
-	// ATTRIBUTE_KEY_APPROVER = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
-	// ATTRIBUTE_KEY_PROXY    = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
-	AttributeKeyURI AttributeKey = 15
+	AttributeKeyURI      AttributeKey = 15
 )
 
 var AttributeKey_name = map[int32]string{
