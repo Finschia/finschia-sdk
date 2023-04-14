@@ -884,7 +884,6 @@
     - [EventSent](#lbm.token.v1.EventSent)
   
     - [AttributeKey](#lbm.token.v1.AttributeKey)
-    - [EventType](#lbm.token.v1.EventType)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
@@ -13106,43 +13105,9 @@ AttributeKey enumerates the valid attribute keys on x/token.
 | ---- | ------ | ----------- |
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
-| ATTRIBUTE_KEY_SYMBOL | 2 |  |
-| ATTRIBUTE_KEY_META | 3 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
-| ATTRIBUTE_KEY_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_FROM | 10 |  |
-| ATTRIBUTE_KEY_TO | 11 |  |
-| ATTRIBUTE_KEY_PERM | 12 |  |
-| ATTRIBUTE_KEY_APPROVER | 13 |  |
-| ATTRIBUTE_KEY_PROXY | 14 |  |
-| ATTRIBUTE_KEY_URI | 15 |  |
-
-
-
-<a name="lbm.token.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/token.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_ISSUE | 1 |  |
-| EVENT_TYPE_MINT | 2 |  |
-| EVENT_TYPE_BURN | 3 |  |
-| EVENT_TYPE_BURN_FROM | 4 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 5 |  |
-| EVENT_TYPE_TRANSFER | 6 |  |
-| EVENT_TYPE_TRANSFER_FROM | 7 |  |
-| EVENT_TYPE_GRANT_PERM | 8 |  |
-| EVENT_TYPE_REVOKE_PERM | 9 |  |
-| EVENT_TYPE_APPROVE_TOKEN | 10 |  |
+| ATTRIBUTE_KEY_META | 3 | ATTRIBUTE_KEY_SYMBOL = 2 [(gogoproto.enumvalue_customname) = "AttributeKeySymbol"]; |
+| ATTRIBUTE_KEY_IMG_URI | 8 | ATTRIBUTE_KEY_CONTRACT_ID = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"]; ATTRIBUTE_KEY_OWNER = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"]; ATTRIBUTE_KEY_AMOUNT = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"]; ATTRIBUTE_KEY_DECIMALS = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"]; deprecated: use ATTRIBUTE_KEY_URI |
+| ATTRIBUTE_KEY_URI | 15 | ATTRIBUTE_KEY_MINTABLE = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"]; ATTRIBUTE_KEY_FROM = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"]; ATTRIBUTE_KEY_TO = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"]; ATTRIBUTE_KEY_PERM = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"]; ATTRIBUTE_KEY_APPROVER = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"]; ATTRIBUTE_KEY_PROXY = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"]; |
 
 
  <!-- end enums -->
