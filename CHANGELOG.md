@@ -62,6 +62,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection,token) [\#957](https://github.com/line/lbm-sdk/pull/957) Refactor queries of x/collection and x/token
 
 ### Removed
+* (x/collection,token) [\#966](https://github.com/line/lbm-sdk/pull/966) Remove legacy events on x/collection and x/token
 
 ### Breaking Changes
 * (proto) [\#923](https://github.com/line/lbm-sdk/pull/923) deprecate broadcast mode `block`
