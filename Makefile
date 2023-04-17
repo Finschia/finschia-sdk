@@ -9,7 +9,7 @@ BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
 SIMAPP = ./simapp
 MOCKS_DIR = $(CURDIR)/tests/mocks
-HTTPS_GIT := https://github.com/line/lbm-sdk.git
+HTTPS_GIT := https://github.com/Finschia/finschia-sdk.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
 CGO_ENABLED ?= 1
@@ -93,12 +93,12 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/line/lbm-sdk/version.Name=sim \
-		  -X github.com/line/lbm-sdk/version.AppName=simd \
-		  -X github.com/line/lbm-sdk/version.Version=$(VERSION) \
-		  -X github.com/line/lbm-sdk/version.Commit=$(COMMIT) \
-		  -X github.com/line/lbm-sdk/types.DBBackend=$(DB_BACKEND) \
-		  -X "github.com/line/lbm-sdk/version.BuildTags=$(build_tags_comma_sep)"
+ldflags = -X github.com/Finschia/finschia-sdk/version.Name=sim \
+		  -X github.com/Finschia/finschia-sdk/version.AppName=simd \
+		  -X github.com/Finschia/finschia-sdk/version.Version=$(VERSION) \
+		  -X github.com/Finschia/finschia-sdk/version.Commit=$(COMMIT) \
+		  -X github.com/Finschia/finschia-sdk/types.DBBackend=$(DB_BACKEND) \
+		  -X "github.com/Finschia/finschia-sdk/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
@@ -191,7 +191,7 @@ update-swagger-docs: statik
 .PHONY: update-swagger-docs
 
 godocs:
-	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/line/lbm-sdk/types"
+	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/Finschia/finschia-sdk/types"
 	godoc -http=:6060
 
 # This builds a docs site for each branch/tag in `./docs/versions`
@@ -377,12 +377,12 @@ format:
 DEVDOC_SAVE = docker commit `docker ps -a -n 1 -q` devdoc:local
 
 devdoc-init:
-	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/line/lbm-sdk" -w "/go/src/github.com/line/lbm-sdk" tendermint/devdoc echo
+	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/Finschia/finschia-sdk" -w "/go/src/github.com/Finschia/finschia-sdk" tendermint/devdoc echo
 	# TODO make this safer
 	$(call DEVDOC_SAVE)
 
 devdoc:
-	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/line/lbm-sdk" -w "/go/src/github.com/line/lbm-sdk" devdoc:local bash
+	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/Finschia/finschia-sdk" -w "/go/src/github.com/Finschia/finschia-sdk" devdoc:local bash
 
 devdoc-save:
 	# TODO make this safer
@@ -583,7 +583,7 @@ GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
 GORELEASER_IMAGE         ?= line/goreleaserx:1.13.1-1.19.3
 GORELEASER_RELEASE       ?= false
-GO_MOD_NAME              := github.com/line/lbm-sdk
+GO_MOD_NAME              := github.com/Finschia/finschia-sdk
 
 ifeq ($(GORELEASER_RELEASE),true)
 	GORELEASER_SKIP_VALIDATE := false

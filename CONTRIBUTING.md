@@ -23,8 +23,8 @@ Contributing to this repo can mean many things such as participating in
 discussion or proposing code changes. To ensure a smooth workflow for all
 contributors, the general procedure for contributing has been established:
 
-1. Either [open](https://github.com/line/lbm-sdk/issues/new/choose) or
-   [find](https://github.com/line/lbm-sdk/issues) an issue you'd like to help with
+1. Either [open](https://github.com/Finschia/finschia-sdk/issues/new/choose) or
+   [find](https://github.com/Finschia/finschia-sdk/issues) an issue you'd like to help with
 2. Participate in thoughtful discussion on that issue
 3. If you would like to contribute:
    1. If the issue is a proposal, ensure that the proposal has been accepted
@@ -107,12 +107,12 @@ Please note that Go requires code to live under absolute paths, which complicate
 While my fork lives at `https://github.com/someone/lbm-sdk`,
 the code should never exist at `$GOPATH/src/github.com/someone/lbm-sdk`.
 Instead, we use `git remote` to add the fork as a new remote for the original repo,
-`$GOPATH/src/github.com/line/lbm-sdk`, and do all the work there.
+`$GOPATH/src/github.com/Finschia/finschia-sdk`, and do all the work there.
 
 For instance, to create a fork and work on a branch of it, I would:
 
 - Create the fork on github, using the fork button.
-- Go to the original repo checked out locally (i.e. `$GOPATH/src/github.com/line/lbm-sdk`)
+- Go to the original repo checked out locally (i.e. `$GOPATH/src/github.com/Finschia/finschia-sdk`)
 - `git remote rename origin upstream`
 - `git remote add origin git@github.com:someone/lbm-sdk.git`
 
@@ -216,7 +216,7 @@ should be targeted against the release candidate branch.
 - `main` must never fail `make lint test test-race`
 - `main` should not fail `make lint`
 - no `--force` onto `main` (except when reverting a broken commit, which should seldom happen)
-- create a development branch either on github.com/line/lbm-sdk, or your fork (using `git remote add origin`)
+- create a development branch either on github.com/Finschia/finschia-sdk, or your fork (using `git remote add origin`)
 - before submitting a pull request, begin `git rebase` on top of `main`
 
 ### Pull Merge Procedure

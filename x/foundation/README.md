@@ -85,7 +85,8 @@ threshold and percentage. Any chain developer can extend upon these two, by
 creating custom decision policies, as long as they adhere to the
 `DecisionPolicy` interface:
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
++++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
++++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
 
 ### Threshold decision policy
 
@@ -229,7 +230,7 @@ module where the Msg method is defined.
 `x/authz`, while the latter allows an account to perform actions on behalf of
 another account.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/authz.go#L10-L27
++++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/authz.go#L10-L27
 
 ## Built-in Authorizations
 

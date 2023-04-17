@@ -9,7 +9,7 @@ import (
 )
 
 // TODO: Revisit this once we have propoer gas fee framework.
-// Tracking issues https://github.com/cosmos/cosmos-sdk/issues/9054, https://github.com/line/lbm-sdk/discussions/9072
+// Tracking issues https://github.com/cosmos/cosmos-sdk/issues/9054, https://github.com/Finschia/finschia-sdk/discussions/9072
 const (
 	gasCostPerIteration = uint64(10)
 )

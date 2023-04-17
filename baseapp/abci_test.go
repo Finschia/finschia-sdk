@@ -174,7 +174,7 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 
 // Test and ensure that consensus params has been updated.
 // See:
-// - https://github.com/line/lbm-sdk/pull/673
+// - https://github.com/Finschia/finschia-sdk/pull/673
 func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	t.Parallel()
 
