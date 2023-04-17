@@ -47,6 +47,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#952](https://github.com/line/lbm-sdk/pull/952) Address generation of the empty coins in x/foundation
 * (x/collection,token,foundation) [\#963](https://github.com/line/lbm-sdk/pull/963) Check event determinism on original modules
 * (x/collection) [\#965](https://github.com/line/lbm-sdk/pull/965) Provide specific error messages on x/collection queries
+* (x/collection,token) [\#980](https://github.com/finschia/finschia-sdk/pull/980) refactor x/token,collection query errors
 
 ### Bug Fixes
 * (swagger) [\#898](https://github.com/line/lbm-sdk/pull/898) fix a bug not added `lbm.tx.v1beta1.Service/GetBlockWithTxs` in swagger
