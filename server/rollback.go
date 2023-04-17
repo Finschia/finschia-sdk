@@ -15,7 +15,7 @@ import (
 func NewRollbackCmd(appCreator types.AppCreator, defaultNodeHome string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rollback",
-		Short: "rollback lbm-sdk and tendermint state by one height",
+		Short: "rollback finschia-sdk and tendermint state by one height",
 		Long: `
 A state rollback is performed to recover from an incorrect application state transition,
 when Tendermint has persisted an incorrect app hash and is thus unable to make

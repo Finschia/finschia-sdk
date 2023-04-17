@@ -38,7 +38,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // GetBlockWithTxsRequest is the request type for the Service.GetBlockWithTxs
 // RPC method.
 //
-// Since: lbm-sdk 0.47.0
+// Since: finschia-sdk 0.47.0
 type GetBlockWithTxsRequest struct {
 	// height is the height of the block to query.
 	Height int64 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
@@ -95,7 +95,7 @@ func (m *GetBlockWithTxsRequest) GetPagination() *query.PageRequest {
 
 // GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
 //
-// Since: lbm-sdk 0.47.0
+// Since: finschia-sdk 0.47.0
 type GetBlockWithTxsResponse struct {
 	// txs are the transactions in the block.
 	Txs     []*tx.Tx       `protobuf:"bytes,1,rep,name=txs,proto3" json:"txs,omitempty"`
@@ -226,7 +226,7 @@ const _ = grpc.SupportPackageIsVersion4
 type ServiceClient interface {
 	// GetBlockWithTxs fetches a block with decoded txs.
 	//
-	// Since: lbm-sdk 0.47.0
+	// Since: finschia-sdk 0.47.0
 	GetBlockWithTxs(ctx context.Context, in *GetBlockWithTxsRequest, opts ...grpc.CallOption) (*GetBlockWithTxsResponse, error)
 }
 
@@ -251,7 +251,7 @@ func (c *serviceClient) GetBlockWithTxs(ctx context.Context, in *GetBlockWithTxs
 type ServiceServer interface {
 	// GetBlockWithTxs fetches a block with decoded txs.
 	//
-	// Since: lbm-sdk 0.47.0
+	// Since: finschia-sdk 0.47.0
 	GetBlockWithTxs(context.Context, *GetBlockWithTxsRequest) (*GetBlockWithTxsResponse, error)
 }
 

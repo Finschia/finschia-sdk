@@ -33,7 +33,7 @@ const (
 	flagHDPath      = "hd-path"
 
 	// CoinTypeNotAssigned means a coin type not assigned
-	// lbm-sdk cannot support the coin type MaxUint32
+	// finschia-sdk cannot support the coin type MaxUint32
 	CoinTypeNotAssigned = math.MaxUint32
 )
 

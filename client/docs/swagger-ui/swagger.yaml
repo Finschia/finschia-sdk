@@ -30819,7 +30819,7 @@ paths:
   '/lbm/tx/v1beta1/txs/block/{height}':
     get:
       summary: GetBlockWithTxs fetches a block with decoded txs.
-      description: 'Since: lbm-sdk 0.47.0'
+      description: 'Since: finschia-sdk 0.47.0'
       operationId: GetBlockWithTxs2
       responses:
         '200':
@@ -52941,4 +52941,4 @@ definitions:
       Service.GetBlockWithTxs method.
 
 
-      Since: lbm-sdk 0.47.0
+      Since: finschia-sdk 0.47.0
