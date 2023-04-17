@@ -9,8 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
-	ostos "github.com/line/ostracon/libs/os"
-	octypes "github.com/line/ostracon/types"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 

@@ -1,7 +1,7 @@
 package codec
 
 import (
-	"github.com/line/ostracon/crypto/sr25519"
+	"github.com/Finschia/ostracon/crypto/sr25519"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"

@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	ocjson "github.com/line/ostracon/libs/json"
+	ocjson "github.com/Finschia/ostracon/libs/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 

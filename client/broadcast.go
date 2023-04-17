@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/ostracon/mempool"
-	octypes "github.com/line/ostracon/types"
+	"github.com/Finschia/ostracon/mempool"
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	sdk "github.com/Finschia/finschia-sdk/types"

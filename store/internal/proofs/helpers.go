@@ -5,7 +5,7 @@ import (
 
 	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	"github.com/line/ostracon/libs/rand"
+	"github.com/Finschia/ostracon/libs/rand"
 
 	sdkmaps "github.com/Finschia/finschia-sdk/store/internal/maps"
 )

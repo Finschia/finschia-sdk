@@ -11,9 +11,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/ostracon/crypto"
-	ostcoretypes "github.com/line/ostracon/rpc/core/types"
-	octypes "github.com/line/ostracon/types"
+	"github.com/Finschia/ostracon/crypto"
+	ostcoretypes "github.com/Finschia/ostracon/rpc/core/types"
+	octypes "github.com/Finschia/ostracon/types"
 
 	sdkclient "github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	ostjson "github.com/line/ostracon/libs/json"
-	octypes "github.com/line/ostracon/types"
+	ostjson "github.com/Finschia/ostracon/libs/json"
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

@@ -15,7 +15,7 @@ import (
 	types "github.com/Finschia/finschia-sdk/codec/types"
 	types0 "github.com/Finschia/finschia-sdk/types"
 	module "github.com/Finschia/finschia-sdk/types/module"
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	cobra "github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 )

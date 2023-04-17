@@ -7,9 +7,9 @@ import (
 	"io"
 	"testing"
 
-	ostcrypto "github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/armor"
-	"github.com/line/ostracon/crypto/xsalsa20symmetric"
+	ostcrypto "github.com/Finschia/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto/armor"
+	"github.com/Finschia/ostracon/crypto/xsalsa20symmetric"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/crypto/bcrypt"
 

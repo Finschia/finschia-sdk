@@ -15,8 +15,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	ocrpc "github.com/line/ostracon/rpc/client"
-	"github.com/line/ostracon/rpc/client/http"
+	ocrpc "github.com/Finschia/ostracon/rpc/client"
+	"github.com/Finschia/ostracon/rpc/client/http"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"

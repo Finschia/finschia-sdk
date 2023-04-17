@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	ostjson "github.com/line/ostracon/libs/json"
-	octypes "github.com/line/ostracon/types"
+	ostjson "github.com/Finschia/ostracon/libs/json"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/spf13/cobra"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 

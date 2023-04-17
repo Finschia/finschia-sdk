@@ -8,7 +8,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/evidence/exported"
 	"github.com/Finschia/finschia-sdk/x/evidence/types"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 )
 
 func (suite *KeeperTestSuite) TestQueryEvidence() {

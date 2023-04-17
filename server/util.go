@@ -14,9 +14,9 @@ import (
 	"syscall"
 	"time"
 
-	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
-	ostcfg "github.com/line/ostracon/config"
-	ostlog "github.com/line/ostracon/libs/log"
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	ostcfg "github.com/Finschia/ostracon/config"
+	ostlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"

@@ -12,11 +12,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	ostconfig "github.com/line/ostracon/config"
-	ostos "github.com/line/ostracon/libs/os"
-	ostrand "github.com/line/ostracon/libs/rand"
-	"github.com/line/ostracon/types"
-	osttime "github.com/line/ostracon/types/time"
+	ostconfig "github.com/Finschia/ostracon/config"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	ostrand "github.com/Finschia/ostracon/libs/rand"
+	"github.com/Finschia/ostracon/types"
+	osttime "github.com/Finschia/ostracon/types/time"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
-	"github.com/line/ostracon/libs/log"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/store/prefix"

@@ -14,10 +14,10 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	ostjson "github.com/line/ostracon/libs/json"
-	"github.com/line/ostracon/libs/log"
-	octypes "github.com/line/ostracon/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	ostjson "github.com/Finschia/ostracon/libs/json"
+	"github.com/Finschia/ostracon/libs/log"
+	octypes "github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 

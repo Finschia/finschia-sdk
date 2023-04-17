@@ -1,8 +1,8 @@
 package teststaking
 
 import (
-	occrypto "github.com/line/ostracon/crypto"
-	octypes "github.com/line/ostracon/types"
+	occrypto "github.com/Finschia/ostracon/crypto"
+	octypes "github.com/Finschia/ostracon/types"
 
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"

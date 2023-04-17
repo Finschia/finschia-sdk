@@ -12,8 +12,8 @@ import (
 	"sort"
 	"strings"
 
-	cfg "github.com/line/ostracon/config"
-	octypes "github.com/line/ostracon/types"
+	cfg "github.com/Finschia/ostracon/config"
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

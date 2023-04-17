@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Finschia/ostracon/crypto"
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/ostracon/crypto"
 	"gopkg.in/yaml.v2"
 
 	"github.com/Finschia/finschia-sdk/codec"

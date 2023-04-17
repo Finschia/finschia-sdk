@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/codec"

@@ -1,7 +1,7 @@
 package rootmulti
 
 import (
-	"github.com/line/ostracon/crypto/merkle"
+	"github.com/Finschia/ostracon/crypto/merkle"
 
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 )

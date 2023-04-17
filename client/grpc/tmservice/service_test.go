@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/libs/bytes"
+	"github.com/Finschia/ostracon/libs/bytes"
 
 	"github.com/stretchr/testify/suite"
 

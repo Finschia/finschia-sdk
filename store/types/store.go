@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	oststrings "github.com/line/ostracon/libs/strings"
+	oststrings "github.com/Finschia/ostracon/libs/strings"
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 

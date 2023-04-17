@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	ostcfg "github.com/line/ostracon/config"
-	"github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/libs/log"
+	ostcfg "github.com/Finschia/ostracon/config"
+	"github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/viper"
 
 	"github.com/Finschia/finschia-sdk/client"

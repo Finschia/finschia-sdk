@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/rpc/client/http"
+	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/rpc/client/http"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/hd"

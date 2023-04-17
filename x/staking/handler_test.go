@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/golang/protobuf/proto"
-	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"

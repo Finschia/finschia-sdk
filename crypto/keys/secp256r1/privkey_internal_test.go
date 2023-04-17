@@ -9,7 +9,7 @@ import (
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/line/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto"
 )
 
 var _ cryptotypes.PrivKey = &PrivKey{}

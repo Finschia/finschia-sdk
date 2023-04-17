@@ -14,7 +14,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/capability"
 	"github.com/Finschia/finschia-sdk/x/capability/keeper"
 	"github.com/Finschia/finschia-sdk/x/capability/types"
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 )
 
 type CapabilityTestSuite struct {

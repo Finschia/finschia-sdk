@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
-	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/Finschia/finschia-sdk/client/flags"

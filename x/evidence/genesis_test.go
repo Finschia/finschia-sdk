@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/types/time"
+	"github.com/Finschia/ostracon/types/time"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 

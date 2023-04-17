@@ -3,8 +3,8 @@ package codec
 import (
 	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	occrypto "github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/encoding"
+	occrypto "github.com/Finschia/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto/encoding"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

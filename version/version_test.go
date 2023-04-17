@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/line/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

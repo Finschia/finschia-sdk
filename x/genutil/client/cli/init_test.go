@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	abci_server "github.com/line/ostracon/abci/server"
-	"github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/libs/log"
+	abci_server "github.com/Finschia/ostracon/abci/server"
+	"github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 

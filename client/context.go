@@ -10,8 +10,8 @@ import (
 
 	"gopkg.in/yaml.v2"
 
+	rpcclient "github.com/Finschia/ostracon/rpc/client"
 	"github.com/gogo/protobuf/proto"
-	rpcclient "github.com/line/ostracon/rpc/client"
 	"github.com/pkg/errors"
 
 	"github.com/Finschia/finschia-sdk/codec"

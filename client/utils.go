@@ -1,7 +1,7 @@
 package client
 
 import (
-	rpchttp "github.com/line/ostracon/rpc/client/http"
+	rpchttp "github.com/Finschia/ostracon/rpc/client/http"
 	"github.com/spf13/pflag"
 
 	"github.com/Finschia/finschia-sdk/client/flags"

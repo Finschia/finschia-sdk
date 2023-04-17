@@ -13,8 +13,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/line/ostracon/libs/log"
-	ostrpcserver "github.com/line/ostracon/rpc/jsonrpc/server"
+	"github.com/Finschia/ostracon/libs/log"
+	ostrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec/legacy"

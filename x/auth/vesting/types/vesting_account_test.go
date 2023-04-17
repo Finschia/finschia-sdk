@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	osttime "github.com/line/ostracon/types/time"
+	osttime "github.com/Finschia/ostracon/types/time"
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	octypes "github.com/line/ostracon/types"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"

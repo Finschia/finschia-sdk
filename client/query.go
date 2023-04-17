@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
-	rpcclient "github.com/line/ostracon/rpc/client"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	rpcclient "github.com/Finschia/ostracon/rpc/client"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/store/rootmulti"

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	ostos "github.com/line/ostracon/libs/os"
-	octypes "github.com/line/ostracon/types"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"

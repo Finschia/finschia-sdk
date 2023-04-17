@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	octypes "github.com/line/ostracon/types"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 

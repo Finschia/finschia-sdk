@@ -11,7 +11,7 @@ import (
 
 	bip39 "github.com/cosmos/go-bip39"
 
-	"github.com/line/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto"
 
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

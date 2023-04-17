@@ -1,8 +1,8 @@
 package exported
 
 import (
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	"github.com/gogo/protobuf/proto"
-	ostbytes "github.com/line/ostracon/libs/bytes"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 )

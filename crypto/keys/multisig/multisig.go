@@ -3,7 +3,7 @@ package multisig
 import (
 	fmt "fmt"
 
-	occrypto "github.com/line/ostracon/crypto"
+	occrypto "github.com/Finschia/ostracon/crypto"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	ctypes "github.com/line/ostracon/rpc/core/types"
+	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"

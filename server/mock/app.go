@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/libs/log"
-	"github.com/line/ostracon/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/libs/log"
+	"github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	bam "github.com/Finschia/finschia-sdk/baseapp"

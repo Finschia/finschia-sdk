@@ -3,7 +3,7 @@ package tmservice
 import (
 	"context"
 
-	ctypes "github.com/line/ostracon/rpc/core/types"
+	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 )
