@@ -3,11 +3,11 @@ package tx
 import (
 	"fmt"
 
-	signingtypes "github.com/line/lbm-sdk/types/tx/signing"
+	signingtypes "github.com/Finschia/finschia-sdk/types/tx/signing"
 
-	sdk "github.com/line/lbm-sdk/types"
-	types "github.com/line/lbm-sdk/types/tx"
-	"github.com/line/lbm-sdk/x/auth/signing"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	types "github.com/Finschia/finschia-sdk/types/tx"
+	"github.com/Finschia/finschia-sdk/x/auth/signing"
 )
 
 // signModeDirectHandler defines the SIGN_MODE_DIRECT SignModeHandler

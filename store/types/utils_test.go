@@ -9,8 +9,8 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/store/rootmulti"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/rootmulti"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func initTestStores(t *testing.T) (types.KVStore, types.KVStore) {

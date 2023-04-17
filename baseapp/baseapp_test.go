@@ -14,13 +14,13 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/server/config"
-	"github.com/line/lbm-sdk/snapshots"
-	store "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	store "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
 var (

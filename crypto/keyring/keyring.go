@@ -16,14 +16,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
 
-	"github.com/line/lbm-sdk/client/input"
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/crypto"
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/ledger"
-	"github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/client/input"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/crypto"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/ledger"
+	"github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // Backend options for Keyring

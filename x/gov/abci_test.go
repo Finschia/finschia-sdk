@@ -10,11 +10,11 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov"
-	"github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/staking"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/x/staking"
 )
 
 func TestTickExpiredDepositPeriod(t *testing.T) {

@@ -1,8 +1,8 @@
 package legacytx
 
 import (
-	"github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var _ types.UnpackInterfacesMessage = StdSignMsg{}

@@ -1,6 +1,6 @@
 go 1.18
 
-module github.com/line/lbm-sdk
+module github.com/Finschia/finschia-sdk
 
 retract v1.0.0 // very old contents with wrong semver, use v0.2.1
 

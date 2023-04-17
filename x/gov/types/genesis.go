@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewGenesisState creates a new genesis state for the governance module

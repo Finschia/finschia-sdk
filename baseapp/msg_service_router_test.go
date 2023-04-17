@@ -12,12 +12,12 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	authsigning "github.com/line/lbm-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/client/tx"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
 )
 
 func TestRegisterMsgService(t *testing.T) {

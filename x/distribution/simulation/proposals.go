@@ -3,12 +3,12 @@ package simulation
 import (
 	"math/rand"
 
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/distribution/keeper"
-	"github.com/line/lbm-sdk/x/distribution/types"
-	"github.com/line/lbm-sdk/x/simulation"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/distribution/keeper"
+	"github.com/Finschia/finschia-sdk/x/distribution/types"
+	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 // OpWeightSubmitCommunitySpendProposal app params key for community spend proposal

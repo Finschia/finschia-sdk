@@ -8,8 +8,8 @@ import (
 
 	ocabci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestLogger(t *testing.T) {

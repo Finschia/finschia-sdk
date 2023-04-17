@@ -12,10 +12,10 @@ import (
 	"github.com/line/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	bam "github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/codec"
-	storetypes "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	bam "github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec"
+	storetypes "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewApp creates a simple mock kvstore app for testing. It should work

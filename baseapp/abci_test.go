@@ -11,7 +11,7 @@ import (
 
 	ocabci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestGetBlockRentionHeight(t *testing.T) {

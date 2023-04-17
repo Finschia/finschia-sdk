@@ -15,12 +15,12 @@ import (
 	cfg "github.com/line/ostracon/config"
 	octypes "github.com/line/ostracon/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	bankexported "github.com/line/lbm-sdk/x/bank/exported"
-	"github.com/line/lbm-sdk/x/genutil/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	bankexported "github.com/Finschia/finschia-sdk/x/bank/exported"
+	"github.com/Finschia/finschia-sdk/x/genutil/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // GenAppStateFromConfig gets the genesis app state from the config

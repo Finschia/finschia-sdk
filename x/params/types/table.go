@@ -3,7 +3,7 @@ package types
 import (
 	"reflect"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 type attribute struct {

@@ -5,12 +5,12 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/store/prefix"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	vestexported "github.com/line/lbm-sdk/x/auth/vesting/exported"
-	"github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	vestexported "github.com/Finschia/finschia-sdk/x/auth/vesting/exported"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 var _ ViewKeeper = (*BaseViewKeeper)(nil)

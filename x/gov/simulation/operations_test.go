@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	govcodec "github.com/line/lbm-sdk/x/gov/codec"
-	"github.com/line/lbm-sdk/x/gov/simulation"
-	"github.com/line/lbm-sdk/x/gov/types"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	govcodec "github.com/Finschia/finschia-sdk/x/gov/codec"
+	"github.com/Finschia/finschia-sdk/x/gov/simulation"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 type MockWeightedProposalContent struct {

@@ -13,9 +13,9 @@ import (
 
 	"github.com/line/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/types/errors"
 )
 
 var (

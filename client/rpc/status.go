@@ -9,10 +9,10 @@ import (
 	"github.com/line/ostracon/p2p"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 // ValidatorInfo is info about the node's validator, same as Ostracon,

@@ -5,11 +5,11 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/ante"
-	"github.com/line/lbm-sdk/x/feegrant"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/ante"
+	"github.com/Finschia/finschia-sdk/x/feegrant"
 )
 
 // Keeper manages state of all fee grants, as well as calculating approval.

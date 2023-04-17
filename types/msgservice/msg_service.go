@@ -6,8 +6,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // RegisterMsgServiceDesc registers all type_urls from Msg services described

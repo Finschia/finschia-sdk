@@ -3,10 +3,10 @@ package keeper
 import (
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/mint/types"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/mint/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 // Keeper of the mint store

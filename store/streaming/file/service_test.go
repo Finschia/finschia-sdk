@@ -14,10 +14,10 @@ import (
 
 	ocabci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/codec"
-	codecTypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var (

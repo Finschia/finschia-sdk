@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
 )
 
 // AminoMultisignature is used to represent amino multi-signatures for StdTx's.

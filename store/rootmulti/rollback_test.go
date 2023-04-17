@@ -13,7 +13,7 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/simapp"
 )
 
 func setup(withGenesis bool, invCheckPeriod uint, db dbm.DB) (*simapp.SimApp, simapp.GenesisState) {

@@ -7,7 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_line_lbm_sdk_types "github.com/line/lbm-sdk/types"
+	github_com_line_lbm_sdk_types "github.com/Finschia/finschia-sdk/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

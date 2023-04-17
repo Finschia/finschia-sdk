@@ -7,7 +7,7 @@ import (
 	ctypes "github.com/line/ostracon/rpc/core/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/client"
+	"github.com/Finschia/finschia-sdk/client"
 )
 
 func getBlock(ctx context.Context, clientCtx client.Context, height *int64) (*ctypes.ResultBlock, error) {

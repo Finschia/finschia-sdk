@@ -8,12 +8,12 @@ import (
 
 	ostcli "github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/client/flags"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/testutil/network"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/mint/client/cli"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/mint/client/cli"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 type IntegrationTestSuite struct {

@@ -3,10 +3,10 @@ package internal
 import (
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 // Keeper defines the foundation module Keeper

@@ -19,14 +19,14 @@ import (
 	"github.com/line/ostracon/rpc/client/http"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
-	crgtypes "github.com/line/lbm-sdk/server/rosetta/lib/types"
-	sdk "github.com/line/lbm-sdk/types"
-	grpctypes "github.com/line/lbm-sdk/types/grpc"
-	"github.com/line/lbm-sdk/version"
-	authtx "github.com/line/lbm-sdk/x/auth/tx"
-	auth "github.com/line/lbm-sdk/x/auth/types"
-	bank "github.com/line/lbm-sdk/x/bank/types"
+	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
+	crgtypes "github.com/Finschia/finschia-sdk/server/rosetta/lib/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
+	"github.com/Finschia/finschia-sdk/version"
+	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
+	auth "github.com/Finschia/finschia-sdk/x/auth/types"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // interface assertion

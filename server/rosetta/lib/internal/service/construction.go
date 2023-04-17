@@ -8,7 +8,7 @@ import (
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 
-	"github.com/line/lbm-sdk/server/rosetta/lib/errors"
+	"github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
 )
 
 // ConstructionCombine Combine creates a network-specific transaction from an unsigned transaction

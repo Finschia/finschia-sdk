@@ -7,7 +7,7 @@ import (
 
 	"github.com/line/ostracon/libs/rand"
 
-	sdkmaps "github.com/line/lbm-sdk/store/internal/maps"
+	sdkmaps "github.com/Finschia/finschia-sdk/store/internal/maps"
 )
 
 // SimpleResult contains a merkle.SimpleProof along with all data needed to build the confio/proof

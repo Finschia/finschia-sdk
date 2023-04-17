@@ -8,12 +8,12 @@ import (
 	"github.com/line/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/simapp/helpers"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp/helpers"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
 )
 
 // SetupSimulation creates the config, db (levelDB), temporary directory and logger for

@@ -13,17 +13,17 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	eviclient "github.com/line/lbm-sdk/x/evidence/client"
-	"github.com/line/lbm-sdk/x/evidence/client/cli"
-	"github.com/line/lbm-sdk/x/evidence/keeper"
-	"github.com/line/lbm-sdk/x/evidence/simulation"
-	"github.com/line/lbm-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	eviclient "github.com/Finschia/finschia-sdk/x/evidence/client"
+	"github.com/Finschia/finschia-sdk/x/evidence/client/cli"
+	"github.com/Finschia/finschia-sdk/x/evidence/keeper"
+	"github.com/Finschia/finschia-sdk/x/evidence/simulation"
+	"github.com/Finschia/finschia-sdk/x/evidence/types"
 )
 
 var (

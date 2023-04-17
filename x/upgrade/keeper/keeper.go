@@ -12,14 +12,14 @@ import (
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/store/prefix"
-	store "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/module"
-	xp "github.com/line/lbm-sdk/x/upgrade/exported"
-	"github.com/line/lbm-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	store "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/module"
+	xp "github.com/Finschia/finschia-sdk/x/upgrade/exported"
+	"github.com/Finschia/finschia-sdk/x/upgrade/types"
 )
 
 // UpgradeInfoFileName file to store upgrade information

@@ -6,11 +6,11 @@ import (
 	"github.com/gogo/protobuf/proto"
 	ostcli "github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/client/flags"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/token"
-	"github.com/line/lbm-sdk/x/token/client/cli"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {

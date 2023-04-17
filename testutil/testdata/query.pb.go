@@ -8,7 +8,7 @@ import (
 	fmt "fmt"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
-	types "github.com/line/lbm-sdk/codec/types"
+	types "github.com/Finschia/finschia-sdk/codec/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

@@ -14,13 +14,13 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/lbm-sdk/store/listenkv"
-	"github.com/line/lbm-sdk/store/tracekv"
-	"github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/telemetry"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/store/cachekv"
+	"github.com/Finschia/finschia-sdk/store/listenkv"
+	"github.com/Finschia/finschia-sdk/store/tracekv"
+	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/kv"
 )
 
 const (

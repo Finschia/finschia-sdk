@@ -6,8 +6,8 @@ package signing
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
-	types "github.com/line/lbm-sdk/codec/types"
-	types1 "github.com/line/lbm-sdk/crypto/types"
+	types "github.com/Finschia/finschia-sdk/codec/types"
+	types1 "github.com/Finschia/finschia-sdk/crypto/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

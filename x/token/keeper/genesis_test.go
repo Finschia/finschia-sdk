@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/line/lbm-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token"
 )
 
 func (s *KeeperTestSuite) TestImportExportGenesis() {

@@ -13,8 +13,8 @@ import (
 
 	"github.com/line/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 )
 
 type addrData struct {

@@ -6,13 +6,13 @@ import (
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/line/lbm-sdk/x/capability"
-	"github.com/line/lbm-sdk/x/capability/keeper"
-	"github.com/line/lbm-sdk/x/capability/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/capability"
+	"github.com/Finschia/finschia-sdk/x/capability/keeper"
+	"github.com/Finschia/finschia-sdk/x/capability/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 func (suite *CapabilityTestSuite) TestGenesis() {

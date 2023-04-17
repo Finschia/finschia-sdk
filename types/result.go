@@ -11,8 +11,8 @@ import (
 	ctypes "github.com/line/ostracon/rpc/core/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 )
 
 func (gi GasInfo) String() string {

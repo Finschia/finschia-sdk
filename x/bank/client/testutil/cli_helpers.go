@@ -5,10 +5,10 @@ import (
 
 	"github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/testutil"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/testutil"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/cli"
 )
 
 func MsgSendExec(clientCtx client.Context, from, to, amount fmt.Stringer, extraArgs ...string) (testutil.BufferWriter, error) {

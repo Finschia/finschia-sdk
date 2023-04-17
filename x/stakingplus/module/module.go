@@ -6,18 +6,18 @@ import (
 	ocabci "github.com/line/ostracon/abci/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/types/module"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 
-	"github.com/line/lbm-sdk/x/stakingplus"
-	"github.com/line/lbm-sdk/x/stakingplus/keeper"
+	"github.com/Finschia/finschia-sdk/x/stakingplus"
+	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
 
-	"github.com/line/lbm-sdk/x/staking"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/x/staking"
+	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 var (

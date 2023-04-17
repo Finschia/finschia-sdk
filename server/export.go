@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/server/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 const (

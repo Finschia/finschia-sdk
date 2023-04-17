@@ -14,13 +14,13 @@ import (
 	"github.com/line/ostracon/types"
 	osttime "github.com/line/ostracon/types/time"
 
-	"github.com/line/lbm-sdk/server/api"
-	servergrpc "github.com/line/lbm-sdk/server/grpc"
-	srvtypes "github.com/line/lbm-sdk/server/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/line/lbm-sdk/x/genutil"
-	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
+	"github.com/Finschia/finschia-sdk/server/api"
+	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
+	srvtypes "github.com/Finschia/finschia-sdk/server/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/genutil"
+	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 )
 
 func startInProcess(cfg Config, val *Validator) error {

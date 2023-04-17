@@ -9,11 +9,11 @@ import (
 
 	octime "github.com/line/ostracon/types/time"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/authz"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 var bankSendAuthMsgType = banktypes.SendAuthorization{}.MsgTypeURL()

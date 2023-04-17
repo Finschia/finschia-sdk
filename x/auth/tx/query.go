@@ -10,9 +10,9 @@ import (
 
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lbm-sdk/client"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // QueryTxsByEvents performs a search for transactions for a given set of events

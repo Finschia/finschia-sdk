@@ -5,10 +5,10 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // Implements ValidatorSet interface

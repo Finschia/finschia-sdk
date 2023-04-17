@@ -10,12 +10,12 @@ import (
 
 	ocabci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/authz"
-	"github.com/line/lbm-sdk/x/authz/simulation"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	"github.com/Finschia/finschia-sdk/x/authz/simulation"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 type SimTestSuite struct {

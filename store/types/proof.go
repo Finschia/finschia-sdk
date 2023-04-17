@@ -6,7 +6,7 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	"github.com/line/ostracon/crypto/merkle"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 const (

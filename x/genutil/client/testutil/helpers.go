@@ -9,12 +9,12 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/server"
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/types/module"
-	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/server"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/types/module"
+	genutilcli "github.com/Finschia/finschia-sdk/x/genutil/client/cli"
 )
 
 func ExecInitCmd(testMbm module.BasicManager, home string, cdc codec.Codec) error {

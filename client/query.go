@@ -13,9 +13,9 @@ import (
 	rpcclient "github.com/line/ostracon/rpc/client"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/store/rootmulti"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/store/rootmulti"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an

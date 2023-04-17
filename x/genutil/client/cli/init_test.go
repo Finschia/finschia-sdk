@@ -16,20 +16,20 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	ed255192 "github.com/line/lbm-sdk/crypto/keys/ed25519"
+	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	"github.com/line/lbm-sdk/server"
-	"github.com/line/lbm-sdk/server/mock"
-	"github.com/line/lbm-sdk/testutil"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	"github.com/line/lbm-sdk/x/genutil"
-	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
-	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-sdk/server"
+	"github.com/Finschia/finschia-sdk/server/mock"
+	"github.com/Finschia/finschia-sdk/testutil"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/x/genutil"
+	genutilcli "github.com/Finschia/finschia-sdk/x/genutil/client/cli"
+	genutiltest "github.com/Finschia/finschia-sdk/x/genutil/client/testutil"
 )
 
 var testMbm = module.NewBasicManager(genutil.AppModuleBasic{})

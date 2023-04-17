@@ -17,14 +17,14 @@ import (
 	"github.com/line/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/server/config"
-	"github.com/line/lbm-sdk/snapshots"
-	"github.com/line/lbm-sdk/store"
-	"github.com/line/lbm-sdk/store/rootmulti"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	"github.com/Finschia/finschia-sdk/store"
+	"github.com/Finschia/finschia-sdk/store/rootmulti"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
 var _ ocabci.Application = (*BaseApp)(nil)

@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil"
 )
 
 func Test_RunMnemonicCmdNormal(t *testing.T) {
