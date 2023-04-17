@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/bank/types";
+option go_package = "github.com/Finschia/finschia-sdk/x/bank/types";
 
 // Params defines the parameters for the bank module.
 message Params {
@@ -30,7 +30,7 @@ message Input {
 
   string   address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
 // Output models transaction outputs.
@@ -40,7 +40,7 @@ message Output {
 
   string   address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
 // Supply represents a struct that passively keeps track of the total supply
@@ -55,7 +55,7 @@ message Supply {
   option (cosmos_proto.implements_interface) = "*github.com/line/lbm-sdk/x/bank/legacy/v040.SupplyI";
 
   repeated cosmos.base.v1beta1.Coin total = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
 // DenomUnit represents a struct that describes a given
