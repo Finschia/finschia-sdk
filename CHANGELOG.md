@@ -38,6 +38,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.47.0-alpha1...HEAD)
 
 ### Features
+* (all) [\#970](https://github.com/Finschia/finschia-sdk/pull/970) change import path to `github.com/Finschia/finschia-sdk` and update license
 
 ### Improvements
 * (x/collection,token) [\#900](https://github.com/Finschia/finschia-sdk/pull/900) Add uri for MsgModify and deprecate the old ones
