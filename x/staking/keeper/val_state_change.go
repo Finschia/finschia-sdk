@@ -6,9 +6,10 @@ import (
 	"sort"
 
 	gogotypes "github.com/gogo/protobuf/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/staking/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // BlockValidatorUpdates calculates the ValidatorUpdates for the current block
