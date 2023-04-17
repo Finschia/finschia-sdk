@@ -2,7 +2,6 @@ go 1.18
 
 module github.com/Finschia/finschia-sdk
 
-retract v1.0.0 // very old contents with wrong semver, use v0.2.1
 
 require (
 	github.com/99designs/keyring v1.1.6
