@@ -3,8 +3,8 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/client"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/client"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 // DONTCOVER

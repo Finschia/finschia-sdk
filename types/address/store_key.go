@@ -1,7 +1,7 @@
 package address
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // MaxAddrLen is the maximum allowed length (in bytes) for an address.

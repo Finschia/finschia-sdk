@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	ostrand "github.com/line/ostracon/libs/rand"
+	ostrand "github.com/Finschia/ostracon/libs/rand"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/lbm-sdk/store/dbadapter"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/cachekv"
+	"github.com/Finschia/finschia-sdk/store/dbadapter"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func newCacheKVStore() types.CacheKVStore {

@@ -1,10 +1,10 @@
 package stakingplus
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/foundation"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 var _ foundation.Authorization = (*CreateValidatorAuthorization)(nil)

@@ -3,14 +3,14 @@ package simapp
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/client"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/client"
 
-	"github.com/line/lbm-sdk/simapp/params"
+	"github.com/Finschia/finschia-sdk/simapp/params"
 
-	"github.com/line/lbm-sdk/codec"
-	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+	"github.com/Finschia/finschia-sdk/codec"
+	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
+	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 )
 
 type TestSupport struct {

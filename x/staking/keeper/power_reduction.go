@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // TokensToConsensusPower - convert input tokens to potential consensus-engine power

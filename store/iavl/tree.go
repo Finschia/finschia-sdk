@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/cosmos/iavl"
-	"github.com/line/lbm-sdk/store/types"
+
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 var (

@@ -14,21 +14,21 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	ostjson "github.com/line/ostracon/libs/json"
-	"github.com/line/ostracon/libs/log"
-	octypes "github.com/line/ostracon/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	ostjson "github.com/Finschia/ostracon/libs/json"
+	"github.com/Finschia/ostracon/libs/log"
+	octypes "github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/server"
-	"github.com/line/lbm-sdk/server/types"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/genutil"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/server"
+	"github.com/Finschia/finschia-sdk/server/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/genutil"
 )
 
 func TestExportCmd_ConsensusParams(t *testing.T) {

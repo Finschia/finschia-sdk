@@ -10,15 +10,15 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/line/ostracon/libs/log"
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/snapshots"
-	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
-	"github.com/line/lbm-sdk/store/iavl"
-	"github.com/line/lbm-sdk/store/rootmulti"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
+	"github.com/Finschia/finschia-sdk/store/iavl"
+	"github.com/Finschia/finschia-sdk/store/rootmulti"
+	"github.com/Finschia/finschia-sdk/store/types"
 	dbm "github.com/tendermint/tm-db"
 )
 

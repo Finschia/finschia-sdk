@@ -3,8 +3,8 @@ package foundation
 import (
 	"github.com/gogo/protobuf/proto"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func (m EventUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {

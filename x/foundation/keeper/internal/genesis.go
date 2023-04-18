@@ -1,8 +1,8 @@
 package internal
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) error {

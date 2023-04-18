@@ -3,7 +3,7 @@ package listenkv
 import (
 	"io"
 
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 var _ types.KVStore = &Store{}

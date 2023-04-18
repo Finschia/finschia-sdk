@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.collection.v1;
 
-option go_package                      = "github.com/line/lbm-sdk/x/collection";
+option go_package                      = "github.com/Finschia/finschia-sdk/x/collection";
 option (gogoproto.equal_all)           = false;
 option (gogoproto.goproto_getters_all) = false;
 
@@ -140,7 +140,7 @@ message Coin {
   // token id associated with the token.
   string token_id = 1;
   // amount of the token.
-  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // Grant defines permission given to a grantee.

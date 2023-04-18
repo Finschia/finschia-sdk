@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	v040slashing "github.com/line/lbm-sdk/x/slashing/legacy/v040"
-	v043slashing "github.com/line/lbm-sdk/x/slashing/legacy/v043"
-	"github.com/line/lbm-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	v040slashing "github.com/Finschia/finschia-sdk/x/slashing/legacy/v040"
+	v043slashing "github.com/Finschia/finschia-sdk/x/slashing/legacy/v043"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
 )
 
 func TestStoreMigration(t *testing.T) {

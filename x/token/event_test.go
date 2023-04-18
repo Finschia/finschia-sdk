@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token"
 )
 
 func TestAttributeKeyStringer(t *testing.T) {

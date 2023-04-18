@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.foundation.v1;
 
-option go_package            = "github.com/line/lbm-sdk/x/foundation";
+option go_package            = "github.com/Finschia/finschia-sdk/x/foundation";
 option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
@@ -50,5 +50,5 @@ message GrantAuthorization {
   string grantee = 1;
 
   google.protobuf.Any authorization = 2
-      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
+      [(cosmos_proto.accepts_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization"];
 }
