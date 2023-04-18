@@ -918,7 +918,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 			},
 			true,
 			&collection.QueryChildrenResponse{
-				Children: []collection.NFT{},
+				Children:   []collection.NFT{},
 				Pagination: &query.PageResponse{},
 			},
 		},
