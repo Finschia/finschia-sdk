@@ -2,7 +2,6 @@ go 1.18
 
 module github.com/Finschia/finschia-sdk
 
-
 require (
 	github.com/99designs/keyring v1.1.6
 	github.com/Finschia/ostracon v1.0.10-0.20230417071658-1c9c22cfe90d
