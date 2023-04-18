@@ -10,16 +10,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cfg "github.com/line/ostracon/config"
-	"github.com/line/ostracon/crypto"
-	tmjson "github.com/line/ostracon/libs/json"
-	"github.com/line/ostracon/libs/log"
-	tmos "github.com/line/ostracon/libs/os"
-	tmrand "github.com/line/ostracon/libs/rand"
-	"github.com/line/ostracon/p2p"
-	"github.com/line/ostracon/privval"
-	"github.com/line/ostracon/types"
-	tmtime "github.com/line/ostracon/types/time"
+	cfg "github.com/Finschia/ostracon/config"
+	"github.com/Finschia/ostracon/crypto"
+	tmjson "github.com/Finschia/ostracon/libs/json"
+	"github.com/Finschia/ostracon/libs/log"
+	tmos "github.com/Finschia/ostracon/libs/os"
+	tmrand "github.com/Finschia/ostracon/libs/rand"
+	"github.com/Finschia/ostracon/p2p"
+	"github.com/Finschia/ostracon/privval"
+	"github.com/Finschia/ostracon/types"
+	tmtime "github.com/Finschia/ostracon/types/time"
 )
 
 var (

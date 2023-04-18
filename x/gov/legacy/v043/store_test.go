@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	v040gov "github.com/line/lbm-sdk/x/gov/legacy/v040"
-	v043gov "github.com/line/lbm-sdk/x/gov/legacy/v043"
-	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	v040gov "github.com/Finschia/finschia-sdk/x/gov/legacy/v040"
+	v043gov "github.com/Finschia/finschia-sdk/x/gov/legacy/v043"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 func TestMigrateStore(t *testing.T) {

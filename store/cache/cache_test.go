@@ -9,9 +9,9 @@ import (
 	"github.com/cosmos/iavl"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/cache"
-	iavlstore "github.com/line/lbm-sdk/store/iavl"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/cache"
+	iavlstore "github.com/Finschia/finschia-sdk/store/iavl"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func TestGetOrSetStoreCache(t *testing.T) {

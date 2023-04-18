@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func TestFTClass(t *testing.T) {

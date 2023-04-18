@@ -7,7 +7,7 @@ import (
 
 	ics23 "github.com/confio/ics23/go"
 
-	sdkmaps "github.com/line/lbm-sdk/store/internal/maps"
+	sdkmaps "github.com/Finschia/finschia-sdk/store/internal/maps"
 )
 
 var (

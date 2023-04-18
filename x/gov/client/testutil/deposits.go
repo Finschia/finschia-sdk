@@ -6,13 +6,13 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	ostcli "github.com/line/ostracon/libs/cli"
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/testutil/network"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/client/cli"
-	"github.com/line/lbm-sdk/x/gov/types"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov/client/cli"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 type DepositTestSuite struct {

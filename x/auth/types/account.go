@@ -7,14 +7,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Finschia/ostracon/crypto"
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/ostracon/crypto"
 	"gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var (

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/evidence/exported"
-	"github.com/line/lbm-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/evidence/exported"
+	"github.com/Finschia/finschia-sdk/x/evidence/types"
 )
 
 // Simulation parameter constants

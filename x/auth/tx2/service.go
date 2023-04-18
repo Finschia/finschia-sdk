@@ -8,14 +8,14 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/grpc/tmservice"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	pagination "github.com/line/lbm-sdk/types/query"
-	txtypes "github.com/line/lbm-sdk/types/tx"
-	tx2types "github.com/line/lbm-sdk/types/tx2"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	pagination "github.com/Finschia/finschia-sdk/types/query"
+	txtypes "github.com/Finschia/finschia-sdk/types/tx"
+	tx2types "github.com/Finschia/finschia-sdk/types/tx2"
 )
 
 type tx2Server struct {

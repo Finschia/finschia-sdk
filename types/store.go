@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/types/kv"
 )
 
 type (

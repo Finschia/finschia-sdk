@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/suite"
 	amino "github.com/tendermint/go-amino"
 
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 )
 
 type TypeWithInterface struct {

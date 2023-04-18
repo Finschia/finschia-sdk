@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func Test_writeReadLedgerInfo(t *testing.T) {

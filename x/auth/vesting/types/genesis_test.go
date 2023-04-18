@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 var (

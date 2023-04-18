@@ -1,7 +1,7 @@
 package authz
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var _ Authorization = &GenericAuthorization{}

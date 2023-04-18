@@ -1,11 +1,11 @@
 package internal_test
 
 import (
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 func (s *KeeperTestSuite) TestProposalHandler() {

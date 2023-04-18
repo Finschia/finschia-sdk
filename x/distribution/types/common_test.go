@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // nolint:deadcode,unused,varcheck

@@ -7,8 +7,8 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/types"
 )
 
 // TestInitApp makes sure we can initialize this thing without an error

@@ -7,10 +7,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	ostcli "github.com/line/ostracon/libs/cli"
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
 )
 
 // Cmd returns a CLI command to interactively create an application CLI

@@ -7,14 +7,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/x/staking/simulation"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/x/staking/simulation"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 var (

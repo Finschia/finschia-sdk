@@ -7,12 +7,12 @@ import (
 	"io"
 	"strings"
 
-	"github.com/line/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/bech32"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/bech32"
 )
 
 func bech32Prefixes(config *sdk.Config) []string {

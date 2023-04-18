@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/simulation"
-	"github.com/line/lbm-sdk/x/slashing/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/simulation"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
 )
 
 const (
