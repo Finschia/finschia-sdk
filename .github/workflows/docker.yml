@@ -4,13 +4,13 @@ on:
     branches:
       - main
       - rc*/*
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+" # Push events to matching v*, i.e. v1.0, v20.15.10
-      - "v[0-9]+.[0-9]+.[0-9]+-rc*" # Push events to matching v*, i.e. v1.0-rc1, v20.15.10-rc5
+#  push:
+#    tags:
+#      - "v[0-9]+.[0-9]+.[0-9]+" # Push events to matching v*, i.e. v1.0, v20.15.10
+#      - "v[0-9]+.[0-9]+.[0-9]+-rc*" # Push events to matching v*, i.e. v1.0-rc1, v20.15.10-rc5
 env:
   registry: docker.io
-  repository: line/lbm-simapp
+  repository: finschia/finschia-simapp
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
       - name: login to the registry
         uses: docker/login-action@v2
-        if: github.event_name != 'pull_request'
+#        if: github.event_name != 'pull_request'
         with:
           registry: ${{env.registry}}
           username: ${{secrets.DOCKERHUB_USERNAME}}
@@ -35,7 +35,7 @@ jobs:
       - name: docker build
         uses: docker/build-push-action@v4
         with:
-          push: ${{github.event_name != 'pull_request'}}
+#          push: ${{github.event_name != 'pull_request'}}
           build-args: ARCH=x86_64
           tags: ${{steps.meta.outputs.tags}}
           labels: ${{steps.meta.outputs.labels}}
