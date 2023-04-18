@@ -25,7 +25,6 @@ jobs:
 #          registry: ${{env.registry}}
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_TOKEN}}
-          logout: true
       - name: extract metadata for docker
         id: meta
         uses: docker/metadata-action@v4
