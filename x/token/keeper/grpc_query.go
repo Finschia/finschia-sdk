@@ -27,14 +27,6 @@ func NewQueryServer(keeper Keeper) token.QueryServer {
 
 var _ token.QueryServer = queryServer{}
 
-func (s queryServer) validateExistenceOfClassGRPC(ctx sdk.Context, id string) error {
-	if _, err := s.keeper.GetClass(ctx, id); err != nil {
-		return status.Error(codes.NotFound, err.Error())
-	}
-
-	return nil
-}
-
 func (s queryServer) addressFromBech32GRPC(address string, context string) (sdk.AccAddress, error) {
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
@@ -75,11 +67,6 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	supply := s.keeper.GetSupply(ctx, req.ContractId)
 
 	return &token.QuerySupplyResponse{Amount: supply}, nil
@@ -96,11 +83,6 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	minted := s.keeper.GetMinted(ctx, req.ContractId)
 
 	return &token.QueryMintedResponse{Amount: minted}, nil
@@ -117,11 +99,6 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId)
 
 	return &token.QueryBurntResponse{Amount: burnt}, nil
@@ -160,11 +137,6 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	store := ctx.KVStore(s.keeper.storeKey)
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, grantee))
 	var grants []token.Grant
@@ -201,11 +173,6 @@ func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperator
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, holder, operator)
 	authorized := err == nil
 
@@ -226,11 +193,6 @@ func (s queryServer) HoldersByOperator(c context.Context, req *token.QueryHolder
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.validateExistenceOfClassGRPC(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
 	store := ctx.KVStore(s.keeper.storeKey)
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
 	var holders []string

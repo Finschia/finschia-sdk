@@ -69,10 +69,14 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Amount)
 			},
 		},
-		"invalid contract id": {},
 		"no such a contract id": {
 			contractID: "fee1dead",
+			valid:      true,
+			postTest: func(res *token.QuerySupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Amount)
+			},
 		},
+		"invalid contract id": {},
 	}
 
 	for name, tc := range testCases {
@@ -109,10 +113,14 @@ func (s *KeeperTestSuite) TestQueryMinted() {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
 			},
 		},
-		"invalid contract id": {},
 		"no such a contract id": {
 			contractID: "fee1dead",
+			valid:      true,
+			postTest: func(res *token.QueryMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Amount)
+			},
 		},
+		"invalid contract id": {},
 	}
 
 	for name, tc := range testCases {
@@ -149,10 +157,14 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
-		"invalid contract id": {},
 		"no such a contract id": {
 			contractID: "fee1dead",
+			valid:      true,
+			postTest: func(res *token.QueryBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Amount)
+			},
 		},
+		"invalid contract id": {},
 	}
 
 	for name, tc := range testCases {
@@ -231,15 +243,19 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 				s.Require().Equal(3, len(res.Grants))
 			},
 		},
+		"class not found": {
+			contractID: "fee1dead",
+			grantee:    s.vendor,
+			valid:      true,
+			postTest: func(res *token.QueryGranteeGrantsResponse) {
+				s.Require().Equal(0, len(res.Grants))
+			},
+		},
 		"invalid contract id": {
 			grantee: s.vendor,
 		},
 		"invalid grantee": {
 			contractID: s.contractID,
-		},
-		"class not found": {
-			contractID: "fee1dead",
-			grantee:    s.vendor,
 		},
 	}
 
@@ -282,6 +298,15 @@ func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 				s.Require().True(res.Authorized)
 			},
 		},
+		"class not found": {
+			contractID: "fee1dead",
+			operator:   s.operator,
+			holder:     s.vendor,
+			valid:      true,
+			postTest: func(res *token.QueryIsOperatorForResponse) {
+				s.Require().False(res.Authorized)
+			},
+		},
 		"invalid contract id": {
 			operator: s.operator,
 			holder:   s.customer,
@@ -293,11 +318,6 @@ func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 		"invalid holder": {
 			contractID: s.contractID,
 			operator:   s.operator,
-		},
-		"class not found": {
-			contractID: "fee1dead",
-			operator:   s.operator,
-			holder:     s.vendor,
 		},
 	}
 
@@ -349,15 +369,19 @@ func (s *KeeperTestSuite) TestQueryHoldersByOperator() {
 				s.Require().Equal(1, len(res.Holders))
 			},
 		},
+		"class not found": {
+			contractID: "fee1dead",
+			operator:   s.operator,
+			valid:      true,
+			postTest: func(res *token.QueryHoldersByOperatorResponse) {
+				s.Require().Equal(0, len(res.Holders))
+			},
+		},
 		"invalid contract id": {
 			operator: s.operator,
 		},
 		"invalid operator": {
 			contractID: s.contractID,
-		},
-		"class not found": {
-			contractID: "fee1dead",
-			operator:   s.operator,
 		},
 	}
 

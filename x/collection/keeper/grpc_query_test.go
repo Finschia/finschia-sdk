@@ -160,23 +160,35 @@ func (s *KeeperTestSuite) TestQueryFTSupply() {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Supply)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    tokenID,
+			valid:      true,
+			postTest: func(res *collection.QueryFTSupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Supply)
+			},
+		},
+		"token not found": {
+			contractID: s.contractID,
+			tokenID:    collection.NewFTID("00bab10c"),
+			valid:      true,
+			postTest: func(res *collection.QueryFTSupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Supply)
+			},
+		},
+		"not a class of ft": {
+			contractID: s.contractID,
+			tokenID:    collection.NewFTID(s.nftClassID),
+			valid:      true,
+			postTest: func(res *collection.QueryFTSupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Supply)
+			},
+		},
 		"invalid contract id": {
 			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID(s.nftClassID),
 		},
 	}
 
@@ -218,23 +230,35 @@ func (s *KeeperTestSuite) TestQueryFTMinted() {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(6)), res.Minted)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    tokenID,
+			valid:      true,
+			postTest: func(res *collection.QueryFTMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Minted)
+			},
+		},
+		"token not found": {
+			contractID: s.contractID,
+			tokenID:    collection.NewFTID("00bab10c"),
+			valid:      true,
+			postTest: func(res *collection.QueryFTMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Minted)
+			},
+		},
+		"not a class of ft": {
+			contractID: s.contractID,
+			tokenID:    collection.NewFTID(s.nftClassID),
+			valid:      true,
+			postTest: func(res *collection.QueryFTMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Minted)
+			},
+		},
 		"invalid contract id": {
 			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID(s.nftClassID),
 		},
 	}
 
@@ -276,23 +300,35 @@ func (s *KeeperTestSuite) TestQueryFTBurnt() {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Burnt)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    tokenID,
+			valid:      true,
+			postTest: func(res *collection.QueryFTBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+			},
+		},
+		"token not found": {
+			contractID: s.contractID,
+			tokenID:    collection.NewFTID("00bab10c"),
+			valid:      true,
+			postTest: func(res *collection.QueryFTBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+			},
+		},
+		"not a class of ft": {
+			contractID: s.contractID,
+			tokenID:    collection.NewFTID(s.nftClassID),
+			valid:      true,
+			postTest: func(res *collection.QueryFTBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+			},
+		},
 		"invalid contract id": {
 			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID(s.nftClassID),
 		},
 	}
 
@@ -333,23 +369,35 @@ func (s *KeeperTestSuite) TestQueryNFTSupply() {
 				s.Require().EqualValues(s.numNFTs*3, res.Supply.Int64())
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenType:  s.nftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryNFTSupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Supply)
+			},
+		},
+		"token type not found": {
+			contractID: s.contractID,
+			tokenType:  "deadbeef",
+			valid:      true,
+			postTest: func(res *collection.QueryNFTSupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Supply)
+			},
+		},
+		"not a class of nft": {
+			contractID: s.contractID,
+			tokenType:  s.ftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryNFTSupplyResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Supply)
+			},
+		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenType:  s.nftClassID,
-		},
-		"token type not found": {
-			contractID: s.contractID,
-			tokenType:  "deadbeef",
-		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
 		},
 	}
 
@@ -390,23 +438,35 @@ func (s *KeeperTestSuite) TestQueryNFTMinted() {
 				s.Require().EqualValues(s.numNFTs*3, res.Minted.Int64())
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenType:  s.nftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryNFTMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Minted)
+			},
+		},
+		"token type not found": {
+			contractID: s.contractID,
+			tokenType:  "deadbeef",
+			valid:      true,
+			postTest: func(res *collection.QueryNFTMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Minted)
+			},
+		},
+		"not a class of nft": {
+			contractID: s.contractID,
+			tokenType:  s.ftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryNFTMintedResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Minted)
+			},
+		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenType:  s.nftClassID,
-		},
-		"token type not found": {
-			contractID: s.contractID,
-			tokenType:  "deadbeef",
-		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
 		},
 	}
 
@@ -447,23 +507,35 @@ func (s *KeeperTestSuite) TestQueryNFTBurnt() {
 				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenType:  s.nftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryNFTBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+			},
+		},
+		"token type not found": {
+			contractID: s.contractID,
+			tokenType:  "deadbeef",
+			valid:      true,
+			postTest: func(res *collection.QueryNFTBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+			},
+		},
+		"not a class of nft": {
+			contractID: s.contractID,
+			tokenType:  s.ftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryNFTBurntResponse) {
+				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+			},
+		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenType:  s.nftClassID,
-		},
-		"token type not found": {
-			contractID: s.contractID,
-			tokenType:  "deadbeef",
-		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
 		},
 	}
 
@@ -797,19 +869,29 @@ func (s *KeeperTestSuite) TestQueryHasParent() {
 				s.Require().Equal(false, res.HasParent)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    tokenID,
+			valid:      true,
+			postTest: func(res *collection.QueryHasParentResponse) {
+				s.Require().NotNil(res)
+				s.Require().Equal(false, res.HasParent)
+			},
+		},
+		"token not found": {
+			contractID: s.contractID,
+			tokenID:    collection.NewNFTID("deadbeef", 1),
+			valid:      true,
+			postTest: func(res *collection.QueryHasParentResponse) {
+				s.Require().NotNil(res)
+				s.Require().Equal(false, res.HasParent)
+			},
+		},
 		"invalid contract id": {
 			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewNFTID("deadbeef", 1),
 		},
 	}
 
@@ -920,19 +1002,27 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 				s.Require().Equal(collection.NewNFTID(s.nftClassID, 2), res.Children[0].TokenId)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			tokenID:    tokenID,
+			valid:      true,
+			postTest: func(res *collection.QueryChildrenResponse) {
+				s.Require().Equal(0, len(res.Children))
+			},
+		},
+		"token not found": {
+			contractID: s.contractID,
+			tokenID:    collection.NewNFTID("deadbeef", 1),
+			valid:      true,
+			postTest: func(res *collection.QueryChildrenResponse) {
+				s.Require().Equal(0, len(res.Children))
+			},
+		},
 		"invalid contract id": {
 			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewNFTID("deadbeef", 1),
 		},
 	}
 
@@ -978,15 +1068,19 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 				s.Require().Equal(4, len(res.Grants))
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			grantee:    s.vendor,
+			valid:      true,
+			postTest: func(res *collection.QueryGranteeGrantsResponse) {
+				s.Require().Equal(0, len(res.Grants))
+			},
+		},
 		"invalid contract id": {
 			grantee: s.vendor,
 		},
 		"invalid grantee": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			grantee:    s.vendor,
 		},
 	}
 
@@ -1029,6 +1123,15 @@ func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 				s.Require().True(res.Authorized)
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			operator:   s.operator,
+			holder:     s.vendor,
+			valid:      true,
+			postTest: func(res *collection.QueryIsOperatorForResponse) {
+				s.Require().False(res.Authorized)
+			},
+		},
 		"invalid contract id": {
 			operator: s.operator,
 			holder:   s.customer,
@@ -1040,11 +1143,6 @@ func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 		"invalid holder": {
 			contractID: s.contractID,
 			operator:   s.operator,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			operator:   s.operator,
-			holder:     s.vendor,
 		},
 	}
 
@@ -1096,15 +1194,19 @@ func (s *KeeperTestSuite) TestQueryHoldersByOperator() {
 				s.Require().Equal(1, len(res.Holders))
 			},
 		},
+		"collection not found": {
+			contractID: "deadbeef",
+			operator:   s.operator,
+			valid:      true,
+			postTest: func(res *collection.QueryHoldersByOperatorResponse) {
+				s.Require().Equal(0, len(res.Holders))
+			},
+		},
 		"invalid contract id": {
 			operator: s.operator,
 		},
 		"invalid operator": {
 			contractID: s.contractID,
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			operator:   s.operator,
 		},
 	}
 

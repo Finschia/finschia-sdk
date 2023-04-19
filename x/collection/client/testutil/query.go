@@ -911,6 +911,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 				Pagination: &query.PageResponse{},
 			},
 		},
+		"token not found": {
+			[]string{
+				s.contractID,
+				collection.NewNFTID("deadbeef", 1),
+			},
+			true,
+			&collection.QueryChildrenResponse{
+				Children:   []collection.NFT{},
+				Pagination: &query.PageResponse{},
+			},
+		},
 		"extra args": {
 			[]string{
 				s.contractID,
@@ -923,14 +934,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-			},
-			false,
-			nil,
-		},
-		"token not found": {
-			[]string{
-				s.contractID,
-				collection.NewNFTID("deadbeef", 1),
 			},
 			false,
 			nil,
