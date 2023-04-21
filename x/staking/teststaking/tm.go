@@ -1,12 +1,12 @@
 package teststaking
 
 import (
-	occrypto "github.com/line/ostracon/crypto"
-	octypes "github.com/line/ostracon/types"
+	occrypto "github.com/Finschia/ostracon/crypto"
+	octypes "github.com/Finschia/ostracon/types"
 
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/staking/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // GetOcConsPubKey gets the validator's public key as an occrypto.PubKey.

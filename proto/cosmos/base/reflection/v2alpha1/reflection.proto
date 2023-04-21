@@ -4,7 +4,7 @@ package cosmos.base.reflection.v2alpha1;
 
 import "google/api/annotations.proto";
 
-option go_package = "github.com/line/lbm-sdk/server/grpc/reflection/v2";
+option go_package = "github.com/Finschia/finschia-sdk/server/grpc/reflection/v2";
 
 // AppDescriptor describes a cosmos-sdk based application
 message AppDescriptor {

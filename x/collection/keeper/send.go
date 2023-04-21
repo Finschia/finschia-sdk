@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount []collection.Coin) error {
@@ -21,7 +21,6 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 					From:       from.String(),
 					To:         to.String(),
 				}
-				ctx.EventManager().EmitEvent(collection.NewEventOperationTransferNFT(event))
 				if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 					panic(err)
 				}

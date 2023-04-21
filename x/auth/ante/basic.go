@@ -1,14 +1,14 @@
 package ante
 
 import (
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	authsigning "github.com/line/lbm-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
 )
 
 // ValidateBasicDecorator will call tx.ValidateBasic and return any non-nil error.

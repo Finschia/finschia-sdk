@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	types "github.com/line/lbm-sdk/types"
+	types "github.com/Finschia/finschia-sdk/types"
 )
 
 // MockRouter is a mock of Router interface.

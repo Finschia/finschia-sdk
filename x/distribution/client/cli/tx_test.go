@@ -5,17 +5,17 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/simapp/params"
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/simapp/params"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func Test_splitAndCall_NoMessages(t *testing.T) {

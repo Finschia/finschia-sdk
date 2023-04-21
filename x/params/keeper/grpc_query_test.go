@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/params/types"
-	"github.com/line/lbm-sdk/x/params/types/proposal"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-sdk/x/params/types/proposal"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryParams() {

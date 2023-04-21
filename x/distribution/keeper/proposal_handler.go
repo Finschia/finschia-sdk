@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/distribution/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/distribution/types"
 )
 
 // HandleCommunityPoolSpendProposal is a handler for executing a passed community spend proposal

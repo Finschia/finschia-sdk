@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 
 import "lbm/collection/v1/collection.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/collection";
+option go_package = "github.com/Finschia/finschia-sdk/x/collection";
 
 option (gogoproto.equal_all) = false;
 
@@ -302,7 +302,7 @@ message MsgIssueFT {
   // the amount of tokens to mint on the issuance.
   // Note: if you provide negative amount, a panic may result.
   // Note: amount may be zero.
-  string amount = 8 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 8 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.

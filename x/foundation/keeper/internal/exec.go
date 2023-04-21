@@ -3,10 +3,10 @@ package internal
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 
-	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 // ensureMsgAuthz checks that if a message requires signers that all of them are equal to the given account address of the authority.

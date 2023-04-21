@@ -8,12 +8,12 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/store/prefix"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/collection"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 type queryServer struct {
@@ -28,6 +28,41 @@ func NewQueryServer(keeper Keeper) collection.QueryServer {
 	}
 }
 
+func (s queryServer) addressFromBech32GRPC(bech32 string, context string) (sdk.AccAddress, error) {
+	addr, err := sdk.AccAddressFromBech32(bech32)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress.Wrap(bech32), context).Error())
+	}
+
+	return addr, nil
+}
+
+func (s queryServer) assertTokenIsFungible(ctx sdk.Context, contractID string, classID string) error {
+	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
+	if err != nil {
+		return err
+	}
+
+	if _, ok := class.(*collection.FTClass); !ok {
+		return collection.ErrTokenNotExist.Wrap(collection.NewFTID(classID))
+	}
+
+	return nil
+}
+
+func (s queryServer) assertTokenTypeIsNonFungible(ctx sdk.Context, contractID string, classID string) error {
+	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
+	if err != nil {
+		return err
+	}
+
+	if _, ok := class.(*collection.NFTClass); !ok {
+		return collection.ErrTokenTypeNotExist.Wrap(classID)
+	}
+
+	return nil
+}
+
 var _ collection.QueryServer = queryServer{}
 
 // Balance queries the number of tokens of a given token id owned by the owner.
@@ -37,21 +72,24 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	addr, err := s.addressFromBech32GRPC(req.Address, "address")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, err
 	}
 
 	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
-	coin := collection.NewCoin(req.TokenId, balance)
+	coin := collection.Coin{
+		TokenId: req.TokenId,
+		Amount:  balance,
+	}
 
 	return &collection.QueryBalanceResponse{Balance: coin}, nil
 }
@@ -63,12 +101,12 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	addr, err := s.addressFromBech32GRPC(req.Address, "address")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -100,19 +138,21 @@ func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRe
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, err
+
+	if err := s.assertTokenIsFungible(ctx, req.ContractId, classID); err != nil {
+		return &collection.QueryFTSupplyResponse{Supply: sdk.ZeroInt()}, nil
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTSupplyResponse{Supply: supply}, nil
@@ -124,19 +164,21 @@ func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRe
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, err
+
+	if err := s.assertTokenIsFungible(ctx, req.ContractId, classID); err != nil {
+		return &collection.QueryFTMintedResponse{Minted: sdk.ZeroInt()}, nil
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTMintedResponse{Minted: minted}, nil
@@ -148,19 +190,21 @@ func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequ
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, err
+
+	if err := s.assertTokenIsFungible(ctx, req.ContractId, classID); err != nil {
+		return &collection.QueryFTBurntResponse{Burnt: sdk.ZeroInt()}, nil
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTBurntResponse{Burnt: burnt}, nil
@@ -172,18 +216,20 @@ func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupply
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := req.TokenType
 	if err := collection.ValidateClassID(classID); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, err
+
+	if err := s.assertTokenTypeIsNonFungible(ctx, req.ContractId, classID); err != nil {
+		return &collection.QueryNFTSupplyResponse{Supply: sdk.ZeroInt()}, nil
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTSupplyResponse{Supply: supply}, nil
@@ -195,18 +241,20 @@ func (s queryServer) NFTMinted(c context.Context, req *collection.QueryNFTMinted
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := req.TokenType
 	if err := collection.ValidateClassID(classID); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, err
+
+	if err := s.assertTokenTypeIsNonFungible(ctx, req.ContractId, classID); err != nil {
+		return &collection.QueryNFTMintedResponse{Minted: sdk.ZeroInt()}, nil
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTMintedResponse{Minted: minted}, nil
@@ -218,18 +266,20 @@ func (s queryServer) NFTBurnt(c context.Context, req *collection.QueryNFTBurntRe
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := req.TokenType
 	if err := collection.ValidateClassID(classID); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
-		return nil, err
+
+	if err := s.assertTokenTypeIsNonFungible(ctx, req.ContractId, classID); err != nil {
+		return &collection.QueryNFTBurntResponse{Burnt: sdk.ZeroInt()}, nil
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTBurntResponse{Burnt: burnt}, nil
@@ -241,13 +291,13 @@ func (s queryServer) Contract(c context.Context, req *collection.QueryContractRe
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	contract, err := s.keeper.GetContract(ctx, req.ContractId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	return &collection.QueryContractResponse{Contract: *contract}, nil
@@ -260,17 +310,17 @@ func (s queryServer) TokenClassTypeName(c context.Context, req *collection.Query
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateClassID(req.ClassId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, req.ClassId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	name := proto.MessageName(class)
 
@@ -283,23 +333,23 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	classID := req.TokenType
 	if err := collection.ValidateClassID(classID); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	nftClass, ok := class.(*collection.NFTClass)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID)
+		return nil, status.Error(codes.NotFound, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID).Error())
 	}
 
 	tokenType := collection.TokenType{
@@ -359,17 +409,17 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	legacyToken, err := s.getToken(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	any, err := codectypes.NewAnyWithValue(legacyToken)
@@ -386,16 +436,16 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateNFTID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	root := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
@@ -407,27 +457,41 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	return &collection.QueryRootResponse{Root: *token}, nil
 }
 
+func (s queryServer) HasParent(c context.Context, req *collection.QueryHasParentRequest) (*collection.QueryHasParentResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := collection.ValidateContractID(req.GetContractId()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := collection.ValidateNFTID(req.GetTokenId()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	return &collection.QueryHasParentResponse{HasParent: (err == nil)}, nil
+}
+
 func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+	if err := collection.ValidateContractID(req.GetContractId()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if err := collection.ValidateNFTID(req.TokenId); err != nil {
-		return nil, err
+	if err := collection.ValidateNFTID(req.GetTokenId()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
-	}
-
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
@@ -444,18 +508,14 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := collection.ValidateNFTID(req.TokenId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
-	}
-
 	store := ctx.KVStore(s.keeper.storeKey)
 	childStore := prefix.NewStore(store, childKeyPrefixByTokenID(req.ContractId, req.TokenId))
 	var children []collection.NFT
@@ -482,12 +542,12 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	granteeAddr, err := sdk.AccAddressFromBech32(req.Grantee)
+	granteeAddr, err := s.addressFromBech32GRPC(req.Grantee, "grantee")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -515,14 +575,14 @@ func (s queryServer) IsOperatorFor(c context.Context, req *collection.QueryIsOpe
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := s.addressFromBech32GRPC(req.Operator, "operator")
 	if err != nil {
 		return nil, err
 	}
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
+	holder, err := s.addressFromBech32GRPC(req.Holder, "holder")
 	if err != nil {
 		return nil, err
 	}
@@ -540,12 +600,12 @@ func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryH
 	}
 
 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := s.addressFromBech32GRPC(req.Operator, "operator")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

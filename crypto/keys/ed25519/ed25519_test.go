@@ -5,17 +5,17 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/line/ostracon/crypto"
-	osted25519 "github.com/line/ostracon/crypto/ed25519"
+	"github.com/Finschia/ostracon/crypto"
+	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	ed25519 "github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	ed25519 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 func TestSignAndValidateEd25519(t *testing.T) {

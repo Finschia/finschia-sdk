@@ -5,11 +5,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	cdctypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	authzcodec "github.com/Finschia/finschia-sdk/x/authz/codec"
 )
 
 var (

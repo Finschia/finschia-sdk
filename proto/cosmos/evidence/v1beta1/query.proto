@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/evidence/types";
+option go_package = "github.com/Finschia/finschia-sdk/x/evidence/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -24,7 +24,7 @@ service Query {
 // QueryEvidenceRequest is the request type for the Query/Evidence RPC method.
 message QueryEvidenceRequest {
   // evidence_hash defines the hash of the requested evidence.
-  bytes evidence_hash = 1 [(gogoproto.casttype) = "github.com/line/ostracon/libs/bytes.HexBytes"];
+  bytes evidence_hash = 1 [(gogoproto.casttype) = "github.com/Finschia/ostracon/libs/bytes.HexBytes"];
 }
 
 // QueryEvidenceResponse is the response type for the Query/Evidence RPC method.

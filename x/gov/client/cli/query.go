@@ -7,12 +7,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
-	gcutils "github.com/line/lbm-sdk/x/gov/client/utils"
-	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/version"
+	gcutils "github.com/Finschia/finschia-sdk/x/gov/client/utils"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

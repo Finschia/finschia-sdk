@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/crypto/types"
 
-	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 )
 
 func TestDecodeMultisignatures(t *testing.T) {

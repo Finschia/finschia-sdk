@@ -3,9 +3,9 @@ package types
 import (
 	"time"
 
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 type (

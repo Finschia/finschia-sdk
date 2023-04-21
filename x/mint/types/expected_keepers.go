@@ -1,8 +1,8 @@
 package types // noalias
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // StakingKeeper defines the expected staking keeper

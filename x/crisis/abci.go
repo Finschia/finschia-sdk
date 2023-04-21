@@ -3,10 +3,10 @@ package crisis
 import (
 	"time"
 
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/crisis/keeper"
-	"github.com/line/lbm-sdk/x/crisis/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/crisis/keeper"
+	"github.com/Finschia/finschia-sdk/x/crisis/types"
 )
 
 // check all registered invariants

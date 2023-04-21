@@ -3,16 +3,16 @@ package testutil
 import (
 	"fmt"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
-	ostcli "github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/client/flags"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/collection"
-	"github.com/line/lbm-sdk/x/collection/client/cli"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/collection"
+	"github.com/Finschia/finschia-sdk/x/collection/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
@@ -326,17 +326,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
 			&collection.QueryNFTSupplyResponse{
-				Supply: s.balance.Mul(sdk.NewInt(4)),
+				Supply: sdk.NewInt(24),
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 				"extra",
 			},
 			false,
@@ -352,7 +352,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.ftClassID,
+				s.nftClassID,
 			},
 			false,
 			nil,
@@ -401,17 +401,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
 			&collection.QueryNFTMintedResponse{
-				Minted: s.balance.Mul(sdk.NewInt(5)),
+				Minted: sdk.NewInt(24),
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 				"extra",
 			},
 			false,
@@ -427,7 +427,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.ftClassID,
+				s.nftClassID,
 			},
 			false,
 			nil,
@@ -476,17 +476,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
 			&collection.QueryNFTBurntResponse{
-				Burnt: s.balance,
+				Burnt: sdk.ZeroInt(),
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 				"extra",
 			},
 			false,
@@ -502,7 +502,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.ftClassID,
+				s.nftClassID,
 			},
 			false,
 			nil,
@@ -911,6 +911,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 				Pagination: &query.PageResponse{},
 			},
 		},
+		"token not found": {
+			[]string{
+				s.contractID,
+				collection.NewNFTID("deadbeef", 1),
+			},
+			true,
+			&collection.QueryChildrenResponse{
+				Children:   []collection.NFT{},
+				Pagination: &query.PageResponse{},
+			},
+		},
 		"extra args": {
 			[]string{
 				s.contractID,
@@ -923,14 +934,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-			},
-			false,
-			nil,
-		},
-		"token not found": {
-			[]string{
-				s.contractID,
-				collection.NewNFTID("deadbeef", 1),
 			},
 			false,
 			nil,

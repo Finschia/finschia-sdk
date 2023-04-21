@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/x/params/client/utils"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/x/params/client/utils"
 )
 
 func TestParseProposal(t *testing.T) {

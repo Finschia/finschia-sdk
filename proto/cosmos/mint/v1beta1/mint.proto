@@ -1,18 +1,18 @@
 syntax = "proto3";
 package cosmos.mint.v1beta1;
 
-option go_package = "github.com/line/lbm-sdk/x/mint/types";
+option go_package = "github.com/Finschia/finschia-sdk/x/mint/types";
 
 import "gogoproto/gogo.proto";
 
 // Minter represents the minting state.
 message Minter {
   // current annual inflation rate
-  string inflation = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
+  string inflation = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
   // current annual expected provisions
   string annual_provisions = 2 [
     (gogoproto.moretags)   = "yaml:\"annual_provisions\"",
-    (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
 }
@@ -26,25 +26,25 @@ message Params {
   // maximum annual change in inflation rate
   string inflation_rate_change = 2 [
     (gogoproto.moretags)   = "yaml:\"inflation_rate_change\"",
-    (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   // maximum inflation rate
   string inflation_max = 3 [
     (gogoproto.moretags)   = "yaml:\"inflation_max\"",
-    (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   // minimum inflation rate
   string inflation_min = 4 [
     (gogoproto.moretags)   = "yaml:\"inflation_min\"",
-    (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   // goal of percent bonded atoms
   string goal_bonded = 5 [
     (gogoproto.moretags)   = "yaml:\"goal_bonded\"",
-    (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   // expected blocks per year

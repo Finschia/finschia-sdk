@@ -3,11 +3,11 @@ package utils
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	authtx "github.com/line/lbm-sdk/x/auth/tx"
-	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/client"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 const (

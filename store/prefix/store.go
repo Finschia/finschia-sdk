@@ -5,10 +5,10 @@ import (
 	"errors"
 	"io"
 
-	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/lbm-sdk/store/listenkv"
-	"github.com/line/lbm-sdk/store/tracekv"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/cachekv"
+	"github.com/Finschia/finschia-sdk/store/listenkv"
+	"github.com/Finschia/finschia-sdk/store/tracekv"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 var _ types.KVStore = Store{}

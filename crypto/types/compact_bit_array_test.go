@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	ostrand "github.com/line/ostracon/libs/rand"
+	ostrand "github.com/Finschia/ostracon/libs/rand"
 )
 
 func randCompactBitArray(bits int) (*CompactBitArray, []byte) {

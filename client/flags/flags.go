@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	ostcli "github.com/line/ostracon/libs/cli"
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
 )
 
 const (
