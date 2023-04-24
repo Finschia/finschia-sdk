@@ -7,7 +7,7 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/baseapp"
 )
 
 func TestValidateBlockParams(t *testing.T) {

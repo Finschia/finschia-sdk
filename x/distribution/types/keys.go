@@ -3,9 +3,9 @@ package types
 import (
 	"encoding/binary"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/address"
-	"github.com/line/lbm-sdk/types/kv"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/address"
+	"github.com/Finschia/finschia-sdk/types/kv"
 )
 
 const (

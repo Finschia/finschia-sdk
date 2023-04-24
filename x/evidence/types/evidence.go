@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/line/ostracon/crypto/tmhash"
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	"github.com/Finschia/ostracon/crypto/tmhash"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"gopkg.in/yaml.v2"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/evidence/exported"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/evidence/exported"
 )
 
 // Evidence type constants

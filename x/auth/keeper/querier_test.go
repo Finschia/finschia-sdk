@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec"
 
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/testutil/testdata"
-	keep "github.com/line/lbm-sdk/x/auth/keeper"
-	"github.com/line/lbm-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	keep "github.com/Finschia/finschia-sdk/x/auth/keeper"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 func TestQueryAccount(t *testing.T) {

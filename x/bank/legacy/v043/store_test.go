@@ -5,14 +5,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/store/prefix"
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	v040bank "github.com/line/lbm-sdk/x/bank/legacy/v040"
-	v043bank "github.com/line/lbm-sdk/x/bank/legacy/v043"
-	"github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	v040bank "github.com/Finschia/finschia-sdk/x/bank/legacy/v040"
+	v043bank "github.com/Finschia/finschia-sdk/x/bank/legacy/v043"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 func TestSupplyMigration(t *testing.T) {

@@ -1,31 +1,36 @@
 package internal_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"github.com/line/lbm-sdk/x/foundation"
-	keeper "github.com/line/lbm-sdk/x/foundation/keeper"
-	"github.com/line/lbm-sdk/x/foundation/keeper/internal"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	keeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
+	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
+
+	deterministic bool
+
 	ctx sdk.Context
 
-	app             *simapp.SimApp
-	keeper          keeper.Keeper
-	impl            internal.Keeper
+	bankKeeper foundation.BankKeeper
+	keeper     keeper.Keeper
+	impl       internal.Keeper
+
 	queryServer     foundation.QueryServer
 	msgServer       foundation.MsgServer
 	proposalHandler govtypes.Handler
@@ -52,20 +57,47 @@ func newMsgCreateDog(name string) sdk.Msg {
 	}
 }
 
+func (s *KeeperTestSuite) createAddresses(accNum int) []sdk.AccAddress {
+	if s.deterministic {
+		addresses := make([]sdk.AccAddress, accNum)
+		for i := range addresses {
+			addresses[i] = sdk.AccAddress(fmt.Sprintf("address%d", i))
+		}
+		return addresses
+	} else {
+		seenAddresses := make(map[string]bool, accNum)
+		addresses := make([]sdk.AccAddress, accNum)
+		for i := range addresses {
+			var address sdk.AccAddress
+			for {
+				pk := secp256k1.GenPrivKey().PubKey()
+				address = sdk.AccAddress(pk.Address())
+				if !seenAddresses[address.String()] {
+					seenAddresses[address.String()] = true
+					break
+				}
+			}
+			addresses[i] = address
+		}
+		return addresses
+	}
+}
+
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
-	s.app = simapp.Setup(checkTx)
-	testdata.RegisterInterfaces(s.app.InterfaceRegistry())
-	testdata.RegisterMsgServer(s.app.MsgServiceRouter(), testdata.MsgServerImpl{})
+	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+	testdata.RegisterMsgServer(app.MsgServiceRouter(), testdata.MsgServerImpl{})
 
-	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
-	s.keeper = s.app.FoundationKeeper
+	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	s.bankKeeper = app.BankKeeper
+	s.keeper = app.FoundationKeeper
 	s.impl = internal.NewKeeper(
-		s.app.AppCodec(),
-		s.app.GetKey(foundation.ModuleName),
-		s.app.MsgServiceRouter(),
-		s.app.AccountKeeper,
-		s.app.BankKeeper,
+		app.AppCodec(),
+		app.GetKey(foundation.ModuleName),
+		app.MsgServiceRouter(),
+		app.AccountKeeper,
+		app.BankKeeper,
 		authtypes.FeeCollectorName,
 		foundation.DefaultConfig(),
 		foundation.DefaultAuthority().String(),
@@ -85,20 +117,18 @@ func (s *KeeperTestSuite) SetupTest() {
 		Authority:  foundation.CensorshipAuthorityFoundation,
 	})
 
-	createAddress := func() sdk.AccAddress {
-		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
 	s.authority = sdk.MustAccAddressFromBech32(s.impl.GetAuthority())
-	s.members = make([]sdk.AccAddress, 10)
+
+	numMembers := 10
+	addresses := s.createAddresses(numMembers + 1)
+	s.members = addresses[:numMembers]
 	for i := range s.members {
-		s.members[i] = createAddress()
 		member := foundation.Member{
 			Address: s.members[i].String(),
 		}
 		s.impl.SetMember(s.ctx, member)
 	}
-	s.stranger = createAddress()
+	s.stranger = addresses[len(addresses)-1]
 
 	info := foundation.DefaultFoundation()
 	info.TotalWeight = sdk.NewDec(int64(len(s.members)))
@@ -106,14 +136,14 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	s.impl.SetFoundationInfo(s.ctx, info)
 
-	s.balance = sdk.NewInt(1000000)
+	s.balance = sdk.NewInt(987654321)
 	s.impl.SetPool(s.ctx, foundation.Pool{
 		Treasury: sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 	})
 	holders := []sdk.AccAddress{
 		s.stranger,
-		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
-		s.app.AccountKeeper.GetModuleAccount(s.ctx, authtypes.FeeCollectorName).GetAddress(),
+		app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
+		app.AccountKeeper.GetModuleAccount(s.ctx, authtypes.FeeCollectorName).GetAddress(),
 	}
 	for _, holder := range holders {
 		amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
@@ -123,11 +153,11 @@ func (s *KeeperTestSuite) SetupTest() {
 		// because x/bank already has dependency on x/mint, and we must have dependency
 		// on x/bank, it's OK to use x/mint here.
 		minterName := minttypes.ModuleName
-		err := s.app.BankKeeper.MintCoins(s.ctx, minterName, amount)
+		err := app.BankKeeper.MintCoins(s.ctx, minterName, amount)
 		s.Require().NoError(err)
 
-		minter := s.app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
-		err = s.app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
+		minter := app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
+		err = app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
 		s.Require().NoError(err)
 	}
 
@@ -210,7 +240,12 @@ func (s *KeeperTestSuite) SetupTest() {
 }
 
 func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
+	for _, deterministic := range []bool{
+		false,
+		true,
+	} {
+		suite.Run(t, &KeeperTestSuite{deterministic: deterministic})
+	}
 }
 
 func TestNewKeeper(t *testing.T) {

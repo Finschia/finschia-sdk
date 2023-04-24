@@ -9,11 +9,11 @@
 // At build time, the variables Name, Version, Commit, and BuildTags
 // can be passed as build flags as shown in the following example:
 //
-//	go build -X github.com/line/lbm-sdk/version.Name=gaia \
-//	 -X github.com/line/lbm-sdk/version.AppName=gaiad \
-//	 -X github.com/line/lbm-sdk/version.Version=1.0 \
-//	 -X github.com/line/lbm-sdk/version.Commit=f0f7b7dab7e36c20b757cebce0e8f4fc5b95de60 \
-//	 -X "github.com/line/lbm-sdk/version.BuildTags=linux darwin amd64"
+//	go build -X github.com/Finschia/finschia-sdk/version.Name=gaia \
+//	 -X github.com/Finschia/finschia-sdk/version.AppName=gaiad \
+//	 -X github.com/Finschia/finschia-sdk/version.Version=1.0 \
+//	 -X github.com/Finschia/finschia-sdk/version.Commit=f0f7b7dab7e36c20b757cebce0e8f4fc5b95de60 \
+//	 -X "github.com/Finschia/finschia-sdk/version.BuildTags=linux darwin amd64"
 package version
 
 import (
@@ -43,7 +43,7 @@ func getSDKVersion() string {
 	}
 	var sdkVersion string
 	for _, dep := range deps.Deps {
-		if dep.Path == "github.com/line/lbm-sdk" {
+		if dep.Path == "github.com/Finschia/finschia-sdk" {
 			sdkVersion = dep.Version
 		}
 	}

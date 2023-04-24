@@ -4,12 +4,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/line/lbm-sdk/client"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	authsign "github.com/line/lbm-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-sdk/client"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	authsign "github.com/Finschia/finschia-sdk/x/auth/signing"
 )
 
 // SimAppChainID hardcoded chainID for simulation

@@ -3,10 +3,10 @@ package mint
 import (
 	"time"
 
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/mint/keeper"
-	"github.com/line/lbm-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/mint/keeper"
+	"github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 // BeginBlocker mints new tokens for the previous block.

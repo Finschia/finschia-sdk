@@ -8,15 +8,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/client/tx"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/authz"
-	bank "github.com/line/lbm-sdk/x/bank/types"
-	staking "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/client/tx"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/version"
+	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
+	staking "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // Flag names and values

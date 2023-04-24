@@ -5,23 +5,23 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/line/lbm-sdk/testutil/testdata"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	authtx "github.com/line/lbm-sdk/x/auth/tx"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/stretchr/testify/suite"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/server/rosetta"
-	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
-	sdk "github.com/line/lbm-sdk/types"
-	authsigning "github.com/line/lbm-sdk/x/auth/signing"
-	bank "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/server/rosetta"
+	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 type ConverterTestSuite struct {

@@ -3,7 +3,7 @@ package types
 import (
 	"io"
 
-	"github.com/line/lbm-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec"
 )
 
 // WriteListener interface for streaming data out from a listenkv.Store

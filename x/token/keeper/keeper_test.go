@@ -2,20 +2,24 @@ package keeper_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/token"
-	"github.com/line/lbm-sdk/x/token/keeper"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token/keeper"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
+
+	deterministic bool
+
 	ctx         sdk.Context
 	goCtx       context.Context
 	keeper      keeper.Keeper
@@ -32,22 +36,30 @@ type KeeperTestSuite struct {
 	balance sdk.Int
 }
 
-func createRandomAccounts(accNum int) []sdk.AccAddress {
-	seenAddresses := make(map[string]bool, accNum)
-	addresses := make([]sdk.AccAddress, accNum)
-	for i := 0; i < accNum; i++ {
-		var address sdk.AccAddress
-		for {
-			pk := secp256k1.GenPrivKey().PubKey()
-			address = sdk.AccAddress(pk.Address())
-			if !seenAddresses[address.String()] {
-				seenAddresses[address.String()] = true
-				break
-			}
+func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
+	if s.deterministic {
+		addresses := make([]sdk.AccAddress, accNum)
+		for i := range addresses {
+			addresses[i] = sdk.AccAddress(fmt.Sprintf("address%d", i))
 		}
-		addresses[i] = address
+		return addresses
+	} else {
+		seenAddresses := make(map[string]bool, accNum)
+		addresses := make([]sdk.AccAddress, accNum)
+		for i := range addresses {
+			var address sdk.AccAddress
+			for {
+				pk := secp256k1.GenPrivKey().PubKey()
+				address = sdk.AccAddress(pk.Address())
+				if !seenAddresses[address.String()] {
+					seenAddresses[address.String()] = true
+					break
+				}
+			}
+			addresses[i] = address
+		}
+		return addresses
 	}
-	return addresses
 }
 
 func (s *KeeperTestSuite) SetupTest() {
@@ -66,7 +78,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		&s.customer,
 		&s.stranger,
 	}
-	for i, address := range createRandomAccounts(len(addresses)) {
+	for i, address := range s.createRandomAccounts(len(addresses)) {
 		*addresses[i] = address
 	}
 
@@ -113,5 +125,10 @@ func (s *KeeperTestSuite) SetupTest() {
 }
 
 func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
+	for _, deterministic := range []bool{
+		false,
+		true,
+	} {
+		suite.Run(t, &KeeperTestSuite{deterministic: deterministic})
+	}
 }

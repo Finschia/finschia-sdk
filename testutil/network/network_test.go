@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/Finschia/finschia-sdk/testutil/network"
 )
 
 type IntegrationTestSuite struct {

@@ -1,8 +1,8 @@
 package authz
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // AccountKeeper defines the expected account keeper (noalias)

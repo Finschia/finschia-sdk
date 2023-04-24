@@ -22,7 +22,7 @@ for dir in $proto_dirs; do
   -I "proto" \
   -I "third_party/proto" \
   --gocosmos_out=plugins=interfacetype+grpc,\
-Mgoogle/protobuf/any.proto=github.com/line/lbm-sdk/codec/types:. \
+Mgoogle/protobuf/any.proto=github.com/Finschia/finschia-sdk/codec/types:. \
   --grpc-gateway_out=logtostderr=true,allow_colon_final_segments=true:. \
   $(find "${dir}" -maxdepth 1 -name '*.proto')
 
@@ -39,8 +39,8 @@ go mod tidy
 
 # generate codec/testdata proto code
 buf protoc -I "proto" -I "third_party/proto" -I "testutil/testdata" --gocosmos_out=plugins=interfacetype+grpc,\
-Mgoogle/protobuf/any.proto=github.com/line/lbm-sdk/codec/types:. ./testutil/testdata/*.proto
+Mgoogle/protobuf/any.proto=github.com/Finschia/finschia-sdk/codec/types:. ./testutil/testdata/*.proto
 
 # move proto files to the right places
-cp -r github.com/line/lbm-sdk/* ./
+cp -r github.com/Finschia/finschia-sdk/* ./
 rm -rf github.com

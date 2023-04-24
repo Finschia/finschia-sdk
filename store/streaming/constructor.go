@@ -7,11 +7,11 @@ import (
 
 	"github.com/spf13/cast"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/codec"
-	serverTypes "github.com/line/lbm-sdk/server/types"
-	"github.com/line/lbm-sdk/store/streaming/file"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec"
+	serverTypes "github.com/Finschia/finschia-sdk/server/types"
+	"github.com/Finschia/finschia-sdk/store/streaming/file"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 // ServiceConstructor is used to construct a streaming service

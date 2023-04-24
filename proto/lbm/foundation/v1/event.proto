@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.foundation.v1;
 
-option go_package = "github.com/line/lbm-sdk/x/foundation";
+option go_package = "github.com/Finschia/finschia-sdk/x/foundation";
 
 import "gogoproto/gogo.proto";
 
@@ -20,14 +20,14 @@ message EventUpdateParams {
 message EventFundTreasury {
   string   from                            = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
 // EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 message EventWithdrawFromTreasury {
   string   to                              = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
 // EventUpdateMembers is an event emitted when the members have been updated.
@@ -87,7 +87,7 @@ message EventGrant {
   string grantee = 1;
   // authorization granted.
   google.protobuf.Any authorization = 2
-      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+      [(cosmos_proto.accepts_interface) = "github.com/Finschia/finschia-sdk/x/authz.Authorization"];
 }
 
 // EventRevoke is emitted on Msg/Revoke

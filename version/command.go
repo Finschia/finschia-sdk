@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/line/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
 )

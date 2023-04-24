@@ -10,10 +10,10 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/dbadapter"
-	"github.com/line/lbm-sdk/store/prefix"
-	"github.com/line/lbm-sdk/store/tracekv"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/dbadapter"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	"github.com/Finschia/finschia-sdk/store/tracekv"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func bz(s string) []byte { return []byte(s) }

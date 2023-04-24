@@ -648,7 +648,6 @@
     - [EventSent](#lbm.collection.v1.EventSent)
   
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
-    - [EventType](#lbm.collection.v1.EventType)
   
 - [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
     - [Balance](#lbm.collection.v1.Balance)
@@ -683,6 +682,8 @@
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
     - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
+    - [QueryHasParentRequest](#lbm.collection.v1.QueryHasParentRequest)
+    - [QueryHasParentResponse](#lbm.collection.v1.QueryHasParentResponse)
     - [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest)
     - [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse)
     - [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest)
@@ -883,7 +884,6 @@
     - [EventSent](#lbm.token.v1.EventSent)
   
     - [AttributeKey](#lbm.token.v1.AttributeKey)
-    - [EventType](#lbm.token.v1.EventType)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
@@ -9536,7 +9536,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. deprecated "base_img_uri" has been replaced by "uri" in the events. |
 
 
 
@@ -9688,8 +9688,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.AttributeKey"></a>
 
 ### AttributeKey
-Deprecated: use typed events.
-
 AttributeKey enumerates the valid attribute keys on x/collection.
 
 | Name | Number | Description |
@@ -9697,65 +9695,8 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
 | ATTRIBUTE_KEY_META | 2 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 3 |  |
-| ATTRIBUTE_KEY_TOKEN_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
 | ATTRIBUTE_KEY_BASE_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_TOKEN_TYPE | 10 |  |
-| ATTRIBUTE_KEY_FROM | 11 |  |
-| ATTRIBUTE_KEY_TO | 12 |  |
-| ATTRIBUTE_KEY_PERM | 13 |  |
-| ATTRIBUTE_KEY_TO_TOKEN_ID | 14 |  |
-| ATTRIBUTE_KEY_FROM_TOKEN_ID | 15 |  |
-| ATTRIBUTE_KEY_APPROVER | 16 |  |
-| ATTRIBUTE_KEY_PROXY | 17 |  |
-| ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID | 18 |  |
-| ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID | 19 |  |
 | ATTRIBUTE_KEY_URI | 20 |  |
-
-
-
-<a name="lbm.collection.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/collection.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_CREATE_COLLECTION | 1 |  |
-| EVENT_TYPE_ISSUE_FT | 2 |  |
-| EVENT_TYPE_ISSUE_NFT | 3 |  |
-| EVENT_TYPE_MINT_FT | 4 |  |
-| EVENT_TYPE_BURN_FT | 5 |  |
-| EVENT_TYPE_MINT_NFT | 6 |  |
-| EVENT_TYPE_BURN_NFT | 7 |  |
-| EVENT_TYPE_BURN_FT_FROM | 8 |  |
-| EVENT_TYPE_BURN_NFT_FROM | 9 |  |
-| EVENT_TYPE_MODIFY_COLLECTION | 10 |  |
-| EVENT_TYPE_MODIFY_TOKEN_TYPE | 11 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 12 |  |
-| EVENT_TYPE_TRANSFER | 13 |  |
-| EVENT_TYPE_TRANSFER_FT | 14 |  |
-| EVENT_TYPE_TRANSFER_NFT | 15 |  |
-| EVENT_TYPE_TRANSFER_FT_FROM | 16 |  |
-| EVENT_TYPE_TRANSFER_NFT_FROM | 17 |  |
-| EVENT_TYPE_GRANT_PERM | 18 |  |
-| EVENT_TYPE_REVOKE_PERM | 19 |  |
-| EVENT_TYPE_ATTACH | 20 |  |
-| EVENT_TYPE_DETACH | 21 |  |
-| EVENT_TYPE_ATTACH_FROM | 22 |  |
-| EVENT_TYPE_DETACH_FROM | 23 |  |
-| EVENT_TYPE_APPROVE_COLLECTION | 24 |  |
-| EVENT_TYPE_DISAPPROVE_COLLECTION | 25 |  |
-| EVENT_TYPE_OPERATION_TRANSFER_NFT | 26 |  |
-| EVENT_TYPE_OPERATION_BURN_NFT | 27 |  |
-| EVENT_TYPE_OPERATION_ROOT_CHANGED | 28 |  |
 
 
  <!-- end enums -->
@@ -10279,6 +10220,37 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 
 
 
+<a name="lbm.collection.v1.QueryHasParentRequest"></a>
+
+### QueryHasParentRequest
+QueryHasParentRequest is the request type for the Query/HasParent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated wit the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryHasParentResponse"></a>
+
+### QueryHasParentResponse
+QueryHasParentResponse is the response type for the Query/HasParent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `has_parent` | [bool](#bool) |  | whether the token has its parent. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryHoldersByOperatorRequest"></a>
 
 ### QueryHoldersByOperatorRequest
@@ -10461,7 +10433,7 @@ QueryParentResponse is the response type for the Query/Parent RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. if there is no parent for the token, it would return nil. |
+| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. |
 
 
 
@@ -10624,6 +10596,7 @@ Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
+| `HasParent` | [QueryHasParentRequest](#lbm.collection.v1.QueryHasParentRequest) | [QueryHasParentResponse](#lbm.collection.v1.QueryHasParentResponse) | HasParent queries whether a given nft has its parent. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
@@ -13055,7 +13028,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes on the metadata of the class. possible attribute keys are same as those of MsgModify. |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes on the metadata of the class. possible attribute keys are same as those of MsgModify. deprecated "img_uri" has been replaced by "uri" in the events. |
 
 
 
@@ -13132,43 +13105,9 @@ AttributeKey enumerates the valid attribute keys on x/token.
 | ---- | ------ | ----------- |
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
-| ATTRIBUTE_KEY_SYMBOL | 2 |  |
 | ATTRIBUTE_KEY_META | 3 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
 | ATTRIBUTE_KEY_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_FROM | 10 |  |
-| ATTRIBUTE_KEY_TO | 11 |  |
-| ATTRIBUTE_KEY_PERM | 12 |  |
-| ATTRIBUTE_KEY_APPROVER | 13 |  |
-| ATTRIBUTE_KEY_PROXY | 14 |  |
 | ATTRIBUTE_KEY_URI | 15 |  |
-
-
-
-<a name="lbm.token.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/token.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_ISSUE | 1 |  |
-| EVENT_TYPE_MINT | 2 |  |
-| EVENT_TYPE_BURN | 3 |  |
-| EVENT_TYPE_BURN_FROM | 4 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 5 |  |
-| EVENT_TYPE_TRANSFER | 6 |  |
-| EVENT_TYPE_TRANSFER_FROM | 7 |  |
-| EVENT_TYPE_GRANT_PERM | 8 |  |
-| EVENT_TYPE_REVOKE_PERM | 9 |  |
-| EVENT_TYPE_APPROVE_TOKEN | 10 |  |
 
 
  <!-- end enums -->
@@ -13986,7 +13925,7 @@ Msg defines the token Msg service.
 GetBlockWithTxsRequest is the request type for the Service.GetBlockWithTxs
 RPC method.
 
-Since: lbm-sdk 0.47.0
+Since: finschia-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
@@ -14004,7 +13943,7 @@ Since: lbm-sdk 0.47.0
 ### GetBlockWithTxsResponse
 GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
 
-Since: lbm-sdk 0.47.0
+Since: finschia-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
@@ -14034,7 +13973,7 @@ Service defines a gRPC service for interacting with transactions.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `GetBlockWithTxs` | [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
 
-Since: lbm-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
+Since: finschia-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
 
  <!-- end services -->
 

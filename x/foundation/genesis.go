@@ -2,10 +2,11 @@ package foundation
 
 import (
 	"github.com/gogo/protobuf/proto"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
+
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // DefaultGenesisState creates a default GenesisState object
@@ -44,11 +45,18 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 		return err
 	}
 
+	for _, p := range data.Proposals {
+		if err := p.UnpackInterfaces(unpacker); err != nil {
+			return err
+		}
+	}
+
 	for _, ga := range data.Authorizations {
 		if err := ga.UnpackInterfaces(unpacker); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 

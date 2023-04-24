@@ -3,13 +3,13 @@ package bankplus
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/types/module"
-	accountkeeper "github.com/line/lbm-sdk/x/auth/keeper"
-	"github.com/line/lbm-sdk/x/bank"
-	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/line/lbm-sdk/x/bankplus/keeper"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/types/module"
+	accountkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
+	"github.com/Finschia/finschia-sdk/x/bank"
+	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/bankplus/keeper"
 )
 
 var (
