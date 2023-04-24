@@ -51,7 +51,7 @@
 ### Removed
 * [\#853](https://github.com/Finschia/finschia-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
   * ibc, authz, collection, feegrant, ibc, token, wasm
-* (x/ibc) [\#858](https://github.com/Finschia/finschia-sdk/pull/858) detach ibc module(repo: [line/ibc-go](https://github.com/Finschia/ibc-go))
+* (x/ibc) [\#858](https://github.com/Finschia/finschia-sdk/pull/858) detach ibc module(repo: [finschia/ibc-go](https://github.com/Finschia/ibc-go))
 * (x/collection,token) [\#966](https://github.com/Finschia/finschia-sdk/pull/966) Remove legacy events on x/collection and x/token
 
 ### Breaking Changes
