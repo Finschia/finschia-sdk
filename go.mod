@@ -5,11 +5,12 @@ module github.com/Finschia/finschia-sdk
 require (
 	github.com/99designs/keyring v1.1.6
 	github.com/Finschia/ostracon v1.1.0
-	github.com/VictoriaMetrics/fastcache v1.12.0
+	github.com/VictoriaMetrics/fastcache v1.12.1
 	github.com/armon/go-metrics v0.4.1
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.1
-	github.com/coinbase/rosetta-sdk-go v0.8.2
+	github.com/coinbase/rosetta-sdk-go v0.8.3
+	github.com/coinbase/rosetta-sdk-go/types v1.0.0
 	github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
