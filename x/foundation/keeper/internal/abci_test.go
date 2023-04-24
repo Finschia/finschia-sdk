@@ -3,9 +3,9 @@ package internal_test
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/foundation/keeper/internal"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 )
 
 func (s *KeeperTestSuite) TestBeginBlocker() {

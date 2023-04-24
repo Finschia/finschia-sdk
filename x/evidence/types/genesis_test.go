@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/x/evidence/exported"
-	"github.com/line/lbm-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/x/evidence/exported"
+	"github.com/Finschia/finschia-sdk/x/evidence/types"
 )
 
 func TestDefaultGenesisState(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 // DefaultPage is the default `page` number for queries.

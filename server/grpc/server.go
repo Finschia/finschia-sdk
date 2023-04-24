@@ -7,11 +7,11 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/server/grpc/gogoreflection"
-	reflection "github.com/line/lbm-sdk/server/grpc/reflection/v2"
-	"github.com/line/lbm-sdk/server/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/server/grpc/gogoreflection"
+	reflection "github.com/Finschia/finschia-sdk/server/grpc/reflection/v2"
+	"github.com/Finschia/finschia-sdk/server/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // StartGRPCServer starts a gRPC server on the given address.

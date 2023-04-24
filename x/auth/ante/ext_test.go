@@ -1,11 +1,11 @@
 package ante_test
 
 import (
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/ante"
-	"github.com/line/lbm-sdk/x/auth/tx"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/ante"
+	"github.com/Finschia/finschia-sdk/x/auth/tx"
 )
 
 func (suite *AnteTestSuite) TestRejectExtensionOptionsDecorator() {

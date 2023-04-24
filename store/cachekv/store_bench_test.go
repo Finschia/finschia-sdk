@@ -5,8 +5,8 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/Finschia/finschia-sdk/store/cachekv"
+	"github.com/Finschia/finschia-sdk/store/dbadapter"
 )
 
 var sink interface{}

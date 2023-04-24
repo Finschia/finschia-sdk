@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // iterate through the classes and perform the provided function

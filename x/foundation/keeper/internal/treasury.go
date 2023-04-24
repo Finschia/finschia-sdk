@@ -1,25 +1,19 @@
 package internal
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/foundation"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName).GetAddress()
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector)
-	if feesCollectedInt.Empty() {
-		return nil
-	}
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// calculate the tax
 	taxRatio := k.GetFoundationTax(ctx)
 	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
-	if tax.Empty() {
-		return nil
-	}
 
 	// collect the tax
 	if err := k.FundTreasury(ctx, feeCollector, tax); err != nil {

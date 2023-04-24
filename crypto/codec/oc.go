@@ -3,13 +3,13 @@ package codec
 import (
 	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	occrypto "github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/encoding"
+	occrypto "github.com/Finschia/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto/encoding"
 
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // FromOcProtoPublicKey converts a OC's tmprotocrypto.PublicKey into our own PubKey.

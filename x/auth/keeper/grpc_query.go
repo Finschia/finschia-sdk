@@ -3,15 +3,15 @@ package keeper
 import (
 	"context"
 
-	"github.com/line/lbm-sdk/store/prefix"
-	"github.com/line/lbm-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	"github.com/Finschia/finschia-sdk/types/query"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/types"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 var _ types.QueryServer = AccountKeeper{}

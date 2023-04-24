@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var amino = codec.NewLegacyAmino()

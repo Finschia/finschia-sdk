@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // Keeper defines the class module Keeper

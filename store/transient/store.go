@@ -3,8 +3,8 @@ package transient
 import (
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/dbadapter"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/dbadapter"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 var (
