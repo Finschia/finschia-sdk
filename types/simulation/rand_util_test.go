@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/simulation"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/simulation"
 )
 
 func TestRandSubsetCoins(t *testing.T) {

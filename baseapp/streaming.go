@@ -6,10 +6,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	store "github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/types"
+	store "github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/types"
 )
 
 // ABCIListener interface used to hook into the ABCI message processing of the BaseApp

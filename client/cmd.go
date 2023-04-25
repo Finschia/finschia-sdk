@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // ClientContextKey defines the context key used to retrieve a client.Context from

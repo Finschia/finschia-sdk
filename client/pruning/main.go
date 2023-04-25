@@ -9,14 +9,14 @@ import (
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/ostracon/libs/log"
+	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/server"
-	servertypes "github.com/line/lbm-sdk/server/types"
-	"github.com/line/lbm-sdk/store/rootmulti"
-	storetypes "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server"
+	servertypes "github.com/Finschia/finschia-sdk/server/types"
+	"github.com/Finschia/finschia-sdk/store/rootmulti"
+	storetypes "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 const FlagAppDBBackend = "app-db-backend"

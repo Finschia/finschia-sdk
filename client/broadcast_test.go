@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/crypto/tmhash"
-	"github.com/line/ostracon/mempool"
-	"github.com/line/ostracon/rpc/client/mock"
-	ctypes "github.com/line/ostracon/rpc/core/types"
-	octypes "github.com/line/ostracon/types"
+	"github.com/Finschia/ostracon/crypto/tmhash"
+	"github.com/Finschia/ostracon/mempool"
+	"github.com/Finschia/ostracon/rpc/client/mock"
+	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/client/flags"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 type MockClient struct {

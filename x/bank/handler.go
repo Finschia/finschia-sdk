@@ -1,10 +1,10 @@
 package bank
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/bank/keeper"
-	"github.com/line/lbm-sdk/x/bank/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/bank/keeper"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // NewHandler returns a handler for "bank" type messages.

@@ -10,9 +10,9 @@ with particular kinds of accounts.
 
    ```go
    import (
-      "github.com/line/lbm-sdk/x/evidence"
-      evidencekeeper "github.com/line/lbm-sdk/x/evidence/keeper"
-      evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
+      "github.com/Finschia/finschia-sdk/x/evidence"
+      evidencekeeper "github.com/Finschia/finschia-sdk/x/evidence/keeper"
+      evidencetypes "github.com/Finschia/finschia-sdk/x/evidence/types"
    )
    ```
 

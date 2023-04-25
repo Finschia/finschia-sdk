@@ -3,8 +3,8 @@ package v040
 import (
 	"github.com/golang/protobuf/proto" //nolint:staticcheck
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/x/bank/types"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // SupplyI defines an inflationary supply interface for modules that handle

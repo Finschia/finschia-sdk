@@ -6,10 +6,10 @@ import (
 	"github.com/gogo/protobuf/proto"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/gov/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/gov/codec"
 )
 
 // Governance message types and routes

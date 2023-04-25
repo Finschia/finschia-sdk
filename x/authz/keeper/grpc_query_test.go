@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/authz"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 func (suite *TestSuite) TestGRPCQueryAuthorization() {

@@ -3,11 +3,11 @@ package v043
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/store/prefix"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/address"
-	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/address"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 const proposalIDLen = 8

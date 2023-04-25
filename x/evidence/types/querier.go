@@ -1,9 +1,9 @@
 package types
 
 import (
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 
-	query "github.com/line/lbm-sdk/types/query"
+	query "github.com/Finschia/finschia-sdk/types/query"
 )
 
 // Querier routes for the evidence module

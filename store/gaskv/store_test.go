@@ -8,9 +8,9 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/dbadapter"
-	"github.com/line/lbm-sdk/store/gaskv"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/dbadapter"
+	"github.com/Finschia/finschia-sdk/store/gaskv"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func bz(s string) []byte { return []byte(s) }

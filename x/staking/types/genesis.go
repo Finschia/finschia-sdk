@@ -3,8 +3,8 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 )
 
 // NewGenesisState creates a new GenesisState instanc e

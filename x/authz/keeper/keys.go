@@ -1,11 +1,11 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/internal/conv"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/address"
-	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/x/authz"
+	"github.com/Finschia/finschia-sdk/internal/conv"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/address"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/x/authz"
 )
 
 // Keys for store prefixes

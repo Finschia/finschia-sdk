@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/libs/bytes"
+	"github.com/Finschia/ostracon/libs/bytes"
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/client/grpc/tmservice"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/testutil/network"
-	"github.com/line/lbm-sdk/testutil/rest"
-	qtypes "github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/version"
+	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	"github.com/Finschia/finschia-sdk/testutil/rest"
+	qtypes "github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/version"
 )
 
 type IntegrationTestSuite struct {

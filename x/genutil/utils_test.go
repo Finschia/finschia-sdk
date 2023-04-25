@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/ostracon/config"
+	"github.com/Finschia/ostracon/config"
 	"github.com/stretchr/testify/require"
 )
 

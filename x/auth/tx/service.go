@@ -12,11 +12,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/client"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	pagination "github.com/line/lbm-sdk/types/query"
-	txtypes "github.com/line/lbm-sdk/types/tx"
+	"github.com/Finschia/finschia-sdk/client"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	pagination "github.com/Finschia/finschia-sdk/types/query"
+	txtypes "github.com/Finschia/finschia-sdk/types/tx"
 )
 
 // baseAppSimulateFn is the signature of the Baseapp#Simulate function.
