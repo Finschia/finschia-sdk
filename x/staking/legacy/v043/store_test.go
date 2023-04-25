@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	v040staking "github.com/line/lbm-sdk/x/staking/legacy/v040"
-	v043staking "github.com/line/lbm-sdk/x/staking/legacy/v043"
-	"github.com/line/lbm-sdk/x/staking/teststaking"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	v040staking "github.com/Finschia/finschia-sdk/x/staking/legacy/v040"
+	v043staking "github.com/Finschia/finschia-sdk/x/staking/legacy/v043"
+	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 func TestStoreMigration(t *testing.T) {

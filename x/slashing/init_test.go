@@ -1,7 +1,7 @@
 package slashing_test
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // The default power validators are initialized to have within tests

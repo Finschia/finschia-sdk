@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/simapp"
 )
 
 // Issue #7739: Catch parse errors resulting from unexpected EOF in

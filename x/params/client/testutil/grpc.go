@@ -5,8 +5,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/x/params/types/proposal"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/x/params/types/proposal"
 )
 
 func (s *IntegrationTestSuite) TestQueryParamsGRPC() {

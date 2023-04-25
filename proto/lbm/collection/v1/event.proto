@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 
 import "lbm/collection/v1/collection.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/collection";
+option go_package = "github.com/Finschia/finschia-sdk/x/collection";
 
 // AttributeKey enumerates the valid attribute keys on x/collection.
 enum AttributeKey {

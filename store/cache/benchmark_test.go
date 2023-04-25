@@ -3,7 +3,7 @@ package cache
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func freshMgr() *CommitKVStoreCacheManager {

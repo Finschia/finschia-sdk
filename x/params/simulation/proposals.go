@@ -1,9 +1,9 @@
 package simulation
 
 import (
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/simulation"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 // OpWeightSubmitParamChangeProposal app params key for param change proposal

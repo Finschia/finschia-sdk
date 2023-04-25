@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/types"
 )
 
 var coinStrs = []string{

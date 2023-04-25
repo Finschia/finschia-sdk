@@ -4,11 +4,11 @@ package lbm.stakingplus.v1;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/stakingplus";
+option go_package = "github.com/Finschia/finschia-sdk/x/stakingplus";
 
 // CreateValidatorAuthorization allows the grantee to create a new validator.
 message CreateValidatorAuthorization {
-  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization";
+  option (cosmos_proto.implements_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization";
 
   // redundant, but good for the query.
   string validator_address = 1;

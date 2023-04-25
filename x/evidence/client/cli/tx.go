@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/x/evidence/types"
 
 	"github.com/spf13/cobra"
 )

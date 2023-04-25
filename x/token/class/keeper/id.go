@@ -6,7 +6,7 @@ import (
 	"hash/fnv"
 	"math"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewID returns a brand new ID.

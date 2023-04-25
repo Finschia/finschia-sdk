@@ -9,9 +9,9 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestGetBlockRentionHeight(t *testing.T) {
@@ -174,7 +174,7 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 
 // Test and ensure that consensus params has been updated.
 // See:
-// - https://github.com/line/lbm-sdk/pull/673
+// - https://github.com/Finschia/finschia-sdk/pull/673
 func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	t.Parallel()
 

@@ -10,12 +10,12 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	runtime "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	client "github.com/line/lbm-sdk/client"
-	codec "github.com/line/lbm-sdk/codec"
-	types "github.com/line/lbm-sdk/codec/types"
-	types0 "github.com/line/lbm-sdk/types"
-	module "github.com/line/lbm-sdk/types/module"
-	ocabci "github.com/line/ostracon/abci/types"
+	client "github.com/Finschia/finschia-sdk/client"
+	codec "github.com/Finschia/finschia-sdk/codec"
+	types "github.com/Finschia/finschia-sdk/codec/types"
+	types0 "github.com/Finschia/finschia-sdk/types"
+	module "github.com/Finschia/finschia-sdk/types/module"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	cobra "github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
