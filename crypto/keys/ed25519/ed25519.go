@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/Finschia/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto/tmhash"
 	"github.com/hdevalence/ed25519consensus"
-	"github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/tmhash"
 
-	"github.com/line/lbm-sdk/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/types/errors"
 )
 
 //-------------------------------------

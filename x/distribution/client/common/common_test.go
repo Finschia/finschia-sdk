@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
 )
 
 func TestQueryDelegationRewardsAddrValidation(t *testing.T) {

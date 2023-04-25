@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/testutil/testdata"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
 func TestStdSignatureMarshalYAML(t *testing.T) {

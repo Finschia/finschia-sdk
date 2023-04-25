@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/types/simulation"
 )
 
 // TransitionMatrix is _almost_ a left stochastic matrix.  It is technically

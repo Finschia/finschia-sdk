@@ -10,11 +10,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/keeper"
-	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov/keeper"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 const custom = "custom"

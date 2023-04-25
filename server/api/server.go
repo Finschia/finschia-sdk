@@ -13,17 +13,17 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/line/ostracon/libs/log"
-	ostrpcserver "github.com/line/ostracon/rpc/jsonrpc/server"
+	"github.com/Finschia/ostracon/libs/log"
+	ostrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/server/config"
-	"github.com/line/lbm-sdk/telemetry"
-	grpctypes "github.com/line/lbm-sdk/types/grpc"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/line/lbm-sdk/client/docs/statik"
+	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 )
 
 // Server defines the server's API interface.

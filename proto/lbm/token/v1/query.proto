@@ -7,7 +7,7 @@ import "lbm/token/v1/token.proto";
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/token";
+option go_package = "github.com/Finschia/finschia-sdk/x/token";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -59,7 +59,7 @@ message QueryBalanceRequest {
 // QueryBalanceResponse is the response type for the Query/Balance RPC method
 message QueryBalanceResponse {
   // the balance of the tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method
@@ -71,7 +71,7 @@ message QuerySupplyRequest {
 // QuerySupplyResponse is the response type for the Query/Supply RPC method
 message QuerySupplyResponse {
   // the supply of the tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryMintedRequest is the request type for the Query/Minted RPC method
@@ -83,7 +83,7 @@ message QueryMintedRequest {
 // QueryMintedResponse is the response type for the Query/Minted RPC method
 message QueryMintedResponse {
   // the amount of the minted tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryBurntRequest is the request type for the Query/Burnt RPC method
@@ -95,7 +95,7 @@ message QueryBurntRequest {
 // QueryBurntResponse is the response type for the Query/Burnt RPC method
 message QueryBurntResponse {
   // the amount of the burnt tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryContractRequest is the request type for the Query/Contract RPC method

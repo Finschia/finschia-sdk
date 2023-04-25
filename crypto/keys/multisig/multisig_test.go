@@ -6,19 +6,19 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/crypto/types/multisig"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	kmultisig "github.com/Finschia/finschia-sdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/crypto/types/multisig"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
 func TestNewMultiSig(t *testing.T) {

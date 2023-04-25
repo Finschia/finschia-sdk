@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/codec"
-	cryptoAmino "github.com/line/lbm-sdk/crypto/codec"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/auth/testutil"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptoAmino "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/x/auth/testutil"
 )
 
 func testCodec() *codec.LegacyAmino {

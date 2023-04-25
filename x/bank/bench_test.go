@@ -7,14 +7,14 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 var moduleAccAddr = authtypes.NewModuleAddress(stakingtypes.BondedPoolName)

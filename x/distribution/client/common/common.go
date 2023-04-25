@@ -3,9 +3,9 @@ package common
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/distribution/types"
+	"github.com/Finschia/finschia-sdk/client"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/distribution/types"
 )
 
 // QueryDelegationRewards queries a delegation rewards between a delegator and a

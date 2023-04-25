@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	"github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-sdk/types"
 )
 
 func TestGenerateCoinKey(t *testing.T) {

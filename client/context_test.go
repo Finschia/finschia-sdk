@@ -9,13 +9,13 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	"github.com/line/lbm-sdk/testutil/network"
-	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 )
 
 func TestMain(m *testing.M) {

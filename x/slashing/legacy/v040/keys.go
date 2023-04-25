@@ -5,9 +5,9 @@ package v040
 import (
 	"encoding/binary"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/kv"
-	v040auth "github.com/line/lbm-sdk/x/auth/legacy/v040"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	v040auth "github.com/Finschia/finschia-sdk/x/auth/legacy/v040"
 )
 
 const (

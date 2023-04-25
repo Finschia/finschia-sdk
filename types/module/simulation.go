@@ -6,9 +6,9 @@ import (
 	"sort"
 	"time"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/simulation"
 )
 
 // AppModuleSimulation defines the standard functions that every module should expose

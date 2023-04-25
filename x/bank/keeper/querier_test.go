@@ -5,13 +5,13 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/bank/keeper"
-	"github.com/line/lbm-sdk/x/bank/types"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/bank/keeper"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 func (suite *IntegrationTestSuite) TestQuerier_QueryBalance() {

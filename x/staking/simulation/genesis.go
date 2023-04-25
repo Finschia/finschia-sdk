@@ -8,10 +8,10 @@ import (
 	"math/rand"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	"github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // Simulation parameter constants

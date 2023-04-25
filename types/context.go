@@ -8,11 +8,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocbytes "github.com/line/ostracon/libs/bytes"
-	"github.com/line/ostracon/libs/log"
+	ocbytes "github.com/Finschia/ostracon/libs/bytes"
+	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/store/gaskv"
-	stypes "github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/gaskv"
+	stypes "github.com/Finschia/finschia-sdk/store/types"
 )
 
 /*

@@ -5,7 +5,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewDeposit creates a new Deposit instance

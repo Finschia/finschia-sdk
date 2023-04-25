@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // Validate performs basic validation of supply genesis data returning an

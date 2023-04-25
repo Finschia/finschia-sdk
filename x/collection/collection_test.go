@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func TestFTClass(t *testing.T) {
@@ -170,4 +170,15 @@ func TestParseCoins(t *testing.T) {
 			require.Equal(t, tc.input, parsed.String())
 		})
 	}
+}
+
+func TestDefaultNextClassIDs(t *testing.T) {
+	contractID := "deadbeef"
+	require.Equal(t, collection.NextClassIDs{
+		ContractId:  contractID,
+		Fungible:    sdk.NewUint(1),
+		NonFungible: sdk.NewUint(1 << 28).Incr(), // "10000000 + 1"
+	},
+		collection.DefaultNextClassIDs(contractID),
+	)
 }

@@ -3,11 +3,11 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/client/flags"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/token"
-	"github.com/line/lbm-sdk/x/token/client/cli"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewTxCmdSend() {

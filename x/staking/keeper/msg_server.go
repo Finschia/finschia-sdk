@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
+	oststrings "github.com/Finschia/ostracon/libs/strings"
 	metrics "github.com/armon/go-metrics"
-	oststrings "github.com/line/ostracon/libs/strings"
 
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/staking/types"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 type msgServer struct {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 func TestParamsEqual(t *testing.T) {

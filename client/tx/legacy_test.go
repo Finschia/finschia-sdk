@@ -6,17 +6,17 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/client"
-	tx2 "github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/simapp/params"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	signing2 "github.com/line/lbm-sdk/types/tx/signing"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/auth/tx"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/client"
+	tx2 "github.com/Finschia/finschia-sdk/client/tx"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/simapp/params"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	signing2 "github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/x/auth/tx"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 const (

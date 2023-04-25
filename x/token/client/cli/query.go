@@ -5,10 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/version"
-	"github.com/line/lbm-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/version"
+	"github.com/Finschia/finschia-sdk/x/token"
 )
 
 // NewQueryCmd returns the cli query commands for this module

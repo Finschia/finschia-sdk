@@ -4,9 +4,9 @@
 package params
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/x/auth/tx"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/x/auth/tx"
 )
 
 // MakeTestEncodingConfig creates an EncodingConfig for a non-amino based test configuration.

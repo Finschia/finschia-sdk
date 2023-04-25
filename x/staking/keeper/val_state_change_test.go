@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"github.com/line/lbm-sdk/x/staking/keeper"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/x/staking/keeper"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"

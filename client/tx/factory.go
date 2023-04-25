@@ -7,13 +7,13 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
 )
 
 // Factory defines a client transaction factory that facilitates generating and

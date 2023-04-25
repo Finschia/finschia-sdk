@@ -14,19 +14,19 @@ import (
 	"syscall"
 	"time"
 
-	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
-	ostcfg "github.com/line/ostracon/config"
-	ostlog "github.com/line/ostracon/libs/log"
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	ostcfg "github.com/Finschia/ostracon/config"
+	ostlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/server/config"
-	"github.com/line/lbm-sdk/server/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/server/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/version"
 )
 
 // DONTCOVER

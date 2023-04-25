@@ -3,9 +3,9 @@ package gov
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/keeper"
-	"github.com/line/lbm-sdk/x/gov/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov/keeper"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // InitGenesis - store genesis parameters

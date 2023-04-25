@@ -10,13 +10,13 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto"
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/crypto"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 const (

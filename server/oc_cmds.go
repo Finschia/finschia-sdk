@@ -8,16 +8,16 @@ import (
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
 
-	cfg "github.com/line/ostracon/config"
-	osjson "github.com/line/ostracon/libs/json"
-	ostos "github.com/line/ostracon/libs/os"
-	"github.com/line/ostracon/node"
-	"github.com/line/ostracon/p2p"
-	pvm "github.com/line/ostracon/privval"
-	"github.com/line/ostracon/types"
-	ostversion "github.com/line/ostracon/version"
+	cfg "github.com/Finschia/ostracon/config"
+	osjson "github.com/Finschia/ostracon/libs/json"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	"github.com/Finschia/ostracon/node"
+	"github.com/Finschia/ostracon/p2p"
+	pvm "github.com/Finschia/ostracon/privval"
+	"github.com/Finschia/ostracon/types"
+	ostversion "github.com/Finschia/ostracon/version"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // ShowNodeIDCmd - ported from Ostracon, dump node ID to stdout

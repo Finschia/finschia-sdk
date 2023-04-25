@@ -1,11 +1,11 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewTestMsg generates a test message

@@ -6,21 +6,21 @@ import (
 	"fmt"
 	"math/rand"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	cdctypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/mint/client/cli"
-	"github.com/line/lbm-sdk/x/mint/keeper"
-	"github.com/line/lbm-sdk/x/mint/simulation"
-	"github.com/line/lbm-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/mint/client/cli"
+	"github.com/Finschia/finschia-sdk/x/mint/keeper"
+	"github.com/Finschia/finschia-sdk/x/mint/simulation"
+	"github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 var (

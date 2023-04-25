@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 func TestDelegationEqual(t *testing.T) {

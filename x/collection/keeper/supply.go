@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract collection.Contract) string {
@@ -16,25 +16,15 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		Meta:       contract.Meta,
 		Uri:        contract.Uri,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
 
-	eventGrant := collection.EventGranted{
-		ContractId: contractID,
-		Grantee:    creator.String(),
-	}
-	ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenHead(eventGrant))
-	for _, permission := range collection.Permission_value {
-		p := collection.Permission(permission)
-		if p == collection.PermissionUnspecified {
-			continue
-		}
+	// 0 is "unspecified"
+	for i := 1; i < len(collection.Permission_value); i++ {
+		p := collection.Permission(i)
 
-		eventGrant.Permission = p
-		ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenBody(eventGrant))
-		k.Grant(ctx, contractID, []byte{}, creator, collection.Permission(permission))
+		k.Grant(ctx, contractID, []byte{}, creator, p)
 	}
 
 	return contractID
@@ -258,12 +248,6 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 	for _, coin := range amount {
 		burntAmount = append(burntAmount, coin)
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			// legacy
-			k.iterateDescendants(ctx, contractID, coin.TokenId, func(descendantID string, _ int) (stop bool) {
-				ctx.EventManager().EmitEvent(collection.NewEventOperationBurnNFT(contractID, descendantID))
-				return false
-			})
-
 			k.deleteNFT(ctx, contractID, coin.TokenId)
 			pruned := k.pruneNFT(ctx, contractID, coin.TokenId)
 
@@ -339,14 +323,6 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 
 	k.setContract(ctx, *contract)
 
-	event := collection.EventModifiedContract{
-		ContractId: contractID,
-		Operator:   operator.String(),
-		Changes:    changes,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
 	return nil
 }
 
@@ -380,15 +356,6 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 
 	k.setTokenClass(ctx, contractID, class)
 
-	event := collection.EventModifiedTokenClass{
-		ContractId: contractID,
-		TokenType:  class.GetId(),
-		Operator:   operator.String(),
-		Changes:    changes,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
 	return nil
 }
 
@@ -413,15 +380,6 @@ func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, op
 
 	k.setNFT(ctx, contractID, *token)
 
-	event := collection.EventModifiedNFT{
-		ContractId: contractID,
-		TokenId:    tokenID,
-		Operator:   operator.String(),
-		Changes:    changes,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
 	return nil
 }
 

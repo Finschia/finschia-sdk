@@ -1,7 +1,7 @@
 package feegrant
 
 import (
-	"github.com/line/lbm-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
 )
 
 var _ types.UnpackInterfacesMessage = GenesisState{}

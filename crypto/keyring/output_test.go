@@ -6,10 +6,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
+	kmultisig "github.com/Finschia/finschia-sdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestBech32KeysOutput(t *testing.T) {

@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
-	"github.com/line/lbm-sdk/x/bank/types"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 var _ Keeper = (*BaseKeeper)(nil)

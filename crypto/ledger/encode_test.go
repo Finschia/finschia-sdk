@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 type byter interface {

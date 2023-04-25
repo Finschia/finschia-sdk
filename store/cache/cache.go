@@ -6,8 +6,8 @@ import (
 
 	"github.com/VictoriaMetrics/fastcache"
 
-	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/cachekv"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 const (

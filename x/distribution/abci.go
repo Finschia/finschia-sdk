@@ -3,12 +3,12 @@ package distribution
 import (
 	"time"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/distribution/keeper"
-	"github.com/line/lbm-sdk/x/distribution/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/distribution/keeper"
+	"github.com/Finschia/finschia-sdk/x/distribution/types"
 )
 
 // BeginBlocker sets the proposer for determining distribution during endblock
