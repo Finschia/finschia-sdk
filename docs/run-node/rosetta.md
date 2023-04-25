@@ -11,7 +11,7 @@ To enable Rosetta API support, it's required to add the `RosettaCommand` to your
 Import the `server` package:
 
 ```go
-    "github.com/line/lbm-sdk/server"
+    "github.com/Finschia/finschia-sdk/server"
 ```
 
 Find the following line:
@@ -74,7 +74,7 @@ import (
 
 "context"
 "github.com/coinbase/rosetta-sdk-go/types"
-"github.com/line/lbm-sdk/server/rosetta/lib"
+"github.com/Finschia/finschia-sdk/server/rosetta/lib"
 )
 
 // CustomClient embeds the standard cosmos client
@@ -98,7 +98,7 @@ Example:
 
 ```go
 package custom_errors
-import crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
+import crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
 
 var customErrRetriable = true
 var CustomError = crgerrs.RegisterError(100, "custom message", customErrRetriable, "description")
@@ -116,7 +116,7 @@ Example:
 package app
 import (
 
-"github.com/line/lbm-sdk/server"
+"github.com/Finschia/finschia-sdk/server"
 "github.com/spf13/cobra"
 )
 

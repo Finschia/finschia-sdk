@@ -10,7 +10,7 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+-rc*" # Push events to matching v*, i.e. v1.0-rc1, v20.15.10-rc5
 env:
   registry: docker.io
-  repository: line/lbm-simapp
+  repository: finschia/finschia-simapp
 jobs:
   build:
     runs-on: ubuntu-latest

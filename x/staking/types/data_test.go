@@ -3,10 +3,10 @@ package types_test
 import (
 	"fmt"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var (

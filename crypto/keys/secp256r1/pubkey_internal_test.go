@@ -6,9 +6,9 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 var _ cryptotypes.PubKey = (*PubKey)(nil)

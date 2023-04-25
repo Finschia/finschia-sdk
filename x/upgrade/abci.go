@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/upgrade/keeper"
-	"github.com/line/lbm-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/upgrade/keeper"
+	"github.com/Finschia/finschia-sdk/x/upgrade/types"
 )
 
 // BeginBlock will check if there is a scheduled plan and if it is ready to be executed.

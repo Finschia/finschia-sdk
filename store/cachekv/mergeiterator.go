@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 // cacheMergeIterator merges a parent Iterator and a cache Iterator.

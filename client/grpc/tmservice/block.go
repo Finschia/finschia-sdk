@@ -3,11 +3,11 @@ package tmservice
 import (
 	"context"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	ctypes "github.com/line/ostracon/rpc/core/types"
+	ocproto "github.com/Finschia/ostracon/proto/ostracon/types"
+	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/client"
+	"github.com/Finschia/finschia-sdk/client"
 )
 
 func getBlock(ctx context.Context, clientCtx client.Context, height *int64) (*ctypes.ResultBlock, error) {

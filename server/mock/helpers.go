@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/libs/log"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/libs/log"
 )
 
 // SetupApp returns an application as well as a clean-up function

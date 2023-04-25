@@ -8,15 +8,15 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/ostracon/libs/log"
+	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/server"
-	"github.com/line/lbm-sdk/simapp"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
-	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server"
+	"github.com/Finschia/finschia-sdk/simapp"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	genutiltest "github.com/Finschia/finschia-sdk/x/genutil/client/testutil"
+	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 )
 
 func Test_TestnetCmd(t *testing.T) {

@@ -4,14 +4,14 @@ import (
 	"testing"
 	"time"
 
-	osttime "github.com/line/ostracon/types/time"
+	osttime "github.com/Finschia/ostracon/types/time"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"github.com/line/lbm-sdk/x/auth/vesting/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/auth/vesting/types"
 )
 
 var (

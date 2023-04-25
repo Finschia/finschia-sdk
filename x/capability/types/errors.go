@@ -3,7 +3,7 @@ package types
 // DONTCOVER
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // x/capability module sentinel errors

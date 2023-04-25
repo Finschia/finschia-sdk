@@ -10,20 +10,20 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/rpc/client/http"
+	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/rpc/client/http"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/testutil/network"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
-	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
-	"github.com/line/lbm-sdk/x/staking/client/cli"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
+	banktestutil "github.com/Finschia/finschia-sdk/x/bank/client/testutil"
+	"github.com/Finschia/finschia-sdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 type IntegrationTestSuite struct {

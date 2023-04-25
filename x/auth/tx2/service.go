@@ -8,14 +8,14 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/grpc/tmservice"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	pagination "github.com/line/lbm-sdk/types/query"
-	txtypes "github.com/line/lbm-sdk/types/tx"
-	tx2types "github.com/line/lbm-sdk/types/tx2"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	pagination "github.com/Finschia/finschia-sdk/types/query"
+	txtypes "github.com/Finschia/finschia-sdk/types/tx"
+	tx2types "github.com/Finschia/finschia-sdk/types/tx2"
 )
 
 type tx2Server struct {
@@ -69,7 +69,7 @@ func (s tx2Server) GetBlockWithTxs(ctx context.Context, req *tx2types.GetBlockWi
 	blockTxs := block.Data.Txs
 	blockTxsLn := uint64(len(blockTxs))
 	txs := make([]*txtypes.Tx, 0, limit)
-	if offset >= blockTxsLn {
+	if offset >= blockTxsLn && blockTxsLn != 0 {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("out of range: cannot paginate %d txs with offset %d and limit %d", blockTxsLn, offset, limit)
 	}
 	decodeTxAt := func(i uint64) error {

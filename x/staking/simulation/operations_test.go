@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	distrtypes "github.com/line/lbm-sdk/x/distribution/types"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
-	"github.com/line/lbm-sdk/x/staking/simulation"
-	"github.com/line/lbm-sdk/x/staking/teststaking"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	distrtypes "github.com/Finschia/finschia-sdk/x/distribution/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/x/staking/simulation"
+	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // TestWeightedOperations tests the weights of the operations.

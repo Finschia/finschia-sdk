@@ -3,7 +3,7 @@ package simapp
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec"
 )
 
 // GenesisState of the blockchain is represented here as a map of raw json

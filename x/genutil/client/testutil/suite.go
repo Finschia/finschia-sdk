@@ -8,15 +8,15 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/simapp"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/testutil/network"
-	sdk "github.com/line/lbm-sdk/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/line/lbm-sdk/x/genutil/client/cli"
-	stakingcli "github.com/line/lbm-sdk/x/staking/client/cli"
-	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/simapp"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/genutil/client/cli"
+	stakingcli "github.com/Finschia/finschia-sdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 type IntegrationTestSuite struct {

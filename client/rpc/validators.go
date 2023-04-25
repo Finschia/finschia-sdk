@@ -6,15 +6,15 @@ import (
 	"strconv"
 	"strings"
 
-	octypes "github.com/line/ostracon/types"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
 )
 
 // TODO these next two functions feel kinda hacky based on their placement

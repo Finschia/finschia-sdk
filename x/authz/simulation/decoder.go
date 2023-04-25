@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/x/authz"
-	"github.com/line/lbm-sdk/x/authz/keeper"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	"github.com/Finschia/finschia-sdk/x/authz/keeper"
 )
 
 // NewDecodeStore returns a decoder function closure that umarshals the KVPair's

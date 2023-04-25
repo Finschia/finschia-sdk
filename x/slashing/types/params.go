@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/types"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 // Default parameter namespace

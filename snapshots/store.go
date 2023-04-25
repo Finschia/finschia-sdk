@@ -13,8 +13,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/snapshots/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/snapshots/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 const (

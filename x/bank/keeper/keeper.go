@@ -3,16 +3,16 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/internal/conv"
-	"github.com/line/lbm-sdk/store/prefix"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/query"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	vestexported "github.com/line/lbm-sdk/x/auth/vesting/exported"
-	"github.com/line/lbm-sdk/x/bank/types"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/internal/conv"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/query"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	vestexported "github.com/Finschia/finschia-sdk/x/auth/vesting/exported"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 var _ Keeper = (*BaseKeeper)(nil)

@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/testutil/network"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/upgrade/client/cli"
-	"github.com/line/lbm-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/upgrade/client/cli"
+	"github.com/Finschia/finschia-sdk/x/upgrade/types"
 )
 
 func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {

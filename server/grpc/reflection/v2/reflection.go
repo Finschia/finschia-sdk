@@ -7,9 +7,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"google.golang.org/grpc"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/tx"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/tx"
 )
 
 type Config struct {

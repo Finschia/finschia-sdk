@@ -8,18 +8,18 @@ import (
 	"os"
 	"time"
 
-	ostjson "github.com/line/ostracon/libs/json"
-	octypes "github.com/line/ostracon/types"
+	ostjson "github.com/Finschia/ostracon/libs/json"
+	octypes "github.com/Finschia/ostracon/types"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // AppStateFn returns the initial application state using a genesis or the simulation parameters.

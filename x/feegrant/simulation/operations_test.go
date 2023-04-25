@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/feegrant"
-	"github.com/line/lbm-sdk/x/feegrant/simulation"
+	"github.com/Finschia/finschia-sdk/simapp"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/feegrant"
+	"github.com/Finschia/finschia-sdk/x/feegrant/simulation"
 )
 
 type SimTestSuite struct {

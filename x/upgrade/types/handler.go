@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
 )
 
 // UpgradeHandler specifies the type of function that is called when an upgrade

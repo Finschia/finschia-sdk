@@ -121,8 +121,8 @@ changelog:
 
 release:
   github:
-    owner: line
-    name: lbm-sdk
+    owner: finschia
+    name: finschia-sdk
   prerelease: auto
   mode: replace
   draft: false

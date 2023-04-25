@@ -5,15 +5,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/line/ostracon/libs/log"
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestGRPCGatewayRouter(t *testing.T) {

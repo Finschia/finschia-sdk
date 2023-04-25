@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // AccountKeeper defines the account contract that must be fulfilled when

@@ -6,16 +6,16 @@ import (
 	"path/filepath"
 	"time"
 
+	cfg "github.com/Finschia/ostracon/config"
+	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	"github.com/Finschia/ostracon/p2p"
+	"github.com/Finschia/ostracon/privval"
+	octypes "github.com/Finschia/ostracon/types"
 	"github.com/cosmos/go-bip39"
-	cfg "github.com/line/ostracon/config"
-	osted25519 "github.com/line/ostracon/crypto/ed25519"
-	ostos "github.com/line/ostracon/libs/os"
-	"github.com/line/ostracon/p2p"
-	"github.com/line/ostracon/privval"
-	octypes "github.com/line/ostracon/types"
 
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 // ExportGenesisFile creates and writes the genesis configuration to disk. An

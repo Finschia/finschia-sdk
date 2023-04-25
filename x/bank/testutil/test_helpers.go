@@ -1,9 +1,9 @@
 package testutil
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 // FundAccount is a utility function that funds an account by minting and

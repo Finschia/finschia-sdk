@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"io"
 
-	octypes "github.com/line/ostracon/types"
+	octypes "github.com/Finschia/ostracon/types"
 	amino "github.com/tendermint/go-amino"
 
-	"github.com/line/lbm-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
 )
 
 // LegacyAmino defines a wrapper for an Amino codec that properly

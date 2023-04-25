@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
 )
 
 type reflectionServiceServer struct {

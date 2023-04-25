@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"github.com/line/lbm-sdk/x/distribution/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/distribution/types"
 )
 
 // get outstanding rewards

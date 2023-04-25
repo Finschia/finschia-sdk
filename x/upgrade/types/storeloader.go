@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/baseapp"
-	store "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	store "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // UpgradeStoreLoader is used to prepare baseapp with a fixed StoreLoader

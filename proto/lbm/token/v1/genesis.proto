@@ -4,7 +4,7 @@ package lbm.token.v1;
 import "gogoproto/gogo.proto";
 import "lbm/token/v1/token.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/token";
+option go_package = "github.com/Finschia/finschia-sdk/x/token";
 
 // GenesisState defines the token module's genesis state.
 message GenesisState {
@@ -39,7 +39,7 @@ message GenesisState {
 // ClassGenesisState defines the classs keeper's genesis state.
 message ClassGenesisState {
   // nonce is the next class nonce to issue.
-  string nonce = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
+  string nonce = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
 
   // ids represents the issued ids.
   repeated string ids = 2;
@@ -61,7 +61,7 @@ message Balance {
   // address of the holder.
   string address = 1;
   // amount of the balance.
-  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // ContractAuthorizations defines authorizations belong to a contract.
@@ -84,5 +84,5 @@ message ContractCoin {
   // contract id associated with the token class.
   string contract_id = 1;
   // amount of the token.
-  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
