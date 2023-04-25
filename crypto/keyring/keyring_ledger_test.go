@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/hd"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestInMemoryCreateLedger(t *testing.T) {

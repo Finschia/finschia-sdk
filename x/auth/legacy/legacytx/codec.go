@@ -1,7 +1,7 @@
 package legacytx
 
 import (
-	"github.com/line/lbm-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/types/errors"
 )
 
 const (

@@ -11,11 +11,11 @@ import (
 	secp256k1 "github.com/btcsuite/btcd/btcec"
 	"golang.org/x/crypto/ripemd160" //nolint: staticcheck // necessary for Bitcoin address format
 
-	"github.com/line/ostracon/crypto"
+	"github.com/Finschia/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/types/errors"
 )
 
 var (

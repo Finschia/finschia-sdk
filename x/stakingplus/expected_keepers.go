@@ -1,7 +1,7 @@
 package stakingplus
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // FoundationKeeper defines the expected foundation keeper

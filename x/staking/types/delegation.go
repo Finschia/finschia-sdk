@@ -8,8 +8,8 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // Implements Delegation interface

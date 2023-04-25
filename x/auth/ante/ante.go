@@ -1,11 +1,11 @@
 package ante
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	authsigning "github.com/line/lbm-sdk/x/auth/signing"
-	"github.com/line/lbm-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.

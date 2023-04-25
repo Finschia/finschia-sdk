@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/x/simulation"
+	"github.com/Finschia/finschia-sdk/x/simulation"
 
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/bank/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // ParamChanges defines the parameters that can be modified by param change proposals

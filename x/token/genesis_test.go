@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/token"
 )
 
 func TestValidateGenesis(t *testing.T) {

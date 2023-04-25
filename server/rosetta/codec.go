@@ -1,11 +1,11 @@
 package rosetta
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	authcodec "github.com/line/lbm-sdk/x/auth/types"
-	bankcodec "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	authcodec "github.com/Finschia/finschia-sdk/x/auth/types"
+	bankcodec "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // MakeCodec generates the codec required to interact
