@@ -10,14 +10,14 @@ import (
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/input"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/tx"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	authsigning "github.com/line/lbm-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/input"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/tx"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
 )
 
 // GenerateOrBroadcastTxCLI will either generate and print and unsigned transaction

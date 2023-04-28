@@ -6,8 +6,9 @@ import (
 	"strings"
 
 	proto "github.com/gogo/protobuf/proto"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 const (

@@ -6,9 +6,9 @@ import (
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 
-	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
+	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // ---------- cosmos-rosetta-gateway.types.NetworkInformationProvider implementation ------------ //

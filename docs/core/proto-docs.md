@@ -13925,7 +13925,7 @@ Msg defines the token Msg service.
 GetBlockWithTxsRequest is the request type for the Service.GetBlockWithTxs
 RPC method.
 
-Since: lbm-sdk 0.47.0
+Since: finschia-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
@@ -13943,7 +13943,7 @@ Since: lbm-sdk 0.47.0
 ### GetBlockWithTxsResponse
 GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
 
-Since: lbm-sdk 0.47.0
+Since: finschia-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
@@ -13973,7 +13973,7 @@ Service defines a gRPC service for interacting with transactions.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `GetBlockWithTxs` | [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
 
-Since: lbm-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
+Since: finschia-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
 
  <!-- end services -->
 

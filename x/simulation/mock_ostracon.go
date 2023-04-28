@@ -10,9 +10,9 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	cryptoenc "github.com/line/ostracon/crypto/encoding"
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	cryptoenc "github.com/Finschia/ostracon/crypto/encoding"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 )
 
 type mockValidator struct {

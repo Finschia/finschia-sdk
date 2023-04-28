@@ -6,7 +6,7 @@ package testutil
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/Finschia/finschia-sdk/testutil/network"
 
 	"github.com/stretchr/testify/suite"
 )

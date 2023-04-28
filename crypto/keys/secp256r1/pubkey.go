@@ -1,11 +1,11 @@
 package secp256r1
 
 import (
+	tmcrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/gogo/protobuf/proto"
-	tmcrypto "github.com/line/ostracon/crypto"
 
-	ecdsa "github.com/line/lbm-sdk/crypto/keys/internal/ecdsa"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	ecdsa "github.com/Finschia/finschia-sdk/crypto/keys/internal/ecdsa"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
 // String implements proto.Message interface.

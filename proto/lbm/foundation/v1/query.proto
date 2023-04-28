@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.foundation.v1;
 
-option go_package = "github.com/line/lbm-sdk/x/foundation";
+option go_package = "github.com/Finschia/finschia-sdk/x/foundation";
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
@@ -92,7 +92,7 @@ message QueryTreasuryRequest {}
 // Query/Treasury RPC method.
 message QueryTreasuryResponse {
   repeated cosmos.base.v1beta1.DecCoin amount = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.DecCoins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.DecCoins"];
 }
 
 // QueryFoundationInfoRequest is the Query/FoundationInfo request type.
@@ -230,7 +230,7 @@ message QueryGrantsRequest {
 message QueryGrantsResponse {
   // authorizations is a list of grants granted for grantee.
   repeated google.protobuf.Any authorizations = 1
-      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
+      [(cosmos_proto.accepts_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization"];
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;

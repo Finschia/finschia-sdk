@@ -12,17 +12,17 @@ import (
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/ostracon/libs/log"
+	"github.com/Finschia/ostracon/libs/log"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/codec"
-	codecTypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/store/cachemulti"
-	"github.com/line/lbm-sdk/store/iavl"
-	sdkmaps "github.com/line/lbm-sdk/store/internal/maps"
-	"github.com/line/lbm-sdk/store/listenkv"
-	"github.com/line/lbm-sdk/store/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/store/cachemulti"
+	"github.com/Finschia/finschia-sdk/store/iavl"
+	sdkmaps "github.com/Finschia/finschia-sdk/store/internal/maps"
+	"github.com/Finschia/finschia-sdk/store/listenkv"
+	"github.com/Finschia/finschia-sdk/store/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func TestStoreType(t *testing.T) {

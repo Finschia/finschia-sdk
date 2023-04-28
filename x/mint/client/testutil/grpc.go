@@ -3,13 +3,13 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/testutil"
-	sdk "github.com/line/lbm-sdk/types"
-	grpctypes "github.com/line/lbm-sdk/types/grpc"
+	"github.com/Finschia/finschia-sdk/testutil"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
 
 	"github.com/gogo/protobuf/proto"
 
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 func (s *IntegrationTestSuite) TestQueryGRPC() {
