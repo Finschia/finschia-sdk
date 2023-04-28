@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 

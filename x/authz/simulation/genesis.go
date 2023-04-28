@@ -3,13 +3,13 @@ package simulation
 import (
 	"math/rand"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/authz"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // genGrant returns a slice of authorization grants.

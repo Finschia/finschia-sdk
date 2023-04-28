@@ -3,10 +3,10 @@
 package legacybech32
 
 import (
-	"github.com/line/lbm-sdk/codec/legacy"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/bech32"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/bech32"
 )
 
 // TODO: when removing this package remove:

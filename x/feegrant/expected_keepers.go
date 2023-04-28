@@ -1,8 +1,8 @@
 package feegrant
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	auth "github.com/line/lbm-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	auth "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // AccountKeeper defines the expected auth Account Keeper (noalias)

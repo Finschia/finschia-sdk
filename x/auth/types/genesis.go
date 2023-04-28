@@ -7,9 +7,9 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/types/module"
 )
 
 var _ types.UnpackInterfacesMessage = GenesisState{}

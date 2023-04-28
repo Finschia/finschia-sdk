@@ -5,10 +5,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	auth "github.com/line/lbm-sdk/x/auth/types"
-	bankexported "github.com/line/lbm-sdk/x/bank/exported"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	auth "github.com/Finschia/finschia-sdk/x/auth/types"
+	bankexported "github.com/Finschia/finschia-sdk/x/bank/exported"
 )
 
 // StakingKeeper defines the expected staking keeper (noalias)

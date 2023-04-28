@@ -1,16 +1,16 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
-	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
-	"github.com/line/lbm-sdk/x/evidence/exported"
-	fdncodec "github.com/line/lbm-sdk/x/foundation/codec"
-	govcodec "github.com/line/lbm-sdk/x/gov/codec"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/msgservice"
+	authzcodec "github.com/Finschia/finschia-sdk/x/authz/codec"
+	"github.com/Finschia/finschia-sdk/x/evidence/exported"
+	fdncodec "github.com/Finschia/finschia-sdk/x/foundation/codec"
+	govcodec "github.com/Finschia/finschia-sdk/x/gov/codec"
 )
 
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the

@@ -7,16 +7,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/ostracon/rpc/client/mock"
-	ctypes "github.com/line/ostracon/rpc/core/types"
-	octypes "github.com/line/ostracon/types"
+	"github.com/Finschia/ostracon/rpc/client/mock"
+	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	octypes "github.com/Finschia/ostracon/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/gov/client/utils"
-	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/x/gov/client/utils"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 type TxSearchMock struct {

@@ -9,19 +9,19 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	cdctypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/capability/keeper"
-	"github.com/line/lbm-sdk/x/capability/simulation"
-	"github.com/line/lbm-sdk/x/capability/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/capability/keeper"
+	"github.com/Finschia/finschia-sdk/x/capability/simulation"
+	"github.com/Finschia/finschia-sdk/x/capability/types"
 )
 
 var (

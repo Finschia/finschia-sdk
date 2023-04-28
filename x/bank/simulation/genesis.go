@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	"github.com/line/lbm-sdk/x/bank/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // RandomGenesisDefaultSendParam computes randomized allow all send transfers param for the bank module

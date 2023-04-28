@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/evidence/exported"
-	"github.com/line/lbm-sdk/x/evidence/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/evidence/exported"
+	"github.com/Finschia/finschia-sdk/x/evidence/types"
 )
 
 func testHandler(sdk.Context, exported.Evidence) error { return nil }

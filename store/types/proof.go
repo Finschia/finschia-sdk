@@ -3,10 +3,10 @@ package types
 import (
 	tmmerkle "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
+	"github.com/Finschia/ostracon/crypto/merkle"
 	ics23 "github.com/confio/ics23/go"
-	"github.com/line/ostracon/crypto/merkle"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 const (

@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/bank/types"
-	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 func (suite *IntegrationTestSuite) TestExportGenesis() {

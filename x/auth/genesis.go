@@ -1,9 +1,9 @@
 package auth
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/keeper"
-	"github.com/line/lbm-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/keeper"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // InitGenesis - Init store state from genesis data

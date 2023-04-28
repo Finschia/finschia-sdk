@@ -9,7 +9,7 @@ import "google/protobuf/any.proto";
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/collection";
+option go_package = "github.com/Finschia/finschia-sdk/x/collection";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -78,6 +78,11 @@ service Query {
   // Root queries the root of a given nft.
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
+  }
+
+  // HasParent queries whether a given nft has its parent.
+  rpc HasParent(QueryHasParentRequest) returns (QueryHasParentResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent";
   }
 
   // Parent queries the parent of a given nft.
@@ -149,7 +154,7 @@ message QueryFTSupplyRequest {
 // QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 message QueryFTSupplyResponse {
   // supply is the supply of the tokens.
-  string supply = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string supply = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
@@ -163,7 +168,7 @@ message QueryFTMintedRequest {
 // QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 message QueryFTMintedResponse {
   // minted is the amount of the minted tokens.
-  string minted = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
@@ -177,7 +182,7 @@ message QueryFTBurntRequest {
 // QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 message QueryFTBurntResponse {
   // burnt is the amount of the burnt tokens.
-  string burnt = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string burnt = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
@@ -192,7 +197,7 @@ message QueryNFTSupplyRequest {
 // QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
 message QueryNFTSupplyResponse {
   // supply is the supply of the non-fungible token.
-  string supply = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string supply = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
@@ -207,7 +212,7 @@ message QueryNFTMintedRequest {
 // QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 message QueryNFTMintedResponse {
   // minted is the amount of minted tokens.
-  string minted = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
@@ -222,7 +227,7 @@ message QueryNFTBurntRequest {
 // QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 message QueryNFTBurntResponse {
   // burnt is the amount of the burnt tokens.
-  string burnt = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string burnt = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryContractRequest is the request type for the Query/Contract RPC method.
@@ -299,6 +304,20 @@ message QueryRootResponse {
   NFT root = 1 [(gogoproto.nullable) = false];
 }
 
+// QueryHasParentRequest is the request type for the Query/HasParent RPC method.
+message QueryHasParentRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated wit the non-fungible token.
+  string token_id = 2;
+}
+
+// QueryHasParentResponse is the response type for the Query/HasParent RPC method.
+message QueryHasParentResponse {
+  // whether the token has its parent.
+  bool has_parent = 1;
+}
+
 // QueryParentRequest is the request type for the Query/Parent RPC method.
 message QueryParentRequest {
   // contract id associated with the contract.
@@ -310,7 +329,6 @@ message QueryParentRequest {
 // QueryParentResponse is the response type for the Query/Parent RPC method.
 message QueryParentResponse {
   // parent is the information of the parent token.
-  // if there is no parent for the token, it would return nil.
   NFT parent = 1 [(gogoproto.nullable) = false];
 }
 

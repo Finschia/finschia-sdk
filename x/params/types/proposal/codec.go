@@ -1,9 +1,9 @@
 package proposal
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/types"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers all necessary param module types with a given LegacyAmino codec.

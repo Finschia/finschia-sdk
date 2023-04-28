@@ -5,17 +5,17 @@ import (
 
 	"github.com/spf13/cobra"
 
-	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
 
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/server/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server/types"
 )
 
 // NewRollbackCmd creates a command to rollback tendermint and multistore state by one height.
 func NewRollbackCmd(appCreator types.AppCreator, defaultNodeHome string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rollback",
-		Short: "rollback lbm-sdk and tendermint state by one height",
+		Short: "rollback finschia-sdk and tendermint state by one height",
 		Long: `
 A state rollback is performed to recover from an incorrect application state transition,
 when Tendermint has persisted an incorrect app hash and is thus unable to make

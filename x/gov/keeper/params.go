@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // GetDepositParams returns the current DepositParams from the global param store

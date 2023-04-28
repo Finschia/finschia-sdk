@@ -6,11 +6,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/store/prefix"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/store/prefix"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-sdk/x/token"
 )
 
 type queryServer struct {
@@ -27,6 +27,15 @@ func NewQueryServer(keeper Keeper) token.QueryServer {
 
 var _ token.QueryServer = queryServer{}
 
+func (s queryServer) addressFromBech32GRPC(address string, context string) (sdk.AccAddress, error) {
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress.Wrap(address), context).Error())
+	}
+
+	return addr, nil
+}
+
 // Balance queries the number of tokens of a given class owned by the owner.
 func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) (*token.QueryBalanceResponse, error) {
 	if req == nil {
@@ -34,11 +43,11 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	addr, err := sdk.AccAddressFromBech32(req.Address)
+	addr, err := s.addressFromBech32GRPC(req.Address, "address")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -54,14 +63,10 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// daphne compat.
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
 	supply := s.keeper.GetSupply(ctx, req.ContractId)
 
 	return &token.QuerySupplyResponse{Amount: supply}, nil
@@ -74,14 +79,10 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// daphne compat.
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
 	minted := s.keeper.GetMinted(ctx, req.ContractId)
 
 	return &token.QueryMintedResponse{Amount: minted}, nil
@@ -94,14 +95,10 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// daphne compat.
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
-		return nil, err
-	}
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId)
 
 	return &token.QueryBurntResponse{Amount: burnt}, nil
@@ -114,13 +111,13 @@ func (s queryServer) Contract(c context.Context, req *token.QueryContractRequest
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	class, err := s.keeper.GetClass(ctx, req.ContractId)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	return &token.QueryContractResponse{Contract: *class}, nil
@@ -132,11 +129,11 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	grantee, err := s.addressFromBech32GRPC(req.Grantee, "grantee")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -164,13 +161,13 @@ func (s queryServer) IsOperatorFor(c context.Context, req *token.QueryIsOperator
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := s.addressFromBech32GRPC(req.Operator, "operator")
 	if err != nil {
 		return nil, err
 	}
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
+	holder, err := s.addressFromBech32GRPC(req.Holder, "holder")
 	if err != nil {
 		return nil, err
 	}
@@ -188,11 +185,11 @@ func (s queryServer) HoldersByOperator(c context.Context, req *token.QueryHolder
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := s.addressFromBech32GRPC(req.Operator, "operator")
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator: %s", req.Operator)
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

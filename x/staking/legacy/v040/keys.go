@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/kv"
-	v040auth "github.com/line/lbm-sdk/x/auth/legacy/v040"
-	"github.com/line/lbm-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	v040auth "github.com/Finschia/finschia-sdk/x/auth/legacy/v040"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 const (

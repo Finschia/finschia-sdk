@@ -3,8 +3,8 @@ package internal_test
 import (
 	"time"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {

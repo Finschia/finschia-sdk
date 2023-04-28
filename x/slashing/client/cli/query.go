@@ -5,11 +5,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

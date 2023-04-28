@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
 )
 
 func TestDefaults(t *testing.T) {

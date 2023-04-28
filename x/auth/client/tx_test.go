@@ -7,17 +7,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 var (

@@ -8,15 +8,15 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	octypes "github.com/line/ostracon/types"
+	octypes "github.com/Finschia/ostracon/types"
 
-	"github.com/line/lbm-sdk/codec"
-	cdctypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/server"
-	"github.com/line/lbm-sdk/types"
-	bankexported "github.com/line/lbm-sdk/x/bank/exported"
-	"github.com/line/lbm-sdk/x/genutil"
-	gtypes "github.com/line/lbm-sdk/x/genutil/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/server"
+	"github.com/Finschia/finschia-sdk/types"
+	bankexported "github.com/Finschia/finschia-sdk/x/bank/exported"
+	"github.com/Finschia/finschia-sdk/x/genutil"
+	gtypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 )
 
 type doNothingUnmarshalJSON struct {

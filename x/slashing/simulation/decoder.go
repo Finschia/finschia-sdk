@@ -6,10 +6,10 @@ import (
 
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/line/lbm-sdk/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

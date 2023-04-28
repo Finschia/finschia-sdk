@@ -12,12 +12,12 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/line/ostracon/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/codec"
-	codecTypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var (

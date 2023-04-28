@@ -1,10 +1,10 @@
 package staking
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/staking/keeper"
-	"github.com/line/lbm-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/staking/keeper"
+	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {
