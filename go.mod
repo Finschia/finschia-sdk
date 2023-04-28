@@ -4,12 +4,13 @@ module github.com/Finschia/finschia-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
-	github.com/Finschia/ostracon v1.0.10-0.20230417071658-1c9c22cfe90d
-	github.com/VictoriaMetrics/fastcache v1.12.0
+	github.com/Finschia/ostracon v1.1.0
+	github.com/VictoriaMetrics/fastcache v1.12.1
 	github.com/armon/go-metrics v0.4.1
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.1
-	github.com/coinbase/rosetta-sdk-go v0.8.2
+	github.com/coinbase/rosetta-sdk-go v0.8.3
+	github.com/coinbase/rosetta-sdk-go/types v1.0.0
 	github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
@@ -30,7 +31,7 @@ require (
 	github.com/jhump/protoreflect v1.12.1-0.20220721211354-060cc04fc18b
 	github.com/magiconair/properties v1.8.7
 	github.com/mailru/easyjson v0.7.7
-	github.com/mattn/go-isatty v0.0.17
+	github.com/mattn/go-isatty v0.0.18
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.15.0
 	github.com/prometheus/common v0.42.0
@@ -108,8 +109,8 @@ require (
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/r2ishiguro/vrf v0.0.0-20180716233122-192de52975eb // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
-	github.com/rs/cors v1.8.3 // indirect
-	github.com/rs/zerolog v1.29.0 // indirect
+	github.com/rs/cors v1.9.0 // indirect
+	github.com/rs/zerolog v1.29.1 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
