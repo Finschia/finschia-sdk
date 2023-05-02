@@ -7,11 +7,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/x/slashing/keeper"
-	"github.com/line/lbm-sdk/x/slashing/testslashing"
-	"github.com/line/lbm-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/x/slashing/keeper"
+	"github.com/Finschia/finschia-sdk/x/slashing/testslashing"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
 )
 
 func TestNewQuerier(t *testing.T) {

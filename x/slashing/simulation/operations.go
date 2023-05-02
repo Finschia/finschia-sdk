@@ -4,16 +4,16 @@ import (
 	"errors"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/simapp/helpers"
-	simappparams "github.com/line/lbm-sdk/simapp/params"
-	sdk "github.com/line/lbm-sdk/types"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/simulation"
-	"github.com/line/lbm-sdk/x/slashing/keeper"
-	"github.com/line/lbm-sdk/x/slashing/types"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp/helpers"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/simulation"
+	"github.com/Finschia/finschia-sdk/x/slashing/keeper"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
+	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 )
 
 // nolint: gosec

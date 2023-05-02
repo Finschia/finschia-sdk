@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // TODO: Break into several smaller functions for clarity

@@ -10,14 +10,14 @@ import (
 
 	"gopkg.in/yaml.v2"
 
+	rpcclient "github.com/Finschia/ostracon/rpc/client"
 	"github.com/gogo/protobuf/proto"
-	rpcclient "github.com/line/ostracon/rpc/client"
 	"github.com/pkg/errors"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // Context implements a typical context created in SDK modules for transaction
@@ -71,7 +71,7 @@ func (ctx Context) WithKeyringOptions(opts ...keyring.Option) Context {
 
 // WithInput returns a copy of the context with an updated input.
 func (ctx Context) WithInput(r io.Reader) Context {
-	// convert to a bufio.Reader to have a shared buffer between the keyring and the
+	// convert to a bufio.Reader to have a shared buffer between the keyring and
 	// the Commands, ensuring a read from one advance the read pointer for the other.
 	// see https://github.com/cosmos/cosmos-sdk/issues/9566.
 	ctx.Input = bufio.NewReader(r)

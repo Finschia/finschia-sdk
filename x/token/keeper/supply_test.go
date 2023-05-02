@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/token"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/token"
 )
 
 func (s *KeeperTestSuite) TestIssue() {
@@ -136,7 +136,7 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 func (s *KeeperTestSuite) TestModify() {
 	changes := []token.Attribute{
 		{Key: token.AttributeKeyName.String(), Value: "new name"},
-		{Key: token.AttributeKeyImageURI.String(), Value: "new uri"},
+		{Key: token.AttributeKeyURI.String(), Value: "new uri"},
 		{Key: token.AttributeKeyMeta.String(), Value: "new meta"},
 	}
 

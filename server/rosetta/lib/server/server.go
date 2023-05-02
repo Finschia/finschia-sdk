@@ -9,8 +9,8 @@ import (
 	"github.com/coinbase/rosetta-sdk-go/server"
 	"github.com/coinbase/rosetta-sdk-go/types"
 
-	"github.com/line/lbm-sdk/server/rosetta/lib/internal/service"
-	crgtypes "github.com/line/lbm-sdk/server/rosetta/lib/types"
+	"github.com/Finschia/finschia-sdk/server/rosetta/lib/internal/service"
+	crgtypes "github.com/Finschia/finschia-sdk/server/rosetta/lib/types"
 )
 
 const (

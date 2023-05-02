@@ -7,11 +7,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 func TestMsgUpdateParams(t *testing.T) {
@@ -752,6 +752,16 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 				}},
 			},
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateMembers\",\"value\":{\"authority\":\"%s\",\"member_updates\":[{\"address\":\"%s\"}]}}],\"metadata\":\"MsgUpdateMembers\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
+		},
+		"MsgUpdateCensorship": {
+			&foundation.MsgUpdateCensorship{
+				Authority: addrs[0].String(),
+				Censorship: foundation.Censorship{
+					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+					Authority:  foundation.CensorshipAuthorityGovernance,
+				},
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateCensorship\",\"value\":{\"authority\":\"%s\",\"censorship\":{\"authority\":1,\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\"}}}],\"metadata\":\"MsgUpdateCensorship\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
 		},
 		"MsgRevoke": {
 			&foundation.MsgRevoke{

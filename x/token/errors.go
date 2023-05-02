@@ -1,7 +1,7 @@
 package token
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 const tokenCodespace = ModuleName

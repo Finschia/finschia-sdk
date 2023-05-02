@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/line/lbm-sdk/x/collection"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func (s *KeeperTestSuite) TestAttach() {

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"math/rand"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	"github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/auth/types"
-	vestingtypes "github.com/line/lbm-sdk/x/auth/vesting/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
+	vestingtypes "github.com/Finschia/finschia-sdk/x/auth/vesting/types"
 )
 
 // Simulation parameter constants

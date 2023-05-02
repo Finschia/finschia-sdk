@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/query"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/line/lbm-sdk/x/slashing/testslashing"
-	"github.com/line/lbm-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/query"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/slashing/testslashing"
+	"github.com/Finschia/finschia-sdk/x/slashing/types"
 )
 
 type SlashingTestSuite struct {

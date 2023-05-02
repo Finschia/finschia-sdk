@@ -15,15 +15,15 @@
     - [Release Procedure](#release-procedure)
   - [Commit Convention](#commit-convention)
 
-Thank you for considering making contributions to lbm-sdk and related
+Thank you for considering making contributions to finschia-sdk and related
 repositories!
 
 Contributing to this repo can mean many things such as participating in
 discussion or proposing code changes. To ensure a smooth workflow for all
 contributors, the general procedure for contributing has been established:
 
-1. Either [open](https://github.com/line/lbm-sdk/issues/new/choose) or
-   [find](https://github.com/line/lbm-sdk/issues) an issue you'd like to help with
+1. Either [open](https://github.com/Finschia/finschia-sdk/issues/new/choose) or
+   [find](https://github.com/Finschia/finschia-sdk/issues) an issue you'd like to help with
 2. Participate in thoughtful discussion on that issue
 3. If you would like to contribute:
    1. If the issue is a proposal, ensure that the proposal has been accepted
@@ -34,7 +34,7 @@ contributors, the general procedure for contributing has been established:
       to begin work
    4. Follow standard Github best practices: fork the repo, branch from the
       HEAD of `main`, make some commits, and submit a PR to `main`
-      - For core developers working within the lbm-sdk repo, to ensure a clear
+      - For core developers working within the finschia-sdk repo, to ensure a clear
         ownership of branches, branches must be named with the convention
         `{moniker}/{issue#}-branch-name`
    5. Be sure to submit the PR in `Draft` mode submit your PR early, even if
@@ -58,7 +58,7 @@ Other notes:
   before each commit is available in the `contrib/githooks/` directory.
 
 ## Commit Convention
-All commits pushed to `lbm-sdk` are classified according to the rules below.
+All commits pushed to `finschia-sdk` are classified according to the rules below.
 Therefore, it cannot be included in the release notes unless you properly assign the prefix to the commit. For example, you can write commit message like `feat: this is new feature`. However, if you want to clarify the scope of the commit, you can write it as follows `feat(x/token): this is new feature`.
 - `chore` : a commit of the type chore makes trivial changes. If you don't want to include specific commit in the release note, add this prefix.
 - `feat` : a commit of the type feat introduces a new feature to the codebase
@@ -103,20 +103,20 @@ If you open a PR on the LBM SDK, it is mandatory to update the relevant document
 ## Forking
 
 Please note that Go requires code to live under absolute paths, which complicates forking.
-While my fork lives at `https://github.com/someone/lbm-sdk`,
-the code should never exist at `$GOPATH/src/github.com/someone/lbm-sdk`.
+While my fork lives at `https://github.com/someone/finschia-sdk`,
+the code should never exist at `$GOPATH/src/github.com/someone/finschia-sdk`.
 Instead, we use `git remote` to add the fork as a new remote for the original repo,
-`$GOPATH/src/github.com/line/lbm-sdk`, and do all the work there.
+`$GOPATH/src/github.com/Finschia/finschia-sdk`, and do all the work there.
 
 For instance, to create a fork and work on a branch of it, I would:
 
 - Create the fork on github, using the fork button.
-- Go to the original repo checked out locally (i.e. `$GOPATH/src/github.com/line/lbm-sdk`)
+- Go to the original repo checked out locally (i.e. `$GOPATH/src/github.com/Finschia/finschia-sdk`)
 - `git remote rename origin upstream`
-- `git remote add origin git@github.com:someone/lbm-sdk.git`
+- `git remote add origin git@github.com:someone/finschia-sdk.git`
 
-Now `origin` refers to my fork and `upstream` refers to the lbm-sdk version.
-So I can `git push -u origin main` to update my fork, and make pull requests to lbm-sdk from there.
+Now `origin` refers to my fork and `upstream` refers to the finschia-sdk version.
+So I can `git push -u origin main` to update my fork, and make pull requests to finschia-sdk from there.
 Of course, replace `someone` with your git handle.
 
 To pull in updates from the origin repo, run
@@ -140,7 +140,7 @@ build, in which case we can fall back on `go mod tidy -v`.
 
 ## Protobuf
 
-We use [Protocol Buffers](https://developers.google.com/protocol-buffers) along with [gogoproto](https://github.com/gogo/protobuf) to generate code for use in lbm-sdk.
+We use [Protocol Buffers](https://developers.google.com/protocol-buffers) along with [gogoproto](https://github.com/gogo/protobuf) to generate code for use in finschia-sdk.
 
 For determinstic behavior around Protobuf tooling, everything is containerized using Docker. Make sure to have Docker installed on your machine, or head to [Docker's website](https://docs.docker.com/get-docker/) to install it.
 
@@ -215,7 +215,7 @@ should be targeted against the release candidate branch.
 - `main` must never fail `make lint test test-race`
 - `main` should not fail `make lint`
 - no `--force` onto `main` (except when reverting a broken commit, which should seldom happen)
-- create a development branch either on github.com/line/lbm-sdk, or your fork (using `git remote add origin`)
+- create a development branch either on github.com/Finschia/finschia-sdk, or your fork (using `git remote add origin`)
 - before submitting a pull request, begin `git rebase` on top of `main`
 
 ### Pull Merge Procedure

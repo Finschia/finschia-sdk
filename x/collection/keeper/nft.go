@@ -3,8 +3,8 @@ package keeper
 import (
 	gogotypes "github.com/gogo/protobuf/types"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenID string) error {
@@ -125,7 +125,6 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 			From:       subject,
 			To:         root,
 		}
-		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
 		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 			panic(err)
 		}
@@ -164,7 +163,6 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 			From:       root,
 			To:         subject,
 		}
-		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
 		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 			panic(err)
 		}

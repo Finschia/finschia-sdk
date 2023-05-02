@@ -6,10 +6,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 // NewQueryCmd returns the parent command for all x/foundation CLi query commands.
@@ -30,6 +30,7 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdVote(),
 		NewQueryCmdVotes(),
 		NewQueryCmdTallyResult(),
+		NewQueryCmdCensorships(),
 		NewQueryCmdGrants(),
 	)
 
@@ -356,6 +357,43 @@ func NewQueryCmdTallyResult() *cobra.Command {
 	return cmd
 }
 
+// NewQueryCmdCensorships returns the query censorships command.
+func NewQueryCmdCensorships() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "censorships",
+		Short: "Query censorships",
+		Long:  "Gets the current censorships",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			censorships := foundation.QueryCensorshipsRequest{
+				Pagination: pageReq,
+			}
+			res, err := queryClient.Censorships(context.Background(), &censorships)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "censorships")
+
+	return cmd
+}
+
 // NewQueryCmdGrants returns grants on a grantee
 func NewQueryCmdGrants() *cobra.Command {
 	cmd := &cobra.Command{
@@ -401,7 +439,7 @@ func NewQueryCmdGrants() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
+	flags.AddPaginationFlagsToCmd(cmd, "grants")
 
 	return cmd
 }

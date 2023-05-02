@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/collection"
-	"github.com/line/lbm-sdk/x/token/class"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/x/collection"
+	"github.com/Finschia/finschia-sdk/x/token/class"
 )
 
 func TestMsgSendFT(t *testing.T) {
@@ -1281,8 +1281,11 @@ func TestMsgModify(t *testing.T) {
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Attribute{changes[0], changes[0]},
-			err:        collection.ErrDuplicateChangesField,
+			changes: []collection.Attribute{
+				{Key: collection.AttributeKeyBaseImgURI.String(), Value: "hello"},
+				{Key: collection.AttributeKeyURI.String(), Value: "world"},
+			},
+			err: collection.ErrDuplicateChangesField,
 		},
 	}
 

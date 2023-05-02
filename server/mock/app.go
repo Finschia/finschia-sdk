@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"path/filepath"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/libs/log"
-	"github.com/line/ostracon/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/libs/log"
+	"github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	bam "github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/codec"
-	storetypes "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	bam "github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec"
+	storetypes "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewApp creates a simple mock kvstore app for testing. It should work

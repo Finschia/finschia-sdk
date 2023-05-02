@@ -6,8 +6,9 @@ import (
 	"strings"
 
 	proto "github.com/gogo/protobuf/proto"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
+
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 const (
@@ -28,8 +29,8 @@ func (x LegacyPermission) String() string {
 func DefaultNextClassIDs(contractID string) NextClassIDs {
 	return NextClassIDs{
 		ContractId:  contractID,
-		Fungible:    sdk.NewUint(0),
-		NonFungible: sdk.NewUint(1 << 28), // "10000000"
+		Fungible:    sdk.NewUint(1),
+		NonFungible: sdk.NewUint(1 << 28).Incr(), // "10000000 + 1"
 	}
 }
 

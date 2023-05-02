@@ -3,7 +3,7 @@ package baseapp
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 type Router struct {

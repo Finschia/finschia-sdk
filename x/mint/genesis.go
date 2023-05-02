@@ -1,9 +1,9 @@
 package mint
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/mint/keeper"
-	"github.com/line/lbm-sdk/x/mint/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/mint/keeper"
+	"github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 // InitGenesis new mint genesis

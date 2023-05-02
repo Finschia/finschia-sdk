@@ -7,17 +7,17 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	"github.com/line/lbm-sdk/testutil/network"
-	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-sdk/testutil/network"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 
-	"github.com/line/lbm-sdk/client/flags"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	sdk "github.com/line/lbm-sdk/types"
-	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
-	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/foundation/client/cli"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/cli"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -56,12 +56,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	var foundationData foundation.GenesisState
 	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[foundation.ModuleName], &foundationData))
 
-	// enable foundation
+	// enable foundation tax
 	params := foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.2"),
-		CensoredMsgTypeUrls: []string{
-			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		},
 	}
 	foundationData.Params = params
 
@@ -92,6 +89,15 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		},
 	})
 	foundationData.Foundation = info
+
+	// enable censorship
+	censorships := []foundation.Censorship{
+		{
+			MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+			Authority:  foundation.CensorshipAuthorityFoundation,
+		},
+	}
+	foundationData.Censorships = censorships
 
 	treasuryReceivers := []sdk.AccAddress{s.stranger, s.leavingMember}
 	for _, receiver := range treasuryReceivers {

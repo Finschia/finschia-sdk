@@ -8,9 +8,9 @@ import (
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
-	grpctypes "github.com/line/lbm-sdk/types/grpc"
+	"github.com/Finschia/finschia-sdk/client"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
 )
 
 var (

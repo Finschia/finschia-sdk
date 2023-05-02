@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec"
 )
 
 type decimalInternalTestSuite struct {

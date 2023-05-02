@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/line/lbm-sdk/client/flags"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	txtypes "github.com/line/lbm-sdk/types/tx"
-	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/foundation/client/cli"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	txtypes "github.com/Finschia/finschia-sdk/types/tx"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewTxCmdUpdateParams() {

@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func (s *KeeperTestSuite) TestCreateContract() {
@@ -175,7 +175,7 @@ func (s *KeeperTestSuite) TestModifyContract() {
 	}
 	changes := []collection.Attribute{
 		{Key: collection.AttributeKeyName.String(), Value: "fox"},
-		{Key: collection.AttributeKeyBaseImgURI.String(), Value: "file:///fox.png"},
+		{Key: collection.AttributeKeyURI.String(), Value: "file:///fox.png"},
 		{Key: collection.AttributeKeyMeta.String(), Value: "Fox"},
 	}
 

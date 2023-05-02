@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/address"
-	"github.com/line/lbm-sdk/x/bank/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/address"
+	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 func cloneAppend(bz []byte, tail []byte) (res []byte) {

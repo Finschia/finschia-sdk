@@ -5,19 +5,19 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/line/lbm-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/golang/mock/gomock"
-	ocabci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/tests/mocks"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/tests/mocks"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
 )
 
 var errFoo = errors.New("dummy")

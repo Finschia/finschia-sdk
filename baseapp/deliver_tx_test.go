@@ -18,17 +18,17 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ocabci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/libs/log"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/snapshots"
-	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
-	"github.com/line/lbm-sdk/store/rootmulti"
-	store "github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
+	"github.com/Finschia/finschia-sdk/store/rootmulti"
+	store "github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func TestLoadSnapshotChunk(t *testing.T) {

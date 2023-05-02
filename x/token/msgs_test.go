@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/token"
-	"github.com/line/lbm-sdk/x/token/class"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token/class"
 )
 
 func TestMsgSend(t *testing.T) {
@@ -651,8 +651,8 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes: []token.Attribute{
-				{Key: token.AttributeKeyName.String(), Value: "hello"},
-				{Key: token.AttributeKeyName.String(), Value: "world"},
+				{Key: token.AttributeKeyImageURI.String(), Value: "hello"},
+				{Key: token.AttributeKeyURI.String(), Value: "world"},
 			},
 			err: token.ErrDuplicateChangesField,
 		},

@@ -1,10 +1,12 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/collection"
-	"github.com/line/lbm-sdk/x/token/class"
+	"github.com/Finschia/ostracon/libs/log"
+
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
+	"github.com/Finschia/finschia-sdk/x/token/class"
 )
 
 // Keeper defines the collection module Keeper
@@ -29,6 +31,11 @@ func NewKeeper(
 		storeKey:    key,
 		cdc:         cdc,
 	}
+}
+
+// Logger returns a module-specific logger.
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", "x/"+collection.ModuleName)
 }
 
 func ValidateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {

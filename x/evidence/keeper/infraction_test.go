@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"time"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/evidence/types"
-	"github.com/line/lbm-sdk/x/staking"
-	"github.com/line/lbm-sdk/x/staking/teststaking"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-sdk/x/staking"
+	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
 )
 
 func (suite *KeeperTestSuite) TestHandleDoubleSign() {

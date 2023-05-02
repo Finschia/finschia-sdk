@@ -5,10 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/x/crisis/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/client/tx"
+	"github.com/Finschia/finschia-sdk/x/crisis/types"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/crisis transaction commands.

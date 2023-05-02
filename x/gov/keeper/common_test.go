@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/staking"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/x/staking"
+	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 var TestProposal = types.NewTextProposal("Test", "description")

@@ -1,8 +1,8 @@
 package v043
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	v040distribution "github.com/line/lbm-sdk/x/distribution/legacy/v040"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	v040distribution "github.com/Finschia/finschia-sdk/x/distribution/legacy/v040"
 )
 
 // MigrateStore performs in-place store migrations from v0.40 to v0.43. The

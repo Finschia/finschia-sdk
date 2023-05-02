@@ -2,10 +2,11 @@ package foundation
 
 import (
 	"github.com/gogo/protobuf/proto"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
+
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // DefaultGenesisState creates a default GenesisState object
@@ -44,11 +45,18 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 		return err
 	}
 
+	for _, p := range data.Proposals {
+		if err := p.UnpackInterfaces(unpacker); err != nil {
+			return err
+		}
+	}
+
 	for _, ga := range data.Authorizations {
 		if err := ga.UnpackInterfaces(unpacker); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -141,9 +149,31 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	seenURLs := map[string]bool{}
+	for _, censorship := range data.Censorships {
+		if err := censorship.ValidateBasic(); err != nil {
+			return err
+		}
+		if censorship.Authority == CensorshipAuthorityUnspecified {
+			return sdkerrors.ErrInvalidRequest.Wrap("authority unspecified")
+		}
+
+		url := censorship.MsgTypeUrl
+		if seenURLs[url] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate censorship over %s", url)
+		}
+		seenURLs[url] = true
+	}
+
 	for _, ga := range data.Authorizations {
-		if ga.GetAuthorization() == nil {
+		auth := ga.GetAuthorization()
+		if auth == nil {
 			return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+		}
+
+		url := auth.MsgTypeURL()
+		if !seenURLs[url] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("no censorship over %s", url)
 		}
 
 		if _, err := sdk.AccAddressFromBech32(ga.Grantee); err != nil {

@@ -6,9 +6,9 @@ import (
 	protoio "github.com/gogo/protobuf/io"
 	dbm "github.com/tendermint/tm-db"
 
-	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
-	store "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
+	store "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 var _ sdk.MultiStore = multiStore{}

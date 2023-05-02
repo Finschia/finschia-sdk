@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
-	ostos "github.com/line/ostracon/libs/os"
+	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/spf13/viper"
 )
 

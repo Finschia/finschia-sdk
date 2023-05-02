@@ -3,8 +3,8 @@ package token
 import (
 	"math"
 
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues
@@ -43,7 +43,7 @@ func ValidateGenesis(data GenesisState) error {
 		if err := validateSymbol(c.Symbol); err != nil {
 			return err
 		}
-		if err := validateImageURI(c.Uri); err != nil {
+		if err := validateURI(c.Uri); err != nil {
 			return err
 		}
 		if err := validateMeta(c.Meta); err != nil {

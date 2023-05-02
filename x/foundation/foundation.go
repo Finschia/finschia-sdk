@@ -6,10 +6,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func validateProposers(proposers []string) error {
@@ -52,6 +52,20 @@ func validateVoteOption(option VoteOption) error {
 	}
 	if _, ok := VoteOption_name[int32(option)]; !ok {
 		return sdkerrors.ErrInvalidRequest.Wrap("invalid vote option")
+	}
+
+	return nil
+}
+
+func (c Censorship) ValidateBasic() error {
+	url := c.MsgTypeUrl
+	if len(url) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("empty msg type url")
+	}
+
+	authority := c.Authority
+	if _, found := CensorshipAuthority_name[int32(authority)]; !found {
+		return sdkerrors.ErrInvalidRequest.Wrapf("censorship authority %s over %s", authority, url)
 	}
 
 	return nil

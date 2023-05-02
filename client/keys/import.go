@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/input"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/input"
 )
 
 // ImportKeyCommand imports private keys from a keyfile.

@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 
-	"github.com/line/lbm-sdk/x/collection"
+	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 var (

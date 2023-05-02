@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/line/lbm-sdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // Validate performs a basic validation of the coin metadata fields. It checks:

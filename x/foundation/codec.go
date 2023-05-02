@@ -1,14 +1,15 @@
 package foundation
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
-	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
-	fdncodec "github.com/line/lbm-sdk/x/foundation/codec"
-	govcodec "github.com/line/lbm-sdk/x/gov/codec"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/legacy"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/msgservice"
+	authzcodec "github.com/Finschia/finschia-sdk/x/authz/codec"
+	fdncodec "github.com/Finschia/finschia-sdk/x/foundation/codec"
+	govcodec "github.com/Finschia/finschia-sdk/x/gov/codec"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
@@ -25,6 +26,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawFromTreasury{}, "lbm-sdk/MsgWithdrawFromTreasury")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMembers{}, "lbm-sdk/MsgUpdateMembers")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateDecisionPolicy{}, "lbm-sdk/MsgUpdateDecisionPolicy")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateCensorship{}, "lbm-sdk/MsgUpdateCensorship")
 	legacy.RegisterAminoMsg(cdc, &MsgGrant{}, "lbm-sdk/MsgGrant")
 	legacy.RegisterAminoMsg(cdc, &MsgRevoke{}, "lbm-sdk/MsgRevoke")
 
@@ -33,6 +35,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&ThresholdDecisionPolicy{}, "lbm-sdk/ThresholdDecisionPolicy", nil)
 	cdc.RegisterConcrete(&PercentageDecisionPolicy{}, "lbm-sdk/PercentageDecisionPolicy", nil)
 	cdc.RegisterConcrete(&ReceiveFromTreasuryAuthorization{}, "lbm-sdk/ReceiveFromTreasuryAuthorization", nil)
+
+	cdc.RegisterConcrete(&FoundationExecProposal{}, "lbm-sdk/FoundationExecProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -47,6 +51,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgVote{},
 		&MsgExec{},
 		&MsgLeaveFoundation{},
+		&MsgUpdateCensorship{},
 		&MsgGrant{},
 		&MsgRevoke{},
 	)
@@ -64,6 +69,11 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*Authorization)(nil),
 		&ReceiveFromTreasuryAuthorization{},
+	)
+
+	registry.RegisterImplementations(
+		(*govtypes.Content)(nil),
+		&FoundationExecProposal{},
 	)
 }
 

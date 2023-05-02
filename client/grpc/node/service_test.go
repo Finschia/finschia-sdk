@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/client"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestServiceServer_Config(t *testing.T) {

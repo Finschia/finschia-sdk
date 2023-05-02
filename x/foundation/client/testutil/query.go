@@ -3,14 +3,14 @@ package testutil
 import (
 	"fmt"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
-	ostcli "github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/client/flags"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/foundation/client/cli"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
@@ -31,9 +31,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 			&foundation.QueryParamsResponse{
 				Params: foundation.Params{
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
-					CensoredMsgTypeUrls: []string{
-						sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-					},
 				},
 			},
 		},
@@ -493,6 +490,51 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 
 			var actual foundation.QueryTallyResultResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdCensorships() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected int
+	}{
+		"valid query": {
+			[]string{},
+			true,
+			1,
+		},
+		"wrong number of args": {
+			[]string{
+				"extra",
+			},
+			false,
+			0,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdCensorships()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryCensorshipsResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Len(actual.Censorships, tc.expected)
 		})
 	}
 }

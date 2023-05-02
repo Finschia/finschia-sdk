@@ -3,8 +3,8 @@ package query
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 // FilteredPaginate does pagination of all the results in the PrefixStore based on the

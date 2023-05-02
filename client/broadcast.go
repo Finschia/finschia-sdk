@@ -8,13 +8,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/ostracon/mempool"
-	octypes "github.com/line/ostracon/types"
+	"github.com/Finschia/ostracon/mempool"
+	octypes "github.com/Finschia/ostracon/types"
 
-	"github.com/line/lbm-sdk/client/flags"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/tx"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/tx"
 )
 
 // BroadcastTx broadcasts a transactions either synchronously or asynchronously

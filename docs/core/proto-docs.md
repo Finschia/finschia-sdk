@@ -648,7 +648,6 @@
     - [EventSent](#lbm.collection.v1.EventSent)
   
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
-    - [EventType](#lbm.collection.v1.EventType)
   
 - [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
     - [Balance](#lbm.collection.v1.Balance)
@@ -683,6 +682,8 @@
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
     - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
+    - [QueryHasParentRequest](#lbm.collection.v1.QueryHasParentRequest)
+    - [QueryHasParentResponse](#lbm.collection.v1.QueryHasParentResponse)
     - [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest)
     - [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse)
     - [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest)
@@ -759,7 +760,9 @@
     - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
+    - [Censorship](#lbm.foundation.v1.Censorship)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
+    - [FoundationExecProposal](#lbm.foundation.v1.FoundationExecProposal)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
     - [MemberRequest](#lbm.foundation.v1.MemberRequest)
@@ -772,6 +775,7 @@
     - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
     - [Vote](#lbm.foundation.v1.Vote)
   
+    - [CensorshipAuthority](#lbm.foundation.v1.CensorshipAuthority)
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
     - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
     - [VoteOption](#lbm.foundation.v1.VoteOption)
@@ -783,6 +787,7 @@
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
+    - [EventUpdateCensorship](#lbm.foundation.v1.EventUpdateCensorship)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
     - [EventUpdateParams](#lbm.foundation.v1.EventUpdateParams)
@@ -795,6 +800,8 @@
     - [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization)
   
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
+    - [QueryCensorshipsRequest](#lbm.foundation.v1.QueryCensorshipsRequest)
+    - [QueryCensorshipsResponse](#lbm.foundation.v1.QueryCensorshipsResponse)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
     - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
@@ -833,6 +840,8 @@
     - [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse)
     - [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal)
     - [MsgSubmitProposalResponse](#lbm.foundation.v1.MsgSubmitProposalResponse)
+    - [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship)
+    - [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse)
     - [MsgUpdateDecisionPolicy](#lbm.foundation.v1.MsgUpdateDecisionPolicy)
     - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
     - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
@@ -875,7 +884,6 @@
     - [EventSent](#lbm.token.v1.EventSent)
   
     - [AttributeKey](#lbm.token.v1.AttributeKey)
-    - [EventType](#lbm.token.v1.EventType)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
@@ -8199,7 +8207,7 @@ BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC metho
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | BROADCAST_MODE_UNSPECIFIED | 0 | zero-value for mode ordering |
-| BROADCAST_MODE_BLOCK | 1 | BROADCAST_MODE_BLOCK defines a tx broadcasting mode where the client waits for the tx to be committed in a block. |
+| BROADCAST_MODE_BLOCK | 1 | DEPRECATED: use BROADCAST_MODE_SYNC instead, |
 | BROADCAST_MODE_SYNC | 2 | BROADCAST_MODE_SYNC defines a tx broadcasting mode where the client waits for a CheckTx execution response only. |
 | BROADCAST_MODE_ASYNC | 3 | BROADCAST_MODE_ASYNC defines a tx broadcasting mode where the client returns immediately. |
 
@@ -9528,7 +9536,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. deprecated "base_img_uri" has been replaced by "uri" in the events. |
 
 
 
@@ -9680,8 +9688,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.AttributeKey"></a>
 
 ### AttributeKey
-Deprecated: use typed events.
-
 AttributeKey enumerates the valid attribute keys on x/collection.
 
 | Name | Number | Description |
@@ -9689,64 +9695,8 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
 | ATTRIBUTE_KEY_META | 2 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 3 |  |
-| ATTRIBUTE_KEY_TOKEN_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
-| ATTRIBUTE_KEY_BASE_IMG_URI | 8 |  |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_TOKEN_TYPE | 10 |  |
-| ATTRIBUTE_KEY_FROM | 11 |  |
-| ATTRIBUTE_KEY_TO | 12 |  |
-| ATTRIBUTE_KEY_PERM | 13 |  |
-| ATTRIBUTE_KEY_TO_TOKEN_ID | 14 |  |
-| ATTRIBUTE_KEY_FROM_TOKEN_ID | 15 |  |
-| ATTRIBUTE_KEY_APPROVER | 16 |  |
-| ATTRIBUTE_KEY_PROXY | 17 |  |
-| ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID | 18 |  |
-| ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID | 19 |  |
-
-
-
-<a name="lbm.collection.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/collection.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_CREATE_COLLECTION | 1 |  |
-| EVENT_TYPE_ISSUE_FT | 2 |  |
-| EVENT_TYPE_ISSUE_NFT | 3 |  |
-| EVENT_TYPE_MINT_FT | 4 |  |
-| EVENT_TYPE_BURN_FT | 5 |  |
-| EVENT_TYPE_MINT_NFT | 6 |  |
-| EVENT_TYPE_BURN_NFT | 7 |  |
-| EVENT_TYPE_BURN_FT_FROM | 8 |  |
-| EVENT_TYPE_BURN_NFT_FROM | 9 |  |
-| EVENT_TYPE_MODIFY_COLLECTION | 10 |  |
-| EVENT_TYPE_MODIFY_TOKEN_TYPE | 11 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 12 |  |
-| EVENT_TYPE_TRANSFER | 13 |  |
-| EVENT_TYPE_TRANSFER_FT | 14 |  |
-| EVENT_TYPE_TRANSFER_NFT | 15 |  |
-| EVENT_TYPE_TRANSFER_FT_FROM | 16 |  |
-| EVENT_TYPE_TRANSFER_NFT_FROM | 17 |  |
-| EVENT_TYPE_GRANT_PERM | 18 |  |
-| EVENT_TYPE_REVOKE_PERM | 19 |  |
-| EVENT_TYPE_ATTACH | 20 |  |
-| EVENT_TYPE_DETACH | 21 |  |
-| EVENT_TYPE_ATTACH_FROM | 22 |  |
-| EVENT_TYPE_DETACH_FROM | 23 |  |
-| EVENT_TYPE_APPROVE_COLLECTION | 24 |  |
-| EVENT_TYPE_DISAPPROVE_COLLECTION | 25 |  |
-| EVENT_TYPE_OPERATION_TRANSFER_NFT | 26 |  |
-| EVENT_TYPE_OPERATION_BURN_NFT | 27 |  |
-| EVENT_TYPE_OPERATION_ROOT_CHANGED | 28 |  |
+| ATTRIBUTE_KEY_BASE_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
+| ATTRIBUTE_KEY_URI | 20 |  |
 
 
  <!-- end enums -->
@@ -10270,6 +10220,37 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 
 
 
+<a name="lbm.collection.v1.QueryHasParentRequest"></a>
+
+### QueryHasParentRequest
+QueryHasParentRequest is the request type for the Query/HasParent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated wit the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryHasParentResponse"></a>
+
+### QueryHasParentResponse
+QueryHasParentResponse is the response type for the Query/HasParent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `has_parent` | [bool](#bool) |  | whether the token has its parent. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryHoldersByOperatorRequest"></a>
 
 ### QueryHoldersByOperatorRequest
@@ -10452,7 +10433,7 @@ QueryParentResponse is the response type for the Query/Parent RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. if there is no parent for the token, it would return nil. |
+| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. |
 
 
 
@@ -10615,6 +10596,7 @@ Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
+| `HasParent` | [QueryHasParentRequest](#lbm.collection.v1.QueryHasParentRequest) | [QueryHasParentResponse](#lbm.collection.v1.QueryHasParentResponse) | HasParent queries whether a given nft has its parent. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
@@ -11003,7 +10985,7 @@ MsgModify is the Msg/Modify request type.
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
 | `token_type` | [string](#string) |  | token type of the token. refer to TokenType for the definition. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, uri, base_img_uri (deprecated), meta. possible attribute keys on modifying token type and token: name, meta. |
 
 
 
@@ -11375,6 +11357,22 @@ up to receive_limit from the treasury.
 
 
 
+<a name="lbm.foundation.v1.Censorship"></a>
+
+### Censorship
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  |  |
+| `authority` | [CensorshipAuthority](#lbm.foundation.v1.CensorshipAuthority) |  |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.DecisionPolicyWindows"></a>
 
 ### DecisionPolicyWindows
@@ -11387,6 +11385,23 @@ DecisionPolicyWindows defines the different windows for voting and execution.
 | `min_execution_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | min_execution_period is the minimum duration after the proposal submission where members can start sending MsgExec. This means that the window for sending a MsgExec transaction is: `[ submission + min_execution_period ; submission + voting_period + max_execution_period]` where max_execution_period is a app-specific config, defined in the keeper. If not set, min_execution_period will default to 0.
 
 Please make sure to set a `min_execution_period` that is smaller than `voting_period + max_execution_period`, or else the above execution window is empty, meaning that all proposals created with this decision policy won't be able to be executed. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.FoundationExecProposal"></a>
+
+### FoundationExecProposal
+FoundationExecProposal is x/gov proposal to trigger the x/foundation messages on behalf of x/gov.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | x/foundation messages to execute all the signers must be x/gov authority. |
 
 
 
@@ -11471,7 +11486,6 @@ Params defines the parameters for the foundation module.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `foundation_tax` | [string](#string) |  |  |
-| `censored_msg_type_urls` | [string](#string) | repeated |  |
 
 
 
@@ -11599,6 +11613,19 @@ Vote represents a vote for a proposal.
 
 
  <!-- end messages -->
+
+
+<a name="lbm.foundation.v1.CensorshipAuthority"></a>
+
+### CensorshipAuthority
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CENSORSHIP_AUTHORITY_UNSPECIFIED | 0 | CENSORSHIP_AUTHORITY_UNSPECIFIED defines an invalid authority. |
+| CENSORSHIP_AUTHORITY_GOVERNANCE | 1 | CENSORSHIP_AUTHORITY_GOVERNANCE defines x/gov authority. |
+| CENSORSHIP_AUTHORITY_FOUNDATION | 2 | CENSORSHIP_AUTHORITY_FOUNDATION defines x/foundation authority. |
+
 
 
 <a name="lbm.foundation.v1.ProposalExecutorResult"></a>
@@ -11755,6 +11782,21 @@ EventSubmitProposal is an event emitted when a proposal is created.
 
 
 
+<a name="lbm.foundation.v1.EventUpdateCensorship"></a>
+
+### EventUpdateCensorship
+EventUpdateCensorship is emitted when a censorship information updated.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `censorship` | [Censorship](#lbm.foundation.v1.Censorship) |  |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.EventUpdateDecisionPolicy"></a>
 
 ### EventUpdateDecisionPolicy
@@ -11878,6 +11920,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
+| `censorships` | [Censorship](#lbm.foundation.v1.Censorship) | repeated |  |
 
 
 
@@ -11913,6 +11956,37 @@ GrantAuthorization defines authorization grant to grantee via route.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/foundation/v1/query.proto
+
+
+
+<a name="lbm.foundation.v1.QueryCensorshipsRequest"></a>
+
+### QueryCensorshipsRequest
+QueryCensorshipsRequest is the request type for the Query/Censorships RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryCensorshipsResponse"></a>
+
+### QueryCensorshipsResponse
+QueryCensorshipsResponse is the response type for the Query/Censorships RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `censorships` | [Censorship](#lbm.foundation.v1.Censorship) | repeated | authorizations is a list of grants granted for grantee. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
 
 
 
@@ -12264,6 +12338,7 @@ Query defines the gRPC querier service for foundation module.
 | `Vote` | [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse) | Vote queries a vote by proposal id and voter. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}|
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
+| `Censorships` | [QueryCensorshipsRequest](#lbm.foundation.v1.QueryCensorshipsRequest) | [QueryCensorshipsResponse](#lbm.foundation.v1.QueryCensorshipsResponse) | Censorships queries the censorship informations. | GET|/lbm/foundation/v1/censorships|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
 
  <!-- end services -->
@@ -12436,6 +12511,32 @@ MsgSubmitProposalResponse is the Msg/SubmitProposal response type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateCensorship"></a>
+
+### MsgUpdateCensorship
+MsgUpdateCensorship is the Msg/UpdateCensorship request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority over the target censorship. |
+| `censorship` | [Censorship](#lbm.foundation.v1.Censorship) |  | new censorship information |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateCensorshipResponse"></a>
+
+### MsgUpdateCensorshipResponse
+MsgUpdateCensorshipResponse is the Msg/UpdateCensorship response type.
 
 
 
@@ -12639,6 +12740,7 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
+| `UpdateCensorship` | [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship) | [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse) | UpdateCensorship updates censorship information. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
 
@@ -12926,7 +13028,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes on the metadata of the class. possible attribute keys are same as those of MsgModify. |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes on the metadata of the class. possible attribute keys are same as those of MsgModify. deprecated "img_uri" has been replaced by "uri" in the events. |
 
 
 
@@ -13003,42 +13105,9 @@ AttributeKey enumerates the valid attribute keys on x/token.
 | ---- | ------ | ----------- |
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
-| ATTRIBUTE_KEY_SYMBOL | 2 |  |
 | ATTRIBUTE_KEY_META | 3 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
-| ATTRIBUTE_KEY_IMG_URI | 8 |  |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_FROM | 10 |  |
-| ATTRIBUTE_KEY_TO | 11 |  |
-| ATTRIBUTE_KEY_PERM | 12 |  |
-| ATTRIBUTE_KEY_APPROVER | 13 |  |
-| ATTRIBUTE_KEY_PROXY | 14 |  |
-
-
-
-<a name="lbm.token.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/token.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_ISSUE | 1 |  |
-| EVENT_TYPE_MINT | 2 |  |
-| EVENT_TYPE_BURN | 3 |  |
-| EVENT_TYPE_BURN_FROM | 4 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 5 |  |
-| EVENT_TYPE_TRANSFER | 6 |  |
-| EVENT_TYPE_TRANSFER_FROM | 7 |  |
-| EVENT_TYPE_GRANT_PERM | 8 |  |
-| EVENT_TYPE_REVOKE_PERM | 9 |  |
-| EVENT_TYPE_APPROVE_TOKEN | 10 |  |
+| ATTRIBUTE_KEY_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
+| ATTRIBUTE_KEY_URI | 15 |  |
 
 
  <!-- end enums -->
@@ -13644,7 +13713,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes to apply. possible attribute keys are: name, img_uri, meta |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes to apply. possible attribute keys are: name, uri, img_uri (deprecated), meta |
 
 
 
@@ -13856,7 +13925,7 @@ Msg defines the token Msg service.
 GetBlockWithTxsRequest is the request type for the Service.GetBlockWithTxs
 RPC method.
 
-Since: lbm-sdk 0.47.0
+Since: finschia-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
@@ -13874,7 +13943,7 @@ Since: lbm-sdk 0.47.0
 ### GetBlockWithTxsResponse
 GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
 
-Since: lbm-sdk 0.47.0
+Since: finschia-sdk 0.47.0
 
 
 | Field | Type | Label | Description |
@@ -13904,7 +13973,7 @@ Service defines a gRPC service for interacting with transactions.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `GetBlockWithTxs` | [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
 
-Since: lbm-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
+Since: finschia-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
 
  <!-- end services -->
 

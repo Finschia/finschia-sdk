@@ -121,8 +121,8 @@ changelog:
 
 release:
   github:
-    owner: tkxkd0159
-    name: lbm-sdk
+    owner: finschia
+    name: finschia-sdk
   prerelease: auto
   mode: replace
   draft: false

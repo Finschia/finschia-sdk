@@ -1,5 +1,5 @@
 
-# Events of LBM-SDK
+# Events of Finschia-SDK
 
 Note: the content of this document is based on the actual implementation in version 0.45.6 of the cosmos-sdk. As we do not intend to introduce a new specification, it's a bug of the documentation if you find any differences between this document and the implementation.
 

@@ -7,14 +7,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	liavl "github.com/cosmos/iavl"
-	"github.com/line/lbm-sdk/store/cachekv"
+	"github.com/Finschia/finschia-sdk/store/cachekv"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/store/dbadapter"
-	"github.com/line/lbm-sdk/store/gaskv"
-	"github.com/line/lbm-sdk/store/iavl"
-	"github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/Finschia/finschia-sdk/store/dbadapter"
+	"github.com/Finschia/finschia-sdk/store/gaskv"
+	"github.com/Finschia/finschia-sdk/store/iavl"
+	"github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // copied from iavl/store_test.go

@@ -7,11 +7,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/types"
-	"github.com/line/lbm-sdk/x/staking/teststaking"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 func TestAllocateTokensToValidatorWithCommission(t *testing.T) {

@@ -10,7 +10,7 @@ with particular kinds of accounts.
 
    ```go
    import (
-       "github.com/line/lbm-sdk/x/bank"
+       "github.com/Finschia/finschia-sdk/x/bank"
    )
    ```
 

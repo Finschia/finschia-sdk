@@ -5,15 +5,15 @@ import (
 	"regexp"
 	"unicode/utf8"
 
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/token/class"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/token/class"
 )
 
 const (
-	maxName     = 20
-	maxImageURI = 1000
-	maxMeta     = 1000
+	maxName = 20
+	maxURI  = 1000
+	maxMeta = 1000
 )
 
 var (
@@ -41,9 +41,9 @@ func validateSymbol(symbol string) error {
 	return nil
 }
 
-func validateImageURI(uri string) error {
-	if !stringInSize(uri, maxImageURI) {
-		return ErrInvalidImageURILength.Wrapf("image_uri cannot be longer than %d", maxImageURI)
+func validateURI(uri string) error {
+	if !stringInSize(uri, maxURI) {
+		return ErrInvalidImageURILength.Wrapf("uri cannot be longer than %d", maxURI)
 	}
 	return nil
 }
@@ -83,8 +83,9 @@ func ValidatePermission(permission Permission) error {
 func validateChange(change Attribute) error {
 	validators := map[string]func(string) error{
 		AttributeKeyName.String():     validateName,
-		AttributeKeyImageURI.String(): validateImageURI,
+		AttributeKeyImageURI.String(): validateURI,
 		AttributeKeyMeta.String():     validateMeta,
+		AttributeKeyURI.String():      validateURI,
 	}
 
 	validator, ok := validators[change.Key]
@@ -96,4 +97,14 @@ func validateChange(change Attribute) error {
 
 func ValidateContractID(id string) error {
 	return class.ValidateID(id)
+}
+
+func canonicalKey(key string) string {
+	convert := map[string]string{
+		AttributeKeyImageURI.String(): AttributeKeyURI.String(),
+	}
+	if converted, ok := convert[key]; ok {
+		return converted
+	}
+	return key
 }

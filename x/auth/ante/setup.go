@@ -3,9 +3,9 @@ package ante
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
 var _ GasTx = (*legacytx.StdTx)(nil) // assert StdTx implements GasTx

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-
 	"io"
 	"os"
 	"path/filepath"
@@ -11,31 +10,31 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/libs/log"
+	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/baseapp"
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/config"
-	"github.com/line/lbm-sdk/client/debug"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/client/keys"
-	"github.com/line/lbm-sdk/client/pruning"
-	"github.com/line/lbm-sdk/client/rpc"
-	"github.com/line/lbm-sdk/server"
-	serverconfig "github.com/line/lbm-sdk/server/config"
-	servertypes "github.com/line/lbm-sdk/server/types"
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/simapp/params"
-	"github.com/line/lbm-sdk/snapshots"
-	"github.com/line/lbm-sdk/store"
-	sdk "github.com/line/lbm-sdk/types"
-	authcmd "github.com/line/lbm-sdk/x/auth/client/cli"
-	"github.com/line/lbm-sdk/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/line/lbm-sdk/x/crisis"
-	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
+	"github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/config"
+	"github.com/Finschia/finschia-sdk/client/debug"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/client/keys"
+	"github.com/Finschia/finschia-sdk/client/pruning"
+	"github.com/Finschia/finschia-sdk/client/rpc"
+	"github.com/Finschia/finschia-sdk/server"
+	serverconfig "github.com/Finschia/finschia-sdk/server/config"
+	servertypes "github.com/Finschia/finschia-sdk/server/types"
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/simapp/params"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	"github.com/Finschia/finschia-sdk/store"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authcmd "github.com/Finschia/finschia-sdk/x/auth/client/cli"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/crisis"
+	genutilcli "github.com/Finschia/finschia-sdk/x/genutil/client/cli"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -90,19 +89,8 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
 
-	// WASMConfig defines configuration for the wasm module.
-	type WASMConfig struct {
-		// This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
-		QueryGasLimit uint64 `mapstructure:"query_gas_limit"`
-
-		// Address defines the gRPC-web server to listen on
-		LruSize uint64 `mapstructure:"lru_size"`
-	}
-
 	type CustomAppConfig struct {
 		serverconfig.Config
-
-		WASM WASMConfig `mapstructure:"wasm"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -125,19 +113,9 @@ func initAppConfig() (string, interface{}) {
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		WASM: WASMConfig{
-			LruSize:       1,
-			QueryGasLimit: 300000,
-		},
 	}
 
-	customAppTemplate := serverconfig.DefaultConfigTemplate + `
-[wasm]
-# This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
-query_gas_limit = 300000
-# This is the number of wasm vm instances we keep cached in memory for speed-up
-# Warning: this is currently unstable and may lead to crashes, best to keep for 0 unless testing locally
-lru_size = 0`
+	customAppTemplate := serverconfig.DefaultConfigTemplate
 
 	return customAppTemplate, customAppConfig
 }

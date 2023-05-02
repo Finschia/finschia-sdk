@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/gov/client/utils"
+	"github.com/Finschia/finschia-sdk/x/gov/client/utils"
 )
 
 func TestNormalizeWeightedVoteOptions(t *testing.T) {
