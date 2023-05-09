@@ -50,4 +50,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Build, CI
 
 ### Document Updates
-
+* (readme) [\#997](https://github.com/finschia/finschia-sdk/pull/997) fix swagger url

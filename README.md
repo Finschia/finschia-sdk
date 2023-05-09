@@ -63,7 +63,7 @@ simd start --home ~/.simapp/simapp1
 
 **Visit with your browser**
 * Node: http://localhost:26657/
-* REST: http://localhost:1317/swagger-ui/
+* REST: http://localhost:1317/swagger/
 
 &nbsp;
 
