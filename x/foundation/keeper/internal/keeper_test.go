@@ -101,6 +101,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		authtypes.FeeCollectorName,
 		foundation.DefaultConfig(),
 		foundation.DefaultAuthority().String(),
+		app.GetSubspace(foundation.ModuleName),
 	)
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
@@ -275,7 +276,7 @@ func TestNewKeeper(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			newKeeper := func() keeper.Keeper {
 				app := simapp.Setup(false)
-				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
+				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String(), app.GetSubspace(foundation.ModuleName))
 			}
 
 			if tc.panics {

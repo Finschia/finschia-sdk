@@ -98,6 +98,7 @@ func TestAbortProposal(t *testing.T) {
 		authtypes.FeeCollectorName,
 		foundation.DefaultConfig(),
 		foundation.DefaultAuthority().String(),
+		app.GetSubspace(foundation.ModuleName),
 	)
 
 	createAddress := func() sdk.AccAddress {
