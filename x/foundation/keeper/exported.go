@@ -94,3 +94,10 @@ func NewFoundationProposalsHandler(k Keeper) govtypes.Handler {
 	impl := k.(*keeper).impl
 	return internal.NewFoundationProposalsHandler(impl)
 }
+
+type Migrator = internal.Migrator
+
+func NewMigrator(k Keeper) Migrator {
+	impl := k.(*keeper).impl
+	return internal.NewMigrator(impl)
+}
