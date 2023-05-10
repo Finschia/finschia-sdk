@@ -13,52 +13,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewTxCmdUpdateParams() {
-	val := s.network.Validators[0]
-
-	commonArgs := []string{
-		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
-	}
-
-	testCases := map[string]struct {
-		args  []string
-		valid bool
-	}{
-		"valid transaction": {
-			[]string{
-				s.authority.String(),
-				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
-			},
-			true,
-		},
-		"wrong number of args": {
-			[]string{
-				s.authority.String(),
-				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
-				"extra",
-			},
-			false,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewTxCmdUpdateParams()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var res txtypes.Tx
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
