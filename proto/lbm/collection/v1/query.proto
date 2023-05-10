@@ -154,7 +154,8 @@ message QueryFTSupplyRequest {
 // QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 message QueryFTSupplyResponse {
   // supply is the supply of the tokens.
-  string supply = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string supply = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
@@ -168,7 +169,8 @@ message QueryFTMintedRequest {
 // QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 message QueryFTMintedResponse {
   // minted is the amount of the minted tokens.
-  string minted = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
@@ -182,7 +184,8 @@ message QueryFTBurntRequest {
 // QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 message QueryFTBurntResponse {
   // burnt is the amount of the burnt tokens.
-  string burnt = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string burnt = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
@@ -197,7 +200,8 @@ message QueryNFTSupplyRequest {
 // QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
 message QueryNFTSupplyResponse {
   // supply is the supply of the non-fungible token.
-  string supply = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string supply = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
@@ -212,7 +216,8 @@ message QueryNFTMintedRequest {
 // QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 message QueryNFTMintedResponse {
   // minted is the amount of minted tokens.
-  string minted = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
@@ -227,7 +232,8 @@ message QueryNFTBurntRequest {
 // QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 message QueryNFTBurntResponse {
   // burnt is the amount of the burnt tokens.
-  string burnt = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string burnt = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryContractRequest is the request type for the Query/Contract RPC method.
