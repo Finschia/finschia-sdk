@@ -1,0 +1,4 @@
+syntax = "proto3";
+package finschia.or.da.v1beta1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";

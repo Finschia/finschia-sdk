@@ -3,17 +3,14 @@ package da
 import (
 	"math/rand"
 
-	dasimulation "github.com/Finschia/finschia-sdk/x/or/da/simulation"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
-
-	"github.com/Finschia/finschia-sdk/baseapp"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	"github.com/Finschia/finschia-sdk/x/simulation"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	dasimulation "github.com/Finschia/finschia-sdk/x/or/da/simulation"
 	datest "github.com/Finschia/finschia-sdk/x/or/da/testutil"
+	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 // avoid unused import issue
@@ -22,8 +19,11 @@ var (
 	_ = dasimulation.FindAccount
 	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
-	_ = baseapp.Paramspace
 )
+
+func GenBatchMaxBytes(r *rand.Rand) uint64 {
+	return uint64(r.Intn(100000*1000000)%1000 + 1)
+}
 
 // GenerateGenesisState creates a randomized GenState of the module
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
@@ -40,16 +40,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 // ProposalContents doesn't return any content functions for governance proposals
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
 	return nil
-}
-
-// RandomizedParams creates randomized  param changes for the simulator
-func (am AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
-	daParams := types.DefaultParams()
-	return []simtypes.ParamChange{
-		simulation.NewSimParamChange(types.ModuleName, string(types.KeyPlaceholder), func(r *rand.Rand) string {
-			return string(types.Amino.MustMarshalJSON(daParams.Placeholder))
-		}),
-	}
 }
 
 // RegisterStoreDecoder registers a decoder

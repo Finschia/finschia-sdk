@@ -7,19 +7,41 @@ import (
 )
 
 // GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	return types.NewParams(
-		k.Placeholder(ctx),
-	)
+func (k Keeper) GetParams(ctx sdk.Context) (types.Params, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte{types.ParamsKey})
+	var params types.Params
+	if bz == nil {
+		return params, nil
+	}
+	err := k.cdc.Unmarshal(bz, &params)
+	return params, err
 }
 
 // SetParams set the params
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramstore.SetParamSet(ctx, &params)
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
+	store := ctx.KVStore(k.storeKey)
+	bz, err := k.cdc.Marshal(&params)
+	if err != nil {
+		return err
+	}
+
+	store.Set([]byte{types.ParamsKey}, bz)
+	return nil
 }
 
-// Placeholder returns the Placeholder param
-func (k Keeper) Placeholder(ctx sdk.Context) (res string) {
-	k.paramstore.Get(ctx, types.KeyPlaceholder, &res)
-	return
+func (k Keeper) CTCBatchMaxBytes(ctx sdk.Context) (uint64, error) {
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return params.CTCBatchMaxBytes, nil
+}
+
+func (k Keeper) SCCBatchMaxBytes(ctx sdk.Context) (uint64, error) {
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return params.SCCBatchMaxBytes, nil
 }

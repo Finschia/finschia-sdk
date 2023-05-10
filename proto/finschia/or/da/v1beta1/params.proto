@@ -8,6 +8,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
-  string placeholder = 1 [(gogoproto.moretags) = "yaml:\"placeholder\""];
+
+  uint64 ctc_batch_max_bytes = 1 [(gogoproto.customname) = "CTCBatchMaxBytes"];
+  uint64 scc_batch_max_bytes = 2 [(gogoproto.customname) = "SCCBatchMaxBytes"];
 }

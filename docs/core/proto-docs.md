@@ -584,6 +584,38 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
+- [finschia/or/da/v1beta1/params.proto](#finschia/or/da/v1beta1/params.proto)
+    - [Params](#finschia.or.da.v1beta1.Params)
+  
+- [finschia/or/da/v1beta1/da.proto](#finschia/or/da/v1beta1/da.proto)
+    - [BatchContext](#finschia.or.da.v1beta1.BatchContext)
+    - [BatchElement](#finschia.or.da.v1beta1.BatchElement)
+    - [CTC](#finschia.or.da.v1beta1.CTC)
+    - [CTCBatch](#finschia.or.da.v1beta1.CTCBatch)
+    - [CTCMetadata](#finschia.or.da.v1beta1.CTCMetadata)
+    - [CTCRef](#finschia.or.da.v1beta1.CTCRef)
+    - [L1toL2Queue](#finschia.or.da.v1beta1.L1toL2Queue)
+  
+    - [CompressionOption](#finschia.or.da.v1beta1.CompressionOption)
+  
+- [finschia/or/da/v1beta1/event.proto](#finschia/or/da/v1beta1/event.proto)
+- [finschia/or/da/v1beta1/genesis.proto](#finschia/or/da/v1beta1/genesis.proto)
+    - [GenesisState](#finschia.or.da.v1beta1.GenesisState)
+  
+- [finschia/or/da/v1beta1/query.proto](#finschia/or/da/v1beta1/query.proto)
+    - [QueryParamsRequest](#finschia.or.da.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#finschia.or.da.v1beta1.QueryParamsResponse)
+  
+    - [Query](#finschia.or.da.v1beta1.Query)
+  
+- [finschia/or/da/v1beta1/tx.proto](#finschia/or/da/v1beta1/tx.proto)
+    - [MsgAppendCTCBatch](#finschia.or.da.v1beta1.MsgAppendCTCBatch)
+    - [MsgAppendCTCBatchResponse](#finschia.or.da.v1beta1.MsgAppendCTCBatchResponse)
+    - [MsgUpdateParams](#finschia.or.da.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#finschia.or.da.v1beta1.MsgUpdateParamsResponse)
+  
+    - [Msg](#finschia.or.da.v1beta1.Msg)
+  
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
   
@@ -8669,6 +8701,367 @@ Since: cosmos-sdk 0.43
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1beta1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1beta1/params.proto
+
+
+
+<a name="finschia.or.da.v1beta1.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ctc_batch_max_bytes` | [uint64](#uint64) |  |  |
+| `scc_batch_max_bytes` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1beta1/da.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1beta1/da.proto
+
+
+
+<a name="finschia.or.da.v1beta1.BatchContext"></a>
+
+### BatchContext
+BatchContext denotes a range of transactions that belong the same batch.
+It is used to compress shared fields that would otherwise be repeated for each transaction.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `num_sequenced_txs` | [uint64](#uint64) |  | num_sequenced_txs specifies the number of sequencer txs included in the batch. |
+| `num_subsequent_queue_txs` | [uint64](#uint64) |  | num_subsequent_queue_txs specifies the number of queued txs included in the batch |
+| `l1_timestamp` | [int64](#int64) |  | timestamp is the L1 unix timestamp of the batch. |
+| `l1_height` | [int64](#int64) |  | blockNumber is the L1 BlockNumber of the batch. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.BatchElement"></a>
+
+### BatchElement
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `is_sequenced` | [bool](#bool) |  |  |
+| `l1_timestamp` | [int64](#int64) |  | timestamp is the L1 unix timestamp of the batch. SEQUENCER TX ONLY |
+| `l1_height` | [int64](#int64) |  | blockNumber is the L1 BlockNumber of the batch. SEQUENCER TX ONLY |
+| `txraw` | [bytes](#bytes) |  | SEQUENCER TX ONLY |
+| `queue_index` | [uint64](#uint64) |  | QUEUED TX ONLY |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.CTC"></a>
+
+### CTC
+CTCRef is a data type that forms an element of Canonical Transaction Chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch_hash` | [bytes](#bytes) |  | Hash value of current batch header |
+| `total_elements` | [string](#string) |  | Total number of elements submitted. |
+| `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
+| `timestamp` | [int64](#int64) |  | The latest batch timestamp. |
+| `block_number` | [int64](#int64) |  | The latest batch blockNumber |
+| `batch_ref` | [CTCRef](#finschia.or.da.v1beta1.CTCRef) |  | Reference for accessing CTC batch data. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.CTCBatch"></a>
+
+### CTCBatch
+Sequencer use CTCBatch when they submit
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total_elements_to_append` | [uint64](#uint64) |  | total_elements_to_append is the number of txs to add in batch |
+| `should_start_at_element` | [string](#string) |  | previous total batch elements. |
+| `batch_contexts` | [BatchContext](#finschia.or.da.v1beta1.BatchContext) | repeated |  |
+| `elements` | [BatchElement](#finschia.or.da.v1beta1.BatchElement) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.CTCMetadata"></a>
+
+### CTCMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive) |
+| `height` | [uint64](#uint64) |  |  |
+| `pruning_ptr` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.CTCRef"></a>
+
+### CTCRef
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `txhash` | [bytes](#bytes) |  |  |
+| `msg_index` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.L1toL2Queue"></a>
+
+### L1toL2Queue
+L1toL2Queue is a queued tx for L2 batch.
+Sequencer must process this transaction in time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `l1_timestamp` | [int64](#int64) |  | timestamp is the L1 unix timestamp of the batch. It is set when the type of tx is L1toL2 |
+| `l1_height` | [int64](#int64) |  | blockNumber is the L1 BlockNumber of the batch. |
+| `txraw` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="finschia.or.da.v1beta1.CompressionOption"></a>
+
+### CompressionOption
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| COMPRESSION_OPTION_UNSPECIFIED | 0 | COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option. |
+| COMPRESSION_OPTION_ZSTD | 1 | Zstandard is a fast compression algorithm, providing high compression ratios. It also offers a special mode for small data, called dictionary compression. |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1beta1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1beta1/event.proto
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1beta1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1beta1/genesis.proto
+
+
+
+<a name="finschia.or.da.v1beta1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the da module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.or.da.v1beta1.Params) |  |  |
+| `ctc_metadata` | [CTCMetadata](#finschia.or.da.v1beta1.CTCMetadata) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1beta1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1beta1/query.proto
+
+
+
+<a name="finschia.or.da.v1beta1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.or.da.v1beta1.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.da.v1beta1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#finschia.or.da.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1beta1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/checkers/da/params|
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1beta1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1beta1/tx.proto
+
+
+
+<a name="finschia.or.da.v1beta1.MsgAppendCTCBatch"></a>
+
+### MsgAppendCTCBatch
+
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.MsgAppendCTCBatchResponse"></a>
+
+### MsgAppendCTCBatchResponse
+
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address that controls the module (defaults to x/gov unless overwritten). |
+| `params` | [Params](#finschia.or.da.v1beta1.Params) |  | params defines the x/or/da parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.da.v1beta1.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#finschia.or.da.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#finschia.or.da.v1beta1.MsgUpdateParamsResponse) |  | |
+| `AppendCTCBatch` | [MsgAppendCTCBatch](#finschia.or.da.v1beta1.MsgAppendCTCBatch) | [MsgAppendCTCBatchResponse](#finschia.or.da.v1beta1.MsgAppendCTCBatchResponse) |  | |
 
  <!-- end services -->
 

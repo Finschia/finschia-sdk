@@ -4,49 +4,38 @@ import (
 	"fmt"
 
 	"gopkg.in/yaml.v2"
-
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-var (
-	KeyPlaceholder = []byte("Placeholder")
-	// TODO: Determine the default value
-	DefaultPlaceholder string = "placeholder"
+const (
+	DefaultCTCBatchMaxBytes uint64 = 1000000
+	DefaultSCCBatchMaxBytes uint64 = 1000000
 )
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams(
-	placeholder string,
+	CTCBatchMaxBytes uint64,
+	SCCBatchMaxBytes uint64,
 ) Params {
 	return Params{
-		Placeholder: placeholder,
+		CTCBatchMaxBytes: CTCBatchMaxBytes,
+		SCCBatchMaxBytes: SCCBatchMaxBytes,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
-		DefaultPlaceholder,
+		DefaultCTCBatchMaxBytes,
+		DefaultSCCBatchMaxBytes,
 	)
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyPlaceholder, &p.Placeholder, validatePlaceholder),
-	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validatePlaceholder(p.Placeholder); err != nil {
+	if err := validateCTCBatchMaxBytes(p.CTCBatchMaxBytes); err != nil {
+		return err
+	}
+	if err := validateSCCBatchMaxBytes(p.SCCBatchMaxBytes); err != nil {
 		return err
 	}
 
@@ -59,15 +48,28 @@ func (p Params) String() string {
 	return string(out)
 }
 
-// validatePlaceholder validates the Placeholder param
-func validatePlaceholder(v interface{}) error {
-	placeholder, ok := v.(string)
+func validateCTCBatchMaxBytes(i interface{}) error {
+	v, ok := i.(uint64)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	// TODO implement validation
-	_ = placeholder
+	if v == 0 {
+		return fmt.Errorf("ctc batch max bytes must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateSCCBatchMaxBytes(i interface{}) error {
+	v, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v == 0 {
+		return fmt.Errorf("scc batch max bytes must be positive: %d", v)
+	}
 
 	return nil
 }
