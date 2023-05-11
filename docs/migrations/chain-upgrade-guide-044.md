@@ -34,7 +34,7 @@ In addition to migrating existing modules, the upgrade handler also performs sto
 
 We recommend validators use [Cosmovisor](../run-node/cosmovisor.html), which is a process manager for running application binaries. For security reasons, we recommend validators build their own upgrade binaries rather than enabling the auto-download option. Validators may still choose to use the auto-download option if the necessary security guarantees are in place (i.e. the URL provided in the upgrade proposal for the downloadable upgrade binary includes a proper checksum).
 
-Validators can use the auto-restart option to prevent unecessary downtime during the upgrade process. The auto-restart option will automatically restart the chain with the upgrade binary once the chain has halted at the proposed upgrade height. With the auto-restart option, validators can prepare the upgrade binary in advance and then relax at the time of the upgrade.
+Validators can use the auto-restart option to prevent unnecessary downtime during the upgrade process. The auto-restart option will automatically restart the chain with the upgrade binary once the chain has halted at the proposed upgrade height. With the auto-restart option, validators can prepare the upgrade binary in advance and then relax at the time of the upgrade.
 
 ## Migrating app.toml
 
