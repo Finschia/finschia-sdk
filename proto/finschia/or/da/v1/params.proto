@@ -1,0 +1,31 @@
+syntax = "proto3";
+package finschia.or.da.v1;
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  // 1. CTC-related
+  uint64 ctc_batch_max_bytes = 1 [(gogoproto.customname) = "CTCBatchMaxBytes"];
+
+  // Queue Tx-related
+  uint64 max_queue_tx_size = 2;
+  uint64 min_queue_tx_gas = 3;
+  // A sequencer must submit a queue tx to L2 before this time.
+  google.protobuf.Timestamp queue_tx_expiration = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+
+  // 2. SCC-related
+  uint64 scc_batch_max_bytes = 5 [(gogoproto.customname) = "SCCBatchMaxBytes"];
+
+  // Number of seconds that the verifier is allowed to submit a fraud proof.
+  // Currnet scc batch header timestamp + fraud_proof_window = challenge period
+  uint64 fraud_proof_window = 6;
+  // Number of seconds that the sequencer is exclusively allowed to post state roots
+  uint64 sequencer_publish_window = 7;
+}

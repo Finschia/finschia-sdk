@@ -1,0 +1,54 @@
+syntax = "proto3";
+package finschia.or.da.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "finschia/or/da/v1/params.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // Allow the sequencer to append a batch of transactions.
+  rpc AppendCTCBatch(MsgAppendCTCBatch) returns (MsgAppendCTCBatchResponse);
+
+  // Add a L2 transaction to the queue to process forcibly.
+  rpc Enqueue(MsgEnqueue) returns (MsgEnqueueResponse);
+
+  // Allow the proposer to append a state batch
+  rpc AppendSCCBatch(MsgAppendSCCBatch) returns (MsgAppendSCCBatchResponse);
+
+  // Removes a batch and all subsequent batches from SCC.
+  rpc RemoveSCCBatch(MsgAppendSCCBatch) returns (MsgAppendSCCBatchResponse);
+}
+
+message MsgUpdateParams {
+
+  // authority is the address that controls the module (defaults to x/gov unless overwritten).
+  string authority = 1;
+
+  // params defines the x/or/da parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}
+
+message MsgAppendCTCBatch {}
+
+message MsgAppendCTCBatchResponse {}
+
+message MsgEnqueue {}
+
+message MsgEnqueueResponse {}
+
+message MsgAppendSCCBatch {}
+
+message MsgAppendSCCBatchResponse {}
+
+message MsgRemoveSCCBatch {}
+
+message MsgRemoveSCCBatchResponse {}

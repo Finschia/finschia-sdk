@@ -1,0 +1,144 @@
+syntax = "proto3";
+package finschia.or.da.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "finschia/or/da/v1/params.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
+
+enum CompressionOption {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option.
+  COMPRESSION_OPTION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "OptionEmpty"];
+
+  // Zstandard is a fast compression algorithm, providing high compression ratios.
+  // It also offers a special mode for small data, called dictionary compression.
+  COMPRESSION_OPTION_ZSTD = 1 [(gogoproto.enumvalue_customname) = "OptionZSTD"];
+}
+
+// BatchContext denotes a range of transactions that belong the same batch.
+// It is used to compress shared fields that would otherwise be repeated for each transaction.
+message CTCBatchContext {
+  // num_sequenced_txs specifies the number of sequencer txs included in
+  // the batch.
+  uint64 num_sequenced_txs = 1;
+
+  // num_subsequent_queue_txs specifies the number of queued txs included in
+  // the batch
+  uint64 num_subsequent_queue_txs = 2;
+
+  // timestamp is the L1 unix timestamp of the batch.
+  google.protobuf.Timestamp l1_timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  // blockNumber is the L1 BlockNumber of the batch.
+  uint64 l1_height = 4;
+}
+
+message CTCBatchElement {
+  bool is_sequenced = 1;
+
+  // timestamp is the L1 unix timestamp of the batch.
+  // SEQUENCER TX ONLY
+  google.protobuf.Timestamp l1_timestamp = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // blockNumber is the L1 BlockNumber of the batch.
+  // SEQUENCER TX ONLY
+  uint64 l1_height = 3;
+
+  // SEQUENCER TX ONLY
+  bytes txraw = 4;
+
+  // QUEUED TX ONLY
+  uint64 queue_index = 5;
+}
+
+// Sequencer use CTCBatch when they submit
+message CTCBatch {
+  // previous total batch elements.
+  string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+
+  repeated CTCBatchContext batch_contexts = 2;
+  repeated CTCBatchElement elements = 3;
+}
+
+// CTCRef is a data type that forms an element of Canonical Transaction Chain.
+message CTCRef {
+  // Reference for accessing batch data.
+  BatchHeader header = 1;
+
+  // The information of current CTC context.
+  CTCMetaData context = 2;// The number of txs in the batch.
+}
+
+message CTCMetaData {
+  // Index of the next queue element.
+  uint64 next_queue_index = 1;
+
+  // The latest batch timestamp.
+  google.protobuf.Timestamp l1_timestamp = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // The latest batch L1 blockNumber
+  uint64 block_number = 3;
+}
+
+// L1toL2Queue is a queued tx for L2 batch.
+// Sequencer must process this transaction in time.
+message L1toL2Queue {
+  // timestamp is the L1 unix timestamp of the batch.
+  // It is set when the type of tx is L1toL2
+  google.protobuf.Timestamp l1_timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // blockNumber is the L1 BlockNumber of the batch.
+  uint64 l1_height = 2;
+
+  bytes txraw = 3;
+}
+
+// Proposer use SCCBatch when they submit
+message SCCBatch {
+  // previous total batch elements.
+  string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+
+  // IntermediateStateRoots for a specific range of CTCs
+  repeated bytes IntermediateStateRoots = 2;
+}
+
+// CTCRef is a data type that forms an element of Canonical Transaction Chain.
+message SCCRef {
+  // Reference for accessing batch data.
+  BatchHeader header = 1;
+
+  // The information of current CTC context.
+  SCCMetaData context = 2;// The number of txs in the batch.
+}
+
+message SCCMetaData {
+  // The latest batch timestamp when the sequencer submits.
+  google.protobuf.Timestamp last_sequencer_submit = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message BatchHeader {
+  // Reference for accessing batch data.
+  bytes txhash = 1 [(gogoproto.customname) = "TxHash"];
+
+  // Total number of elements submitted.
+  string total_elements = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+
+  // Number of elements in the batch
+  uint64 batch_size = 3;
+
+  uint64 batch_index = 4;
+
+  // CTC Batch : previous block hash
+  // SCC Batch : Merkle Root of IntermediateStateRoots
+  bytes batch_root = 5;
+}
+
+// BatchChainState is the state of target batch chain
+message BatchChainState {
+  // Assumed to contain all contiguous batches between base and height (inclusive)
+  uint64 base = 1;
+  uint64 height = 2;
+  uint64 pruning_ptr = 3;
+}

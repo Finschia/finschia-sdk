@@ -1,10 +1,10 @@
 syntax = "proto3";
-package finschia.or.da.v1beta1;
+package finschia.or.da.v1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "finschia/or/da/v1beta1/params.proto";
+import "finschia/or/da/v1/params.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 
