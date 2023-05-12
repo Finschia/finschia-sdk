@@ -13,9 +13,12 @@ enum CompressionOption {
   // COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option.
   COMPRESSION_OPTION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "OptionEmpty"];
 
+  // Go standard library fo zlib compression (RFC 1950).
+  COMPRESSION_OPTION_ZLIB = 1 [(gogoproto.enumvalue_customname) = "OptionZLIB"];
+
   // Zstandard is a fast compression algorithm, providing high compression ratios.
   // It also offers a special mode for small data, called dictionary compression.
-  COMPRESSION_OPTION_ZSTD = 1 [(gogoproto.enumvalue_customname) = "OptionZSTD"];
+  COMPRESSION_OPTION_ZSTD = 2 [(gogoproto.enumvalue_customname) = "OptionZSTD"];
 }
 
 // BatchContext denotes a range of transactions that belong the same batch.
@@ -140,5 +143,7 @@ message BatchChainState {
   // Assumed to contain all contiguous batches between base and height (inclusive)
   uint64 base = 1;
   uint64 height = 2;
-  uint64 pruning_ptr = 3;
+
+  // The name of rollup chain (use as key)
+  bytes name = 3;
 }

@@ -621,6 +621,8 @@
     - [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse)
     - [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue)
     - [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse)
+    - [MsgRegisterRollup](#finschia.or.da.v1.MsgRegisterRollup)
+    - [MsgRegisterRollupResponse](#finschia.or.da.v1.MsgRegisterRollupResponse)
     - [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch)
     - [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse)
     - [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams)
@@ -8772,7 +8774,7 @@ BatchChainState is the state of target batch chain
 | ----- | ---- | ----- | ----------- |
 | `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive) |
 | `height` | [uint64](#uint64) |  |  |
-| `pruning_ptr` | [uint64](#uint64) |  |  |
+| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key) |
 
 
 
@@ -8965,7 +8967,8 @@ The number of txs in the batch. |
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | COMPRESSION_OPTION_UNSPECIFIED | 0 | COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option. |
-| COMPRESSION_OPTION_ZSTD | 1 | Zstandard is a fast compression algorithm, providing high compression ratios. It also offers a special mode for small data, called dictionary compression. |
+| COMPRESSION_OPTION_ZLIB | 1 | Go standard library fo zlib compression (RFC 1950). |
+| COMPRESSION_OPTION_ZSTD | 2 | Zstandard is a fast compression algorithm, providing high compression ratios. It also offers a special mode for small data, called dictionary compression. |
 
 
  <!-- end enums -->
@@ -9024,8 +9027,8 @@ GenesisState defines the da module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#finschia.or.da.v1.Params) |  |  |
-| `ctc` | [CTC](#finschia.or.da.v1.CTC) |  |  |
-| `scc` | [SCC](#finschia.or.da.v1.SCC) |  |  |
+| `ctc` | [CTC](#finschia.or.da.v1.CTC) | repeated |  |
+| `scc` | [SCC](#finschia.or.da.v1.SCC) | repeated |  |
 
 
 
@@ -9175,6 +9178,31 @@ Query defines the gRPC querier service.
 
 
 
+<a name="finschia.or.da.v1.MsgRegisterRollup"></a>
+
+### MsgRegisterRollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgRegisterRollupResponse"></a>
+
+### MsgRegisterRollupResponse
+
+
+
+
+
+
+
 <a name="finschia.or.da.v1.MsgRemoveSCCBatch"></a>
 
 ### MsgRemoveSCCBatch
@@ -9237,6 +9265,7 @@ Msg defines the Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `UpdateParams` | [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse) |  | |
+| `RegisterRollup` | [MsgRegisterRollup](#finschia.or.da.v1.MsgRegisterRollup) | [MsgRegisterRollupResponse](#finschia.or.da.v1.MsgRegisterRollupResponse) |  | |
 | `AppendCTCBatch` | [MsgAppendCTCBatch](#finschia.or.da.v1.MsgAppendCTCBatch) | [MsgAppendCTCBatchResponse](#finschia.or.da.v1.MsgAppendCTCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |

@@ -11,6 +11,8 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
+  rpc RegisterRollup(MsgRegisterRollup) returns (MsgRegisterRollupResponse);
+
   // Allow the sequencer to append a batch of transactions.
   rpc AppendCTCBatch(MsgAppendCTCBatch) returns (MsgAppendCTCBatchResponse);
 
@@ -36,6 +38,12 @@ message MsgUpdateParams {
 }
 
 message MsgUpdateParamsResponse {}
+
+message MsgRegisterRollup {
+  string name = 1;
+}
+
+message MsgRegisterRollupResponse {}
 
 message MsgAppendCTCBatch {}
 
