@@ -8866,7 +8866,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Challenge` | [QueryChallengeRequest](#finschia.or.settlement.v1beta1.QueryChallengeRequest) | [QueryChallengeResponse](#finschia.or.settlement.v1beta1.QueryChallengeResponse) | instead of getStepNumber, isSearching, and getProposedState | GET|/lbm/settlement/v1/challenge/{challenge_id}|
+| `Challenge` | [QueryChallengeRequest](#finschia.or.settlement.v1beta1.QueryChallengeRequest) | [QueryChallengeResponse](#finschia.or.settlement.v1beta1.QueryChallengeResponse) | instead of getStepNumber, isSearching, and getProposedState | GET|/finschia/settlement/v1/challenge/{challenge_id}|
 
  <!-- end services -->
 
