@@ -49,7 +49,9 @@ func (k msgServer) AppendCTCBatch(goCtx context.Context, msg *types.MsgAppendCTC
 	if err := k.validateSequencerAuthority(); err != nil {
 		return nil, err
 	}
+
 	k.appendSequencerBatch()
+
 	return &types.MsgAppendCTCBatchResponse{}, nil
 }
 

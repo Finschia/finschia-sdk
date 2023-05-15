@@ -1,4 +1,4 @@
-package keeper
+package testutil
 
 import (
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
