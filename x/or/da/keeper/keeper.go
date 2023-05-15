@@ -41,7 +41,7 @@ func (k Keeper) Logger(ctx sdktypes.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) validateAuthority(authority string) error {
+func (k Keeper) validateGovAuthority(authority string) error {
 	if _, err := sdktypes.AccAddressFromBech32(authority); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
 	}
@@ -51,4 +51,8 @@ func (k Keeper) validateAuthority(authority string) error {
 	}
 
 	return nil
+}
+
+func (k Keeper) validateSequencerAuthority() error {
+	panic("implement me")
 }

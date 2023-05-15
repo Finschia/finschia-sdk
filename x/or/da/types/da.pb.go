@@ -148,6 +148,8 @@ type CTCBatchElement struct {
 	Txraw []byte `protobuf:"bytes,4,opt,name=txraw,proto3" json:"txraw,omitempty"`
 	// QUEUED TX ONLY
 	QueueIndex uint64 `protobuf:"varint,5,opt,name=queue_index,json=queueIndex,proto3" json:"queue_index,omitempty"`
+	// l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer.
+	L2Height uint64 `protobuf:"varint,6,opt,name=l2_height,json=l2Height,proto3" json:"l2_height,omitempty"`
 }
 
 func (m *CTCBatchElement) Reset()         { *m = CTCBatchElement{} }
@@ -218,7 +220,14 @@ func (m *CTCBatchElement) GetQueueIndex() uint64 {
 	return 0
 }
 
-// Sequencer use CTCBatch when they submit
+func (m *CTCBatchElement) GetL2Height() uint64 {
+	if m != nil {
+		return m.L2Height
+	}
+	return 0
+}
+
+// Sequencer use CTCBatch when they submit.
 type CTCBatch struct {
 	// previous total batch elements.
 	ShouldStartAtElement github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,1,opt,name=should_start_at_element,json=shouldStartAtElement,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"should_start_at_element"`
@@ -277,8 +286,6 @@ func (m *CTCBatch) GetElements() []*CTCBatchElement {
 type CTCRef struct {
 	// Reference for accessing batch data.
 	Header *BatchHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
-	// The information of current CTC context.
-	Context *CTCMetaData `protobuf:"bytes,2,opt,name=context,proto3" json:"context,omitempty"`
 }
 
 func (m *CTCRef) Reset()         { *m = CTCRef{} }
@@ -321,76 +328,6 @@ func (m *CTCRef) GetHeader() *BatchHeader {
 	return nil
 }
 
-func (m *CTCRef) GetContext() *CTCMetaData {
-	if m != nil {
-		return m.Context
-	}
-	return nil
-}
-
-type CTCMetaData struct {
-	// Index of the next queue element.
-	NextQueueIndex uint64 `protobuf:"varint,1,opt,name=next_queue_index,json=nextQueueIndex,proto3" json:"next_queue_index,omitempty"`
-	// The latest batch timestamp.
-	L1Timestamp time.Time `protobuf:"bytes,2,opt,name=l1_timestamp,json=l1Timestamp,proto3,stdtime" json:"l1_timestamp"`
-	// The latest batch L1 blockNumber
-	BlockNumber uint64 `protobuf:"varint,3,opt,name=block_number,json=blockNumber,proto3" json:"block_number,omitempty"`
-}
-
-func (m *CTCMetaData) Reset()         { *m = CTCMetaData{} }
-func (m *CTCMetaData) String() string { return proto.CompactTextString(m) }
-func (*CTCMetaData) ProtoMessage()    {}
-func (*CTCMetaData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{4}
-}
-func (m *CTCMetaData) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *CTCMetaData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CTCMetaData.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *CTCMetaData) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CTCMetaData.Merge(m, src)
-}
-func (m *CTCMetaData) XXX_Size() int {
-	return m.Size()
-}
-func (m *CTCMetaData) XXX_DiscardUnknown() {
-	xxx_messageInfo_CTCMetaData.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CTCMetaData proto.InternalMessageInfo
-
-func (m *CTCMetaData) GetNextQueueIndex() uint64 {
-	if m != nil {
-		return m.NextQueueIndex
-	}
-	return 0
-}
-
-func (m *CTCMetaData) GetL1Timestamp() time.Time {
-	if m != nil {
-		return m.L1Timestamp
-	}
-	return time.Time{}
-}
-
-func (m *CTCMetaData) GetBlockNumber() uint64 {
-	if m != nil {
-		return m.BlockNumber
-	}
-	return 0
-}
-
 // L1toL2Queue is a queued tx for L2 batch.
 // Sequencer must process this transaction in time.
 type L1ToL2Queue struct {
@@ -406,7 +343,7 @@ func (m *L1ToL2Queue) Reset()         { *m = L1ToL2Queue{} }
 func (m *L1ToL2Queue) String() string { return proto.CompactTextString(m) }
 func (*L1ToL2Queue) ProtoMessage()    {}
 func (*L1ToL2Queue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{5}
+	return fileDescriptor_5f98d06b06a65392, []int{4}
 }
 func (m *L1ToL2Queue) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -456,11 +393,11 @@ func (m *L1ToL2Queue) GetTxraw() []byte {
 	return nil
 }
 
-// Proposer use SCCBatch when they submit
+// Proposer use SCCBatch when they submit.
 type SCCBatch struct {
 	// previous total batch elements.
 	ShouldStartAtElement github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,1,opt,name=should_start_at_element,json=shouldStartAtElement,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"should_start_at_element"`
-	// IntermediateStateRoots for a specific range of CTCs
+	// IntermediateStateRoots for a specific range of CTCs.
 	IntermediateStateRoots [][]byte `protobuf:"bytes,2,rep,name=IntermediateStateRoots,proto3" json:"IntermediateStateRoots,omitempty"`
 }
 
@@ -468,7 +405,7 @@ func (m *SCCBatch) Reset()         { *m = SCCBatch{} }
 func (m *SCCBatch) String() string { return proto.CompactTextString(m) }
 func (*SCCBatch) ProtoMessage()    {}
 func (*SCCBatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{6}
+	return fileDescriptor_5f98d06b06a65392, []int{5}
 }
 func (m *SCCBatch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -508,15 +445,13 @@ func (m *SCCBatch) GetIntermediateStateRoots() [][]byte {
 type SCCRef struct {
 	// Reference for accessing batch data.
 	Header *BatchHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
-	// The information of current CTC context.
-	Context *SCCMetaData `protobuf:"bytes,2,opt,name=context,proto3" json:"context,omitempty"`
 }
 
 func (m *SCCRef) Reset()         { *m = SCCRef{} }
 func (m *SCCRef) String() string { return proto.CompactTextString(m) }
 func (*SCCRef) ProtoMessage()    {}
 func (*SCCRef) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{7}
+	return fileDescriptor_5f98d06b06a65392, []int{6}
 }
 func (m *SCCRef) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -552,68 +487,16 @@ func (m *SCCRef) GetHeader() *BatchHeader {
 	return nil
 }
 
-func (m *SCCRef) GetContext() *SCCMetaData {
-	if m != nil {
-		return m.Context
-	}
-	return nil
-}
-
-type SCCMetaData struct {
-	// The latest batch timestamp when the sequencer submits.
-	LastSequencerSubmit time.Time `protobuf:"bytes,1,opt,name=last_sequencer_submit,json=lastSequencerSubmit,proto3,stdtime" json:"last_sequencer_submit"`
-}
-
-func (m *SCCMetaData) Reset()         { *m = SCCMetaData{} }
-func (m *SCCMetaData) String() string { return proto.CompactTextString(m) }
-func (*SCCMetaData) ProtoMessage()    {}
-func (*SCCMetaData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{8}
-}
-func (m *SCCMetaData) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SCCMetaData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SCCMetaData.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SCCMetaData) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SCCMetaData.Merge(m, src)
-}
-func (m *SCCMetaData) XXX_Size() int {
-	return m.Size()
-}
-func (m *SCCMetaData) XXX_DiscardUnknown() {
-	xxx_messageInfo_SCCMetaData.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SCCMetaData proto.InternalMessageInfo
-
-func (m *SCCMetaData) GetLastSequencerSubmit() time.Time {
-	if m != nil {
-		return m.LastSequencerSubmit
-	}
-	return time.Time{}
-}
-
 type BatchHeader struct {
 	// Reference for accessing batch data.
 	TxHash []byte `protobuf:"bytes,1,opt,name=txhash,proto3" json:"txhash,omitempty"`
 	// Total number of elements submitted.
 	TotalElements github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,2,opt,name=total_elements,json=totalElements,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"total_elements"`
-	// Number of elements in the batch
+	// Number of elements in the batch.
 	BatchSize  uint64 `protobuf:"varint,3,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
 	BatchIndex uint64 `protobuf:"varint,4,opt,name=batch_index,json=batchIndex,proto3" json:"batch_index,omitempty"`
-	// CTC Batch : previous block hash
-	// SCC Batch : Merkle Root of IntermediateStateRoots
+	// CTC Batch : previous block hash.
+	// SCC Batch : Merkle Root of IntermediateStateRoots.
 	BatchRoot []byte `protobuf:"bytes,5,opt,name=batch_root,json=batchRoot,proto3" json:"batch_root,omitempty"`
 }
 
@@ -621,7 +504,7 @@ func (m *BatchHeader) Reset()         { *m = BatchHeader{} }
 func (m *BatchHeader) String() string { return proto.CompactTextString(m) }
 func (*BatchHeader) ProtoMessage()    {}
 func (*BatchHeader) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{9}
+	return fileDescriptor_5f98d06b06a65392, []int{7}
 }
 func (m *BatchHeader) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -678,27 +561,36 @@ func (m *BatchHeader) GetBatchRoot() []byte {
 	return nil
 }
 
-// BatchChainState is the state of target batch chain
-type BatchChainState struct {
-	// Assumed to contain all contiguous batches between base and height (inclusive)
+// BatchChainState is the state of target batch chain.
+type CTCState struct {
+	// Assumed to contain all contiguous batches between base and height (inclusive).
 	Base   uint64 `protobuf:"varint,1,opt,name=base,proto3" json:"base,omitempty"`
 	Height uint64 `protobuf:"varint,2,opt,name=height,proto3" json:"height,omitempty"`
-	// The name of rollup chain (use as key)
+	// The name of rollup chain (use as key).
 	Name []byte `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// The ratio between the cost of gas on L1 and L2.
+	// This is a positive integer.
+	L1ToL2GasRatio uint64 `protobuf:"varint,4,opt,name=l1_to_l2_gas_ratio,json=l1ToL2GasRatio,proto3" json:"l1_to_l2_gas_ratio,omitempty"`
+	// Index of the next queue element.
+	NextQueueIndex uint64 `protobuf:"varint,5,opt,name=next_queue_index,json=nextQueueIndex,proto3" json:"next_queue_index,omitempty"`
+	// The latest batch timestamp.
+	L1Timestamp time.Time `protobuf:"bytes,6,opt,name=l1_timestamp,json=l1Timestamp,proto3,stdtime" json:"l1_timestamp"`
+	// The latest batch L1 blockNumber.
+	L1Height uint64 `protobuf:"varint,7,opt,name=l1_height,json=l1Height,proto3" json:"l1_height,omitempty"`
 }
 
-func (m *BatchChainState) Reset()         { *m = BatchChainState{} }
-func (m *BatchChainState) String() string { return proto.CompactTextString(m) }
-func (*BatchChainState) ProtoMessage()    {}
-func (*BatchChainState) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5f98d06b06a65392, []int{10}
+func (m *CTCState) Reset()         { *m = CTCState{} }
+func (m *CTCState) String() string { return proto.CompactTextString(m) }
+func (*CTCState) ProtoMessage()    {}
+func (*CTCState) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5f98d06b06a65392, []int{8}
 }
-func (m *BatchChainState) XXX_Unmarshal(b []byte) error {
+func (m *CTCState) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *BatchChainState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CTCState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_BatchChainState.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CTCState.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -708,37 +600,137 @@ func (m *BatchChainState) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *BatchChainState) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BatchChainState.Merge(m, src)
+func (m *CTCState) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CTCState.Merge(m, src)
 }
-func (m *BatchChainState) XXX_Size() int {
+func (m *CTCState) XXX_Size() int {
 	return m.Size()
 }
-func (m *BatchChainState) XXX_DiscardUnknown() {
-	xxx_messageInfo_BatchChainState.DiscardUnknown(m)
+func (m *CTCState) XXX_DiscardUnknown() {
+	xxx_messageInfo_CTCState.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_BatchChainState proto.InternalMessageInfo
+var xxx_messageInfo_CTCState proto.InternalMessageInfo
 
-func (m *BatchChainState) GetBase() uint64 {
+func (m *CTCState) GetBase() uint64 {
 	if m != nil {
 		return m.Base
 	}
 	return 0
 }
 
-func (m *BatchChainState) GetHeight() uint64 {
+func (m *CTCState) GetHeight() uint64 {
 	if m != nil {
 		return m.Height
 	}
 	return 0
 }
 
-func (m *BatchChainState) GetName() []byte {
+func (m *CTCState) GetName() []byte {
 	if m != nil {
 		return m.Name
 	}
 	return nil
+}
+
+func (m *CTCState) GetL1ToL2GasRatio() uint64 {
+	if m != nil {
+		return m.L1ToL2GasRatio
+	}
+	return 0
+}
+
+func (m *CTCState) GetNextQueueIndex() uint64 {
+	if m != nil {
+		return m.NextQueueIndex
+	}
+	return 0
+}
+
+func (m *CTCState) GetL1Timestamp() time.Time {
+	if m != nil {
+		return m.L1Timestamp
+	}
+	return time.Time{}
+}
+
+func (m *CTCState) GetL1Height() uint64 {
+	if m != nil {
+		return m.L1Height
+	}
+	return 0
+}
+
+// BatchChainState is the state of target batch chain.
+type SCCState struct {
+	// Assumed to contain all contiguous batches between base and height (inclusive).
+	Base   uint64 `protobuf:"varint,1,opt,name=base,proto3" json:"base,omitempty"`
+	Height uint64 `protobuf:"varint,2,opt,name=height,proto3" json:"height,omitempty"`
+	// The name of rollup chain (use as key).
+	Name []byte `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// The latest batch timestamp when the sequencer submits.
+	LastSequencerSubmit time.Time `protobuf:"bytes,4,opt,name=last_sequencer_submit,json=lastSequencerSubmit,proto3,stdtime" json:"last_sequencer_submit"`
+}
+
+func (m *SCCState) Reset()         { *m = SCCState{} }
+func (m *SCCState) String() string { return proto.CompactTextString(m) }
+func (*SCCState) ProtoMessage()    {}
+func (*SCCState) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5f98d06b06a65392, []int{9}
+}
+func (m *SCCState) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SCCState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SCCState.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SCCState) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SCCState.Merge(m, src)
+}
+func (m *SCCState) XXX_Size() int {
+	return m.Size()
+}
+func (m *SCCState) XXX_DiscardUnknown() {
+	xxx_messageInfo_SCCState.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SCCState proto.InternalMessageInfo
+
+func (m *SCCState) GetBase() uint64 {
+	if m != nil {
+		return m.Base
+	}
+	return 0
+}
+
+func (m *SCCState) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *SCCState) GetName() []byte {
+	if m != nil {
+		return m.Name
+	}
+	return nil
+}
+
+func (m *SCCState) GetLastSequencerSubmit() time.Time {
+	if m != nil {
+		return m.LastSequencerSubmit
+	}
+	return time.Time{}
 }
 
 func init() {
@@ -747,78 +739,76 @@ func init() {
 	proto.RegisterType((*CTCBatchElement)(nil), "finschia.or.da.v1.CTCBatchElement")
 	proto.RegisterType((*CTCBatch)(nil), "finschia.or.da.v1.CTCBatch")
 	proto.RegisterType((*CTCRef)(nil), "finschia.or.da.v1.CTCRef")
-	proto.RegisterType((*CTCMetaData)(nil), "finschia.or.da.v1.CTCMetaData")
 	proto.RegisterType((*L1ToL2Queue)(nil), "finschia.or.da.v1.L1toL2Queue")
 	proto.RegisterType((*SCCBatch)(nil), "finschia.or.da.v1.SCCBatch")
 	proto.RegisterType((*SCCRef)(nil), "finschia.or.da.v1.SCCRef")
-	proto.RegisterType((*SCCMetaData)(nil), "finschia.or.da.v1.SCCMetaData")
 	proto.RegisterType((*BatchHeader)(nil), "finschia.or.da.v1.BatchHeader")
-	proto.RegisterType((*BatchChainState)(nil), "finschia.or.da.v1.BatchChainState")
+	proto.RegisterType((*CTCState)(nil), "finschia.or.da.v1.CTCState")
+	proto.RegisterType((*SCCState)(nil), "finschia.or.da.v1.SCCState")
 }
 
 func init() { proto.RegisterFile("finschia/or/da/v1/da.proto", fileDescriptor_5f98d06b06a65392) }
 
 var fileDescriptor_5f98d06b06a65392 = []byte{
-	// 931 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0xcd, 0x6e, 0xdb, 0x46,
-	0x10, 0x16, 0x25, 0x47, 0x95, 0x87, 0x8a, 0x7f, 0xb6, 0x4e, 0x22, 0xa8, 0x28, 0xe5, 0xf0, 0x64,
-	0xb8, 0x28, 0x05, 0x29, 0x40, 0xda, 0x53, 0x81, 0x8a, 0x56, 0x6a, 0x01, 0x8e, 0x7f, 0x48, 0x15,
-	0x68, 0x73, 0x21, 0x56, 0xd2, 0x5a, 0x24, 0x42, 0x72, 0x15, 0xee, 0x32, 0x55, 0x7c, 0xea, 0xb1,
-	0xcd, 0x29, 0x2f, 0x90, 0x53, 0x2e, 0xbd, 0xf4, 0x3d, 0x72, 0x4c, 0x6f, 0x45, 0x51, 0xb8, 0x85,
-	0x7d, 0xec, 0x4b, 0x14, 0xbb, 0x4b, 0xb2, 0x4a, 0x6d, 0x23, 0x68, 0xe1, 0xf6, 0xa4, 0xdd, 0x99,
-	0x6f, 0x66, 0x67, 0xf8, 0x7d, 0x33, 0x10, 0x34, 0x8f, 0x83, 0x98, 0x8d, 0xfd, 0x00, 0xb7, 0x69,
-	0xd2, 0x9e, 0xe0, 0xf6, 0xd3, 0x4e, 0x7b, 0x82, 0xad, 0x59, 0x42, 0x39, 0x45, 0xeb, 0xb9, 0xcf,
-	0xa2, 0x89, 0x35, 0xc1, 0xd6, 0xd3, 0x4e, 0x73, 0x63, 0x4a, 0xa7, 0x54, 0x7a, 0xdb, 0xe2, 0xa4,
-	0x80, 0xcd, 0xd6, 0x94, 0xd2, 0x69, 0x48, 0xda, 0xf2, 0x36, 0x4a, 0x8f, 0xdb, 0x3c, 0x88, 0x08,
-	0xe3, 0x38, 0x9a, 0x65, 0x00, 0xe3, 0xe2, 0x2b, 0x33, 0x9c, 0xe0, 0x88, 0x29, 0xbf, 0xf9, 0xab,
-	0x06, 0xab, 0xf6, 0xd0, 0xee, 0x61, 0x3e, 0xf6, 0x6d, 0x1a, 0x73, 0x32, 0xe7, 0x68, 0x1b, 0xd6,
-	0xe3, 0x34, 0xf2, 0x18, 0x79, 0x92, 0x92, 0x78, 0x4c, 0x26, 0x1e, 0x9f, 0xb3, 0x86, 0xb6, 0xa9,
-	0x6d, 0x2d, 0x39, 0xab, 0x71, 0x1a, 0xb9, 0xb9, 0x7d, 0x38, 0x67, 0xe8, 0x13, 0x68, 0x48, 0x6c,
-	0x3a, 0x52, 0x70, 0xee, 0x3d, 0x49, 0x49, 0x4a, 0x64, 0x48, 0x59, 0x86, 0xdc, 0x12, 0x21, 0x85,
-	0xfb, 0x48, 0x78, 0x45, 0xe0, 0x17, 0x50, 0x0f, 0x3b, 0x5e, 0x51, 0x6e, 0xa3, 0xb2, 0xa9, 0x6d,
-	0xe9, 0xdd, 0xa6, 0xa5, 0x1a, 0xb2, 0xf2, 0x86, 0xac, 0x61, 0x8e, 0xe8, 0xd5, 0x5e, 0x9f, 0xb6,
-	0x4a, 0x2f, 0x7e, 0x6b, 0x69, 0x8e, 0x1e, 0x76, 0x0a, 0x33, 0xfa, 0x00, 0x96, 0xc3, 0x8e, 0xe7,
-	0x93, 0x60, 0xea, 0xf3, 0xc6, 0x92, 0x7c, 0xb2, 0x16, 0x76, 0x76, 0xe5, 0xdd, 0xfc, 0x69, 0xa1,
-	0xbd, 0x7e, 0x48, 0x22, 0x12, 0x73, 0x74, 0x17, 0xea, 0x01, 0xfb, 0xab, 0x3b, 0xd9, 0x59, 0xcd,
-	0xd1, 0x03, 0x56, 0x34, 0x76, 0xa1, 0xb8, 0xf2, 0xb5, 0x14, 0x57, 0x79, 0xbb, 0x38, 0xb4, 0x01,
-	0x37, 0xf8, 0x3c, 0xc1, 0xdf, 0xc8, 0xaa, 0xeb, 0x8e, 0xba, 0xa0, 0x16, 0xe8, 0xea, 0x13, 0x06,
-	0xf1, 0x84, 0xcc, 0x1b, 0x37, 0x64, 0x10, 0x48, 0xd3, 0x40, 0x58, 0xcc, 0x6f, 0xcb, 0x50, 0xcb,
-	0x7b, 0x42, 0x01, 0xdc, 0x61, 0x3e, 0x4d, 0xc3, 0x89, 0xc7, 0x38, 0x4e, 0xb8, 0x87, 0xb9, 0x47,
-	0x54, 0x9f, 0xb2, 0xaf, 0xe5, 0x5e, 0x57, 0x14, 0xf6, 0xcb, 0x69, 0x6b, 0x7b, 0x1a, 0x70, 0x3f,
-	0x1d, 0x59, 0x63, 0x1a, 0xb5, 0x1f, 0xe4, 0x9a, 0xc8, 0xc5, 0xf1, 0x31, 0x9b, 0x3c, 0x6e, 0xf3,
-	0x67, 0x33, 0xc2, 0xac, 0x41, 0xcc, 0x9d, 0x0d, 0x95, 0xd2, 0x15, 0x19, 0x3f, 0xe7, 0xf9, 0x77,
-	0x1b, 0xc0, 0xca, 0x48, 0xbc, 0xe9, 0x8d, 0x95, 0x4e, 0x04, 0xc1, 0x95, 0x2d, 0xbd, 0x6b, 0x5a,
-	0x17, 0xd4, 0x6a, 0xfd, 0x4d, 0x52, 0xce, 0xcd, 0xd1, 0xc2, 0x8d, 0xa1, 0xcf, 0xa0, 0x96, 0x55,
-	0xc9, 0x1a, 0x95, 0x77, 0x26, 0xc9, 0x0a, 0x70, 0x8a, 0x18, 0xf3, 0x04, 0xaa, 0xf6, 0xd0, 0x76,
-	0xc8, 0x31, 0xba, 0x0f, 0x55, 0x9f, 0xe0, 0x09, 0x49, 0x64, 0xbb, 0x7a, 0xd7, 0xb8, 0x24, 0x8f,
-	0x4c, 0xb2, 0x2b, 0x51, 0x4e, 0x86, 0x46, 0x9f, 0xc2, 0x7b, 0x59, 0x1b, 0x19, 0xb9, 0xc6, 0xe5,
-	0x05, 0x3c, 0x24, 0x1c, 0xef, 0x60, 0x8e, 0x9d, 0x1c, 0x6e, 0xbe, 0xd2, 0x40, 0x5f, 0x70, 0xa0,
-	0x2d, 0x58, 0x8b, 0xc9, 0x3c, 0xd7, 0xbd, 0x22, 0x4d, 0x0d, 0xcb, 0x8a, 0xb0, 0x1f, 0x15, 0xc4,
-	0x5d, 0x9f, 0xaa, 0xee, 0x42, 0x7d, 0x14, 0xd2, 0xf1, 0x63, 0x2f, 0x4e, 0xa3, 0x11, 0x49, 0x32,
-	0x61, 0xe9, 0xd2, 0xb6, 0x2f, 0x4d, 0xe6, 0xf7, 0x1a, 0xe8, 0x7b, 0x1d, 0x4e, 0xf7, 0xba, 0xb2,
-	0x80, 0x0b, 0x6f, 0x6b, 0xd7, 0xa2, 0xe8, 0xf2, 0x55, 0x8a, 0xae, 0x2c, 0x28, 0xda, 0xfc, 0x51,
-	0x83, 0x9a, 0x6b, 0xff, 0xff, 0x82, 0xbd, 0x0f, 0xb7, 0x07, 0x31, 0x27, 0x49, 0x44, 0x26, 0x01,
-	0xe6, 0xc4, 0xe5, 0x98, 0x13, 0x87, 0xd2, 0x4c, 0xb8, 0x75, 0xe7, 0x0a, 0xaf, 0x50, 0x97, 0x6b,
-	0xff, 0xf7, 0xea, 0x72, 0xed, 0x4b, 0xd4, 0x35, 0x05, 0x7d, 0xc1, 0x8e, 0xbe, 0x82, 0x5b, 0x21,
-	0x66, 0xbc, 0xd8, 0x56, 0x89, 0xd8, 0xb4, 0x51, 0xc0, 0xff, 0x11, 0x7f, 0xef, 0x8b, 0x14, 0xf9,
-	0x72, 0x4b, 0x5c, 0x99, 0xc0, 0xfc, 0x43, 0x03, 0x7d, 0xa1, 0x74, 0x64, 0x42, 0x95, 0xcf, 0x7d,
-	0xcc, 0x7c, 0x99, 0xba, 0xde, 0x83, 0xb3, 0xd3, 0x56, 0x75, 0x38, 0xdf, 0xc5, 0xcc, 0x77, 0x32,
-	0x0f, 0xfa, 0x1a, 0x56, 0x38, 0xe5, 0x38, 0xf4, 0x8a, 0xe1, 0x2d, 0xff, 0x6b, 0xca, 0x6e, 0xca,
-	0x4c, 0x19, 0x55, 0x0c, 0x7d, 0x08, 0xa0, 0x96, 0x0b, 0x0b, 0x4e, 0x48, 0x26, 0xe8, 0x65, 0x69,
-	0x71, 0x83, 0x13, 0x22, 0x96, 0xa2, 0x72, 0xab, 0xf9, 0x52, 0x6b, 0x5e, 0x45, 0xa8, 0xd9, 0x2a,
-	0xe2, 0x13, 0x4a, 0xb9, 0x5c, 0x9a, 0xf5, 0x2c, 0x5e, 0x70, 0x6a, 0x1e, 0xc1, 0xaa, 0xda, 0x47,
-	0x3e, 0x0e, 0x62, 0x49, 0x35, 0x42, 0xb0, 0x34, 0xc2, 0x8c, 0x64, 0xb3, 0x2a, 0xcf, 0xe8, 0xb6,
-	0xe0, 0x7b, 0x41, 0xd9, 0xd9, 0x4d, 0x60, 0x63, 0x1c, 0x91, 0x4c, 0xd6, 0xf2, 0xbc, 0xfd, 0x83,
-	0x06, 0xeb, 0x36, 0x8d, 0x66, 0x09, 0x61, 0x2c, 0xa0, 0xf1, 0xc1, 0x8c, 0x07, 0x34, 0x46, 0xf7,
-	0xc0, 0xb0, 0x0f, 0x1e, 0x1e, 0x3a, 0x7d, 0xd7, 0x1d, 0x1c, 0xec, 0x7b, 0x07, 0x87, 0x43, 0xf1,
-	0xf3, 0xe5, 0xbe, 0x7b, 0xd8, 0xb7, 0x07, 0x0f, 0x06, 0xfd, 0x9d, 0xb5, 0x52, 0x73, 0xf5, 0xf9,
-	0xcb, 0x4d, 0x5d, 0xe1, 0xfb, 0xd1, 0x8c, 0x3f, 0x43, 0x1f, 0xc1, 0x9d, 0x4b, 0x82, 0x1e, 0xed,
-	0x0d, 0x7a, 0x6b, 0x5a, 0x73, 0xe5, 0xf9, 0xcb, 0x4d, 0x50, 0x68, 0x61, 0xb9, 0x0a, 0xec, 0x0e,
-	0x77, 0xd6, 0xca, 0x6f, 0x81, 0xdd, 0xe1, 0x4e, 0x73, 0xe9, 0xbb, 0x57, 0x46, 0xa9, 0xb7, 0xfb,
-	0xfa, 0xcc, 0xd0, 0xde, 0x9c, 0x19, 0xda, 0xef, 0x67, 0x86, 0xf6, 0xe2, 0xdc, 0x28, 0xbd, 0x39,
-	0x37, 0x4a, 0x3f, 0x9f, 0x1b, 0xa5, 0x47, 0xd6, 0x3b, 0x19, 0x9b, 0x67, 0x7f, 0x1c, 0x24, 0x73,
-	0xa3, 0xaa, 0x14, 0xda, 0xbd, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x70, 0xa1, 0xf6, 0x28, 0xbd,
-	0x08, 0x00, 0x00,
+	// 926 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x4f, 0x6f, 0xdc, 0x44,
+	0x14, 0x5f, 0xef, 0xa6, 0xcb, 0x66, 0xbc, 0xdd, 0x24, 0x43, 0xda, 0xae, 0x16, 0xe1, 0x0d, 0x7b,
+	0x8a, 0x82, 0xb0, 0xb5, 0xae, 0x54, 0x6e, 0x08, 0xd6, 0xd9, 0x36, 0x2b, 0x85, 0x26, 0xb5, 0x8d,
+	0x04, 0xbd, 0x58, 0xb3, 0xeb, 0xc9, 0xda, 0xc2, 0xf6, 0x6c, 0x3d, 0xe3, 0xe2, 0xf6, 0xc4, 0x09,
+	0x41, 0x4f, 0xfd, 0x02, 0x3d, 0xc1, 0x81, 0x0b, 0xdf, 0xa3, 0xc7, 0x1e, 0x11, 0x42, 0x01, 0x25,
+	0x47, 0x24, 0x3e, 0x03, 0x9a, 0x19, 0xdb, 0xdd, 0x26, 0x8d, 0x8a, 0x20, 0xea, 0x69, 0x3d, 0xef,
+	0xcf, 0xcf, 0xef, 0xfd, 0xfc, 0x7b, 0x6f, 0x16, 0xf4, 0x8e, 0xc2, 0x84, 0xce, 0x82, 0x10, 0x19,
+	0x24, 0x35, 0x7c, 0x64, 0x3c, 0x1c, 0x1a, 0x3e, 0xd2, 0x17, 0x29, 0x61, 0x04, 0x6e, 0x94, 0x3e,
+	0x9d, 0xa4, 0xba, 0x8f, 0xf4, 0x87, 0xc3, 0xde, 0xe6, 0x9c, 0xcc, 0x89, 0xf0, 0x1a, 0xfc, 0x49,
+	0x06, 0xf6, 0xfa, 0x73, 0x42, 0xe6, 0x11, 0x36, 0xc4, 0x69, 0x9a, 0x1d, 0x19, 0x2c, 0x8c, 0x31,
+	0x65, 0x28, 0x5e, 0x14, 0x01, 0xda, 0xf9, 0xb7, 0x2c, 0x50, 0x8a, 0x62, 0x2a, 0xfd, 0x83, 0xdf,
+	0x15, 0xb0, 0x66, 0xb9, 0xd6, 0x08, 0xb1, 0x59, 0x60, 0x91, 0x84, 0xe1, 0x9c, 0xc1, 0x1d, 0xb0,
+	0x91, 0x64, 0xb1, 0x47, 0xf1, 0x83, 0x0c, 0x27, 0x33, 0xec, 0x7b, 0x2c, 0xa7, 0x5d, 0x65, 0x4b,
+	0xd9, 0x5e, 0xb1, 0xd7, 0x92, 0x2c, 0x76, 0x4a, 0xbb, 0x9b, 0x53, 0xf8, 0x31, 0xe8, 0x8a, 0xd8,
+	0x6c, 0x2a, 0xc3, 0x99, 0xf7, 0x20, 0xc3, 0x19, 0x16, 0x29, 0x75, 0x91, 0x72, 0x8d, 0xa7, 0x54,
+	0xee, 0x7b, 0xdc, 0xcb, 0x13, 0xef, 0x80, 0x76, 0x34, 0xf4, 0xaa, 0x72, 0xbb, 0x8d, 0x2d, 0x65,
+	0x5b, 0x35, 0x7b, 0xba, 0x6c, 0x48, 0x2f, 0x1b, 0xd2, 0xdd, 0x32, 0x62, 0xd4, 0x7a, 0x7e, 0xdc,
+	0xaf, 0x3d, 0xfd, 0xa3, 0xaf, 0xd8, 0x6a, 0x34, 0xac, 0xcc, 0xf0, 0x3d, 0xb0, 0x1a, 0x0d, 0xbd,
+	0x00, 0x87, 0xf3, 0x80, 0x75, 0x57, 0xc4, 0x2b, 0x5b, 0xd1, 0x70, 0x4f, 0x9c, 0x07, 0x7f, 0x2f,
+	0xb5, 0x37, 0x8e, 0x70, 0x8c, 0x13, 0x06, 0x3f, 0x00, 0xed, 0x90, 0xbe, 0xec, 0x4e, 0x74, 0xd6,
+	0xb2, 0xd5, 0x90, 0x56, 0x8d, 0x9d, 0x2b, 0xae, 0x7e, 0x29, 0xc5, 0x35, 0x5e, 0x2d, 0x0e, 0x6e,
+	0x82, 0x2b, 0x2c, 0x4f, 0xd1, 0x37, 0xa2, 0xea, 0xb6, 0x2d, 0x0f, 0xb0, 0x0f, 0x54, 0x49, 0x61,
+	0x98, 0xf8, 0x38, 0xef, 0x5e, 0x11, 0x49, 0x40, 0x98, 0x26, 0xdc, 0x22, 0x30, 0xcd, 0x12, 0xb3,
+	0x59, 0x60, 0x9a, 0x45, 0xc3, 0xdf, 0xd6, 0x41, 0xab, 0x6c, 0x18, 0x86, 0xe0, 0x06, 0x0d, 0x48,
+	0x16, 0xf9, 0x1e, 0x65, 0x28, 0x65, 0x1e, 0x62, 0x1e, 0x96, 0x24, 0x88, 0xa6, 0x57, 0x47, 0x26,
+	0xaf, 0xfa, 0xb7, 0xe3, 0xfe, 0xce, 0x3c, 0x64, 0x41, 0x36, 0xd5, 0x67, 0x24, 0x36, 0x6e, 0x97,
+	0x82, 0x29, 0x95, 0xf3, 0x11, 0xf5, 0xbf, 0x36, 0xd8, 0xa3, 0x05, 0xa6, 0xfa, 0x24, 0x61, 0xf6,
+	0xa6, 0x84, 0x74, 0x38, 0xe2, 0x67, 0xac, 0x24, 0x75, 0x02, 0x3a, 0x53, 0xfe, 0x4e, 0x6f, 0x26,
+	0x45, 0xc4, 0xbf, 0x7e, 0x63, 0x5b, 0x35, 0x07, 0xfa, 0x39, 0x29, 0xeb, 0x67, 0xf4, 0x66, 0x5f,
+	0x9d, 0x2e, 0x9d, 0x28, 0xfc, 0x04, 0xb4, 0x8a, 0x2a, 0x69, 0xb7, 0xf1, 0x46, 0x90, 0xa2, 0x00,
+	0xbb, 0xca, 0x19, 0x7c, 0x0a, 0x9a, 0x96, 0x6b, 0xd9, 0xf8, 0x08, 0xde, 0x02, 0xcd, 0x00, 0x23,
+	0x1f, 0xa7, 0xa2, 0x5d, 0xd5, 0xd4, 0x5e, 0x83, 0x23, 0x40, 0xf6, 0x44, 0x94, 0x5d, 0x44, 0x0f,
+	0x7e, 0x50, 0x80, 0xba, 0x3f, 0x64, 0x64, 0xdf, 0x14, 0x72, 0x3d, 0x27, 0x07, 0xe5, 0x52, 0xe4,
+	0x50, 0xbf, 0x48, 0x0e, 0x8d, 0x25, 0x39, 0x0c, 0x7e, 0x51, 0x40, 0xcb, 0xb1, 0xde, 0xfe, 0x07,
+	0xbd, 0x05, 0xae, 0x4f, 0x12, 0x86, 0xd3, 0x18, 0xfb, 0x21, 0x62, 0xd8, 0x61, 0x88, 0x61, 0x9b,
+	0x90, 0xe2, 0xc3, 0xb6, 0xed, 0x0b, 0xbc, 0x9c, 0x7d, 0xc7, 0xfa, 0x5f, 0xec, 0xff, 0xa5, 0x00,
+	0x75, 0xc9, 0x0e, 0x07, 0xa0, 0xc9, 0xf2, 0x00, 0xd1, 0x40, 0xe0, 0xb4, 0x47, 0xe0, 0xe4, 0xb8,
+	0xdf, 0x74, 0xf3, 0x3d, 0x44, 0x03, 0xbb, 0xf0, 0xc0, 0xaf, 0x40, 0x87, 0x11, 0x86, 0x22, 0xaf,
+	0x52, 0x4e, 0xfd, 0x3f, 0xf3, 0x71, 0x55, 0x20, 0x15, 0x3c, 0x50, 0xf8, 0x3e, 0x00, 0x52, 0xd9,
+	0x34, 0x7c, 0x8c, 0x8b, 0x19, 0x5e, 0x15, 0x16, 0x27, 0x7c, 0x8c, 0xf9, 0xb8, 0x4a, 0xb7, 0x1c,
+	0x57, 0xb9, 0x80, 0x64, 0x86, 0x1c, 0xd7, 0x2a, 0x3f, 0x25, 0x84, 0x89, 0x71, 0x6e, 0x17, 0xf9,
+	0x9c, 0xb0, 0xc1, 0x77, 0x72, 0x60, 0x05, 0x83, 0x10, 0x82, 0x95, 0x29, 0xa2, 0xb8, 0x58, 0xb6,
+	0xe2, 0x19, 0x5e, 0xe7, 0x34, 0x2e, 0x09, 0xa6, 0x38, 0xf1, 0xd8, 0x04, 0xc5, 0xb8, 0x50, 0x8b,
+	0x78, 0x86, 0x3b, 0x00, 0x72, 0xa1, 0x12, 0x2f, 0x32, 0xbd, 0x39, 0xa2, 0x5e, 0x8a, 0x58, 0x48,
+	0x8a, 0x9a, 0x3a, 0xd1, 0xd0, 0x25, 0xfb, 0xe6, 0x1d, 0x44, 0x6d, 0x6e, 0x85, 0xdb, 0x60, 0x3d,
+	0xc1, 0x79, 0xb9, 0xaf, 0x97, 0x97, 0x4d, 0x87, 0xdb, 0xef, 0xbd, 0x5c, 0x38, 0x67, 0xe5, 0xdf,
+	0xbc, 0x14, 0xf9, 0xbf, 0x73, 0x66, 0x55, 0xff, 0x24, 0x85, 0x7e, 0x39, 0x44, 0x7c, 0x09, 0xae,
+	0x45, 0x88, 0xb2, 0x6a, 0xcb, 0xa7, 0xfc, 0x86, 0x8a, 0x43, 0x79, 0x41, 0xfc, 0xdb, 0xda, 0xdf,
+	0xe5, 0x10, 0xe5, 0xa5, 0x90, 0x3a, 0x02, 0x60, 0xe7, 0x67, 0x05, 0x6c, 0x58, 0x24, 0x5e, 0xa4,
+	0x98, 0xd2, 0x90, 0x24, 0x07, 0x0b, 0x16, 0x92, 0x04, 0xde, 0x04, 0x9a, 0x75, 0xf0, 0xf9, 0xa1,
+	0x3d, 0x76, 0x9c, 0xc9, 0xc1, 0x5d, 0xef, 0xe0, 0xd0, 0xe5, 0x3f, 0x5f, 0xdc, 0x75, 0x0e, 0xc7,
+	0xd6, 0xe4, 0xf6, 0x64, 0xbc, 0xbb, 0x5e, 0xeb, 0xad, 0x3d, 0x79, 0xb6, 0xa5, 0xca, 0xf8, 0x71,
+	0xbc, 0x60, 0x8f, 0xe0, 0x87, 0xe0, 0xc6, 0x6b, 0x92, 0xee, 0xef, 0x4f, 0x46, 0xeb, 0x4a, 0xaf,
+	0xf3, 0xe4, 0xd9, 0x16, 0x90, 0xd1, 0xdc, 0x72, 0x51, 0xb0, 0xe3, 0xee, 0xae, 0xd7, 0x5f, 0x09,
+	0x76, 0xdc, 0xdd, 0xde, 0xca, 0xf7, 0x3f, 0x6a, 0xb5, 0xd1, 0xde, 0xf3, 0x13, 0x4d, 0x79, 0x71,
+	0xa2, 0x29, 0x7f, 0x9e, 0x68, 0xca, 0xd3, 0x53, 0xad, 0xf6, 0xe2, 0x54, 0xab, 0xfd, 0x7a, 0xaa,
+	0xd5, 0xee, 0xeb, 0x6f, 0x1c, 0x87, 0xbc, 0xf8, 0xbf, 0x20, 0xc6, 0x62, 0xda, 0x14, 0x3c, 0xdd,
+	0xfc, 0x27, 0x00, 0x00, 0xff, 0xff, 0x04, 0xb2, 0x4a, 0x58, 0xb4, 0x08, 0x00, 0x00,
 }
 
 func (m *CTCBatchContext) Marshal() (dAtA []byte, err error) {
@@ -887,6 +877,11 @@ func (m *CTCBatchElement) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.L2Height != 0 {
+		i = encodeVarintDa(dAtA, i, uint64(m.L2Height))
+		i--
+		dAtA[i] = 0x30
+	}
 	if m.QueueIndex != 0 {
 		i = encodeVarintDa(dAtA, i, uint64(m.QueueIndex))
 		i--
@@ -1006,18 +1001,6 @@ func (m *CTCRef) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Context != nil {
-		{
-			size, err := m.Context.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintDa(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
 	if m.Header != nil {
 		{
 			size, err := m.Header.MarshalToSizedBuffer(dAtA[:i])
@@ -1029,47 +1012,6 @@ func (m *CTCRef) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *CTCMetaData) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *CTCMetaData) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *CTCMetaData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.BlockNumber != 0 {
-		i = encodeVarintDa(dAtA, i, uint64(m.BlockNumber))
-		i--
-		dAtA[i] = 0x18
-	}
-	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.L1Timestamp, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.L1Timestamp):])
-	if err5 != nil {
-		return 0, err5
-	}
-	i -= n5
-	i = encodeVarintDa(dAtA, i, uint64(n5))
-	i--
-	dAtA[i] = 0x12
-	if m.NextQueueIndex != 0 {
-		i = encodeVarintDa(dAtA, i, uint64(m.NextQueueIndex))
-		i--
-		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1106,12 +1048,12 @@ func (m *L1ToL2Queue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x10
 	}
-	n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.L1Timestamp, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.L1Timestamp):])
-	if err6 != nil {
-		return 0, err6
+	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.L1Timestamp, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.L1Timestamp):])
+	if err4 != nil {
+		return 0, err4
 	}
-	i -= n6
-	i = encodeVarintDa(dAtA, i, uint64(n6))
+	i -= n4
+	i = encodeVarintDa(dAtA, i, uint64(n4))
 	i--
 	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
@@ -1179,18 +1121,6 @@ func (m *SCCRef) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Context != nil {
-		{
-			size, err := m.Context.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintDa(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
 	if m.Header != nil {
 		{
 			size, err := m.Header.MarshalToSizedBuffer(dAtA[:i])
@@ -1203,37 +1133,6 @@ func (m *SCCRef) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0xa
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SCCMetaData) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SCCMetaData) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SCCMetaData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LastSequencerSubmit, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LastSequencerSubmit):])
-	if err9 != nil {
-		return 0, err9
-	}
-	i -= n9
-	i = encodeVarintDa(dAtA, i, uint64(n9))
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1294,7 +1193,7 @@ func (m *BatchHeader) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *BatchChainState) Marshal() (dAtA []byte, err error) {
+func (m *CTCState) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1304,16 +1203,87 @@ func (m *BatchChainState) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *BatchChainState) MarshalTo(dAtA []byte) (int, error) {
+func (m *CTCState) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *BatchChainState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CTCState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.L1Height != 0 {
+		i = encodeVarintDa(dAtA, i, uint64(m.L1Height))
+		i--
+		dAtA[i] = 0x38
+	}
+	n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.L1Timestamp, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.L1Timestamp):])
+	if err6 != nil {
+		return 0, err6
+	}
+	i -= n6
+	i = encodeVarintDa(dAtA, i, uint64(n6))
+	i--
+	dAtA[i] = 0x32
+	if m.NextQueueIndex != 0 {
+		i = encodeVarintDa(dAtA, i, uint64(m.NextQueueIndex))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.L1ToL2GasRatio != 0 {
+		i = encodeVarintDa(dAtA, i, uint64(m.L1ToL2GasRatio))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintDa(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Height != 0 {
+		i = encodeVarintDa(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Base != 0 {
+		i = encodeVarintDa(dAtA, i, uint64(m.Base))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SCCState) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SCCState) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SCCState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	n7, err7 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LastSequencerSubmit, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LastSequencerSubmit):])
+	if err7 != nil {
+		return 0, err7
+	}
+	i -= n7
+	i = encodeVarintDa(dAtA, i, uint64(n7))
+	i--
+	dAtA[i] = 0x22
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
@@ -1386,6 +1356,9 @@ func (m *CTCBatchElement) Size() (n int) {
 	if m.QueueIndex != 0 {
 		n += 1 + sovDa(uint64(m.QueueIndex))
 	}
+	if m.L2Height != 0 {
+		n += 1 + sovDa(uint64(m.L2Height))
+	}
 	return n
 }
 
@@ -1421,27 +1394,6 @@ func (m *CTCRef) Size() (n int) {
 	if m.Header != nil {
 		l = m.Header.Size()
 		n += 1 + l + sovDa(uint64(l))
-	}
-	if m.Context != nil {
-		l = m.Context.Size()
-		n += 1 + l + sovDa(uint64(l))
-	}
-	return n
-}
-
-func (m *CTCMetaData) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.NextQueueIndex != 0 {
-		n += 1 + sovDa(uint64(m.NextQueueIndex))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.L1Timestamp)
-	n += 1 + l + sovDa(uint64(l))
-	if m.BlockNumber != 0 {
-		n += 1 + sovDa(uint64(m.BlockNumber))
 	}
 	return n
 }
@@ -1491,21 +1443,6 @@ func (m *SCCRef) Size() (n int) {
 		l = m.Header.Size()
 		n += 1 + l + sovDa(uint64(l))
 	}
-	if m.Context != nil {
-		l = m.Context.Size()
-		n += 1 + l + sovDa(uint64(l))
-	}
-	return n
-}
-
-func (m *SCCMetaData) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LastSequencerSubmit)
-	n += 1 + l + sovDa(uint64(l))
 	return n
 }
 
@@ -1534,7 +1471,7 @@ func (m *BatchHeader) Size() (n int) {
 	return n
 }
 
-func (m *BatchChainState) Size() (n int) {
+func (m *CTCState) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1550,6 +1487,38 @@ func (m *BatchChainState) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovDa(uint64(l))
 	}
+	if m.L1ToL2GasRatio != 0 {
+		n += 1 + sovDa(uint64(m.L1ToL2GasRatio))
+	}
+	if m.NextQueueIndex != 0 {
+		n += 1 + sovDa(uint64(m.NextQueueIndex))
+	}
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.L1Timestamp)
+	n += 1 + l + sovDa(uint64(l))
+	if m.L1Height != 0 {
+		n += 1 + sovDa(uint64(m.L1Height))
+	}
+	return n
+}
+
+func (m *SCCState) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Base != 0 {
+		n += 1 + sovDa(uint64(m.Base))
+	}
+	if m.Height != 0 {
+		n += 1 + sovDa(uint64(m.Height))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovDa(uint64(l))
+	}
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LastSequencerSubmit)
+	n += 1 + l + sovDa(uint64(l))
 	return n
 }
 
@@ -1853,6 +1822,25 @@ func (m *CTCBatchElement) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field L2Height", wireType)
+			}
+			m.L2Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.L2Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDa(dAtA[iNdEx:])
@@ -2091,163 +2079,6 @@ func (m *CTCRef) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Context", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDa
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDa
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDa
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Context == nil {
-				m.Context = &CTCMetaData{}
-			}
-			if err := m.Context.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipDa(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthDa
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *CTCMetaData) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowDa
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: CTCMetaData: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CTCMetaData: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NextQueueIndex", wireType)
-			}
-			m.NextQueueIndex = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDa
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NextQueueIndex |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field L1Timestamp", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDa
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDa
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDa
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.L1Timestamp, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BlockNumber", wireType)
-			}
-			m.BlockNumber = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDa
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.BlockNumber |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDa(dAtA[iNdEx:])
@@ -2586,125 +2417,6 @@ func (m *SCCRef) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Context", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDa
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDa
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDa
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Context == nil {
-				m.Context = &SCCMetaData{}
-			}
-			if err := m.Context.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipDa(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthDa
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SCCMetaData) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowDa
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SCCMetaData: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SCCMetaData: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LastSequencerSubmit", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDa
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDa
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDa
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LastSequencerSubmit, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDa(dAtA[iNdEx:])
@@ -2916,7 +2628,7 @@ func (m *BatchHeader) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *BatchChainState) Unmarshal(dAtA []byte) error {
+func (m *CTCState) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2939,10 +2651,10 @@ func (m *BatchChainState) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: BatchChainState: wiretype end group for non-group")
+			return fmt.Errorf("proto: CTCState: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: BatchChainState: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CTCState: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3015,6 +2727,251 @@ func (m *BatchChainState) Unmarshal(dAtA []byte) error {
 			m.Name = append(m.Name[:0], dAtA[iNdEx:postIndex]...)
 			if m.Name == nil {
 				m.Name = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field L1ToL2GasRatio", wireType)
+			}
+			m.L1ToL2GasRatio = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.L1ToL2GasRatio |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextQueueIndex", wireType)
+			}
+			m.NextQueueIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NextQueueIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field L1Timestamp", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDa
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDa
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.L1Timestamp, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field L1Height", wireType)
+			}
+			m.L1Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.L1Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDa(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthDa
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SCCState) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDa
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SCCState: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SCCState: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Base", wireType)
+			}
+			m.Base = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Base |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthDa
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDa
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = append(m.Name[:0], dAtA[iNdEx:postIndex]...)
+			if m.Name == nil {
+				m.Name = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastSequencerSubmit", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDa
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDa
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDa
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LastSequencerSubmit, dAtA[iNdEx:postIndex]); err != nil {
+				return err
 			}
 			iNdEx = postIndex
 		default:

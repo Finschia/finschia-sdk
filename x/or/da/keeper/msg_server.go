@@ -22,7 +22,7 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 	ctx.BlockHeader()
-	if err := k.validateAuthority(msg.Authority); err != nil {
+	if err := k.validateGovAuthority(msg.Authority); err != nil {
 		return nil, err
 	}
 
@@ -37,9 +37,20 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) AppendCTCBatch(goCtx context.Context, msg *types.MsgAppendCTCBatch) (*types.MsgAppendCTCBatchResponse, error) {
-	k.appendSequencerBatch()
+func (k msgServer) RegisterRollup(goCtx context.Context, msg *types.MsgRegisterRollup) (*types.MsgRegisterRollupResponse, error) {
+	if err := k.validateSequencerAuthority(); err != nil {
+		return nil, err
+	}
+
 	panic("implement me")
+}
+
+func (k msgServer) AppendCTCBatch(goCtx context.Context, msg *types.MsgAppendCTCBatch) (*types.MsgAppendCTCBatchResponse, error) {
+	if err := k.validateSequencerAuthority(); err != nil {
+		return nil, err
+	}
+	k.appendSequencerBatch()
+	return &types.MsgAppendCTCBatchResponse{}, nil
 }
 
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
@@ -47,11 +58,9 @@ func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types
 }
 
 func (k msgServer) AppendSCCBatch(goCtx context.Context, msg *types.MsgAppendSCCBatch) (*types.MsgAppendSCCBatchResponse, error) {
-	//TODO implement me
 	panic("implement me")
 }
 
 func (k msgServer) RemoveSCCBatch(goCtx context.Context, msg *types.MsgAppendSCCBatch) (*types.MsgAppendSCCBatchResponse, error) {
-	//TODO implement me
 	panic("implement me")
 }

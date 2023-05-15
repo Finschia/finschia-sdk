@@ -15,10 +15,10 @@ message GenesisState {
 }
 
 message CTC {
-  BatchChainState state = 1;
+  CTCState state = 1;
   repeated CTCRef history = 2;
 }
 message SCC {
-  BatchChainState state = 1;
+  SCCState state = 1;
   repeated SCCRef history = 2;
 }

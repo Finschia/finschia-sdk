@@ -54,9 +54,12 @@ message CTCBatchElement {
 
   // QUEUED TX ONLY
   uint64 queue_index = 5;
+
+  // l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer.
+  uint64 l2_height = 6;
 }
 
-// Sequencer use CTCBatch when they submit
+// Sequencer use CTCBatch when they submit.
 message CTCBatch {
   // previous total batch elements.
   string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
@@ -69,20 +72,6 @@ message CTCBatch {
 message CTCRef {
   // Reference for accessing batch data.
   BatchHeader header = 1;
-
-  // The information of current CTC context.
-  CTCMetaData context = 2;// The number of txs in the batch.
-}
-
-message CTCMetaData {
-  // Index of the next queue element.
-  uint64 next_queue_index = 1;
-
-  // The latest batch timestamp.
-  google.protobuf.Timestamp l1_timestamp = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-
-  // The latest batch L1 blockNumber
-  uint64 block_number = 3;
 }
 
 // L1toL2Queue is a queued tx for L2 batch.
@@ -98,12 +87,12 @@ message L1toL2Queue {
   bytes txraw = 3;
 }
 
-// Proposer use SCCBatch when they submit
+// Proposer use SCCBatch when they submit.
 message SCCBatch {
   // previous total batch elements.
   string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 
-  // IntermediateStateRoots for a specific range of CTCs
+  // IntermediateStateRoots for a specific range of CTCs.
   repeated bytes IntermediateStateRoots = 2;
 }
 
@@ -111,14 +100,6 @@ message SCCBatch {
 message SCCRef {
   // Reference for accessing batch data.
   BatchHeader header = 1;
-
-  // The information of current CTC context.
-  SCCMetaData context = 2;// The number of txs in the batch.
-}
-
-message SCCMetaData {
-  // The latest batch timestamp when the sequencer submits.
-  google.protobuf.Timestamp last_sequencer_submit = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message BatchHeader {
@@ -128,22 +109,48 @@ message BatchHeader {
   // Total number of elements submitted.
   string total_elements = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 
-  // Number of elements in the batch
+  // Number of elements in the batch.
   uint64 batch_size = 3;
 
   uint64 batch_index = 4;
 
-  // CTC Batch : previous block hash
-  // SCC Batch : Merkle Root of IntermediateStateRoots
+  // CTC Batch : previous block hash.
+  // SCC Batch : Merkle Root of IntermediateStateRoots.
   bytes batch_root = 5;
 }
 
-// BatchChainState is the state of target batch chain
-message BatchChainState {
-  // Assumed to contain all contiguous batches between base and height (inclusive)
+// BatchChainState is the state of target batch chain.
+message CTCState {
+  // Assumed to contain all contiguous batches between base and height (inclusive).
   uint64 base = 1;
   uint64 height = 2;
 
-  // The name of rollup chain (use as key)
+  // The name of rollup chain (use as key).
   bytes name = 3;
+
+  // The ratio between the cost of gas on L1 and L2.
+  // This is a positive integer.
+  uint64 l1_to_l2_gas_ratio = 4;
+
+  // Index of the next queue element.
+  uint64 next_queue_index = 5;
+
+  // The latest batch timestamp.
+  google.protobuf.Timestamp l1_timestamp = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // The latest batch L1 blockNumber.
+  uint64 l1_height = 7;
+}
+
+// BatchChainState is the state of target batch chain.
+message SCCState {
+  // Assumed to contain all contiguous batches between base and height (inclusive).
+  uint64 base = 1;
+  uint64 height = 2;
+
+  // The name of rollup chain (use as key).
+  bytes name = 3;
+
+  // The latest batch timestamp when the sequencer submits.
+  google.protobuf.Timestamp last_sequencer_submit = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }

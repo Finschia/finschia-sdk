@@ -588,17 +588,16 @@
     - [Params](#finschia.or.da.v1.Params)
   
 - [finschia/or/da/v1/da.proto](#finschia/or/da/v1/da.proto)
-    - [BatchChainState](#finschia.or.da.v1.BatchChainState)
     - [BatchHeader](#finschia.or.da.v1.BatchHeader)
     - [CTCBatch](#finschia.or.da.v1.CTCBatch)
     - [CTCBatchContext](#finschia.or.da.v1.CTCBatchContext)
     - [CTCBatchElement](#finschia.or.da.v1.CTCBatchElement)
-    - [CTCMetaData](#finschia.or.da.v1.CTCMetaData)
     - [CTCRef](#finschia.or.da.v1.CTCRef)
+    - [CTCState](#finschia.or.da.v1.CTCState)
     - [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue)
     - [SCCBatch](#finschia.or.da.v1.SCCBatch)
-    - [SCCMetaData](#finschia.or.da.v1.SCCMetaData)
     - [SCCRef](#finschia.or.da.v1.SCCRef)
+    - [SCCState](#finschia.or.da.v1.SCCState)
   
     - [CompressionOption](#finschia.or.da.v1.CompressionOption)
   
@@ -8764,23 +8763,6 @@ Params defines the parameters for the module.
 
 
 
-<a name="finschia.or.da.v1.BatchChainState"></a>
-
-### BatchChainState
-BatchChainState is the state of target batch chain
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive) |
-| `height` | [uint64](#uint64) |  |  |
-| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key) |
-
-
-
-
-
-
 <a name="finschia.or.da.v1.BatchHeader"></a>
 
 ### BatchHeader
@@ -8791,9 +8773,9 @@ BatchChainState is the state of target batch chain
 | ----- | ---- | ----- | ----------- |
 | `txhash` | [bytes](#bytes) |  | Reference for accessing batch data. |
 | `total_elements` | [string](#string) |  | Total number of elements submitted. |
-| `batch_size` | [uint64](#uint64) |  | Number of elements in the batch |
+| `batch_size` | [uint64](#uint64) |  | Number of elements in the batch. |
 | `batch_index` | [uint64](#uint64) |  |  |
-| `batch_root` | [bytes](#bytes) |  | CTC Batch : previous block hash SCC Batch : Merkle Root of IntermediateStateRoots |
+| `batch_root` | [bytes](#bytes) |  | CTC Batch : previous block hash. SCC Batch : Merkle Root of IntermediateStateRoots. |
 
 
 
@@ -8803,7 +8785,7 @@ BatchChainState is the state of target batch chain
 <a name="finschia.or.da.v1.CTCBatch"></a>
 
 ### CTCBatch
-Sequencer use CTCBatch when they submit
+Sequencer use CTCBatch when they submit.
 
 
 | Field | Type | Label | Description |
@@ -8849,23 +8831,7 @@ It is used to compress shared fields that would otherwise be repeated for each t
 | `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. SEQUENCER TX ONLY |
 | `txraw` | [bytes](#bytes) |  | SEQUENCER TX ONLY |
 | `queue_index` | [uint64](#uint64) |  | QUEUED TX ONLY |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.CTCMetaData"></a>
-
-### CTCMetaData
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
-| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
-| `block_number` | [uint64](#uint64) |  | The latest batch L1 blockNumber |
+| `l2_height` | [uint64](#uint64) |  | l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer. |
 
 
 
@@ -8881,9 +8847,27 @@ CTCRef is a data type that forms an element of Canonical Transaction Chain.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `header` | [BatchHeader](#finschia.or.da.v1.BatchHeader) |  | Reference for accessing batch data. |
-| `context` | [CTCMetaData](#finschia.or.da.v1.CTCMetaData) |  | The information of current CTC context.
 
-The number of txs in the batch. |
+
+
+
+
+
+<a name="finschia.or.da.v1.CTCState"></a>
+
+### CTCState
+BatchChainState is the state of target batch chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
+| `height` | [uint64](#uint64) |  |  |
+| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
+| `l1_to_l2_gas_ratio` | [uint64](#uint64) |  | The ratio between the cost of gas on L1 and L2. This is a positive integer. |
+| `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
+| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
+| `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |
 
 
 
@@ -8911,28 +8895,13 @@ Sequencer must process this transaction in time.
 <a name="finschia.or.da.v1.SCCBatch"></a>
 
 ### SCCBatch
-Proposer use SCCBatch when they submit
+Proposer use SCCBatch when they submit.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `should_start_at_element` | [string](#string) |  | previous total batch elements. |
-| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CTCs |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.SCCMetaData"></a>
-
-### SCCMetaData
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `last_sequencer_submit` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp when the sequencer submits. |
+| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CTCs. |
 
 
 
@@ -8948,9 +8917,24 @@ CTCRef is a data type that forms an element of Canonical Transaction Chain.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `header` | [BatchHeader](#finschia.or.da.v1.BatchHeader) |  | Reference for accessing batch data. |
-| `context` | [SCCMetaData](#finschia.or.da.v1.SCCMetaData) |  | The information of current CTC context.
 
-The number of txs in the batch. |
+
+
+
+
+
+<a name="finschia.or.da.v1.SCCState"></a>
+
+### SCCState
+BatchChainState is the state of target batch chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
+| `height` | [uint64](#uint64) |  |  |
+| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
+| `last_sequencer_submit` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp when the sequencer submits. |
 
 
 
@@ -9010,7 +8994,7 @@ The number of txs in the batch. |
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `state` | [BatchChainState](#finschia.or.da.v1.BatchChainState) |  |  |
+| `state` | [CTCState](#finschia.or.da.v1.CTCState) |  |  |
 | `history` | [CTCRef](#finschia.or.da.v1.CTCRef) | repeated |  |
 
 
@@ -9043,7 +9027,7 @@ GenesisState defines the da module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `state` | [BatchChainState](#finschia.or.da.v1.BatchChainState) |  |  |
+| `state` | [SCCState](#finschia.or.da.v1.SCCState) |  |  |
 | `history` | [SCCRef](#finschia.or.da.v1.SCCRef) | repeated |  |
 
 
@@ -9124,6 +9108,11 @@ Query defines the gRPC querier service.
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch` | [CTCBatch](#finschia.or.da.v1.CTCBatch) |  |  |
+
+
 
 
 
@@ -9144,6 +9133,11 @@ Query defines the gRPC querier service.
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch` | [SCCBatch](#finschia.or.da.v1.SCCBatch) |  |  |
+
+
 
 
 
@@ -9162,6 +9156,12 @@ Query defines the gRPC querier service.
 
 ### MsgEnqueue
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `gas_limit` | [uint64](#uint64) |  |  |
+| `txraw` | [bytes](#bytes) |  |  |
 
 
 
@@ -9187,6 +9187,7 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  |  |
+| `l1_to_l2_gas_ratio` | [uint64](#uint64) |  |  |
 
 
 
@@ -9207,6 +9208,11 @@ Query defines the gRPC querier service.
 
 ### MsgRemoveSCCBatch
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch_index` | [uint64](#uint64) |  |  |
 
 
 
