@@ -12,7 +12,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
 service Query {
   // instead of getStepNumber, isSearching, and getProposedState
   rpc Challenge(QueryChallengeRequest) returns (QueryChallengeResponse) {
-    option (google.api.http).get = "/lbm/settlement/v1/challenge/{challenge_id}";
+    option (google.api.http).get = "/finschia/settlement/v1/challenge/{challenge_id}";
   }
 }
 
