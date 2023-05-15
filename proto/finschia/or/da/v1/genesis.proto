@@ -10,8 +10,8 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 // GenesisState defines the da module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated CTC ctc = 2 [(gogoproto.customname) = "CTC"];
-  repeated SCC scc = 3 [(gogoproto.customname) = "SCC"];
+  repeated CTC ctc_list = 2 [(gogoproto.customname) = "CTCList"];
+  repeated SCC scc_list = 3 [(gogoproto.customname) = "SCCList"];
 }
 
 message CTC {

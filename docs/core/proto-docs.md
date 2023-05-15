@@ -9011,8 +9011,8 @@ GenesisState defines the da module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#finschia.or.da.v1.Params) |  |  |
-| `ctc` | [CTC](#finschia.or.da.v1.CTC) | repeated |  |
-| `scc` | [SCC](#finschia.or.da.v1.SCC) | repeated |  |
+| `ctc_list` | [CTC](#finschia.or.da.v1.CTC) | repeated |  |
+| `scc_list` | [SCC](#finschia.or.da.v1.SCC) | repeated |  |
 
 
 
