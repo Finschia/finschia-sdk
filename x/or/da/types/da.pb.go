@@ -62,7 +62,7 @@ func (CompressionOption) EnumDescriptor() ([]byte, []int) {
 
 // BatchContext denotes a range of transactions that belong the same batch.
 // It is used to compress shared fields that would otherwise be repeated for each transaction.
-type CTCBatchContext struct {
+type CCBatchContext struct {
 	// num_sequenced_txs specifies the number of sequencer txs included in
 	// the batch.
 	NumSequencedTxs uint64 `protobuf:"varint,1,opt,name=num_sequenced_txs,json=numSequencedTxs,proto3" json:"num_sequenced_txs,omitempty"`
@@ -75,18 +75,18 @@ type CTCBatchContext struct {
 	L1Height uint64 `protobuf:"varint,4,opt,name=l1_height,json=l1Height,proto3" json:"l1_height,omitempty"`
 }
 
-func (m *CTCBatchContext) Reset()         { *m = CTCBatchContext{} }
-func (m *CTCBatchContext) String() string { return proto.CompactTextString(m) }
-func (*CTCBatchContext) ProtoMessage()    {}
-func (*CTCBatchContext) Descriptor() ([]byte, []int) {
+func (m *CCBatchContext) Reset()         { *m = CCBatchContext{} }
+func (m *CCBatchContext) String() string { return proto.CompactTextString(m) }
+func (*CCBatchContext) ProtoMessage()    {}
+func (*CCBatchContext) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f98d06b06a65392, []int{0}
 }
-func (m *CTCBatchContext) XXX_Unmarshal(b []byte) error {
+func (m *CCBatchContext) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CTCBatchContext) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CCBatchContext) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CTCBatchContext.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CCBatchContext.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -96,47 +96,47 @@ func (m *CTCBatchContext) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *CTCBatchContext) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CTCBatchContext.Merge(m, src)
+func (m *CCBatchContext) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CCBatchContext.Merge(m, src)
 }
-func (m *CTCBatchContext) XXX_Size() int {
+func (m *CCBatchContext) XXX_Size() int {
 	return m.Size()
 }
-func (m *CTCBatchContext) XXX_DiscardUnknown() {
-	xxx_messageInfo_CTCBatchContext.DiscardUnknown(m)
+func (m *CCBatchContext) XXX_DiscardUnknown() {
+	xxx_messageInfo_CCBatchContext.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CTCBatchContext proto.InternalMessageInfo
+var xxx_messageInfo_CCBatchContext proto.InternalMessageInfo
 
-func (m *CTCBatchContext) GetNumSequencedTxs() uint64 {
+func (m *CCBatchContext) GetNumSequencedTxs() uint64 {
 	if m != nil {
 		return m.NumSequencedTxs
 	}
 	return 0
 }
 
-func (m *CTCBatchContext) GetNumSubsequentQueueTxs() uint64 {
+func (m *CCBatchContext) GetNumSubsequentQueueTxs() uint64 {
 	if m != nil {
 		return m.NumSubsequentQueueTxs
 	}
 	return 0
 }
 
-func (m *CTCBatchContext) GetTimestamp() time.Time {
+func (m *CCBatchContext) GetTimestamp() time.Time {
 	if m != nil {
 		return m.Timestamp
 	}
 	return time.Time{}
 }
 
-func (m *CTCBatchContext) GetL1Height() uint64 {
+func (m *CCBatchContext) GetL1Height() uint64 {
 	if m != nil {
 		return m.L1Height
 	}
 	return 0
 }
 
-type CTCBatchElement struct {
+type CCBatchElement struct {
 	// timestamp is the L2 block unix timestamp of the batch.
 	// SEQUENCER TX ONLY
 	Timestamp time.Time `protobuf:"bytes,1,opt,name=timestamp,proto3,stdtime" json:"timestamp"`
@@ -151,18 +151,18 @@ type CTCBatchElement struct {
 	L2Height uint64 `protobuf:"varint,5,opt,name=l2_height,json=l2Height,proto3" json:"l2_height,omitempty"`
 }
 
-func (m *CTCBatchElement) Reset()         { *m = CTCBatchElement{} }
-func (m *CTCBatchElement) String() string { return proto.CompactTextString(m) }
-func (*CTCBatchElement) ProtoMessage()    {}
-func (*CTCBatchElement) Descriptor() ([]byte, []int) {
+func (m *CCBatchElement) Reset()         { *m = CCBatchElement{} }
+func (m *CCBatchElement) String() string { return proto.CompactTextString(m) }
+func (*CCBatchElement) ProtoMessage()    {}
+func (*CCBatchElement) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f98d06b06a65392, []int{1}
 }
-func (m *CTCBatchElement) XXX_Unmarshal(b []byte) error {
+func (m *CCBatchElement) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CTCBatchElement) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CCBatchElement) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CTCBatchElement.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CCBatchElement.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -172,54 +172,54 @@ func (m *CTCBatchElement) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *CTCBatchElement) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CTCBatchElement.Merge(m, src)
+func (m *CCBatchElement) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CCBatchElement.Merge(m, src)
 }
-func (m *CTCBatchElement) XXX_Size() int {
+func (m *CCBatchElement) XXX_Size() int {
 	return m.Size()
 }
-func (m *CTCBatchElement) XXX_DiscardUnknown() {
-	xxx_messageInfo_CTCBatchElement.DiscardUnknown(m)
+func (m *CCBatchElement) XXX_DiscardUnknown() {
+	xxx_messageInfo_CCBatchElement.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CTCBatchElement proto.InternalMessageInfo
+var xxx_messageInfo_CCBatchElement proto.InternalMessageInfo
 
-func (m *CTCBatchElement) GetTimestamp() time.Time {
+func (m *CCBatchElement) GetTimestamp() time.Time {
 	if m != nil {
 		return m.Timestamp
 	}
 	return time.Time{}
 }
 
-func (m *CTCBatchElement) GetL1Height() uint64 {
+func (m *CCBatchElement) GetL1Height() uint64 {
 	if m != nil {
 		return m.L1Height
 	}
 	return 0
 }
 
-func (m *CTCBatchElement) GetTxraw() []byte {
+func (m *CCBatchElement) GetTxraw() []byte {
 	if m != nil {
 		return m.Txraw
 	}
 	return nil
 }
 
-func (m *CTCBatchElement) GetQueueIndex() uint64 {
+func (m *CCBatchElement) GetQueueIndex() uint64 {
 	if m != nil {
 		return m.QueueIndex
 	}
 	return 0
 }
 
-func (m *CTCBatchElement) GetL2Height() uint64 {
+func (m *CCBatchElement) GetL2Height() uint64 {
 	if m != nil {
 		return m.L2Height
 	}
 	return 0
 }
 
-// CTCBatch is used  when the sequencer submits.
+// CCBatch is used  when the sequencer submits.
 // Assuming the block and timestamp criteria for sequencer txs are
 // respected within each group, the following are examples of groupings:
 //  - [s]         // sequencer can exist by itself
@@ -229,27 +229,27 @@ func (m *CTCBatchElement) GetL2Height() uint64 {
 //  - [q] [q s]   // INVALID: consecutive queued txs are split
 //  - [q q] [s]   // correct split for preceding case
 //  - [s q] [s q] // alternating sequencer tx interleaved with queued
-type CTCBatch struct {
+type CCBatch struct {
 	// previous total batch elements.
 	ShouldStartAtElement github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,1,opt,name=should_start_at_element,json=shouldStartAtElement,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"should_start_at_element"`
-	BatchContexts        []*CTCBatchContext                         `protobuf:"bytes,2,rep,name=batch_contexts,json=batchContexts,proto3" json:"batch_contexts,omitempty"`
-	Elements             []*CTCBatchElement                         `protobuf:"bytes,3,rep,name=elements,proto3" json:"elements,omitempty"`
+	BatchContexts        []*CCBatchContext                          `protobuf:"bytes,2,rep,name=batch_contexts,json=batchContexts,proto3" json:"batch_contexts,omitempty"`
+	Elements             []*CCBatchElement                          `protobuf:"bytes,3,rep,name=elements,proto3" json:"elements,omitempty"`
 	// compression is the compression algorithm used for the batch.
 	Compression CompressionOption `protobuf:"varint,4,opt,name=compression,proto3,enum=finschia.or.da.v1.CompressionOption" json:"compression,omitempty"`
 }
 
-func (m *CTCBatch) Reset()         { *m = CTCBatch{} }
-func (m *CTCBatch) String() string { return proto.CompactTextString(m) }
-func (*CTCBatch) ProtoMessage()    {}
-func (*CTCBatch) Descriptor() ([]byte, []int) {
+func (m *CCBatch) Reset()         { *m = CCBatch{} }
+func (m *CCBatch) String() string { return proto.CompactTextString(m) }
+func (*CCBatch) ProtoMessage()    {}
+func (*CCBatch) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f98d06b06a65392, []int{2}
 }
-func (m *CTCBatch) XXX_Unmarshal(b []byte) error {
+func (m *CCBatch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CTCBatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CCBatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CTCBatch.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CCBatch.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -259,57 +259,57 @@ func (m *CTCBatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *CTCBatch) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CTCBatch.Merge(m, src)
+func (m *CCBatch) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CCBatch.Merge(m, src)
 }
-func (m *CTCBatch) XXX_Size() int {
+func (m *CCBatch) XXX_Size() int {
 	return m.Size()
 }
-func (m *CTCBatch) XXX_DiscardUnknown() {
-	xxx_messageInfo_CTCBatch.DiscardUnknown(m)
+func (m *CCBatch) XXX_DiscardUnknown() {
+	xxx_messageInfo_CCBatch.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CTCBatch proto.InternalMessageInfo
+var xxx_messageInfo_CCBatch proto.InternalMessageInfo
 
-func (m *CTCBatch) GetBatchContexts() []*CTCBatchContext {
+func (m *CCBatch) GetBatchContexts() []*CCBatchContext {
 	if m != nil {
 		return m.BatchContexts
 	}
 	return nil
 }
 
-func (m *CTCBatch) GetElements() []*CTCBatchElement {
+func (m *CCBatch) GetElements() []*CCBatchElement {
 	if m != nil {
 		return m.Elements
 	}
 	return nil
 }
 
-func (m *CTCBatch) GetCompression() CompressionOption {
+func (m *CCBatch) GetCompression() CompressionOption {
 	if m != nil {
 		return m.Compression
 	}
 	return OptionEmpty
 }
 
-// CTCRef is a data type that forms an element of Canonical Transaction Chain.
-type CTCRef struct {
+// CCRef is a data type that forms an element of Canonical Transaction Chain.
+type CCRef struct {
 	// Reference for accessing batch data.
 	Header *BatchHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
 }
 
-func (m *CTCRef) Reset()         { *m = CTCRef{} }
-func (m *CTCRef) String() string { return proto.CompactTextString(m) }
-func (*CTCRef) ProtoMessage()    {}
-func (*CTCRef) Descriptor() ([]byte, []int) {
+func (m *CCRef) Reset()         { *m = CCRef{} }
+func (m *CCRef) String() string { return proto.CompactTextString(m) }
+func (*CCRef) ProtoMessage()    {}
+func (*CCRef) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f98d06b06a65392, []int{3}
 }
-func (m *CTCRef) XXX_Unmarshal(b []byte) error {
+func (m *CCRef) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CTCRef) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CCRef) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CTCRef.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CCRef.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -319,19 +319,19 @@ func (m *CTCRef) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *CTCRef) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CTCRef.Merge(m, src)
+func (m *CCRef) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CCRef.Merge(m, src)
 }
-func (m *CTCRef) XXX_Size() int {
+func (m *CCRef) XXX_Size() int {
 	return m.Size()
 }
-func (m *CTCRef) XXX_DiscardUnknown() {
-	xxx_messageInfo_CTCRef.DiscardUnknown(m)
+func (m *CCRef) XXX_DiscardUnknown() {
+	xxx_messageInfo_CCRef.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CTCRef proto.InternalMessageInfo
+var xxx_messageInfo_CCRef proto.InternalMessageInfo
 
-func (m *CTCRef) GetHeader() *BatchHeader {
+func (m *CCRef) GetHeader() *BatchHeader {
 	if m != nil {
 		return m.Header
 	}
@@ -407,7 +407,7 @@ func (m *L1ToL2Queue) GetTxraw() []byte {
 type SCCBatch struct {
 	// previous total batch elements.
 	ShouldStartAtElement github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,1,opt,name=should_start_at_element,json=shouldStartAtElement,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"should_start_at_element"`
-	// IntermediateStateRoots for a specific range of CTCs.
+	// IntermediateStateRoots for a specific range of CCs.
 	IntermediateStateRoots [][]byte `protobuf:"bytes,2,rep,name=IntermediateStateRoots,proto3" json:"IntermediateStateRoots,omitempty"`
 }
 
@@ -451,7 +451,7 @@ func (m *SCCBatch) GetIntermediateStateRoots() [][]byte {
 	return nil
 }
 
-// CTCRef is a data type that forms an element of Canonical Transaction Chain.
+// CCRef is a data type that forms an element of Canonical Transaction Chain.
 type SCCRef struct {
 	// Reference for accessing batch data.
 	Header *BatchHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`
@@ -505,7 +505,7 @@ type BatchHeader struct {
 	// Number of elements in the batch.
 	BatchSize  uint64 `protobuf:"varint,3,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
 	BatchIndex uint64 `protobuf:"varint,4,opt,name=batch_index,json=batchIndex,proto3" json:"batch_index,omitempty"`
-	// CTC Batch : previous block hash.
+	// CC Batch : previous block hash.
 	// SCC Batch : Merkle Root of IntermediateStateRoots.
 	BatchRoot []byte `protobuf:"bytes,5,opt,name=batch_root,json=batchRoot,proto3" json:"batch_root,omitempty"`
 }
@@ -572,7 +572,7 @@ func (m *BatchHeader) GetBatchRoot() []byte {
 }
 
 // BatchChainState is the state of target batch chain.
-type CTCState struct {
+type CCState struct {
 	// Assumed to contain all contiguous batches between base and height (inclusive).
 	Base   uint64 `protobuf:"varint,1,opt,name=base,proto3" json:"base,omitempty"`
 	Height uint64 `protobuf:"varint,2,opt,name=height,proto3" json:"height,omitempty"`
@@ -589,18 +589,18 @@ type CTCState struct {
 	L1Height uint64 `protobuf:"varint,7,opt,name=l1_height,json=l1Height,proto3" json:"l1_height,omitempty"`
 }
 
-func (m *CTCState) Reset()         { *m = CTCState{} }
-func (m *CTCState) String() string { return proto.CompactTextString(m) }
-func (*CTCState) ProtoMessage()    {}
-func (*CTCState) Descriptor() ([]byte, []int) {
+func (m *CCState) Reset()         { *m = CCState{} }
+func (m *CCState) String() string { return proto.CompactTextString(m) }
+func (*CCState) ProtoMessage()    {}
+func (*CCState) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f98d06b06a65392, []int{8}
 }
-func (m *CTCState) XXX_Unmarshal(b []byte) error {
+func (m *CCState) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CTCState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CCState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CTCState.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CCState.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -610,61 +610,61 @@ func (m *CTCState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *CTCState) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CTCState.Merge(m, src)
+func (m *CCState) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CCState.Merge(m, src)
 }
-func (m *CTCState) XXX_Size() int {
+func (m *CCState) XXX_Size() int {
 	return m.Size()
 }
-func (m *CTCState) XXX_DiscardUnknown() {
-	xxx_messageInfo_CTCState.DiscardUnknown(m)
+func (m *CCState) XXX_DiscardUnknown() {
+	xxx_messageInfo_CCState.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CTCState proto.InternalMessageInfo
+var xxx_messageInfo_CCState proto.InternalMessageInfo
 
-func (m *CTCState) GetBase() uint64 {
+func (m *CCState) GetBase() uint64 {
 	if m != nil {
 		return m.Base
 	}
 	return 0
 }
 
-func (m *CTCState) GetHeight() uint64 {
+func (m *CCState) GetHeight() uint64 {
 	if m != nil {
 		return m.Height
 	}
 	return 0
 }
 
-func (m *CTCState) GetName() []byte {
+func (m *CCState) GetName() []byte {
 	if m != nil {
 		return m.Name
 	}
 	return nil
 }
 
-func (m *CTCState) GetL1ToL2GasRatio() uint64 {
+func (m *CCState) GetL1ToL2GasRatio() uint64 {
 	if m != nil {
 		return m.L1ToL2GasRatio
 	}
 	return 0
 }
 
-func (m *CTCState) GetNextQueueIndex() uint64 {
+func (m *CCState) GetNextQueueIndex() uint64 {
 	if m != nil {
 		return m.NextQueueIndex
 	}
 	return 0
 }
 
-func (m *CTCState) GetL1Timestamp() time.Time {
+func (m *CCState) GetL1Timestamp() time.Time {
 	if m != nil {
 		return m.L1Timestamp
 	}
 	return time.Time{}
 }
 
-func (m *CTCState) GetL1Height() uint64 {
+func (m *CCState) GetL1Height() uint64 {
 	if m != nil {
 		return m.L1Height
 	}
@@ -745,83 +745,83 @@ func (m *SCCState) GetLastSequencerSubmit() time.Time {
 
 func init() {
 	proto.RegisterEnum("finschia.or.da.v1.CompressionOption", CompressionOption_name, CompressionOption_value)
-	proto.RegisterType((*CTCBatchContext)(nil), "finschia.or.da.v1.CTCBatchContext")
-	proto.RegisterType((*CTCBatchElement)(nil), "finschia.or.da.v1.CTCBatchElement")
-	proto.RegisterType((*CTCBatch)(nil), "finschia.or.da.v1.CTCBatch")
-	proto.RegisterType((*CTCRef)(nil), "finschia.or.da.v1.CTCRef")
+	proto.RegisterType((*CCBatchContext)(nil), "finschia.or.da.v1.CCBatchContext")
+	proto.RegisterType((*CCBatchElement)(nil), "finschia.or.da.v1.CCBatchElement")
+	proto.RegisterType((*CCBatch)(nil), "finschia.or.da.v1.CCBatch")
+	proto.RegisterType((*CCRef)(nil), "finschia.or.da.v1.CCRef")
 	proto.RegisterType((*L1ToL2Queue)(nil), "finschia.or.da.v1.L1toL2Queue")
 	proto.RegisterType((*SCCBatch)(nil), "finschia.or.da.v1.SCCBatch")
 	proto.RegisterType((*SCCRef)(nil), "finschia.or.da.v1.SCCRef")
 	proto.RegisterType((*BatchHeader)(nil), "finschia.or.da.v1.BatchHeader")
-	proto.RegisterType((*CTCState)(nil), "finschia.or.da.v1.CTCState")
+	proto.RegisterType((*CCState)(nil), "finschia.or.da.v1.CCState")
 	proto.RegisterType((*SCCState)(nil), "finschia.or.da.v1.SCCState")
 }
 
 func init() { proto.RegisterFile("finschia/or/da/v1/da.proto", fileDescriptor_5f98d06b06a65392) }
 
 var fileDescriptor_5f98d06b06a65392 = []byte{
-	// 924 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x4f, 0x6f, 0xdb, 0x36,
-	0x14, 0xb7, 0x1c, 0xd7, 0x73, 0x68, 0xd7, 0x49, 0xb8, 0xb4, 0x35, 0x3c, 0x4c, 0x0e, 0x8c, 0x1d,
-	0x82, 0x0c, 0x93, 0x60, 0x15, 0xe8, 0x6e, 0xc3, 0x66, 0xc5, 0x69, 0x04, 0x64, 0x4d, 0x2a, 0x69,
-	0xc0, 0xd6, 0x8b, 0x40, 0x5b, 0x8c, 0x25, 0x4c, 0x12, 0x5d, 0x91, 0xea, 0xd4, 0x7e, 0x80, 0x61,
-	0xeb, 0xa9, 0x5f, 0xa0, 0xa7, 0xed, 0xb0, 0xcb, 0xbe, 0xc6, 0x90, 0x63, 0x6f, 0x1b, 0x76, 0xc8,
-	0x86, 0xe4, 0xb8, 0x2f, 0x31, 0x90, 0x94, 0x1c, 0xe7, 0x4f, 0xd1, 0xa1, 0x0d, 0x76, 0x32, 0xf9,
-	0xde, 0xef, 0xfd, 0xf8, 0xde, 0xd3, 0xef, 0x91, 0x06, 0xdd, 0xc3, 0x30, 0xa1, 0x93, 0x20, 0x44,
-	0x3a, 0x49, 0x75, 0x1f, 0xe9, 0x4f, 0x06, 0xba, 0x8f, 0xb4, 0x59, 0x4a, 0x18, 0x81, 0x6b, 0xa5,
-	0x4f, 0x23, 0xa9, 0xe6, 0x23, 0xed, 0xc9, 0xa0, 0xbb, 0x3e, 0x25, 0x53, 0x22, 0xbc, 0x3a, 0x5f,
-	0x49, 0x60, 0xb7, 0x37, 0x25, 0x64, 0x1a, 0x61, 0x5d, 0xec, 0xc6, 0xd9, 0xa1, 0xce, 0xc2, 0x18,
-	0x53, 0x86, 0xe2, 0x59, 0x01, 0x50, 0x2f, 0x9f, 0x32, 0x43, 0x29, 0x8a, 0xa9, 0xf4, 0xf7, 0x7f,
-	0x57, 0xc0, 0x8a, 0xe9, 0x9a, 0x43, 0xc4, 0x26, 0x81, 0x49, 0x12, 0x86, 0x73, 0x06, 0xb7, 0xc0,
-	0x5a, 0x92, 0xc5, 0x1e, 0xc5, 0x8f, 0x33, 0x9c, 0x4c, 0xb0, 0xef, 0xb1, 0x9c, 0x76, 0x94, 0x0d,
-	0x65, 0xb3, 0x66, 0xaf, 0x24, 0x59, 0xec, 0x94, 0x76, 0x37, 0xa7, 0xf0, 0x53, 0xd0, 0x11, 0xd8,
-	0x6c, 0x2c, 0xe1, 0xcc, 0x7b, 0x9c, 0xe1, 0x0c, 0x8b, 0x90, 0xaa, 0x08, 0xb9, 0xc5, 0x43, 0xe6,
-	0xee, 0x87, 0xdc, 0xcb, 0x03, 0x87, 0x60, 0x79, 0x9e, 0x6b, 0x67, 0x69, 0x43, 0xd9, 0x6c, 0x1a,
-	0x5d, 0x4d, 0x56, 0xa3, 0x95, 0xd5, 0x68, 0x6e, 0x89, 0x18, 0x36, 0x8e, 0x8e, 0x7b, 0x95, 0x17,
-	0x7f, 0xf5, 0x14, 0xfb, 0x2c, 0x0c, 0x7e, 0x00, 0x96, 0xa3, 0x81, 0x17, 0xe0, 0x70, 0x1a, 0xb0,
-	0x4e, 0x4d, 0x9c, 0xd6, 0x88, 0x06, 0xbb, 0x62, 0xdf, 0xff, 0x6d, 0xa1, 0xb2, 0x51, 0x84, 0x63,
-	0x9c, 0xb0, 0xf3, 0x87, 0x2a, 0xd7, 0x70, 0x68, 0xf5, 0xfc, 0xa1, 0x70, 0x1d, 0xdc, 0x60, 0x79,
-	0x8a, 0xbe, 0x13, 0x15, 0xb5, 0x6c, 0xb9, 0x81, 0x3d, 0xd0, 0x94, 0x5d, 0x09, 0x13, 0x1f, 0xe7,
-	0x45, 0xa6, 0x40, 0x98, 0x2c, 0x6e, 0x11, 0x9c, 0x46, 0xc9, 0x79, 0xa3, 0xe0, 0x34, 0x8a, 0x42,
-	0x8e, 0xaa, 0xa0, 0x51, 0x16, 0x02, 0x43, 0x70, 0x87, 0x06, 0x24, 0x8b, 0x7c, 0x8f, 0x32, 0x94,
-	0x32, 0x0f, 0x31, 0x0f, 0xcb, 0xe2, 0x44, 0x3d, 0xcb, 0x43, 0x83, 0xe7, 0xfc, 0xe7, 0x71, 0x6f,
-	0x6b, 0x1a, 0xb2, 0x20, 0x1b, 0x6b, 0x13, 0x12, 0xeb, 0x3b, 0xa5, 0x06, 0x4a, 0x31, 0x7c, 0x42,
-	0xfd, 0x6f, 0x75, 0xf6, 0x74, 0x86, 0xa9, 0x66, 0x25, 0xcc, 0x5e, 0x97, 0x94, 0x0e, 0x67, 0xfc,
-	0x82, 0x95, 0xcd, 0xb2, 0x40, 0x7b, 0xcc, 0xcf, 0xf4, 0x26, 0x52, 0x17, 0xfc, 0x83, 0x2e, 0x6d,
-	0x36, 0x8d, 0xbe, 0x76, 0x49, 0x9d, 0xda, 0x05, 0x09, 0xd9, 0x37, 0xc7, 0x0b, 0x3b, 0x0a, 0x3f,
-	0x03, 0x8d, 0x22, 0x4b, 0xda, 0x59, 0x7a, 0x23, 0x49, 0x91, 0x80, 0x3d, 0x8f, 0x81, 0x3b, 0xa0,
-	0x39, 0x21, 0xf1, 0x2c, 0xc5, 0x94, 0x86, 0x24, 0x11, 0x0d, 0x6c, 0x1b, 0x1f, 0x5d, 0x45, 0x71,
-	0x86, 0xda, 0x9f, 0xb1, 0x90, 0x24, 0xf6, 0x62, 0x60, 0xff, 0x73, 0x50, 0x37, 0x5d, 0xd3, 0xc6,
-	0x87, 0xf0, 0x1e, 0xa8, 0x07, 0x18, 0xf9, 0x38, 0x2d, 0x64, 0xa0, 0x5e, 0x41, 0x26, 0x92, 0xd9,
-	0x15, 0x28, 0xbb, 0x40, 0xf7, 0x7f, 0x54, 0x40, 0x73, 0x6f, 0xc0, 0xc8, 0x9e, 0x21, 0x94, 0x0c,
-	0xef, 0x83, 0x56, 0x34, 0xf0, 0xde, 0x4e, 0x54, 0xcd, 0x68, 0xe0, 0xbe, 0x83, 0xac, 0xfa, 0xbf,
-	0x2a, 0xa0, 0xe1, 0x98, 0xff, 0xbf, 0x30, 0xee, 0x81, 0xdb, 0x56, 0xc2, 0x70, 0x1a, 0x63, 0x3f,
-	0x44, 0x0c, 0x3b, 0x0c, 0x31, 0x6c, 0x13, 0x52, 0x08, 0xa4, 0x65, 0xbf, 0xc6, 0xcb, 0xbb, 0xef,
-	0x98, 0xef, 0xd4, 0xfd, 0x7f, 0x14, 0xd0, 0x5c, 0xb0, 0xc3, 0x3e, 0xa8, 0xb3, 0x3c, 0x40, 0x34,
-	0x10, 0x3c, 0xad, 0x21, 0x38, 0x39, 0xee, 0xd5, 0xdd, 0x7c, 0x17, 0xd1, 0xc0, 0x2e, 0x3c, 0xf0,
-	0x1b, 0xd0, 0x66, 0x84, 0xa1, 0xc8, 0x9b, 0x2b, 0xb0, 0xfa, 0xd6, 0xfd, 0xb8, 0x29, 0x98, 0x46,
-	0xa5, 0x2c, 0x3f, 0x04, 0x40, 0x4e, 0x08, 0x0d, 0x9f, 0x61, 0xf1, 0x6d, 0x6a, 0xf6, 0xb2, 0xb0,
-	0x38, 0xe1, 0x33, 0xcc, 0xc7, 0x5e, 0xba, 0xcf, 0x8d, 0xbd, 0x30, 0xc9, 0xb1, 0x9f, 0xc7, 0xa7,
-	0x84, 0xc8, 0xb9, 0x6f, 0x15, 0xf1, 0xbc, 0x61, 0xfd, 0xef, 0xe5, 0xe0, 0x8b, 0x0e, 0x42, 0x08,
-	0x6a, 0x63, 0x44, 0x71, 0x71, 0x0f, 0x8b, 0x35, 0xbc, 0xcd, 0xdb, 0xb8, 0x20, 0x98, 0x62, 0xc7,
-	0xb1, 0x09, 0x8a, 0x71, 0xa1, 0x16, 0xb1, 0x86, 0x5b, 0x00, 0x72, 0xa1, 0x12, 0x2f, 0x32, 0xbc,
-	0x29, 0xa2, 0x5e, 0x8a, 0x58, 0x48, 0x8a, 0x9c, 0xda, 0xd1, 0xc0, 0x25, 0x7b, 0xc6, 0x7d, 0x44,
-	0x6d, 0x6e, 0x85, 0x9b, 0x60, 0x35, 0xc1, 0x79, 0x79, 0x95, 0xcb, 0xec, 0xe5, 0xad, 0xd4, 0xe6,
-	0xf6, 0x87, 0x67, 0x17, 0xd7, 0x45, 0xf9, 0xd7, 0xaf, 0x45, 0xfe, 0xef, 0x5d, 0xb8, 0xca, 0x7f,
-	0x96, 0x42, 0xbf, 0x9e, 0x46, 0x7c, 0x0d, 0x6e, 0x45, 0x88, 0xb2, 0xf9, 0xf3, 0x96, 0xf2, 0xc7,
-	0x2b, 0x0e, 0xe5, 0x03, 0xf2, 0x5f, 0x73, 0x7f, 0x9f, 0x53, 0x94, 0x0f, 0x61, 0xea, 0x08, 0x82,
-	0xad, 0x5f, 0x14, 0xb0, 0x76, 0xe9, 0x02, 0x82, 0x77, 0x81, 0x6a, 0xee, 0x7f, 0x79, 0x60, 0x8f,
-	0x1c, 0xc7, 0xda, 0x7f, 0xe0, 0xed, 0x1f, 0xb8, 0xfc, 0xe7, 0xab, 0x07, 0xce, 0xc1, 0xc8, 0xb4,
-	0x76, 0xac, 0xd1, 0xf6, 0x6a, 0xa5, 0xbb, 0xf2, 0xfc, 0xe5, 0x46, 0x53, 0xe2, 0x47, 0xf1, 0x8c,
-	0x3d, 0x85, 0x1f, 0x83, 0x3b, 0x57, 0x04, 0x3d, 0xda, 0xb3, 0x86, 0xab, 0x4a, 0xb7, 0xfd, 0xfc,
-	0xe5, 0x06, 0x90, 0x68, 0x6e, 0x79, 0x1d, 0xd8, 0x71, 0xb7, 0x57, 0xab, 0xe7, 0xc0, 0x8e, 0xbb,
-	0xdd, 0xad, 0xfd, 0xf0, 0x93, 0x5a, 0x19, 0xee, 0x1e, 0x9d, 0xa8, 0xca, 0xab, 0x13, 0x55, 0xf9,
-	0xfb, 0x44, 0x55, 0x5e, 0x9c, 0xaa, 0x95, 0x57, 0xa7, 0x6a, 0xe5, 0x8f, 0x53, 0xb5, 0xf2, 0x48,
-	0x7b, 0xe3, 0x38, 0xe4, 0xc5, 0x5f, 0x09, 0x31, 0x16, 0xe3, 0xba, 0xe8, 0xd3, 0xdd, 0x7f, 0x03,
-	0x00, 0x00, 0xff, 0xff, 0x82, 0x38, 0xa5, 0x39, 0xcf, 0x08, 0x00, 0x00,
+	// 921 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x4f, 0x6f, 0x1b, 0x45,
+	0x14, 0xf7, 0x3a, 0x8e, 0x9b, 0x3c, 0xbb, 0x6e, 0x32, 0xa4, 0xad, 0x65, 0xc4, 0x3a, 0x58, 0x1c,
+	0xa2, 0x20, 0xd6, 0xf2, 0x56, 0x2a, 0x27, 0x04, 0xd8, 0x71, 0x6a, 0x4b, 0xa1, 0x49, 0x77, 0x8d,
+	0x04, 0xbd, 0xac, 0xc6, 0xde, 0x89, 0x77, 0xc5, 0xee, 0x8e, 0xbb, 0x33, 0x5b, 0xb6, 0xbd, 0x23,
+	0x41, 0x4f, 0xfd, 0x02, 0x3d, 0xc1, 0x81, 0x0b, 0x1f, 0x03, 0xa9, 0xc7, 0x9e, 0x10, 0xe2, 0x10,
+	0x50, 0x72, 0xe4, 0x4b, 0xa0, 0x99, 0xd9, 0x75, 0xe2, 0x26, 0x55, 0x51, 0x1b, 0xa9, 0x27, 0xcf,
+	0xbc, 0xf7, 0x7b, 0x7f, 0xf7, 0xf7, 0xde, 0x18, 0x1a, 0x87, 0x7e, 0xc4, 0x26, 0x9e, 0x8f, 0xdb,
+	0x34, 0x6e, 0xbb, 0xb8, 0xfd, 0xb0, 0xd3, 0x76, 0xb1, 0x31, 0x8b, 0x29, 0xa7, 0x68, 0x3d, 0xd7,
+	0x19, 0x34, 0x36, 0x5c, 0x6c, 0x3c, 0xec, 0x34, 0x36, 0xa6, 0x74, 0x4a, 0xa5, 0xb6, 0x2d, 0x4e,
+	0x0a, 0xd8, 0x68, 0x4e, 0x29, 0x9d, 0x06, 0xa4, 0x2d, 0x6f, 0xe3, 0xe4, 0xb0, 0xcd, 0xfd, 0x90,
+	0x30, 0x8e, 0xc3, 0x59, 0x06, 0xd0, 0xcf, 0x47, 0x99, 0xe1, 0x18, 0x87, 0x4c, 0xe9, 0x5b, 0x7f,
+	0x68, 0x50, 0xeb, 0xf5, 0xba, 0x98, 0x4f, 0xbc, 0x1e, 0x8d, 0x38, 0x49, 0x39, 0xda, 0x86, 0xf5,
+	0x28, 0x09, 0x1d, 0x46, 0x1e, 0x24, 0x24, 0x9a, 0x10, 0xd7, 0xe1, 0x29, 0xab, 0x6b, 0x9b, 0xda,
+	0x56, 0xc9, 0xba, 0x16, 0x25, 0xa1, 0x9d, 0xcb, 0x47, 0x29, 0x43, 0x9f, 0x42, 0x5d, 0x62, 0x93,
+	0xb1, 0x82, 0x73, 0xe7, 0x41, 0x42, 0x12, 0x22, 0x4d, 0x8a, 0xd2, 0xe4, 0xba, 0x30, 0x99, 0xab,
+	0xef, 0x09, 0xad, 0x30, 0xec, 0xc2, 0xea, 0x3c, 0xd5, 0xfa, 0xd2, 0xa6, 0xb6, 0x55, 0x31, 0x1b,
+	0x86, 0x2a, 0xc6, 0xc8, 0x8b, 0x31, 0x46, 0x39, 0xa2, 0xbb, 0xf2, 0xfc, 0xa8, 0x59, 0x78, 0xfa,
+	0x77, 0x53, 0xb3, 0x4e, 0xcd, 0xd0, 0xfb, 0xb0, 0x1a, 0x74, 0x1c, 0x8f, 0xf8, 0x53, 0x8f, 0xd7,
+	0x4b, 0x32, 0xda, 0x4a, 0xd0, 0x19, 0xc8, 0x7b, 0xeb, 0xf7, 0xd3, 0xc2, 0xfa, 0x01, 0x09, 0x49,
+	0xc4, 0x17, 0x63, 0x6a, 0x97, 0x10, 0xb3, 0xb8, 0x18, 0x13, 0x6d, 0xc0, 0x32, 0x4f, 0x63, 0xfc,
+	0xbd, 0x2c, 0xa8, 0x6a, 0xa9, 0x0b, 0x6a, 0x42, 0x45, 0x35, 0xc5, 0x8f, 0x5c, 0x92, 0x66, 0x89,
+	0x82, 0x14, 0x0d, 0x85, 0x44, 0xfa, 0x34, 0x73, 0x9f, 0xcb, 0x99, 0x4f, 0x33, 0xaf, 0xa3, 0x08,
+	0x57, 0xb2, 0x3a, 0x90, 0x0f, 0x37, 0x99, 0x47, 0x93, 0xc0, 0x75, 0x18, 0xc7, 0x31, 0x77, 0x30,
+	0x77, 0x88, 0xaa, 0x4d, 0x96, 0xb3, 0xda, 0x35, 0x45, 0xca, 0x7f, 0x1d, 0x35, 0xb7, 0xa7, 0x3e,
+	0xf7, 0x92, 0xb1, 0x31, 0xa1, 0x61, 0x7b, 0x37, 0x27, 0x40, 0xce, 0x84, 0x4f, 0x98, 0xfb, 0x5d,
+	0x9b, 0x3f, 0x9a, 0x11, 0x66, 0x0c, 0x23, 0x6e, 0x6d, 0x28, 0x97, 0xb6, 0xf0, 0xf8, 0x25, 0xcf,
+	0x7b, 0x35, 0x80, 0xda, 0x58, 0xc4, 0x74, 0x26, 0x8a, 0x15, 0xe2, 0x73, 0x2e, 0x6d, 0x55, 0xcc,
+	0x0f, 0x8d, 0x73, 0xd4, 0x34, 0x16, 0xf9, 0x63, 0x5d, 0x1d, 0x9f, 0xb9, 0x31, 0xf4, 0x19, 0xac,
+	0x64, 0x49, 0xb2, 0xfa, 0xd2, 0xeb, 0x7c, 0x64, 0xe1, 0xad, 0xb9, 0x09, 0xda, 0x85, 0xca, 0x84,
+	0x86, 0xb3, 0x98, 0x30, 0xe6, 0xd3, 0x48, 0x76, 0xaf, 0x66, 0x7e, 0x74, 0x91, 0x87, 0x53, 0xd4,
+	0xfe, 0x8c, 0xfb, 0x34, 0xb2, 0xce, 0x1a, 0xb6, 0x3e, 0x87, 0xe5, 0x5e, 0xcf, 0x22, 0x87, 0xe8,
+	0x36, 0x94, 0x3d, 0x82, 0x5d, 0x12, 0x67, 0x14, 0xd0, 0x2f, 0xf0, 0x25, 0x73, 0x19, 0x48, 0x94,
+	0x95, 0xa1, 0x5b, 0x3f, 0x69, 0x50, 0xd9, 0xeb, 0x70, 0xba, 0x67, 0x4a, 0x12, 0xa3, 0x3b, 0x50,
+	0x0d, 0x3a, 0xce, 0x9b, 0x11, 0xaa, 0x12, 0x74, 0x46, 0x6f, 0x41, 0xa9, 0xd6, 0x6f, 0x1a, 0xac,
+	0xd8, 0xef, 0x80, 0x15, 0xb7, 0xe1, 0xc6, 0x30, 0xe2, 0x24, 0x0e, 0x89, 0xeb, 0x63, 0x4e, 0x6c,
+	0x8e, 0x39, 0xb1, 0x28, 0xcd, 0xd8, 0x51, 0xb5, 0x5e, 0xa1, 0x6d, 0x7d, 0x01, 0x65, 0xfb, 0xed,
+	0xba, 0xff, 0xaf, 0x06, 0x95, 0x33, 0x72, 0xd4, 0x82, 0x32, 0x4f, 0x3d, 0xcc, 0x3c, 0xe9, 0xa7,
+	0xda, 0x85, 0xe3, 0xa3, 0x66, 0x79, 0x94, 0x0e, 0x30, 0xf3, 0xac, 0x4c, 0x83, 0xbe, 0x85, 0x1a,
+	0xa7, 0x1c, 0x07, 0xce, 0x9c, 0x7f, 0xc5, 0x37, 0xee, 0xc7, 0x55, 0xe9, 0xa9, 0x9f, 0xb3, 0xf2,
+	0x03, 0x00, 0x35, 0x1e, 0xcc, 0x7f, 0x4c, 0xe4, 0xb7, 0x29, 0x59, 0xab, 0x52, 0x62, 0xfb, 0x8f,
+	0x89, 0x18, 0x79, 0xa5, 0x5e, 0x18, 0x79, 0x29, 0x52, 0x23, 0x3f, 0xb7, 0x8f, 0x29, 0x55, 0x33,
+	0x5f, 0xcd, 0xec, 0x45, 0xc3, 0x5a, 0x3f, 0xc8, 0xa1, 0x97, 0x0d, 0x44, 0x08, 0x4a, 0x63, 0xcc,
+	0x48, 0xb6, 0x81, 0xe5, 0x19, 0xdd, 0x10, 0x5d, 0x3c, 0xc3, 0x97, 0xec, 0x26, 0xb0, 0x11, 0x0e,
+	0x49, 0x46, 0x16, 0x79, 0x46, 0xdb, 0x80, 0x04, 0x4f, 0xa9, 0x13, 0x98, 0xce, 0x14, 0x33, 0x27,
+	0xc6, 0xdc, 0xa7, 0x59, 0x4a, 0xb5, 0xa0, 0x33, 0xa2, 0x7b, 0xe6, 0x1d, 0xcc, 0x2c, 0x21, 0x45,
+	0x5b, 0xb0, 0x16, 0x91, 0x34, 0x5f, 0xe2, 0x2a, 0x79, 0xb5, 0x90, 0x6a, 0x42, 0x7e, 0xef, 0x74,
+	0x67, 0xbd, 0xcc, 0xfe, 0xf2, 0xa5, 0xb0, 0xff, 0xca, 0x4b, 0x4b, 0xfc, 0x17, 0xc5, 0xf3, 0xcb,
+	0x69, 0xc4, 0x37, 0x70, 0x3d, 0xc0, 0x8c, 0xcf, 0x1f, 0xb6, 0x58, 0x3c, 0x5b, 0xa1, 0xaf, 0x9e,
+	0x8e, 0xff, 0x9b, 0xfb, 0x7b, 0xc2, 0x45, 0xfe, 0x04, 0xc6, 0xb6, 0x74, 0xb0, 0xfd, 0xab, 0x06,
+	0xeb, 0xe7, 0xd6, 0x0f, 0xba, 0x05, 0x7a, 0x6f, 0xff, 0xab, 0x03, 0xab, 0x6f, 0xdb, 0xc3, 0xfd,
+	0xbb, 0xce, 0xfe, 0xc1, 0x48, 0xfc, 0x7c, 0x7d, 0xd7, 0x3e, 0xe8, 0xf7, 0x86, 0xbb, 0xc3, 0xfe,
+	0xce, 0x5a, 0xa1, 0x71, 0xed, 0xc9, 0xb3, 0xcd, 0x8a, 0xc2, 0xf7, 0xc3, 0x19, 0x7f, 0x84, 0x3e,
+	0x86, 0x9b, 0x17, 0x18, 0xdd, 0xdf, 0x1b, 0x76, 0xd7, 0xb4, 0x46, 0xed, 0xc9, 0xb3, 0x4d, 0x50,
+	0x68, 0x21, 0x79, 0x15, 0xd8, 0x1e, 0xed, 0xac, 0x15, 0x17, 0xc0, 0xf6, 0x68, 0xa7, 0x51, 0xfa,
+	0xf1, 0x67, 0xbd, 0xd0, 0x1d, 0x3c, 0x3f, 0xd6, 0xb5, 0x17, 0xc7, 0xba, 0xf6, 0xcf, 0xb1, 0xae,
+	0x3d, 0x3d, 0xd1, 0x0b, 0x2f, 0x4e, 0xf4, 0xc2, 0x9f, 0x27, 0x7a, 0xe1, 0xbe, 0xf1, 0xda, 0x69,
+	0x48, 0xb3, 0xff, 0x10, 0x72, 0x2a, 0xc6, 0x65, 0xd9, 0xa7, 0x5b, 0xff, 0x05, 0x00, 0x00, 0xff,
+	0xff, 0x5d, 0x8f, 0xd1, 0xbd, 0xc8, 0x08, 0x00, 0x00,
 }
 
-func (m *CTCBatchContext) Marshal() (dAtA []byte, err error) {
+func (m *CCBatchContext) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -831,12 +831,12 @@ func (m *CTCBatchContext) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CTCBatchContext) MarshalTo(dAtA []byte) (int, error) {
+func (m *CCBatchContext) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CTCBatchContext) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CCBatchContext) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -867,7 +867,7 @@ func (m *CTCBatchContext) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *CTCBatchElement) Marshal() (dAtA []byte, err error) {
+func (m *CCBatchElement) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -877,12 +877,12 @@ func (m *CTCBatchElement) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CTCBatchElement) MarshalTo(dAtA []byte) (int, error) {
+func (m *CCBatchElement) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CTCBatchElement) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CCBatchElement) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -920,7 +920,7 @@ func (m *CTCBatchElement) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *CTCBatch) Marshal() (dAtA []byte, err error) {
+func (m *CCBatch) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -930,12 +930,12 @@ func (m *CTCBatch) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CTCBatch) MarshalTo(dAtA []byte) (int, error) {
+func (m *CCBatch) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CTCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -986,7 +986,7 @@ func (m *CTCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *CTCRef) Marshal() (dAtA []byte, err error) {
+func (m *CCRef) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -996,12 +996,12 @@ func (m *CTCRef) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CTCRef) MarshalTo(dAtA []byte) (int, error) {
+func (m *CCRef) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CTCRef) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CCRef) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1198,7 +1198,7 @@ func (m *BatchHeader) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *CTCState) Marshal() (dAtA []byte, err error) {
+func (m *CCState) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1208,12 +1208,12 @@ func (m *CTCState) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CTCState) MarshalTo(dAtA []byte) (int, error) {
+func (m *CCState) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CTCState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CCState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1320,7 +1320,7 @@ func encodeVarintDa(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *CTCBatchContext) Size() (n int) {
+func (m *CCBatchContext) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1340,7 +1340,7 @@ func (m *CTCBatchContext) Size() (n int) {
 	return n
 }
 
-func (m *CTCBatchElement) Size() (n int) {
+func (m *CCBatchElement) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1364,7 +1364,7 @@ func (m *CTCBatchElement) Size() (n int) {
 	return n
 }
 
-func (m *CTCBatch) Size() (n int) {
+func (m *CCBatch) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1390,7 +1390,7 @@ func (m *CTCBatch) Size() (n int) {
 	return n
 }
 
-func (m *CTCRef) Size() (n int) {
+func (m *CCRef) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1476,7 +1476,7 @@ func (m *BatchHeader) Size() (n int) {
 	return n
 }
 
-func (m *CTCState) Size() (n int) {
+func (m *CCState) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1533,7 +1533,7 @@ func sovDa(x uint64) (n int) {
 func sozDa(x uint64) (n int) {
 	return sovDa(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *CTCBatchContext) Unmarshal(dAtA []byte) error {
+func (m *CCBatchContext) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1556,10 +1556,10 @@ func (m *CTCBatchContext) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CTCBatchContext: wiretype end group for non-group")
+			return fmt.Errorf("proto: CCBatchContext: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CTCBatchContext: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CCBatchContext: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1673,7 +1673,7 @@ func (m *CTCBatchContext) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CTCBatchElement) Unmarshal(dAtA []byte) error {
+func (m *CCBatchElement) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1696,10 +1696,10 @@ func (m *CTCBatchElement) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CTCBatchElement: wiretype end group for non-group")
+			return fmt.Errorf("proto: CCBatchElement: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CTCBatchElement: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CCBatchElement: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1847,7 +1847,7 @@ func (m *CTCBatchElement) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CTCBatch) Unmarshal(dAtA []byte) error {
+func (m *CCBatch) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1870,10 +1870,10 @@ func (m *CTCBatch) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CTCBatch: wiretype end group for non-group")
+			return fmt.Errorf("proto: CCBatch: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CTCBatch: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CCBatch: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1939,7 +1939,7 @@ func (m *CTCBatch) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BatchContexts = append(m.BatchContexts, &CTCBatchContext{})
+			m.BatchContexts = append(m.BatchContexts, &CCBatchContext{})
 			if err := m.BatchContexts[len(m.BatchContexts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1973,7 +1973,7 @@ func (m *CTCBatch) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Elements = append(m.Elements, &CTCBatchElement{})
+			m.Elements = append(m.Elements, &CCBatchElement{})
 			if err := m.Elements[len(m.Elements)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2018,7 +2018,7 @@ func (m *CTCBatch) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CTCRef) Unmarshal(dAtA []byte) error {
+func (m *CCRef) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2041,10 +2041,10 @@ func (m *CTCRef) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CTCRef: wiretype end group for non-group")
+			return fmt.Errorf("proto: CCRef: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CTCRef: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CCRef: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2632,7 +2632,7 @@ func (m *BatchHeader) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CTCState) Unmarshal(dAtA []byte) error {
+func (m *CCState) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2655,10 +2655,10 @@ func (m *CTCState) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CTCState: wiretype end group for non-group")
+			return fmt.Errorf("proto: CCState: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CTCState: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CCState: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

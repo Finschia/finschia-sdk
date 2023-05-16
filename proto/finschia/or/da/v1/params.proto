@@ -10,8 +10,8 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  // 1. CTC-related
-  uint64 ctc_batch_max_bytes = 1 [(gogoproto.customname) = "CTCBatchMaxBytes"];
+  // 1. CC-related
+  uint64 cc_batch_max_bytes = 1 [(gogoproto.customname) = "CCBatchMaxBytes"];
 
   // Queue Tx-related
   uint64 max_queue_tx_size = 2;

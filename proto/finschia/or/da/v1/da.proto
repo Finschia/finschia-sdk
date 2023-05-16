@@ -23,7 +23,7 @@ enum CompressionOption {
 
 // BatchContext denotes a range of transactions that belong the same batch.
 // It is used to compress shared fields that would otherwise be repeated for each transaction.
-message CTCBatchContext {
+message CCBatchContext {
   // num_sequenced_txs specifies the number of sequencer txs included in
   // the batch.
   uint64 num_sequenced_txs = 1;
@@ -38,7 +38,7 @@ message CTCBatchContext {
   uint64 l1_height = 4;
 }
 
-message CTCBatchElement {
+message CCBatchElement {
   // timestamp is the L2 block unix timestamp of the batch.
   // SEQUENCER TX ONLY
   google.protobuf.Timestamp timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -57,7 +57,7 @@ message CTCBatchElement {
   uint64 l2_height = 5;
 }
 
-// CTCBatch is used  when the sequencer submits.
+// CCBatch is used  when the sequencer submits.
 // Assuming the block and timestamp criteria for sequencer txs are
 // respected within each group, the following are examples of groupings:
 //  - [s]         // sequencer can exist by itself
@@ -67,19 +67,19 @@ message CTCBatchElement {
 //  - [q] [q s]   // INVALID: consecutive queued txs are split
 //  - [q q] [s]   // correct split for preceding case
 //  - [s q] [s q] // alternating sequencer tx interleaved with queued
-message CTCBatch {
+message CCBatch {
   // previous total batch elements.
   string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 
-  repeated CTCBatchContext batch_contexts = 2;
-  repeated CTCBatchElement elements = 3;
+  repeated CCBatchContext batch_contexts = 2;
+  repeated CCBatchElement elements = 3;
 
   // compression is the compression algorithm used for the batch.
   CompressionOption compression = 4;
 }
 
-// CTCRef is a data type that forms an element of Canonical Transaction Chain.
-message CTCRef {
+// CCRef is a data type that forms an element of Canonical Transaction Chain.
+message CCRef {
   // Reference for accessing batch data.
   BatchHeader header = 1;
 }
@@ -102,11 +102,11 @@ message SCCBatch {
   // previous total batch elements.
   string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 
-  // IntermediateStateRoots for a specific range of CTCs.
+  // IntermediateStateRoots for a specific range of CCs.
   repeated bytes IntermediateStateRoots = 2;
 }
 
-// CTCRef is a data type that forms an element of Canonical Transaction Chain.
+// CCRef is a data type that forms an element of Canonical Transaction Chain.
 message SCCRef {
   // Reference for accessing batch data.
   BatchHeader header = 1;
@@ -124,13 +124,13 @@ message BatchHeader {
 
   uint64 batch_index = 4;
 
-  // CTC Batch : previous block hash.
+  // CC Batch : previous block hash.
   // SCC Batch : Merkle Root of IntermediateStateRoots.
   bytes batch_root = 5;
 }
 
 // BatchChainState is the state of target batch chain.
-message CTCState {
+message CCState {
   // Assumed to contain all contiguous batches between base and height (inclusive).
   uint64 base = 1;
   uint64 height = 2;

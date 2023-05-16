@@ -589,11 +589,11 @@
   
 - [finschia/or/da/v1/da.proto](#finschia/or/da/v1/da.proto)
     - [BatchHeader](#finschia.or.da.v1.BatchHeader)
-    - [CTCBatch](#finschia.or.da.v1.CTCBatch)
-    - [CTCBatchContext](#finschia.or.da.v1.CTCBatchContext)
-    - [CTCBatchElement](#finschia.or.da.v1.CTCBatchElement)
-    - [CTCRef](#finschia.or.da.v1.CTCRef)
-    - [CTCState](#finschia.or.da.v1.CTCState)
+    - [CCBatch](#finschia.or.da.v1.CCBatch)
+    - [CCBatchContext](#finschia.or.da.v1.CCBatchContext)
+    - [CCBatchElement](#finschia.or.da.v1.CCBatchElement)
+    - [CCRef](#finschia.or.da.v1.CCRef)
+    - [CCState](#finschia.or.da.v1.CCState)
     - [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue)
     - [SCCBatch](#finschia.or.da.v1.SCCBatch)
     - [SCCRef](#finschia.or.da.v1.SCCRef)
@@ -603,7 +603,7 @@
   
 - [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
-    - [CTC](#finschia.or.da.v1.CTC)
+    - [CC](#finschia.or.da.v1.CC)
     - [GenesisState](#finschia.or.da.v1.GenesisState)
     - [SCC](#finschia.or.da.v1.SCC)
   
@@ -614,8 +614,8 @@
     - [Query](#finschia.or.da.v1.Query)
   
 - [finschia/or/da/v1/tx.proto](#finschia/or/da/v1/tx.proto)
-    - [MsgAppendCTCBatch](#finschia.or.da.v1.MsgAppendCTCBatch)
-    - [MsgAppendCTCBatchResponse](#finschia.or.da.v1.MsgAppendCTCBatchResponse)
+    - [MsgAppendCCBatch](#finschia.or.da.v1.MsgAppendCCBatch)
+    - [MsgAppendCCBatchResponse](#finschia.or.da.v1.MsgAppendCCBatchResponse)
     - [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch)
     - [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse)
     - [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue)
@@ -8732,7 +8732,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `ctc_batch_max_bytes` | [uint64](#uint64) |  | 1. CTC-related |
+| `cc_batch_max_bytes` | [uint64](#uint64) |  | 1. CC-related |
 | `max_queue_tx_size` | [uint64](#uint64) |  | Queue Tx-related |
 | `min_queue_tx_gas` | [uint64](#uint64) |  |  |
 | `queue_tx_expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | A sequencer must submit a queue tx to L2 before this time. |
@@ -8773,17 +8773,17 @@ Params defines the parameters for the module.
 | `total_elements` | [string](#string) |  | Total number of elements submitted. |
 | `batch_size` | [uint64](#uint64) |  | Number of elements in the batch. |
 | `batch_index` | [uint64](#uint64) |  |  |
-| `batch_root` | [bytes](#bytes) |  | CTC Batch : previous block hash. SCC Batch : Merkle Root of IntermediateStateRoots. |
+| `batch_root` | [bytes](#bytes) |  | CC Batch : previous block hash. SCC Batch : Merkle Root of IntermediateStateRoots. |
 
 
 
 
 
 
-<a name="finschia.or.da.v1.CTCBatch"></a>
+<a name="finschia.or.da.v1.CCBatch"></a>
 
-### CTCBatch
-CTCBatch is used  when the sequencer submits.
+### CCBatch
+CCBatch is used  when the sequencer submits.
 Assuming the block and timestamp criteria for sequencer txs are
 respected within each group, the following are examples of groupings:
  - [s]         // sequencer can exist by itself
@@ -8798,8 +8798,8 @@ respected within each group, the following are examples of groupings:
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `should_start_at_element` | [string](#string) |  | previous total batch elements. |
-| `batch_contexts` | [CTCBatchContext](#finschia.or.da.v1.CTCBatchContext) | repeated |  |
-| `elements` | [CTCBatchElement](#finschia.or.da.v1.CTCBatchElement) | repeated |  |
+| `batch_contexts` | [CCBatchContext](#finschia.or.da.v1.CCBatchContext) | repeated |  |
+| `elements` | [CCBatchElement](#finschia.or.da.v1.CCBatchElement) | repeated |  |
 | `compression` | [CompressionOption](#finschia.or.da.v1.CompressionOption) |  | compression is the compression algorithm used for the batch. |
 
 
@@ -8807,9 +8807,9 @@ respected within each group, the following are examples of groupings:
 
 
 
-<a name="finschia.or.da.v1.CTCBatchContext"></a>
+<a name="finschia.or.da.v1.CCBatchContext"></a>
 
-### CTCBatchContext
+### CCBatchContext
 BatchContext denotes a range of transactions that belong the same batch.
 It is used to compress shared fields that would otherwise be repeated for each transaction.
 
@@ -8826,9 +8826,9 @@ It is used to compress shared fields that would otherwise be repeated for each t
 
 
 
-<a name="finschia.or.da.v1.CTCBatchElement"></a>
+<a name="finschia.or.da.v1.CCBatchElement"></a>
 
-### CTCBatchElement
+### CCBatchElement
 
 
 
@@ -8845,10 +8845,10 @@ It is used to compress shared fields that would otherwise be repeated for each t
 
 
 
-<a name="finschia.or.da.v1.CTCRef"></a>
+<a name="finschia.or.da.v1.CCRef"></a>
 
-### CTCRef
-CTCRef is a data type that forms an element of Canonical Transaction Chain.
+### CCRef
+CCRef is a data type that forms an element of Canonical Transaction Chain.
 
 
 | Field | Type | Label | Description |
@@ -8860,9 +8860,9 @@ CTCRef is a data type that forms an element of Canonical Transaction Chain.
 
 
 
-<a name="finschia.or.da.v1.CTCState"></a>
+<a name="finschia.or.da.v1.CCState"></a>
 
-### CTCState
+### CCState
 BatchChainState is the state of target batch chain.
 
 
@@ -8908,7 +8908,7 @@ Proposer use SCCBatch when they submit.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `should_start_at_element` | [string](#string) |  | previous total batch elements. |
-| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CTCs. |
+| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CCs. |
 
 
 
@@ -8918,7 +8918,7 @@ Proposer use SCCBatch when they submit.
 <a name="finschia.or.da.v1.SCCRef"></a>
 
 ### SCCRef
-CTCRef is a data type that forms an element of Canonical Transaction Chain.
+CCRef is a data type that forms an element of Canonical Transaction Chain.
 
 
 | Field | Type | Label | Description |
@@ -8993,16 +8993,16 @@ BatchChainState is the state of target batch chain.
 
 
 
-<a name="finschia.or.da.v1.CTC"></a>
+<a name="finschia.or.da.v1.CC"></a>
 
-### CTC
+### CC
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `state` | [CTCState](#finschia.or.da.v1.CTCState) |  |  |
-| `history` | [CTCRef](#finschia.or.da.v1.CTCRef) | repeated |  |
+| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+| `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
 
 
 
@@ -9018,7 +9018,7 @@ GenesisState defines the da module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#finschia.or.da.v1.Params) |  |  |
-| `ctc_list` | [CTC](#finschia.or.da.v1.CTC) | repeated |  |
+| `cc_list` | [CC](#finschia.or.da.v1.CC) | repeated |  |
 | `scc_list` | [SCC](#finschia.or.da.v1.SCC) | repeated |  |
 
 
@@ -9109,25 +9109,25 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.da.v1.MsgAppendCTCBatch"></a>
+<a name="finschia.or.da.v1.MsgAppendCCBatch"></a>
 
-### MsgAppendCTCBatch
+### MsgAppendCCBatch
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `rollup_name` | [string](#string) |  |  |
-| `batch` | [CTCBatch](#finschia.or.da.v1.CTCBatch) |  |  |
+| `batch` | [CCBatch](#finschia.or.da.v1.CCBatch) |  |  |
 
 
 
 
 
 
-<a name="finschia.or.da.v1.MsgAppendCTCBatchResponse"></a>
+<a name="finschia.or.da.v1.MsgAppendCCBatchResponse"></a>
 
-### MsgAppendCTCBatchResponse
+### MsgAppendCCBatchResponse
 
 
 
@@ -9256,7 +9256,7 @@ Msg defines the Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `UpdateParams` | [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse) |  | |
-| `AppendCTCBatch` | [MsgAppendCTCBatch](#finschia.or.da.v1.MsgAppendCTCBatch) | [MsgAppendCTCBatchResponse](#finschia.or.da.v1.MsgAppendCTCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
+| `AppendCCBatch` | [MsgAppendCCBatch](#finschia.or.da.v1.MsgAppendCCBatch) | [MsgAppendCCBatchResponse](#finschia.or.da.v1.MsgAppendCCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
 | `RemoveSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |

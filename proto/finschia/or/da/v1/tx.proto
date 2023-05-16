@@ -13,7 +13,7 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
   // Allow the sequencer to append a batch of transactions.
-  rpc AppendCTCBatch(MsgAppendCTCBatch) returns (MsgAppendCTCBatchResponse);
+  rpc AppendCCBatch(MsgAppendCCBatch) returns (MsgAppendCCBatchResponse);
 
   // Add a L2 transaction to the queue to process forcibly.
   rpc Enqueue(MsgEnqueue) returns (MsgEnqueueResponse);
@@ -38,12 +38,12 @@ message MsgUpdateParams {
 
 message MsgUpdateParamsResponse {}
 
-message MsgAppendCTCBatch {
+message MsgAppendCCBatch {
   string rollup_name = 1;
-  CTCBatch batch = 2 [(gogoproto.nullable) = false];
+  CCBatch batch = 2 [(gogoproto.nullable) = false];
 }
 
-message MsgAppendCTCBatchResponse {}
+message MsgAppendCCBatchResponse {}
 
 message MsgEnqueue {
   string rollup_name = 1;

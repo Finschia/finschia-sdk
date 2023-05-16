@@ -9,3 +9,5 @@ parent:
 
 ## Abstract
 The da module is responsible for handling optimistic rollups data availability.
+* `CC` : Canonical Chain (append-only batch log chain)
+* `SCC` : State Commitment Chain (append state commitment to finalize the CC Batch) 

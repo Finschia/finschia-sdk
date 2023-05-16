@@ -30,12 +30,12 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	return nil
 }
 
-func (k Keeper) CTCBatchMaxBytes(ctx sdk.Context) (uint64, error) {
+func (k Keeper) CCBatchMaxBytes(ctx sdk.Context) (uint64, error) {
 	params, err := k.GetParams(ctx)
 	if err != nil {
 		return 0, err
 	}
-	return params.CTCBatchMaxBytes, nil
+	return params.CCBatchMaxBytes, nil
 }
 
 func (k Keeper) SCCBatchMaxBytes(ctx sdk.Context) (uint64, error) {

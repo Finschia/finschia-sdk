@@ -37,14 +37,14 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) AppendCTCBatch(goCtx context.Context, msg *types.MsgAppendCTCBatch) (*types.MsgAppendCTCBatchResponse, error) {
+func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBatch) (*types.MsgAppendCCBatchResponse, error) {
 	if err := k.validateSequencerAuthority(); err != nil {
 		return nil, err
 	}
 
 	k.appendSequencerBatch()
 
-	return &types.MsgAppendCTCBatchResponse{}, nil
+	return &types.MsgAppendCCBatchResponse{}, nil
 }
 
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
