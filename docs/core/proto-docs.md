@@ -620,8 +620,6 @@
     - [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse)
     - [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue)
     - [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse)
-    - [MsgRegisterRollup](#finschia.or.da.v1.MsgRegisterRollup)
-    - [MsgRegisterRollupResponse](#finschia.or.da.v1.MsgRegisterRollupResponse)
     - [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch)
     - [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse)
     - [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams)
@@ -8785,7 +8783,16 @@ Params defines the parameters for the module.
 <a name="finschia.or.da.v1.CTCBatch"></a>
 
 ### CTCBatch
-Sequencer use CTCBatch when they submit.
+CTCBatch is used  when the sequencer submits.
+Assuming the block and timestamp criteria for sequencer txs are
+respected within each group, the following are examples of groupings:
+ - [s]         // sequencer can exist by itself
+ - [q]         // ququed tx can exist by itself
+ - [s] [s]     // differing sequencer tx timestamp/blocknumber
+ - [s q] [s]   // sequencer tx must precede queued tx in group
+ - [q] [q s]   // INVALID: consecutive queued txs are split
+ - [q q] [s]   // correct split for preceding case
+ - [s q] [s q] // alternating sequencer tx interleaved with queued
 
 
 | Field | Type | Label | Description |
@@ -8793,6 +8800,7 @@ Sequencer use CTCBatch when they submit.
 | `should_start_at_element` | [string](#string) |  | previous total batch elements. |
 | `batch_contexts` | [CTCBatchContext](#finschia.or.da.v1.CTCBatchContext) | repeated |  |
 | `elements` | [CTCBatchElement](#finschia.or.da.v1.CTCBatchElement) | repeated |  |
+| `compression` | [CompressionOption](#finschia.or.da.v1.CompressionOption) |  | compression is the compression algorithm used for the batch. |
 
 
 
@@ -8810,7 +8818,7 @@ It is used to compress shared fields that would otherwise be repeated for each t
 | ----- | ---- | ----- | ----------- |
 | `num_sequenced_txs` | [uint64](#uint64) |  | num_sequenced_txs specifies the number of sequencer txs included in the batch. |
 | `num_subsequent_queue_txs` | [uint64](#uint64) |  | num_subsequent_queue_txs specifies the number of queued txs included in the batch |
-| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the batch. |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. |
 | `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
 
 
@@ -8826,8 +8834,7 @@ It is used to compress shared fields that would otherwise be repeated for each t
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `is_sequenced` | [bool](#bool) |  |  |
-| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the batch. SEQUENCER TX ONLY |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. SEQUENCER TX ONLY |
 | `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. SEQUENCER TX ONLY |
 | `txraw` | [bytes](#bytes) |  | SEQUENCER TX ONLY |
 | `queue_index` | [uint64](#uint64) |  | QUEUED TX ONLY |
@@ -9181,32 +9188,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.da.v1.MsgRegisterRollup"></a>
-
-### MsgRegisterRollup
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  |  |
-| `l1_to_l2_gas_ratio` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.MsgRegisterRollupResponse"></a>
-
-### MsgRegisterRollupResponse
-
-
-
-
-
-
-
 <a name="finschia.or.da.v1.MsgRemoveSCCBatch"></a>
 
 ### MsgRemoveSCCBatch
@@ -9275,7 +9256,6 @@ Msg defines the Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `UpdateParams` | [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse) |  | |
-| `RegisterRollup` | [MsgRegisterRollup](#finschia.or.da.v1.MsgRegisterRollup) | [MsgRegisterRollupResponse](#finschia.or.da.v1.MsgRegisterRollupResponse) |  | |
 | `AppendCTCBatch` | [MsgAppendCTCBatch](#finschia.or.da.v1.MsgAppendCTCBatch) | [MsgAppendCTCBatchResponse](#finschia.or.da.v1.MsgAppendCTCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |

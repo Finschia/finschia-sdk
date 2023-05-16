@@ -32,40 +32,50 @@ message CTCBatchContext {
   // the batch
   uint64 num_subsequent_queue_txs = 2;
 
-  // timestamp is the L1 unix timestamp of the batch.
-  google.protobuf.Timestamp l1_timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  // timestamp is the L2 block unix timestamp of the batch.
+  google.protobuf.Timestamp timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   // blockNumber is the L1 BlockNumber of the batch.
   uint64 l1_height = 4;
 }
 
 message CTCBatchElement {
-  bool is_sequenced = 1;
-
-  // timestamp is the L1 unix timestamp of the batch.
+  // timestamp is the L2 block unix timestamp of the batch.
   // SEQUENCER TX ONLY
-  google.protobuf.Timestamp l1_timestamp = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // blockNumber is the L1 BlockNumber of the batch.
   // SEQUENCER TX ONLY
-  uint64 l1_height = 3;
+  uint64 l1_height = 2;
 
   // SEQUENCER TX ONLY
-  bytes txraw = 4;
+  bytes txraw = 3;
 
   // QUEUED TX ONLY
-  uint64 queue_index = 5;
+  uint64 queue_index = 4;
 
   // l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer.
-  uint64 l2_height = 6;
+  uint64 l2_height = 5;
 }
 
-// Sequencer use CTCBatch when they submit.
+// CTCBatch is used  when the sequencer submits.
+// Assuming the block and timestamp criteria for sequencer txs are
+// respected within each group, the following are examples of groupings:
+//  - [s]         // sequencer can exist by itself
+//  - [q]         // ququed tx can exist by itself
+//  - [s] [s]     // differing sequencer tx timestamp/blocknumber
+//  - [s q] [s]   // sequencer tx must precede queued tx in group
+//  - [q] [q s]   // INVALID: consecutive queued txs are split
+//  - [q q] [s]   // correct split for preceding case
+//  - [s q] [s q] // alternating sequencer tx interleaved with queued
 message CTCBatch {
   // previous total batch elements.
   string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 
   repeated CTCBatchContext batch_contexts = 2;
   repeated CTCBatchElement elements = 3;
+
+  // compression is the compression algorithm used for the batch.
+  CompressionOption compression = 4;
 }
 
 // CTCRef is a data type that forms an element of Canonical Transaction Chain.

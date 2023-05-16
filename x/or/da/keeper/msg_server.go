@@ -37,14 +37,6 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) RegisterRollup(goCtx context.Context, msg *types.MsgRegisterRollup) (*types.MsgRegisterRollupResponse, error) {
-	if err := k.validateSequencerAuthority(); err != nil {
-		return nil, err
-	}
-
-	panic("implement me")
-}
-
 func (k msgServer) AppendCTCBatch(goCtx context.Context, msg *types.MsgAppendCTCBatch) (*types.MsgAppendCTCBatchResponse, error) {
 	if err := k.validateSequencerAuthority(); err != nil {
 		return nil, err

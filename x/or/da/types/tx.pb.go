@@ -121,94 +121,6 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
-type MsgRegisterRollup struct {
-	Name           string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	L1ToL2GasRatio uint64 `protobuf:"varint,2,opt,name=l1_to_l2_gas_ratio,json=l1ToL2GasRatio,proto3" json:"l1_to_l2_gas_ratio,omitempty"`
-}
-
-func (m *MsgRegisterRollup) Reset()         { *m = MsgRegisterRollup{} }
-func (m *MsgRegisterRollup) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterRollup) ProtoMessage()    {}
-func (*MsgRegisterRollup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{2}
-}
-func (m *MsgRegisterRollup) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRegisterRollup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRegisterRollup.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRegisterRollup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterRollup.Merge(m, src)
-}
-func (m *MsgRegisterRollup) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRegisterRollup) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterRollup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRegisterRollup proto.InternalMessageInfo
-
-func (m *MsgRegisterRollup) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *MsgRegisterRollup) GetL1ToL2GasRatio() uint64 {
-	if m != nil {
-		return m.L1ToL2GasRatio
-	}
-	return 0
-}
-
-type MsgRegisterRollupResponse struct {
-}
-
-func (m *MsgRegisterRollupResponse) Reset()         { *m = MsgRegisterRollupResponse{} }
-func (m *MsgRegisterRollupResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterRollupResponse) ProtoMessage()    {}
-func (*MsgRegisterRollupResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{3}
-}
-func (m *MsgRegisterRollupResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRegisterRollupResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRegisterRollupResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRegisterRollupResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterRollupResponse.Merge(m, src)
-}
-func (m *MsgRegisterRollupResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRegisterRollupResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterRollupResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRegisterRollupResponse proto.InternalMessageInfo
-
 type MsgAppendCTCBatch struct {
 	RollupName string   `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
 	Batch      CTCBatch `protobuf:"bytes,2,opt,name=batch,proto3" json:"batch"`
@@ -218,7 +130,7 @@ func (m *MsgAppendCTCBatch) Reset()         { *m = MsgAppendCTCBatch{} }
 func (m *MsgAppendCTCBatch) String() string { return proto.CompactTextString(m) }
 func (*MsgAppendCTCBatch) ProtoMessage()    {}
 func (*MsgAppendCTCBatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{4}
+	return fileDescriptor_0e3106aca12fbccc, []int{2}
 }
 func (m *MsgAppendCTCBatch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -268,7 +180,7 @@ func (m *MsgAppendCTCBatchResponse) Reset()         { *m = MsgAppendCTCBatchResp
 func (m *MsgAppendCTCBatchResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAppendCTCBatchResponse) ProtoMessage()    {}
 func (*MsgAppendCTCBatchResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{5}
+	return fileDescriptor_0e3106aca12fbccc, []int{3}
 }
 func (m *MsgAppendCTCBatchResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -307,7 +219,7 @@ func (m *MsgEnqueue) Reset()         { *m = MsgEnqueue{} }
 func (m *MsgEnqueue) String() string { return proto.CompactTextString(m) }
 func (*MsgEnqueue) ProtoMessage()    {}
 func (*MsgEnqueue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{6}
+	return fileDescriptor_0e3106aca12fbccc, []int{4}
 }
 func (m *MsgEnqueue) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -364,7 +276,7 @@ func (m *MsgEnqueueResponse) Reset()         { *m = MsgEnqueueResponse{} }
 func (m *MsgEnqueueResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgEnqueueResponse) ProtoMessage()    {}
 func (*MsgEnqueueResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{7}
+	return fileDescriptor_0e3106aca12fbccc, []int{5}
 }
 func (m *MsgEnqueueResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -402,7 +314,7 @@ func (m *MsgAppendSCCBatch) Reset()         { *m = MsgAppendSCCBatch{} }
 func (m *MsgAppendSCCBatch) String() string { return proto.CompactTextString(m) }
 func (*MsgAppendSCCBatch) ProtoMessage()    {}
 func (*MsgAppendSCCBatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{8}
+	return fileDescriptor_0e3106aca12fbccc, []int{6}
 }
 func (m *MsgAppendSCCBatch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -452,7 +364,7 @@ func (m *MsgAppendSCCBatchResponse) Reset()         { *m = MsgAppendSCCBatchResp
 func (m *MsgAppendSCCBatchResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAppendSCCBatchResponse) ProtoMessage()    {}
 func (*MsgAppendSCCBatchResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{9}
+	return fileDescriptor_0e3106aca12fbccc, []int{7}
 }
 func (m *MsgAppendSCCBatchResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -490,7 +402,7 @@ func (m *MsgRemoveSCCBatch) Reset()         { *m = MsgRemoveSCCBatch{} }
 func (m *MsgRemoveSCCBatch) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveSCCBatch) ProtoMessage()    {}
 func (*MsgRemoveSCCBatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{10}
+	return fileDescriptor_0e3106aca12fbccc, []int{8}
 }
 func (m *MsgRemoveSCCBatch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -540,7 +452,7 @@ func (m *MsgRemoveSCCBatchResponse) Reset()         { *m = MsgRemoveSCCBatchResp
 func (m *MsgRemoveSCCBatchResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveSCCBatchResponse) ProtoMessage()    {}
 func (*MsgRemoveSCCBatchResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0e3106aca12fbccc, []int{11}
+	return fileDescriptor_0e3106aca12fbccc, []int{9}
 }
 func (m *MsgRemoveSCCBatchResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -572,8 +484,6 @@ var xxx_messageInfo_MsgRemoveSCCBatchResponse proto.InternalMessageInfo
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "finschia.or.da.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "finschia.or.da.v1.MsgUpdateParamsResponse")
-	proto.RegisterType((*MsgRegisterRollup)(nil), "finschia.or.da.v1.MsgRegisterRollup")
-	proto.RegisterType((*MsgRegisterRollupResponse)(nil), "finschia.or.da.v1.MsgRegisterRollupResponse")
 	proto.RegisterType((*MsgAppendCTCBatch)(nil), "finschia.or.da.v1.MsgAppendCTCBatch")
 	proto.RegisterType((*MsgAppendCTCBatchResponse)(nil), "finschia.or.da.v1.MsgAppendCTCBatchResponse")
 	proto.RegisterType((*MsgEnqueue)(nil), "finschia.or.da.v1.MsgEnqueue")
@@ -587,43 +497,39 @@ func init() {
 func init() { proto.RegisterFile("finschia/or/da/v1/tx.proto", fileDescriptor_0e3106aca12fbccc) }
 
 var fileDescriptor_0e3106aca12fbccc = []byte{
-	// 572 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcf, 0x6f, 0xd3, 0x30,
-	0x18, 0x6d, 0x58, 0x37, 0xd8, 0xb7, 0x69, 0x68, 0x56, 0x25, 0xda, 0x14, 0xd2, 0x2a, 0x02, 0xa9,
-	0x9a, 0x20, 0x51, 0xcb, 0x61, 0x67, 0x5a, 0xf1, 0x4b, 0x5a, 0x01, 0x65, 0xdb, 0x85, 0x03, 0xc1,
-	0x6d, 0x4c, 0x1a, 0x91, 0xc4, 0x21, 0x76, 0x4b, 0xf7, 0x5f, 0xf0, 0x67, 0xed, 0x84, 0x76, 0xe4,
-	0x84, 0x50, 0xfb, 0x8f, 0xa0, 0x24, 0x76, 0xd7, 0x1f, 0x69, 0xb7, 0x03, 0xdc, 0xec, 0xef, 0x7b,
-	0x7e, 0xef, 0x7d, 0xf6, 0x93, 0x41, 0xfd, 0xe2, 0x85, 0xac, 0x3f, 0xf0, 0xb0, 0x49, 0x63, 0xd3,
-	0xc1, 0xe6, 0xa8, 0x69, 0xf2, 0xb1, 0x11, 0xc5, 0x94, 0x53, 0x74, 0x28, 0x7b, 0x06, 0x8d, 0x0d,
-	0x07, 0x1b, 0xa3, 0xa6, 0x5a, 0x72, 0xa9, 0x4b, 0xd3, 0xae, 0x99, 0xac, 0x32, 0xa0, 0x5a, 0xe9,
-	0x53, 0x16, 0x50, 0x66, 0x67, 0x8d, 0x6c, 0x23, 0x5a, 0xda, 0x2a, 0x7f, 0x84, 0x63, 0x1c, 0xc8,
-	0x7e, 0x8e, 0xbe, 0x83, 0xb3, 0x9e, 0x3e, 0x80, 0xfb, 0x5d, 0xe6, 0x9e, 0x47, 0x0e, 0xe6, 0xe4,
-	0x43, 0x7a, 0x08, 0x3d, 0x84, 0x5d, 0x3c, 0xe4, 0x03, 0x1a, 0x7b, 0xfc, 0xa2, 0xac, 0xd4, 0x95,
-	0xc6, 0xae, 0x75, 0x5d, 0x40, 0xc7, 0xb0, 0x93, 0x91, 0x97, 0xef, 0xd4, 0x95, 0xc6, 0x5e, 0xab,
-	0x62, 0xac, 0x4c, 0x60, 0x64, 0x44, 0xed, 0xe2, 0xe5, 0xef, 0x5a, 0xc1, 0x12, 0x70, 0xbd, 0x02,
-	0x0f, 0x96, 0x94, 0x2c, 0xc2, 0x22, 0x1a, 0x32, 0xa2, 0x9f, 0xc2, 0x61, 0x97, 0xb9, 0x16, 0x71,
-	0x3d, 0xc6, 0x49, 0x6c, 0x51, 0xdf, 0x1f, 0x46, 0x08, 0x41, 0x31, 0xc4, 0x01, 0x11, 0x0e, 0xd2,
-	0x35, 0x3a, 0x02, 0xe4, 0x37, 0x6d, 0x4e, 0x6d, 0xbf, 0x65, 0xbb, 0x98, 0xd9, 0x31, 0xe6, 0x1e,
-	0x4d, 0x8d, 0x14, 0xad, 0x03, 0xbf, 0x79, 0x46, 0x4f, 0x5a, 0xaf, 0x31, 0xb3, 0x92, 0xaa, 0x5e,
-	0x85, 0xca, 0x0a, 0xe9, 0x4c, 0x31, 0x48, 0x15, 0x5f, 0x44, 0x11, 0x09, 0x9d, 0xce, 0x59, 0xa7,
-	0x8d, 0x79, 0x7f, 0x80, 0x6a, 0xb0, 0x17, 0xa7, 0x30, 0x7b, 0x4e, 0x18, 0xb2, 0xd2, 0xbb, 0x44,
-	0xfe, 0x18, 0xb6, 0x7b, 0x09, 0x52, 0x8c, 0x5e, 0xcd, 0x19, 0x5d, 0x92, 0x89, 0xe1, 0x33, 0xbc,
-	0xf0, 0xb2, 0x28, 0x37, 0xf3, 0xf2, 0x19, 0xa0, 0xcb, 0xdc, 0x97, 0xe1, 0xb7, 0x21, 0x19, 0x92,
-	0x9b, 0x4d, 0x54, 0x61, 0x37, 0x19, 0xdd, 0xf7, 0x02, 0x8f, 0x8b, 0xd1, 0xef, 0xb9, 0x98, 0x9d,
-	0x24, 0x7b, 0x54, 0x82, 0x6d, 0x3e, 0x8e, 0xf1, 0xf7, 0xf2, 0x56, 0x5d, 0x69, 0xec, 0x5b, 0xd9,
-	0x46, 0x2f, 0x01, 0xba, 0x56, 0xc8, 0xbd, 0x83, 0xd3, 0xce, 0x3f, 0xbc, 0x03, 0x49, 0xb6, 0xfe,
-	0x0e, 0x24, 0x62, 0xe6, 0xe5, 0x5c, 0x24, 0x20, 0xa0, 0x23, 0x72, 0x7b, 0x2f, 0x35, 0xd8, 0x4b,
-	0xb9, 0x6d, 0x2f, 0x74, 0xc8, 0x58, 0x5c, 0x06, 0xa4, 0xa5, 0xb7, 0x49, 0x65, 0x96, 0x81, 0x79,
-	0x5a, 0xa9, 0xd9, 0xfa, 0x59, 0x84, 0xad, 0x2e, 0x73, 0xd1, 0x27, 0xd8, 0x5f, 0xc8, 0xbf, 0x9e,
-	0x33, 0xd2, 0x52, 0x72, 0xd5, 0xa3, 0x9b, 0x31, 0x52, 0x07, 0x39, 0x70, 0xb0, 0x14, 0xed, 0xc7,
-	0xf9, 0xa7, 0x17, 0x51, 0xea, 0xd3, 0xdb, 0xa0, 0xe6, 0x55, 0x96, 0xe2, 0xbc, 0x46, 0x65, 0x11,
-	0xb5, 0x4e, 0x25, 0x3f, 0xab, 0xe8, 0x3d, 0xdc, 0x95, 0x41, 0x7d, 0x94, 0x7f, 0x50, 0xb4, 0xd5,
-	0x27, 0x1b, 0xdb, 0xab, 0xb6, 0x67, 0xaf, 0xbe, 0xd1, 0xb6, 0x44, 0x6d, 0xb6, 0xbd, 0xfc, 0xd4,
-	0xd9, 0x13, 0x2c, 0x64, 0xeb, 0x3f, 0xa8, 0xb4, 0xdf, 0x5c, 0x4e, 0x34, 0xe5, 0x6a, 0xa2, 0x29,
-	0x7f, 0x26, 0x9a, 0xf2, 0x63, 0xaa, 0x15, 0xae, 0xa6, 0x5a, 0xe1, 0xd7, 0x54, 0x2b, 0x7c, 0x34,
-	0x5c, 0x8f, 0x0f, 0x86, 0x3d, 0xa3, 0x4f, 0x03, 0xf3, 0x95, 0xfc, 0x8c, 0x25, 0xf5, 0x33, 0xe6,
-	0x7c, 0x35, 0xc7, 0xe2, 0x6f, 0xe6, 0x17, 0x11, 0x61, 0xbd, 0x9d, 0xf4, 0x73, 0x7e, 0xfe, 0x37,
-	0x00, 0x00, 0xff, 0xff, 0xc5, 0x7c, 0x9f, 0xe2, 0x3a, 0x06, 0x00, 0x00,
+	// 509 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0x8d, 0x49, 0x5b, 0xc8, 0xa4, 0x02, 0xd5, 0x8a, 0x44, 0xe2, 0x80, 0x13, 0x59, 0x20, 0x45,
+	0x08, 0x6c, 0xb5, 0x1c, 0x7a, 0x26, 0x11, 0x08, 0x24, 0x02, 0xc8, 0xd0, 0x0b, 0x07, 0xc2, 0x26,
+	0x5e, 0xd6, 0x16, 0xb1, 0xd7, 0x78, 0xd7, 0x21, 0xfd, 0x0b, 0x3e, 0xab, 0xc7, 0x1e, 0x39, 0x21,
+	0x94, 0x5c, 0xf8, 0x0c, 0x64, 0xef, 0x6e, 0xaa, 0x38, 0x26, 0xed, 0x81, 0xde, 0xbc, 0xf3, 0xde,
+	0xbe, 0xf7, 0x3c, 0x3b, 0x1a, 0x30, 0xbe, 0x04, 0x11, 0x9b, 0xf8, 0x01, 0x72, 0x68, 0xe2, 0x78,
+	0xc8, 0x99, 0x1d, 0x3a, 0x7c, 0x6e, 0xc7, 0x09, 0xe5, 0x54, 0x3f, 0x50, 0x98, 0x4d, 0x13, 0xdb,
+	0x43, 0xf6, 0xec, 0xd0, 0x68, 0x10, 0x4a, 0x68, 0x8e, 0x3a, 0xd9, 0x97, 0x20, 0x1a, 0xad, 0x09,
+	0x65, 0x21, 0x65, 0x23, 0x01, 0x88, 0x83, 0x84, 0xcc, 0x4d, 0xfd, 0x18, 0x25, 0x28, 0x54, 0x78,
+	0x89, 0xbf, 0x87, 0x04, 0x66, 0xf9, 0x70, 0x67, 0xc8, 0xc8, 0x49, 0xec, 0x21, 0x8e, 0xdf, 0xe5,
+	0x97, 0xf4, 0x7b, 0x50, 0x43, 0x29, 0xf7, 0x69, 0x12, 0xf0, 0xd3, 0xa6, 0xd6, 0xd5, 0x7a, 0x35,
+	0xf7, 0xa2, 0xa0, 0x1f, 0xc3, 0x9e, 0x10, 0x6f, 0xde, 0xe8, 0x6a, 0xbd, 0xfa, 0x51, 0xcb, 0xde,
+	0xf8, 0x03, 0x5b, 0x08, 0xf5, 0x77, 0xce, 0x7e, 0x75, 0x2a, 0xae, 0xa4, 0x5b, 0x2d, 0xb8, 0x5b,
+	0x70, 0x72, 0x31, 0x8b, 0x69, 0xc4, 0xb0, 0x15, 0xc2, 0xc1, 0x90, 0x91, 0x67, 0x71, 0x8c, 0x23,
+	0x6f, 0xf0, 0x61, 0xd0, 0x47, 0x7c, 0xe2, 0xeb, 0x1d, 0xa8, 0x27, 0x74, 0x3a, 0x4d, 0xe3, 0x51,
+	0x84, 0x42, 0x2c, 0x83, 0x80, 0x28, 0xbd, 0x41, 0x21, 0xd6, 0x8f, 0x61, 0x77, 0x9c, 0x31, 0x65,
+	0x90, 0x76, 0x49, 0x10, 0x25, 0x26, 0xa3, 0x08, 0xbe, 0xd5, 0x86, 0xd6, 0x86, 0xdd, 0x2a, 0xcb,
+	0x67, 0x80, 0x21, 0x23, 0xcf, 0xa3, 0x6f, 0x29, 0x4e, 0xf1, 0xe5, 0x21, 0xda, 0x50, 0x23, 0x88,
+	0x8d, 0xa6, 0x41, 0x18, 0xf0, 0x3c, 0xc8, 0x8e, 0x7b, 0x8b, 0x20, 0xf6, 0x3a, 0x3b, 0xeb, 0x0d,
+	0xd8, 0xe5, 0xf3, 0x04, 0x7d, 0x6f, 0x56, 0xbb, 0x5a, 0x6f, 0xdf, 0x15, 0x07, 0xab, 0x01, 0xfa,
+	0x85, 0x43, 0x69, 0x0f, 0xde, 0x0f, 0xfe, 0x63, 0x0f, 0x94, 0xd8, 0xbf, 0x7b, 0xa0, 0x18, 0xab,
+	0x2c, 0x27, 0x79, 0x16, 0x17, 0x87, 0x74, 0x86, 0xaf, 0x9e, 0xa5, 0x03, 0xf5, 0x5c, 0x7b, 0x14,
+	0x44, 0x1e, 0x9e, 0xcb, 0x66, 0x40, 0x5e, 0x7a, 0x95, 0x55, 0xa4, 0xe7, 0xba, 0xac, 0xf2, 0x3c,
+	0xfa, 0x53, 0x85, 0xea, 0x90, 0x11, 0xfd, 0x13, 0xec, 0xaf, 0x4d, 0xa3, 0x55, 0xf2, 0x4b, 0x85,
+	0x39, 0x32, 0x1e, 0x5d, 0xce, 0x51, 0x3e, 0xba, 0x07, 0xb7, 0x0b, 0x83, 0xf6, 0xa0, 0xfc, 0xf6,
+	0x3a, 0xcb, 0x78, 0x7c, 0x15, 0xd6, 0xca, 0xe5, 0x2d, 0xdc, 0x54, 0x23, 0x74, 0xbf, 0xfc, 0xa2,
+	0x84, 0x8d, 0x87, 0x5b, 0xe1, 0xcd, 0xd8, 0xab, 0xf7, 0xd8, 0x1a, 0x5b, 0xb1, 0xb6, 0xc7, 0x2e,
+	0x3e, 0x42, 0xe6, 0x52, 0x78, 0xf5, 0x6b, 0x70, 0xe9, 0xbf, 0x3c, 0x5b, 0x98, 0xda, 0xf9, 0xc2,
+	0xd4, 0x7e, 0x2f, 0x4c, 0xed, 0xc7, 0xd2, 0xac, 0x9c, 0x2f, 0xcd, 0xca, 0xcf, 0xa5, 0x59, 0xf9,
+	0x68, 0x93, 0x80, 0xfb, 0xe9, 0xd8, 0x9e, 0xd0, 0xd0, 0x79, 0xa1, 0x96, 0x96, 0x92, 0x7e, 0xc2,
+	0xbc, 0xaf, 0xce, 0x5c, 0xee, 0x30, 0x7e, 0x1a, 0x63, 0x36, 0xde, 0xcb, 0x97, 0xd8, 0xd3, 0xbf,
+	0x01, 0x00, 0x00, 0xff, 0xff, 0x38, 0xf3, 0xe5, 0x3a, 0x62, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -639,7 +545,6 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	RegisterRollup(ctx context.Context, in *MsgRegisterRollup, opts ...grpc.CallOption) (*MsgRegisterRollupResponse, error)
 	// Allow the sequencer to append a batch of transactions.
 	AppendCTCBatch(ctx context.Context, in *MsgAppendCTCBatch, opts ...grpc.CallOption) (*MsgAppendCTCBatchResponse, error)
 	// Add a L2 transaction to the queue to process forcibly.
@@ -661,15 +566,6 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, "/finschia.or.da.v1.Msg/UpdateParams", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) RegisterRollup(ctx context.Context, in *MsgRegisterRollup, opts ...grpc.CallOption) (*MsgRegisterRollupResponse, error) {
-	out := new(MsgRegisterRollupResponse)
-	err := c.cc.Invoke(ctx, "/finschia.or.da.v1.Msg/RegisterRollup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -715,7 +611,6 @@ func (c *msgClient) RemoveSCCBatch(ctx context.Context, in *MsgAppendSCCBatch, o
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	RegisterRollup(context.Context, *MsgRegisterRollup) (*MsgRegisterRollupResponse, error)
 	// Allow the sequencer to append a batch of transactions.
 	AppendCTCBatch(context.Context, *MsgAppendCTCBatch) (*MsgAppendCTCBatchResponse, error)
 	// Add a L2 transaction to the queue to process forcibly.
@@ -732,9 +627,6 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
-}
-func (*UnimplementedMsgServer) RegisterRollup(ctx context.Context, req *MsgRegisterRollup) (*MsgRegisterRollupResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterRollup not implemented")
 }
 func (*UnimplementedMsgServer) AppendCTCBatch(ctx context.Context, req *MsgAppendCTCBatch) (*MsgAppendCTCBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppendCTCBatch not implemented")
@@ -767,24 +659,6 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_RegisterRollup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRegisterRollup)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RegisterRollup(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/finschia.or.da.v1.Msg/RegisterRollup",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RegisterRollup(ctx, req.(*MsgRegisterRollup))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -870,10 +744,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "RegisterRollup",
-			Handler:    _Msg_RegisterRollup_Handler,
-		},
-		{
 			MethodName: "AppendCTCBatch",
 			Handler:    _Msg_AppendCTCBatch_Handler,
 		},
@@ -950,64 +820,6 @@ func (m *MsgUpdateParamsResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRegisterRollup) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRegisterRollup) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRegisterRollup) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.L1ToL2GasRatio != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.L1ToL2GasRatio))
-		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRegisterRollupResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRegisterRollupResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRegisterRollupResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1299,31 +1111,6 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgRegisterRollup) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.L1ToL2GasRatio != 0 {
-		n += 1 + sovTx(uint64(m.L1ToL2GasRatio))
-	}
-	return n
-}
-
-func (m *MsgRegisterRollupResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *MsgAppendCTCBatch) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1574,157 +1361,6 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRegisterRollup) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterRollup: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterRollup: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field L1ToL2GasRatio", wireType)
-			}
-			m.L1ToL2GasRatio = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.L1ToL2GasRatio |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRegisterRollupResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterRollupResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterRollupResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

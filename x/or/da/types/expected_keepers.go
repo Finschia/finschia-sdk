@@ -17,3 +17,12 @@ type BankKeeper interface {
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	// Methods imported from bank should be defined here
 }
+
+type SequencerKeeper interface {
+	GetRollupInfo(ctx sdk.Context, rollupID string) (RollupInfo, error)
+}
+
+type RollupInfo struct {
+	ID             string
+	L1ToL2GasRatio uint64
+}
