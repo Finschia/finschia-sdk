@@ -9110,6 +9110,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `batch` | [CTCBatch](#finschia.or.da.v1.CTCBatch) |  |  |
 
 
@@ -9135,6 +9136,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `batch` | [SCCBatch](#finschia.or.da.v1.SCCBatch) |  |  |
 
 
@@ -9160,6 +9162,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `gas_limit` | [uint64](#uint64) |  |  |
 | `txraw` | [bytes](#bytes) |  |  |
 
@@ -9212,6 +9215,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `batch_index` | [uint64](#uint64) |  |  |
 
 

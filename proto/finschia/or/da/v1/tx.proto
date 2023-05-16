@@ -48,26 +48,30 @@ message MsgRegisterRollup {
 message MsgRegisterRollupResponse {}
 
 message MsgAppendCTCBatch {
-  CTCBatch batch = 1 [(gogoproto.nullable) = false];
+  string rollup_name = 1;
+  CTCBatch batch = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendCTCBatchResponse {}
 
 message MsgEnqueue {
-  uint64 gas_limit = 1;
-  bytes txraw = 2;
+  string rollup_name = 1;
+  uint64 gas_limit = 2;
+  bytes txraw = 3;
 }
 
 message MsgEnqueueResponse {}
 
 message MsgAppendSCCBatch {
-  SCCBatch batch = 1 [(gogoproto.nullable) = false];
+  string rollup_name = 1;
+  SCCBatch batch = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendSCCBatchResponse {}
 
 message MsgRemoveSCCBatch {
-  uint64 batch_index = 1;
+  string rollup_name = 1;
+  uint64 batch_index = 2;
 }
 
 message MsgRemoveSCCBatchResponse {}
