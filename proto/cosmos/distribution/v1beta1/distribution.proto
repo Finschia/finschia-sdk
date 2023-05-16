@@ -81,8 +81,7 @@ message ValidatorOutstandingRewards {
 // for delegations which are withdrawn after a slash has occurred.
 message ValidatorSlashEvent {
   uint64 validator_period = 1 [(gogoproto.moretags) = "yaml:\"validator_period\""];
-  string fraction         = 2
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
+  string fraction = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // ValidatorSlashEvents is a collection of ValidatorSlashEvent messages.
