@@ -17,11 +17,11 @@ func TestGetParams(t *testing.T) {
 
 	savedParams, err := k.GetParams(ctx)
 	require.Nil(t, err)
-	savedCTCBatchMaxBytes, err := k.CTCBatchMaxBytes(ctx)
+	savedCCBatchMaxBytes, err := k.CCBatchMaxBytes(ctx)
 	require.Nil(t, err)
 	savedSCCBatchMaxBytes, err := k.SCCBatchMaxBytes(ctx)
 	require.Nil(t, err)
 	require.EqualValues(t, params, savedParams)
-	require.EqualValues(t, params.CTCBatchMaxBytes, savedCTCBatchMaxBytes)
+	require.EqualValues(t, params.CCBatchMaxBytes, savedCCBatchMaxBytes)
 	require.EqualValues(t, params.SCCBatchMaxBytes, savedSCCBatchMaxBytes)
 }

@@ -7,17 +7,17 @@ import (
 )
 
 const (
-	DefaultCTCBatchMaxBytes uint64 = 1000000
+	DefaultCCBatchMaxBytes  uint64 = 1000000
 	DefaultSCCBatchMaxBytes uint64 = 1000000
 )
 
 // NewParams creates a new Params instance
 func NewParams(
-	CTCBatchMaxBytes uint64,
+	CCBatchMaxBytes uint64,
 	SCCBatchMaxBytes uint64,
 ) Params {
 	return Params{
-		CTCBatchMaxBytes: CTCBatchMaxBytes,
+		CCBatchMaxBytes:  CCBatchMaxBytes,
 		SCCBatchMaxBytes: SCCBatchMaxBytes,
 	}
 }
@@ -25,14 +25,14 @@ func NewParams(
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
-		DefaultCTCBatchMaxBytes,
+		DefaultCCBatchMaxBytes,
 		DefaultSCCBatchMaxBytes,
 	)
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateCTCBatchMaxBytes(p.CTCBatchMaxBytes); err != nil {
+	if err := validateCCBatchMaxBytes(p.CCBatchMaxBytes); err != nil {
 		return err
 	}
 	if err := validateSCCBatchMaxBytes(p.SCCBatchMaxBytes); err != nil {
@@ -48,7 +48,7 @@ func (p Params) String() string {
 	return string(out)
 }
 
-func validateCTCBatchMaxBytes(i interface{}) error {
+func validateCCBatchMaxBytes(i interface{}) error {
 	v, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)

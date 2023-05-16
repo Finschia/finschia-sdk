@@ -17,7 +17,7 @@ message Params {
   uint64 max_queue_tx_size = 2;
   uint64 min_queue_tx_gas = 3;
   // A sequencer must submit a queue tx to L2 before this time.
-  google.protobuf.Timestamp queue_tx_expiration = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  uint64 queue_tx_expiration_window = 4;
 
 
   // 2. SCC-related

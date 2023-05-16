@@ -8735,7 +8735,7 @@ Params defines the parameters for the module.
 | `cc_batch_max_bytes` | [uint64](#uint64) |  | 1. CC-related |
 | `max_queue_tx_size` | [uint64](#uint64) |  | Queue Tx-related |
 | `min_queue_tx_gas` | [uint64](#uint64) |  |  |
-| `queue_tx_expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | A sequencer must submit a queue tx to L2 before this time. |
+| `queue_tx_expiration_window` | [uint64](#uint64) |  | A sequencer must submit a queue tx to L2 before this time. |
 | `scc_batch_max_bytes` | [uint64](#uint64) |  | 2. SCC-related |
 | `fraud_proof_window` | [uint64](#uint64) |  | Number of seconds that the verifier is allowed to submit a fraud proof. Currnet scc batch header timestamp + fraud_proof_window = challenge period |
 | `sequencer_publish_window` | [uint64](#uint64) |  | Number of seconds that the sequencer is exclusively allowed to post state roots |
