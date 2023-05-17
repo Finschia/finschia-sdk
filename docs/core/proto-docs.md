@@ -8873,7 +8873,7 @@ BatchChainState is the state of target batch chain.
 | `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
 | `height` | [uint64](#uint64) |  |  |
 | `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
-| `l1_to_l2_gas_ratio` | [uint64](#uint64) |  | The ratio between the cost of gas on L1 and L2. This is a positive integer. |
+| `processed_queue_index` | [uint64](#uint64) |  | Index of the processed queue element. Queue elements up to this index were submitted via CC batch. |
 | `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
 | `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
 | `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |
