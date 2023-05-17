@@ -15,10 +15,6 @@ option (gogoproto.goproto_getters_all) = false;
 
 // Msg defines the foundation Msg service.
 service Msg {
-  // UpdateParams defines an operation for updating the x/foundation module
-  // parameters.
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
-
   // FundTreasury defines a method to fund the treasury.
   rpc FundTreasury(MsgFundTreasury) returns (MsgFundTreasuryResponse);
 
@@ -58,20 +54,6 @@ service Msg {
   // that has been granted to the grantee.
   rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
 }
-
-// MsgUpdateParams is the Msg/UpdateParams request type.
-message MsgUpdateParams {
-  // authority is the address of the privileged account.
-  string authority = 1;
-
-  // params defines the x/foundation parameters to update.
-  //
-  // NOTE: All parameters must be supplied.
-  Params params = 2 [(gogoproto.nullable) = false];
-}
-
-// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-message MsgUpdateParamsResponse {}
 
 // MsgFundTreasury is the Msg/FundTreasury request type.
 message MsgFundTreasury {
