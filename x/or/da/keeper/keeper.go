@@ -12,17 +12,15 @@ import (
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
-type (
-	Keeper struct {
-		cdc      codec.BinaryCodec
-		storeKey storetypes.StoreKey
-		memKey   storetypes.StoreKey
+type Keeper struct {
+	cdc      codec.BinaryCodec
+	storeKey storetypes.StoreKey
+	memKey   storetypes.StoreKey
 
-		// the address capable of executing a MsgUpdateParams message. Typically, this
-		// should be the x/gov module account.
-		authority string
-	}
-)
+	// the address capable of executing a MsgUpdateParams message. Typically, this
+	// should be the gov module account.
+	authority string
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
