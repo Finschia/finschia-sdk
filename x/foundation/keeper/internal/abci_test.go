@@ -24,12 +24,11 @@ func (s *KeeperTestSuite) TestBeginBlocker() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			s.impl.SetParams(ctx, foundation.Params{
-				FoundationTax: tc.taxRatio,
-			})
-
 			// collect
 			testing := func() {
+				s.impl.SetParams(ctx, foundation.Params{
+					FoundationTax: tc.taxRatio,
+				})
 				internal.BeginBlocker(ctx, s.impl)
 			}
 			if !tc.valid {

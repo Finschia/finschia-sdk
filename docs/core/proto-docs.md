@@ -790,7 +790,6 @@
     - [EventUpdateCensorship](#lbm.foundation.v1.EventUpdateCensorship)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
-    - [EventUpdateParams](#lbm.foundation.v1.EventUpdateParams)
     - [EventVote](#lbm.foundation.v1.EventVote)
     - [EventWithdrawFromTreasury](#lbm.foundation.v1.EventWithdrawFromTreasury)
     - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
@@ -846,8 +845,6 @@
     - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
     - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
     - [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse)
-    - [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams)
-    - [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse)
     - [MsgVote](#lbm.foundation.v1.MsgVote)
     - [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse)
     - [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury)
@@ -11827,21 +11824,6 @@ EventUpdateMembers is an event emitted when the members have been updated.
 
 
 
-<a name="lbm.foundation.v1.EventUpdateParams"></a>
-
-### EventUpdateParams
-EventUpdateParams is emitted after updating foundation parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.EventVote"></a>
 
 ### EventVote
@@ -12595,34 +12577,6 @@ MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
 
 
 
-<a name="lbm.foundation.v1.MsgUpdateParams"></a>
-
-### MsgUpdateParams
-MsgUpdateParams is the Msg/UpdateParams request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authority` | [string](#string) |  | authority is the address of the privileged account. |
-| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
-
-NOTE: All parameters must be supplied. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.MsgUpdateParamsResponse"></a>
-
-### MsgUpdateParamsResponse
-MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-
-
-
-
-
-
 <a name="lbm.foundation.v1.MsgVote"></a>
 
 ### MsgVote
@@ -12730,7 +12684,6 @@ Msg defines the foundation Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `UpdateParams` | [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse) | UpdateParams defines an operation for updating the x/foundation module parameters. | |
 | `FundTreasury` | [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury) | [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse) | FundTreasury defines a method to fund the treasury. | |
 | `WithdrawFromTreasury` | [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury) | [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse) | WithdrawFromTreasury defines a method to withdraw coins from the treasury. | |
 | `UpdateMembers` | [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers) | [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse) | UpdateMembers updates the foundation members. | |
