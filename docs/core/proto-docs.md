@@ -602,6 +602,8 @@
     - [CompressionOption](#finschia.or.da.v1.CompressionOption)
   
 - [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
+    - [EventUpdateParams](#finschia.or.da.v1.EventUpdateParams)
+  
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
     - [CC](#finschia.or.da.v1.CC)
     - [GenesisState](#finschia.or.da.v1.GenesisState)
@@ -8974,6 +8976,21 @@ BatchChainState is the state of target batch chain.
 <p align="right"><a href="#top">Top</a></p>
 
 ## finschia/or/da/v1/event.proto
+
+
+
+<a name="finschia.or.da.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+EventUpdateParams is emitted after updating foundation parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.or.da.v1.Params) |  |  |
+
+
+
 
 
  <!-- end messages -->

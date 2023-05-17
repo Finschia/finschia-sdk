@@ -34,6 +34,10 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 		return nil, err
 	}
 
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventUpdateParams{Params: msg.Params}); err != nil {
+		return nil, err
+	}
+
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
