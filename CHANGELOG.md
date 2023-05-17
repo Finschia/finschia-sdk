@@ -58,6 +58,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 * (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24 
+* (all) [\#1007](https://github.com/Finschia/finschia-sdk/pull/1007) catch up with the upstream's module versions
 
 ### State Machine Breaking
 
