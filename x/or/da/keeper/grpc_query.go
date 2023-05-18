@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
 var _ types.QueryServer = Keeper{}
