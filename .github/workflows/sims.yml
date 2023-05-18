@@ -1,6 +1,10 @@
 name: Sims
 # Sims workflow runs multiple types of simulations (nondeterminism, import-export, after-import, multi-seed-short)
 # This workflow will run on all Pull Requests, if a .go, .mod or .sum file have been changed
+
+env:
+  GOPRIVATE: "github.com/Finschia/ramus"
+
 on:
   pull_request:
     branches-ignore:
@@ -12,7 +16,7 @@ on:
 
 jobs:
   cleanup-runs:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
     steps:
       - uses: rokroskar/workflow-run-cleanup-action@master
@@ -20,9 +24,13 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: "!contains(github.event.head_commit.message, 'skip-sims')"
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -32,7 +40,7 @@ jobs:
       - run: make build
 
   install-runsim:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
     steps:
       - uses: actions/setup-go@v4.0.0
@@ -48,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-go-runsim-binary
 
   test-sim-nondeterminism-short:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
@@ -75,7 +83,7 @@ jobs:
         if: env.GIT_DIFF
 
   test-sim-import-export-short:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
@@ -104,7 +112,7 @@ jobs:
         if: env.GIT_DIFF
 
   test-sim-after-import-short:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
@@ -133,7 +141,7 @@ jobs:
         if: env.GIT_DIFF
 
   test-sim-multi-seed-short:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3

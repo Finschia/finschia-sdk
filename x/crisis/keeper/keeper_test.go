@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"testing"
 
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -22,7 +22,7 @@ func TestLogger(t *testing.T) {
 func TestInvariants(t *testing.T) {
 	app := simapp.Setup(false)
 	app.Commit()
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	require.Equal(t, app.CrisisKeeper.InvCheckPeriod(), uint(5))
 
@@ -35,7 +35,7 @@ func TestInvariants(t *testing.T) {
 func TestAssertInvariants(t *testing.T) {
 	app := simapp.Setup(false)
 	app.Commit()
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	ctx := app.NewContext(true, tmproto.Header{})
 

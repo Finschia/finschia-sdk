@@ -3,6 +3,8 @@ package capability_test
 import (
 	"testing"
 
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -14,7 +16,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/capability"
 	"github.com/Finschia/finschia-sdk/x/capability/keeper"
 	"github.com/Finschia/finschia-sdk/x/capability/types"
-	ocabci "github.com/Finschia/ostracon/abci/types"
 )
 
 type CapabilityTestSuite struct {
@@ -64,7 +65,7 @@ func (suite *CapabilityTestSuite) TestInitializeMemStore() {
 	ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{}).WithBlockGasMeter(sdk.NewGasMeter(50))
 	prevGas := ctx.BlockGasMeter().GasConsumed()
 	restartedModule := capability.NewAppModule(suite.cdc, *newKeeper)
-	restartedModule.BeginBlock(ctx, ocabci.RequestBeginBlock{})
+	restartedModule.BeginBlock(ctx, abci.RequestBeginBlock{})
 	suite.Require().True(newKeeper.IsInitialized(ctx), "memstore initialized flag not set")
 	gasUsed := ctx.BlockGasMeter().GasConsumed()
 
@@ -85,7 +86,7 @@ func (suite *CapabilityTestSuite) TestInitializeMemStore() {
 	// Ensure the capabilities don't get reinitialized on next BeginBlock
 	// by testing to see if capability returns same pointer
 	// also check that initialized flag is still set
-	restartedModule.BeginBlock(ctx, ocabci.RequestBeginBlock{})
+	restartedModule.BeginBlock(ctx, abci.RequestBeginBlock{})
 	recap, ok := newSk1.GetCapability(ctx, "transfer")
 	suite.Require().True(ok)
 	suite.Require().Equal(cap1, recap, "capabilities got reinitialized after second BeginBlock")

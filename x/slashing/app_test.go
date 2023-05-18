@@ -4,10 +4,10 @@ import (
 	"errors"
 	"testing"
 
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
@@ -76,7 +76,7 @@ func TestSlashingMsgs(t *testing.T) {
 	simapp.CheckBalance(t, app, addr1, sdk.Coins{genCoin.Sub(bondCoin)})
 
 	header = tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	validator := checkValidator(t, app, addr1, true)
 	require.Equal(t, sdk.ValAddress(addr1).String(), validator.OperatorAddress)

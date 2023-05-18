@@ -9,13 +9,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
-	rpcclient "github.com/Finschia/ostracon/rpc/client"
 	abci "github.com/tendermint/tendermint/abci/types"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/Finschia/finschia-sdk/store/rootmulti"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an

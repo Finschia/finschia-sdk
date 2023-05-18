@@ -9,7 +9,7 @@ import (
 	types "github.com/Finschia/finschia-sdk/codec/types"
 	query "github.com/Finschia/finschia-sdk/types/query"
 	_ "github.com/Finschia/ostracon/abci/types"
-	types2 "github.com/Finschia/ostracon/proto/ostracon/types"
+	types2 "github.com/tendermint/tendermint/proto/tendermint/types"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	types3 "github.com/tendermint/tendermint/abci/types"

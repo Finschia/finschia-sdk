@@ -1,11 +1,12 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/Finschia/finschia-sdk/x/staking/keeper"
 	"github.com/Finschia/finschia-sdk/x/staking/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestUnbondingToUnbondedPanic(t *testing.T) {

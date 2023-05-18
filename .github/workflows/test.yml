@@ -2,6 +2,9 @@ name: Tests / Code Coverage
 #  Tests / Code Coverage workflow runs unit tests and uploads a code coverage report
 #  This workflow is run on pushes to main & every Pull Requests where a .go, .mod, .sum have been changed
 
+env:
+  GOPRIVATE: "github.com/Finschia/ramus"
+
 on:
   pull_request:
   push:
@@ -11,7 +14,7 @@ on:
       - release/*
 jobs:
   cleanup-runs:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: rokroskar/workflow-run-cleanup-action@master
         env:
@@ -19,7 +22,7 @@ jobs:
     if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
 
   install-tparse:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/setup-go@v4.0.0
         with:
@@ -35,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-go-tparse-binary
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         include:
@@ -46,6 +49,10 @@ jobs:
             gcc: "aarch64-linux-gnu-gcc"
             package: "g++-aarch64-linux-gnu"
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
@@ -65,8 +72,12 @@ jobs:
 
 
   test-cosmovisor:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -86,7 +97,7 @@ jobs:
         if: env.GIT_DIFF
 
   split-test-files:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - name: Create a file with all the pkgs
@@ -112,13 +123,17 @@ jobs:
           path: ./pkgs.txt.part.03
 
   tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: split-test-files
     strategy:
       fail-fast: false
       matrix:
         part: ["00", "01", "02", "03"]
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -153,7 +168,7 @@ jobs:
           path: ./${{ matrix.part }}profile.out
 
   upload-coverage-report:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: tests
     steps:
       - uses: actions/checkout@v3
@@ -200,13 +215,17 @@ jobs:
         if: env.GIT_DIFF
 
   test-race:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: split-test-files
     strategy:
       fail-fast: false
       matrix:
         part: ["00", "01", "02", "03"]
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -243,7 +262,7 @@ jobs:
 
 # TODO finschia: enable this test
 #  test-rosetta:
-#    runs-on: ubuntu-latest
+#    runs-on: self-hosted
 #    timeout-minutes: 10
 #    steps:
 #      - uses: actions/checkout@v2
@@ -261,7 +280,7 @@ jobs:
 
 # TODO ebony: enable this test
 #  liveness-test:
-#    runs-on: ubuntu-latest
+#    runs-on: self-hosted
 #    timeout-minutes: 10
 #    steps:
 #      - uses: actions/checkout@v3
@@ -286,7 +305,7 @@ jobs:
 
 # TODO ebony: fix module download error in docker
 #  docker-build:
-#    runs-on: ubuntu-latest
+#    runs-on: self-hosted
 #    timeout-minutes: 10
 #    steps:
 #      - uses: actions/checkout@v3

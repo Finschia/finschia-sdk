@@ -33,15 +33,32 @@ func (s *handlerTestSuite) TestChainAnteDecorators() {
 	_, err := sdk.ChainAnteDecorators(mockAnteDecorator1)(ctx, tx, true)
 	s.Require().NoError(err)
 
-	mockAnteDecorator2 := mocks.NewMockAnteDecorator(mockCtrl)
-	// NOTE: we can't check that mockAnteDecorator2 is passed as the last argument because
-	// ChainAnteDecorators wraps the decorators into closures, so each decorator is
-	// receiving a closure.
-	mockAnteDecorator1.EXPECT().AnteHandle(gomock.Eq(ctx), gomock.Eq(tx), true, gomock.Any()).Times(1)
-	mockAnteDecorator2.EXPECT().AnteHandle(gomock.Eq(ctx), gomock.Eq(tx), true, gomock.Any()).Times(1)
+	called := []bool{false, false}
+	testAnteDecorator1 := TestAnteDecorator{suite: s, ctx: ctx, tx: tx, simulate: true, called: &called[0]}
+	testAnteDecorator2 := TestAnteDecorator{suite: s, ctx: ctx, tx: tx, simulate: true, called: &called[1]}
 
 	_, err = sdk.ChainAnteDecorators(
-		mockAnteDecorator1,
-		mockAnteDecorator2)(ctx, tx, true)
+		testAnteDecorator1,
+		testAnteDecorator2)(ctx, tx, true)
 	s.Require().NoError(err)
+	s.Require().True(called[0])
+	s.Require().True(called[1])
 }
+
+type TestAnteDecorator struct {
+	suite    *handlerTestSuite
+	ctx      sdk.Context
+	tx       sdk.Tx
+	simulate bool
+	called   *bool
+}
+
+func (t TestAnteDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	t.suite.Require().Equal(t.ctx, ctx)
+	t.suite.Require().Equal(t.tx, tx)
+	t.suite.Require().Equal(t.simulate, simulate)
+	*t.called = true
+	return next(ctx, tx, simulate)
+}
+
+// 鷹見さんのコードを参考にした

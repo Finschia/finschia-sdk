@@ -31,7 +31,6 @@ message Params {
   // A sequencer must submit a queue tx to L2 before this time.
   uint64 queue_tx_expiration_window = 6;
 
-
   // 2. SCC-related
   uint64 scc_batch_max_bytes = 7 [(gogoproto.customname) = "SCCBatchMaxBytes"];
 

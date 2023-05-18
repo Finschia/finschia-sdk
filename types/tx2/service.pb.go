@@ -8,7 +8,7 @@ import (
 	fmt "fmt"
 	query "github.com/Finschia/finschia-sdk/types/query"
 	tx "github.com/Finschia/finschia-sdk/types/tx"
-	types1 "github.com/Finschia/ostracon/proto/ostracon/types"
+	types1 "github.com/tendermint/tendermint/proto/tendermint/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"

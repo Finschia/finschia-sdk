@@ -13,7 +13,7 @@ env:
   repository: finschia/finschia-simapp
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
         with:
