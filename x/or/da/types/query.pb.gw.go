@@ -328,11 +328,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"checkers", "da", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"finschia", "or", "da", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_CCBatches_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"checkers", "da", "batches", "cc"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_CCBatches_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5}, []string{"finschia", "or", "da", "v1", "batches", "cc"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_CCBatch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"checkers", "da", "batches", "cc", "batch_height"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_CCBatch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"finschia", "or", "da", "v1", "batches", "cc", "batch_height"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

@@ -13,15 +13,15 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/checkers/da/params";
+    option (google.api.http).get = "/finschia/or/da/v1/params";
   }
 
   rpc CCBatches(QueryCCBatchesRequest) returns (QueryCCBatchesResponse) {
-    option (google.api.http).get = "/checkers/da/batches/cc";
+    option (google.api.http).get = "/finschia/or/da/v1/batches/cc";
   }
 
   rpc CCBatch(QueryCCBatchRequest) returns (QueryCCBatchResponse) {
-    option (google.api.http).get = "/checkers/da/batches/cc/{batch_height}";
+    option (google.api.http).get = "/finschia/or/da/v1/batches/cc/{batch_height}";
   }
 }
 
