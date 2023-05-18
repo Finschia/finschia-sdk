@@ -1,10 +1,10 @@
 syntax = "proto3";
-package finschia.or.settlement.v1beta1;
+package finschia.or.settlement.v1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "finschia/or/settlement/v1beta1/settlement.proto";
+import "finschia/or/settlement/v1/settlement.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
 
@@ -12,7 +12,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
 service Query {
   // instead of getStepNumber, isSearching, and getProposedState
   rpc Challenge(QueryChallengeRequest) returns (QueryChallengeResponse) {
-    option (google.api.http).get = "/finschia/settlement/v1/challenge/{challenge_id}";
+    option (google.api.http).get = "/finschia/or/settlement/v1/challenge/{challenge_id}";
   }
 }
 

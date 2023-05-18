@@ -1,5 +1,5 @@
 syntax = "proto3";
-package finschia.or.settlement.v1beta1;
+package finschia.or.settlement.v1;
 
 // this line is used by starport scaffolding # proto/tx/import
 

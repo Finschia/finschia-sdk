@@ -584,36 +584,36 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
-- [finschia/or/settlement/v1beta1/genesis.proto](#finschia/or/settlement/v1beta1/genesis.proto)
-    - [GenesisState](#finschia.or.settlement.v1beta1.GenesisState)
+- [finschia/or/settlement/v1/genesis.proto](#finschia/or/settlement/v1/genesis.proto)
+    - [GenesisState](#finschia.or.settlement.v1.GenesisState)
   
-- [finschia/or/settlement/v1beta1/settlement.proto](#finschia/or/settlement/v1beta1/settlement.proto)
-    - [Challenge](#finschia.or.settlement.v1beta1.Challenge)
-    - [Challenge.AssertedStateEntry](#finschia.or.settlement.v1beta1.Challenge.AssertedStateEntry)
-    - [Challenge.DefendedStateEntry](#finschia.or.settlement.v1beta1.Challenge.DefendedStateEntry)
-    - [Params](#finschia.or.settlement.v1beta1.Params)
+- [finschia/or/settlement/v1/settlement.proto](#finschia/or/settlement/v1/settlement.proto)
+    - [Challenge](#finschia.or.settlement.v1.Challenge)
+    - [Challenge.AssertedStateEntry](#finschia.or.settlement.v1.Challenge.AssertedStateEntry)
+    - [Challenge.DefendedStateEntry](#finschia.or.settlement.v1.Challenge.DefendedStateEntry)
+    - [Params](#finschia.or.settlement.v1.Params)
   
-- [finschia/or/settlement/v1beta1/query.proto](#finschia/or/settlement/v1beta1/query.proto)
-    - [QueryChallengeRequest](#finschia.or.settlement.v1beta1.QueryChallengeRequest)
-    - [QueryChallengeResponse](#finschia.or.settlement.v1beta1.QueryChallengeResponse)
+- [finschia/or/settlement/v1/query.proto](#finschia/or/settlement/v1/query.proto)
+    - [QueryChallengeRequest](#finschia.or.settlement.v1.QueryChallengeRequest)
+    - [QueryChallengeResponse](#finschia.or.settlement.v1.QueryChallengeResponse)
   
-    - [Query](#finschia.or.settlement.v1beta1.Query)
+    - [Query](#finschia.or.settlement.v1.Query)
   
-- [finschia/or/settlement/v1beta1/tx.proto](#finschia/or/settlement/v1beta1/tx.proto)
-    - [MsgAddTrieNode](#finschia.or.settlement.v1beta1.MsgAddTrieNode)
-    - [MsgAddTrieNodeResponse](#finschia.or.settlement.v1beta1.MsgAddTrieNodeResponse)
-    - [MsgConfirmStateTransition](#finschia.or.settlement.v1beta1.MsgConfirmStateTransition)
-    - [MsgConfirmStateTransitionResponse](#finschia.or.settlement.v1beta1.MsgConfirmStateTransitionResponse)
-    - [MsgDenyStateTransition](#finschia.or.settlement.v1beta1.MsgDenyStateTransition)
-    - [MsgDenyStateTransitionResponse](#finschia.or.settlement.v1beta1.MsgDenyStateTransitionResponse)
-    - [MsgInitiateChallenge](#finschia.or.settlement.v1beta1.MsgInitiateChallenge)
-    - [MsgInitiateChallengeResponse](#finschia.or.settlement.v1beta1.MsgInitiateChallengeResponse)
-    - [MsgProposeState](#finschia.or.settlement.v1beta1.MsgProposeState)
-    - [MsgProposeStateResponse](#finschia.or.settlement.v1beta1.MsgProposeStateResponse)
-    - [MsgRespondState](#finschia.or.settlement.v1beta1.MsgRespondState)
-    - [MsgRespondStateResponse](#finschia.or.settlement.v1beta1.MsgRespondStateResponse)
+- [finschia/or/settlement/v1/tx.proto](#finschia/or/settlement/v1/tx.proto)
+    - [MsgAddTrieNode](#finschia.or.settlement.v1.MsgAddTrieNode)
+    - [MsgAddTrieNodeResponse](#finschia.or.settlement.v1.MsgAddTrieNodeResponse)
+    - [MsgConfirmStateTransition](#finschia.or.settlement.v1.MsgConfirmStateTransition)
+    - [MsgConfirmStateTransitionResponse](#finschia.or.settlement.v1.MsgConfirmStateTransitionResponse)
+    - [MsgDenyStateTransition](#finschia.or.settlement.v1.MsgDenyStateTransition)
+    - [MsgDenyStateTransitionResponse](#finschia.or.settlement.v1.MsgDenyStateTransitionResponse)
+    - [MsgInitiateChallenge](#finschia.or.settlement.v1.MsgInitiateChallenge)
+    - [MsgInitiateChallengeResponse](#finschia.or.settlement.v1.MsgInitiateChallengeResponse)
+    - [MsgProposeState](#finschia.or.settlement.v1.MsgProposeState)
+    - [MsgProposeStateResponse](#finschia.or.settlement.v1.MsgProposeStateResponse)
+    - [MsgRespondState](#finschia.or.settlement.v1.MsgRespondState)
+    - [MsgRespondStateResponse](#finschia.or.settlement.v1.MsgRespondStateResponse)
   
-    - [Msg](#finschia.or.settlement.v1beta1.Msg)
+    - [Msg](#finschia.or.settlement.v1.Msg)
   
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
@@ -8705,14 +8705,14 @@ Since: cosmos-sdk 0.43
 
 
 
-<a name="finschia/or/settlement/v1beta1/genesis.proto"></a>
+<a name="finschia/or/settlement/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## finschia/or/settlement/v1beta1/genesis.proto
+## finschia/or/settlement/v1/genesis.proto
 
 
 
-<a name="finschia.or.settlement.v1beta1.GenesisState"></a>
+<a name="finschia.or.settlement.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the settlement module's genesis state.
@@ -8737,14 +8737,14 @@ GenesisState defines the settlement module's genesis state.
 
 
 
-<a name="finschia/or/settlement/v1beta1/settlement.proto"></a>
+<a name="finschia/or/settlement/v1/settlement.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## finschia/or/settlement/v1beta1/settlement.proto
+## finschia/or/settlement/v1/settlement.proto
 
 
 
-<a name="finschia.or.settlement.v1beta1.Challenge"></a>
+<a name="finschia.or.settlement.v1.Challenge"></a>
 
 ### Challenge
 Challenge defines token information.
@@ -8755,8 +8755,8 @@ a.k.a Contract.sol#ChallengeData.
 | ----- | ---- | ----- | ----------- |
 | `l` | [bytes](#bytes) |  | Left bound of the binary search: challenger & defender agree on all steps <= L. |
 | `r` | [bytes](#bytes) |  | Right bound of the binary search: challenger & defender disagree on all steps >= R. |
-| `asserted_state` | [Challenge.AssertedStateEntry](#finschia.or.settlement.v1beta1.Challenge.AssertedStateEntry) | repeated | Maps step numbers to asserted state hashes for the challenger. |
-| `defended_state` | [Challenge.DefendedStateEntry](#finschia.or.settlement.v1beta1.Challenge.DefendedStateEntry) | repeated | Maps step numbers to asserted state hashes for the defender. |
+| `asserted_state` | [Challenge.AssertedStateEntry](#finschia.or.settlement.v1.Challenge.AssertedStateEntry) | repeated | Maps step numbers to asserted state hashes for the challenger. |
+| `defended_state` | [Challenge.DefendedStateEntry](#finschia.or.settlement.v1.Challenge.DefendedStateEntry) | repeated | Maps step numbers to asserted state hashes for the defender. |
 | `challenger` | [string](#string) |  | Address of the challenger. |
 | `block_number_n` | [int64](#int64) |  | Block number preceding the challenged block. |
 
@@ -8765,7 +8765,7 @@ a.k.a Contract.sol#ChallengeData.
 
 
 
-<a name="finschia.or.settlement.v1beta1.Challenge.AssertedStateEntry"></a>
+<a name="finschia.or.settlement.v1.Challenge.AssertedStateEntry"></a>
 
 ### Challenge.AssertedStateEntry
 
@@ -8781,7 +8781,7 @@ a.k.a Contract.sol#ChallengeData.
 
 
 
-<a name="finschia.or.settlement.v1beta1.Challenge.DefendedStateEntry"></a>
+<a name="finschia.or.settlement.v1.Challenge.DefendedStateEntry"></a>
 
 ### Challenge.DefendedStateEntry
 
@@ -8797,7 +8797,7 @@ a.k.a Contract.sol#ChallengeData.
 
 
 
-<a name="finschia.or.settlement.v1beta1.Params"></a>
+<a name="finschia.or.settlement.v1.Params"></a>
 
 ### Params
 Params defines the parameters for the token module.
@@ -8816,14 +8816,14 @@ Params defines the parameters for the token module.
 
 
 
-<a name="finschia/or/settlement/v1beta1/query.proto"></a>
+<a name="finschia/or/settlement/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## finschia/or/settlement/v1beta1/query.proto
+## finschia/or/settlement/v1/query.proto
 
 
 
-<a name="finschia.or.settlement.v1beta1.QueryChallengeRequest"></a>
+<a name="finschia.or.settlement.v1.QueryChallengeRequest"></a>
 
 ### QueryChallengeRequest
 
@@ -8838,7 +8838,7 @@ Params defines the parameters for the token module.
 
 
 
-<a name="finschia.or.settlement.v1beta1.QueryChallengeResponse"></a>
+<a name="finschia.or.settlement.v1.QueryChallengeResponse"></a>
 
 ### QueryChallengeResponse
 
@@ -8846,7 +8846,7 @@ Params defines the parameters for the token module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `challenge` | [Challenge](#finschia.or.settlement.v1beta1.Challenge) |  |  |
+| `challenge` | [Challenge](#finschia.or.settlement.v1.Challenge) |  |  |
 
 
 
@@ -8859,27 +8859,27 @@ Params defines the parameters for the token module.
  <!-- end HasExtensions -->
 
 
-<a name="finschia.or.settlement.v1beta1.Query"></a>
+<a name="finschia.or.settlement.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Challenge` | [QueryChallengeRequest](#finschia.or.settlement.v1beta1.QueryChallengeRequest) | [QueryChallengeResponse](#finschia.or.settlement.v1beta1.QueryChallengeResponse) | instead of getStepNumber, isSearching, and getProposedState | GET|/finschia/settlement/v1/challenge/{challenge_id}|
+| `Challenge` | [QueryChallengeRequest](#finschia.or.settlement.v1.QueryChallengeRequest) | [QueryChallengeResponse](#finschia.or.settlement.v1.QueryChallengeResponse) | instead of getStepNumber, isSearching, and getProposedState | GET|/finschia/or/settlement/v1/challenge/{challenge_id}|
 
  <!-- end services -->
 
 
 
-<a name="finschia/or/settlement/v1beta1/tx.proto"></a>
+<a name="finschia/or/settlement/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## finschia/or/settlement/v1beta1/tx.proto
+## finschia/or/settlement/v1/tx.proto
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgAddTrieNode"></a>
+<a name="finschia.or.settlement.v1.MsgAddTrieNode"></a>
 
 ### MsgAddTrieNode
 
@@ -8894,7 +8894,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgAddTrieNodeResponse"></a>
+<a name="finschia.or.settlement.v1.MsgAddTrieNodeResponse"></a>
 
 ### MsgAddTrieNodeResponse
 
@@ -8904,7 +8904,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgConfirmStateTransition"></a>
+<a name="finschia.or.settlement.v1.MsgConfirmStateTransition"></a>
 
 ### MsgConfirmStateTransition
 
@@ -8919,7 +8919,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgConfirmStateTransitionResponse"></a>
+<a name="finschia.or.settlement.v1.MsgConfirmStateTransitionResponse"></a>
 
 ### MsgConfirmStateTransitionResponse
 
@@ -8929,7 +8929,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgDenyStateTransition"></a>
+<a name="finschia.or.settlement.v1.MsgDenyStateTransition"></a>
 
 ### MsgDenyStateTransition
 
@@ -8944,7 +8944,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgDenyStateTransitionResponse"></a>
+<a name="finschia.or.settlement.v1.MsgDenyStateTransitionResponse"></a>
 
 ### MsgDenyStateTransitionResponse
 
@@ -8954,7 +8954,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgInitiateChallenge"></a>
+<a name="finschia.or.settlement.v1.MsgInitiateChallenge"></a>
 
 ### MsgInitiateChallenge
 
@@ -8973,7 +8973,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgInitiateChallengeResponse"></a>
+<a name="finschia.or.settlement.v1.MsgInitiateChallengeResponse"></a>
 
 ### MsgInitiateChallengeResponse
 
@@ -8988,7 +8988,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgProposeState"></a>
+<a name="finschia.or.settlement.v1.MsgProposeState"></a>
 
 ### MsgProposeState
 
@@ -9004,7 +9004,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgProposeStateResponse"></a>
+<a name="finschia.or.settlement.v1.MsgProposeStateResponse"></a>
 
 ### MsgProposeStateResponse
 
@@ -9014,7 +9014,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgRespondState"></a>
+<a name="finschia.or.settlement.v1.MsgRespondState"></a>
 
 ### MsgRespondState
 
@@ -9030,7 +9030,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.settlement.v1beta1.MsgRespondStateResponse"></a>
+<a name="finschia.or.settlement.v1.MsgRespondStateResponse"></a>
 
 ### MsgRespondStateResponse
 
@@ -9046,19 +9046,19 @@ Query defines the gRPC querier service.
  <!-- end HasExtensions -->
 
 
-<a name="finschia.or.settlement.v1beta1.Msg"></a>
+<a name="finschia.or.settlement.v1.Msg"></a>
 
 ### Msg
 Msg defines the Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `InitiateChallenge` | [MsgInitiateChallenge](#finschia.or.settlement.v1beta1.MsgInitiateChallenge) | [MsgInitiateChallengeResponse](#finschia.or.settlement.v1beta1.MsgInitiateChallengeResponse) |  | |
-| `ProposeState` | [MsgProposeState](#finschia.or.settlement.v1beta1.MsgProposeState) | [MsgProposeStateResponse](#finschia.or.settlement.v1beta1.MsgProposeStateResponse) |  | |
-| `RespondState` | [MsgRespondState](#finschia.or.settlement.v1beta1.MsgRespondState) | [MsgRespondStateResponse](#finschia.or.settlement.v1beta1.MsgRespondStateResponse) |  | |
-| `ConfirmStateTransition` | [MsgConfirmStateTransition](#finschia.or.settlement.v1beta1.MsgConfirmStateTransition) | [MsgConfirmStateTransitionResponse](#finschia.or.settlement.v1beta1.MsgConfirmStateTransitionResponse) |  | |
-| `DenyStateTransition` | [MsgDenyStateTransition](#finschia.or.settlement.v1beta1.MsgDenyStateTransition) | [MsgDenyStateTransitionResponse](#finschia.or.settlement.v1beta1.MsgDenyStateTransitionResponse) |  | |
-| `AddTrieNode` | [MsgAddTrieNode](#finschia.or.settlement.v1beta1.MsgAddTrieNode) | [MsgAddTrieNodeResponse](#finschia.or.settlement.v1beta1.MsgAddTrieNodeResponse) |  | |
+| `InitiateChallenge` | [MsgInitiateChallenge](#finschia.or.settlement.v1.MsgInitiateChallenge) | [MsgInitiateChallengeResponse](#finschia.or.settlement.v1.MsgInitiateChallengeResponse) |  | |
+| `ProposeState` | [MsgProposeState](#finschia.or.settlement.v1.MsgProposeState) | [MsgProposeStateResponse](#finschia.or.settlement.v1.MsgProposeStateResponse) |  | |
+| `RespondState` | [MsgRespondState](#finschia.or.settlement.v1.MsgRespondState) | [MsgRespondStateResponse](#finschia.or.settlement.v1.MsgRespondStateResponse) |  | |
+| `ConfirmStateTransition` | [MsgConfirmStateTransition](#finschia.or.settlement.v1.MsgConfirmStateTransition) | [MsgConfirmStateTransitionResponse](#finschia.or.settlement.v1.MsgConfirmStateTransitionResponse) |  | |
+| `DenyStateTransition` | [MsgDenyStateTransition](#finschia.or.settlement.v1.MsgDenyStateTransition) | [MsgDenyStateTransitionResponse](#finschia.or.settlement.v1.MsgDenyStateTransitionResponse) |  | |
+| `AddTrieNode` | [MsgAddTrieNode](#finschia.or.settlement.v1.MsgAddTrieNode) | [MsgAddTrieNodeResponse](#finschia.or.settlement.v1.MsgAddTrieNodeResponse) |  | |
 
  <!-- end services -->
 
