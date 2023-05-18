@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "finschia/or/da/v1/params.proto";
+import "finschia/or/da/v1/da.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 
@@ -13,6 +14,14 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/checkers/da/params";
+  }
+
+  rpc CCBatches(QueryCCBatchesRequest) returns (QueryCCBatchesResponse) {
+    option (google.api.http).get = "/checkers/da/batches/cc";
+  }
+
+  rpc CCBatch(QueryCCBatchRequest) returns (QueryCCBatchResponse) {
+    option (google.api.http).get = "/checkers/da/batches/cc/{batch_height}";
   }
 }
 
@@ -23,4 +32,23 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryCCBatchesRequest {
+  string rollup_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryCCBatchesResponse {
+  repeated CCRef batches_loc = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryCCBatchRequest {
+  string rollup_name = 1;
+  uint64 batch_height = 2;
+}
+
+message QueryCCBatchResponse {
+  CCRef batch_loc = 1;
 }

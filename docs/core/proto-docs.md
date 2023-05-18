@@ -610,6 +610,10 @@
     - [SCC](#finschia.or.da.v1.SCC)
   
 - [finschia/or/da/v1/query.proto](#finschia/or/da/v1/query.proto)
+    - [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest)
+    - [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse)
+    - [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest)
+    - [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse)
     - [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest)
     - [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse)
   
@@ -9075,6 +9079,69 @@ GenesisState defines the da module's genesis state.
 
 
 
+<a name="finschia.or.da.v1.QueryCCBatchRequest"></a>
+
+### QueryCCBatchRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch_height` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchResponse"></a>
+
+### QueryCCBatchResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch_loc` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchesRequest"></a>
+
+### QueryCCBatchesRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchesResponse"></a>
+
+### QueryCCBatchesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batches_loc` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
 <a name="finschia.or.da.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -9114,6 +9181,8 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/checkers/da/params|
+| `CCBatches` | [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest) | [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse) |  | GET|/checkers/da/batches/cc|
+| `CCBatch` | [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest) | [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse) |  | GET|/checkers/da/batches/cc/{batch_height}|
 
  <!-- end services -->
 
