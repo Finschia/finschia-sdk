@@ -23,6 +23,8 @@
     - [QueryAccountsResponse](#cosmos.auth.v1beta1.QueryAccountsResponse)
     - [QueryModuleAccountByNameRequest](#cosmos.auth.v1beta1.QueryModuleAccountByNameRequest)
     - [QueryModuleAccountByNameResponse](#cosmos.auth.v1beta1.QueryModuleAccountByNameResponse)
+    - [QueryNextAccountNumberRequest](#cosmos.auth.v1beta1.QueryNextAccountNumberRequest)
+    - [QueryNextAccountNumberResponse](#cosmos.auth.v1beta1.QueryNextAccountNumberResponse)
     - [QueryParamsRequest](#cosmos.auth.v1beta1.QueryParamsRequest)
     - [QueryParamsResponse](#cosmos.auth.v1beta1.QueryParamsResponse)
   
@@ -1218,6 +1220,31 @@ QueryModuleAccountByNameResponse is the response type for the Query/ModuleAccoun
 
 
 
+<a name="cosmos.auth.v1beta1.QueryNextAccountNumberRequest"></a>
+
+### QueryNextAccountNumberRequest
+QueryNextAccountNumberRequest is the request type for the Query/NextAccountNumber.
+
+
+
+
+
+
+<a name="cosmos.auth.v1beta1.QueryNextAccountNumberResponse"></a>
+
+### QueryNextAccountNumberResponse
+QueryNextAccountNumberResponse is the response for the Query/NextAccountNumber.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `next_account_number` | [uint64](#uint64) |  | The next account number is the next value of global account index. |
+
+
+
+
+
+
 <a name="cosmos.auth.v1beta1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -1262,6 +1289,7 @@ Since: cosmos-sdk 0.43 | GET|/cosmos/auth/v1beta1/accounts|
 | `Account` | [QueryAccountRequest](#cosmos.auth.v1beta1.QueryAccountRequest) | [QueryAccountResponse](#cosmos.auth.v1beta1.QueryAccountResponse) | Account returns account details based on address. | GET|/cosmos/auth/v1beta1/accounts/{address}|
 | `Params` | [QueryParamsRequest](#cosmos.auth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#cosmos.auth.v1beta1.QueryParamsResponse) | Params queries all parameters. | GET|/cosmos/auth/v1beta1/params|
 | `ModuleAccountByName` | [QueryModuleAccountByNameRequest](#cosmos.auth.v1beta1.QueryModuleAccountByNameRequest) | [QueryModuleAccountByNameResponse](#cosmos.auth.v1beta1.QueryModuleAccountByNameResponse) | ModuleAccountByName returns the module account info by module name | GET|/cosmos/auth/v1beta1/module_accounts/{name}|
+| `NextAccountNumber` | [QueryNextAccountNumberRequest](#cosmos.auth.v1beta1.QueryNextAccountNumberRequest) | [QueryNextAccountNumberResponse](#cosmos.auth.v1beta1.QueryNextAccountNumberResponse) | NextAccountNumber queries the global account number. Please be careful use this rpc. This rpc can be disappear whenever. And backward compatibility is not guaranteed. | GET|/cosmos/auth/v1beta1/next_account_index|
 
  <!-- end services -->
 
