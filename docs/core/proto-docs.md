@@ -965,6 +965,12 @@
   
     - [Msg](#lbm.foundation.v1.Msg)
   
+- [lbm/rollup/v1/da.proto](#lbm/rollup/v1/da.proto)
+    - [SubmitRequest](#lbm.rollup.v1.SubmitRequest)
+    - [SubmitResponse](#lbm.rollup.v1.SubmitResponse)
+  
+    - [DA](#lbm.rollup.v1.DA)
+  
 - [lbm/stakingplus/v1/authz.proto](#lbm/stakingplus/v1/authz.proto)
     - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
   
@@ -14236,6 +14242,52 @@ Msg defines the foundation Msg service.
 | `UpdateCensorship` | [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship) | [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse) | UpdateCensorship updates censorship information. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/rollup/v1/da.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/rollup/v1/da.proto
+
+
+
+<a name="lbm.rollup.v1.SubmitRequest"></a>
+
+### SubmitRequest
+
+
+
+
+
+
+
+<a name="lbm.rollup.v1.SubmitResponse"></a>
+
+### SubmitResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.rollup.v1.DA"></a>
+
+### DA
+DA defines the services as Data Availability Layer for L2.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Submit` | [SubmitRequest](#lbm.rollup.v1.SubmitRequest) | [SubmitResponse](#lbm.rollup.v1.SubmitResponse) | Submit defines a method to submit (batched) blocks from L2 | |
 
  <!-- end services -->
 
