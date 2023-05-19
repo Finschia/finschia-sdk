@@ -588,18 +588,21 @@
     - [Params](#finschia.or.da.v1.Params)
   
 - [finschia/or/da/v1/da.proto](#finschia/or/da/v1/da.proto)
-    - [BatchHeader](#finschia.or.da.v1.BatchHeader)
     - [CCBatch](#finschia.or.da.v1.CCBatch)
-    - [CCBatchContext](#finschia.or.da.v1.CCBatchContext)
     - [CCBatchElement](#finschia.or.da.v1.CCBatchElement)
+    - [CCBatchFrame](#finschia.or.da.v1.CCBatchFrame)
+    - [CCBatchHeader](#finschia.or.da.v1.CCBatchHeader)
     - [CCRef](#finschia.or.da.v1.CCRef)
     - [CCState](#finschia.or.da.v1.CCState)
+    - [CompressedCCBatch](#finschia.or.da.v1.CompressedCCBatch)
     - [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue)
+    - [PassedCCPtr](#finschia.or.da.v1.PassedCCPtr)
     - [SCCBatch](#finschia.or.da.v1.SCCBatch)
     - [SCCRef](#finschia.or.da.v1.SCCRef)
     - [SCCState](#finschia.or.da.v1.SCCState)
   
     - [CompressionOption](#finschia.or.da.v1.CompressionOption)
+    - [QueueTxStatus](#finschia.or.da.v1.QueueTxStatus)
   
 - [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
     - [EventUpdateParams](#finschia.or.da.v1.EventUpdateParams)
@@ -8767,65 +8770,16 @@ Params defines the parameters for the module.
 
 
 
-<a name="finschia.or.da.v1.BatchHeader"></a>
-
-### BatchHeader
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `txhash` | [bytes](#bytes) |  | Reference for accessing batch data. |
-| `total_elements` | [string](#string) |  | Total number of elements submitted. |
-| `batch_size` | [uint64](#uint64) |  | Number of elements in the batch. |
-| `batch_index` | [uint64](#uint64) |  |  |
-| `batch_root` | [bytes](#bytes) |  | CC Batch : previous block hash. SCC Batch : Merkle Root of IntermediateStateRoots. |
-
-
-
-
-
-
 <a name="finschia.or.da.v1.CCBatch"></a>
 
 ### CCBatch
-CCBatch is used  when the sequencer submits.
-Assuming the block and timestamp criteria for sequencer txs are
-respected within each group, the following are examples of groupings:
- - [s]         // sequencer can exist by itself
- - [q]         // ququed tx can exist by itself
- - [s] [s]     // differing sequencer tx timestamp/blocknumber
- - [s q] [s]   // sequencer tx must precede queued tx in group
- - [q] [q s]   // INVALID: consecutive queued txs are split
- - [q q] [s]   // correct split for preceding case
- - [s q] [s q] // alternating sequencer tx interleaved with queued
+CCBatch is a data unit per batch epoch.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `should_start_at_element` | [string](#string) |  | previous total batch elements. |
-| `batch_contexts` | [CCBatchContext](#finschia.or.da.v1.CCBatchContext) | repeated |  |
-| `elements` | [CCBatchElement](#finschia.or.da.v1.CCBatchElement) | repeated |  |
-| `compression` | [CompressionOption](#finschia.or.da.v1.CompressionOption) |  | compression is the compression algorithm used for the batch. |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.CCBatchContext"></a>
-
-### CCBatchContext
-BatchContext denotes a range of transactions that belong the same batch.
-It is used to compress shared fields that would otherwise be repeated for each transaction.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `num_sequenced_txs` | [uint64](#uint64) |  | num_sequenced_txs specifies the number of sequencer txs included in the batch. |
-| `num_subsequent_queue_txs` | [uint64](#uint64) |  | num_subsequent_queue_txs specifies the number of queued txs included in the batch |
-| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. |
-| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
+| `should_start_at_frame` | [uint64](#uint64) |  | previous total batch frames. |
+| `frames` | [CCBatchFrame](#finschia.or.da.v1.CCBatchFrame) | repeated | One batch frame matches one roll-up block. |
 
 
 
@@ -8840,11 +8794,43 @@ It is used to compress shared fields that would otherwise be repeated for each t
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. SEQUENCER TX ONLY |
-| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. SEQUENCER TX ONLY |
 | `txraw` | [bytes](#bytes) |  | SEQUENCER TX ONLY |
 | `queue_index` | [uint64](#uint64) |  | QUEUED TX ONLY |
-| `l2_height` | [uint64](#uint64) |  | l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCBatchFrame"></a>
+
+### CCBatchFrame
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `hedaer` | [CCBatchHeader](#finschia.or.da.v1.CCBatchHeader) |  |  |
+| `elements` | [CCBatchElement](#finschia.or.da.v1.CCBatchElement) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCBatchHeader"></a>
+
+### CCBatchHeader
+BatchContext denotes a range of transactions that belong the same batch.
+It is used to compress shared fields that would otherwise be repeated for each transaction.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `parent_hash` | [bytes](#bytes) |  | parent_hash is the parent L2 block hash |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. |
+| `l2_height` | [uint64](#uint64) |  |  |
+| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
 
 
 
@@ -8854,12 +8840,16 @@ It is used to compress shared fields that would otherwise be repeated for each t
 <a name="finschia.or.da.v1.CCRef"></a>
 
 ### CCRef
-CCRef is a data type that forms an element of Canonical Transaction Chain.
+CCRef is a data type that forms an element of the reference chain of Rollup Canonical Chain.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `header` | [BatchHeader](#finschia.or.da.v1.BatchHeader) |  | Reference for accessing batch data. |
+| `txhash` | [bytes](#bytes) |  | Reference for accessing batch data. |
+| `msg_index` | [uint64](#uint64) |  | Reference for accessing batch data. |
+| `total_frames` | [uint64](#uint64) |  | Total number of batch frames submitted. It is the same as the height of the L2 block submitted so far |
+| `batch_size` | [uint32](#uint32) |  | Number of batch frames in the batch. |
+| `batch_root` | [bytes](#bytes) |  | Hash of CompressedCCBatch data. |
 
 
 
@@ -8876,11 +8866,26 @@ BatchChainState is the state of target batch chain.
 | ----- | ---- | ----- | ----------- |
 | `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
 | `height` | [uint64](#uint64) |  |  |
-| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
-| `processed_queue_index` | [uint64](#uint64) |  | Index of the processed queue element. Queue elements up to this index were submitted via CC batch. |
+| `processed_queue_index` | [uint64](#uint64) |  | Index of the processed queue element. Queue elements up to this index were submitted via CC batch or timeout. |
 | `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
-| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
 | `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CompressedCCBatch"></a>
+
+### CompressedCCBatch
+CompressedCCBatch is used  when the sequencer submits.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | data is a byte array which is generated by compressing CCBatch using the option below. |
+| `compression` | [CompressionOption](#finschia.or.da.v1.CompressionOption) |  | compression is the compression algorithm used for the batch. |
 
 
 
@@ -8891,14 +8896,31 @@ BatchChainState is the state of target batch chain.
 
 ### L1toL2Queue
 L1toL2Queue is a queued tx for L2 batch.
-Sequencer must process this transaction in time.
+Sequencer must process this transaction on time in order.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the batch. It is set when the type of tx is L1toL2 |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the batch. It is set when the type of tx is L1toL2 |
 | `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
 | `txraw` | [bytes](#bytes) |  |  |
+| `status` | [QueueTxStatus](#finschia.or.da.v1.QueueTxStatus) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.PassedCCPtr"></a>
+
+### PassedCCPtr
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch_height` | [uint64](#uint64) |  |  |
+| `frame_index` | [sint32](#sint32) |  | if all frames are passed in the batch, this value is -1. |
 
 
 
@@ -8913,8 +8935,8 @@ Proposer use SCCBatch when they submit.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `should_start_at_element` | [string](#string) |  | previous total batch elements. |
-| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CCs. |
+| `should_start_at_frame` | [uint64](#uint64) |  | previous total batch frames. |
+| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CCs. len(IntermediateStateRoots) = len(CCBatchFrame) * (len(CCBatchElement) + 2) BeginBlock + DeliverTX for each CCBatchElement + EndBlock |
 
 
 
@@ -8924,12 +8946,16 @@ Proposer use SCCBatch when they submit.
 <a name="finschia.or.da.v1.SCCRef"></a>
 
 ### SCCRef
-CCRef is a data type that forms an element of Canonical Transaction Chain.
+SCCRef is a data type that forms an element of State Commitment Chain.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `header` | [BatchHeader](#finschia.or.da.v1.BatchHeader) |  | Reference for accessing batch data. |
+| `total_frames` | [uint64](#uint64) |  | Reference for accessing batch data. |
+| `batch_size` | [uint32](#uint32) |  | Number of batch frames in the batch. |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is data to determine if this batch is within the challenge period. |
+| `batch_root` | [bytes](#bytes) |  | Merkle Root of IntermediateStateRoots. |
+| `IntermediateStateRoots` | [bytes](#bytes) | repeated |  |
 
 
 
@@ -8946,8 +8972,8 @@ BatchChainState is the state of target batch chain.
 | ----- | ---- | ----- | ----------- |
 | `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
 | `height` | [uint64](#uint64) |  |  |
-| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
 | `last_sequencer_submit` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp when the sequencer submits. |
+| `validated_state` | [PassedCCPtr](#finschia.or.da.v1.PassedCCPtr) |  | The CC data up to that position were validated over the challenge period (fraud proof). |
 
 
 
@@ -8966,6 +8992,19 @@ BatchChainState is the state of target batch chain.
 | COMPRESSION_OPTION_UNSPECIFIED | 0 | COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option. |
 | COMPRESSION_OPTION_ZLIB | 1 | Go standard library fo zlib compression (RFC 1950). |
 | COMPRESSION_OPTION_ZSTD | 2 | Zstandard is a fast compression algorithm, providing high compression ratios. It also offers a special mode for small data, called dictionary compression. |
+
+
+
+<a name="finschia.or.da.v1.QueueTxStatus"></a>
+
+### QueueTxStatus
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| QUEUE_TX_PENDING | 0 | QUEUE_TX_PENDING defines the status where the Tx has not been submitted to L1 batch yet. |
+| QUEUE_TX_FINALIZED | 1 | QUEUE_TX_FINALIZED defines the status where the Tx has been submitted to L1 batch. |
+| QUEUE_TX_OUTDATED | 2 | QUEUE_TX_OUTDATED defines the status where the Tx has not been submitted until the expiration deadline. Sequencers get penalty if queued txs reach this status. |
 
 
  <!-- end enums -->
