@@ -107,6 +107,8 @@ func (ak AccountKeeper) ModuleAccountByName(c context.Context, req *types.QueryM
 	return &types.QueryModuleAccountByNameResponse{Account: any}, nil
 }
 
+// NextAccountNumber implements the Query/NextAccountNumber gRPC method
+// nolint: staticcheck
 func (ak AccountKeeper) NextAccountNumber(c context.Context, req *types.QueryNextAccountNumberRequest) (*types.QueryNextAccountNumberResponse, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
@@ -115,5 +117,5 @@ func (ak AccountKeeper) NextAccountNumber(c context.Context, req *types.QueryNex
 	ctx := sdk.UnwrapSDKContext(c)
 	accNumber := ak.QueryNextAccountNumber(ctx)
 
-	return &types.QueryNextAccountNumberResponse{NextAccountNumber: accNumber}, nil
+	return &types.QueryNextAccountNumberResponse{NextAccountNumber: accNumber}, nil //nolint: staticcheck
 }
