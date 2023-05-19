@@ -1228,7 +1228,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/auth/v1beta1/next_account_index:
+  /cosmos/auth/v1beta1/next_account_number:
     get:
       summary: |-
         NextAccountNumber queries the global account number.
@@ -1246,7 +1246,7 @@ paths:
                 format: uint64
                 description: >-
                   The next account number is the next value of global account
-                  index.
+                  number.
             description: >-
               QueryNextAccountNumberResponse is the response for the
               Query/NextAccountNumber.
@@ -31843,7 +31843,7 @@ definitions:
       next_account_number:
         type: string
         format: uint64
-        description: The next account number is the next value of global account index.
+        description: The next account number is the next value of global account number.
     description: >-
       QueryNextAccountNumberResponse is the response for the
       Query/NextAccountNumber.

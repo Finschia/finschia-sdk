@@ -39,7 +39,7 @@ service Query {
   // And backward compatibility is not guaranteed.
   rpc NextAccountNumber(QueryNextAccountNumberRequest) returns (QueryNextAccountNumberResponse) {
     option deprecated            = true;
-    option (google.api.http).get = "/cosmos/auth/v1beta1/next_account_index";
+    option (google.api.http).get = "/cosmos/auth/v1beta1/next_account_number";
   }
 }
 
@@ -105,6 +105,6 @@ message QueryNextAccountNumberRequest {
 message QueryNextAccountNumberResponse {
   option deprecated = true;
 
-  // The next account number is the next value of global account index.
+  // The next account number is the next value of global account number.
   uint64 next_account_number = 1;
 }
