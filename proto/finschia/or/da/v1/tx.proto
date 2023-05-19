@@ -39,23 +39,23 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgAppendCCBatch {
-  string rollup_name = 1;
-  CCBatch batch = 2 [(gogoproto.nullable) = false];
+  string  rollup_name = 1;
+  CCBatch batch       = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendCCBatchResponse {}
 
 message MsgEnqueue {
   string rollup_name = 1;
-  uint64 gas_limit = 2;
-  bytes txraw = 3;
+  uint64 gas_limit   = 2;
+  bytes  txraw       = 3;
 }
 
 message MsgEnqueueResponse {}
 
 message MsgAppendSCCBatch {
-  string rollup_name = 1;
-  SCCBatch batch = 2 [(gogoproto.nullable) = false];
+  string   rollup_name = 1;
+  SCCBatch batch       = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendSCCBatchResponse {}

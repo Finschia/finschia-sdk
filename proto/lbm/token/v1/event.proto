@@ -37,7 +37,8 @@ message EventSent {
   // recipient of the tokens
   string to = 4;
   // number of tokens sent.
-  string amount = 5 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 5
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
@@ -126,7 +127,8 @@ message EventMinted {
   // recipient of the tokens.
   string to = 3;
   // number of tokens minted.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventBurned is emitted when tokens are burnt.
@@ -140,7 +142,8 @@ message EventBurned {
   // holder whose tokens were burned.
   string from = 3;
   // number of tokens burned.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventModified is emitted when the information of a contract is modified.
