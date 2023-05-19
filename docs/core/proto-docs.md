@@ -8920,7 +8920,7 @@ Sequencer must process this transaction on time in order.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `batch_height` | [uint64](#uint64) |  |  |
-| `frame_index` | [sint32](#sint32) |  | if all frames are passed in the batch, this value is -1. |
+| `frame_index` | [sint32](#sint32) |  |  |
 
 
 

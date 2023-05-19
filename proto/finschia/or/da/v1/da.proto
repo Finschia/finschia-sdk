@@ -179,6 +179,5 @@ message SCCState {
 message PassedCCPtr {
   uint64 batch_height = 1;
 
-  // if all frames are passed in the batch, this value is -1.
   sint32 frame_index = 2;
 }

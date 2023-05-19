@@ -839,8 +839,7 @@ func (m *SCCState) GetValidatedState() *PassedCCPtr {
 
 type PassedCCPtr struct {
 	BatchHeight uint64 `protobuf:"varint,1,opt,name=batch_height,json=batchHeight,proto3" json:"batch_height,omitempty"`
-	// if all frames are passed in the batch, this value is -1.
-	FrameIndex int32 `protobuf:"zigzag32,2,opt,name=frame_index,json=frameIndex,proto3" json:"frame_index,omitempty"`
+	FrameIndex  int32  `protobuf:"zigzag32,2,opt,name=frame_index,json=frameIndex,proto3" json:"frame_index,omitempty"`
 }
 
 func (m *PassedCCPtr) Reset()         { *m = PassedCCPtr{} }
