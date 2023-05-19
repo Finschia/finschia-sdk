@@ -584,6 +584,55 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
+- [finschia/or/da/v1/params.proto](#finschia/or/da/v1/params.proto)
+    - [Params](#finschia.or.da.v1.Params)
+  
+- [finschia/or/da/v1/da.proto](#finschia/or/da/v1/da.proto)
+    - [BatchHeader](#finschia.or.da.v1.BatchHeader)
+    - [CCBatch](#finschia.or.da.v1.CCBatch)
+    - [CCBatchContext](#finschia.or.da.v1.CCBatchContext)
+    - [CCBatchElement](#finschia.or.da.v1.CCBatchElement)
+    - [CCRef](#finschia.or.da.v1.CCRef)
+    - [CCState](#finschia.or.da.v1.CCState)
+    - [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue)
+    - [SCCBatch](#finschia.or.da.v1.SCCBatch)
+    - [SCCRef](#finschia.or.da.v1.SCCRef)
+    - [SCCState](#finschia.or.da.v1.SCCState)
+  
+    - [CompressionOption](#finschia.or.da.v1.CompressionOption)
+  
+- [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
+    - [EventUpdateParams](#finschia.or.da.v1.EventUpdateParams)
+  
+- [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
+    - [CC](#finschia.or.da.v1.CC)
+    - [GenesisState](#finschia.or.da.v1.GenesisState)
+    - [SCC](#finschia.or.da.v1.SCC)
+  
+- [finschia/or/da/v1/query.proto](#finschia/or/da/v1/query.proto)
+    - [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest)
+    - [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse)
+    - [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest)
+    - [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse)
+    - [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse)
+  
+    - [Query](#finschia.or.da.v1.Query)
+  
+- [finschia/or/da/v1/tx.proto](#finschia/or/da/v1/tx.proto)
+    - [MsgAppendCCBatch](#finschia.or.da.v1.MsgAppendCCBatch)
+    - [MsgAppendCCBatchResponse](#finschia.or.da.v1.MsgAppendCCBatchResponse)
+    - [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch)
+    - [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse)
+    - [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue)
+    - [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse)
+    - [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch)
+    - [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse)
+    - [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse)
+  
+    - [Msg](#finschia.or.da.v1.Msg)
+  
 - [finschia/or/settlement/v1/genesis.proto](#finschia/or/settlement/v1/genesis.proto)
     - [GenesisState](#finschia.or.settlement.v1.GenesisState)
   
@@ -8700,6 +8749,634 @@ Since: cosmos-sdk 0.43
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1/params.proto
+
+
+
+<a name="finschia.or.da.v1.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cc_batch_max_bytes` | [uint64](#uint64) |  | 1. CC-related |
+| `max_queue_tx_size` | [uint64](#uint64) |  | Queue Tx-related |
+| `min_queue_tx_gas` | [uint64](#uint64) |  |  |
+| `queue_tx_expiration_window` | [uint64](#uint64) |  | A sequencer must submit a queue tx to L2 before this time. |
+| `scc_batch_max_bytes` | [uint64](#uint64) |  | 2. SCC-related |
+| `fraud_proof_window` | [uint64](#uint64) |  | Number of seconds that the verifier is allowed to submit a fraud proof. Currnet scc batch header timestamp + fraud_proof_window = challenge period |
+| `sequencer_publish_window` | [uint64](#uint64) |  | Number of seconds that the sequencer is exclusively allowed to post state roots |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1/da.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1/da.proto
+
+
+
+<a name="finschia.or.da.v1.BatchHeader"></a>
+
+### BatchHeader
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `txhash` | [bytes](#bytes) |  | Reference for accessing batch data. |
+| `total_elements` | [string](#string) |  | Total number of elements submitted. |
+| `batch_size` | [uint64](#uint64) |  | Number of elements in the batch. |
+| `batch_index` | [uint64](#uint64) |  |  |
+| `batch_root` | [bytes](#bytes) |  | CC Batch : previous block hash. SCC Batch : Merkle Root of IntermediateStateRoots. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCBatch"></a>
+
+### CCBatch
+CCBatch is used  when the sequencer submits.
+Assuming the block and timestamp criteria for sequencer txs are
+respected within each group, the following are examples of groupings:
+ - [s]         // sequencer can exist by itself
+ - [q]         // ququed tx can exist by itself
+ - [s] [s]     // differing sequencer tx timestamp/blocknumber
+ - [s q] [s]   // sequencer tx must precede queued tx in group
+ - [q] [q s]   // INVALID: consecutive queued txs are split
+ - [q q] [s]   // correct split for preceding case
+ - [s q] [s q] // alternating sequencer tx interleaved with queued
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `should_start_at_element` | [string](#string) |  | previous total batch elements. |
+| `batch_contexts` | [CCBatchContext](#finschia.or.da.v1.CCBatchContext) | repeated |  |
+| `elements` | [CCBatchElement](#finschia.or.da.v1.CCBatchElement) | repeated |  |
+| `compression` | [CompressionOption](#finschia.or.da.v1.CompressionOption) |  | compression is the compression algorithm used for the batch. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCBatchContext"></a>
+
+### CCBatchContext
+BatchContext denotes a range of transactions that belong the same batch.
+It is used to compress shared fields that would otherwise be repeated for each transaction.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `num_sequenced_txs` | [uint64](#uint64) |  | num_sequenced_txs specifies the number of sequencer txs included in the batch. |
+| `num_subsequent_queue_txs` | [uint64](#uint64) |  | num_subsequent_queue_txs specifies the number of queued txs included in the batch |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. |
+| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCBatchElement"></a>
+
+### CCBatchElement
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L2 block unix timestamp of the batch. SEQUENCER TX ONLY |
+| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. SEQUENCER TX ONLY |
+| `txraw` | [bytes](#bytes) |  | SEQUENCER TX ONLY |
+| `queue_index` | [uint64](#uint64) |  | QUEUED TX ONLY |
+| `l2_height` | [uint64](#uint64) |  | l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCRef"></a>
+
+### CCRef
+CCRef is a data type that forms an element of Canonical Transaction Chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `header` | [BatchHeader](#finschia.or.da.v1.BatchHeader) |  | Reference for accessing batch data. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.CCState"></a>
+
+### CCState
+BatchChainState is the state of target batch chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
+| `height` | [uint64](#uint64) |  |  |
+| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
+| `processed_queue_index` | [uint64](#uint64) |  | Index of the processed queue element. Queue elements up to this index were submitted via CC batch. |
+| `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
+| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
+| `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.L1toL2Queue"></a>
+
+### L1toL2Queue
+L1toL2Queue is a queued tx for L2 batch.
+Sequencer must process this transaction in time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `l1_timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the batch. It is set when the type of tx is L1toL2 |
+| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
+| `txraw` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.SCCBatch"></a>
+
+### SCCBatch
+Proposer use SCCBatch when they submit.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `should_start_at_element` | [string](#string) |  | previous total batch elements. |
+| `IntermediateStateRoots` | [bytes](#bytes) | repeated | IntermediateStateRoots for a specific range of CCs. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.SCCRef"></a>
+
+### SCCRef
+CCRef is a data type that forms an element of Canonical Transaction Chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `header` | [BatchHeader](#finschia.or.da.v1.BatchHeader) |  | Reference for accessing batch data. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.SCCState"></a>
+
+### SCCState
+BatchChainState is the state of target batch chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
+| `height` | [uint64](#uint64) |  |  |
+| `name` | [bytes](#bytes) |  | The name of rollup chain (use as key). |
+| `last_sequencer_submit` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp when the sequencer submits. |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="finschia.or.da.v1.CompressionOption"></a>
+
+### CompressionOption
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| COMPRESSION_OPTION_UNSPECIFIED | 0 | COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option. |
+| COMPRESSION_OPTION_ZLIB | 1 | Go standard library fo zlib compression (RFC 1950). |
+| COMPRESSION_OPTION_ZSTD | 2 | Zstandard is a fast compression algorithm, providing high compression ratios. It also offers a special mode for small data, called dictionary compression. |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1/event.proto
+
+
+
+<a name="finschia.or.da.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+EventUpdateParams is emitted after updating foundation parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.or.da.v1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1/genesis.proto
+
+
+
+<a name="finschia.or.da.v1.CC"></a>
+
+### CC
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+| `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the da module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.or.da.v1.Params) |  |  |
+| `cc_list` | [CC](#finschia.or.da.v1.CC) | repeated |  |
+| `scc_list` | [SCC](#finschia.or.da.v1.SCC) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.SCC"></a>
+
+### SCC
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [SCCState](#finschia.or.da.v1.SCCState) |  |  |
+| `history` | [SCCRef](#finschia.or.da.v1.SCCRef) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1/query.proto
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchRequest"></a>
+
+### QueryCCBatchRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch_height` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchResponse"></a>
+
+### QueryCCBatchResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batch_loc` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchesRequest"></a>
+
+### QueryCCBatchesRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCBatchesResponse"></a>
+
+### QueryCCBatchesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `batches_loc` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.or.da.v1.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.da.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/finschia/or/da/v1/params|
+| `CCBatches` | [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest) | [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse) |  | GET|/finschia/or/da/v1/batches/cc|
+| `CCBatch` | [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest) | [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse) |  | GET|/finschia/or/da/v1/batches/cc/{batch_height}|
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/da/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/da/v1/tx.proto
+
+
+
+<a name="finschia.or.da.v1.MsgAppendCCBatch"></a>
+
+### MsgAppendCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch` | [CCBatch](#finschia.or.da.v1.CCBatch) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgAppendCCBatchResponse"></a>
+
+### MsgAppendCCBatchResponse
+
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgAppendSCCBatch"></a>
+
+### MsgAppendSCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch` | [SCCBatch](#finschia.or.da.v1.SCCBatch) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgAppendSCCBatchResponse"></a>
+
+### MsgAppendSCCBatchResponse
+
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgEnqueue"></a>
+
+### MsgEnqueue
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `gas_limit` | [uint64](#uint64) |  |  |
+| `txraw` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgEnqueueResponse"></a>
+
+### MsgEnqueueResponse
+
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgRemoveSCCBatch"></a>
+
+### MsgRemoveSCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch_index` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgRemoveSCCBatchResponse"></a>
+
+### MsgRemoveSCCBatchResponse
+
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address that controls the module (defaults to x/gov unless overwritten). |
+| `params` | [Params](#finschia.or.da.v1.Params) |  | params defines the x/or/da parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.da.v1.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse) |  | |
+| `AppendCCBatch` | [MsgAppendCCBatch](#finschia.or.da.v1.MsgAppendCCBatch) | [MsgAppendCCBatchResponse](#finschia.or.da.v1.MsgAppendCCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
+| `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
+| `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
+| `RemoveSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
 
  <!-- end services -->
 

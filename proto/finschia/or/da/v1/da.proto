@@ -1,0 +1,166 @@
+syntax = "proto3";
+package finschia.or.da.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "finschia/or/da/v1/params.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
+
+enum CompressionOption {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // COMPRESSION_OPTION_UNSPECIFIED defines a no-op compress option.
+  COMPRESSION_OPTION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "OptionEmpty"];
+
+  // Go standard library fo zlib compression (RFC 1950).
+  COMPRESSION_OPTION_ZLIB = 1 [(gogoproto.enumvalue_customname) = "OptionZLIB"];
+
+  // Zstandard is a fast compression algorithm, providing high compression ratios.
+  // It also offers a special mode for small data, called dictionary compression.
+  COMPRESSION_OPTION_ZSTD = 2 [(gogoproto.enumvalue_customname) = "OptionZSTD"];
+}
+
+// BatchContext denotes a range of transactions that belong the same batch.
+// It is used to compress shared fields that would otherwise be repeated for each transaction.
+message CCBatchContext {
+  // num_sequenced_txs specifies the number of sequencer txs included in
+  // the batch.
+  uint64 num_sequenced_txs = 1;
+
+  // num_subsequent_queue_txs specifies the number of queued txs included in
+  // the batch
+  uint64 num_subsequent_queue_txs = 2;
+
+  // timestamp is the L2 block unix timestamp of the batch.
+  google.protobuf.Timestamp timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  // blockNumber is the L1 BlockNumber of the batch.
+  uint64 l1_height = 4;
+}
+
+message CCBatchElement {
+  // timestamp is the L2 block unix timestamp of the batch.
+  // SEQUENCER TX ONLY
+  google.protobuf.Timestamp timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // blockNumber is the L1 BlockNumber of the batch.
+  // SEQUENCER TX ONLY
+  uint64 l1_height = 2;
+
+  // SEQUENCER TX ONLY
+  bytes txraw = 3;
+
+  // QUEUED TX ONLY
+  uint64 queue_index = 4;
+
+  // l2_height is required when we reconstruct the L2 chain without relying on the L2 sequencer.
+  uint64 l2_height = 5;
+}
+
+// CCBatch is used  when the sequencer submits.
+// Assuming the block and timestamp criteria for sequencer txs are
+// respected within each group, the following are examples of groupings:
+//  - [s]         // sequencer can exist by itself
+//  - [q]         // ququed tx can exist by itself
+//  - [s] [s]     // differing sequencer tx timestamp/blocknumber
+//  - [s q] [s]   // sequencer tx must precede queued tx in group
+//  - [q] [q s]   // INVALID: consecutive queued txs are split
+//  - [q q] [s]   // correct split for preceding case
+//  - [s q] [s q] // alternating sequencer tx interleaved with queued
+message CCBatch {
+  // previous total batch elements.
+  string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+
+  repeated CCBatchContext batch_contexts = 2;
+  repeated CCBatchElement elements = 3;
+
+  // compression is the compression algorithm used for the batch.
+  CompressionOption compression = 4;
+}
+
+// CCRef is a data type that forms an element of Canonical Transaction Chain.
+message CCRef {
+  // Reference for accessing batch data.
+  BatchHeader header = 1;
+}
+
+// L1toL2Queue is a queued tx for L2 batch.
+// Sequencer must process this transaction in time.
+message L1toL2Queue {
+  // timestamp is the L1 unix timestamp of the batch.
+  // It is set when the type of tx is L1toL2
+  google.protobuf.Timestamp l1_timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // blockNumber is the L1 BlockNumber of the batch.
+  uint64 l1_height = 2;
+
+  bytes txraw = 3;
+}
+
+// Proposer use SCCBatch when they submit.
+message SCCBatch {
+  // previous total batch elements.
+  string should_start_at_element = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+
+  // IntermediateStateRoots for a specific range of CCs.
+  repeated bytes IntermediateStateRoots = 2;
+}
+
+// CCRef is a data type that forms an element of Canonical Transaction Chain.
+message SCCRef {
+  // Reference for accessing batch data.
+  BatchHeader header = 1;
+}
+
+message BatchHeader {
+  // Reference for accessing batch data.
+  bytes txhash = 1 [(gogoproto.customname) = "TxHash"];
+
+  // Total number of elements submitted.
+  string total_elements = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+
+  // Number of elements in the batch.
+  uint64 batch_size = 3;
+
+  uint64 batch_index = 4;
+
+  // CC Batch : previous block hash.
+  // SCC Batch : Merkle Root of IntermediateStateRoots.
+  bytes batch_root = 5;
+}
+
+// BatchChainState is the state of target batch chain.
+message CCState {
+  // Assumed to contain all contiguous batches between base and height (inclusive).
+  uint64 base = 1;
+  uint64 height = 2;
+
+  // The name of rollup chain (use as key).
+  bytes name = 3;
+
+  // Index of the processed queue element.
+  // Queue elements up to this index were submitted via CC batch.
+  uint64 processed_queue_index = 4;
+
+  // Index of the next queue element.
+  uint64 next_queue_index = 5;
+
+  // The latest batch timestamp.
+  google.protobuf.Timestamp l1_timestamp = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // The latest batch L1 blockNumber.
+  uint64 l1_height = 7;
+}
+
+// BatchChainState is the state of target batch chain.
+message SCCState {
+  // Assumed to contain all contiguous batches between base and height (inclusive).
+  uint64 base = 1;
+  uint64 height = 2;
+
+  // The name of rollup chain (use as key).
+  bytes name = 3;
+
+  // The latest batch timestamp when the sequencer submits.
+  google.protobuf.Timestamp last_sequencer_submit = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
