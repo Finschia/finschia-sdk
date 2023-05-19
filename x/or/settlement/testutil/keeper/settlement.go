@@ -10,6 +10,7 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/or/settlement/keeper"
 	"github.com/Finschia/finschia-sdk/x/or/settlement/types"
+	typesparams "github.com/Finschia/finschia-sdk/x/params/types"
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -29,10 +30,17 @@ func SettlementKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 
+	paramsSubspace := typesparams.NewSubspace(cdc,
+		types.Amino,
+		storeKey,
+		memStoreKey,
+		"SettlementParams",
+	)
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
+		paramsSubspace,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

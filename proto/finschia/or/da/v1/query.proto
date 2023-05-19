@@ -35,17 +35,17 @@ message QueryParamsResponse {
 }
 
 message QueryCCBatchesRequest {
-  string                                rollup_name = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination  = 2;
+  string rollup_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryCCBatchesResponse {
-  repeated CCRef                         batches_loc = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination  = 2;
+  repeated CCRef batches_loc = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryCCBatchRequest {
-  string rollup_name  = 1;
+  string rollup_name = 1;
   uint64 batch_height = 2;
 }
 
