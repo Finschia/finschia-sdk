@@ -33,6 +33,14 @@ service Query {
   rpc ModuleAccountByName(QueryModuleAccountByNameRequest) returns (QueryModuleAccountByNameResponse) {
     option (google.api.http).get = "/cosmos/auth/v1beta1/module_accounts/{name}";
   }
+
+  // NextAccountNumber queries the global account number.
+  // Please be careful use this rpc. This rpc can be disappear whenever.
+  // And backward compatibility is not guaranteed.
+  rpc NextAccountNumber(QueryNextAccountNumberRequest) returns (QueryNextAccountNumberResponse) {
+    option deprecated            = true;
+    option (google.api.http).get = "/cosmos/auth/v1beta1/next_account_number";
+  }
 }
 
 // QueryAccountsRequest is the request type for the Query/Accounts RPC method.
@@ -86,4 +94,17 @@ message QueryModuleAccountByNameRequest {
 // QueryModuleAccountByNameResponse is the response type for the Query/ModuleAccountByName RPC method.
 message QueryModuleAccountByNameResponse {
   google.protobuf.Any account = 1 [(cosmos_proto.accepts_interface) = "ModuleAccountI"];
+}
+
+// QueryNextAccountNumberRequest is the request type for the Query/NextAccountNumber.
+message QueryNextAccountNumberRequest {
+  option deprecated = true;
+}
+
+// QueryNextAccountNumberResponse is the response for the Query/NextAccountNumber.
+message QueryNextAccountNumberResponse {
+  option deprecated = true;
+
+  // The next account number is the next value of global account number.
+  uint64 next_account_number = 1;
 }

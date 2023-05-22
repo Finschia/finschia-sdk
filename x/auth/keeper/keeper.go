@@ -115,6 +115,30 @@ func (ak AccountKeeper) GetSequence(ctx sdk.Context, addr sdk.AccAddress) (uint6
 	return acc.GetSequence(), nil
 }
 
+// QueryNextAccountNumber returns the global account number counter.
+// This function queries only the number without incrementing values.
+// And this is a temporary use function.
+func (ak AccountKeeper) QueryNextAccountNumber(ctx sdk.Context) uint64 {
+	var accNumber uint64
+	store := ctx.KVStore(ak.key)
+
+	bz := store.Get(types.GlobalAccountNumberKey)
+	if bz == nil {
+		accNumber = 0
+	} else {
+		val := gogotypes.UInt64Value{}
+
+		err := ak.cdc.Unmarshal(bz, &val)
+		if err != nil {
+			panic(err)
+		}
+
+		accNumber = val.GetValue()
+	}
+
+	return accNumber
+}
+
 // GetNextAccountNumber returns and increments the global account number counter.
 // If the global account number is not set, it initializes it with value 0.
 func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
