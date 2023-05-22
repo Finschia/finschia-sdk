@@ -171,13 +171,4 @@ message SCCState {
 
   // The latest batch timestamp when the sequencer submits.
   google.protobuf.Timestamp last_sequencer_submit = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-
-  // The CC data up to that position were validated over the challenge period (fraud proof).
-  PassedCCPtr validated_state = 5;
-}
-
-message PassedCCPtr {
-  uint64 batch_height = 1;
-
-  sint32 frame_index = 2;
 }

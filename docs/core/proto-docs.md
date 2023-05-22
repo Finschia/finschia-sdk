@@ -596,7 +596,6 @@
     - [CCState](#finschia.or.da.v1.CCState)
     - [CompressedCCBatch](#finschia.or.da.v1.CompressedCCBatch)
     - [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue)
-    - [PassedCCPtr](#finschia.or.da.v1.PassedCCPtr)
     - [SCCBatch](#finschia.or.da.v1.SCCBatch)
     - [SCCRef](#finschia.or.da.v1.SCCRef)
     - [SCCState](#finschia.or.da.v1.SCCState)
@@ -8911,22 +8910,6 @@ Sequencer must process this transaction on time in order.
 
 
 
-<a name="finschia.or.da.v1.PassedCCPtr"></a>
-
-### PassedCCPtr
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `batch_height` | [uint64](#uint64) |  |  |
-| `frame_index` | [sint32](#sint32) |  |  |
-
-
-
-
-
-
 <a name="finschia.or.da.v1.SCCBatch"></a>
 
 ### SCCBatch
@@ -8973,7 +8956,6 @@ BatchChainState is the state of target batch chain.
 | `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
 | `height` | [uint64](#uint64) |  |  |
 | `last_sequencer_submit` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp when the sequencer submits. |
-| `validated_state` | [PassedCCPtr](#finschia.or.da.v1.PassedCCPtr) |  | The CC data up to that position were validated over the challenge period (fraud proof). |
 
 
 
