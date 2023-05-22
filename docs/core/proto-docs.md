@@ -9257,7 +9257,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `from_address` | [string](#string) |  | this address must be the sequencer address which is registered in L1. |
 | `rollup_name` | [string](#string) |  |  |
-| `batch` | [CCBatch](#finschia.or.da.v1.CCBatch) |  |  |
+| `batch` | [CompressedCCBatch](#finschia.or.da.v1.CompressedCCBatch) |  |  |
 
 
 

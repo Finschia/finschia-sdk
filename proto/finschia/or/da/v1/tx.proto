@@ -42,7 +42,7 @@ message MsgAppendCCBatch {
   // this address must be the sequencer address which is registered in L1.
   string from_address = 1;
   string rollup_name = 2;
-  CCBatch batch = 3 [(gogoproto.nullable) = false];
+  CompressedCCBatch batch = 3 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendCCBatchResponse {}
