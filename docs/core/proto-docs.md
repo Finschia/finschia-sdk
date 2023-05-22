@@ -9401,7 +9401,7 @@ Msg defines the Msg service.
 | `AppendCCBatch` | [MsgAppendCCBatch](#finschia.or.da.v1.MsgAppendCCBatch) | [MsgAppendCCBatchResponse](#finschia.or.da.v1.MsgAppendCCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
-| `RemoveSCCBatch` | [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
+| `RemoveSCCBatch` | [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch) | [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
 
  <!-- end services -->
 

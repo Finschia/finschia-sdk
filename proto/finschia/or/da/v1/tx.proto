@@ -22,7 +22,7 @@ service Msg {
   rpc AppendSCCBatch(MsgAppendSCCBatch) returns (MsgAppendSCCBatchResponse);
 
   // Removes a batch and all subsequent batches from SCC.
-  rpc RemoveSCCBatch(MsgRemoveSCCBatch) returns (MsgAppendSCCBatchResponse);
+  rpc RemoveSCCBatch(MsgRemoveSCCBatch) returns (MsgRemoveSCCBatchResponse);
 }
 
 message MsgUpdateParams {

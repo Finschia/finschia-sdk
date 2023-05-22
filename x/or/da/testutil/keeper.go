@@ -3,9 +3,6 @@ package testutil
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
-
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -16,6 +13,8 @@ import (
 	"github.com/Finschia/finschia-sdk/store"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
+	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
 func DaKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {

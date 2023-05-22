@@ -63,6 +63,6 @@ func (k msgServer) AppendSCCBatch(goCtx context.Context, msg *types.MsgAppendSCC
 	panic("implement me")
 }
 
-func (k msgServer) RemoveSCCBatch(goCtx context.Context, msg *types.MsgAppendSCCBatch) (*types.MsgAppendSCCBatchResponse, error) {
+func (k msgServer) RemoveSCCBatch(goCtx context.Context, msg *types.MsgRemoveSCCBatch) (*types.MsgRemoveSCCBatchResponse, error) {
 	panic("implement me")
 }
