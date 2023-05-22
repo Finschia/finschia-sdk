@@ -29,10 +29,18 @@ const (
 )
 
 func GetCCBatchIndexKey(i uint64) []byte {
+	if i < 1 {
+		panic("batch index must be positive")
+	}
+
 	return genPrefixIndexKey(i, []byte{CCBatchIndexPrefix})
 }
 
 func GetSCCBatchIndexKey(i uint64) []byte {
+	if i < 1 {
+		panic("batch index must be positive")
+	}
+
 	return genPrefixIndexKey(i, []byte{SCCBatchIndexPrefix})
 }
 

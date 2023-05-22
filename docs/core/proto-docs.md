@@ -9255,6 +9255,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  | this address must be the sequencer address which is registered in L1. |
 | `rollup_name` | [string](#string) |  |  |
 | `batch` | [CCBatch](#finschia.or.da.v1.CCBatch) |  |  |
 
@@ -9281,6 +9282,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
 | `rollup_name` | [string](#string) |  |  |
 | `batch` | [SCCBatch](#finschia.or.da.v1.SCCBatch) |  |  |
 
@@ -9307,6 +9309,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
 | `rollup_name` | [string](#string) |  |  |
 | `gas_limit` | [uint64](#uint64) |  |  |
 | `txraw` | [bytes](#bytes) |  |  |
@@ -9334,6 +9337,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority must be settlement module address. |
 | `rollup_name` | [string](#string) |  |  |
 | `batch_index` | [uint64](#uint64) |  |  |
 

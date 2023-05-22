@@ -39,30 +39,36 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgAppendCCBatch {
-  string rollup_name = 1;
-  CCBatch batch = 2 [(gogoproto.nullable) = false];
+  // this address must be the sequencer address which is registered in L1.
+  string from_address = 1;
+  string rollup_name = 2;
+  CCBatch batch = 3 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendCCBatchResponse {}
 
 message MsgEnqueue {
-  string rollup_name = 1;
-  uint64 gas_limit = 2;
-  bytes txraw = 3;
+  string from_address = 1;
+  string rollup_name = 2;
+  uint64 gas_limit = 3;
+  bytes txraw = 4;
 }
 
 message MsgEnqueueResponse {}
 
 message MsgAppendSCCBatch {
-  string rollup_name = 1;
-  SCCBatch batch = 2 [(gogoproto.nullable) = false];
+  string from_address = 1;
+  string rollup_name = 2;
+  SCCBatch batch = 3 [(gogoproto.nullable) = false];
 }
 
 message MsgAppendSCCBatchResponse {}
 
 message MsgRemoveSCCBatch {
-  string rollup_name = 1;
-  uint64 batch_index = 2;
+  // authority must be settlement module address.
+  string authority = 1;
+  string rollup_name = 2;
+  uint64 batch_index = 3;
 }
 
 message MsgRemoveSCCBatchResponse {}
