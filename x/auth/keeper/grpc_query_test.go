@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"fmt"
-
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/auth/types"
@@ -239,6 +238,40 @@ func (suite *KeeperTestSuite) TestGRPCQueryModuleAccountByName() {
 			}
 
 			tc.posttests(res)
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestGRPCQueryNextAccountNumber() {
+	var req *types.QueryNextAccountNumberRequest
+
+	testCases := []struct {
+		msg      string
+		malleate func()
+		expPass  bool
+	}{
+		{
+			"success",
+			func() {
+				req = &types.QueryNextAccountNumberRequest{}
+			},
+			true,
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			suite.SetupTest() // reset
+			tc.malleate()
+			ctx := sdk.WrapSDKContext(suite.ctx)
+			res, err := suite.queryClient.NextAccountNumber(ctx, req)
+			if tc.expPass {
+				suite.Require().NoError(err)
+				suite.Require().NotNil(res)
+			} else {
+				suite.Require().Error(err)
+				suite.Require().Nil(res)
+			}
 		})
 	}
 }
