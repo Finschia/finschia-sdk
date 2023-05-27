@@ -38,7 +38,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.47.0...HEAD)
 
 ### Features
-* (server/grpc) [\#1017](https://github.com/Finschia/finschia-sdk/pull/1017) support custom r/w gRPC options (backport cosmos/cosmos-sdk#11889)
+* (server/grpc) [\#1018](https://github.com/Finschia/finschia-sdk/pull/1018) support custom r/w gRPC options (backport #1017)
 
 ### Improvements
 
