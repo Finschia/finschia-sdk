@@ -39,6 +39,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 * (x/auth) [\#1011](https://github.com/Finschia/finschia-sdk/pull/1011) add the api for querying next account number
+* (server/grpc) [\#1019](https://github.com/Finschia/finschia-sdk/pull/1019) support custom r/w gRPC options (backport #1017)
 
 ### Improvements
 

@@ -31,3 +31,9 @@ func TestValidateBasic(t *testing.T) {
 	err = cfg.ValidateBasic()
 	require.Error(t, err)
 }
+
+func TestSetGRPCMsgSize(t *testing.T) {
+	cfg := DefaultConfig()
+	require.Equal(t, DefaultGRPCMaxRecvMsgSize, cfg.GRPC.MaxRecvMsgSize)
+	require.Equal(t, DefaultGRPCMaxSendMsgSize, cfg.GRPC.MaxSendMsgSize)
+}
