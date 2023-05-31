@@ -6,7 +6,6 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -29,7 +28,7 @@ func TestImportExportQueues(t *testing.T) {
 	SortAddresses(addrs)
 
 	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	ctx = app.BaseApp.NewContext(false, tmproto.Header{})
 
@@ -82,10 +81,10 @@ func TestImportExportQueues(t *testing.T) {
 	)
 
 	app2.Commit()
-	app2.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app2.LastBlockHeight() + 1}})
+	app2.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app2.LastBlockHeight() + 1}})
 
 	header = tmproto.Header{Height: app2.LastBlockHeight() + 1}
-	app2.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app2.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	ctx2 := app2.BaseApp.NewContext(false, tmproto.Header{})
 
@@ -143,7 +142,7 @@ func TestEqualProposals(t *testing.T) {
 	SortAddresses(addrs)
 
 	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	// Submit two proposals
 	proposal := TestProposal

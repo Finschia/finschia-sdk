@@ -98,7 +98,7 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 		isErr bool
 		err   string
 	}{
-		{blkhash, false, ""},
+		{bytes.HexBytes(blkhash), false, ""},
 		{bytes.HexBytes("wrong hash"), true, "the length of block hash must be 32: invalid request"},
 		{bytes.HexBytes(""), true, "block hash cannot be empty"},
 	}

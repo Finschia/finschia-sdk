@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	octypes "github.com/Finschia/ostracon/types"
 	"github.com/spf13/cobra"
+
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -101,8 +102,8 @@ func (rvo ResultValidatorsOutput) String() string {
 	return b.String()
 }
 
-func validatorOutput(validator *octypes.Validator) (ValidatorOutput, error) {
-	pk, err := cryptocodec.FromOcPubKeyInterface(validator.PubKey)
+func validatorOutput(validator *tmtypes.Validator) (ValidatorOutput, error) {
+	pk, err := cryptocodec.FromTmPubKeyInterface(validator.PubKey)
 	if err != nil {
 		return ValidatorOutput{}, err
 	}
