@@ -1,14 +1,13 @@
 package simulation_test
 
 import (
+	abci "github.com/tendermint/tendermint/abci/types"
 	"math/rand"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -90,7 +89,7 @@ func (suite *SimTestSuite) TestSimulateGrant() {
 	ctx := suite.ctx.WithBlockTime(blockTime)
 
 	// begin a new block
-	suite.app.BeginBlock(ocabci.RequestBeginBlock{
+	suite.app.BeginBlock(abci.RequestBeginBlock{
 		Header: tmproto.Header{
 			Height:  suite.app.LastBlockHeight() + 1,
 			AppHash: suite.app.LastCommitID().Hash,
@@ -120,7 +119,7 @@ func (suite *SimTestSuite) TestSimulateRevoke() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(ocabci.RequestBeginBlock{
+	suite.app.BeginBlock(abci.RequestBeginBlock{
 		Header: tmproto.Header{
 			Height:  suite.app.LastBlockHeight() + 1,
 			AppHash: suite.app.LastCommitID().Hash,
@@ -159,7 +158,7 @@ func (suite *SimTestSuite) TestSimulateExec() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	initAmt := suite.app.StakingKeeper.TokensFromConsensusPower(suite.ctx, 200000)
 	initCoins := sdk.NewCoins(sdk.NewCoin("stake", initAmt))

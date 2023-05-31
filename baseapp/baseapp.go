@@ -12,7 +12,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/Finschia/ostracon/crypto/tmhash"
 	"github.com/Finschia/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
@@ -27,7 +26,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
-var _ ocabci.Application = (*BaseApp)(nil)
+var _ abci.Application = (*BaseApp)(nil)
 
 type (
 	// StoreLoader defines a customizable function to control how we load the CommitMultiStore
@@ -520,7 +519,7 @@ func (app *BaseApp) getMaximumBlockGas(ctx sdk.Context) uint64 {
 	}
 }
 
-func (app *BaseApp) validateHeight(req ocabci.RequestBeginBlock) error {
+func (app *BaseApp) validateHeight(req abci.RequestBeginBlock) error {
 	if req.Header.Height < 1 {
 		return fmt.Errorf("invalid height: %d", req.Header.Height)
 	}
@@ -844,4 +843,25 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		Log:    strings.TrimSpace(msgLogs.String()),
 		Events: events.ToABCIEvents(),
 	}, nil
+}
+
+// following is from rollkit/cosmos-sdk
+func (app *BaseApp) GetAppHash(hash abci.RequestGetAppHash) abci.ResponseGetAppHash {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (app *BaseApp) GenerateFraudProof(proof abci.RequestGenerateFraudProof) abci.ResponseGenerateFraudProof {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (app *BaseApp) VerifyFraudProof(proof abci.RequestVerifyFraudProof) abci.ResponseVerifyFraudProof {
+	// TODO implement me
+	panic("implement me")
+}
+
+// Close is called in start cmd to gracefully cleanup resources.
+func (app *BaseApp) Close() error {
+	return nil
 }

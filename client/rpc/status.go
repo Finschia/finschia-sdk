@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/ostracon/libs/bytes"
-	"github.com/Finschia/ostracon/p2p"
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	"github.com/tendermint/tendermint/libs/bytes"
+	"github.com/tendermint/tendermint/p2p"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -48,7 +48,7 @@ func StatusCommand() *cobra.Command {
 			}
 
 			// `status` has OC pubkeys, we need to convert them to our pubkeys.
-			pk, err := cryptocodec.FromOcPubKeyInterface(status.ValidatorInfo.PubKey)
+			pk, err := cryptocodec.FromTmPubKeyInterface(status.ValidatorInfo.PubKey)
 			if err != nil {
 				return err
 			}

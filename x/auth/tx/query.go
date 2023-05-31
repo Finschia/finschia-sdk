@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

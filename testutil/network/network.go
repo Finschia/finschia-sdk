@@ -17,9 +17,8 @@ import (
 	ostcfg "github.com/Finschia/ostracon/config"
 	"github.com/Finschia/ostracon/libs/log"
 	ostrand "github.com/Finschia/ostracon/libs/rand"
-	"github.com/Finschia/ostracon/node"
-	ostclient "github.com/Finschia/ostracon/rpc/client"
 	"github.com/stretchr/testify/require"
+	tmclient "github.com/tendermint/tendermint/rpc/client"
 	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
 
@@ -44,6 +43,8 @@ import (
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/genutil"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+
+	rollnode "github.com/Finschia/ramus/node"
 )
 
 // package-wide network lock to only allow one test network at a time
@@ -157,9 +158,9 @@ type (
 		P2PAddress string
 		Address    sdk.AccAddress
 		ValAddress sdk.ValAddress
-		RPCClient  ostclient.Client
+		RPCClient  tmclient.Client
 
-		tmNode  *node.Node
+		tmNode  rollnode.Node
 		api     *api.Server
 		grpc    *grpc.Server
 		grpcWeb *http.Server
@@ -508,8 +509,8 @@ func (n *Network) Cleanup() {
 	n.T.Log("cleaning up test network...")
 
 	for _, v := range n.Validators {
-		if v.tmNode != nil && v.tmNode.IsRunning() {
-			_ = v.tmNode.Stop()
+		if v.tmNode != nil && v.tmNode.(*rollnode.FullNode).IsRunning() {
+			_ = v.tmNode.(*rollnode.FullNode).Stop()
 		}
 
 		if v.api != nil {

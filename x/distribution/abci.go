@@ -1,9 +1,8 @@
 package distribution
 
 import (
+	abci "github.com/tendermint/tendermint/abci/types"
 	"time"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -13,7 +12,7 @@ import (
 
 // BeginBlocker sets the proposer for determining distribution during endblock
 // and distribute rewards for the previous block
-func BeginBlocker(ctx sdk.Context, req ocabci.RequestBeginBlock, k keeper.Keeper) {
+func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	// determine the total power signing the block

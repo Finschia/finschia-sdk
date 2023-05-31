@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/Finschia/finschia-sdk/compat"
 	"io"
 	"os"
 	"reflect"
 	"testing"
 	"time"
 
-	abci_server "github.com/Finschia/ostracon/abci/server"
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
+	abci_server "github.com/tendermint/tendermint/abci/server"
 
 	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 
@@ -185,7 +186,7 @@ func TestStartStandAlone(t *testing.T) {
 	svr, err := abci_server.NewServer(svrAddr, "grpc", app)
 	require.NoError(t, err, "error creating listener")
 
-	svr.SetLogger(logger.With("module", "abci-server"))
+	svr.SetLogger(compat.NewTMLogger(logger.With("module", "abci-server")))
 	err = svr.Start()
 	require.NoError(t, err)
 
