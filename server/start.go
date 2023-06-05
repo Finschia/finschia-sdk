@@ -25,7 +25,7 @@ import (
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/server/api"
-	"github.com/Finschia/finschia-sdk/server/config"
+	serverconfig "github.com/Finschia/finschia-sdk/server/config"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
 	"github.com/Finschia/finschia-sdk/server/rosetta"
 	crgserver "github.com/Finschia/finschia-sdk/server/rosetta/lib/server"
@@ -170,10 +170,10 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 	cmd.Flags().Bool(flagGRPCOnly, false, "Start the node in gRPC query only mode (no Tendermint process is started)")
 	cmd.Flags().Bool(flagGRPCEnable, true, "Define if the gRPC server should be enabled")
-	cmd.Flags().String(flagGRPCAddress, config.DefaultGRPCAddress, "the gRPC server address to listen on")
+	cmd.Flags().String(flagGRPCAddress, serverconfig.DefaultGRPCAddress, "the gRPC server address to listen on")
 
 	cmd.Flags().Bool(flagGRPCWebEnable, true, "Define if the gRPC-Web server should be enabled. (Note: gRPC must also be enabled.)")
-	cmd.Flags().String(flagGRPCWebAddress, config.DefaultGRPCWebAddress, "The gRPC-Web server address to listen on")
+	cmd.Flags().String(flagGRPCWebAddress, serverconfig.DefaultGRPCWebAddress, "The gRPC-Web server address to listen on")
 
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
@@ -182,7 +182,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metric for app")
 
-	cmd.Flags().Uint(FlagChanCheckTxSize, config.DefaultChanCheckTxSize, "The size of the channel check tx")
+	cmd.Flags().Uint(FlagChanCheckTxSize, serverconfig.DefaultChanCheckTxSize, "The size of the channel check tx")
 
 	// add support for all Ostracon-specific command line options
 	ostcmd.AddNodeFlags(cmd)
@@ -207,7 +207,7 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 
 	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
 
-	config, err := config.GetConfig(ctx.Viper)
+	config, err := serverconfig.GetConfig(ctx.Viper)
 	if err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		return err
 	}
 
-	config, err := config.GetConfig(ctx.Viper)
+	config, err := serverconfig.GetConfig(ctx.Viper)
 	if err != nil {
 		return err
 	}
@@ -381,7 +381,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	)
 
 	if config.GRPC.Enable {
-		grpcSrv, err = servergrpc.StartGRPCServer(clientCtx, app, config.GRPC.Address)
+		grpcSrv, err = servergrpc.StartGRPCServer(clientCtx, app, config.GRPC)
 		if err != nil {
 			return err
 		}
@@ -471,7 +471,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	return WaitForQuitSignals()
 }
 
-func startTelemetry(cfg config.Config) (*telemetry.Metrics, error) {
+func startTelemetry(cfg serverconfig.Config) (*telemetry.Metrics, error) {
 	if !cfg.Telemetry.Enabled {
 		return nil, nil
 	}
