@@ -122,8 +122,10 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 type MsgAppendCCBatch struct {
-	RollupName string  `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
-	Batch      CCBatch `protobuf:"bytes,2,opt,name=batch,proto3" json:"batch"`
+	// this address must be the sequencer address which is registered in L1.
+	FromAddress string            `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
+	RollupName  string            `protobuf:"bytes,2,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
+	Batch       CompressedCCBatch `protobuf:"bytes,3,opt,name=batch,proto3" json:"batch"`
 }
 
 func (m *MsgAppendCCBatch) Reset()         { *m = MsgAppendCCBatch{} }
@@ -159,6 +161,13 @@ func (m *MsgAppendCCBatch) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAppendCCBatch proto.InternalMessageInfo
 
+func (m *MsgAppendCCBatch) GetFromAddress() string {
+	if m != nil {
+		return m.FromAddress
+	}
+	return ""
+}
+
 func (m *MsgAppendCCBatch) GetRollupName() string {
 	if m != nil {
 		return m.RollupName
@@ -166,11 +175,11 @@ func (m *MsgAppendCCBatch) GetRollupName() string {
 	return ""
 }
 
-func (m *MsgAppendCCBatch) GetBatch() CCBatch {
+func (m *MsgAppendCCBatch) GetBatch() CompressedCCBatch {
 	if m != nil {
 		return m.Batch
 	}
-	return CCBatch{}
+	return CompressedCCBatch{}
 }
 
 type MsgAppendCCBatchResponse struct {
@@ -210,9 +219,10 @@ func (m *MsgAppendCCBatchResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAppendCCBatchResponse proto.InternalMessageInfo
 
 type MsgEnqueue struct {
-	RollupName string `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
-	GasLimit   uint64 `protobuf:"varint,2,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`
-	Txraw      []byte `protobuf:"bytes,3,opt,name=txraw,proto3" json:"txraw,omitempty"`
+	FromAddress string `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
+	RollupName  string `protobuf:"bytes,2,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
+	GasLimit    uint64 `protobuf:"varint,3,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`
+	Txraw       []byte `protobuf:"bytes,4,opt,name=txraw,proto3" json:"txraw,omitempty"`
 }
 
 func (m *MsgEnqueue) Reset()         { *m = MsgEnqueue{} }
@@ -247,6 +257,13 @@ func (m *MsgEnqueue) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgEnqueue proto.InternalMessageInfo
+
+func (m *MsgEnqueue) GetFromAddress() string {
+	if m != nil {
+		return m.FromAddress
+	}
+	return ""
+}
 
 func (m *MsgEnqueue) GetRollupName() string {
 	if m != nil {
@@ -306,8 +323,9 @@ func (m *MsgEnqueueResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgEnqueueResponse proto.InternalMessageInfo
 
 type MsgAppendSCCBatch struct {
-	RollupName string   `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
-	Batch      SCCBatch `protobuf:"bytes,2,opt,name=batch,proto3" json:"batch"`
+	FromAddress string   `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
+	RollupName  string   `protobuf:"bytes,2,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
+	Batch       SCCBatch `protobuf:"bytes,3,opt,name=batch,proto3" json:"batch"`
 }
 
 func (m *MsgAppendSCCBatch) Reset()         { *m = MsgAppendSCCBatch{} }
@@ -342,6 +360,13 @@ func (m *MsgAppendSCCBatch) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgAppendSCCBatch proto.InternalMessageInfo
+
+func (m *MsgAppendSCCBatch) GetFromAddress() string {
+	if m != nil {
+		return m.FromAddress
+	}
+	return ""
+}
 
 func (m *MsgAppendSCCBatch) GetRollupName() string {
 	if m != nil {
@@ -394,8 +419,10 @@ func (m *MsgAppendSCCBatchResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAppendSCCBatchResponse proto.InternalMessageInfo
 
 type MsgRemoveSCCBatch struct {
-	RollupName string `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
-	BatchIndex uint64 `protobuf:"varint,2,opt,name=batch_index,json=batchIndex,proto3" json:"batch_index,omitempty"`
+	// authority must be settlement module address.
+	Authority  string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	RollupName string `protobuf:"bytes,2,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
+	BatchIndex uint64 `protobuf:"varint,3,opt,name=batch_index,json=batchIndex,proto3" json:"batch_index,omitempty"`
 }
 
 func (m *MsgRemoveSCCBatch) Reset()         { *m = MsgRemoveSCCBatch{} }
@@ -430,6 +457,13 @@ func (m *MsgRemoveSCCBatch) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgRemoveSCCBatch proto.InternalMessageInfo
+
+func (m *MsgRemoveSCCBatch) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
 
 func (m *MsgRemoveSCCBatch) GetRollupName() string {
 	if m != nil {
@@ -497,40 +531,43 @@ func init() {
 func init() { proto.RegisterFile("finschia/or/da/v1/tx.proto", fileDescriptor_0e3106aca12fbccc) }
 
 var fileDescriptor_0e3106aca12fbccc = []byte{
-	// 522 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0x8d, 0x49, 0x5b, 0xc8, 0xa4, 0x7c, 0xd4, 0x8a, 0x44, 0xe2, 0x80, 0x13, 0x19, 0x90, 0x22,
-	0x3e, 0x6c, 0xb5, 0x48, 0xf4, 0x4c, 0x2a, 0x10, 0x48, 0x04, 0x90, 0xab, 0x5e, 0x38, 0x10, 0x36,
-	0xf1, 0xb2, 0xb6, 0x1a, 0x7b, 0x8d, 0x77, 0x1d, 0xd2, 0x7f, 0xc1, 0xcf, 0xea, 0xb1, 0x47, 0x4e,
-	0x08, 0x25, 0xe2, 0x7f, 0xa0, 0x78, 0xd7, 0x2e, 0x76, 0xac, 0x26, 0x17, 0x6e, 0xde, 0x79, 0x6f,
-	0xdf, 0x7b, 0x3b, 0x1e, 0x0d, 0x68, 0x5f, 0xbd, 0x80, 0x8d, 0x5d, 0x0f, 0x59, 0x34, 0xb2, 0x1c,
-	0x64, 0x4d, 0xf7, 0x2d, 0x3e, 0x33, 0xc3, 0x88, 0x72, 0xaa, 0xee, 0xa5, 0x98, 0x49, 0x23, 0xd3,
-	0x41, 0xe6, 0x74, 0x5f, 0x6b, 0x10, 0x4a, 0x68, 0x82, 0x5a, 0xcb, 0x2f, 0x41, 0xd4, 0x5a, 0x63,
-	0xca, 0x7c, 0xca, 0x86, 0x02, 0x10, 0x07, 0x09, 0xe9, 0xab, 0xfa, 0x21, 0x8a, 0x90, 0x9f, 0xe2,
-	0x25, 0xfe, 0x0e, 0x12, 0x98, 0xe1, 0xc2, 0xed, 0x01, 0x23, 0x27, 0xa1, 0x83, 0x38, 0xfe, 0x98,
-	0x5c, 0x52, 0xef, 0x41, 0x0d, 0xc5, 0xdc, 0xa5, 0x91, 0xc7, 0xcf, 0x9a, 0x4a, 0x57, 0xe9, 0xd5,
-	0xec, 0xcb, 0x82, 0x7a, 0x08, 0x3b, 0x42, 0xbc, 0x79, 0xad, 0xab, 0xf4, 0xea, 0x07, 0x2d, 0x73,
-	0xe5, 0x05, 0xa6, 0x10, 0xea, 0x6f, 0x9d, 0xff, 0xea, 0x54, 0x6c, 0x49, 0x37, 0x5a, 0x70, 0xb7,
-	0xe0, 0x64, 0x63, 0x16, 0xd2, 0x80, 0x61, 0xe3, 0x14, 0xee, 0x0c, 0x18, 0x79, 0x19, 0x86, 0x38,
-	0x70, 0x8e, 0x8e, 0xfa, 0x88, 0x8f, 0x5d, 0xb5, 0x03, 0xf5, 0x88, 0x4e, 0x26, 0x71, 0x38, 0x0c,
-	0x90, 0x8f, 0x65, 0x0e, 0x10, 0xa5, 0xf7, 0xc8, 0xc7, 0xea, 0x0b, 0xd8, 0x1e, 0x2d, 0x99, 0x32,
-	0x87, 0x56, 0x92, 0x43, 0x6a, 0xc9, 0x20, 0x82, 0x6e, 0x68, 0xd0, 0x2c, 0x9a, 0x65, 0x41, 0xbe,
-	0x00, 0x0c, 0x18, 0x79, 0x15, 0x7c, 0x8b, 0x71, 0x8c, 0xd7, 0x47, 0x68, 0x43, 0x8d, 0x20, 0x36,
-	0x9c, 0x78, 0xbe, 0xc7, 0x93, 0x18, 0x5b, 0xf6, 0x0d, 0x82, 0xd8, 0xbb, 0xe5, 0x59, 0x6d, 0xc0,
-	0x36, 0x9f, 0x45, 0xe8, 0x7b, 0xb3, 0xda, 0x55, 0x7a, 0xbb, 0xb6, 0x38, 0x18, 0x0d, 0x50, 0x2f,
-	0x1d, 0x32, 0x5f, 0x1f, 0xf6, 0xb2, 0x4c, 0xc7, 0x1b, 0x77, 0xe0, 0x30, 0xdf, 0x81, 0x76, 0x49,
-	0x07, 0x8e, 0x4b, 0x5b, 0xd0, 0x86, 0xd6, 0x8a, 0x5d, 0x96, 0xe5, 0x24, 0xc9, 0x62, 0x63, 0x9f,
-	0x4e, 0xf1, 0xe6, 0x59, 0x3a, 0x50, 0x4f, 0xb4, 0x87, 0x5e, 0xe0, 0xe0, 0x99, 0x6c, 0x06, 0x24,
-	0xa5, 0xb7, 0xcb, 0x8a, 0xf4, 0xcc, 0xcb, 0xa6, 0x9e, 0x07, 0x7f, 0xaa, 0x50, 0x1d, 0x30, 0xa2,
-	0x7e, 0x86, 0xdd, 0xdc, 0x28, 0x1a, 0x25, 0x4f, 0x2a, 0x0c, 0x91, 0xf6, 0x78, 0x3d, 0x27, 0xf5,
-	0x51, 0x11, 0xdc, 0xcc, 0x4f, 0xd9, 0x83, 0xf2, 0xcb, 0x39, 0x92, 0xf6, 0x64, 0x03, 0x52, 0x66,
-	0xf1, 0x01, 0xae, 0xa7, 0xf3, 0x73, 0xbf, 0xfc, 0x9e, 0x84, 0xb5, 0x47, 0x57, 0xc2, 0x99, 0xa0,
-	0x03, 0xb7, 0x0a, 0x83, 0xf1, 0xf0, 0xaa, 0x3c, 0x29, 0x4b, 0x7b, 0xba, 0x09, 0xeb, 0x5f, 0x97,
-	0xc2, 0x2f, 0xff, 0x0f, 0x2e, 0xfd, 0x37, 0xe7, 0x73, 0x5d, 0xb9, 0x98, 0xeb, 0xca, 0xef, 0xb9,
-	0xae, 0xfc, 0x58, 0xe8, 0x95, 0x8b, 0x85, 0x5e, 0xf9, 0xb9, 0xd0, 0x2b, 0x9f, 0x4c, 0xe2, 0x71,
-	0x37, 0x1e, 0x99, 0x63, 0xea, 0x5b, 0xaf, 0xd3, 0x75, 0x95, 0x4a, 0x3f, 0x63, 0xce, 0xa9, 0x35,
-	0x93, 0xdb, 0x8b, 0x9f, 0x85, 0x98, 0x8d, 0x76, 0x92, 0xf5, 0xf5, 0xfc, 0x6f, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x25, 0x62, 0xa5, 0xe8, 0x5c, 0x05, 0x00, 0x00,
+	// 568 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xc7, 0x63, 0x92, 0x16, 0x32, 0x09, 0x1f, 0xb5, 0x22, 0x91, 0x38, 0xe0, 0x04, 0x53, 0xa4,
+	0x88, 0x0f, 0x5b, 0x2d, 0x87, 0x5e, 0x69, 0x22, 0x10, 0x48, 0x04, 0x90, 0x2b, 0x2e, 0x1c, 0x88,
+	0x36, 0xd9, 0xad, 0x63, 0x11, 0x7b, 0x8d, 0x77, 0x13, 0xd2, 0x33, 0x2f, 0xd0, 0x23, 0x8f, 0xd4,
+	0x63, 0x8f, 0x9c, 0x10, 0x4a, 0xc4, 0x7b, 0x20, 0x7b, 0x6d, 0xb7, 0x76, 0xdc, 0xb4, 0x87, 0xde,
+	0xb2, 0x33, 0xff, 0x99, 0xff, 0x6f, 0x27, 0xe3, 0x05, 0xe5, 0xd0, 0x76, 0xd9, 0x68, 0x6c, 0x23,
+	0x83, 0xfa, 0x06, 0x46, 0xc6, 0x6c, 0xc7, 0xe0, 0x73, 0xdd, 0xf3, 0x29, 0xa7, 0xf2, 0x56, 0x9c,
+	0xd3, 0xa9, 0xaf, 0x63, 0xa4, 0xcf, 0x76, 0x94, 0x9a, 0x45, 0x2d, 0x1a, 0x66, 0x8d, 0xe0, 0x97,
+	0x10, 0x2a, 0x8d, 0x11, 0x65, 0x0e, 0x65, 0x03, 0x91, 0x10, 0x87, 0x28, 0xa5, 0xae, 0xf6, 0xf7,
+	0x90, 0x8f, 0x9c, 0x38, 0x9f, 0xe3, 0x8f, 0x91, 0xc8, 0x69, 0x63, 0xb8, 0xdb, 0x67, 0xd6, 0x67,
+	0x0f, 0x23, 0x4e, 0x3e, 0x85, 0x45, 0xf2, 0x03, 0x28, 0xa3, 0x29, 0x1f, 0x53, 0xdf, 0xe6, 0x47,
+	0x75, 0xa9, 0x2d, 0x75, 0xca, 0xe6, 0x59, 0x40, 0xde, 0x83, 0x4d, 0xd1, 0xbc, 0x7e, 0xa3, 0x2d,
+	0x75, 0x2a, 0xbb, 0x0d, 0x7d, 0xe5, 0x06, 0xba, 0x68, 0xd4, 0x2d, 0x9d, 0xfc, 0x69, 0x15, 0xcc,
+	0x48, 0xae, 0x35, 0xe0, 0x7e, 0xc6, 0xc9, 0x24, 0xcc, 0xa3, 0x2e, 0x23, 0xda, 0x2f, 0x09, 0xee,
+	0xf5, 0x99, 0xb5, 0xef, 0x79, 0xc4, 0xc5, 0xbd, 0x5e, 0x17, 0xf1, 0xd1, 0x58, 0x7e, 0x04, 0xd5,
+	0x43, 0x9f, 0x3a, 0x03, 0x84, 0xb1, 0x4f, 0x18, 0x8b, 0x48, 0x2a, 0x41, 0x6c, 0x5f, 0x84, 0xe4,
+	0x16, 0x54, 0x7c, 0x3a, 0x99, 0x4c, 0xbd, 0x81, 0x8b, 0x1c, 0x12, 0x02, 0x95, 0x4d, 0x10, 0xa1,
+	0x0f, 0xc8, 0x21, 0xf2, 0x2b, 0xd8, 0x18, 0x06, 0xcd, 0xea, 0xc5, 0x90, 0x75, 0x3b, 0x87, 0xb5,
+	0x47, 0x1d, 0x2f, 0x68, 0x46, 0x62, 0xe3, 0x08, 0x5b, 0x14, 0x6a, 0x0a, 0xd4, 0xb3, 0x64, 0x09,
+	0xf6, 0x4f, 0x09, 0xa0, 0xcf, 0xac, 0xd7, 0xee, 0xf7, 0x29, 0x99, 0x92, 0x6b, 0x01, 0x6e, 0x42,
+	0xd9, 0x42, 0x6c, 0x30, 0xb1, 0x1d, 0x9b, 0x87, 0xd0, 0x25, 0xf3, 0x96, 0x85, 0xd8, 0xfb, 0xe0,
+	0x2c, 0xd7, 0x60, 0x83, 0xcf, 0x7d, 0xf4, 0xa3, 0x5e, 0x6a, 0x4b, 0x9d, 0xaa, 0x29, 0x0e, 0x5a,
+	0x0d, 0xe4, 0x33, 0x88, 0x84, 0xed, 0x58, 0x82, 0xad, 0x04, 0xfc, 0xe0, 0x3a, 0x67, 0xba, 0x97,
+	0x9e, 0x69, 0x33, 0x67, 0xa6, 0x07, 0xb9, 0xa3, 0x6c, 0x42, 0x63, 0x85, 0x28, 0xe1, 0x65, 0x21,
+	0xae, 0x49, 0x1c, 0x3a, 0x23, 0x09, 0xee, 0xfa, 0x4d, 0xbc, 0x94, 0xb4, 0x05, 0x95, 0xd0, 0x79,
+	0x60, 0xbb, 0x98, 0xcc, 0xa3, 0x71, 0x42, 0x18, 0x7a, 0x17, 0x44, 0x22, 0xa2, 0xb4, 0x69, 0x4c,
+	0xb4, 0xfb, 0xaf, 0x08, 0xc5, 0x3e, 0xb3, 0xe4, 0xaf, 0x50, 0x4d, 0x7d, 0x1e, 0x5a, 0xce, 0x85,
+	0x33, 0x8b, 0xad, 0x3c, 0xbd, 0x5c, 0x13, 0xfb, 0xc8, 0x08, 0x6e, 0xa7, 0x17, 0xff, 0x71, 0x7e,
+	0x71, 0x4a, 0xa4, 0x3c, 0xbb, 0x82, 0x28, 0xb1, 0xf8, 0x08, 0x37, 0xe3, 0x25, 0x7d, 0x98, 0x5f,
+	0x17, 0xa5, 0x95, 0x27, 0x6b, 0xd3, 0x49, 0x43, 0x0c, 0x77, 0x32, 0x9b, 0xb5, 0xbd, 0x8e, 0x27,
+	0x56, 0x29, 0xcf, 0xaf, 0xa2, 0x3a, 0xef, 0x92, 0x59, 0x88, 0x0b, 0x5c, 0xd2, 0xaa, 0x8b, 0x5c,
+	0xf2, 0xff, 0xe7, 0xee, 0xdb, 0x93, 0x85, 0x2a, 0x9d, 0x2e, 0x54, 0xe9, 0xef, 0x42, 0x95, 0x8e,
+	0x97, 0x6a, 0xe1, 0x74, 0xa9, 0x16, 0x7e, 0x2f, 0xd5, 0xc2, 0x17, 0xdd, 0xb2, 0xf9, 0x78, 0x3a,
+	0xd4, 0x47, 0xd4, 0x31, 0xde, 0xc4, 0x4f, 0x68, 0xdc, 0xfa, 0x05, 0xc3, 0xdf, 0x8c, 0x79, 0xf4,
+	0xa2, 0xf2, 0x23, 0x8f, 0xb0, 0xe1, 0x66, 0xf8, 0xa4, 0xbe, 0xfc, 0x1f, 0x00, 0x00, 0xff, 0xff,
+	0x84, 0x5f, 0xf5, 0x60, 0xf0, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -553,7 +590,7 @@ type MsgClient interface {
 	// Allow the proposer to append a state batch
 	AppendSCCBatch(ctx context.Context, in *MsgAppendSCCBatch, opts ...grpc.CallOption) (*MsgAppendSCCBatchResponse, error)
 	// Removes a batch and all subsequent batches from SCC.
-	RemoveSCCBatch(ctx context.Context, in *MsgAppendSCCBatch, opts ...grpc.CallOption) (*MsgAppendSCCBatchResponse, error)
+	RemoveSCCBatch(ctx context.Context, in *MsgRemoveSCCBatch, opts ...grpc.CallOption) (*MsgRemoveSCCBatchResponse, error)
 }
 
 type msgClient struct {
@@ -600,8 +637,8 @@ func (c *msgClient) AppendSCCBatch(ctx context.Context, in *MsgAppendSCCBatch, o
 	return out, nil
 }
 
-func (c *msgClient) RemoveSCCBatch(ctx context.Context, in *MsgAppendSCCBatch, opts ...grpc.CallOption) (*MsgAppendSCCBatchResponse, error) {
-	out := new(MsgAppendSCCBatchResponse)
+func (c *msgClient) RemoveSCCBatch(ctx context.Context, in *MsgRemoveSCCBatch, opts ...grpc.CallOption) (*MsgRemoveSCCBatchResponse, error) {
+	out := new(MsgRemoveSCCBatchResponse)
 	err := c.cc.Invoke(ctx, "/finschia.or.da.v1.Msg/RemoveSCCBatch", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -619,7 +656,7 @@ type MsgServer interface {
 	// Allow the proposer to append a state batch
 	AppendSCCBatch(context.Context, *MsgAppendSCCBatch) (*MsgAppendSCCBatchResponse, error)
 	// Removes a batch and all subsequent batches from SCC.
-	RemoveSCCBatch(context.Context, *MsgAppendSCCBatch) (*MsgAppendSCCBatchResponse, error)
+	RemoveSCCBatch(context.Context, *MsgRemoveSCCBatch) (*MsgRemoveSCCBatchResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -638,7 +675,7 @@ func (*UnimplementedMsgServer) Enqueue(ctx context.Context, req *MsgEnqueue) (*M
 func (*UnimplementedMsgServer) AppendSCCBatch(ctx context.Context, req *MsgAppendSCCBatch) (*MsgAppendSCCBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppendSCCBatch not implemented")
 }
-func (*UnimplementedMsgServer) RemoveSCCBatch(ctx context.Context, req *MsgAppendSCCBatch) (*MsgAppendSCCBatchResponse, error) {
+func (*UnimplementedMsgServer) RemoveSCCBatch(ctx context.Context, req *MsgRemoveSCCBatch) (*MsgRemoveSCCBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveSCCBatch not implemented")
 }
 
@@ -719,7 +756,7 @@ func _Msg_AppendSCCBatch_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Msg_RemoveSCCBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAppendSCCBatch)
+	in := new(MsgRemoveSCCBatch)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -731,7 +768,7 @@ func _Msg_RemoveSCCBatch_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/finschia.or.da.v1.Msg/RemoveSCCBatch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveSCCBatch(ctx, req.(*MsgAppendSCCBatch))
+		return srv.(MsgServer).RemoveSCCBatch(ctx, req.(*MsgRemoveSCCBatch))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -857,11 +894,18 @@ func (m *MsgAppendCCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x12
+	dAtA[i] = 0x1a
 	if len(m.RollupName) > 0 {
 		i -= len(m.RollupName)
 		copy(dAtA[i:], m.RollupName)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FromAddress) > 0 {
+		i -= len(m.FromAddress)
+		copy(dAtA[i:], m.FromAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.FromAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -916,17 +960,24 @@ func (m *MsgEnqueue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Txraw)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Txraw)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if m.GasLimit != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.GasLimit))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
 	}
 	if len(m.RollupName) > 0 {
 		i -= len(m.RollupName)
 		copy(dAtA[i:], m.RollupName)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FromAddress) > 0 {
+		i -= len(m.FromAddress)
+		copy(dAtA[i:], m.FromAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.FromAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -985,11 +1036,18 @@ func (m *MsgAppendSCCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x12
+	dAtA[i] = 0x1a
 	if len(m.RollupName) > 0 {
 		i -= len(m.RollupName)
 		copy(dAtA[i:], m.RollupName)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FromAddress) > 0 {
+		i -= len(m.FromAddress)
+		copy(dAtA[i:], m.FromAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.FromAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1042,12 +1100,19 @@ func (m *MsgRemoveSCCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.BatchIndex != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.BatchIndex))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
 	}
 	if len(m.RollupName) > 0 {
 		i -= len(m.RollupName)
 		copy(dAtA[i:], m.RollupName)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1118,6 +1183,10 @@ func (m *MsgAppendCCBatch) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.FromAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.RollupName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1142,6 +1211,10 @@ func (m *MsgEnqueue) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.FromAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.RollupName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1171,6 +1244,10 @@ func (m *MsgAppendSCCBatch) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.FromAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.RollupName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1195,6 +1272,10 @@ func (m *MsgRemoveSCCBatch) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.RollupName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1416,6 +1497,38 @@ func (m *MsgAppendCCBatch) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RollupName", wireType)
 			}
 			var stringLen uint64
@@ -1446,7 +1559,7 @@ func (m *MsgAppendCCBatch) Unmarshal(dAtA []byte) error {
 			}
 			m.RollupName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Batch", wireType)
 			}
@@ -1581,6 +1694,38 @@ func (m *MsgEnqueue) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RollupName", wireType)
 			}
 			var stringLen uint64
@@ -1611,7 +1756,7 @@ func (m *MsgEnqueue) Unmarshal(dAtA []byte) error {
 			}
 			m.RollupName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field GasLimit", wireType)
 			}
@@ -1630,7 +1775,7 @@ func (m *MsgEnqueue) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Txraw", wireType)
 			}
@@ -1766,6 +1911,38 @@ func (m *MsgAppendSCCBatch) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RollupName", wireType)
 			}
 			var stringLen uint64
@@ -1796,7 +1973,7 @@ func (m *MsgAppendSCCBatch) Unmarshal(dAtA []byte) error {
 			}
 			m.RollupName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Batch", wireType)
 			}
@@ -1931,6 +2108,38 @@ func (m *MsgRemoveSCCBatch) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RollupName", wireType)
 			}
 			var stringLen uint64
@@ -1961,7 +2170,7 @@ func (m *MsgRemoveSCCBatch) Unmarshal(dAtA []byte) error {
 			}
 			m.RollupName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BatchIndex", wireType)
 			}

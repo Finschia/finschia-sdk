@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"crypto/sha256"
 
 	sdktypes "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
@@ -46,8 +47,11 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 		return nil, err
 	}
 
-	k.appendSequencerBatch()
+	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
+	_ = sha256.Sum256(ctx.TxBytes())
+	k.appendSequencerBatch()
+	ctx.HeaderHash()
 	return &types.MsgAppendCCBatchResponse{}, nil
 }
 
@@ -59,6 +63,6 @@ func (k msgServer) AppendSCCBatch(goCtx context.Context, msg *types.MsgAppendSCC
 	panic("implement me")
 }
 
-func (k msgServer) RemoveSCCBatch(goCtx context.Context, msg *types.MsgAppendSCCBatch) (*types.MsgAppendSCCBatchResponse, error) {
+func (k msgServer) RemoveSCCBatch(goCtx context.Context, msg *types.MsgRemoveSCCBatch) (*types.MsgRemoveSCCBatchResponse, error) {
 	panic("implement me")
 }
