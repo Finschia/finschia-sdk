@@ -604,6 +604,7 @@
     - [QueueTxStatus](#finschia.or.da.v1.QueueTxStatus)
   
 - [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
+    - [EventUpdateCCBatch](#finschia.or.da.v1.EventUpdateCCBatch)
     - [EventUpdateParams](#finschia.or.da.v1.EventUpdateParams)
   
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
@@ -9033,6 +9034,26 @@ BatchChainState is the state of target batch chain.
 <p align="right"><a href="#top">Top</a></p>
 
 ## finschia/or/da/v1/event.proto
+
+
+
+<a name="finschia.or.da.v1.EventUpdateCCBatch"></a>
+
+### EventUpdateCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch_index` | [uint64](#uint64) |  |  |
+| `next_queue_index` | [uint64](#uint64) |  |  |
+| `total_frames` | [uint64](#uint64) |  |  |
+| `batch_size` | [uint32](#uint32) |  |  |
+| `batch_hash` | [bytes](#bytes) |  |  |
+
+
+
 
 
 

@@ -19,11 +19,11 @@ const (
 
 	ParamsKey = byte(0x00)
 
-	CCStoreKey         = byte(0x10)
+	CCStateStoreKey    = byte(0x10)
 	CCMetadataKey      = byte(0x11)
 	CCBatchIndexPrefix = byte(0x12)
 
-	SCCStoreKey         = byte(0x20)
+	SCCStateStoreKey    = byte(0x20)
 	SCCMetadataKey      = byte(0x21)
 	SCCBatchIndexPrefix = byte(0x22)
 )
@@ -50,4 +50,20 @@ func genPrefixIndexKey(prefix []byte, i uint64) []byte {
 	copy(k[:l], prefix)
 	binary.BigEndian.PutUint64(k[l:], i)
 	return k
+}
+
+func GetCCStateStoreKey(rollupName string) []byte {
+	key := make([]byte, 1+1+len(rollupName))
+	key[0] = CCStateStoreKey
+	key[1] = byte(len(rollupName))
+	copy(key[2:], []byte(rollupName))
+	return key
+}
+
+func GetSCCStateStoreKey(rollupName string) []byte {
+	key := make([]byte, 1+1+len(rollupName))
+	key[0] = SCCStateStoreKey
+	key[1] = byte(len(rollupName))
+	copy(key[2:], []byte(rollupName))
+	return key
 }

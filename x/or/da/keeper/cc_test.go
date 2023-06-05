@@ -78,7 +78,7 @@ func (s *KeeperTestSuite) TestDecompressCCBatch() {
 					Compression: tc.opt,
 					Data:        tc.compressor(serializedSrc),
 				}
-				batch, err := s.keeper.DecompressCCBatch(cb)
+				batch, err := s.keeper.DecompressCCBatch(s.ctx, cb)
 				s.Require().NoError(err)
 				s.Require().Equal(src.ShouldStartAtFrame, batch.ShouldStartAtFrame)
 				s.Require().Equal(src.Frames, batch.Frames)
@@ -88,14 +88,14 @@ func (s *KeeperTestSuite) TestDecompressCCBatch() {
 						Compression: types.OptionEmpty,
 						Data:        serializedSrc,
 					}
-					_, err := s.keeper.DecompressCCBatch(cb)
+					_, err := s.keeper.DecompressCCBatch(s.ctx, cb)
 					s.Require().Error(err)
 				} else {
 					cb := types.CompressedCCBatch{
 						Compression: tc.opt,
 						Data:        tc.compressor(serializedSrc),
 					}
-					_, err := s.keeper.DecompressCCBatch(cb)
+					_, err := s.keeper.DecompressCCBatch(s.ctx, cb)
 					s.Require().Error(err)
 				}
 			}
