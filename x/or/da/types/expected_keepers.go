@@ -12,13 +12,7 @@ type AccountKeeper interface {
 	// Methods imported from account should be defined here
 }
 
-// BankKeeper defines the expected interface needed to retrieve account balances.
-type BankKeeper interface {
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	// Methods imported from bank should be defined here
-}
-
-type SequencerKeeper interface {
+type RollupKeeper interface {
 	GetRollupInfo(ctx sdk.Context, rollupID string) (RollupInfo, error)
 }
 

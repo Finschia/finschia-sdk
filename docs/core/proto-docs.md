@@ -8876,7 +8876,7 @@ CCRef is a data type that forms an element of the reference chain of Rollup Cano
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `txhash` | [bytes](#bytes) |  | Reference for accessing batch data. |
-| `msg_index` | [uint64](#uint64) |  | Reference for accessing batch data. |
+| `msg_index` | [uint32](#uint32) |  | Reference for accessing batch data. |
 | `total_frames` | [uint64](#uint64) |  | Total number of batch frames submitted. It is the same as the height of the L2 block submitted so far |
 | `batch_size` | [uint32](#uint32) |  | Number of batch frames in the batch. |
 | `batch_root` | [bytes](#bytes) |  | Hash of CompressedCCBatch data. |
@@ -8927,6 +8927,7 @@ CompressedCCBatch is used  when the sequencer submits.
 ### L1toL2Queue
 L1toL2Queue is a queued tx for L2 batch.
 Sequencer must process this transaction on time in order.
+Queue index start from 1.
 
 
 | Field | Type | Label | Description |

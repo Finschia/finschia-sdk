@@ -3,6 +3,7 @@ package testutil
 import (
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/golang/mock/gomock"
 	"testing"
 
 	"github.com/Finschia/ostracon/libs/log"
@@ -32,10 +33,13 @@ func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 
+	ctrl := gomock.NewController(t)
+	rollupKeeperMock := NewMockRollupKeeper(ctrl)
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		rollupKeeperMock,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

@@ -19,18 +19,22 @@ type Keeper struct {
 	// the address capable of executing a MsgUpdateParams message. Typically, this
 	// should be the gov module account.
 	authority string
+
+	rollupKeeper types.RollupKeeper
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	authority string,
+	rk types.RollupKeeper,
 ) Keeper {
 
 	return Keeper{
-		cdc:       cdc,
-		storeKey:  storeKey,
-		authority: authority,
+		cdc:          cdc,
+		storeKey:     storeKey,
+		authority:    authority,
+		rollupKeeper: rk,
 	}
 }
 

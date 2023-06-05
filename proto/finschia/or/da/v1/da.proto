@@ -69,6 +69,7 @@ message CompressedCCBatch {
 
 // L1toL2Queue is a queued tx for L2 batch.
 // Sequencer must process this transaction on time in order.
+// Queue index start from 1.
 message L1toL2Queue {
   // timestamp is the L1 unix timestamp of the batch.
   // It is set when the type of tx is L1toL2
@@ -101,7 +102,7 @@ message CCRef {
   bytes txhash = 1 [(gogoproto.customname) = "TxHash"];
 
   // Reference for accessing batch data.
-  uint64 msg_index = 2;
+  uint32 msg_index = 2;
 
   // Total number of batch frames submitted.
   // It is the same as the height of the L2 block submitted so far
