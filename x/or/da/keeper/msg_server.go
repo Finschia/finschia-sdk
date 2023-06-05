@@ -21,8 +21,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	ctx := sdktypes.UnwrapSDKContext(goCtx)
-	ctx.BlockHeader()
 	if err := k.validateGovAuthority(msg.Authority); err != nil {
 		return nil, err
 	}
@@ -31,6 +29,7 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 		return nil, err
 	}
 
+	ctx := sdktypes.UnwrapSDKContext(goCtx)
 	if err := k.SetParams(ctx, msg.Params); err != nil {
 		return nil, err
 	}
@@ -43,12 +42,17 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 }
 
 func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBatch) (*types.MsgAppendCCBatchResponse, error) {
-	if err := k.validateSequencerAuthority(); err != nil {
+	if err := k.validateSequencerAuthority(msg.FromAddress); err != nil {
 		return nil, err
 	}
 
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
+	batch, err := k.DecompressCCBatch(msg.Batch)
+	if err != nil {
+		return nil, err
+	}
+	_ = batch
 	_ = sha256.Sum256(ctx.TxBytes())
 	k.appendSequencerBatch()
 	ctx.HeaderHash()

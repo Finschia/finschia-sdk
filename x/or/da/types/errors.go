@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrInvalidCompressedData = sdkerrors.Register(ModuleName, 1100, "this data cannot be decompressed.")
 )

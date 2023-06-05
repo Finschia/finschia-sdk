@@ -6,7 +6,7 @@ import (
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "da"
+	ModuleName = "orda"
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
@@ -15,7 +15,7 @@ const (
 	RouterKey = ModuleName
 
 	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_da"
+	MemStoreKey = "mem_orda"
 
 	ParamsKey = byte(0x00)
 
@@ -28,23 +28,23 @@ const (
 	SCCBatchIndexPrefix = byte(0x22)
 )
 
-func GetCCBatchIndexKey(i uint64) []byte {
+func GetCCBatchIndexKey(rollupName string, i uint64) []byte {
 	if i < 1 {
 		panic("batch index must be positive")
 	}
 
-	return genPrefixIndexKey(i, []byte{CCBatchIndexPrefix})
+	return genPrefixIndexKey(append([]byte(rollupName), []byte{CCBatchIndexPrefix}...), i)
 }
 
-func GetSCCBatchIndexKey(i uint64) []byte {
+func GetSCCBatchIndexKey(rollupName string, i uint64) []byte {
 	if i < 1 {
 		panic("batch index must be positive")
 	}
 
-	return genPrefixIndexKey(i, []byte{SCCBatchIndexPrefix})
+	return genPrefixIndexKey(append([]byte(rollupName), []byte{SCCBatchIndexPrefix}...), i)
 }
 
-func genPrefixIndexKey(i uint64, prefix []byte) []byte {
+func genPrefixIndexKey(prefix []byte, i uint64) []byte {
 	l := len(prefix)
 	k := make([]byte, 8+l)
 	copy(k[:l], prefix)

@@ -16,8 +16,8 @@ func TestGenesis(t *testing.T) {
 	}
 
 	k, ctx := datest.DaKeeper(t)
-	da.InitGenesis(ctx, *k, genesisState)
-	got := da.ExportGenesis(ctx, *k)
+	da.InitGenesis(ctx, k, genesisState)
+	got := da.ExportGenesis(ctx, k)
 	require.NotNil(t, got)
 
 	// TODO: compare got & genesisState for each field

@@ -1,6 +1,8 @@
 package testutil
 
 import (
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 	"testing"
 
 	"github.com/Finschia/ostracon/libs/log"
@@ -17,7 +19,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
-func DaKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -33,7 +35,7 @@ func DaKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
-		memStoreKey,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
