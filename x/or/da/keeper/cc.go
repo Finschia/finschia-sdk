@@ -47,12 +47,12 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 				if elem.QueueIndex != ccState.NextQueueIndex {
 					return types.ErrInvalidCCBatch.Wrapf("invalid queue index %d, expected %d", elem.QueueIndex, ccState.NextQueueIndex)
 				}
-				ccState.NextQueueIndex += 1
+				ccState.NextQueueIndex++
 			}
 		}
 	}
 
-	ccState.Height += 1
+	ccState.Height++
 	k.setCCRef(ctx, rollupName, ccState.Height, ref)
 	k.setCCState(ctx, rollupName, ccState)
 

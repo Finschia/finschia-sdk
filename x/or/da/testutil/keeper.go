@@ -1,12 +1,10 @@
 package testutil
 
 import (
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	"github.com/golang/mock/gomock"
 	"testing"
 
 	"github.com/Finschia/ostracon/libs/log"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
@@ -16,6 +14,8 @@ import (
 	"github.com/Finschia/finschia-sdk/store"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
