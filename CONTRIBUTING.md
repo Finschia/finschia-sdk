@@ -129,7 +129,7 @@ Please don't make Pull Requests from `main`.
 
 ## Dependencies
 
-We use [Go 1.18 Modules](https://github.com/golang/go/wiki/Modules) to manage
+We use [Go 1.19 Modules](https://github.com/golang/go/wiki/Modules) to manage
 dependency versions.
 
 The `main` branch of every LBM repository should just build with `go get`,
