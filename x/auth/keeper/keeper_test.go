@@ -146,3 +146,26 @@ func TestSupply_ValidatePermissions(t *testing.T) {
 	err = app.AccountKeeper.ValidatePermissions(otherAcc)
 	require.Error(t, err)
 }
+
+func TestQueryNextAccountNumber(t *testing.T) {
+	app, ctx := createTestApp(true)
+	addr := sdk.AccAddress([]byte("some---------address"))
+
+	// check next account number
+	accNum := app.AccountKeeper.QueryNextAccountNumber(ctx)
+	require.Equal(t, uint64(0), accNum)
+
+	acc := app.AccountKeeper.GetAccount(ctx, addr)
+	require.Nil(t, acc)
+
+	// create account and check default value
+	acc = app.AccountKeeper.NewAccountWithAddress(ctx, addr)
+	require.NotNil(t, acc)
+	require.Equal(t, addr, acc.GetAddress())
+	require.EqualValues(t, nil, acc.GetPubKey())
+	require.EqualValues(t, 0, acc.GetSequence())
+
+	// check next account number
+	accNum = app.AccountKeeper.QueryNextAccountNumber(ctx)
+	require.Equal(t, uint64(1), accNum)
+}
