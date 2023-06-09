@@ -15,7 +15,7 @@ func (s *KeeperTestSuite) TestDecompressCCBatch() {
 		ShouldStartAtFrame: 30,
 		Frames: []*types.CCBatchFrame{
 			{
-				Hedaer: &types.CCBatchHeader{
+				Header: &types.CCBatchHeader{
 					ParentHash: []byte("parent_hash"),
 					Timestamp:  time.Now().UTC(),
 					L2Height:   10,

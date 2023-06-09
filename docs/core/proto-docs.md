@@ -8841,7 +8841,7 @@ CCBatch is a data unit per batch epoch.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `hedaer` | [CCBatchHeader](#finschia.or.da.v1.CCBatchHeader) |  |  |
+| `header` | [CCBatchHeader](#finschia.or.da.v1.CCBatchHeader) |  |  |
 | `elements` | [CCBatchElement](#finschia.or.da.v1.CCBatchElement) | repeated |  |
 
 
@@ -8901,6 +8901,7 @@ BatchChainState is the state of target batch chain.
 | `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
 | `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
 | `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |
+| `processed_l2block` | [uint64](#uint64) |  | processed_l2block is the last l2block height that has been processed by L1. |
 
 
 
@@ -9051,6 +9052,7 @@ BatchChainState is the state of target batch chain.
 | `total_frames` | [uint64](#uint64) |  |  |
 | `batch_size` | [uint32](#uint32) |  |  |
 | `batch_hash` | [bytes](#bytes) |  |  |
+| `processed_l2block` | [uint64](#uint64) |  | processed_l2block is the last l2block height that has been processed by L1. |
 
 
 

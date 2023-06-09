@@ -18,4 +18,7 @@ message EventUpdateCCBatch {
   uint64 total_frames = 4;
   uint32 batch_size = 5;
   bytes batch_hash = 6;
+
+  // processed_l2block is the last l2block height that has been processed by L1.
+  uint64 processed_l2block = 7;
 }

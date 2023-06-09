@@ -51,6 +51,10 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 	if err != nil {
 		return nil, err
 	}
+	if len(batch.Frames) == 0 {
+		return nil, types.ErrInvalidCCBatch.Wrapf("empty batch")
+	}
+
 	if err := k.SaveCCBatch(ctx, msg.RollupName, batch); err != nil {
 		return nil, err
 	}
