@@ -48,7 +48,7 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 			return types.ErrInvalidCCBatch.Wrapf("frame %d has nil parent hash", i)
 		}
 		if frame.Header.Timestamp.Before(ccState.GetTimestamp()) {
-			return types.ErrInvalidCCBatch.Wrapf("frame %d is outdated: %d < %d", i, frame.Header.Timestamp, ccState.GetTimestamp())
+			return types.ErrInvalidCCBatch.Wrapf("frame %d is outdated: %s < %s", i, frame.Header.Timestamp, ccState.GetTimestamp())
 		}
 		if frame.Header.L1Height < ccState.GetL1Height() {
 			return types.ErrInvalidCCBatch.Wrapf("frame %d has invalid l1 height %d", i, frame.Header.L1Height)
