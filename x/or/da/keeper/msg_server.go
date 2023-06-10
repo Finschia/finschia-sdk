@@ -63,7 +63,23 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 }
 
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
-	panic("implement me")
+	ctx := sdktypes.UnwrapSDKContext(goCtx)
+
+	if msg.Txraw == nil {
+		return nil, types.ErrInvalidQueueTx.Wrapf("empty tx")
+	} else if uint64(len(msg.Txraw)) > k.MaxQueueTxSize(ctx) {
+		return nil, types.ErrInvalidQueueTx.Wrapf("tx data size exceeds maximum for rollup tx")
+	}
+
+	if msg.GasLimit < k.MinQueueTxGas(ctx) {
+		return nil, types.ErrInvalidQueueTx.Wrapf("gas limit too low to enqueue tx")
+	}
+
+	if err := k.SaveQueueTx(ctx, msg.RollupName, msg.Txraw, msg.GasLimit); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgEnqueueResponse{}, nil
 }
 
 func (k msgServer) AppendSCCBatch(goCtx context.Context, msg *types.MsgAppendSCCBatch) (*types.MsgAppendSCCBatchResponse, error) {

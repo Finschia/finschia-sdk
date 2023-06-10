@@ -50,6 +50,8 @@ message MsgAppendCCBatchResponse {}
 message MsgEnqueue {
   string from_address = 1;
   string rollup_name = 2;
+
+  // When sequencer processes that queue tx, it uses this gas limit and submits tx to L2.
   uint64 gas_limit = 3;
   bytes txraw = 4;
 }

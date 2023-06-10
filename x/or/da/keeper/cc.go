@@ -11,6 +11,45 @@ import (
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
+func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, gasLimit uint64) error {
+	// Transactions submitted to the queue lack a method for paying gas fees to the Sequencer.
+	// For transaction with a high L2 gas limit, we burn some extra gas on L1.
+	gasToConsume := (gasLimit - k.EnqueueL2GasPrepaid(ctx)) / k.L2GasDiscountDivisor(ctx)
+	ctx.GasMeter().ConsumeGas(gasToConsume, "enqueue tx")
+
+	var queueState *types.QueueTxState
+	queueState, _ = k.GetQueueTxState(ctx, rollupName)
+	if queueState == nil {
+		queueState = &types.QueueTxState{
+			ProcessedQueueIndex: 0,
+			NextQueueIndex:      1,
+		}
+	}
+
+	qtx := &types.L1ToL2Queue{
+		Timestamp: ctx.BlockTime(),
+		L1Height:  ctx.BlockHeight(),
+		Txraw:     tx,
+		Status:    types.QUEUE_TX_PENDING,
+	}
+
+	k.saveQueueTx(ctx, rollupName, queueState.NextQueueIndex, qtx)
+	queueState.NextQueueIndex++
+
+	k.setQueueTxState(ctx, rollupName, queueState)
+
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventSaveQueueTx{
+		RollupName:       rollupName,
+		NextQueueIndex:   queueState.NextQueueIndex,
+		ExtraConsumedGas: gasToConsume,
+		L2GasLimit:       gasLimit,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *types.CCBatch) error {
 	var ccState *types.CCState
 	ccState, _ = k.GetCCState(ctx, rollupName)
@@ -19,8 +58,16 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 			return types.ErrInvalidCCBatch.Wrapf("batch should start at frame %d but cc state not found", batch.ShouldStartAtFrame)
 		}
 		ccState = &types.CCState{
-			Base:           1,
-			NextQueueIndex: 1,
+			Base: 1,
+		}
+	}
+
+	var queueState *types.QueueTxState
+	queueState, _ = k.GetQueueTxState(ctx, rollupName)
+	if queueState == nil {
+		queueState = &types.QueueTxState{
+			ProcessedQueueIndex: 0,
+			NextQueueIndex:      1,
 		}
 	}
 
@@ -59,11 +106,18 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 
 		for j, elem := range frame.Elements {
 			if elem.Txraw == nil {
-				if elem.QueueIndex < 1 || elem.QueueIndex != ccState.NextQueueIndex {
-					return types.ErrInvalidCCBatch.Wrapf("frame %d element %d queue index %d, expected %d", i, j, elem.QueueIndex, ccState.NextQueueIndex)
+				if elem.QueueIndex < 1 || elem.QueueIndex != queueState.ProcessedQueueIndex+1 {
+					return types.ErrInvalidCCBatch.Wrapf("frame %d element %d queue index %d, expected %d", i, j, elem.QueueIndex, queueState.NextQueueIndex)
 				}
-				// TODO: check the existence of queue tx
-				ccState.NextQueueIndex++
+
+				qtx, err := k.GetQueueTx(ctx, rollupName, elem.QueueIndex)
+				if err != nil {
+					return err
+				}
+				qtx.Status = types.QUEUE_TX_SUBMITTED
+				k.saveQueueTx(ctx, rollupName, elem.QueueIndex, qtx)
+
+				queueState.ProcessedQueueIndex++
 			}
 		}
 
@@ -77,15 +131,16 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	ccState.Height++
 	k.setCCRef(ctx, rollupName, ccState.Height, ref)
 	k.setCCState(ctx, rollupName, ccState)
+	k.setQueueTxState(ctx, rollupName, queueState)
 
-	if err := ctx.EventManager().EmitTypedEvent(&types.EventUpdateCCBatch{
-		RollupName:       rollupName,
-		BatchIndex:       ccState.Height,
-		NextQueueIndex:   ccState.NextQueueIndex,
-		TotalFrames:      ref.TotalFrames,
-		BatchSize:        ref.BatchSize,
-		BatchHash:        ref.BatchRoot,
-		ProcessedL2Block: ccState.ProcessedL2Block,
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventAppendCCBatch{
+		RollupName:          rollupName,
+		BatchIndex:          ccState.Height,
+		ProcessedQueueIndex: queueState.ProcessedQueueIndex,
+		TotalFrames:         ref.TotalFrames,
+		BatchSize:           ref.BatchSize,
+		BatchHash:           ref.BatchRoot,
+		ProcessedL2Block:    ccState.ProcessedL2Block,
 	}); err != nil {
 		return err
 	}
@@ -94,10 +149,7 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 }
 
 func (k Keeper) DecompressCCBatch(ctx sdktypes.Context, origin types.CompressedCCBatch) (*types.CCBatch, error) {
-	p, err := k.GetParams(ctx)
-	if err != nil {
-		return nil, err
-	}
+	p := k.GetParams(ctx)
 	if uint64(len(origin.Data)) > p.CCBatchMaxBytes {
 		return nil, types.ErrInvalidCompressedData.Wrapf("compressed data size %d exceeds max batch size %d", len(origin.Data), p.CCBatchMaxBytes)
 	}
@@ -162,4 +214,38 @@ func (k Keeper) setCCRef(ctx sdktypes.Context, rollupName string, idx uint64, re
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(ref)
 	store.Set(types.GetCCBatchIndexKey(rollupName, idx), bz)
+}
+
+func (k Keeper) GetQueueTxState(ctx sdktypes.Context, rollupName string) (*types.QueueTxState, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.GetQueueTxStateStoreKey(rollupName))
+	if bz == nil {
+		return nil, types.ErrQueueTxStateNotFound
+	}
+	state := new(types.QueueTxState)
+	k.cdc.MustUnmarshal(bz, state)
+	return state, nil
+}
+
+func (k Keeper) setQueueTxState(ctx sdktypes.Context, rollupName string, state *types.QueueTxState) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(state)
+	store.Set(types.GetQueueTxStateStoreKey(rollupName), bz)
+}
+
+func (k Keeper) GetQueueTx(ctx sdktypes.Context, rollupName string, idx uint64) (*types.L1ToL2Queue, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.GetCCQueueTxKey(rollupName, idx))
+	if bz == nil {
+		return nil, types.ErrQueueTxNotFound
+	}
+	tx := new(types.L1ToL2Queue)
+	k.cdc.MustUnmarshal(bz, tx)
+	return tx, nil
+}
+
+func (k Keeper) saveQueueTx(ctx sdktypes.Context, rollupName string, idx uint64, elem *types.L1ToL2Queue) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(elem)
+	store.Set(types.GetCCQueueTxKey(rollupName, idx), bz)
 }

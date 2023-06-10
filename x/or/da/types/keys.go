@@ -19,9 +19,10 @@ const (
 
 	ParamsKey = byte(0x00)
 
-	CCStateStoreKey    = byte(0x10)
-	CCMetadataKey      = byte(0x11)
-	CCBatchIndexPrefix = byte(0x12)
+	CCStateStoreKey      = byte(0x10)
+	QueueTxStateStoreKey = byte(0x11)
+	CCBatchIndexPrefix   = byte(0x12)
+	CCQueueTxPrefix      = byte(0x13)
 
 	SCCStateStoreKey    = byte(0x20)
 	SCCMetadataKey      = byte(0x21)
@@ -33,7 +34,15 @@ func GetCCBatchIndexKey(rollupName string, i uint64) []byte {
 		panic("batch index must be positive")
 	}
 
-	return genPrefixIndexKey(append([]byte(rollupName), []byte{CCBatchIndexPrefix}...), i)
+	return genPrefixIndexKey(GenRollupPrefix(rollupName, CCBatchIndexPrefix), i)
+}
+
+func GetCCQueueTxKey(rollupName string, i uint64) []byte {
+	if i < 1 {
+		panic("queue tx index must be positive")
+	}
+
+	return genPrefixIndexKey(GenRollupPrefix(rollupName, CCQueueTxPrefix), i)
 }
 
 func GetSCCBatchIndexKey(rollupName string, i uint64) []byte {
@@ -41,7 +50,7 @@ func GetSCCBatchIndexKey(rollupName string, i uint64) []byte {
 		panic("batch index must be positive")
 	}
 
-	return genPrefixIndexKey(append([]byte(rollupName), []byte{SCCBatchIndexPrefix}...), i)
+	return genPrefixIndexKey(GenRollupPrefix(rollupName, SCCBatchIndexPrefix), i)
 }
 
 func genPrefixIndexKey(prefix []byte, i uint64) []byte {
@@ -52,9 +61,21 @@ func genPrefixIndexKey(prefix []byte, i uint64) []byte {
 	return k
 }
 
+func GenRollupPrefix(rollupName string, prefix byte) []byte {
+	return append([]byte(rollupName), prefix)
+}
+
 func GetCCStateStoreKey(rollupName string) []byte {
 	key := make([]byte, 1+1+len(rollupName))
 	key[0] = CCStateStoreKey
+	key[1] = byte(len(rollupName))
+	copy(key[2:], []byte(rollupName))
+	return key
+}
+
+func GetQueueTxStateStoreKey(rollupName string) []byte {
+	key := make([]byte, 1+1+len(rollupName))
+	key[0] = QueueTxStateStoreKey
 	key[1] = byte(len(rollupName))
 	copy(key[2:], []byte(rollupName))
 	return key
