@@ -73,6 +73,20 @@ func (m *MockRollupKeeper) EXPECT() *MockRollupKeeperMockRecorder {
 	return m.recorder
 }
 
+// GetRegisteredRollups mocks base method.
+func (m *MockRollupKeeper) GetRegisteredRollups(ctx types.Context) []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRegisteredRollups", ctx)
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// GetRegisteredRollups indicates an expected call of GetRegisteredRollups.
+func (mr *MockRollupKeeperMockRecorder) GetRegisteredRollups(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRegisteredRollups", reflect.TypeOf((*MockRollupKeeper)(nil).GetRegisteredRollups), ctx)
+}
+
 // GetRollupInfo mocks base method.
 func (m *MockRollupKeeper) GetRollupInfo(ctx types.Context, rollupID string) (types1.RollupInfo, error) {
 	m.ctrl.T.Helper()

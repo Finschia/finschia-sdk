@@ -14,6 +14,7 @@ type AccountKeeper interface {
 
 type RollupKeeper interface {
 	GetRollupInfo(ctx sdk.Context, rollupID string) (RollupInfo, error)
+	GetRegisteredRollups(ctx sdk.Context) []string
 }
 
 type RollupInfo struct {

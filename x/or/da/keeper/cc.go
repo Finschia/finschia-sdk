@@ -149,9 +149,7 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 }
 
 func (k Keeper) UpdateQueueTxsStatus(ctx sdktypes.Context) error {
-	var rollupList []string
-	// TODO: get rollupList from rollup module
-
+	rollupList := k.rollupKeeper.GetRegisteredRollups(ctx)
 	if rollupList == nil {
 		return nil
 	}
@@ -171,12 +169,12 @@ func (k Keeper) UpdateQueueTxsStatus(ctx sdktypes.Context) error {
 
 			if (uint64(qtx.L1Height) + k.QueueTxExpirationWindow(ctx)) < uint64(ctx.BlockHeight()) {
 				break
-			} else {
-				if qtx.Status == types.QUEUE_TX_PENDING {
-					qtx.Status = types.QUEUE_TX_EXPIRED
-					k.saveQueueTx(ctx, name, qi, qtx)
-					// TODO: slash registered sequencers
-				}
+			}
+
+			if qtx.Status == types.QUEUE_TX_PENDING {
+				qtx.Status = types.QUEUE_TX_EXPIRED
+				k.saveQueueTx(ctx, name, qi, qtx)
+				// TODO: slash registered sequencers
 			}
 		}
 		state.ProcessedQueueIndex = qi - 1
