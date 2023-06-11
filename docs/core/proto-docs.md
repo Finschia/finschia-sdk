@@ -9038,7 +9038,7 @@ BatchChainState is the state of target batch chain.
 | ---- | ------ | ----------- |
 | QUEUE_TX_PENDING | 0 | QUEUE_TX_PENDING defines the status where the Tx has not been submitted to L1 batch yet. |
 | QUEUE_TX_SUBMITTED | 1 | QUEUE_TX_SUBMITTED defines the status where the Tx has been submitted to L1 batch. |
-| QUEUE_TX_OUTDATED | 2 | QUEUE_TX_OUTDATED defines the status where the Tx has not been submitted until the expiration deadline. Sequencers get penalty if queued txs reach this status. |
+| QUEUE_TX_EXPIRED | 2 | QUEUE_TX_EXPIRED defines the status where the Tx has not been submitted until the expiration deadline. Sequencers get penalty if queued txs reach this status. |
 
 
  <!-- end enums -->

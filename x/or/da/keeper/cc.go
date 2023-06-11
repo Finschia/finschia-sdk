@@ -148,6 +148,44 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	return nil
 }
 
+func (k Keeper) UpdateQueueTxsStatus(ctx sdktypes.Context) error {
+	var rollupList []string
+	// TODO: get rollupList from rollup module
+
+	if rollupList == nil {
+		return nil
+	}
+
+	for _, name := range rollupList {
+		state, err := k.GetQueueTxState(ctx, name)
+		if err != nil {
+			continue
+		}
+
+		qi := state.ProcessedQueueIndex + 1
+		for ; qi < state.NextQueueIndex; qi++ {
+			qtx, err := k.GetQueueTx(ctx, name, qi)
+			if err != nil {
+				return types.ErrQueueTxStateNotFound.Wrapf("rollup %s queue tx index %d", name, qi)
+			}
+
+			if (uint64(qtx.L1Height) + k.QueueTxExpirationWindow(ctx)) < uint64(ctx.BlockHeight()) {
+				break
+			} else {
+				if qtx.Status == types.QUEUE_TX_PENDING {
+					qtx.Status = types.QUEUE_TX_EXPIRED
+					k.saveQueueTx(ctx, name, qi, qtx)
+					// TODO: slash registered sequencers
+				}
+			}
+		}
+		state.ProcessedQueueIndex = qi - 1
+		k.setQueueTxState(ctx, name, state)
+	}
+
+	return nil
+}
+
 func (k Keeper) DecompressCCBatch(ctx sdktypes.Context, origin types.CompressedCCBatch) (*types.CCBatch, error) {
 	p := k.GetParams(ctx)
 	if uint64(len(origin.Data)) > p.CCBatchMaxBytes {

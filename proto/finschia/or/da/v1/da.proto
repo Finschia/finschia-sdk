@@ -91,9 +91,9 @@ enum QueueTxStatus {
   // QUEUE_TX_SUBMITTED defines the status where the Tx has been submitted to L1 batch.
   QUEUE_TX_SUBMITTED = 1;
 
-  // QUEUE_TX_OUTDATED defines the status where the Tx has not been submitted until the expiration deadline.
+  // QUEUE_TX_EXPIRED defines the status where the Tx has not been submitted until the expiration deadline.
   // Sequencers get penalty if queued txs reach this status.
-  QUEUE_TX_OUTDATED = 2;
+  QUEUE_TX_EXPIRED = 2;
 }
 
 // CCRef is a data type that forms an element of the reference chain of Rollup Canonical Chain.
