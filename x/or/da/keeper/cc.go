@@ -160,26 +160,34 @@ func (k Keeper) UpdateQueueTxsStatus(ctx sdktypes.Context) error {
 			continue
 		}
 
-		qi := state.ProcessedQueueIndex + 1
-		for ; qi < state.NextQueueIndex; qi++ {
-			qtx, err := k.GetQueueTx(ctx, name, qi)
-			if err != nil {
-				return types.ErrQueueTxStateNotFound.Wrapf("rollup %s queue tx index %d", name, qi)
-			}
-
-			if (uint64(qtx.L1Height) + k.QueueTxExpirationWindow(ctx)) < uint64(ctx.BlockHeight()) {
-				break
-			}
-
-			if qtx.Status == types.QUEUE_TX_PENDING {
-				qtx.Status = types.QUEUE_TX_EXPIRED
-				k.saveQueueTx(ctx, name, qi, qtx)
-				// TODO: slash registered sequencers
-			}
+		if err := k.processQueueTxs(ctx, state, name); err != nil {
+			return err
 		}
-		state.ProcessedQueueIndex = qi - 1
-		k.setQueueTxState(ctx, name, state)
 	}
+
+	return nil
+}
+
+func (k Keeper) processQueueTxs(ctx sdktypes.Context, state *types.QueueTxState, name string) error {
+	qi := state.ProcessedQueueIndex + 1
+	for ; qi < state.NextQueueIndex; qi++ {
+		qtx, err := k.GetQueueTx(ctx, name, qi)
+		if err != nil {
+			return types.ErrQueueTxStateNotFound.Wrapf("rollup %s queue tx index %d", name, qi)
+		}
+
+		if (uint64(qtx.L1Height) + k.QueueTxExpirationWindow(ctx)) > uint64(ctx.BlockHeight()) {
+			break
+		}
+
+		if qtx.Status == types.QUEUE_TX_PENDING {
+			qtx.Status = types.QUEUE_TX_EXPIRED
+			k.saveQueueTx(ctx, name, qi, qtx)
+			// TODO: slash registered sequencers
+		}
+	}
+	state.ProcessedQueueIndex = qi - 1
+	k.setQueueTxState(ctx, name, state)
 
 	return nil
 }

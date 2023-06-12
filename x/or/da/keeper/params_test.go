@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetParams(t *testing.T) {
-	k, ctx := datest.DaKeeper(t)
+	k, ctx, _ := datest.DaKeeper(t)
 	params := types.DefaultParams()
 
 	require.Nil(t, k.SetParams(ctx, params))

@@ -15,6 +15,7 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 
+	storeKey    sdk.StoreKey
 	ctx         sdk.Context
 	goCtx       context.Context
 	keeper      keeper.Keeper
@@ -26,12 +27,12 @@ type KeeperTestSuite struct {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	k, ctx := testutil.DaKeeper(s.T())
+	k, ctx, skey := testutil.DaKeeper(s.T())
+	s.storeKey = skey
 	s.ctx = ctx
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = k
 	s.encCfg = simapp.MakeTestEncodingConfig()
-
 	s.msgServer = keeper.NewMsgServerImpl(s.keeper)
 	s.queryServer = s.keeper
 

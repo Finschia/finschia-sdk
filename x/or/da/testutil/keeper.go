@@ -20,7 +20,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
-func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
+func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -35,6 +35,7 @@ func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 
 	ctrl := gomock.NewController(t)
 	rollupKeeperMock := NewMockRollupKeeper(ctrl)
+	rollupKeeperMock.EXPECT().GetRegisteredRollups(gomock.Any()).Return([]string{"rollup1"}).AnyTimes()
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
@@ -49,5 +50,5 @@ func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 		panic(err)
 	}
 
-	return k, ctx
+	return k, ctx, storeKey
 }
