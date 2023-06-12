@@ -1,0 +1,15 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "gogoproto/gogo.proto";
+
+import "finschia/or/rollup/v1/rollup.proto";
+import "finschia/or/rollup/v1/params.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+
+message GenesisState {
+    repeated Rollup rollupList = 1 [(gogoproto.nullable) = false];
+    repeated Sequencer sequencerList = 2 [(gogoproto.nullable) = false];
+    Params params = 3 [(gogoproto.nullable) = false];
+}

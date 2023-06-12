@@ -1,0 +1,56 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "finschia/or/rollup/v1/rollup.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+
+service Msg {
+  rpc CreateRollup(MsgCreateRollup) returns (MsgCreateRollupResponse);
+  rpc RegisterSequencer(MsgRegisterSequencer) returns (MsgRegisterSequencerResponse);
+  rpc Deposit(MsgDeposit) returns (MsgDepositResponse);
+  rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
+  rpc RemoveSequencer(MsgRemoveSequencer) returns (MsgRemoveSequencerResponse);
+}
+
+message MsgCreateRollup {
+  string rollupName = 1;
+  string creator = 2;
+  Sequencers permissionedAddresses = 3 [(gogoproto.nullable) = false];
+  uint64 maxSequencers = 4;
+}
+
+message MsgRegisterSequencer {
+  string              creator     = 1;
+  google.protobuf.Any pubkey      = 2 [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey"];
+  string              rollupName = 3;
+  cosmos.base.v1beta1.Coin value = 4 [(gogoproto.nullable) = false];
+}
+
+message MsgDeposit {
+  string rollupName = 1;
+  string sequencerAddress = 2;
+  cosmos.base.v1beta1.Coin value = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgWithdraw {
+  string rollupName = 1;
+  string sequencerAddress = 2;
+  cosmos.base.v1beta1.Coin value = 3 [(gogoproto.nullable) = false];  
+}
+
+message MsgCreateRollupResponse {}
+
+message MsgRegisterSequencerResponse {}
+
+message MsgRemoveSequencer {}
+
+message MsgRemoveSequencerResponse {}
+
+message MsgDepositResponse {}
+
+message MsgWithdrawResponse {}
