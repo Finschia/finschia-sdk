@@ -1,0 +1,36 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "google/api/annotations.proto";
+
+import "finschia/or/rollup/v1/rollup.proto";
+
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+
+service Query {
+  rpc Rollup(QueryRollupRequest) returns (QueryRollupResponse) {
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/{rollup_name}";
+  }
+
+  rpc Sequencer(QuerySequencerRequest) returns (QuerySequencerResponse) {
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencer/{rollup_name}";
+  }
+}
+
+message QueryRollupRequest {
+  string rollup_name = 1;
+}
+
+message QuerySequencerRequest {
+  string rollup_name = 1;
+}
+
+message QueryRollupResponse {
+  Rollup rollup = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySequencerResponse {
+  Sequencer sequencer = 1 [(gogoproto.nullable) = false];
+}

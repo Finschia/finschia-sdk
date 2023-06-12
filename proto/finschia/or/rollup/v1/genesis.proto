@@ -1,0 +1,11 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "gogoproto/gogo.proto";
+
+import "finschia/or/rollup/v1/rollup.proto";
+
+message GenesisState {
+    repeated Rollup rollup_list = 1 [(gogoproto.nullable) = false];
+    repeated Sequencer sequencer_list = 2 [(gogoproto.nullable) = false];
+}

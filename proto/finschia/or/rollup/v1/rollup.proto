@@ -1,0 +1,18 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+
+message Rollup {
+  string rollup_name = 1;
+  string creator     = 2;
+  int64  version     = 3;
+}
+
+message Sequencer {
+  string              sequencer_address = 1;
+  google.protobuf.Any pubkey            = 2 [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey"];
+  string              rollup_name       = 3;
+}

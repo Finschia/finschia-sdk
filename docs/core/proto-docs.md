@@ -635,6 +635,26 @@
   
     - [Msg](#finschia.or.da.v1.Msg)
   
+- [finschia/or/rollup/v1/rollup.proto](#finschia/or/rollup/v1/rollup.proto)
+    - [Rollup](#finschia.or.rollup.v1.Rollup)
+    - [Sequencer](#finschia.or.rollup.v1.Sequencer)
+  
+- [finschia/or/rollup/v1/query.proto](#finschia/or/rollup/v1/query.proto)
+    - [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest)
+    - [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse)
+    - [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest)
+    - [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse)
+  
+    - [Query](#finschia.or.rollup.v1.Query)
+  
+- [finschia/or/rollup/v1/tx.proto](#finschia/or/rollup/v1/tx.proto)
+    - [MsgCreateRollup](#finschia.or.rollup.v1.MsgCreateRollup)
+    - [MsgCreateRollupResponse](#finschia.or.rollup.v1.MsgCreateRollupResponse)
+    - [MsgRegisterSequencer](#finschia.or.rollup.v1.MsgRegisterSequencer)
+    - [MsgRegisterSequencerResponse](#finschia.or.rollup.v1.MsgRegisterSequencerResponse)
+  
+    - [Msg](#finschia.or.rollup.v1.Msg)
+  
 - [finschia/or/settlement/v1/genesis.proto](#finschia/or/settlement/v1/genesis.proto)
     - [GenesisState](#finschia.or.settlement.v1.GenesisState)
   
@@ -9402,6 +9422,222 @@ Msg defines the Msg service.
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
 | `RemoveSCCBatch` | [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch) | [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/rollup.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/rollup.proto
+
+
+
+<a name="finschia.or.rollup.v1.Rollup"></a>
+
+### Rollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `creator` | [string](#string) |  |  |
+| `version` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.Sequencer"></a>
+
+### Sequencer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequencer_address` | [string](#string) |  |  |
+| `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/query.proto
+
+
+
+<a name="finschia.or.rollup.v1.QueryRollupRequest"></a>
+
+### QueryRollupRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryRollupResponse"></a>
+
+### QueryRollupResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup` | [Rollup](#finschia.or.rollup.v1.Rollup) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencerRequest"></a>
+
+### QuerySequencerRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencerResponse"></a>
+
+### QuerySequencerResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequencer` | [Sequencer](#finschia.or.rollup.v1.Sequencer) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.rollup.v1.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Rollup` | [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest) | [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/{rollup_name}|
+| `Sequencer` | [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest) | [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencer/{rollup_name}|
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/tx.proto
+
+
+
+<a name="finschia.or.rollup.v1.MsgCreateRollup"></a>
+
+### MsgCreateRollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgCreateRollupResponse"></a>
+
+### MsgCreateRollupResponse
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRegisterSequencer"></a>
+
+### MsgRegisterSequencer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  |  |
+| `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRegisterSequencerResponse"></a>
+
+### MsgRegisterSequencerResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.rollup.v1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateRollup` | [MsgCreateRollup](#finschia.or.rollup.v1.MsgCreateRollup) | [MsgCreateRollupResponse](#finschia.or.rollup.v1.MsgCreateRollupResponse) |  | |
+| `RegisterSequencer` | [MsgRegisterSequencer](#finschia.or.rollup.v1.MsgRegisterSequencer) | [MsgRegisterSequencerResponse](#finschia.or.rollup.v1.MsgRegisterSequencerResponse) |  | |
 
  <!-- end services -->
 
