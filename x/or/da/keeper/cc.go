@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"compress/zlib"
 	"crypto/sha256"
+	"encoding/binary"
 	"io"
+	"time"
 
 	sdktypes "github.com/Finschia/finschia-sdk/types"
 	sdkerror "github.com/Finschia/finschia-sdk/types/errors"
@@ -55,10 +57,14 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	ccState, _ = k.GetCCState(ctx, rollupName)
 	if ccState == nil {
 		if batch.ShouldStartAtFrame != 0 {
-			return types.ErrInvalidCCBatch.Wrapf("batch should start at frame %d but cc state not found", batch.ShouldStartAtFrame)
+			return types.ErrInvalidCCBatch.Wrapf("cc state not found: this batch should start at frame 0, but start at %d", batch.ShouldStartAtFrame)
 		}
 		ccState = &types.CCState{
-			Base: 1,
+			Base:             1,
+			Height:           0,
+			ProcessedL2Block: 0,
+			Timestamp:        time.Unix(0, 0).UTC(),
+			L1Height:         0,
 		}
 	}
 
@@ -72,42 +78,48 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	}
 
 	var totalFrames uint64
-	prevCCRef, err := k.GetCCRef(ctx, rollupName, ccState.Height)
-	if prevCCRef == nil {
+	if ccState.Height == 0 {
 		totalFrames = uint64(len(batch.Frames))
-	} else if err == nil {
-		if prevCCRef.TotalFrames != (batch.ShouldStartAtFrame + 1) {
-			return types.ErrInvalidCCBatch.Wrapf("batch should start at frame %d but this batch start at frame %d", prevCCRef.TotalFrames, batch.ShouldStartAtFrame)
+	} else {
+		prevCCRef, err := k.GetCCRef(ctx, rollupName, ccState.Height)
+		if err != nil {
+			return err
 		}
 
+		if prevCCRef.TotalFrames != batch.ShouldStartAtFrame {
+			return types.ErrInvalidCCBatch.Wrapf("batch should start at frame %d but this batch start at frame %d", prevCCRef.TotalFrames, batch.ShouldStartAtFrame)
+		}
 		totalFrames = prevCCRef.TotalFrames + uint64(len(batch.Frames))
 	}
 
 	batchHash := sha256.Sum256(k.cdc.MustMarshal(batch))
 	ref := types.NewCCRef(ctx.TxBytes(), uint32(ctx.MsgIndex()), uint32(len(batch.Frames)), totalFrames, batchHash[:])
 
+	// start to process batch frames
+	ccState.Height++
+
 	for i, frame := range batch.Frames {
 		if len(frame.Elements) == 0 {
 			return types.ErrInvalidCCBatch.Wrapf("frame %d has empty elements", i)
 		}
 
-		if frame.Header.GetParentHash() == nil {
-			return types.ErrInvalidCCBatch.Wrapf("frame %d has nil parent hash", i)
-		}
-		if frame.Header.Timestamp.Before(ccState.GetTimestamp()) {
-			return types.ErrInvalidCCBatch.Wrapf("frame %d is outdated: %s < %s", i, frame.Header.Timestamp, ccState.GetTimestamp())
-		}
-		if frame.Header.L1Height < ccState.GetL1Height() {
-			return types.ErrInvalidCCBatch.Wrapf("frame %d has invalid l1 height %d", i, frame.Header.L1Height)
-		}
 		if frame.Header.GetL2Height() != ccState.ProcessedL2Block+1 {
 			return types.ErrInvalidCCBatch.Wrapf("frame %d has invalid l2 height %d, expected %d", i, frame.Header.GetL2Height(), ccState.ProcessedL2Block+1)
+		}
+		if frame.Header.GetL2Height() != 1 && frame.Header.GetParentHash() == nil {
+			return types.ErrInvalidCCBatch.Wrapf("frame %d has nil parent hash", i)
+		}
+		if !ccState.Timestamp.Equal(time.Unix(0, 0).UTC()) && frame.Header.Timestamp.Before(ccState.GetTimestamp()) {
+			return types.ErrInvalidCCBatch.Wrapf("frame %d is outdated: %s (frame) < %s (CCState)", i, frame.Header.GetTimestamp(), ccState.GetTimestamp())
+		}
+		if frame.Header.GetL1Height() < ccState.GetL1Height() {
+			return types.ErrInvalidCCBatch.Wrapf("frame %d is outdated: %d (frame) < %d (CCState)", i, frame.Header.GetL1Height(), ccState.GetL1Height())
 		}
 
 		for j, elem := range frame.Elements {
 			if elem.Txraw == nil {
 				if elem.QueueIndex < 1 || elem.QueueIndex != queueState.ProcessedQueueIndex+1 {
-					return types.ErrInvalidCCBatch.Wrapf("frame %d element %d queue index %d, expected %d", i, j, elem.QueueIndex, queueState.NextQueueIndex)
+					return types.ErrInvalidCCBatch.Wrapf("queue index of frame %d element %d is %d, expected %d", i, j, elem.QueueIndex, queueState.ProcessedQueueIndex+1)
 				}
 
 				qtx, err := k.GetQueueTx(ctx, rollupName, elem.QueueIndex)
@@ -122,13 +134,11 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 		}
 
 		ccState.ProcessedL2Block++
-		if i == (len(batch.Frames) - 1) {
-			ccState.Timestamp = frame.Header.Timestamp
-			ccState.L1Height = frame.Header.L1Height
-		}
+		ccState.Timestamp = frame.Header.Timestamp
+		ccState.L1Height = frame.Header.L1Height
+		k.setL2HeightBatchMap(ctx, rollupName, ccState.ProcessedL2Block, ccState.Height)
 	}
 
-	ccState.Height++
 	k.setCCRef(ctx, rollupName, ccState.Height, ref)
 	k.setCCState(ctx, rollupName, ccState)
 	k.setQueueTxState(ctx, rollupName, queueState)
@@ -296,4 +306,21 @@ func (k Keeper) saveQueueTx(ctx sdktypes.Context, rollupName string, idx uint64,
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(elem)
 	store.Set(types.GetCCQueueTxKey(rollupName, idx), bz)
+}
+
+func (k Keeper) GetL2HeightBatchMap(ctx sdktypes.Context, rollupName string, l2height uint64) (uint64, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.GetCCL2HeightToBatchKey(rollupName, l2height))
+	if bz == nil {
+		return 0, types.ErrL2HeightBatchMapNotFound
+	}
+	batchIdx := binary.BigEndian.Uint64(bz)
+	return batchIdx, nil
+}
+
+func (k Keeper) setL2HeightBatchMap(ctx sdktypes.Context, rollupName string, l2height, batchIdx uint64) {
+	store := ctx.KVStore(k.storeKey)
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, batchIdx)
+	store.Set(types.GetCCL2HeightToBatchKey(rollupName, l2height), bz)
 }

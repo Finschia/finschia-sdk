@@ -19,10 +19,11 @@ const (
 
 	ParamsKey = byte(0x00)
 
-	CCStateStoreKey      = byte(0x10)
-	QueueTxStateStoreKey = byte(0x11)
-	CCBatchIndexPrefix   = byte(0x12)
-	CCQueueTxPrefix      = byte(0x13)
+	CCStateStoreKey         = byte(0x10)
+	QueueTxStateStoreKey    = byte(0x11)
+	CCBatchIndexPrefix      = byte(0x12)
+	CCQueueTxPrefix         = byte(0x13)
+	CCL2HeightToBatchPrefix = byte(0x14)
 
 	SCCStateStoreKey    = byte(0x20)
 	SCCMetadataKey      = byte(0x21)
@@ -87,4 +88,8 @@ func GetSCCStateStoreKey(rollupName string) []byte {
 	key[1] = byte(len(rollupName))
 	copy(key[2:], []byte(rollupName))
 	return key
+}
+
+func GetCCL2HeightToBatchKey(rollupName string, l2height uint64) []byte {
+	return genPrefixIndexKey(GenRollupPrefix(rollupName, CCL2HeightToBatchPrefix), l2height)
 }
