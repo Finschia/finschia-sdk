@@ -15,7 +15,7 @@ func TestGenesis(t *testing.T) {
 		Params: types.DefaultParams(),
 	}
 
-	k, ctx := datest.DaKeeper(t)
+	k, ctx, _ := datest.DaKeeper(t)
 	da.InitGenesis(ctx, k, genesisState)
 	got := da.ExportGenesis(ctx, k)
 	require.NotNil(t, got)

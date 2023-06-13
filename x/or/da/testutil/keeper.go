@@ -34,12 +34,15 @@ func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
 	cdc := codec.NewProtoCodec(registry)
 
 	ctrl := gomock.NewController(t)
+	accountKeeprMock := NewMockAccountKeeper(ctrl)
+	accountKeeprMock.EXPECT().GetParams(gomock.Any()).Return(authtypes.DefaultParams()).AnyTimes()
 	rollupKeeperMock := NewMockRollupKeeper(ctrl)
 	rollupKeeperMock.EXPECT().GetRegisteredRollups(gomock.Any()).Return([]string{"rollup1"}).AnyTimes()
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		accountKeeprMock,
 		rollupKeeperMock,
 	)
 

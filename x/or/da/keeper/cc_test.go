@@ -104,12 +104,16 @@ func (s *KeeperTestSuite) TestDecompressCCBatch() {
 	}
 }
 
+func (s *KeeperTestSuite) TestSaveCCBatch() {
+
+}
+
 func (s *KeeperTestSuite) TestSaveQueueTx() {
 	s.ctx = s.ctx.WithBlockHeight(10)
 	t := time.Now().UTC()
 	s.ctx = s.ctx.WithBlockTime(t)
 
-	err := s.keeper.SaveQueueTx(s.ctx, "rollup1", []byte("qtx1"), 90000)
+	err := s.keeper.SaveQueueTx(s.ctx, "rollup1", []byte("qtx1"), 90000, 10)
 	s.Require().NoError(err)
 	state, err := s.keeper.GetQueueTxState(s.ctx, "rollup1")
 	s.Require().NoError(err)
@@ -121,6 +125,14 @@ func (s *KeeperTestSuite) TestSaveQueueTx() {
 	s.Require().Equal(types.QUEUE_TX_PENDING, qtx.Status)
 	s.Require().Equal(int64(10), qtx.L1Height)
 	s.Require().Equal(t, qtx.Timestamp)
+	evt, err := sdktypes.ParseTypedEvent(s.ctx.EventManager().ABCIEvents()[0])
+	s.Require().NoError(err)
+	parsedEvt := evt.(*types.EventSaveQueueTx)
+	s.Require().Equal("rollup1", parsedEvt.RollupName)
+	s.Require().Equal(uint64(2), parsedEvt.NextQueueIndex)
+	s.Require().Equal(uint64(8966), parsedEvt.ExtraConsumedGas)
+	s.Require().Equal(uint64(90000), parsedEvt.L2GasLimit)
+
 }
 
 func (s *KeeperTestSuite) TestUpdateQueueTxsStatus() {

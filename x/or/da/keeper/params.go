@@ -46,16 +46,6 @@ func (k Keeper) MinQueueTxGas(ctx sdk.Context) uint64 {
 	return params.MinQueueTxGas
 }
 
-func (k Keeper) L2GasDiscountDivisor(ctx sdk.Context) uint64 {
-	params := k.GetParams(ctx)
-	return params.L2GasDiscountDivisor
-}
-
-func (k Keeper) EnqueueL2GasPrepaid(ctx sdk.Context) uint64 {
-	params := k.GetParams(ctx)
-	return params.EnqueueL2GasPrepaid
-}
-
 func (k Keeper) QueueTxExpirationWindow(ctx sdk.Context) uint64 {
 	params := k.GetParams(ctx)
 	return params.QueueTxExpirationWindow

@@ -47,6 +47,10 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
+	if _, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName); err != nil {
+		return nil, err
+	}
+
 	batch, err := k.DecompressCCBatch(ctx, msg.Batch)
 	if err != nil {
 		return nil, err
@@ -65,6 +69,11 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
+	rollupInfo, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName)
+	if err != nil {
+		return nil, err
+	}
+
 	if msg.Txraw == nil {
 		return nil, types.ErrInvalidQueueTx.Wrapf("empty tx")
 	} else if uint64(len(msg.Txraw)) > k.MaxQueueTxSize(ctx) {
@@ -75,7 +84,7 @@ func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types
 		return nil, types.ErrInvalidQueueTx.Wrapf("gas limit too low to enqueue tx")
 	}
 
-	if err := k.SaveQueueTx(ctx, msg.RollupName, msg.Txraw, msg.GasLimit); err != nil {
+	if err := k.SaveQueueTx(ctx, msg.RollupName, msg.Txraw, msg.GasLimit, rollupInfo.L1ToL2GasRatio); err != nil {
 		return nil, err
 	}
 

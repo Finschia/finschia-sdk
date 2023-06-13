@@ -20,21 +20,24 @@ type Keeper struct {
 	// should be the gov module account.
 	authority string
 
-	rollupKeeper types.RollupKeeper
+	accountKeeper types.AccountKeeper
+	rollupKeeper  types.RollupKeeper
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	authority string,
+	ak types.AccountKeeper,
 	rk types.RollupKeeper,
 ) Keeper {
 
 	return Keeper{
-		cdc:          cdc,
-		storeKey:     storeKey,
-		authority:    authority,
-		rollupKeeper: rk,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		authority:     authority,
+		accountKeeper: ak,
+		rollupKeeper:  rk,
 	}
 }
 

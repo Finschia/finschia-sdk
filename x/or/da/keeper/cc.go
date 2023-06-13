@@ -11,10 +11,10 @@ import (
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
-func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, gasLimit uint64) error {
+func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, gasLimit, L1ToL2GasRatio uint64) error {
 	// Transactions submitted to the queue lack a method for paying gas fees to the Sequencer.
 	// For transaction with a high L2 gas limit, we burn some extra gas on L1.
-	gasToConsume := (gasLimit - k.EnqueueL2GasPrepaid(ctx)) / k.L2GasDiscountDivisor(ctx)
+	gasToConsume := (gasLimit - k.EnqueueL2GasPrepaid(ctx, tx)) / L1ToL2GasRatio
 	ctx.GasMeter().ConsumeGas(gasToConsume, "enqueue tx")
 
 	var queueState *types.QueueTxState
@@ -224,6 +224,10 @@ func (k Keeper) DecompressCCBatch(ctx sdktypes.Context, origin types.CompressedC
 	default:
 		return nil, sdkerror.ErrInvalidRequest.Wrapf("no compression option provided")
 	}
+}
+
+func (k Keeper) EnqueueL2GasPrepaid(ctx sdktypes.Context, tx []byte) uint64 {
+	return k.accountKeeper.GetParams(ctx).TxSizeCostPerByte * uint64(len(tx)+30)
 }
 
 func (k Keeper) GetCCState(ctx sdktypes.Context, rollupName string) (*types.CCState, error) {
