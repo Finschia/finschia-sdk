@@ -118,6 +118,7 @@ message CCRef {
 // BatchChainState is the state of target batch chain.
 message CCState {
   // Assumed to contain all contiguous batches between base and height (inclusive).
+  // height is the latest batch height.
   uint64 base = 1;
   uint64 height = 2;
 

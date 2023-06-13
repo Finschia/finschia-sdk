@@ -8899,7 +8899,7 @@ BatchChainState is the state of target batch chain.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). height is the latest batch height. |
 | `height` | [uint64](#uint64) |  |  |
 | `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
 | `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |

@@ -540,6 +540,7 @@ func (m *CCRef) GetBatchRoot() []byte {
 // BatchChainState is the state of target batch chain.
 type CCState struct {
 	// Assumed to contain all contiguous batches between base and height (inclusive).
+	// height is the latest batch height.
 	Base   uint64 `protobuf:"varint,1,opt,name=base,proto3" json:"base,omitempty"`
 	Height uint64 `protobuf:"varint,2,opt,name=height,proto3" json:"height,omitempty"`
 	// The latest batch timestamp.
