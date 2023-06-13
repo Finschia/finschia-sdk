@@ -105,7 +105,252 @@ func (s *KeeperTestSuite) TestDecompressCCBatch() {
 }
 
 func (s *KeeperTestSuite) TestSaveCCBatch() {
+	rollupName := "rollup1"
 
+	testCases := map[string]struct {
+		src       *types.CCBatch
+		malleate  func(b *types.CCBatch)
+		postCheck func()
+		isErr     bool
+	}{
+		"wrong ShouldStartAtFrame": {
+			src: &types.CCBatch{
+				ShouldStartAtFrame: 1000,
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+			},
+			isErr: true,
+		},
+		"empty frame": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Elements: nil,
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+			},
+			isErr: true,
+		},
+		"wrong frame header l2 height": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: []byte("parent_hash"),
+							L2Height:   10,
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw: []byte("txraw"),
+							},
+						},
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+			},
+			isErr: true,
+		},
+		"empty parent hash": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: nil,
+							L1Height:   10,
+							Timestamp:  time.Unix(2000, 0).UTC(),
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw: []byte("txraw"),
+							},
+						},
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+				b.Frames[0].Header.L2Height = calL2Height(s, rollupName)
+			},
+			isErr: true,
+		},
+		"outdated frame - timestamp": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: []byte("parent_hash2"),
+							L1Height:   10,
+							Timestamp:  time.Unix(500, 0).UTC(),
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw: []byte("txraw"),
+							},
+						},
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+				b.Frames[0].Header.L2Height = calL2Height(s, rollupName)
+			},
+			isErr: true,
+		},
+		"outdated frame - l1 block height": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: []byte("parent_hash2"),
+							L1Height:   8,
+							Timestamp:  time.Unix(1100, 0).UTC(),
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw: []byte("txraw"),
+							},
+						},
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+				b.Frames[0].Header.L2Height = calL2Height(s, rollupName)
+			},
+			isErr: true,
+		},
+		"process queue txs in the wrong order": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: []byte("parent_hash2"),
+							L1Height:   11,
+							Timestamp:  time.Unix(1200, 0).UTC(),
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw:      nil,
+								QueueIndex: 3,
+							},
+						},
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				saveQueueTx(s.storeKey, s.ctx, rollupName, 1, &types.L1ToL2Queue{Txraw: []byte("txraw"), Status: types.QUEUE_TX_PENDING})
+				saveQueueTxState(s.storeKey, s.ctx, rollupName, &types.QueueTxState{ProcessedQueueIndex: 0, NextQueueIndex: 2})
+				err := prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+				b.Frames[0].Header.L2Height = calL2Height(s, rollupName)
+
+				if err != nil {
+					_ = s.keeper.SaveCCBatch(s.ctx, rollupName, &types.CCBatch{
+						ShouldStartAtFrame: calShouldStartAtFrame(s, rollupName),
+						Frames: []*types.CCBatchFrame{
+							{
+								Header: &types.CCBatchHeader{
+									ParentHash: []byte("parent_hash2"),
+									L2Height:   2,
+									L1Height:   10,
+									Timestamp:  time.Unix(1100, 0).UTC(),
+								},
+								Elements: []*types.CCBatchElement{
+									{
+										Txraw: []byte("txraw"),
+									},
+									{
+										Txraw:      nil,
+										QueueIndex: 1,
+									},
+								},
+							},
+						},
+					})
+					b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+					b.Frames[0].Header.L2Height = calL2Height(s, rollupName)
+				}
+			},
+			isErr: true,
+		},
+		"valid batch": {
+			src: &types.CCBatch{
+				Frames: []*types.CCBatchFrame{
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: []byte("parent_hash"),
+							L1Height:   21,
+							Timestamp:  time.Unix(2200, 0).UTC(),
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw: []byte("txraw"),
+							},
+						},
+					},
+					{
+						Header: &types.CCBatchHeader{
+							ParentHash: []byte("parent_hash2"),
+							L1Height:   22,
+							Timestamp:  time.Unix(2300, 0).UTC(),
+						},
+						Elements: []*types.CCBatchElement{
+							{
+								Txraw: []byte("txraw"),
+							},
+						},
+					},
+				},
+			},
+			malleate: func(b *types.CCBatch) {
+				_ = prepareCCPreset(s, rollupName)
+				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+				b.Frames[0].Header.L2Height = calL2Height(s, rollupName)
+				b.Frames[1].Header.L2Height = calL2Height(s, rollupName) + 1
+			},
+			isErr: false,
+			postCheck: func() {
+				ccState, err := s.keeper.GetCCState(s.ctx, rollupName)
+				s.Require().NoError(err)
+				_, err = s.keeper.GetQueueTxState(s.ctx, rollupName)
+				s.Require().NoError(err)
+				ccRef, err := s.keeper.GetCCRef(s.ctx, rollupName, ccState.Height)
+				s.Require().NoError(err)
+				for i := uint64(1); i <= ccRef.TotalFrames; i++ {
+					_, err = s.keeper.GetL2HeightBatchMap(s.ctx, rollupName, i)
+					s.Require().NoError(err)
+				}
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			if tc.malleate != nil {
+				tc.malleate(tc.src)
+			}
+			err := s.keeper.SaveCCBatch(s.ctx, rollupName, tc.src)
+			if tc.isErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(err)
+				if tc.postCheck != nil {
+					tc.postCheck()
+				}
+			}
+		})
+	}
 }
 
 func (s *KeeperTestSuite) TestSaveQueueTx() {
@@ -209,6 +454,45 @@ func (s *KeeperTestSuite) TestUpdateQueueTxsStatus() {
 			}
 		})
 	}
+}
+
+func calShouldStartAtFrame(s *KeeperTestSuite, rollupName string) (ShouldStartAtFrame uint64) {
+	state, err := s.keeper.GetCCState(s.ctx, rollupName)
+	if err == nil {
+		ref, _ := s.keeper.GetCCRef(s.ctx, rollupName, state.Height)
+		ShouldStartAtFrame = ref.TotalFrames
+	}
+	return
+}
+
+func calL2Height(s *KeeperTestSuite, rollupName string) (height uint64) {
+	state, err := s.keeper.GetCCState(s.ctx, rollupName)
+	if err == nil {
+		height = state.ProcessedL2Block + 1
+	}
+	return
+}
+
+func prepareCCPreset(s *KeeperTestSuite, rollupName string) (err error) {
+	err = s.keeper.SaveCCBatch(s.ctx, rollupName, &types.CCBatch{
+		ShouldStartAtFrame: calShouldStartAtFrame(s, rollupName),
+		Frames: []*types.CCBatchFrame{
+			{
+				Header: &types.CCBatchHeader{
+					ParentHash: nil,
+					L2Height:   1,
+					L1Height:   10,
+					Timestamp:  time.Unix(1000, 0).UTC(),
+				},
+				Elements: []*types.CCBatchElement{
+					{
+						Txraw: []byte("txraw"),
+					},
+				},
+			},
+		},
+	})
+	return
 }
 
 func saveQueueTx(skey sdktypes.StoreKey, ctx sdktypes.Context, rollupName string, idx uint64, elem *types.L1ToL2Queue) {
