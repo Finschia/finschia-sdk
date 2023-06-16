@@ -135,10 +135,10 @@ message CCState {
 message QueueTxState {
   // Index of the processed queue element.
   // Queue elements up to this index were submitted via CC batch or timeout.
-  uint64 processed_queue_index = 3;
+  uint64 processed_queue_index = 1;
 
   // Index of the next queue element.
-  uint64 next_queue_index = 4;
+  uint64 next_queue_index = 2;
 }
 
 // Proposer use SCCBatch when they submit.
