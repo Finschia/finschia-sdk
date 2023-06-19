@@ -35,7 +35,7 @@ func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, 
 		Status:    types.QUEUE_TX_PENDING,
 	}
 
-	k.saveQueueTx(ctx, rollupName, queueState.NextQueueIndex, qtx)
+	k.setQueueTx(ctx, rollupName, queueState.NextQueueIndex, qtx)
 	queueState.NextQueueIndex++
 
 	k.setQueueTxState(ctx, rollupName, queueState)
@@ -127,7 +127,7 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 					return err
 				}
 				qtx.Status = types.QUEUE_TX_SUBMITTED
-				k.saveQueueTx(ctx, rollupName, elem.QueueIndex, qtx)
+				k.setQueueTx(ctx, rollupName, elem.QueueIndex, qtx)
 
 				queueState.ProcessedQueueIndex++
 			}
@@ -192,7 +192,7 @@ func (k Keeper) processQueueTxs(ctx sdktypes.Context, state *types.QueueTxState,
 
 		if qtx.Status == types.QUEUE_TX_PENDING {
 			qtx.Status = types.QUEUE_TX_EXPIRED
-			k.saveQueueTx(ctx, name, qi, qtx)
+			k.setQueueTx(ctx, name, qi, qtx)
 			// TODO: slash registered sequencers
 		}
 	}
@@ -302,7 +302,7 @@ func (k Keeper) GetQueueTx(ctx sdktypes.Context, rollupName string, idx uint64) 
 	return tx, nil
 }
 
-func (k Keeper) saveQueueTx(ctx sdktypes.Context, rollupName string, idx uint64, elem *types.L1ToL2Queue) {
+func (k Keeper) setQueueTx(ctx sdktypes.Context, rollupName string, idx uint64, elem *types.L1ToL2Queue) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(elem)
 	store.Set(types.GetCCQueueTxKey(rollupName, idx), bz)
