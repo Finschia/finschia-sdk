@@ -217,11 +217,18 @@ func (k Keeper) DecompressCCBatch(ctx sdktypes.Context, origin types.CompressedC
 		if err != nil {
 			return nil, types.ErrInvalidCompressedData.Wrap(err.Error())
 		}
-		buf := make([]byte, p.CCBatchMaxBytes)
-		n, err := r.Read(buf)
-		out := buf[:n]
-		if err != nil && err != io.EOF {
-			return nil, err
+
+		out := make([]byte, 0)
+		for {
+			buf := make([]byte, p.CCBatchMaxBytes)
+			n, err := r.Read(buf)
+			out = append(out, buf[:n]...)
+			if err != nil {
+				if err == io.EOF {
+					break
+				}
+				return nil, err
+			}
 		}
 		batch := new(types.CCBatch)
 		k.cdc.MustUnmarshal(out, batch)
@@ -231,7 +238,7 @@ func (k Keeper) DecompressCCBatch(ctx sdktypes.Context, origin types.CompressedC
 	case types.OptionZSTD:
 		return nil, types.ErrInvalidCompressedData.Wrapf("compression %s not supported", origin.Compression)
 	case types.OptionEmpty:
-		return nil, types.ErrInvalidCompressedData
+		return nil, types.ErrInvalidCompressedData.Wrapf("batch data must be compressed")
 	default:
 		return nil, sdkerror.ErrInvalidRequest.Wrapf("no compression option provided")
 	}

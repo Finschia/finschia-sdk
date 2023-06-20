@@ -70,6 +70,19 @@ func (s *KeeperTestSuite) TestDecompressCCBatch() {
 			opt:        types.OptionEmpty,
 			err:        true,
 		},
+		"batch size exceeded - zlib": {
+			compressor: func(src []byte) []byte {
+				var b bytes.Buffer
+				w := zlib.NewWriter(&b)
+				_, err := w.Write(serializedSrc)
+				s.Require().NoError(err)
+				err = w.Close()
+				s.Require().NoError(err)
+				return append(b.Bytes(), make([]byte, types.DefaultCCBatchMaxBytes)...)
+			},
+			opt: types.OptionZLIB,
+			err: true,
+		},
 	}
 
 	for name, tc := range testCases {
