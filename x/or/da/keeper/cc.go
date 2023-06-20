@@ -93,7 +93,8 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	}
 
 	batchHash := sha256.Sum256(k.cdc.MustMarshal(batch))
-	ref := types.NewCCRef(ctx.TxBytes(), uint32(ctx.MsgIndex()), uint32(len(batch.Frames)), totalFrames, batchHash[:])
+	txHash := sha256.Sum256(ctx.TxBytes())
+	ref := types.NewCCRef(txHash[:], uint32(ctx.MsgIndex()), uint32(len(batch.Frames)), totalFrames, batchHash[:])
 
 	// start to process batch frames
 	ccState.Height++
