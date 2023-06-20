@@ -166,7 +166,7 @@ message SCCRef {
   // Merkle Root of IntermediateStateRoots.
   bytes batch_root = 4;
 
-  repeated bytes IntermediateStateRoots = 6;
+  repeated bytes IntermediateStateRoots = 5;
 }
 
 // BatchChainState is the state of target batch chain.
