@@ -15,23 +15,29 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
-	memKey   storetypes.StoreKey
 
 	// the address capable of executing a MsgUpdateParams message. Typically, this
 	// should be the gov module account.
 	authority string
+
+	accountKeeper types.AccountKeeper
+	rollupKeeper  types.RollupKeeper
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
-) *Keeper {
+	storeKey storetypes.StoreKey,
+	authority string,
+	ak types.AccountKeeper,
+	rk types.RollupKeeper,
+) Keeper {
 
-	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		memKey:   memKey,
+	return Keeper{
+		cdc:           cdc,
+		storeKey:      storeKey,
+		authority:     authority,
+		accountKeeper: ak,
+		rollupKeeper:  rk,
 	}
 }
 
@@ -51,6 +57,11 @@ func (k Keeper) validateGovAuthority(authority string) error {
 	return nil
 }
 
-func (k Keeper) validateSequencerAuthority() error {
-	panic("implement me")
+func (k Keeper) validateSequencerAuthority(authority string) error {
+	if _, err := sdktypes.AccAddressFromBech32(authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+	}
+	// TODO: check if authority is a sequencer
+
+	return nil
 }

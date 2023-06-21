@@ -18,10 +18,7 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	p, err := k.GetParams(ctx)
-	if err != nil {
-		return nil, err
-	}
+	p := k.GetParams(ctx)
 	return &types.QueryParamsResponse{Params: p}, nil
 }
 

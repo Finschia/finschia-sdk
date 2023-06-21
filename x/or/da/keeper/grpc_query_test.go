@@ -11,7 +11,7 @@ import (
 )
 
 func TestParamsQuery(t *testing.T) {
-	keeper, ctx := datest.DaKeeper(t)
+	keeper, ctx, _ := datest.DaKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	params := types.DefaultParams()
 	err := keeper.SetParams(ctx, params)

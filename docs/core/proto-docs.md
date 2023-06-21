@@ -596,6 +596,7 @@
     - [CCState](#finschia.or.da.v1.CCState)
     - [CompressedCCBatch](#finschia.or.da.v1.CompressedCCBatch)
     - [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue)
+    - [QueueTxState](#finschia.or.da.v1.QueueTxState)
     - [SCCBatch](#finschia.or.da.v1.SCCBatch)
     - [SCCRef](#finschia.or.da.v1.SCCRef)
     - [SCCState](#finschia.or.da.v1.SCCState)
@@ -604,6 +605,8 @@
     - [QueueTxStatus](#finschia.or.da.v1.QueueTxStatus)
   
 - [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
+    - [EventAppendCCBatch](#finschia.or.da.v1.EventAppendCCBatch)
+    - [EventSaveQueueTx](#finschia.or.da.v1.EventSaveQueueTx)
     - [EventUpdateParams](#finschia.or.da.v1.EventUpdateParams)
   
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
@@ -8772,8 +8775,10 @@ Params defines the parameters for the module.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `cc_batch_max_bytes` | [uint64](#uint64) |  | 1. CC-related |
-| `max_queue_tx_size` | [uint64](#uint64) |  | Queue Tx-related |
-| `min_queue_tx_gas` | [uint64](#uint64) |  |  |
+| `max_queue_tx_size` | [uint64](#uint64) |  | max_queue_tx_size is the maximum queue tx size that can be submitted. |
+| `min_queue_tx_gas` | [uint64](#uint64) |  | min_queue_tx_gas is the minimum gas that must be specified for a queue tx. |
+| `l2gas_discount_divisor` | [uint64](#uint64) |  | l2gas_discount_divisor is the ratio between the cost of gas on L1 and L2. This is a positive integer, meaning we assume L2 gas is always less costly. |
+| `enqueue_l2gas_prepaid` | [uint64](#uint64) |  | enqueue_l2gas_prepaid is the base cost of calling enqueue function. |
 | `queue_tx_expiration_window` | [uint64](#uint64) |  | A sequencer must submit a queue tx to L2 before this time. |
 | `scc_batch_max_bytes` | [uint64](#uint64) |  | 2. SCC-related |
 | `fraud_proof_window` | [uint64](#uint64) |  | Number of seconds that the verifier is allowed to submit a fraud proof. Currnet scc batch header timestamp + fraud_proof_window = challenge period |
@@ -8840,7 +8845,7 @@ CCBatch is a data unit per batch epoch.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `hedaer` | [CCBatchHeader](#finschia.or.da.v1.CCBatchHeader) |  |  |
+| `header` | [CCBatchHeader](#finschia.or.da.v1.CCBatchHeader) |  |  |
 | `elements` | [CCBatchElement](#finschia.or.da.v1.CCBatchElement) | repeated |  |
 
 
@@ -8876,7 +8881,7 @@ CCRef is a data type that forms an element of the reference chain of Rollup Cano
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `txhash` | [bytes](#bytes) |  | Reference for accessing batch data. |
-| `msg_index` | [uint64](#uint64) |  | Reference for accessing batch data. |
+| `msg_index` | [uint32](#uint32) |  | Reference for accessing batch data. |
 | `total_frames` | [uint64](#uint64) |  | Total number of batch frames submitted. It is the same as the height of the L2 block submitted so far |
 | `batch_size` | [uint32](#uint32) |  | Number of batch frames in the batch. |
 | `batch_root` | [bytes](#bytes) |  | Hash of CompressedCCBatch data. |
@@ -8894,12 +8899,11 @@ BatchChainState is the state of target batch chain.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). |
+| `base` | [uint64](#uint64) |  | Assumed to contain all contiguous batches between base and height (inclusive). height is the latest batch height. |
 | `height` | [uint64](#uint64) |  |  |
-| `processed_queue_index` | [uint64](#uint64) |  | Index of the processed queue element. Queue elements up to this index were submitted via CC batch or timeout. |
-| `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
 | `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The latest batch timestamp. |
 | `l1_height` | [uint64](#uint64) |  | The latest batch L1 blockNumber. |
+| `processed_l2block` | [uint64](#uint64) |  | processed_l2block is the last l2block height that has been processed by L1. |
 
 
 
@@ -8927,14 +8931,31 @@ CompressedCCBatch is used  when the sequencer submits.
 ### L1toL2Queue
 L1toL2Queue is a queued tx for L2 batch.
 Sequencer must process this transaction on time in order.
+Queue index start from 1.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the batch. It is set when the type of tx is L1toL2 |
-| `l1_height` | [uint64](#uint64) |  | blockNumber is the L1 BlockNumber of the batch. |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is the L1 unix timestamp of the queue tx. |
+| `l1_height` | [int64](#int64) |  | blockNumber is the L1 BlockNumber when this queue tx was submitted. the queue tx will be expired based on this height. |
 | `txraw` | [bytes](#bytes) |  |  |
 | `status` | [QueueTxStatus](#finschia.or.da.v1.QueueTxStatus) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueueTxState"></a>
+
+### QueueTxState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `processed_queue_index` | [uint64](#uint64) |  | Index of the processed queue element. Queue elements up to this index were submitted via CC batch or timeout. |
+| `next_queue_index` | [uint64](#uint64) |  | Index of the next queue element. |
 
 
 
@@ -9016,8 +9037,8 @@ BatchChainState is the state of target batch chain.
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | QUEUE_TX_PENDING | 0 | QUEUE_TX_PENDING defines the status where the Tx has not been submitted to L1 batch yet. |
-| QUEUE_TX_FINALIZED | 1 | QUEUE_TX_FINALIZED defines the status where the Tx has been submitted to L1 batch. |
-| QUEUE_TX_OUTDATED | 2 | QUEUE_TX_OUTDATED defines the status where the Tx has not been submitted until the expiration deadline. Sequencers get penalty if queued txs reach this status. |
+| QUEUE_TX_SUBMITTED | 1 | QUEUE_TX_SUBMITTED defines the status where the Tx has been submitted to L1 batch. |
+| QUEUE_TX_EXPIRED | 2 | QUEUE_TX_EXPIRED defines the status where the Tx has not been submitted until the expiration deadline. Sequencers get penalty if queued txs reach this status. |
 
 
  <!-- end enums -->
@@ -9032,6 +9053,45 @@ BatchChainState is the state of target batch chain.
 <p align="right"><a href="#top">Top</a></p>
 
 ## finschia/or/da/v1/event.proto
+
+
+
+<a name="finschia.or.da.v1.EventAppendCCBatch"></a>
+
+### EventAppendCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch_index` | [uint64](#uint64) |  |  |
+| `processed_queue_index` | [uint64](#uint64) |  |  |
+| `total_frames` | [uint64](#uint64) |  |  |
+| `batch_size` | [uint32](#uint32) |  |  |
+| `batch_hash` | [bytes](#bytes) |  |  |
+| `processed_l2block` | [uint64](#uint64) |  | processed_l2block is the last l2block height that has been processed by L1. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.EventSaveQueueTx"></a>
+
+### EventSaveQueueTx
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `next_queue_index` | [uint64](#uint64) |  |  |
+| `extra_consumed_gas` | [uint64](#uint64) |  |  |
+| `l2gas_limit` | [uint64](#uint64) |  |  |
+
+
+
 
 
 
@@ -9311,7 +9371,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `from_address` | [string](#string) |  |  |
 | `rollup_name` | [string](#string) |  |  |
-| `gas_limit` | [uint64](#uint64) |  |  |
+| `gas_limit` | [uint64](#uint64) |  | When sequencer processes that queue tx, it uses this gas limit and submits tx to L2. |
 | `txraw` | [bytes](#bytes) |  |  |
 
 

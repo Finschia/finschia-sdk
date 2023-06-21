@@ -2,23 +2,39 @@ package types
 
 import (
 	"fmt"
+	"math"
 
 	"gopkg.in/yaml.v2"
 )
 
 const (
-	DefaultCCBatchMaxBytes  uint64 = 1000000
-	DefaultSCCBatchMaxBytes uint64 = 1000000
+	DefaultCCBatchMaxBytes         uint64 = 1000_000
+	DefaultSCCBatchMaxBytes        uint64 = 1000_000
+	DefaultMaxQueueTxSize          uint64 = math.MaxUint16
+	DefaultMinQueueTxGas           uint64 = 300000
+	DefaultQueueTxExpirationWindow uint64 = 600
+	DefaultFraudProofWindow        uint64 = 7 * 24 * 60 * 60 / 6
+	DefaultSequencerPublishWindow  uint64 = 600
 )
 
 // NewParams creates a new Params instance
 func NewParams(
 	CCBatchMaxBytes uint64,
+	MaxQueueTxSize uint64,
+	MinQueueTxGas uint64,
+	QueueTxExpirationWindow uint64,
 	SCCBatchMaxBytes uint64,
+	FraudProofWindow uint64,
+	SequencerPublishWindow uint64,
 ) Params {
 	return Params{
-		CCBatchMaxBytes:  CCBatchMaxBytes,
-		SCCBatchMaxBytes: SCCBatchMaxBytes,
+		CCBatchMaxBytes:         CCBatchMaxBytes,
+		MaxQueueTxSize:          MaxQueueTxSize,
+		MinQueueTxGas:           MinQueueTxGas,
+		QueueTxExpirationWindow: QueueTxExpirationWindow,
+		SCCBatchMaxBytes:        SCCBatchMaxBytes,
+		FraudProofWindow:        FraudProofWindow,
+		SequencerPublishWindow:  SequencerPublishWindow,
 	}
 }
 
@@ -26,7 +42,12 @@ func NewParams(
 func DefaultParams() Params {
 	return NewParams(
 		DefaultCCBatchMaxBytes,
+		DefaultMaxQueueTxSize,
+		DefaultMinQueueTxGas,
+		DefaultQueueTxExpirationWindow,
 		DefaultSCCBatchMaxBytes,
+		DefaultFraudProofWindow,
+		DefaultSequencerPublishWindow,
 	)
 }
 

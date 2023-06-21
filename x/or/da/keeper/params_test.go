@@ -10,17 +10,14 @@ import (
 )
 
 func TestGetParams(t *testing.T) {
-	k, ctx := datest.DaKeeper(t)
+	k, ctx, _ := datest.DaKeeper(t)
 	params := types.DefaultParams()
 
 	require.Nil(t, k.SetParams(ctx, params))
 
-	savedParams, err := k.GetParams(ctx)
-	require.Nil(t, err)
-	savedCCBatchMaxBytes, err := k.CCBatchMaxBytes(ctx)
-	require.Nil(t, err)
-	savedSCCBatchMaxBytes, err := k.SCCBatchMaxBytes(ctx)
-	require.Nil(t, err)
+	savedParams := k.GetParams(ctx)
+	savedCCBatchMaxBytes := k.CCBatchMaxBytes(ctx)
+	savedSCCBatchMaxBytes := k.SCCBatchMaxBytes(ctx)
 	require.EqualValues(t, params, savedParams)
 	require.EqualValues(t, params.CCBatchMaxBytes, savedCCBatchMaxBytes)
 	require.EqualValues(t, params.SCCBatchMaxBytes, savedSCCBatchMaxBytes)

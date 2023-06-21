@@ -45,7 +45,7 @@ message CCBatchElement {
 }
 
 message CCBatchFrame {
-  CCBatchHeader hedaer = 1;
+  CCBatchHeader header = 1;
   repeated CCBatchElement elements = 2;
 }
 
@@ -69,13 +69,14 @@ message CompressedCCBatch {
 
 // L1toL2Queue is a queued tx for L2 batch.
 // Sequencer must process this transaction on time in order.
+// Queue index start from 1.
 message L1toL2Queue {
-  // timestamp is the L1 unix timestamp of the batch.
-  // It is set when the type of tx is L1toL2
+  // timestamp is the L1 unix timestamp of the queue tx.
   google.protobuf.Timestamp timestamp = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  // blockNumber is the L1 BlockNumber of the batch.
-  uint64 l1_height = 2;
+  // blockNumber is the L1 BlockNumber when this queue tx was submitted.
+  // the queue tx will be expired based on this height.
+  int64 l1_height = 2;
 
   bytes txraw = 3;
   QueueTxStatus status = 4;
@@ -87,12 +88,12 @@ enum QueueTxStatus {
   // QUEUE_TX_PENDING defines the status where the Tx has not been submitted to L1 batch yet.
   QUEUE_TX_PENDING = 0;
 
-  // QUEUE_TX_FINALIZED defines the status where the Tx has been submitted to L1 batch.
-  QUEUE_TX_FINALIZED = 1;
+  // QUEUE_TX_SUBMITTED defines the status where the Tx has been submitted to L1 batch.
+  QUEUE_TX_SUBMITTED = 1;
 
-  // QUEUE_TX_OUTDATED defines the status where the Tx has not been submitted until the expiration deadline.
+  // QUEUE_TX_EXPIRED defines the status where the Tx has not been submitted until the expiration deadline.
   // Sequencers get penalty if queued txs reach this status.
-  QUEUE_TX_OUTDATED = 2;
+  QUEUE_TX_EXPIRED = 2;
 }
 
 // CCRef is a data type that forms an element of the reference chain of Rollup Canonical Chain.
@@ -101,7 +102,7 @@ message CCRef {
   bytes txhash = 1 [(gogoproto.customname) = "TxHash"];
 
   // Reference for accessing batch data.
-  uint64 msg_index = 2;
+  uint32 msg_index = 2;
 
   // Total number of batch frames submitted.
   // It is the same as the height of the L2 block submitted so far
@@ -117,23 +118,28 @@ message CCRef {
 // BatchChainState is the state of target batch chain.
 message CCState {
   // Assumed to contain all contiguous batches between base and height (inclusive).
+  // height is the latest batch height.
   uint64 base = 1;
   uint64 height = 2;
 
-  // Index of the processed queue element.
-  // Queue elements up to this index were submitted via CC batch or timeout.
-  uint64 processed_queue_index = 3;
-
-  // Index of the next queue element.
-  uint64 next_queue_index = 4;
-
   // The latest batch timestamp.
-  google.protobuf.Timestamp timestamp = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // The latest batch L1 blockNumber.
-  uint64 l1_height = 6;
+  uint64 l1_height = 4;
+
+  // processed_l2block is the last l2block height that has been processed by L1.
+  uint64 processed_l2block = 5;
 }
 
+message QueueTxState {
+  // Index of the processed queue element.
+  // Queue elements up to this index were submitted via CC batch or timeout.
+  uint64 processed_queue_index = 1;
+
+  // Index of the next queue element.
+  uint64 next_queue_index = 2;
+}
 
 // Proposer use SCCBatch when they submit.
 message SCCBatch {
@@ -160,7 +166,7 @@ message SCCRef {
   // Merkle Root of IntermediateStateRoots.
   bytes batch_root = 4;
 
-  repeated bytes IntermediateStateRoots = 6;
+  repeated bytes IntermediateStateRoots = 5;
 }
 
 // BatchChainState is the state of target batch chain.
