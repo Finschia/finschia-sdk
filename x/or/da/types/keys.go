@@ -54,6 +54,22 @@ func GetSCCBatchIndexKey(rollupName string, i uint64) []byte {
 	return genPrefixIndexKey(GenRollupPrefix(rollupName, SCCBatchIndexPrefix), i)
 }
 
+func GetCCStateStoreKey(rollupName string) []byte {
+	return GenRollupPrefix(rollupName, CCStateStoreKey)
+}
+
+func GetQueueTxStateStoreKey(rollupName string) []byte {
+	return GenRollupPrefix(rollupName, QueueTxStateStoreKey)
+}
+
+func GetSCCStateStoreKey(rollupName string) []byte {
+	return GenRollupPrefix(rollupName, SCCStateStoreKey)
+}
+
+func GetCCL2HeightToBatchKey(rollupName string, l2height uint64) []byte {
+	return genPrefixIndexKey(GenRollupPrefix(rollupName, CCL2HeightToBatchPrefix), l2height)
+}
+
 func genPrefixIndexKey(prefix []byte, i uint64) []byte {
 	l := len(prefix)
 	k := make([]byte, 8+l)
@@ -63,33 +79,9 @@ func genPrefixIndexKey(prefix []byte, i uint64) []byte {
 }
 
 func GenRollupPrefix(rollupName string, prefix byte) []byte {
-	return append([]byte(rollupName), prefix)
-}
-
-func GetCCStateStoreKey(rollupName string) []byte {
 	key := make([]byte, 1+1+len(rollupName))
-	key[0] = CCStateStoreKey
+	key[0] = prefix
 	key[1] = byte(len(rollupName))
 	copy(key[2:], []byte(rollupName))
 	return key
-}
-
-func GetQueueTxStateStoreKey(rollupName string) []byte {
-	key := make([]byte, 1+1+len(rollupName))
-	key[0] = QueueTxStateStoreKey
-	key[1] = byte(len(rollupName))
-	copy(key[2:], []byte(rollupName))
-	return key
-}
-
-func GetSCCStateStoreKey(rollupName string) []byte {
-	key := make([]byte, 1+1+len(rollupName))
-	key[0] = SCCStateStoreKey
-	key[1] = byte(len(rollupName))
-	copy(key[2:], []byte(rollupName))
-	return key
-}
-
-func GetCCL2HeightToBatchKey(rollupName string, l2height uint64) []byte {
-	return genPrefixIndexKey(GenRollupPrefix(rollupName, CCL2HeightToBatchPrefix), l2height)
 }
