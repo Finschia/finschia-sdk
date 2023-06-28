@@ -9140,6 +9140,7 @@ EventUpdateParams is emitted after updating foundation parameters.
 | `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
 | `queue_tx_state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
 | `queue_list` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
+| `l2_batch_map` | [L2BatchMap](#finschia.or.da.v1.L2BatchMap) | repeated |  |
 
 
 
