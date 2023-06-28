@@ -612,6 +612,7 @@
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
     - [CC](#finschia.or.da.v1.CC)
     - [GenesisState](#finschia.or.da.v1.GenesisState)
+    - [L2BatchMap](#finschia.or.da.v1.L2BatchMap)
     - [SCC](#finschia.or.da.v1.SCC)
   
 - [finschia/or/da/v1/query.proto](#finschia/or/da/v1/query.proto)
@@ -9134,8 +9135,11 @@ EventUpdateParams is emitted after updating foundation parameters.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `cc_state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
 | `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `queue_tx_state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
+| `queue_list` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
 
 
 
@@ -9159,6 +9163,22 @@ GenesisState defines the da module's genesis state.
 
 
 
+<a name="finschia.or.da.v1.L2BatchMap"></a>
+
+### L2BatchMap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `l2_height` | [uint64](#uint64) |  |  |
+| `batch_idx` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
 <a name="finschia.or.da.v1.SCC"></a>
 
 ### SCC
@@ -9167,6 +9187,7 @@ GenesisState defines the da module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `state` | [SCCState](#finschia.or.da.v1.SCCState) |  |  |
 | `history` | [SCCRef](#finschia.or.da.v1.SCCRef) | repeated |  |
 

@@ -90,7 +90,20 @@ func GenRollupPrefix(rollupName string, prefix byte) []byte {
 	return key
 }
 
-func SplitIndexKey(key []byte) (prefix []byte, rollupName string, index uint64) {
+func SplitPrefixKey(key []byte) (prefix []byte, rollupName string) {
+	if len(key) < 2 {
+		panic("invalid key")
+	}
+
+	prefix = key[:1]
+	begin := 2
+	end := begin + int(key[begin-1])
+	rollupName = string(key[begin:end])
+
+	return
+}
+
+func SplitPrefixIndexKey(key []byte) (prefix []byte, rollupName string, index uint64) {
 	if len(key) < 10 {
 		panic("invalid index key")
 	}
