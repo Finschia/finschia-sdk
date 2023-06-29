@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+
 	sdktypes "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
@@ -18,10 +19,12 @@ func (k Keeper) InitGenesis(ctx sdktypes.Context, genState types.GenesisState) {
 		k.setQueueTxState(ctx, name, &cc.QueueTxState)
 
 		for i, ref := range cc.History {
+			ref := ref
 			k.setCCRef(ctx, name, uint64(i+1), &ref)
 		}
 
 		for i, tx := range cc.QueueList {
+			tx := tx
 			k.setQueueTx(ctx, name, uint64(i+1), &tx)
 		}
 
