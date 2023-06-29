@@ -638,12 +638,24 @@
 - [finschia/or/rollup/v1/rollup.proto](#finschia/or/rollup/v1/rollup.proto)
     - [Rollup](#finschia.or.rollup.v1.Rollup)
     - [Sequencer](#finschia.or.rollup.v1.Sequencer)
+    - [Sequencers](#finschia.or.rollup.v1.Sequencers)
+    - [SequencersByRollup](#finschia.or.rollup.v1.SequencersByRollup)
+  
+- [finschia/or/rollup/v1/params.proto](#finschia/or/rollup/v1/params.proto)
+    - [Params](#finschia.or.rollup.v1.Params)
+  
+- [finschia/or/rollup/v1/genesis.proto](#finschia/or/rollup/v1/genesis.proto)
+    - [GenesisState](#finschia.or.rollup.v1.GenesisState)
   
 - [finschia/or/rollup/v1/query.proto](#finschia/or/rollup/v1/query.proto)
+    - [QueryAllRollupRequest](#finschia.or.rollup.v1.QueryAllRollupRequest)
+    - [QueryAllRollupResponse](#finschia.or.rollup.v1.QueryAllRollupResponse)
     - [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest)
     - [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse)
     - [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest)
     - [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse)
+    - [QuerySequencersByRollupRequest](#finschia.or.rollup.v1.QuerySequencersByRollupRequest)
+    - [QuerySequencersByRollupResponse](#finschia.or.rollup.v1.QuerySequencersByRollupResponse)
   
     - [Query](#finschia.or.rollup.v1.Query)
   
@@ -652,6 +664,8 @@
     - [MsgCreateRollupResponse](#finschia.or.rollup.v1.MsgCreateRollupResponse)
     - [MsgRegisterSequencer](#finschia.or.rollup.v1.MsgRegisterSequencer)
     - [MsgRegisterSequencerResponse](#finschia.or.rollup.v1.MsgRegisterSequencerResponse)
+    - [MsgRemoveSequencer](#finschia.or.rollup.v1.MsgRemoveSequencer)
+    - [MsgRemoveSequencerResponse](#finschia.or.rollup.v1.MsgRemoveSequencerResponse)
   
     - [Msg](#finschia.or.rollup.v1.Msg)
   
@@ -9444,7 +9458,8 @@ Msg defines the Msg service.
 | ----- | ---- | ----- | ----------- |
 | `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
-| `version` | [int64](#int64) |  |  |
+| `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
+| `max_sequencers` | [uint64](#uint64) |  |  |
 
 
 
@@ -9467,6 +9482,96 @@ Msg defines the Msg service.
 
 
 
+
+<a name="finschia.or.rollup.v1.Sequencers"></a>
+
+### Sequencers
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `addresses` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.SequencersByRollup"></a>
+
+### SequencersByRollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollupName` | [string](#string) |  |  |
+| `sequencers` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/params.proto
+
+
+
+<a name="finschia.or.rollup.v1.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/genesis.proto
+
+
+
+<a name="finschia.or.rollup.v1.GenesisState"></a>
+
+### GenesisState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_list` | [Rollup](#finschia.or.rollup.v1.Rollup) | repeated |  |
+| `sequencer_list` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+| `params` | [Params](#finschia.or.rollup.v1.Params) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -9481,6 +9586,37 @@ Msg defines the Msg service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## finschia/or/rollup/v1/query.proto
+
+
+
+<a name="finschia.or.rollup.v1.QueryAllRollupRequest"></a>
+
+### QueryAllRollupRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryAllRollupResponse"></a>
+
+### QueryAllRollupResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup` | [Rollup](#finschia.or.rollup.v1.Rollup) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
 
 
 
@@ -9543,6 +9679,37 @@ Msg defines the Msg service.
 
 
 
+
+<a name="finschia.or.rollup.v1.QuerySequencersByRollupRequest"></a>
+
+### QuerySequencersByRollupRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencersByRollupResponse"></a>
+
+### QuerySequencersByRollupResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_list` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -9558,7 +9725,9 @@ Msg defines the Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Rollup` | [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest) | [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/{rollup_name}|
+| `AllRollup` | [QueryAllRollupRequest](#finschia.or.rollup.v1.QueryAllRollupRequest) | [QueryAllRollupResponse](#finschia.or.rollup.v1.QueryAllRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/rollup|
 | `Sequencer` | [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest) | [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencer/{rollup_name}|
+| `SequencersByRollup` | [QuerySequencersByRollupRequest](#finschia.or.rollup.v1.QuerySequencersByRollupRequest) | [QuerySequencersByRollupResponse](#finschia.or.rollup.v1.QuerySequencersByRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollup_name}|
 
  <!-- end services -->
 
@@ -9580,6 +9749,9 @@ Msg defines the Msg service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `rollup_name` | [string](#string) |  |  |
+| `creator` | [string](#string) |  |  |
+| `permissionedAddresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
+| `maxSequencers` | [uint64](#uint64) |  |  |
 
 
 
@@ -9607,6 +9779,7 @@ Msg defines the Msg service.
 | `creator` | [string](#string) |  |  |
 | `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 | `rollup_name` | [string](#string) |  |  |
+| `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -9616,6 +9789,26 @@ Msg defines the Msg service.
 <a name="finschia.or.rollup.v1.MsgRegisterSequencerResponse"></a>
 
 ### MsgRegisterSequencerResponse
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRemoveSequencer"></a>
+
+### MsgRemoveSequencer
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRemoveSequencerResponse"></a>
+
+### MsgRemoveSequencerResponse
 
 
 
@@ -9638,6 +9831,7 @@ Msg defines the Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `CreateRollup` | [MsgCreateRollup](#finschia.or.rollup.v1.MsgCreateRollup) | [MsgCreateRollupResponse](#finschia.or.rollup.v1.MsgCreateRollupResponse) |  | |
 | `RegisterSequencer` | [MsgRegisterSequencer](#finschia.or.rollup.v1.MsgRegisterSequencer) | [MsgRegisterSequencerResponse](#finschia.or.rollup.v1.MsgRegisterSequencerResponse) |  | |
+| `RemoveSequencer` | [MsgRemoveSequencer](#finschia.or.rollup.v1.MsgRemoveSequencer) | [MsgRemoveSequencerResponse](#finschia.or.rollup.v1.MsgRemoveSequencerResponse) |  | |
 
  <!-- end services -->
 

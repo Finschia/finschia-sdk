@@ -5,22 +5,42 @@ import "google/api/annotations.proto";
 
 import "finschia/or/rollup/v1/rollup.proto";
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
 
 service Query {
   rpc Rollup(QueryRollupRequest) returns (QueryRollupResponse) {
     option (google.api.http).get = "/finschia/or/rollup/v1/rollup/{rollup_name}";
   }
 
+  rpc AllRollup(QueryAllRollupRequest) returns (QueryAllRollupResponse) {
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/rollup";
+  }
+
   rpc Sequencer(QuerySequencerRequest) returns (QuerySequencerResponse) {
     option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencer/{rollup_name}";
+  }
+
+  rpc SequencersByRollup(QuerySequencersByRollupRequest) returns (QuerySequencersByRollupResponse) {
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollup_name}";
   }
 }
 
 message QueryRollupRequest {
   string rollup_name = 1;
+}
+
+message QueryAllRollupRequest {
+    cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllRollupResponse {
+    repeated Rollup rollup = 1 [(gogoproto.nullable) = false];
+    cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QuerySequencerRequest {
@@ -33,4 +53,13 @@ message QueryRollupResponse {
 
 message QuerySequencerResponse {
   Sequencer sequencer = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySequencersByRollupRequest {
+    string rollup_name = 1;
+}
+
+message QuerySequencersByRollupResponse {
+    string rollup_name = 1;
+    repeated Sequencer sequencer_list = 2 [(gogoproto.nullable) = false];
 }

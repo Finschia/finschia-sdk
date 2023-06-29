@@ -1,0 +1,12 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
