@@ -75,12 +75,11 @@ func (k msgServer) RegisterSequencer(goCtx context.Context, msg *types.MsgRegist
 	if found {
 		// TODO: Modify when rollup:sequencer=1:N
 		return nil, types.SequencersByRollupExists
-	} else {
-		sequencersByRollup.RollupName = msg.RollupName
-		sequencersByRollup.Sequencers = append(sequencersByRollup.Sequencers, sequencer)
-
-		k.SetSequencersByRollup(ctx, sequencersByRollup)
 	}
+	sequencersByRollup.RollupName = msg.RollupName
+	sequencersByRollup.Sequencers = append(sequencersByRollup.Sequencers, sequencer)
+
+	k.SetSequencersByRollup(ctx, sequencersByRollup)
 
 	k.SetSequencer(ctx, sequencer)
 

@@ -2,13 +2,12 @@ package types
 
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	// Methods imported from account should be defined here
 
 	GetModuleAddress(name string) sdk.AccAddress
