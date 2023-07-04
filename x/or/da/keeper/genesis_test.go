@@ -76,11 +76,21 @@ func dummyCCList() []types.CC {
 					Status:    types.QUEUE_TX_PENDING,
 					Txraw:     []byte("dummy txraw"),
 				},
+				{
+					Timestamp: t,
+					L1Height:  13,
+					Status:    types.QUEUE_TX_EXPIRED,
+					Txraw:     []byte("dummy txraw2"),
+				},
 			},
 			L2BatchMap: []types.L2BatchMap{
 				{
 					L2Height: 20,
 					BatchIdx: 5,
+				},
+				{
+					L2Height: 44,
+					BatchIdx: 10,
 				},
 			},
 		},
