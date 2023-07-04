@@ -80,9 +80,8 @@ func (k Keeper) CCRefs(goCtx context.Context, req *types.QueryCCRefsRequest) (*t
 	qtxStore := prefix.NewStore(ctx.KVStore(k.storeKey), key)
 	ccRefs, pageRes, err := query.GenericFilteredPaginate(k.cdc, qtxStore, req.Pagination,
 		func(key []byte, value *types.CCRef) (*types.CCRef, error) {
-			_, rollupName := types.SplitPrefixKey(key)
-			if rollupName != req.RollupName {
-				panic(fmt.Sprintf("unexpected rollup name %s during iteration", rollupName))
+			if len(key) != 8 {
+				panic(fmt.Sprintf("unexpected key length %d", len(key)))
 			}
 
 			return value, nil
@@ -150,9 +149,8 @@ func (k Keeper) QueueTxs(goCtx context.Context, req *types.QueryQueueTxsRequest)
 	qtxStore := prefix.NewStore(ctx.KVStore(k.storeKey), key)
 	qtxs, pageRes, err := query.GenericFilteredPaginate(k.cdc, qtxStore, req.Pagination,
 		func(key []byte, value *types.L1ToL2Queue) (*types.L1ToL2Queue, error) {
-			_, rollupName := types.SplitPrefixKey(key)
-			if rollupName != req.RollupName {
-				panic(fmt.Sprintf("unexpected rollup name %s during iteration", rollupName))
+			if len(key) != 8 {
+				panic(fmt.Sprintf("unexpected key length %d", len(key)))
 			}
 
 			return value, nil

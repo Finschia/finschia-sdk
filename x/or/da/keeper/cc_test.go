@@ -370,6 +370,7 @@ func (s *KeeperTestSuite) TestSaveQueueTx() {
 	s.ctx = s.ctx.WithBlockHeight(10)
 	t := time.Now().UTC()
 	s.ctx = s.ctx.WithBlockTime(t)
+	s.ctx = s.ctx.WithEventManager(sdktypes.NewEventManager())
 
 	err := s.keeper.SaveQueueTx(s.ctx, "rollup1", []byte("qtx1"), 90000, 10)
 	s.Require().NoError(err)
