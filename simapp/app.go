@@ -103,7 +103,6 @@ import (
 	upgradekeeper "github.com/Finschia/finschia-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/Finschia/finschia-sdk/x/upgrade/types"
 
-	"github.com/Finschia/finschia-sdk/x/or/rollup"
 	rollupkeeper "github.com/Finschia/finschia-sdk/x/or/rollup/keeper"
 	rolluptypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 
@@ -146,7 +145,7 @@ var (
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
-		rollup.AppModuleBasic{},
+		// rollup.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -398,7 +397,7 @@ func NewSimApp(
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		rollup.NewAppModule(appCodec, app.RollupKeeper, app.AccountKeeper, app.BankKeeper),
+		// rollup.NewAppModule(appCodec, app.RollupKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
