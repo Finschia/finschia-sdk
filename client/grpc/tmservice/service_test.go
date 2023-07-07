@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Finschia/ostracon/libs/bytes"
+	"github.com/tendermint/tendermint/libs/bytes"
 
 	"github.com/stretchr/testify/suite"
 

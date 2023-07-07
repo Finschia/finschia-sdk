@@ -8,14 +8,13 @@ import (
 	json "encoding/json"
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
-	runtime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	client "github.com/Finschia/finschia-sdk/client"
 	codec "github.com/Finschia/finschia-sdk/codec"
 	types "github.com/Finschia/finschia-sdk/codec/types"
 	types0 "github.com/Finschia/finschia-sdk/types"
 	module "github.com/Finschia/finschia-sdk/types/module"
-	ocabci "github.com/Finschia/ostracon/abci/types"
+	gomock "github.com/golang/mock/gomock"
+	runtime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	cobra "github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -330,7 +329,7 @@ func (m *MockAppModule) EXPECT() *MockAppModuleMockRecorder {
 }
 
 // BeginBlock mocks base method.
-func (m *MockAppModule) BeginBlock(arg0 types0.Context, arg1 ocabci.RequestBeginBlock) {
+func (m *MockAppModule) BeginBlock(arg0 types0.Context, arg1 abci.RequestBeginBlock) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "BeginBlock", arg0, arg1)
 }
