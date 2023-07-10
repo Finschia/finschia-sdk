@@ -10,6 +10,7 @@ import (
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/version"
 
 	// "github.com/Finschia/finschia-sdk/client/flags"
 	// sdk "github.com/Finschia/finschia-sdk/types"
@@ -35,15 +36,19 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 func NewQueryCmdChallenge() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "challenge",
-		Short: "shows the challenge of the module",
-		Args:  cobra.NoArgs,
+		Use:     "challenge",
+		Short:   "Query for challenge by id",
+		Args:    cobra.ExactArgs(1),
+		Example: fmt.Sprintf(`$ %s query %s challenge <challenge-id>`, version.AppName, types.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Challenge(context.Background(), &types.QueryChallengeRequest{})
+			req := &types.QueryChallengeRequest{
+				ChallengeId: args[0],
+			}
+			res, err := queryClient.Challenge(context.Background(), req)
 			if err != nil {
 				return err
 			}
