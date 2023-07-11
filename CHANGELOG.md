@@ -41,6 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server/grpc) [\#1017](https://github.com/Finschia/finschia-sdk/pull/1017) support custom r/w gRPC options (backport cosmos/cosmos-sdk#11889)
 
 ### Improvements
+* (third_party/proto) [\#1037](https://github.com/Finschia/finschia-sdk/pull/1037) change the proof.proto path to third_party/proto/confio
 
 ### Bug Fixes
 
