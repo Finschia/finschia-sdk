@@ -29,3 +29,10 @@ func (k Keeper) GetChallenge(ctx sdk.Context, challengeID string) (*types.Challe
 
 	return &challenge, nil
 }
+
+func (k Keeper) HasChallenge(ctx sdk.Context, challengeID string) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := challengeKey(challengeID)
+	bz := store.Get(key)
+	return bz != nil
+}

@@ -2,16 +2,44 @@ package types
 
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgStartChallenge{}
 
 func (m MsgStartChallenge) ValidateBasic() error {
-	panic("implement me")
+	_, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid challenger address (%s)", err)
+	}
+
+	_, err = sdk.AccAddressFromBech32(m.To)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid defender address (%s)", err)
+	}
+
+	if len(m.RollupName) == 0 {
+		return ErrInvalidRollupName
+	}
+
+	if m.BlockHeight == 0 {
+		return ErrInvalidL2BlockHeight
+	}
+
+	// 0 < step_count
+	if m.StepCount == 0 {
+		return ErrInvalidStepCount
+	}
+
+	return nil
 }
 
 func (m MsgStartChallenge) GetSigners() []sdk.AccAddress {
-	panic("implement me")
+	from, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{from}
 }
 
 func (m MsgStartChallenge) Type() string {
