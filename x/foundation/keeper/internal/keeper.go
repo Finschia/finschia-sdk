@@ -7,6 +7,7 @@ import (
 	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 // Keeper defines the foundation module Keeper
@@ -35,6 +36,8 @@ type Keeper struct {
 	//
 	// Typically, this should be the x/foundation module account.
 	authority string
+
+	paramSpace paramtypes.Subspace
 }
 
 func NewKeeper(
@@ -46,6 +49,7 @@ func NewKeeper(
 	feeCollectorName string,
 	config foundation.Config,
 	authority string,
+	paramSpace paramtypes.Subspace,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic("authority is not a valid acc address")
@@ -54,6 +58,11 @@ func NewKeeper(
 	// authority is x/foundation module account for now.
 	if authority != foundation.DefaultAuthority().String() {
 		panic("x/foundation authority must be the module account")
+	}
+
+	// set KeyTable if it has not already been set
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(foundation.ParamKeyTable())
 	}
 
 	return Keeper{
@@ -65,6 +74,7 @@ func NewKeeper(
 		feeCollectorName: feeCollectorName,
 		config:           config,
 		authority:        authority,
+		paramSpace:       paramSpace,
 	}
 }
 

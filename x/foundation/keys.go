@@ -12,3 +12,8 @@ const (
 
 	TreasuryName = "treasury"
 )
+
+// params
+const (
+	ParamKeyFoundationTax = "FoundationTax"
+)

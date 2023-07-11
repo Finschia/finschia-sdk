@@ -10,64 +10,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
-func (s *KeeperTestSuite) TestMsgUpdateParams() {
-	testCases := map[string]struct {
-		malleate  func(ctx sdk.Context)
-		authority sdk.AccAddress
-		params    foundation.Params
-		valid     bool
-		events    sdk.Events
-	}{
-		"valid request": {
-			authority: s.authority,
-			params:    foundation.DefaultParams(),
-			valid:     true,
-			events:    sdk.Events{sdk.Event{Type: "lbm.foundation.v1.EventUpdateParams", Attributes: []abci.EventAttribute{{Key: []uint8{0x70, 0x61, 0x72, 0x61, 0x6d, 0x73}, Value: []uint8{0x7b, 0x22, 0x66, 0x6f, 0x75, 0x6e, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x61, 0x78, 0x22, 0x3a, 0x22, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x7d}, Index: false}}}},
-		},
-		"invalid authority": {
-			authority: s.stranger,
-			params:    foundation.DefaultParams(),
-		},
-		"enabling foundation tax": {
-			malleate: func(ctx sdk.Context) {
-				s.impl.SetParams(ctx, foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-				})
-			},
-			authority: s.authority,
-			params: foundation.Params{
-				FoundationTax: sdk.OneDec(),
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-			if tc.malleate != nil {
-				tc.malleate(ctx)
-			}
-
-			req := &foundation.MsgUpdateParams{
-				Authority: tc.authority.String(),
-				Params:    tc.params,
-			}
-			res, err := s.msgServer.UpdateParams(sdk.WrapSDKContext(ctx), req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestMsgFundTreasury() {
 	testCases := map[string]struct {
 		amount sdk.Int
