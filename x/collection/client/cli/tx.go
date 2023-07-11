@@ -53,6 +53,8 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdIssueNFT(),
 		NewTxCmdMintFT(),
 		NewTxCmdMintNFT(),
+		NewTxCmdBurnFT(),
+		NewTxCmdBurnNFT(),
 		NewTxCmdAttach(),
 		NewTxCmdDetach(),
 		NewTxCmdOperatorAttach(),
