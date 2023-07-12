@@ -53,6 +53,8 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdIssueNFT(),
 		NewTxCmdMintFT(),
 		NewTxCmdMintNFT(),
+		NewTxCmdBurnFT(),
+		NewTxCmdBurnNFT(),
 		NewTxCmdAttach(),
 		NewTxCmdDetach(),
 		NewTxCmdOperatorAttach(),
@@ -414,11 +416,11 @@ func NewTxCmdIssueNFT() *cobra.Command {
 
 func NewTxCmdMintFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-ft [contract-id] [operator] [to] [class-id] [amount]",
-		Args:  cobra.ExactArgs(5),
+		Use:   "mint-ft [contract-id] [operator] [to] [amount]",
+		Args:  cobra.ExactArgs(4),
 		Short: "mint fungible tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s mint-ft [contract-id] [operator] [to] [class-id] [amount]`, version.AppName, collection.ModuleName),
+			$ %s tx %s mint-ft [contract-id] [operator] [to] [amount]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -431,18 +433,17 @@ func NewTxCmdMintFT() *cobra.Command {
 				return err
 			}
 
-			amountStr := args[4]
-			amount, ok := sdk.NewIntFromString(amountStr)
-			if !ok {
-				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
+			amountStr := args[3]
+			amount, err := collection.ParseCoins(amountStr)
+			if err != nil {
+				return err
 			}
 
-			coins := collection.NewCoins(collection.NewFTCoin(args[3], amount))
 			msg := collection.MsgMintFT{
 				ContractId: args[0],
 				From:       args[1],
 				To:         args[2],
-				Amount:     coins,
+				Amount:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

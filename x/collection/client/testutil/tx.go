@@ -528,6 +528,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintFT() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
+	amount := collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance))
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -537,8 +538,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintFT() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				s.ftClassID,
-				s.balance.String(),
+				amount.String(),
 			},
 			true,
 		},
@@ -547,8 +547,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintFT() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				s.ftClassID,
-				s.balance.String(),
+				amount.String(),
 				"extra",
 			},
 			false,
@@ -558,7 +557,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintFT() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				s.ftClassID,
 			},
 			false,
 		},
@@ -567,8 +565,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintFT() {
 				"",
 				s.operator.String(),
 				s.customer.String(),
-				s.ftClassID,
-				s.balance.String(),
+				amount.String(),
 			},
 			false,
 		},

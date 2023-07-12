@@ -219,12 +219,12 @@ func (s *IntegrationTestSuite) createNFTClass(contractID string, operator sdk.Ac
 
 func (s *IntegrationTestSuite) mintFT(contractID string, operator, to sdk.AccAddress, classID string, amount sdk.Int) {
 	val := s.network.Validators[0]
+	amt := collection.NewCoins(collection.NewFTCoin(classID, amount))
 	args := append([]string{
 		contractID,
 		operator.String(),
 		to.String(),
-		classID,
-		amount.String(),
+		amt.String(),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintFT(), args)
