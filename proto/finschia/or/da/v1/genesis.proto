@@ -10,15 +10,25 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 // GenesisState defines the da module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated CC cc_list = 2 [(gogoproto.customname) = "CCList"];
-  repeated SCC scc_list = 3 [(gogoproto.customname) = "SCCList"];
+  repeated CC cc_list = 2 [(gogoproto.nullable) = false, (gogoproto.customname) = "CCList"];
+  repeated SCC scc_list = 3 [(gogoproto.nullable) = false, (gogoproto.customname) = "SCCList"];
 }
 
 message CC {
-  CCState state = 1;
-  repeated CCRef history = 2;
+  string rollup_name = 1;
+  CCState cc_state = 2 [(gogoproto.nullable) = false, (gogoproto.customname) = "CCState"];
+  repeated CCRef history = 3 [(gogoproto.nullable) = false];
+  QueueTxState queue_tx_state = 4 [(gogoproto.nullable) = false];
+  repeated L1toL2Queue queue_list = 5 [(gogoproto.nullable) = false];
+  repeated L2BatchMap l2_batch_map = 6 [(gogoproto.nullable) = false];
 }
 message SCC {
-  SCCState state = 1;
-  repeated SCCRef history = 2;
+  string rollup_name = 1;
+  SCCState state = 2 [(gogoproto.nullable) = false];
+  repeated SCCRef history = 3 [(gogoproto.nullable) = false];
+}
+
+message L2BatchMap {
+  uint64 l2_height = 1;
+  uint64 batch_idx =2;
 }

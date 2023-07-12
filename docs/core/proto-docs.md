@@ -612,15 +612,26 @@
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
     - [CC](#finschia.or.da.v1.CC)
     - [GenesisState](#finschia.or.da.v1.GenesisState)
+    - [L2BatchMap](#finschia.or.da.v1.L2BatchMap)
     - [SCC](#finschia.or.da.v1.SCC)
   
 - [finschia/or/da/v1/query.proto](#finschia/or/da/v1/query.proto)
-    - [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest)
-    - [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse)
-    - [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest)
-    - [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse)
+    - [QueryCCRefRequest](#finschia.or.da.v1.QueryCCRefRequest)
+    - [QueryCCRefResponse](#finschia.or.da.v1.QueryCCRefResponse)
+    - [QueryCCRefsRequest](#finschia.or.da.v1.QueryCCRefsRequest)
+    - [QueryCCRefsResponse](#finschia.or.da.v1.QueryCCRefsResponse)
+    - [QueryCCStateRequest](#finschia.or.da.v1.QueryCCStateRequest)
+    - [QueryCCStateResponse](#finschia.or.da.v1.QueryCCStateResponse)
+    - [QueryMappedBatchRequest](#finschia.or.da.v1.QueryMappedBatchRequest)
+    - [QueryMappedBatchResponse](#finschia.or.da.v1.QueryMappedBatchResponse)
     - [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest)
     - [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse)
+    - [QueryQueueTxRequest](#finschia.or.da.v1.QueryQueueTxRequest)
+    - [QueryQueueTxResponse](#finschia.or.da.v1.QueryQueueTxResponse)
+    - [QueryQueueTxStateRequest](#finschia.or.da.v1.QueryQueueTxStateRequest)
+    - [QueryQueueTxStateResponse](#finschia.or.da.v1.QueryQueueTxStateResponse)
+    - [QueryQueueTxsRequest](#finschia.or.da.v1.QueryQueueTxsRequest)
+    - [QueryQueueTxsResponse](#finschia.or.da.v1.QueryQueueTxsResponse)
   
     - [Query](#finschia.or.da.v1.Query)
   
@@ -9134,8 +9145,12 @@ EventUpdateParams is emitted after updating foundation parameters.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `cc_state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
 | `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `queue_tx_state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
+| `queue_list` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
+| `l2_batch_map` | [L2BatchMap](#finschia.or.da.v1.L2BatchMap) | repeated |  |
 
 
 
@@ -9159,6 +9174,22 @@ GenesisState defines the da module's genesis state.
 
 
 
+<a name="finschia.or.da.v1.L2BatchMap"></a>
+
+### L2BatchMap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `l2_height` | [uint64](#uint64) |  |  |
+| `batch_idx` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
 <a name="finschia.or.da.v1.SCC"></a>
 
 ### SCC
@@ -9167,6 +9198,7 @@ GenesisState defines the da module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `state` | [SCCState](#finschia.or.da.v1.SCCState) |  |  |
 | `history` | [SCCRef](#finschia.or.da.v1.SCCRef) | repeated |  |
 
@@ -9191,9 +9223,9 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchRequest"></a>
+<a name="finschia.or.da.v1.QueryCCRefRequest"></a>
 
-### QueryCCBatchRequest
+### QueryCCRefRequest
 
 
 
@@ -9207,24 +9239,24 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchResponse"></a>
+<a name="finschia.or.da.v1.QueryCCRefResponse"></a>
 
-### QueryCCBatchResponse
+### QueryCCRefResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `batch_loc` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
+| `ref` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
 
 
 
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchesRequest"></a>
+<a name="finschia.or.da.v1.QueryCCRefsRequest"></a>
 
-### QueryCCBatchesRequest
+### QueryCCRefsRequest
 
 
 
@@ -9238,16 +9270,77 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchesResponse"></a>
+<a name="finschia.or.da.v1.QueryCCRefsResponse"></a>
 
-### QueryCCBatchesResponse
+### QueryCCRefsResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `batches_loc` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `refs` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCStateRequest"></a>
+
+### QueryCCStateRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCStateResponse"></a>
+
+### QueryCCStateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryMappedBatchRequest"></a>
+
+### QueryMappedBatchRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `l2_height` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryMappedBatchResponse"></a>
+
+### QueryMappedBatchResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ref` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
 
 
 
@@ -9278,6 +9371,99 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+
+<a name="finschia.or.da.v1.QueryQueueTxRequest"></a>
+
+### QueryQueueTxRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `queue_index` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxResponse"></a>
+
+### QueryQueueTxResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxStateRequest"></a>
+
+### QueryQueueTxStateRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxStateResponse"></a>
+
+### QueryQueueTxStateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxsRequest"></a>
+
+### QueryQueueTxsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxsResponse"></a>
+
+### QueryQueueTxsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `txs` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -9292,9 +9478,14 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/finschia/or/da/v1/params|
-| `CCBatches` | [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest) | [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse) |  | GET|/finschia/or/da/v1/batches/cc|
-| `CCBatch` | [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest) | [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse) |  | GET|/finschia/or/da/v1/batches/cc/{batch_height}|
+| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Params queries the parameters of the or/da module. | GET|/finschia/or/da/v1/params|
+| `CCState` | [QueryCCStateRequest](#finschia.or.da.v1.QueryCCStateRequest) | [QueryCCStateResponse](#finschia.or.da.v1.QueryCCStateResponse) | CCState queries the CC state for specific rollup | GET|/finschia/or/da/v1/cc/state/{rollup_name}|
+| `CCRef` | [QueryCCRefRequest](#finschia.or.da.v1.QueryCCRefRequest) | [QueryCCRefResponse](#finschia.or.da.v1.QueryCCRefResponse) | CCRef queries the CC batch reference at the given batch height for specific rollup | GET|/finschia/or/da/v1/cc/ref/{rollup_name}/{batch_height}|
+| `CCRefs` | [QueryCCRefsRequest](#finschia.or.da.v1.QueryCCRefsRequest) | [QueryCCRefsResponse](#finschia.or.da.v1.QueryCCRefsResponse) | CCRefs queries all the CC batch references for specific rollup | GET|/finschia/or/da/v1/cc/refs/{rollup_name}|
+| `QueueTxState` | [QueryQueueTxStateRequest](#finschia.or.da.v1.QueryQueueTxStateRequest) | [QueryQueueTxStateResponse](#finschia.or.da.v1.QueryQueueTxStateResponse) | QueueTxState queries the L1-to-L2 queue state | GET|/finschia/or/da/v1/cc/queuetx/state/{rollup_name}|
+| `QueueTx` | [QueryQueueTxRequest](#finschia.or.da.v1.QueryQueueTxRequest) | [QueryQueueTxResponse](#finschia.or.da.v1.QueryQueueTxResponse) | QueueTx queries the L1-to-L2 queue transaction at the given index | GET|/finschia/or/da/v1/cc/queuetx/{rollup_name}/{queue_index}|
+| `QueueTxs` | [QueryQueueTxsRequest](#finschia.or.da.v1.QueryQueueTxsRequest) | [QueryQueueTxsResponse](#finschia.or.da.v1.QueryQueueTxsResponse) | QueueTx queries the L1-to-L2 queue transaction at the given index | GET|/finschia/or/da/v1/cc/queuetxs/{rollup_name}|
+| `MappedBatch` | [QueryMappedBatchRequest](#finschia.or.da.v1.QueryMappedBatchRequest) | [QueryMappedBatchResponse](#finschia.or.da.v1.QueryMappedBatchResponse) | MappedBatch queries the CC batch reference containing the corresponding L2 block height | GET|/finschia/or/da/v1/cc/mappedbatch/{rollup_name}/{l2_height}|
 
  <!-- end services -->
 

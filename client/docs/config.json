@@ -175,6 +175,21 @@
           "GetBlockWithTxs": "GetBlockWithTxs2"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/finschia/or/da/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "OrDaParams",
+          "CCState": "OrDaCCState",
+          "CCRef": "OrDaCCRef",
+          "CCRefs": "OrDaCCRefs",
+          "QueueTxState": "OrDaQueueTxState",
+          "QueueTx": "OrDaQueueTx",
+          "QueueTxs": "OrDaQueueTxs",
+          "MappedBatch": "OrDaMappedBatch"
+        }
+      }
     }
   ]
 }

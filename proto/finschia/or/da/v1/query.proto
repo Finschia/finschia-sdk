@@ -11,17 +11,44 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
+  // Params queries the parameters of the or/da module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/finschia/or/da/v1/params";
   }
 
-  rpc CCBatches(QueryCCBatchesRequest) returns (QueryCCBatchesResponse) {
-    option (google.api.http).get = "/finschia/or/da/v1/batches/cc";
+  // CCState queries the CC state for specific rollup
+  rpc CCState(QueryCCStateRequest) returns (QueryCCStateResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/state/{rollup_name}";
   }
 
-  rpc CCBatch(QueryCCBatchRequest) returns (QueryCCBatchResponse) {
-    option (google.api.http).get = "/finschia/or/da/v1/batches/cc/{batch_height}";
+  // CCRef queries the CC batch reference at the given batch height for specific rollup
+  rpc CCRef(QueryCCRefRequest) returns (QueryCCRefResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/ref/{rollup_name}/{batch_height}";
+  }
+
+  // CCRefs queries all the CC batch references for specific rollup
+  rpc CCRefs(QueryCCRefsRequest) returns (QueryCCRefsResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/refs/{rollup_name}";
+  }
+
+  // QueueTxState queries the L1-to-L2 queue state
+  rpc QueueTxState(QueryQueueTxStateRequest) returns (QueryQueueTxStateResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/queuetx/state/{rollup_name}";
+  }
+
+  // QueueTx queries the L1-to-L2 queue transaction at the given index
+  rpc QueueTx(QueryQueueTxRequest) returns (QueryQueueTxResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/queuetx/{rollup_name}/{queue_index}";
+  }
+
+  // QueueTx queries the L1-to-L2 queue transaction at the given index
+  rpc QueueTxs(QueryQueueTxsRequest) returns (QueryQueueTxsResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/queuetxs/{rollup_name}";
+  }
+
+  // MappedBatch queries the CC batch reference containing the corresponding L2 block height
+  rpc MappedBatch(QueryMappedBatchRequest) returns (QueryMappedBatchResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/cc/mappedbatch/{rollup_name}/{l2_height}";
   }
 }
 
@@ -34,21 +61,65 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryCCBatchesRequest {
+message QueryCCStateRequest {
   string rollup_name = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryCCBatchesResponse {
-  repeated CCRef batches_loc = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+message QueryCCStateResponse {
+  CCState state = 1;
 }
 
-message QueryCCBatchRequest {
+message QueryCCRefRequest {
   string rollup_name = 1;
   uint64 batch_height = 2;
 }
 
-message QueryCCBatchResponse {
-  CCRef batch_loc = 1;
+message QueryCCRefResponse {
+  CCRef ref = 1;
+}
+
+message QueryCCRefsRequest {
+  string rollup_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryCCRefsResponse {
+  repeated CCRef refs = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryQueueTxStateRequest {
+  string rollup_name = 1;
+}
+
+message QueryQueueTxStateResponse {
+  QueueTxState state = 1;
+}
+
+message QueryQueueTxRequest {
+  string rollup_name = 1;
+  uint64 queue_index = 2;
+}
+
+message QueryQueueTxResponse {
+  L1toL2Queue tx = 1;
+}
+
+message QueryQueueTxsRequest {
+  string rollup_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryQueueTxsResponse {
+  repeated L1toL2Queue txs = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryMappedBatchRequest {
+  string rollup_name = 1;
+  uint64 l2_height = 2;
+}
+
+message QueryMappedBatchResponse {
+    CCRef ref = 1;
 }
