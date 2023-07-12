@@ -15,7 +15,7 @@ require (
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/iavl v0.19.4
-	github.com/cosmos/ledger-cosmos-go v0.11.1
+	github.com/cosmos/ledger-cosmos-go v0.12.2
 	github.com/go-kit/kit v0.12.0
 	github.com/gogo/gateway v1.1.0
 	github.com/gogo/protobuf v1.3.3
@@ -117,7 +117,8 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca // indirect
-	github.com/zondax/hid v0.9.0 // indirect
+	github.com/zondax/hid v0.9.1 // indirect
+	github.com/zondax/ledger-go v0.14.1 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
