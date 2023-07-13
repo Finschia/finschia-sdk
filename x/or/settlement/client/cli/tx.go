@@ -1,8 +1,10 @@
 package cli
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -72,11 +74,44 @@ func NewTxCmdStartChallenge() *cobra.Command {
 }
 
 func NewTxCmdNsectChallenge() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "nsect-challenge [from_address] [challenge_id] [state_hash,state_hash,...]",
+		Short: "Nsect challenge.",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			panic("implement me")
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			stateStrs := strings.Split(args[2], ",")
+			stateHashes := make([][]byte, len(stateStrs))
+			for i := range stateStrs {
+				if len(stateStrs[i]) != 64 {
+					return types.ErrInvalidStateHashes
+				}
+				stateHashes[i], err = hex.DecodeString(stateStrs[i])
+				if err != nil {
+					return err
+				}
+			}
+
+			msg := &types.MsgNsectChallenge{
+				From:        args[0],
+				ChallengeId: args[1],
+				StateHashes: stateHashes,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
 }
 
 func NewTxCmdFinishChallenge() *cobra.Command {

@@ -57,11 +57,28 @@ func (m MsgStartChallenge) GetSignBytes() []byte {
 var _ sdk.Msg = &MsgNsectChallenge{}
 
 func (m MsgNsectChallenge) ValidateBasic() error {
-	panic("implement me")
+	_, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid challenger address (%s)", err)
+	}
+
+	if len(m.ChallengeId) != 64 {
+		return ErrInvalidChallengeID
+	}
+
+	if len(m.StateHashes) == 0 {
+		return ErrInvalidStateHashes
+	}
+
+	return nil
 }
 
 func (m MsgNsectChallenge) GetSigners() []sdk.AccAddress {
-	panic("implement me")
+	from, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{from}
 }
 
 func (m MsgNsectChallenge) Type() string {

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"bytes"
 	"context"
 	"encoding/hex"
 
@@ -52,7 +53,50 @@ func (s msgServer) StartChallenge(c context.Context, req *types.MsgStartChalleng
 }
 
 func (s msgServer) NsectChallenge(c context.Context, req *types.MsgNsectChallenge) (*types.MsgNsectChallengeResponse, error) {
-	panic("implement me")
+	ctx := sdk.UnwrapSDKContext(c)
+
+	challenge, err := s.Keeper.GetChallenge(ctx, req.ChallengeId)
+	if err != nil {
+		return nil, err
+	}
+
+	if !challenge.IsSearching() {
+		return nil, types.ErrNotSearching
+	}
+
+	if challenge.CurrentResponder() != req.From {
+		return nil, types.ErrNotResponder
+	}
+
+	if len(challenge.GetSteps()) != len(req.StateHashes) {
+		return nil, types.ErrInvalidStateHashes
+	}
+
+	steps := challenge.GetSteps()
+
+	if challenge.Challenger == req.From {
+		for i := range steps {
+			challenge.AssertedStateHashes[steps[i]] = req.StateHashes[i]
+		}
+	} else {
+		for i := range steps {
+			challenge.DefendedStateHashes[steps[i]] = req.StateHashes[i]
+		}
+
+		// next round
+		for i := range steps {
+			if bytes.Equal(challenge.AssertedStateHashes[steps[i]], challenge.DefendedStateHashes[steps[i]]) {
+				challenge.L = steps[i]
+			} else {
+				challenge.R = steps[i]
+				break
+			}
+		}
+	}
+
+	s.Keeper.SetChallenge(ctx, challenge.ID(), *challenge)
+
+	return &types.MsgNsectChallengeResponse{}, nil
 }
 
 func (s msgServer) FinishChallenge(c context.Context, req *types.MsgFinishChallenge) (*types.MsgFinishChallengeResponse, error) {
