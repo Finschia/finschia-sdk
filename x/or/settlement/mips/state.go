@@ -8,7 +8,7 @@ import (
 )
 
 type State struct {
-	Memory *Memory `json:"memory"`
+	Memory IMemory `json:"memory"`
 
 	PreimageKey    common.Hash `json:"preimageKey"`
 	PreimageOffset uint32      `json:"preimageOffset"` // note that the offset includes the 8-byte length prefix

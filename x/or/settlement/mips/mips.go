@@ -1,3 +1,4 @@
+// nolint
 package mips
 
 import (
@@ -15,6 +16,8 @@ func (m *InstrumentedState) readPreimage(key [32]byte, offset uint32) (dat [32]b
 		preimage = make([]byte, 0, 8+len(data))
 		preimage = binary.BigEndian.AppendUint64(preimage, uint64(len(data)))
 		preimage = append(preimage, data...)
+		// TODO:
+		// - consider if add preimage with prefix to last preimage. it seems like witness doesn't need preimage with prefix.
 		m.lastPreimage = preimage
 	}
 	m.lastPreimageOffset = offset
