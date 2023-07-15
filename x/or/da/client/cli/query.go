@@ -185,6 +185,10 @@ func CmdQueueTx() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			idx, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+
 			res, err := queryClient.QueueTx(cmd.Context(), &types.QueryQueueTxRequest{
 				RollupName: args[0],
 				QueueIndex: idx,
@@ -245,6 +249,10 @@ func CmdMappedBatch() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			l2h, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+
 			res, err := queryClient.MappedBatch(cmd.Context(), &types.QueryMappedBatchRequest{
 				RollupName: args[0],
 				L2Height:   l2h,
