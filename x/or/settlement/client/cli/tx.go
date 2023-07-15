@@ -6,13 +6,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spf13/cobra"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/or/settlement/types"
+	"github.com/spf13/cobra"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -115,9 +114,70 @@ func NewTxCmdNsectChallenge() *cobra.Command {
 }
 
 func NewTxCmdFinishChallenge() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "finish-challenge [address] [challenge_id] [state] [proofs] [preimage_key,preimage_value,preimage_offset]",
+		Short: "Finish challenge.",
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			panic("implement me")
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			statebytes, err := hex.DecodeString(args[2])
+			if err != nil {
+				return err
+			}
+			state, err := types.DecodeState(statebytes)
+			if err != nil {
+				return err
+			}
+
+			proofs, err := hex.DecodeString(args[3])
+			if err != nil {
+				return err
+			}
+
+			preimageStrs := strings.Split(args[4], ",")
+			if len(preimageStrs) != 3 {
+				return types.ErrInvalidWitness
+			}
+
+			key, err := hex.DecodeString(preimageStrs[0])
+			if err != nil {
+				return err
+			}
+
+			val, err := hex.DecodeString(preimageStrs[1])
+			if err != nil {
+				return err
+			}
+
+			offset, err := strconv.ParseInt(preimageStrs[2], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgFinishChallenge{
+				From:        args[0],
+				ChallengeId: args[1],
+				Witness: &types.Witness{
+					State:          state,
+					Proofs:         proofs,
+					PreimageKey:    key,
+					PreimageValue:  val,
+					PreimageOffset: uint32(offset),
+				},
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
 }

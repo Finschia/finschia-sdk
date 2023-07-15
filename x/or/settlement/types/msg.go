@@ -96,11 +96,22 @@ func (m MsgNsectChallenge) GetSignBytes() []byte {
 var _ sdk.Msg = &MsgFinishChallenge{}
 
 func (m MsgFinishChallenge) ValidateBasic() error {
-	panic("implement me")
+	if len(m.ChallengeId) != 64 {
+		return ErrInvalidChallengeID
+	}
+
+	if m.Witness == nil {
+		return ErrInvalidWitness
+	}
+	return nil
 }
 
 func (m MsgFinishChallenge) GetSigners() []sdk.AccAddress {
-	panic("implement me")
+	from, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{from}
 }
 
 func (m MsgFinishChallenge) Type() string {

@@ -3,9 +3,11 @@ package keeper
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/or/settlement/mips"
 	"github.com/Finschia/finschia-sdk/x/or/settlement/types"
 )
 
@@ -100,5 +102,43 @@ func (s msgServer) NsectChallenge(c context.Context, req *types.MsgNsectChalleng
 }
 
 func (s msgServer) FinishChallenge(c context.Context, req *types.MsgFinishChallenge) (*types.MsgFinishChallengeResponse, error) {
-	panic("implement me")
+	ctx := sdk.UnwrapSDKContext(c)
+
+	challenge, err := s.Keeper.GetChallenge(ctx, req.ChallengeId)
+	if err != nil {
+		return nil, err
+	}
+
+	// check timing
+	if challenge.IsSearching() {
+		return nil, types.ErrSearchingNow
+	}
+
+	state, err := mips.WitnessStep(req.Witness, challenge)
+	if err != nil {
+		return nil, err
+	}
+	steped := sha256.Sum256(state.EncodeWitness())
+
+	// settle dispute
+	// challenger win unless steped state is not equal to asserted state or program exit normally.
+	// program check if defender's assertion is correct. program exit normally if defender's assertion is correct.
+	win := true
+	if !bytes.Equal(challenge.AssertedStateHashes[challenge.R], steped[:]) {
+		win = false
+	}
+	if state.Exited && state.ExitCode == 0 {
+		win = false
+	}
+
+	// emit event
+	event := &types.EventChallengeFinished{
+		ChallengeId: req.ChallengeId,
+		Win:         win,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(event); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgFinishChallengeResponse{}, nil
 }

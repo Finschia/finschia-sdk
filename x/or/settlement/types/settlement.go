@@ -50,3 +50,35 @@ func (c Challenge) CurrentResponder() string {
 	}
 	return c.Defender
 }
+
+func DecodeState(input []byte) (*State, error) {
+	if len(input) != 226 {
+		return nil, fmt.Errorf("invalid state bytes length, length %d", len(input))
+	}
+	state := State{}
+	memoryRoot := input[:32]
+	state.MemRoot = memoryRoot
+	state.PreimageKey = input[32:64]
+	state.PreimageOffset = binary.BigEndian.Uint32(input[64:68])
+	state.Pc = binary.BigEndian.Uint32(input[68:72])
+	state.NextPc = binary.BigEndian.Uint32(input[72:76])
+	state.Lo = binary.BigEndian.Uint32(input[76:80])
+	state.Hi = binary.BigEndian.Uint32(input[80:84])
+	state.Heap = binary.BigEndian.Uint32(input[84:88])
+	state.ExitCode = uint32(input[88])
+	if input[89] == 1 {
+		state.Exited = true
+	} else if input[89] == 0 {
+		state.Exited = false
+	} else {
+		return nil, fmt.Errorf("invalid state bytes data, index 89")
+	}
+	state.Step = binary.BigEndian.Uint64(input[90:98])
+	for i := 0; i < 32; i++ {
+		index := i*4 + 98
+		register := binary.BigEndian.Uint32(input[index : index+4])
+		state.Registers = append(state.Registers, register)
+	}
+
+	return &state, nil
+}
