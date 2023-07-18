@@ -27,10 +27,10 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: golangci/golangci-lint-action@master
+      - uses: golangci/golangci-lint-action@v3
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v1.49.0
+          version: v1.51
           args: --timeout 10m
           github-token: ${{ secrets.GITHUB_TOKEN }}
         if: env.GIT_DIFF
