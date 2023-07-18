@@ -2,8 +2,9 @@ package slashing_test
 
 import (
 	"errors"
-	abci "github.com/tendermint/tendermint/abci/types"
 	"testing"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"

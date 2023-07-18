@@ -3,10 +3,11 @@ package network
 import (
 	"context"
 	"encoding/json"
-	"github.com/Finschia/finschia-sdk/compat"
-	"github.com/tendermint/tendermint/privval"
 	"path/filepath"
 	"time"
+
+	"github.com/Finschia/finschia-sdk/compat"
+	"github.com/tendermint/tendermint/privval"
 
 	"github.com/Finschia/finschia-sdk/server/api"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
