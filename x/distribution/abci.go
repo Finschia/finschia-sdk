@@ -1,8 +1,9 @@
 package distribution
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
 	"time"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"

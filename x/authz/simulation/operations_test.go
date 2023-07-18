@@ -1,10 +1,11 @@
 package simulation_test
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
 	"math/rand"
 	"testing"
 	"time"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"

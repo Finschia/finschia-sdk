@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	liavl "github.com/cosmos/iavl"
 	"github.com/Finschia/finschia-sdk/store/cachekv"
+	liavl "github.com/cosmos/iavl"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/store/dbadapter"

@@ -1,8 +1,9 @@
 package testutil
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
 	"testing"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
 
 	"github.com/stretchr/testify/require"
 )

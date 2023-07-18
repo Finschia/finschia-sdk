@@ -2,10 +2,11 @@ package types
 
 import (
 	"encoding/json"
-	abci "github.com/tendermint/tendermint/abci/types"
 	"os"
 	"path/filepath"
 	"testing"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"

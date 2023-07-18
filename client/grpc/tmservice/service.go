@@ -3,6 +3,7 @@ package tmservice
 import (
 	"context"
 	"crypto/sha256"
+
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/tendermint/tendermint/abci/types"

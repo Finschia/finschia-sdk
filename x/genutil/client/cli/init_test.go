@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/Finschia/finschia-sdk/compat"
 	"io"
 	"os"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/Finschia/finschia-sdk/compat"
 
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/Finschia/ostracon/libs/log"

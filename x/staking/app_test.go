@@ -1,8 +1,9 @@
 package staking_test
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
 	"testing"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
