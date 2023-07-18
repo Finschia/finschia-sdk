@@ -35,11 +35,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
-## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.47.0...HEAD)
+## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.47.1...HEAD)
 
 ### Features
-* (x/auth) [\#1011](https://github.com/Finschia/finschia-sdk/pull/1011) add the api for querying next account number
-* (server/grpc) [\#1019](https://github.com/Finschia/finschia-sdk/pull/1019) support custom r/w gRPC options (backport #1017)
 
 ### Improvements
 
@@ -48,7 +46,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
-* (x/foundation) [\#999](https://github.com/Finschia/finschia-sdk/pull/999) migrate x/foundation FoundationTax into x/params
 
 ### Build, CI
 

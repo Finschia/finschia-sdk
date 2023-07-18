@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.47.1](https://github.com/Finschia/finschia-sdk/releases/tag/v0.47.1) - 2023-07-18
+
+### Features
+* (x/auth) [\#1011](https://github.com/Finschia/finschia-sdk/pull/1011) add the api for querying next account number
+* (server/grpc) [\#1019](https://github.com/Finschia/finschia-sdk/pull/1019) support custom r/w gRPC options (backport #1017)
+
+### Breaking Changes
+* (x/foundation) [\#999](https://github.com/Finschia/finschia-sdk/pull/999) migrate x/foundation FoundationTax into x/params
+
+
 ## [v0.47.0](https://github.com/Finschia/finschia-sdk/releases/tag/v0.47.0) - 2023-04-24
 
 ### Features
