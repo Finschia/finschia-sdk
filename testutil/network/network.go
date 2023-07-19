@@ -509,7 +509,7 @@ func (n *Network) Cleanup() {
 	n.T.Log("cleaning up test network...")
 
 	for _, v := range n.Validators {
-		if v.tmNode != nil && v.tmNode.(*rollnode.FullNode).IsRunning() {
+		if v.tmNode.(*rollnode.FullNode).IsRunning() {
 			_ = v.tmNode.(*rollnode.FullNode).Stop()
 		}
 

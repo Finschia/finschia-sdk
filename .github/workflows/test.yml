@@ -2,6 +2,9 @@ name: Tests / Code Coverage
 #  Tests / Code Coverage workflow runs unit tests and uploads a code coverage report
 #  This workflow is run on pushes to main & every Pull Requests where a .go, .mod, .sum have been changed
 
+env:
+  GOPRIVATE: "github.com/Finschia/ramus"
+
 on:
   pull_request:
   push:
@@ -46,6 +49,10 @@ jobs:
             gcc: "aarch64-linux-gnu-gcc"
             package: "g++-aarch64-linux-gnu"
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
@@ -67,6 +74,10 @@ jobs:
   test-cosmovisor:
     runs-on: ubuntu-latest
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -119,6 +130,10 @@ jobs:
       matrix:
         part: ["00", "01", "02", "03"]
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -207,6 +222,10 @@ jobs:
       matrix:
         part: ["00", "01", "02", "03"]
     steps:
+      - name: Configure git for private modules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
