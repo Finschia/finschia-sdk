@@ -1,0 +1,9 @@
+syntax = "proto3";
+package finschia.or.settlement.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
+
+// GenesisState defines the settlement module's genesis state.
+message GenesisState {}

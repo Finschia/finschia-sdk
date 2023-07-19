@@ -612,26 +612,15 @@
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
     - [CC](#finschia.or.da.v1.CC)
     - [GenesisState](#finschia.or.da.v1.GenesisState)
-    - [L2BatchMap](#finschia.or.da.v1.L2BatchMap)
     - [SCC](#finschia.or.da.v1.SCC)
   
 - [finschia/or/da/v1/query.proto](#finschia/or/da/v1/query.proto)
-    - [QueryCCRefRequest](#finschia.or.da.v1.QueryCCRefRequest)
-    - [QueryCCRefResponse](#finschia.or.da.v1.QueryCCRefResponse)
-    - [QueryCCRefsRequest](#finschia.or.da.v1.QueryCCRefsRequest)
-    - [QueryCCRefsResponse](#finschia.or.da.v1.QueryCCRefsResponse)
-    - [QueryCCStateRequest](#finschia.or.da.v1.QueryCCStateRequest)
-    - [QueryCCStateResponse](#finschia.or.da.v1.QueryCCStateResponse)
-    - [QueryMappedBatchRequest](#finschia.or.da.v1.QueryMappedBatchRequest)
-    - [QueryMappedBatchResponse](#finschia.or.da.v1.QueryMappedBatchResponse)
+    - [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest)
+    - [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse)
+    - [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest)
+    - [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse)
     - [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest)
     - [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse)
-    - [QueryQueueTxRequest](#finschia.or.da.v1.QueryQueueTxRequest)
-    - [QueryQueueTxResponse](#finschia.or.da.v1.QueryQueueTxResponse)
-    - [QueryQueueTxStateRequest](#finschia.or.da.v1.QueryQueueTxStateRequest)
-    - [QueryQueueTxStateResponse](#finschia.or.da.v1.QueryQueueTxStateResponse)
-    - [QueryQueueTxsRequest](#finschia.or.da.v1.QueryQueueTxsRequest)
-    - [QueryQueueTxsResponse](#finschia.or.da.v1.QueryQueueTxsResponse)
   
     - [Query](#finschia.or.da.v1.Query)
   
@@ -648,6 +637,36 @@
     - [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse)
   
     - [Msg](#finschia.or.da.v1.Msg)
+  
+- [finschia/or/settlement/v1/event.proto](#finschia/or/settlement/v1/event.proto)
+    - [EventChallengeFinished](#finschia.or.settlement.v1.EventChallengeFinished)
+  
+- [finschia/or/settlement/v1/genesis.proto](#finschia/or/settlement/v1/genesis.proto)
+    - [GenesisState](#finschia.or.settlement.v1.GenesisState)
+  
+- [finschia/or/settlement/v1/settlement.proto](#finschia/or/settlement/v1/settlement.proto)
+    - [Challenge](#finschia.or.settlement.v1.Challenge)
+    - [Challenge.AssertedStateHashesEntry](#finschia.or.settlement.v1.Challenge.AssertedStateHashesEntry)
+    - [Challenge.DefendedStateHashesEntry](#finschia.or.settlement.v1.Challenge.DefendedStateHashesEntry)
+    - [Params](#finschia.or.settlement.v1.Params)
+    - [State](#finschia.or.settlement.v1.State)
+    - [Witness](#finschia.or.settlement.v1.Witness)
+  
+- [finschia/or/settlement/v1/query.proto](#finschia/or/settlement/v1/query.proto)
+    - [QueryChallengeRequest](#finschia.or.settlement.v1.QueryChallengeRequest)
+    - [QueryChallengeResponse](#finschia.or.settlement.v1.QueryChallengeResponse)
+  
+    - [Query](#finschia.or.settlement.v1.Query)
+  
+- [finschia/or/settlement/v1/tx.proto](#finschia/or/settlement/v1/tx.proto)
+    - [MsgFinishChallenge](#finschia.or.settlement.v1.MsgFinishChallenge)
+    - [MsgFinishChallengeResponse](#finschia.or.settlement.v1.MsgFinishChallengeResponse)
+    - [MsgNsectChallenge](#finschia.or.settlement.v1.MsgNsectChallenge)
+    - [MsgNsectChallengeResponse](#finschia.or.settlement.v1.MsgNsectChallengeResponse)
+    - [MsgStartChallenge](#finschia.or.settlement.v1.MsgStartChallenge)
+    - [MsgStartChallengeResponse](#finschia.or.settlement.v1.MsgStartChallengeResponse)
+  
+    - [Msg](#finschia.or.settlement.v1.Msg)
   
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
@@ -9114,12 +9133,8 @@ EventUpdateParams is emitted after updating foundation parameters.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
-| `cc_state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
 | `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
-| `queue_tx_state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
-| `queue_list` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
-| `l2_batch_map` | [L2BatchMap](#finschia.or.da.v1.L2BatchMap) | repeated |  |
 
 
 
@@ -9143,22 +9158,6 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.L2BatchMap"></a>
-
-### L2BatchMap
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `l2_height` | [uint64](#uint64) |  |  |
-| `batch_idx` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
 <a name="finschia.or.da.v1.SCC"></a>
 
 ### SCC
@@ -9167,7 +9166,6 @@ GenesisState defines the da module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
 | `state` | [SCCState](#finschia.or.da.v1.SCCState) |  |  |
 | `history` | [SCCRef](#finschia.or.da.v1.SCCRef) | repeated |  |
 
@@ -9192,9 +9190,9 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCRefRequest"></a>
+<a name="finschia.or.da.v1.QueryCCBatchRequest"></a>
 
-### QueryCCRefRequest
+### QueryCCBatchRequest
 
 
 
@@ -9208,24 +9206,24 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCRefResponse"></a>
+<a name="finschia.or.da.v1.QueryCCBatchResponse"></a>
 
-### QueryCCRefResponse
+### QueryCCBatchResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `ref` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
+| `batch_loc` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
 
 
 
 
 
 
-<a name="finschia.or.da.v1.QueryCCRefsRequest"></a>
+<a name="finschia.or.da.v1.QueryCCBatchesRequest"></a>
 
-### QueryCCRefsRequest
+### QueryCCBatchesRequest
 
 
 
@@ -9239,77 +9237,16 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCRefsResponse"></a>
+<a name="finschia.or.da.v1.QueryCCBatchesResponse"></a>
 
-### QueryCCRefsResponse
+### QueryCCBatchesResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `refs` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `batches_loc` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryCCStateRequest"></a>
-
-### QueryCCStateRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryCCStateResponse"></a>
-
-### QueryCCStateResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryMappedBatchRequest"></a>
-
-### QueryMappedBatchRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
-| `l2_height` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryMappedBatchResponse"></a>
-
-### QueryMappedBatchResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `ref` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
 
 
 
@@ -9340,99 +9277,6 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
-
-<a name="finschia.or.da.v1.QueryQueueTxRequest"></a>
-
-### QueryQueueTxRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
-| `queue_index` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryQueueTxResponse"></a>
-
-### QueryQueueTxResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tx` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryQueueTxStateRequest"></a>
-
-### QueryQueueTxStateRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryQueueTxStateResponse"></a>
-
-### QueryQueueTxStateResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryQueueTxsRequest"></a>
-
-### QueryQueueTxsRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `rollup_name` | [string](#string) |  |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.QueryQueueTxsResponse"></a>
-
-### QueryQueueTxsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `txs` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -9447,14 +9291,9 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Params queries the parameters of the or/da module. | GET|/finschia/or/da/v1/params|
-| `CCState` | [QueryCCStateRequest](#finschia.or.da.v1.QueryCCStateRequest) | [QueryCCStateResponse](#finschia.or.da.v1.QueryCCStateResponse) | CCState queries the CC state for specific rollup | GET|/finschia/or/da/v1/cc/state/{rollup_name}|
-| `CCRef` | [QueryCCRefRequest](#finschia.or.da.v1.QueryCCRefRequest) | [QueryCCRefResponse](#finschia.or.da.v1.QueryCCRefResponse) | CCRef queries the CC batch reference at the given batch height for specific rollup | GET|/finschia/or/da/v1/cc/ref/{rollup_name}/{batch_height}|
-| `CCRefs` | [QueryCCRefsRequest](#finschia.or.da.v1.QueryCCRefsRequest) | [QueryCCRefsResponse](#finschia.or.da.v1.QueryCCRefsResponse) | CCRefs queries all the CC batch references for specific rollup | GET|/finschia/or/da/v1/cc/refs/{rollup_name}|
-| `QueueTxState` | [QueryQueueTxStateRequest](#finschia.or.da.v1.QueryQueueTxStateRequest) | [QueryQueueTxStateResponse](#finschia.or.da.v1.QueryQueueTxStateResponse) | QueueTxState queries the L1-to-L2 queue state | GET|/finschia/or/da/v1/cc/queuetx/state/{rollup_name}|
-| `QueueTx` | [QueryQueueTxRequest](#finschia.or.da.v1.QueryQueueTxRequest) | [QueryQueueTxResponse](#finschia.or.da.v1.QueryQueueTxResponse) | QueueTx queries the L1-to-L2 queue transaction at the given index | GET|/finschia/or/da/v1/cc/queuetx/{rollup_name}/{queue_index}|
-| `QueueTxs` | [QueryQueueTxsRequest](#finschia.or.da.v1.QueryQueueTxsRequest) | [QueryQueueTxsResponse](#finschia.or.da.v1.QueryQueueTxsResponse) | QueueTx queries the L1-to-L2 queue transaction at the given index | GET|/finschia/or/da/v1/cc/queuetxs/{rollup_name}|
-| `MappedBatch` | [QueryMappedBatchRequest](#finschia.or.da.v1.QueryMappedBatchRequest) | [QueryMappedBatchResponse](#finschia.or.da.v1.QueryMappedBatchResponse) | MappedBatch queries the CC batch reference containing the corresponding L2 block height | GET|/finschia/or/da/v1/cc/mappedbatch/{rollup_name}/{l2_height}|
+| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/finschia/or/da/v1/params|
+| `CCBatches` | [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest) | [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse) |  | GET|/finschia/or/da/v1/batches/cc|
+| `CCBatch` | [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest) | [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse) |  | GET|/finschia/or/da/v1/batches/cc/{batch_height}|
 
  <!-- end services -->
 
@@ -9622,6 +9461,362 @@ Msg defines the Msg service.
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
 | `RemoveSCCBatch` | [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch) | [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/settlement/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/settlement/v1/event.proto
+
+
+
+<a name="finschia.or.settlement.v1.EventChallengeFinished"></a>
+
+### EventChallengeFinished
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `challenge_id` | [string](#string) |  |  |
+| `win` | [bool](#bool) |  | true if challegner win |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/settlement/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/settlement/v1/genesis.proto
+
+
+
+<a name="finschia.or.settlement.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the settlement module's genesis state.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/settlement/v1/settlement.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/settlement/v1/settlement.proto
+
+
+
+<a name="finschia.or.settlement.v1.Challenge"></a>
+
+### Challenge
+Challenge defines challenge information.
+a.k.a Contract.sol#ChallengeData.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  | Rollup name |
+| `block_height` | [int64](#int64) |  | Block number preceding the challenged block. |
+| `challenger` | [string](#string) |  | Address of the challenger. |
+| `defender` | [string](#string) |  | Address of the defender. |
+| `l` | [uint64](#uint64) |  | Left bound of the binary search: challenger & defender agree on all steps <= L. |
+| `r` | [uint64](#uint64) |  | Right bound of the binary search: challenger & defender disagree on all steps >= R. |
+| `asserted_state_hashes` | [Challenge.AssertedStateHashesEntry](#finschia.or.settlement.v1.Challenge.AssertedStateHashesEntry) | repeated | Maps step numbers to asserted state hashes for the challenger. |
+| `defended_state_hashes` | [Challenge.DefendedStateHashesEntry](#finschia.or.settlement.v1.Challenge.DefendedStateHashesEntry) | repeated | Maps step numbers to defended state hashes for the defender. |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.Challenge.AssertedStateHashesEntry"></a>
+
+### Challenge.AssertedStateHashesEntry
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [uint64](#uint64) |  |  |
+| `value` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.Challenge.DefendedStateHashesEntry"></a>
+
+### Challenge.DefendedStateHashesEntry
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [uint64](#uint64) |  |  |
+| `value` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.Params"></a>
+
+### Params
+Params defines the parameters for the settlement module.
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.State"></a>
+
+### State
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `mem_root` | [bytes](#bytes) |  |  |
+| `preimage_key` | [bytes](#bytes) |  |  |
+| `preimage_offset` | [uint32](#uint32) |  |  |
+| `pc` | [uint32](#uint32) |  |  |
+| `next_pc` | [uint32](#uint32) |  |  |
+| `lo` | [uint32](#uint32) |  |  |
+| `hi` | [uint32](#uint32) |  |  |
+| `heap` | [uint32](#uint32) |  |  |
+| `exit_code` | [uint32](#uint32) |  |  |
+| `exited` | [bool](#bool) |  |  |
+| `step` | [uint64](#uint64) |  |  |
+| `registers` | [uint32](#uint32) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.Witness"></a>
+
+### Witness
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [State](#finschia.or.settlement.v1.State) |  |  |
+| `proofs` | [bytes](#bytes) |  |  |
+| `preimage_key` | [bytes](#bytes) |  |  |
+| `preimage_value` | [bytes](#bytes) |  |  |
+| `preimage_offset` | [uint32](#uint32) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/settlement/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/settlement/v1/query.proto
+
+
+
+<a name="finschia.or.settlement.v1.QueryChallengeRequest"></a>
+
+### QueryChallengeRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `challenge_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.QueryChallengeResponse"></a>
+
+### QueryChallengeResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `challenge` | [Challenge](#finschia.or.settlement.v1.Challenge) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.settlement.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Challenge` | [QueryChallengeRequest](#finschia.or.settlement.v1.QueryChallengeRequest) | [QueryChallengeResponse](#finschia.or.settlement.v1.QueryChallengeResponse) | instead of getStepNumber, isSearching, and getProposedState | GET|/finschia/or/settlement/v1/challenge/{challenge_id}|
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/settlement/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/settlement/v1/tx.proto
+
+
+
+<a name="finschia.or.settlement.v1.MsgFinishChallenge"></a>
+
+### MsgFinishChallenge
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `challenge_id` | [string](#string) |  |  |
+| `witness` | [Witness](#finschia.or.settlement.v1.Witness) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.MsgFinishChallengeResponse"></a>
+
+### MsgFinishChallengeResponse
+
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.MsgNsectChallenge"></a>
+
+### MsgNsectChallenge
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `challenge_id` | [string](#string) |  |  |
+| `state_hashes` | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.MsgNsectChallengeResponse"></a>
+
+### MsgNsectChallengeResponse
+
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.MsgStartChallenge"></a>
+
+### MsgStartChallenge
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `block_height` | [int64](#int64) |  |  |
+| `step_count` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.settlement.v1.MsgStartChallengeResponse"></a>
+
+### MsgStartChallengeResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `challenge_id` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.settlement.v1.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `StartChallenge` | [MsgStartChallenge](#finschia.or.settlement.v1.MsgStartChallenge) | [MsgStartChallengeResponse](#finschia.or.settlement.v1.MsgStartChallengeResponse) |  | |
+| `NsectChallenge` | [MsgNsectChallenge](#finschia.or.settlement.v1.MsgNsectChallenge) | [MsgNsectChallengeResponse](#finschia.or.settlement.v1.MsgNsectChallengeResponse) |  | |
+| `FinishChallenge` | [MsgFinishChallenge](#finschia.or.settlement.v1.MsgFinishChallenge) | [MsgFinishChallengeResponse](#finschia.or.settlement.v1.MsgFinishChallengeResponse) |  | |
 
  <!-- end services -->
 

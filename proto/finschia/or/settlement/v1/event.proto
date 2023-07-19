@@ -1,0 +1,9 @@
+syntax = "proto3";
+package finschia.or.settlement.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
+
+message EventChallengeFinished {
+  string challenge_id = 1;
+  bool   win          = 2; // true if challegner win
+}
