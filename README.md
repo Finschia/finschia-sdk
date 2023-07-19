@@ -4,7 +4,7 @@ This is forked from [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) at 2021
 
 **WARNING**: Breaking changes may occur because this repository is still in the pre-release development phase.
 
-**Note**: Requires [Go 1.18+](https://golang.org/dl/)
+**Note**: Requires [Go 1.20+](https://golang.org/dl/)
 
 ## What is the Finschia SDK?
 
