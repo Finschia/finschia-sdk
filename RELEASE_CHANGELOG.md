@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.47.2](https://github.com/Finschia/finschia-sdk/releases/tag/v0.47.2) - 2023-07-18
+
+### Features
+* (server/grpc) [\#1018](https://github.com/Finschia/finschia-sdk/pull/1018) support custom r/w gRPC options (backport #1017)
+* (x/auth) [\#1026](https://github.com/Finschia/finschia-sdk/pull/1026) add the api for querying next account number (backport #1011)
+
+## [v0.47.1](https://github.com/Finschia/finschia-sdk/releases/tag/v0.47.1) - 2023-07-18
+⚠️ **DEPRECATED**
+
 ## [v0.47.0](https://github.com/Finschia/finschia-sdk/releases/tag/v0.47.0) - 2023-04-24
 
 ### Features
