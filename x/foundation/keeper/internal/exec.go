@@ -102,12 +102,9 @@ func (k Keeper) doExecuteMsgs(ctx sdk.Context, proposal foundation.Proposal) ([]
 		if err != nil {
 			return nil, sdkerrors.Wrapf(err, "message %q at position %d", msg, i)
 		}
-		// Handler should always return non-nil sdk.Result.
-		if r == nil {
-			return nil, fmt.Errorf("got nil sdk.Result for message %q at position %d", msg, i)
+		if r != nil {
+			results[i] = *r
 		}
-
-		results[i] = *r
 	}
 	return results, nil
 }
