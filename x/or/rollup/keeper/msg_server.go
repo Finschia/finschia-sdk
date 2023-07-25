@@ -139,39 +139,6 @@ func (k msgServer) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types
 	return &types.MsgDepositResponse{}, nil
 }
 
-func (k msgServer) Slash(ctx sdk.Context, rollupName string, sequencerAddress string, value sdk.Coin) error {
-	_, found := k.GetRollup(ctx, rollupName)
-	if !found {
-		return types.ErrNotExistRollupName
-	}
-	_, found = k.GetSequencer(ctx, sequencerAddress)
-	if !found {
-		return types.ErrNotExistSequencer
-	}
-
-	deposit, found := k.GetDeposit(ctx, rollupName, sequencerAddress)
-	if !found {
-		return types.ErrNotFoundDeposit
-	}
-
-	slashAmount := value
-	if deposit.Value.Amount.LT(value.Amount) {
-		slashAmount = deposit.Value
-		deposit.Value = sdk.NewCoin(value.Denom, sdk.NewInt(0))
-	} else {
-		deposit.Value.Sub(value)
-	}
-
-	err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(slashAmount))
-	if err != nil {
-		return err
-	}
-
-	k.SetDeposit(ctx, deposit)
-
-	return nil
-}
-
 func (k msgServer) Withdraw(goCtx context.Context, msg *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 

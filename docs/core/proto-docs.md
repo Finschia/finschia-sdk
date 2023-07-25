@@ -9463,8 +9463,8 @@ Msg defines the Msg service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
-| `SequencerAddress` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
 | `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
@@ -9480,10 +9480,10 @@ Msg defines the Msg service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
-| `permissionedAddresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
-| `maxSequencers` | [uint64](#uint64) |  |  |
+| `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
+| `max_sequencers` | [uint64](#uint64) |  |  |
 
 
 
@@ -9498,9 +9498,9 @@ Msg defines the Msg service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `sequencerAddress` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
 | `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 
 
 
@@ -9530,7 +9530,7 @@ Msg defines the Msg service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 | `sequencers` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
 
 
@@ -9588,8 +9588,8 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupList` | [Rollup](#finschia.or.rollup.v1.Rollup) | repeated |  |
-| `sequencerList` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+| `rollup_list` | [Rollup](#finschia.or.rollup.v1.Rollup) | repeated |  |
+| `sequencer_list` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
 | `params` | [Params](#finschia.or.rollup.v1.Params) |  |  |
 
 
@@ -9652,8 +9652,8 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
-| `sequencerAddress` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
 
 
 
@@ -9683,7 +9683,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 
 
 
@@ -9713,7 +9713,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `sequencerAddress` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
 
 
 
@@ -9743,7 +9743,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 
 
 
@@ -9758,7 +9758,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 | `sequencer_list` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
 
 
@@ -9779,11 +9779,11 @@ Params defines the parameters for the module.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Rollup` | [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest) | [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/{rollupName}|
+| `Rollup` | [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest) | [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/{rollup_name}|
 | `AllRollup` | [QueryAllRollupRequest](#finschia.or.rollup.v1.QueryAllRollupRequest) | [QueryAllRollupResponse](#finschia.or.rollup.v1.QueryAllRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/rollup|
-| `Sequencer` | [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest) | [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencer/{sequencerAddress}|
-| `SequencersByRollup` | [QuerySequencersByRollupRequest](#finschia.or.rollup.v1.QuerySequencersByRollupRequest) | [QuerySequencersByRollupResponse](#finschia.or.rollup.v1.QuerySequencersByRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollupName}|
-| `Deposit` | [QueryDepositRequest](#finschia.or.rollup.v1.QueryDepositRequest) | [QueryDepositResponse](#finschia.or.rollup.v1.QueryDepositResponse) |  | GET|/finschia/or/rollup/v1/rollup/deposit/{rollupName}/{sequencerAddress}|
+| `Sequencer` | [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest) | [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencer/{sequencer_address}|
+| `SequencersByRollup` | [QuerySequencersByRollupRequest](#finschia.or.rollup.v1.QuerySequencersByRollupRequest) | [QuerySequencersByRollupResponse](#finschia.or.rollup.v1.QuerySequencersByRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollup_name}|
+| `Deposit` | [QueryDepositRequest](#finschia.or.rollup.v1.QueryDepositRequest) | [QueryDepositResponse](#finschia.or.rollup.v1.QueryDepositResponse) |  | GET|/finschia/or/rollup/v1/rollup/deposit/{rollup_name}/{sequencer_address}|
 
  <!-- end services -->
 
@@ -9804,10 +9804,10 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
-| `permissionedAddresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
-| `maxSequencers` | [uint64](#uint64) |  |  |
+| `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
+| `max_sequencers` | [uint64](#uint64) |  |  |
 
 
 
@@ -9832,8 +9832,8 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
-| `sequencerAddress` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
 | `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
@@ -9861,7 +9861,7 @@ Params defines the parameters for the module.
 | ----- | ---- | ----- | ----------- |
 | `creator` | [string](#string) |  |  |
 | `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `rollupName` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
 | `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
@@ -9907,8 +9907,8 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rollupName` | [string](#string) |  |  |
-| `sequencerAddress` | [string](#string) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
 | `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 

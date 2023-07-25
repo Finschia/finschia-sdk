@@ -42,15 +42,15 @@ func request_Query_Rollup_0(ctx context.Context, marshaler runtime.Marshaler, cl
 		_   = err
 	)
 
-	val, ok = pathParams["rollupName"]
+	val, ok = pathParams["rollup_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollupName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollup_name")
 	}
 
 	protoReq.RollupName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollupName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollup_name", err)
 	}
 
 	msg, err := client.Rollup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -69,15 +69,15 @@ func local_request_Query_Rollup_0(ctx context.Context, marshaler runtime.Marshal
 		_   = err
 	)
 
-	val, ok = pathParams["rollupName"]
+	val, ok = pathParams["rollup_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollupName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollup_name")
 	}
 
 	protoReq.RollupName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollupName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollup_name", err)
 	}
 
 	msg, err := server.Rollup(ctx, &protoReq)
@@ -132,15 +132,15 @@ func request_Query_Sequencer_0(ctx context.Context, marshaler runtime.Marshaler,
 		_   = err
 	)
 
-	val, ok = pathParams["sequencerAddress"]
+	val, ok = pathParams["sequencer_address"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencerAddress")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencer_address")
 	}
 
 	protoReq.SequencerAddress, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencerAddress", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencer_address", err)
 	}
 
 	msg, err := client.Sequencer(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -159,15 +159,15 @@ func local_request_Query_Sequencer_0(ctx context.Context, marshaler runtime.Mars
 		_   = err
 	)
 
-	val, ok = pathParams["sequencerAddress"]
+	val, ok = pathParams["sequencer_address"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencerAddress")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencer_address")
 	}
 
 	protoReq.SequencerAddress, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencerAddress", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencer_address", err)
 	}
 
 	msg, err := server.Sequencer(ctx, &protoReq)
@@ -186,15 +186,15 @@ func request_Query_SequencersByRollup_0(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["rollupName"]
+	val, ok = pathParams["rollup_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollupName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollup_name")
 	}
 
 	protoReq.RollupName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollupName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollup_name", err)
 	}
 
 	msg, err := client.SequencersByRollup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -213,15 +213,15 @@ func local_request_Query_SequencersByRollup_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["rollupName"]
+	val, ok = pathParams["rollup_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollupName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollup_name")
 	}
 
 	protoReq.RollupName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollupName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollup_name", err)
 	}
 
 	msg, err := server.SequencersByRollup(ctx, &protoReq)
@@ -240,26 +240,26 @@ func request_Query_Deposit_0(ctx context.Context, marshaler runtime.Marshaler, c
 		_   = err
 	)
 
-	val, ok = pathParams["rollupName"]
+	val, ok = pathParams["rollup_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollupName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollup_name")
 	}
 
 	protoReq.RollupName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollupName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollup_name", err)
 	}
 
-	val, ok = pathParams["sequencerAddress"]
+	val, ok = pathParams["sequencer_address"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencerAddress")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencer_address")
 	}
 
 	protoReq.SequencerAddress, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencerAddress", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencer_address", err)
 	}
 
 	msg, err := client.Deposit(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -278,26 +278,26 @@ func local_request_Query_Deposit_0(ctx context.Context, marshaler runtime.Marsha
 		_   = err
 	)
 
-	val, ok = pathParams["rollupName"]
+	val, ok = pathParams["rollup_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollupName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rollup_name")
 	}
 
 	protoReq.RollupName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollupName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rollup_name", err)
 	}
 
-	val, ok = pathParams["sequencerAddress"]
+	val, ok = pathParams["sequencer_address"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencerAddress")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequencer_address")
 	}
 
 	protoReq.SequencerAddress, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencerAddress", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequencer_address", err)
 	}
 
 	msg, err := server.Deposit(ctx, &protoReq)
@@ -556,15 +556,15 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Rollup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 1, 0, 4, 1, 5, 4}, []string{"finschia", "or", "rollup", "v1", "rollupName"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Rollup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 1, 0, 4, 1, 5, 4}, []string{"finschia", "or", "rollup", "v1", "rollup_name"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_AllRollup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 2}, []string{"finschia", "or", "rollup", "v1"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Sequencer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"finschia", "or", "rollup", "v1", "sequencer", "sequencerAddress"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Sequencer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"finschia", "or", "rollup", "v1", "sequencer", "sequencer_address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_SequencersByRollup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"finschia", "or", "rollup", "v1", "sequencers_by_rollup", "rollupName"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SequencersByRollup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"finschia", "or", "rollup", "v1", "sequencers_by_rollup", "rollup_name"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Deposit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"finschia", "or", "rollup", "v1", "deposit", "rollupName", "sequencerAddress"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Deposit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 2, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"finschia", "or", "rollup", "v1", "deposit", "rollup_name", "sequencer_address"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

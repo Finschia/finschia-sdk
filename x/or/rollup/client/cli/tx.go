@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	flag "github.com/spf13/pflag"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
@@ -82,9 +80,9 @@ func NewCreateRollupCmd() *cobra.Command {
 
 func NewRegisterSequencerCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-sequencer [rollup_name] [pubkey]",
-		Short: "Register a new sequencer for a rollup",
-		Args:  cobra.ExactArgs(2),
+		Use:   "register-sequencer [rollup_name] [pubkey] [amount]",
+		Short: "Register a new sequencer for a rollup. Amount is the value to deposit",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRollupName := args[0]
 			argPubkey := args[1]
@@ -99,8 +97,7 @@ func NewRegisterSequencerCmd() *cobra.Command {
 				return err
 			}
 
-			fAmount, _ := cmd.Flags().GetString(FlagAmount)
-			amount, err := sdk.ParseCoinNormalized(fAmount)
+			amount, err := sdk.ParseCoinNormalized(args[2])
 			if err != nil {
 				return err
 			}
@@ -123,7 +120,6 @@ func NewRegisterSequencerCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FlagSetAmount())
 	flags.AddTxFlagsToCmd(cmd)
 
 	_ = cmd.MarkFlagRequired(FlagAmount)
@@ -133,9 +129,9 @@ func NewRegisterSequencerCmd() *cobra.Command {
 
 func NewDepositCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deposit-by-sequencer [rollup_name]",
+		Use:   "deposit-by-sequencer [rollup_name] [amount]",
 		Short: "Deposit by sequencer",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRollupName := args[0]
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -143,8 +139,7 @@ func NewDepositCmd() *cobra.Command {
 				return err
 			}
 
-			fAmount, _ := cmd.Flags().GetString(FlagAmount)
-			amount, err := sdk.ParseCoinNormalized(fAmount)
+			amount, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
@@ -159,7 +154,6 @@ func NewDepositCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FlagSetAmount())
 	flags.AddTxFlagsToCmd(cmd)
 
 	_ = cmd.MarkFlagRequired(FlagAmount)
@@ -169,9 +163,9 @@ func NewDepositCmd() *cobra.Command {
 
 func NewWithdrawCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-by-sequencer [rollup_name]",
+		Use:   "withdraw-by-sequencer [rollup_name] [amount]",
 		Short: "Withdraw by sequencer",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRollupName := args[0]
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -179,8 +173,7 @@ func NewWithdrawCmd() *cobra.Command {
 				return err
 			}
 
-			fAmount, _ := cmd.Flags().GetString(FlagAmount)
-			amount, err := sdk.ParseCoinNormalized(fAmount)
+			amount, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
@@ -195,7 +188,6 @@ func NewWithdrawCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FlagSetAmount())
 	flags.AddTxFlagsToCmd(cmd)
 
 	_ = cmd.MarkFlagRequired(FlagAmount)
@@ -206,10 +198,3 @@ func NewWithdrawCmd() *cobra.Command {
 // func NewRemoveSequencerCmd() *cobra.Command {
 // 	panic("implement me")
 // }
-
-// FlagSetAmount Returns the FlagSet for amount related operations.
-func FlagSetAmount() *flag.FlagSet {
-	fs := flag.NewFlagSet("", flag.ContinueOnError)
-	fs.String(FlagAmount, "", "Amount of coins to deposit")
-	return fs
-}

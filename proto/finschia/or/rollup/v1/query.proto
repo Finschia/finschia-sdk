@@ -14,7 +14,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
 
 service Query {
   rpc Rollup(QueryRollupRequest) returns (QueryRollupResponse) {
-    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/{rollupName}";
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/{rollup_name}";
   }
 
   rpc AllRollup(QueryAllRollupRequest) returns (QueryAllRollupResponse) {
@@ -22,20 +22,20 @@ service Query {
   }
 
   rpc Sequencer(QuerySequencerRequest) returns (QuerySequencerResponse) {
-    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencer/{sequencerAddress}";
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencer/{sequencer_address}";
   }
 
   rpc SequencersByRollup(QuerySequencersByRollupRequest) returns (QuerySequencersByRollupResponse) {
-    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollupName}";
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollup_name}";
   }
 
   rpc Deposit(QueryDepositRequest) returns (QueryDepositResponse) {
-    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/deposit/{rollupName}/{sequencerAddress}";
+    option (google.api.http).get = "/finschia/or/rollup/v1/rollup/deposit/{rollup_name}/{sequencer_address}";
   }
 }
 
 message QueryRollupRequest {
-  string rollupName = 1;
+  string rollup_name = 1;
 }
 
 message QueryAllRollupRequest {
@@ -48,7 +48,7 @@ message QueryAllRollupResponse {
 }
 
 message QuerySequencerRequest {
-  string sequencerAddress = 1;
+  string sequencer_address = 1;
 }
 
 message QueryRollupResponse {
@@ -60,17 +60,17 @@ message QuerySequencerResponse {
 }
 
 message QuerySequencersByRollupRequest {
-    string rollupName = 1;
+    string rollup_name = 1;
 }
 
 message QuerySequencersByRollupResponse {
-    string rollupName = 1;
+    string rollup_name = 1;
     repeated Sequencer sequencer_list = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryDepositRequest {
-  string rollupName = 1;
-  string sequencerAddress = 2;
+  string rollup_name = 1;
+  string sequencer_address = 2;
 }
 
 message QueryDepositResponse {

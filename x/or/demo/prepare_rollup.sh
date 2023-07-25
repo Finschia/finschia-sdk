@@ -6,23 +6,25 @@ ROLLUPNAME="test-rollup"
 DEPOSIT="20"
 WITHDRAW="10"
 
+BASE_DIR=~/.simapp
+
 # Get address which want to register for sequencer
-SEQUENCER=$(simd keys list --keyring-backend=test --home ~/.simapp/simapp0 --output json | jq -r '.[0]'.name)
-SEQUENCERADDRESS=$(simd keys list --keyring-backend=test --home ~/.simapp/simapp0 --output json | jq -r '.[0]'.address)
-SEQUENCERPUBKEY=$(simd keys list --keyring-backend=test --home ~/.simapp/simapp0 --output json | jq -r '.[0]'.pubkey)
+SEQUENCER=$(simd keys list --keyring-backend=test --home $BASE_DIR --output json | jq -r '.[0]'.name)
+SEQUENCERADDRESS=$(simd keys list --keyring-backend=test --home $BASE_DIR --output json | jq -r '.[0]'.address)
+SEQUENCERPUBKEY=$(simd keys list --keyring-backend=test --home $BASE_DIR --output json | jq -r '.[0]'.pubkey)
 echo "Sequencer Info"
 echo $SEQUENCER
 echo $SEQUENCERADDRESS
 echo $SEQUENCERPUBKEY
 
 echo "# Check init balance"
-INITBALANCE=$(simd query bank balances $SEQUENCERADDRESS --home ~/.simapp/simapp0 --output json | jq -r '.balances[0].amount')
+INITBALANCE=$(simd query bank balances $SEQUENCERADDRESS --home $BASE_DIR --output json | jq -r '.balances[0].amount')
 echo $INITBALANCE
 
 echo "# Create rollup"
-simd tx rollup create-rollup $ROLLUPNAME --from $SEQUENCER --keyring-backend=test --home ~/.simapp/simapp0 --chain-id sim -y
+simd tx rollup create-rollup $ROLLUPNAME --from $SEQUENCER --keyring-backend=test --home $BASE_DIR --chain-id sim -y
 
-sleep 2
+sleep 5
 
 echo "# Check created rollup"
 simd query rollup show-rollup $ROLLUPNAME
@@ -31,12 +33,12 @@ echo "# Check rollup list"
 simd query rollup list
 
 echo "# Register sequencer"
-simd tx rollup register-sequencer test-rollup ${SEQUENCERPUBKEY} --from $SEQUENCER --amount $DEPOSIT$DENOM --keyring-backend test --home ~/.simapp/simapp0 --chain-id sim -y
+simd tx rollup register-sequencer test-rollup ${SEQUENCERPUBKEY} $DEPOSIT$DENOM --from $SEQUENCER --keyring-backend test --home $BASE_DIR --chain-id sim -y
 
-sleep 2
+sleep 5
 
 echo "# Check balance after registered sequencer"
-BALANCEAFTERREGISTER=$(simd query bank balances $SEQUENCERADDRESS --home ~/.simapp/simapp0 --output json | jq -r '.balances[0].amount')
+BALANCEAFTERREGISTER=$(simd query bank balances $SEQUENCERADDRESS --home $BASE_DIR --output json | jq -r '.balances[0].amount')
 echo $BALANCEAFTERREGISTER
 
 if [ $((${INITBALANCE}-${DEPOSIT})) -ne ${BALANCEAFTERREGISTER} ]; then
@@ -50,15 +52,15 @@ echo "# Check sequencer by rollup name"
 simd query rollup show-sequencers-by-rollup $ROLLUPNAME --output json
 
 echo "# Check sequencer"
-simd query rollup show-sequencer $SEQUENCERADDRESS --home ~/.simapp/simapp0 --output json
+simd query rollup show-sequencer $SEQUENCERADDRESS --home $BASE_DIR --output json
 
 echo "# Withdraw deposit"
-simd tx rollup withdraw-by-sequencer $ROLLUPNAME --from $SEQUENCER --amount $WITHDRAW$DENOM --keyring-backend test --home ~/.simapp/simapp0 --chain-id sim -y
+simd tx rollup withdraw-by-sequencer $ROLLUPNAME $WITHDRAW$DENOM --from $SEQUENCER --keyring-backend test --home $BASE_DIR --chain-id sim -y
 
-sleep 2
+sleep 5
 
 echo "# Check balance after withdraw"
-BALANCEAFTERWITHDRAW=$(simd query bank balances $SEQUENCERADDRESS --home ~/.simapp/simapp0 --output json | jq -r '.balances[0].amount')
+BALANCEAFTERWITHDRAW=$(simd query bank balances $SEQUENCERADDRESS --home $BASE_DIR --output json | jq -r '.balances[0].amount')
 
 if [ $((${INITBALANCE}-${DEPOSIT}+${WITHDRAW})) -ne ${BALANCEAFTERWITHDRAW} ]; then
     echo "The balance after withdraw does not match."
@@ -68,12 +70,12 @@ else
 fi
 
 echo "# Deposit by sequencer again"
-simd tx rollup deposit-by-sequencer test-rollup --from $SEQUENCER --amount $DEPOSIT$DENOM --keyring-backend=test --home ~/.simapp/simapp0 --chain-id sim -y
+simd tx rollup deposit-by-sequencer test-rollup $DEPOSIT$DENOM --from $SEQUENCER --keyring-backend=test --home $BASE_DIR --chain-id sim -y
 
-sleep 2
+sleep 5
 
 echo "# Check balance after deposit again"
-BALANCEAFTERDEPOSITAGAIN=$(simd query bank balances $SEQUENCERADDRESS --home ~/.simapp/simapp0 --output json | jq -r '.balances[0].amount')
+BALANCEAFTERDEPOSITAGAIN=$(simd query bank balances $SEQUENCERADDRESS --home $BASE_DIR --output json | jq -r '.balances[0].amount')
 
 if [ $((${INITBALANCE}-2*${DEPOSIT}+${WITHDRAW})) -ne ${BALANCEAFTERDEPOSITAGAIN} ]; then
     echo "The balance after deposit again does not match."

@@ -59,11 +59,6 @@ func NewQueryCmdShowRollup() *cobra.Command {
 	return cmd
 }
 
-// func NewQueryCmdShowSequencer() *cobra.Command {
-// 	cmd := &cobra.Command{}
-// 	return cmd
-// }
-
 func NewQueryCmdShowSequencersByRollup() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-sequencers-by-rollup [rollup-name]",
