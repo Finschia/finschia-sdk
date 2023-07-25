@@ -81,6 +81,8 @@ import (
 	"github.com/Finschia/finschia-sdk/x/mint"
 	mintkeeper "github.com/Finschia/finschia-sdk/x/mint/keeper"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	ordakeeper "github.com/Finschia/finschia-sdk/x/or/da/keeper"
+	ordatypes "github.com/Finschia/finschia-sdk/x/or/da/types"
 	"github.com/Finschia/finschia-sdk/x/params"
 	paramsclient "github.com/Finschia/finschia-sdk/x/params/client"
 	paramskeeper "github.com/Finschia/finschia-sdk/x/params/keeper"
@@ -147,6 +149,7 @@ var (
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
 		rollup.AppModuleBasic{},
+		//ordamodule.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -207,6 +210,7 @@ type SimApp struct {
 	ClassKeeper      classkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
+	Ordakeeper       ordakeeper.Keeper
 
 	RollupKeeper rollupkeeper.Keeper
 
@@ -263,6 +267,7 @@ func NewSimApp(
 		collection.StoreKey,
 		authzkeeper.StoreKey,
 		rolluptypes.StoreKey,
+		ordatypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
@@ -367,6 +372,9 @@ func NewSimApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	/****  Rollup ****/
+	app.Ordakeeper = ordakeeper.NewKeeper(appCodec, keys[ordatypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper, nil)
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -399,6 +407,7 @@ func NewSimApp(
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		rollup.NewAppModule(appCodec, app.RollupKeeper, app.AccountKeeper, app.BankKeeper),
+		//ordamodule.NewAppModule(appCodec, app.Ordakeeper, app.AccountKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -427,6 +436,7 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		rolluptypes.ModuleName,
+		ordatypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -449,6 +459,7 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		rolluptypes.ModuleName,
+		ordatypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -477,6 +488,7 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		rolluptypes.ModuleName,
+		ordatypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.

@@ -7,15 +7,15 @@ import (
 )
 
 // GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx sdk.Context) (types.Params, error) {
+func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte{types.ParamsKey})
 	var params types.Params
 	if bz == nil {
-		return params, nil
+		return params
 	}
-	err := k.cdc.Unmarshal(bz, &params)
-	return params, err
+	k.cdc.MustUnmarshal(bz, &params)
+	return params
 }
 
 // SetParams set the params
@@ -30,18 +30,38 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	return nil
 }
 
-func (k Keeper) CCBatchMaxBytes(ctx sdk.Context) (uint64, error) {
-	params, err := k.GetParams(ctx)
-	if err != nil {
-		return 0, err
-	}
-	return params.CCBatchMaxBytes, nil
+func (k Keeper) CCBatchMaxBytes(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+
+	return params.CCBatchMaxBytes
 }
 
-func (k Keeper) SCCBatchMaxBytes(ctx sdk.Context) (uint64, error) {
-	params, err := k.GetParams(ctx)
-	if err != nil {
-		return 0, err
-	}
-	return params.SCCBatchMaxBytes, nil
+func (k Keeper) MaxQueueTxSize(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return params.MaxQueueTxSize
+}
+
+func (k Keeper) MinQueueTxGas(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return params.MinQueueTxGas
+}
+
+func (k Keeper) QueueTxExpirationWindow(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return params.QueueTxExpirationWindow
+}
+
+func (k Keeper) SCCBatchMaxBytes(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return params.SCCBatchMaxBytes
+}
+
+func (k Keeper) FraudProofWindow(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return params.FraudProofWindow
+}
+
+func (k Keeper) SequencerPublishWindow(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return params.SequencerPublishWindow
 }

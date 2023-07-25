@@ -8,7 +8,8 @@ import (
 )
 
 func TestAccAddress(t *testing.T) {
-	addr := AccAddress()
+	_ = AccAddress()
+	addr := AccAddressString()
 	require.NotPanics(t, func() {
 		sdk.MustAccAddressFromBech32(addr)
 	})

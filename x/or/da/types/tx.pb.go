@@ -221,8 +221,9 @@ var xxx_messageInfo_MsgAppendCCBatchResponse proto.InternalMessageInfo
 type MsgEnqueue struct {
 	FromAddress string `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
 	RollupName  string `protobuf:"bytes,2,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
-	GasLimit    uint64 `protobuf:"varint,3,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`
-	Txraw       []byte `protobuf:"bytes,4,opt,name=txraw,proto3" json:"txraw,omitempty"`
+	// When sequencer processes that queue tx, it uses this gas limit and submits tx to L2.
+	GasLimit uint64 `protobuf:"varint,3,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`
+	Txraw    []byte `protobuf:"bytes,4,opt,name=txraw,proto3" json:"txraw,omitempty"`
 }
 
 func (m *MsgEnqueue) Reset()         { *m = MsgEnqueue{} }

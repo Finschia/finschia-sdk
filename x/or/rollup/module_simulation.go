@@ -8,16 +8,12 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	settlementsimulation "github.com/Finschia/finschia-sdk/x/or/settlement/simulation"
-	"github.com/Finschia/finschia-sdk/x/or/settlement/testutil/sample"
-	"github.com/Finschia/finschia-sdk/x/or/settlement/types"
+	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
 	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 // avoid unused import issue
 var (
-	_ = sample.AccAddress
-	_ = settlementsimulation.FindAccount
 	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace

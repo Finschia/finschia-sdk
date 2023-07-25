@@ -39,6 +39,7 @@ type Context struct {
 	minGasPrice   DecCoins
 	consParams    *abci.ConsensusParams
 	eventManager  *EventManager
+	msgIndex      int
 }
 
 // Proposed rename, not done to avoid API breakage
@@ -59,6 +60,7 @@ func (c Context) IsCheckTx() bool             { return c.checkTx }
 func (c Context) IsReCheckTx() bool           { return c.recheckTx }
 func (c Context) MinGasPrices() DecCoins      { return c.minGasPrice }
 func (c Context) EventManager() *EventManager { return c.eventManager }
+func (c Context) MsgIndex() int               { return c.msgIndex }
 
 // clone the header before returning
 func (c Context) BlockHeader() tmproto.Header {
@@ -91,6 +93,7 @@ func NewContext(ms MultiStore, header tmproto.Header, isCheckTx bool, logger log
 		gasMeter:     stypes.NewInfiniteGasMeter(),
 		minGasPrice:  DecCoins{},
 		eventManager: NewEventManager(),
+		msgIndex:     -1,
 	}
 }
 
@@ -212,6 +215,11 @@ func (c Context) WithConsensusParams(params *abci.ConsensusParams) Context {
 // WithEventManager returns a Context with an updated event manager
 func (c Context) WithEventManager(em *EventManager) Context {
 	c.eventManager = em
+	return c
+}
+
+func (c Context) WithMsgIndex(idx int) Context {
+	c.msgIndex = idx
 	return c
 }
 
