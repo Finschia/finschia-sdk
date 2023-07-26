@@ -8,12 +8,16 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	rollupsimulation "github.com/Finschia/finschia-sdk/x/or/rollup/simulation"
+	rolluptest "github.com/Finschia/finschia-sdk/x/or/rollup/testutil"
 	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
 	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 // avoid unused import issue
 var (
+	_ = rolluptest.AccAddress
+	_ = rollupsimulation.FindAccount
 	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace
@@ -29,8 +33,8 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
 	}
-	settlementGenesis := types.GenesisState{}
-	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&settlementGenesis)
+	rollupGenesis := types.GenesisState{}
+	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&rollupGenesis)
 }
 
 // ProposalContents doesn't return any content functions for governance proposals

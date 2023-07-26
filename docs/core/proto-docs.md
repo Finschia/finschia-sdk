@@ -648,7 +648,7 @@
     - [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse)
   
     - [Msg](#finschia.or.da.v1.Msg)
-
+  
 - [finschia/or/rollup/v1/rollup.proto](#finschia/or/rollup/v1/rollup.proto)
     - [Deposit](#finschia.or.rollup.v1.Deposit)
     - [Rollup](#finschia.or.rollup.v1.Rollup)
@@ -9666,6 +9666,8 @@ Msg defines the Msg service.
 
  <!-- end services -->
 
+
+
 <a name="finschia/or/rollup/v1/rollup.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -9701,7 +9703,6 @@ Msg defines the Msg service.
 | `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
 | `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
-| `max_sequencers` | [uint64](#uint64) |  |  |
 
 
 
@@ -10025,7 +10026,6 @@ Params defines the parameters for the module.
 | `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
 | `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
-| `max_sequencers` | [uint64](#uint64) |  |  |
 
 
 
@@ -10165,37 +10165,6 @@ Params defines the parameters for the module.
 
  <!-- end services -->
 
-
-
-<a name="finschia/or/settlement/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## finschia/or/settlement/v1/genesis.proto
-
-
-
-<a name="finschia.or.settlement.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the settlement module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `global_start_state` | [bytes](#bytes) |  | State hashes of the global start. |
-| `defender` | [string](#string) |  | Address of the defender. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
 
 
 <a name="lbm/bankplus/v1/bankplus.proto"></a>

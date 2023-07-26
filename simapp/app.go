@@ -344,8 +344,6 @@ func NewSimApp(
 
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 
-	app.RollupKeeper = rollupkeeper.NewKeeper(appCodec, app.BankKeeper, app.AccountKeeper, keys[rolluptypes.StoreKey], keys[rolluptypes.MemStoreKey], app.GetSubspace(rolluptypes.ModuleName))
-
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
@@ -373,6 +371,7 @@ func NewSimApp(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	/****  Rollup ****/
+	app.RollupKeeper = rollupkeeper.NewKeeper(appCodec, app.BankKeeper, app.AccountKeeper, keys[rolluptypes.StoreKey], keys[rolluptypes.MemStoreKey], app.GetSubspace(rolluptypes.ModuleName))
 	app.Ordakeeper = ordakeeper.NewKeeper(appCodec, keys[ordatypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper, nil)
 
 	/****  Module Options ****/

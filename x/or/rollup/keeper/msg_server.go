@@ -30,7 +30,6 @@ func (k msgServer) CreateRollup(goCtx context.Context, msg *types.MsgCreateRollu
 	rollup := types.Rollup{
 		RollupName:            msg.RollupName,
 		Creator:               msg.Creator,
-		MaxSequencers:         msg.MaxSequencers,
 		PermissionedAddresses: msg.PermissionedAddresses,
 	}
 

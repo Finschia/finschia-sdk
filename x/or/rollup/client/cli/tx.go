@@ -62,8 +62,6 @@ func NewCreateRollupCmd() *cobra.Command {
 				argRollupName,
 				clientCtx.GetFromAddress().String(),
 				argPermissionedAddresses,
-				// TODO: If rollup:sequencer=1:N, fix maxSequencers
-				1,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {

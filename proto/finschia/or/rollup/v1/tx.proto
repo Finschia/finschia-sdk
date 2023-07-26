@@ -21,7 +21,6 @@ message MsgCreateRollup {
   string rollup_name = 1;
   string creator = 2;
   Sequencers permissioned_addresses = 3 [(gogoproto.nullable) = false];
-  uint64 max_sequencers = 4;
 }
 
 message MsgRegisterSequencer {

@@ -1,8 +1,6 @@
 package rollup
 
 import (
-	"fmt"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/or/rollup/keeper"
 	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
@@ -12,12 +10,6 @@ import (
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, accoutKeeper types.AccountKeeper, genState types.GenesisState) {
 	k.SetParams(ctx, genState.Params)
-
-	rollupModuleAddress := k.GetRollupAccount(ctx)
-	if rollupModuleAddress == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
-	}
-	accoutKeeper.SetModuleAccount(ctx, rollupModuleAddress)
 }
 
 // ExportGenesis returns the capability module's exported genesis.
