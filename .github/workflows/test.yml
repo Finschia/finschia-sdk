@@ -54,6 +54,8 @@ jobs:
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -75,6 +77,8 @@ jobs:
       - name: Configure git for private modules
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -96,6 +100,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - name: Create a file with all the pkgs
         run: go list ./... > pkgs.txt
       - name: Split pkgs into 4 files
@@ -129,6 +135,8 @@ jobs:
       - name: Configure git for private modules
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -166,6 +174,8 @@ jobs:
     needs: tests
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |
@@ -219,6 +229,8 @@ jobs:
       - name: Configure git for private modules
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
