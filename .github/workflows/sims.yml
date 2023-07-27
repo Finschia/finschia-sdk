@@ -35,7 +35,8 @@ jobs:
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - name: Display go version
         run: go version
-      - run: make build
+      - name: Build
+        run: make build
         with:
           ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
 
