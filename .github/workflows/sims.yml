@@ -27,19 +27,17 @@ jobs:
     runs-on: self-hosted
     if: "!contains(github.event.head_commit.message, 'skip-sims')"
     steps:
-      - name: Configure git for private modules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
+      - name: Configure git for private modules
+        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - name: Display go version
         run: go version
       - run: make build
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
 
   install-runsim:
     runs-on: self-hosted
