@@ -1,0 +1,36 @@
+syntax = "proto3";
+package finschia.or.rollup.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+
+message Rollup {
+  string rollup_name = 1;
+  string creator     = 2;
+  Sequencers permissioned_addresses = 3 [(gogoproto.nullable) = false];
+}
+
+message Sequencer {
+  string              sequencer_address = 1;
+  google.protobuf.Any pubkey            = 2 [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey"];
+  string              rollup_name       = 3;
+}
+
+message Deposit {
+  string rollup_name = 1;
+  string sequencer_address = 2;
+  cosmos.base.v1beta1.Coin value = 3 [(gogoproto.nullable) = false];
+}
+
+message SequencersByRollup {
+    string rollup_name = 1;
+    repeated Sequencer sequencers = 2 [(gogoproto.nullable) = false];    
+}
+
+message Sequencers {  
+    repeated string addresses = 1; 
+}
