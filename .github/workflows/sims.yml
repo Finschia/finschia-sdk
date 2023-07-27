@@ -35,10 +35,14 @@ jobs:
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - name: Display go version
         run: go version
-      - name: Build
-        run: make build
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
+      - name: Setup ssh config
+        env:
+          SSH_KEY: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - run: make build
 
   install-runsim:
     runs-on: self-hosted
