@@ -50,9 +50,7 @@ jobs:
             package: "g++-aarch64-linux-gnu"
     steps:
       - name: Configure git for private modules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
@@ -75,9 +73,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Configure git for private modules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -131,9 +127,7 @@ jobs:
         part: ["00", "01", "02", "03"]
     steps:
       - name: Configure git for private modules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -223,9 +217,7 @@ jobs:
         part: ["00", "01", "02", "03"]
     steps:
       - name: Configure git for private modules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
