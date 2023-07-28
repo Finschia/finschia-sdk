@@ -66,8 +66,6 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -95,8 +93,6 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -126,8 +122,6 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -157,8 +151,6 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19

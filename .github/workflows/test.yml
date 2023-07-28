@@ -49,13 +49,9 @@ jobs:
             gcc: "aarch64-linux-gnu-gcc"
             package: "g++-aarch64-linux-gnu"
     steps:
-      - name: Configure git for private modules
-        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -67,6 +63,16 @@ jobs:
             go.mod
             go.sum
             .github/workflows/test.yml
+      - name: Setup ssh config
+        env:
+          SSH_KEY: ${{secrets.PRIVATE_REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Setup access for private go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
       - name: Build
         run: GOOS=linux CGO_ENABLED=1 GOARCH=${{ matrix.goarch }} CC=${{ matrix.gcc }} LEDGER_ENABLED=false make build
 
@@ -77,8 +83,6 @@ jobs:
       - name: Configure git for private modules
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -100,8 +104,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - name: Create a file with all the pkgs
         run: go list ./... > pkgs.txt
       - name: Split pkgs into 4 files
@@ -135,8 +137,6 @@ jobs:
       - name: Configure git for private modules
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -174,8 +174,6 @@ jobs:
     needs: tests
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |
@@ -229,8 +227,6 @@ jobs:
       - name: Configure git for private modules
         run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
