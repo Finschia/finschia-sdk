@@ -7,10 +7,12 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-sims')"
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -19,7 +21,7 @@ jobs:
       - run: make build
 
   install-runsim:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/setup-go@v4.0.0
@@ -35,10 +37,12 @@ jobs:
           key: ${{ runner.os }}-go-runsim-binary
 
   test-sim-nondeterminism:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -53,10 +57,12 @@ jobs:
           make test-sim-nondeterminism
 
   test-sim-import-export:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -71,10 +77,12 @@ jobs:
           make test-sim-import-export
 
   test-sim-after-import:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19

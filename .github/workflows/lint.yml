@@ -14,13 +14,15 @@ on:
 jobs:
   golangci:
     name: golangci-lint
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |

@@ -8,10 +8,12 @@ on:
 jobs:
   lint:
     name: proto-lint(clang-format)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: DoozyX/clang-format-lint-action@v0.16
         with:
           source: '.'
@@ -21,9 +23,11 @@ jobs:
           inplace: True
   swagger:
     name: check generated swagger files
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
@@ -33,7 +37,7 @@ jobs:
 
 # TODO ebony: release comment after merging initial proto files to v2 branch
 #  breakage:
-#    runs-on: self-hosted
+#    runs-on: ubuntu-latest
 #    steps:
 #      - uses: actions/checkout@master
 #      - name: check-breakage
