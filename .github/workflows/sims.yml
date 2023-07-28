@@ -34,8 +34,8 @@ jobs:
       - uses: getsentry/action-github-app-token@v2.0.0
         id: get-token
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
+          app_id: ${{ secrets.CI_GITHUB_APP_ID }}
+          private_key: ${{ secrets.CI_GITHUB_APP_PRIVATE_KEY }}
       - run: git config --global url."https://x-access-token:${{ steps.get-token.outputs.token }}@github.com/".insteadOf "https://github.com/"
       - name: Display go version
         run: go version
