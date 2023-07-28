@@ -33,7 +33,7 @@ jobs:
           go-version: 1.19
       - name: Get GitHub API Token
         id: get-github-token
-        uses: getsentry/action-github-app-token@v1
+        uses: tibdex/github-app-token@v1
         with:
           app_id: ${{ secrets.CI_GITHUB_APP_ID }}
           private_key: ${{ secrets.CI_GITHUB_APP_PRIVATE_KEY }}
