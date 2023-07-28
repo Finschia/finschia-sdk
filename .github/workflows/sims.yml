@@ -16,7 +16,7 @@ on:
 
 jobs:
   cleanup-runs:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
     steps:
       - uses: rokroskar/workflow-run-cleanup-action@master
@@ -24,28 +24,30 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-sims')"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
+      - name: Get GitHub API Token
+        id: get-github-token
+        uses: getsentry/action-github-app-token@v1
+        with:
+          app_id: ${{ secrets.CI_GITHUB_APP_ID }}
+          private_key: ${{ secrets.CI_GITHUB_APP_PRIVATE_KEY }}
       - name: Configure git for private modules
-        run: git config --global url."ssh://git@github.com".insteadOf "https://github.com"
+        env:
+          API_TOKEN: ${{ steps.get-github-token.outputs.token }}
+        run: |
+          git config --global url."https://x-access-token:$API_TOKEN@github.com/Finschia/".insteadOf git@github.com:Finschia/
       - name: Display go version
         run: go version
-      - name: Setup ssh config
-        env:
-          SSH_KEY: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
       - run: make build
 
   install-runsim:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/setup-go@v4.0.0
@@ -61,7 +63,7 @@ jobs:
           key: ${{ runner.os }}-go-runsim-binary
 
   test-sim-nondeterminism-short:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
@@ -90,7 +92,7 @@ jobs:
         if: env.GIT_DIFF
 
   test-sim-import-export-short:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
@@ -121,7 +123,7 @@ jobs:
         if: env.GIT_DIFF
 
   test-sim-after-import-short:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
@@ -152,7 +154,7 @@ jobs:
         if: env.GIT_DIFF
 
   test-sim-multi-seed-short:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3

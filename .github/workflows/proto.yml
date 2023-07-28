@@ -8,7 +8,7 @@ on:
 jobs:
   lint:
     name: proto-lint(clang-format)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
           inplace: True
   swagger:
     name: check generated swagger files
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -37,7 +37,7 @@ jobs:
 
 # TODO ebony: release comment after merging initial proto files to v2 branch
 #  breakage:
-#    runs-on: self-hosted
+#    runs-on: ubuntu-latest
 #    steps:
 #      - uses: actions/checkout@master
 #      - name: check-breakage
