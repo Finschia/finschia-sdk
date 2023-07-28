@@ -21,8 +21,6 @@ jobs:
         with:
           go-version: 1.19
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |

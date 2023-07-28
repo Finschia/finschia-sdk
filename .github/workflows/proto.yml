@@ -12,8 +12,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: DoozyX/clang-format-lint-action@v0.16
         with:
           source: '.'
@@ -26,8 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
