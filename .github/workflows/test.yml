@@ -96,6 +96,16 @@ jobs:
             go.mod
             go.sum
             tools/cosmovisor/**
+      - name: Setup ssh config
+        env:
+          SSH_KEY: ${{secrets.PRIVATE_REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Setup access for private go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
       - name: Run cosmovisor tests
         run: make cosmovisor
         if: env.GIT_DIFF
@@ -147,6 +157,16 @@ jobs:
             go.mod
             go.sum
             .github/workflows/test.yml
+      - name: Setup ssh config
+        env:
+          SSH_KEY: ${{secrets.PRIVATE_REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Setup access for private go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
@@ -237,6 +257,16 @@ jobs:
             go.mod
             go.sum
             .github/workflows/test.yml
+      - name: Setup ssh config
+        env:
+          SSH_KEY: ${{secrets.PRIVATE_REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Setup access for private go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
