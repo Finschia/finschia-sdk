@@ -3,7 +3,7 @@ name: Sims
 # This workflow will run on all Pull Requests, if a .go, .mod or .sum file have been changed
 
 env:
-  GOPRIVATE: "github.com/Finschia/*"
+  GOPRIVATE: "github.com/Finschia"
 
 on:
   pull_request:
@@ -31,18 +31,30 @@ jobs:
       - uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
-      - uses: getsentry/action-github-app-token@v2.0.0
-        id: get-github-token
-        with:
-          app_id: ${{ secrets.CI_GITHUB_APP_ID }}
-          private_key: ${{ secrets.CI_GITHUB_APP_PRIVATE_KEY }}
-      - name: Set git config
-        env:
-          GITHUB_TOKEN: ${{ steps.get-github-token.outputs.token }}
-        run: |
-          git config --global url."https://x-access-token:$GITHUB_TOKEN@github.com/".insteadOf https://github.com/
       - name: Display go version
         run: go version
+      - name: Add SSH Go Module Private Key
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.PRIVATE_REPO_SSH_KEY }}"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+      - name: Setup access for private go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+      # - uses: getsentry/action-github-app-token@v2.0.0
+      #   id: get-github-token
+      #   with:
+      #     app_id: ${{ secrets.CI_GITHUB_APP_ID }}
+      #     private_key: ${{ secrets.CI_GITHUB_APP_PRIVATE_KEY }}
+      # - name: Set git config
+      #   env:
+      #     GITHUB_TOKEN: ${{ steps.get-github-token.outputs.token }}
+      #   run: |
+      #     git config --global url."https://x-access-token:$GITHUB_TOKEN@github.com/".insteadOf https://github.com/
       - run: make build
 
   install-runsim:
