@@ -3,7 +3,7 @@ name: Sims
 # This workflow will run on all Pull Requests, if a .go, .mod or .sum file have been changed
 
 env:
-  GOPRIVATE: "github.com/Finschia/ramus"
+  GOPRIVATE: "github.com/Finschia/*"
 
 on:
   pull_request:
@@ -40,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.get-github-token.outputs.token }}
         run: |
-          git config --global url."https://x-access-token:$GITHUB_TOKEN@github.com/Finschia/".insteadOf git@github.com:Finschia/
+          git config --global url."https://x-access-token:$GITHUB_TOKEN@github.com/".insteadOf https://github.com/
       - name: Display go version
         run: go version
       - run: make build
