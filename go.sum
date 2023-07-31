@@ -43,8 +43,8 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d h1:nalkkPQcITbvhmL4+C4cKA87NW0tfm3Kl9VXRoPywFg=
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:URdX5+vg25ts3aCh8H5IFZybJYKWhJHYMTnf+ULtoC4=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
-github.com/Finschia/ostracon v1.1.1-0.20230728060830-c8ae08c6dae7 h1:wAP+b+VBzq9CqGnTG+Sv9VV4FhWCtX1DYsPPBejnrPc=
-github.com/Finschia/ostracon v1.1.1-0.20230728060830-c8ae08c6dae7/go.mod h1:Ub1TWTN2+PfdCFo8ckdc4PxkfPmh2qQ8mmey+gLK5fw=
+github.com/Finschia/ostracon v1.1.1 h1:Hdj2Xe9YSlD0hXbacIXUfOL6NfkF/lxg6AB8OnKvwgM=
+github.com/Finschia/ostracon v1.1.1/go.mod h1:Ub1TWTN2+PfdCFo8ckdc4PxkfPmh2qQ8mmey+gLK5fw=
 github.com/Finschia/r2ishiguro_vrf v0.1.2 h1:lDBz6NQMx1pw5I3End6xFmXpM//7KcmTr3Ka983e7v8=
 github.com/Finschia/r2ishiguro_vrf v0.1.2/go.mod h1:OHRtvzcJnfIrcJ0bvPNktJozRFAyZFuv56E9R3/qB+Y=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
