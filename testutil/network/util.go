@@ -61,7 +61,7 @@ func startInProcess(cfg Config, val *Validator) error {
 
 	nodeConfig := rollconf.NodeConfig{}
 	err = nodeConfig.GetViperConfig(val.Ctx.Viper)
-	nodeConfig.Aggregator = true
+	nodeConfig.Sequencer = true
 	nodeConfig.DALayer = "mock"
 	if err != nil {
 		return err
