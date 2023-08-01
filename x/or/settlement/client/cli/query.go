@@ -4,17 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	// "strings"
-
 	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/version"
-
-	// "github.com/Finschia/finschia-sdk/client/flags"
-	// sdk "github.com/Finschia/finschia-sdk/types"
-
 	"github.com/Finschia/finschia-sdk/x/or/settlement/types"
 )
 

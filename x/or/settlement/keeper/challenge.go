@@ -8,11 +8,7 @@ import (
 func (k Keeper) SetChallenge(ctx sdk.Context, challengeID string, challenge types.Challenge) {
 	store := ctx.KVStore(k.storeKey)
 	key := challengeKey(challengeID)
-
-	bz, err := challenge.Marshal()
-	if err != nil {
-		panic(err)
-	}
+	bz := k.cdc.MustMarshal(&challenge)
 	store.Set(key, bz)
 }
 

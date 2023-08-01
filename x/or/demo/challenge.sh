@@ -97,7 +97,7 @@ PROOF_FMT=out/proof-%d.json
 PROOF_MAL_FMT=out/proof-%d-mal.json
 
 # make output directory
-mkdir out -p
+mkdir -p out
 
 echo "# Start challenge"
 start_challenge

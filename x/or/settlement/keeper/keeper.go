@@ -10,13 +10,11 @@ import (
 	"github.com/Finschia/finschia-sdk/x/or/settlement/types"
 )
 
-type (
-	Keeper struct {
-		cdc      codec.BinaryCodec
-		storeKey sdk.StoreKey
-		memKey   sdk.StoreKey
-	}
-)
+type Keeper struct {
+	cdc      codec.BinaryCodec
+	storeKey sdk.StoreKey
+	memKey   sdk.StoreKey
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
