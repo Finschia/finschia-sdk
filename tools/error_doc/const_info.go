@@ -12,7 +12,6 @@ func getConst(line string) (string, string, error) {
 		i := strings.TrimSpace(parts[0])
 		val := strings.Trim(strings.TrimSpace(parts[1]), `"`)
 		return i, val, nil
-	} else {
-		return "", "", errors.New("failed to get the value in: " + line)
 	}
+	return "", "", errors.New("failed to get the value in: " + line)
 }

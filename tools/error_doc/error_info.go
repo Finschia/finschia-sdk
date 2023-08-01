@@ -21,12 +21,10 @@ func (err errorInfo) toString(moduleName string) (string, error) {
 	if err.codeSpace == "ModuleName" {
 		if moduleName == "" {
 			return "", errors.New("failed to find moduleName")
-		} else {
-			return fmt.Sprintf(errorInfoTemplate, err.errorName, moduleName, err.code, err.description), nil
 		}
-	} else {
-		return fmt.Sprintf(errorInfoTemplate, err.errorName, err.codeSpace, err.code, err.description), nil
+		return fmt.Sprintf(errorInfoTemplate, err.errorName, moduleName, err.code, err.description), nil
 	}
+	return fmt.Sprintf(errorInfoTemplate, err.errorName, err.codeSpace, err.code, err.description), nil
 }
 
 func addError(line string, errorDict map[string]string) (errorInfo, error) {
@@ -55,13 +53,10 @@ func addError(line string, errorDict map[string]string) (errorInfo, error) {
 				code:        code,
 				description: description,
 			}, nil
-		} else {
-			return errorInfo{}, errors.New("failed to get error info in: " + line)
 		}
-	} else {
-		return errorInfo{}, errors.New("failed to parse error info in: " + line)
+		return errorInfo{}, errors.New("failed to get error info in: " + line)
 	}
-
+	return errorInfo{}, errors.New("failed to parse error info in: " + line)
 }
 
 func getErrors(p string) ([]errorInfo, error) {

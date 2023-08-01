@@ -36,7 +36,7 @@ func findModuleWithFiles(targetPath string) (map[string][]string, []string, erro
 	errorFile := "errors.go"
 	filePaths, err := findFilesWithName(targetPath, errorFile)
 	if len(filePaths) == 0 || err != nil {
-		return nil, nil, errors.New("Not find target files in x folder")
+		return nil, nil, errors.New("not find target files in x folder")
 	}
 
 	// get each module name and bind it to paths (one module may have multiple errors.go)
@@ -44,13 +44,15 @@ func findModuleWithFiles(targetPath string) (map[string][]string, []string, erro
 	for _, filePath := range filePaths {
 		moduleName := findModuleName(filePath)
 		if moduleName == "" {
-			return nil, nil, errors.New("Failed to get module name for " + filePath)
+			return nil, nil, errors.New("failed to get module name for " + filePath)
 		}
 		moduleWithPaths[moduleName] = append(moduleWithPaths[moduleName], filePath)
 	}
 
 	// sort keys and filepaths
-	var modules []string
+	n := len(moduleWithPaths)
+	modules := make([]string, 0, n)
+
 	for moduleName := range moduleWithPaths {
 		modules = append(modules, moduleName)
 		sort.Strings(moduleWithPaths[moduleName])
