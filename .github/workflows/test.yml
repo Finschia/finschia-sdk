@@ -51,8 +51,8 @@ jobs:
     steps:
       - name: Configure git for private modules
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+          GITHUB_TOKEN: ${{ secrets.GO_MODULES_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
@@ -76,8 +76,8 @@ jobs:
 #    steps:
 #      - name: Configure git for private modules
 #        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+#          GITHUB_TOKEN: ${{ secrets.GO_MODULES_TOKEN }}
+#        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 #      - uses: actions/checkout@v3
 #      - uses: actions/setup-go@v4.0.0
 #        with:
@@ -132,8 +132,8 @@ jobs:
     steps:
       - name: Configure git for private modules
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+          GITHUB_TOKEN: ${{ secrets.GO_MODULES_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
@@ -224,8 +224,8 @@ jobs:
     steps:
       - name: Configure git for private modules
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+          GITHUB_TOKEN: ${{ secrets.GO_MODULES_TOKEN }}
+        run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4.0.0
         with:
