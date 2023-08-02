@@ -785,8 +785,8 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 	// NOTE: GasWanted is determined by the AnteHandler and GasUsed by the GasMeter.
 	for i, msg := range msgs {
 		var (
-			msgResult    *sdk.Result
-			err          error
+			msgResult *sdk.Result
+			err       error
 		)
 
 		if handler := app.msgServiceRouter.Handler(msg); handler != nil {
