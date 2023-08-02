@@ -58,4 +58,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Document Updates
 * (readme) [\#997](https://github.com/finschia/finschia-sdk/pull/997) fix swagger url
-* (x/ERRORS.md) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
+* (docs) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
