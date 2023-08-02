@@ -25,13 +25,12 @@ jobs:
 
       - name: Check generated error docs
         run: |
-          cd ./tools/error_doc
-          go run ./
+          make error-doc
           if ! git diff --stat --exit-code ; then
             echo ">> ERROR:"
             echo ">>"
             echo ">> Error documents require update (source files in x folder may have changed)."
-            echo ">> Ensure your tools are up-to-date, re-run 'go run ./' in tools/error_doc and update this PR."
+            echo ">> Ensure your tools are up-to-date, re-run 'make error-doc' and update this PR."
             echo ">>"
             exit 1
           fi
