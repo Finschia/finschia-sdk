@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	var _ = os.Args // To avoid linter "imported but not used" false positive
 	rootCmd, _ := cmd.NewRootCmd()
 
 	if err := svrcmd.Execute(rootCmd, simapp.DefaultNodeHome); err != nil {
