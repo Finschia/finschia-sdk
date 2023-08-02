@@ -87,17 +87,17 @@ func (mr *MockRollupKeeperMockRecorder) GetRegisteredRollups(ctx interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRegisteredRollups", reflect.TypeOf((*MockRollupKeeper)(nil).GetRegisteredRollups), ctx)
 }
 
-// GetRollupInfo mocks base method.
-func (m *MockRollupKeeper) GetRollupInfo(ctx types.Context, rollupID string) (types1.RollupInfo, error) {
+// GetRollup mocks base method.
+func (m *MockRollupKeeper) GetRollup(ctx types.Context, rollupID string) (types1.RollupInfo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRollupInfo", ctx, rollupID)
+	ret := m.ctrl.Call(m, "GetRollup", ctx, rollupID)
 	ret0, _ := ret[0].(types1.RollupInfo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetRollupInfo indicates an expected call of GetRollupInfo.
-func (mr *MockRollupKeeperMockRecorder) GetRollupInfo(ctx, rollupID interface{}) *gomock.Call {
+// GetRollup indicates an expected call of GetRollup.
+func (mr *MockRollupKeeperMockRecorder) GetRollup(ctx, rollupID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRollupInfo", reflect.TypeOf((*MockRollupKeeper)(nil).GetRollupInfo), ctx, rollupID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRollup", reflect.TypeOf((*MockRollupKeeper)(nil).GetRollup), ctx, rollupID)
 }

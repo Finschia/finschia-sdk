@@ -10,7 +10,7 @@ type AccountKeeper interface {
 }
 
 type RollupKeeper interface {
-	GetRollupInfo(ctx sdk.Context, name string) (RollupInfo, error)
+	GetRollup(ctx sdk.Context, name string) (RollupInfo, error)
 	GetRegisteredRollups(ctx sdk.Context) []string
 }
 

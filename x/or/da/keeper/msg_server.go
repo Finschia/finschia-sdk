@@ -47,7 +47,7 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
-	if _, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName); err != nil {
+	if _, err := k.rollupKeeper.GetRollup(ctx, msg.RollupName); err != nil {
 		return nil, err
 	}
 
@@ -69,7 +69,7 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
-	rollupInfo, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName)
+	rollupInfo, err := k.rollupKeeper.GetRollup(ctx, msg.RollupName)
 	if err != nil {
 		return nil, err
 	}
