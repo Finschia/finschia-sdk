@@ -3,6 +3,8 @@ package types
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+
+	rolluptypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 )
 
 type AccountKeeper interface {
@@ -10,7 +12,7 @@ type AccountKeeper interface {
 }
 
 type RollupKeeper interface {
-	GetRollup(ctx sdk.Context, name string) (RollupInfo, error)
+	GetRollup(ctx sdk.Context, name string) (rolluptypes.Rollup, bool)
 	GetRegisteredRollups(ctx sdk.Context) []string
 }
 
