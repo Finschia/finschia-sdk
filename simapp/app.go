@@ -81,6 +81,8 @@ import (
 	"github.com/Finschia/finschia-sdk/x/mint"
 	mintkeeper "github.com/Finschia/finschia-sdk/x/mint/keeper"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	ordakeeper "github.com/Finschia/finschia-sdk/x/or/da/keeper"
+	ordatypes "github.com/Finschia/finschia-sdk/x/or/da/types"
 	"github.com/Finschia/finschia-sdk/x/or/settlement"
 	settlementkeeper "github.com/Finschia/finschia-sdk/x/or/settlement/keeper"
 	settlementtypes "github.com/Finschia/finschia-sdk/x/or/settlement/types"
@@ -105,6 +107,10 @@ import (
 	upgradeclient "github.com/Finschia/finschia-sdk/x/upgrade/client"
 	upgradekeeper "github.com/Finschia/finschia-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/Finschia/finschia-sdk/x/upgrade/types"
+
+	"github.com/Finschia/finschia-sdk/x/or/rollup"
+	rollupkeeper "github.com/Finschia/finschia-sdk/x/or/rollup/keeper"
+	rolluptypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
@@ -145,6 +151,8 @@ var (
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
+		rollup.AppModuleBasic{},
+		//ordamodule.AppModuleBasic{},
 		settlement.AppModuleBasic{},
 	)
 
@@ -158,6 +166,7 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
+		rolluptypes.ModuleName:         {authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -205,6 +214,8 @@ type SimApp struct {
 	ClassKeeper      classkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
+	RollupKeeper     rollupkeeper.Keeper
+	Ordakeeper       ordakeeper.Keeper
 	SettlementKeeper settlementkeeper.Keeper
 
 	// the module manager
@@ -259,6 +270,8 @@ func NewSimApp(
 		token.StoreKey,
 		collection.StoreKey,
 		authzkeeper.StoreKey,
+		rolluptypes.StoreKey,
+		ordatypes.StoreKey,
 		settlementtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -364,6 +377,10 @@ func NewSimApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	/****  Rollup ****/
+	app.RollupKeeper = rollupkeeper.NewKeeper(appCodec, app.BankKeeper, app.AccountKeeper, keys[rolluptypes.StoreKey], keys[rolluptypes.MemStoreKey], app.GetSubspace(rolluptypes.ModuleName))
+	app.Ordakeeper = ordakeeper.NewKeeper(appCodec, keys[ordatypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper, nil)
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -395,6 +412,8 @@ func NewSimApp(
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		rollup.NewAppModule(appCodec, app.RollupKeeper, app.AccountKeeper, app.BankKeeper),
+		//ordamodule.NewAppModule(appCodec, app.Ordakeeper, app.AccountKeeper),
 		settlement.NewAppModule(appCodec, app.SettlementKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
@@ -423,6 +442,8 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		rolluptypes.ModuleName,
+		ordatypes.ModuleName,
 		settlementtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
@@ -445,6 +466,8 @@ func NewSimApp(
 		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		rolluptypes.ModuleName,
+		ordatypes.ModuleName,
 		settlementtypes.ModuleName,
 	)
 
@@ -473,6 +496,8 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		rolluptypes.ModuleName,
+		ordatypes.ModuleName,
 		settlementtypes.ModuleName,
 	)
 
@@ -725,6 +750,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(settlementtypes.ModuleName)
+
+	paramsKeeper.Subspace(rolluptypes.ModuleName)
 
 	return paramsKeeper
 }

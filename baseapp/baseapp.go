@@ -790,7 +790,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 			err          error
 		)
 
-		ctx.WithMsgIndex(i)
+		ctx = ctx.WithMsgIndex(i)
 
 		if handler := app.msgServiceRouter.Handler(msg); handler != nil {
 			// ADR 031 request type routing
@@ -833,7 +833,6 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		msgLogs = append(msgLogs, sdk.NewABCIMessageLog(uint32(i), msgResult.Log, msgEvents))
 	}
 
-	ctx.WithMsgIndex(-1)
 	data, err := proto.Marshal(txMsgData)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "failed to marshal tx data")

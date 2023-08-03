@@ -2,7 +2,7 @@
 
 # Remove data
 pkill simd
-rm -rf ~/.simapp -f
+rm -rf ~/.simapp
 
 if ! [ -x "$(which simd)" ]; then
   echo "Error: simd is not installed. Try running 'cd ../../../ && make install'" >&2
@@ -14,7 +14,7 @@ TEST_MNEMONIC="mind flame tobacco sense move hammer drift crime ring globe art g
 BASE_DIR=~/.simapp
 CHAIN_ID=sim
 
-simd init validator --home $BASE_DIR --chain-id $CHAIN_ID > /dev/null 2>&1
+simd init rollupdemo --home $BASE_DIR --chain-id $CHAIN_ID > /dev/null 2>&1
 simd keys add validator --keyring-backend=test --home $BASE_DIR --recover --account=0 <<< ${TEST_MNEMONIC} > /dev/null 2>&1
 simd keys add sequencer --keyring-backend=test --home $BASE_DIR --recover --account=1 <<< ${TEST_MNEMONIC} > /dev/null 2>&1
 simd keys add challenger --keyring-backend=test --home $BASE_DIR --recover --account=2 <<< ${TEST_MNEMONIC} > /dev/null 2>&1

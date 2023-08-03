@@ -612,15 +612,26 @@
 - [finschia/or/da/v1/genesis.proto](#finschia/or/da/v1/genesis.proto)
     - [CC](#finschia.or.da.v1.CC)
     - [GenesisState](#finschia.or.da.v1.GenesisState)
+    - [L2BatchMap](#finschia.or.da.v1.L2BatchMap)
     - [SCC](#finschia.or.da.v1.SCC)
   
 - [finschia/or/da/v1/query.proto](#finschia/or/da/v1/query.proto)
-    - [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest)
-    - [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse)
-    - [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest)
-    - [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse)
+    - [QueryCCRefRequest](#finschia.or.da.v1.QueryCCRefRequest)
+    - [QueryCCRefResponse](#finschia.or.da.v1.QueryCCRefResponse)
+    - [QueryCCRefsRequest](#finschia.or.da.v1.QueryCCRefsRequest)
+    - [QueryCCRefsResponse](#finschia.or.da.v1.QueryCCRefsResponse)
+    - [QueryCCStateRequest](#finschia.or.da.v1.QueryCCStateRequest)
+    - [QueryCCStateResponse](#finschia.or.da.v1.QueryCCStateResponse)
+    - [QueryMappedBatchRequest](#finschia.or.da.v1.QueryMappedBatchRequest)
+    - [QueryMappedBatchResponse](#finschia.or.da.v1.QueryMappedBatchResponse)
     - [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest)
     - [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse)
+    - [QueryQueueTxRequest](#finschia.or.da.v1.QueryQueueTxRequest)
+    - [QueryQueueTxResponse](#finschia.or.da.v1.QueryQueueTxResponse)
+    - [QueryQueueTxStateRequest](#finschia.or.da.v1.QueryQueueTxStateRequest)
+    - [QueryQueueTxStateResponse](#finschia.or.da.v1.QueryQueueTxStateResponse)
+    - [QueryQueueTxsRequest](#finschia.or.da.v1.QueryQueueTxsRequest)
+    - [QueryQueueTxsResponse](#finschia.or.da.v1.QueryQueueTxsResponse)
   
     - [Query](#finschia.or.da.v1.Query)
   
@@ -637,6 +648,47 @@
     - [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse)
   
     - [Msg](#finschia.or.da.v1.Msg)
+  
+- [finschia/or/rollup/v1/rollup.proto](#finschia/or/rollup/v1/rollup.proto)
+    - [Deposit](#finschia.or.rollup.v1.Deposit)
+    - [Rollup](#finschia.or.rollup.v1.Rollup)
+    - [Sequencer](#finschia.or.rollup.v1.Sequencer)
+    - [Sequencers](#finschia.or.rollup.v1.Sequencers)
+    - [SequencersByRollup](#finschia.or.rollup.v1.SequencersByRollup)
+  
+- [finschia/or/rollup/v1/params.proto](#finschia/or/rollup/v1/params.proto)
+    - [Params](#finschia.or.rollup.v1.Params)
+  
+- [finschia/or/rollup/v1/genesis.proto](#finschia/or/rollup/v1/genesis.proto)
+    - [GenesisState](#finschia.or.rollup.v1.GenesisState)
+  
+- [finschia/or/rollup/v1/query.proto](#finschia/or/rollup/v1/query.proto)
+    - [QueryAllRollupRequest](#finschia.or.rollup.v1.QueryAllRollupRequest)
+    - [QueryAllRollupResponse](#finschia.or.rollup.v1.QueryAllRollupResponse)
+    - [QueryDepositRequest](#finschia.or.rollup.v1.QueryDepositRequest)
+    - [QueryDepositResponse](#finschia.or.rollup.v1.QueryDepositResponse)
+    - [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest)
+    - [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse)
+    - [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest)
+    - [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse)
+    - [QuerySequencersByRollupRequest](#finschia.or.rollup.v1.QuerySequencersByRollupRequest)
+    - [QuerySequencersByRollupResponse](#finschia.or.rollup.v1.QuerySequencersByRollupResponse)
+  
+    - [Query](#finschia.or.rollup.v1.Query)
+  
+- [finschia/or/rollup/v1/tx.proto](#finschia/or/rollup/v1/tx.proto)
+    - [MsgCreateRollup](#finschia.or.rollup.v1.MsgCreateRollup)
+    - [MsgCreateRollupResponse](#finschia.or.rollup.v1.MsgCreateRollupResponse)
+    - [MsgDeposit](#finschia.or.rollup.v1.MsgDeposit)
+    - [MsgDepositResponse](#finschia.or.rollup.v1.MsgDepositResponse)
+    - [MsgRegisterSequencer](#finschia.or.rollup.v1.MsgRegisterSequencer)
+    - [MsgRegisterSequencerResponse](#finschia.or.rollup.v1.MsgRegisterSequencerResponse)
+    - [MsgRemoveSequencer](#finschia.or.rollup.v1.MsgRemoveSequencer)
+    - [MsgRemoveSequencerResponse](#finschia.or.rollup.v1.MsgRemoveSequencerResponse)
+    - [MsgWithdraw](#finschia.or.rollup.v1.MsgWithdraw)
+    - [MsgWithdrawResponse](#finschia.or.rollup.v1.MsgWithdrawResponse)
+  
+    - [Msg](#finschia.or.rollup.v1.Msg)
   
 - [finschia/or/settlement/v1/event.proto](#finschia/or/settlement/v1/event.proto)
     - [EventChallengeFinished](#finschia.or.settlement.v1.EventChallengeFinished)
@@ -9133,8 +9185,12 @@ EventUpdateParams is emitted after updating foundation parameters.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `cc_state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
 | `history` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `queue_tx_state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
+| `queue_list` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
+| `l2_batch_map` | [L2BatchMap](#finschia.or.da.v1.L2BatchMap) | repeated |  |
 
 
 
@@ -9158,6 +9214,22 @@ GenesisState defines the da module's genesis state.
 
 
 
+<a name="finschia.or.da.v1.L2BatchMap"></a>
+
+### L2BatchMap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `l2_height` | [uint64](#uint64) |  |  |
+| `batch_idx` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
 <a name="finschia.or.da.v1.SCC"></a>
 
 ### SCC
@@ -9166,6 +9238,7 @@ GenesisState defines the da module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
 | `state` | [SCCState](#finschia.or.da.v1.SCCState) |  |  |
 | `history` | [SCCRef](#finschia.or.da.v1.SCCRef) | repeated |  |
 
@@ -9190,9 +9263,9 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchRequest"></a>
+<a name="finschia.or.da.v1.QueryCCRefRequest"></a>
 
-### QueryCCBatchRequest
+### QueryCCRefRequest
 
 
 
@@ -9206,24 +9279,24 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchResponse"></a>
+<a name="finschia.or.da.v1.QueryCCRefResponse"></a>
 
-### QueryCCBatchResponse
+### QueryCCRefResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `batch_loc` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
+| `ref` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
 
 
 
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchesRequest"></a>
+<a name="finschia.or.da.v1.QueryCCRefsRequest"></a>
 
-### QueryCCBatchesRequest
+### QueryCCRefsRequest
 
 
 
@@ -9237,16 +9310,77 @@ GenesisState defines the da module's genesis state.
 
 
 
-<a name="finschia.or.da.v1.QueryCCBatchesResponse"></a>
+<a name="finschia.or.da.v1.QueryCCRefsResponse"></a>
 
-### QueryCCBatchesResponse
+### QueryCCRefsResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `batches_loc` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
+| `refs` | [CCRef](#finschia.or.da.v1.CCRef) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCStateRequest"></a>
+
+### QueryCCStateRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryCCStateResponse"></a>
+
+### QueryCCStateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [CCState](#finschia.or.da.v1.CCState) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryMappedBatchRequest"></a>
+
+### QueryMappedBatchRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `l2_height` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryMappedBatchResponse"></a>
+
+### QueryMappedBatchResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ref` | [CCRef](#finschia.or.da.v1.CCRef) |  |  |
 
 
 
@@ -9277,6 +9411,99 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+
+<a name="finschia.or.da.v1.QueryQueueTxRequest"></a>
+
+### QueryQueueTxRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `queue_index` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxResponse"></a>
+
+### QueryQueueTxResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxStateRequest"></a>
+
+### QueryQueueTxStateRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxStateResponse"></a>
+
+### QueryQueueTxStateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `state` | [QueueTxState](#finschia.or.da.v1.QueueTxState) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxsRequest"></a>
+
+### QueryQueueTxsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.QueryQueueTxsResponse"></a>
+
+### QueryQueueTxsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `txs` | [L1toL2Queue](#finschia.or.da.v1.L1toL2Queue) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -9291,9 +9518,14 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/finschia/or/da/v1/params|
-| `CCBatches` | [QueryCCBatchesRequest](#finschia.or.da.v1.QueryCCBatchesRequest) | [QueryCCBatchesResponse](#finschia.or.da.v1.QueryCCBatchesResponse) |  | GET|/finschia/or/da/v1/batches/cc|
-| `CCBatch` | [QueryCCBatchRequest](#finschia.or.da.v1.QueryCCBatchRequest) | [QueryCCBatchResponse](#finschia.or.da.v1.QueryCCBatchResponse) |  | GET|/finschia/or/da/v1/batches/cc/{batch_height}|
+| `Params` | [QueryParamsRequest](#finschia.or.da.v1.QueryParamsRequest) | [QueryParamsResponse](#finschia.or.da.v1.QueryParamsResponse) | Params queries the parameters of the or/da module. | GET|/finschia/or/da/v1/params|
+| `CCState` | [QueryCCStateRequest](#finschia.or.da.v1.QueryCCStateRequest) | [QueryCCStateResponse](#finschia.or.da.v1.QueryCCStateResponse) | CCState queries the CC state for specific rollup | GET|/finschia/or/da/v1/cc/state/{rollup_name}|
+| `CCRef` | [QueryCCRefRequest](#finschia.or.da.v1.QueryCCRefRequest) | [QueryCCRefResponse](#finschia.or.da.v1.QueryCCRefResponse) | CCRef queries the CC batch reference at the given batch height for specific rollup | GET|/finschia/or/da/v1/cc/ref/{rollup_name}/{batch_height}|
+| `CCRefs` | [QueryCCRefsRequest](#finschia.or.da.v1.QueryCCRefsRequest) | [QueryCCRefsResponse](#finschia.or.da.v1.QueryCCRefsResponse) | CCRefs queries all the CC batch references for specific rollup | GET|/finschia/or/da/v1/cc/refs/{rollup_name}|
+| `QueueTxState` | [QueryQueueTxStateRequest](#finschia.or.da.v1.QueryQueueTxStateRequest) | [QueryQueueTxStateResponse](#finschia.or.da.v1.QueryQueueTxStateResponse) | QueueTxState queries the L1-to-L2 queue state | GET|/finschia/or/da/v1/cc/queuetx/state/{rollup_name}|
+| `QueueTx` | [QueryQueueTxRequest](#finschia.or.da.v1.QueryQueueTxRequest) | [QueryQueueTxResponse](#finschia.or.da.v1.QueryQueueTxResponse) | QueueTx queries the L1-to-L2 queue transaction at the given index | GET|/finschia/or/da/v1/cc/queuetx/{rollup_name}/{queue_index}|
+| `QueueTxs` | [QueryQueueTxsRequest](#finschia.or.da.v1.QueryQueueTxsRequest) | [QueryQueueTxsResponse](#finschia.or.da.v1.QueryQueueTxsResponse) | QueueTx queries the L1-to-L2 queue transaction at the given index | GET|/finschia/or/da/v1/cc/queuetxs/{rollup_name}|
+| `MappedBatch` | [QueryMappedBatchRequest](#finschia.or.da.v1.QueryMappedBatchRequest) | [QueryMappedBatchResponse](#finschia.or.da.v1.QueryMappedBatchResponse) | MappedBatch queries the CC batch reference containing the corresponding L2 block height | GET|/finschia/or/da/v1/cc/mappedbatch/{rollup_name}/{l2_height}|
 
  <!-- end services -->
 
@@ -9461,6 +9693,505 @@ Msg defines the Msg service.
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
 | `RemoveSCCBatch` | [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch) | [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/rollup.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/rollup.proto
+
+
+
+<a name="finschia.or.rollup.v1.Deposit"></a>
+
+### Deposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
+| `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.Rollup"></a>
+
+### Rollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `creator` | [string](#string) |  |  |
+| `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.Sequencer"></a>
+
+### Sequencer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequencer_address` | [string](#string) |  |  |
+| `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.Sequencers"></a>
+
+### Sequencers
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `addresses` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.SequencersByRollup"></a>
+
+### SequencersByRollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencers` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/params.proto
+
+
+
+<a name="finschia.or.rollup.v1.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/genesis.proto
+
+
+
+<a name="finschia.or.rollup.v1.GenesisState"></a>
+
+### GenesisState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_list` | [Rollup](#finschia.or.rollup.v1.Rollup) | repeated |  |
+| `sequencer_list` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+| `params` | [Params](#finschia.or.rollup.v1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/query.proto
+
+
+
+<a name="finschia.or.rollup.v1.QueryAllRollupRequest"></a>
+
+### QueryAllRollupRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryAllRollupResponse"></a>
+
+### QueryAllRollupResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup` | [Rollup](#finschia.or.rollup.v1.Rollup) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryDepositRequest"></a>
+
+### QueryDepositRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryDepositResponse"></a>
+
+### QueryDepositResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `deposit` | [Deposit](#finschia.or.rollup.v1.Deposit) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryRollupRequest"></a>
+
+### QueryRollupRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QueryRollupResponse"></a>
+
+### QueryRollupResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup` | [Rollup](#finschia.or.rollup.v1.Rollup) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencerRequest"></a>
+
+### QuerySequencerRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequencer_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencerResponse"></a>
+
+### QuerySequencerResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequencer` | [Sequencer](#finschia.or.rollup.v1.Sequencer) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencersByRollupRequest"></a>
+
+### QuerySequencersByRollupRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.QuerySequencersByRollupResponse"></a>
+
+### QuerySequencersByRollupResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_list` | [Sequencer](#finschia.or.rollup.v1.Sequencer) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.rollup.v1.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Rollup` | [QueryRollupRequest](#finschia.or.rollup.v1.QueryRollupRequest) | [QueryRollupResponse](#finschia.or.rollup.v1.QueryRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/{rollup_name}|
+| `AllRollup` | [QueryAllRollupRequest](#finschia.or.rollup.v1.QueryAllRollupRequest) | [QueryAllRollupResponse](#finschia.or.rollup.v1.QueryAllRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/rollup|
+| `Sequencer` | [QuerySequencerRequest](#finschia.or.rollup.v1.QuerySequencerRequest) | [QuerySequencerResponse](#finschia.or.rollup.v1.QuerySequencerResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencer/{sequencer_address}|
+| `SequencersByRollup` | [QuerySequencersByRollupRequest](#finschia.or.rollup.v1.QuerySequencersByRollupRequest) | [QuerySequencersByRollupResponse](#finschia.or.rollup.v1.QuerySequencersByRollupResponse) |  | GET|/finschia/or/rollup/v1/rollup/sequencers_by_rollup/{rollup_name}|
+| `Deposit` | [QueryDepositRequest](#finschia.or.rollup.v1.QueryDepositRequest) | [QueryDepositResponse](#finschia.or.rollup.v1.QueryDepositResponse) |  | GET|/finschia/or/rollup/v1/rollup/deposit/{rollup_name}/{sequencer_address}|
+
+ <!-- end services -->
+
+
+
+<a name="finschia/or/rollup/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/or/rollup/v1/tx.proto
+
+
+
+<a name="finschia.or.rollup.v1.MsgCreateRollup"></a>
+
+### MsgCreateRollup
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `creator` | [string](#string) |  |  |
+| `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgCreateRollupResponse"></a>
+
+### MsgCreateRollupResponse
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgDeposit"></a>
+
+### MsgDeposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
+| `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgDepositResponse"></a>
+
+### MsgDepositResponse
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRegisterSequencer"></a>
+
+### MsgRegisterSequencer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  |  |
+| `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `rollup_name` | [string](#string) |  |  |
+| `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRegisterSequencerResponse"></a>
+
+### MsgRegisterSequencerResponse
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRemoveSequencer"></a>
+
+### MsgRemoveSequencer
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgRemoveSequencerResponse"></a>
+
+### MsgRemoveSequencerResponse
+
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgWithdraw"></a>
+
+### MsgWithdraw
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `sequencer_address` | [string](#string) |  |  |
+| `value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.rollup.v1.MsgWithdrawResponse"></a>
+
+### MsgWithdrawResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.or.rollup.v1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateRollup` | [MsgCreateRollup](#finschia.or.rollup.v1.MsgCreateRollup) | [MsgCreateRollupResponse](#finschia.or.rollup.v1.MsgCreateRollupResponse) |  | |
+| `RegisterSequencer` | [MsgRegisterSequencer](#finschia.or.rollup.v1.MsgRegisterSequencer) | [MsgRegisterSequencerResponse](#finschia.or.rollup.v1.MsgRegisterSequencerResponse) |  | |
+| `Deposit` | [MsgDeposit](#finschia.or.rollup.v1.MsgDeposit) | [MsgDepositResponse](#finschia.or.rollup.v1.MsgDepositResponse) |  | |
+| `Withdraw` | [MsgWithdraw](#finschia.or.rollup.v1.MsgWithdraw) | [MsgWithdrawResponse](#finschia.or.rollup.v1.MsgWithdrawResponse) |  | |
+| `RemoveSequencer` | [MsgRemoveSequencer](#finschia.or.rollup.v1.MsgRemoveSequencer) | [MsgRemoveSequencerResponse](#finschia.or.rollup.v1.MsgRemoveSequencerResponse) |  | |
 
  <!-- end services -->
 
