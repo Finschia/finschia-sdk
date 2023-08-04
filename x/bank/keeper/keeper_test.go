@@ -584,20 +584,10 @@ func (suite *IntegrationTestSuite) TestMsgSendEvents() {
 		abci.EventAttribute{Key: []byte(sdk.AttributeKeyAmount), Value: []byte(newCoins.String())},
 	)
 
-	event2 := sdk.Event{
-		Type:       sdk.EventTypeMessage,
-		Attributes: []abci.EventAttribute{},
-	}
-	event2.Attributes = append(
-		event2.Attributes,
-		abci.EventAttribute{Key: []byte(types.AttributeKeySender), Value: []byte(addr.String())},
-	)
-
 	// events are shifted due to the funding account events
 	events := ctx.EventManager().ABCIEvents()
-	suite.Require().Equal(10, len(events))
-	suite.Require().Equal(abci.Event(event1), events[8])
-	suite.Require().Equal(abci.Event(event2), events[9])
+	suite.Require().Equal(8, len(events))
+	suite.Require().Equal(abci.Event(event1), events[7])
 }
 
 func (suite *IntegrationTestSuite) TestMsgMultiSendEvents() {
@@ -636,17 +626,7 @@ func (suite *IntegrationTestSuite) TestMsgMultiSendEvents() {
 	suite.Require().Error(app.BankKeeper.InputOutputCoins(ctx, inputs, outputs))
 
 	events = ctx.EventManager().ABCIEvents()
-	suite.Require().Equal(8, len(events)) // 7 events because account funding causes extra minting + coin_spent + coin_recv events
-
-	event1 := sdk.Event{
-		Type:       sdk.EventTypeMessage,
-		Attributes: []abci.EventAttribute{},
-	}
-	event1.Attributes = append(
-		event1.Attributes,
-		abci.EventAttribute{Key: []byte(types.AttributeKeySender), Value: []byte(addr.String())},
-	)
-	suite.Require().Equal(abci.Event(event1), events[7])
+	suite.Require().Equal(6, len(events)) // 6 events because account funding causes extra minting + coin_spent + coin_recv events
 
 	// Set addr's coins and addr2's coins
 	suite.Require().NoError(simapp.FundAccount(app, ctx, addr, sdk.NewCoins(sdk.NewInt64Coin(fooDenom, 50))))
@@ -658,44 +638,34 @@ func (suite *IntegrationTestSuite) TestMsgMultiSendEvents() {
 	suite.Require().NoError(app.BankKeeper.InputOutputCoins(ctx, inputs, outputs))
 
 	events = ctx.EventManager().ABCIEvents()
-	suite.Require().Equal(28, len(events)) // 25 due to account funding + coin_spent + coin_recv events
+	suite.Require().Equal(22, len(events)) // 22 due to account funding + coin_spent + coin_recv events
 
+	event1 := sdk.Event{
+		Type:       types.EventTypeTransfer,
+		Attributes: []abci.EventAttribute{},
+	}
+	event1.Attributes = append(
+		event1.Attributes,
+		abci.EventAttribute{Key: []byte(types.AttributeKeyRecipient), Value: []byte(addr3.String())},
+	)
+	event1.Attributes = append(
+		event1.Attributes,
+		abci.EventAttribute{Key: []byte(sdk.AttributeKeyAmount), Value: []byte(newCoins.String())})
 	event2 := sdk.Event{
-		Type:       sdk.EventTypeMessage,
+		Type:       types.EventTypeTransfer,
 		Attributes: []abci.EventAttribute{},
 	}
 	event2.Attributes = append(
 		event2.Attributes,
-		abci.EventAttribute{Key: []byte(types.AttributeKeySender), Value: []byte(addr2.String())},
-	)
-	event3 := sdk.Event{
-		Type:       types.EventTypeTransfer,
-		Attributes: []abci.EventAttribute{},
-	}
-	event3.Attributes = append(
-		event3.Attributes,
-		abci.EventAttribute{Key: []byte(types.AttributeKeyRecipient), Value: []byte(addr3.String())},
-	)
-	event3.Attributes = append(
-		event3.Attributes,
-		abci.EventAttribute{Key: []byte(sdk.AttributeKeyAmount), Value: []byte(newCoins.String())})
-	event4 := sdk.Event{
-		Type:       types.EventTypeTransfer,
-		Attributes: []abci.EventAttribute{},
-	}
-	event4.Attributes = append(
-		event4.Attributes,
 		abci.EventAttribute{Key: []byte(types.AttributeKeyRecipient), Value: []byte(addr4.String())},
 	)
-	event4.Attributes = append(
-		event4.Attributes,
+	event2.Attributes = append(
+		event2.Attributes,
 		abci.EventAttribute{Key: []byte(sdk.AttributeKeyAmount), Value: []byte(newCoins2.String())},
 	)
 	// events are shifted due to the funding account events
-	suite.Require().Equal(abci.Event(event1), events[21])
-	suite.Require().Equal(abci.Event(event2), events[23])
-	suite.Require().Equal(abci.Event(event3), events[25])
-	suite.Require().Equal(abci.Event(event4), events[27])
+	suite.Require().Equal(abci.Event(event1), events[19])
+	suite.Require().Equal(abci.Event(event2), events[21])
 }
 
 func (suite *IntegrationTestSuite) TestSpendableCoins() {

@@ -48,6 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 * (refactor) [\#1063](https://github.com/Finschia/finschia-sdk/pull/1063) Automate EventTypeMessage inclusion in every message execution (backport cosmos/cosmos-sdk#13532)
+* (x/bank) [#17273](https://github.com/cosmos/cosmos-sdk/pull/17273) Remove message events including `sender` attribute whose information is already present in the relevant events
 
 ### Build, CI
 
