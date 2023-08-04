@@ -1,0 +1,41 @@
+syntax = "proto3";
+package finschia.or.settlement.v1;
+
+import "finschia/or/settlement/v1/settlement.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc StartChallenge(MsgStartChallenge) returns (MsgStartChallengeResponse);
+  rpc NsectChallenge(MsgNsectChallenge) returns (MsgNsectChallengeResponse);
+  rpc FinishChallenge(MsgFinishChallenge) returns (MsgFinishChallengeResponse);
+}
+
+message MsgStartChallenge {
+  string from         = 1;
+  string to           = 2;
+  string rollup_name  = 3;
+  int64  block_height = 4;
+  uint64 step_count   = 5;
+}
+
+message MsgStartChallengeResponse {
+  string challenge_id = 1;
+}
+
+message MsgNsectChallenge {
+  string         from         = 1;
+  string         challenge_id = 2;
+  repeated bytes state_hashes = 3;
+}
+
+message MsgNsectChallengeResponse {}
+
+message MsgFinishChallenge {
+  string  from         = 1;
+  string  challenge_id = 2;
+  Witness witness      = 3;
+}
+
+message MsgFinishChallengeResponse {}

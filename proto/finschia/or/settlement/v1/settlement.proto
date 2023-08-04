@@ -1,0 +1,53 @@
+syntax = "proto3";
+package finschia.or.settlement.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/or/settlement/types";
+
+// Params defines the parameters for the settlement module.
+message Params {}
+
+// Challenge defines challenge information.
+// a.k.a Contract.sol#ChallengeData.
+message Challenge {
+  // Rollup name
+  string rollup_name = 1;
+  // Block number preceding the challenged block.
+  int64 block_height = 2;
+  // Address of the challenger.
+  string challenger = 3;
+  // Address of the defender.
+  string defender = 4;
+  // Left bound of the binary search: challenger & defender agree on all steps
+  // <= L.
+  uint64 l = 5;
+  // Right bound of the binary search: challenger & defender disagree on all
+  // steps >= R.
+  uint64 r = 6;
+  // Maps step numbers to asserted state hashes for the challenger.
+  map<uint64, bytes> asserted_state_hashes = 7;
+  // Maps step numbers to defended state hashes for the defender.
+  map<uint64, bytes> defended_state_hashes = 8;
+}
+
+message State {
+  bytes           mem_root        = 1;
+  bytes           preimage_key    = 2;
+  uint32          preimage_offset = 3;
+  uint32          pc              = 4;
+  uint32          next_pc         = 5;
+  uint32          lo              = 6;
+  uint32          hi              = 7;
+  uint32          heap            = 8;
+  uint32          exit_code       = 9;
+  bool            exited          = 10;
+  uint64          step            = 11;
+  repeated uint32 registers       = 12;
+}
+
+message Witness {
+  State  state           = 1;
+  bytes  proofs          = 2;
+  bytes  preimage_key    = 3;
+  bytes  preimage_value  = 4;
+  uint32 preimage_offset = 5;
+}
