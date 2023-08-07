@@ -10229,7 +10229,7 @@ GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC met
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
-| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
 
 
 
@@ -10260,7 +10260,7 @@ GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
-| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
 
 
 
@@ -10319,7 +10319,7 @@ GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC met
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
-| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
 
 
 
@@ -15443,7 +15443,7 @@ Since: finschia-sdk 0.47.0
 | ----- | ---- | ----- | ----------- |
 | `txs` | [cosmos.tx.v1beta1.Tx](#cosmos.tx.v1beta1.Tx) | repeated | txs are the transactions in the block. |
 | `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
-| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines a pagination for the response. |
 
 
