@@ -42,7 +42,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 
 ### Bug Fixes
-* (x/foundation) [\#1053](https://github.com/Finschia/finschia-sdk/pull/1053) Make x/foundation MsgExec propagate events
+* (x/foundation) [\#1061](https://github.com/Finschia/finschia-sdk/pull/1061) Make x/foundation MsgExec propagate events (backport #1053)
 
 ### Removed
 
