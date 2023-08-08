@@ -9,9 +9,7 @@ const (
 	EventTypeTransfer = "transfer"
 
 	AttributeKeyRecipient = "recipient"
-	AttributeKeySender    = "sender"
-
-	AttributeValueCategory = ModuleName
+	AttributeKeySender    = sdk.AttributeKeySender
 
 	// supply and balance tracking events name and attributes
 	EventTypeCoinSpent    = "coin_spent"

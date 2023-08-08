@@ -171,14 +171,3 @@ func TestParseCoins(t *testing.T) {
 		})
 	}
 }
-
-func TestDefaultNextClassIDs(t *testing.T) {
-	contractID := "deadbeef"
-	require.Equal(t, collection.NextClassIDs{
-		ContractId:  contractID,
-		Fungible:    sdk.NewUint(1),
-		NonFungible: sdk.NewUint(1 << 28).Incr(), // "10000000 + 1"
-	},
-		collection.DefaultNextClassIDs(contractID),
-	)
-}

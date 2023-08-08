@@ -648,7 +648,6 @@
     - [EventSent](#lbm.collection.v1.EventSent)
   
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
-    - [EventType](#lbm.collection.v1.EventType)
   
 - [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
     - [Balance](#lbm.collection.v1.Balance)
@@ -885,7 +884,6 @@
     - [EventSent](#lbm.token.v1.EventSent)
   
     - [AttributeKey](#lbm.token.v1.AttributeKey)
-    - [EventType](#lbm.token.v1.EventType)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
@@ -9690,8 +9688,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.AttributeKey"></a>
 
 ### AttributeKey
-Deprecated: use typed events.
-
 AttributeKey enumerates the valid attribute keys on x/collection.
 
 | Name | Number | Description |
@@ -9699,65 +9695,8 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
 | ATTRIBUTE_KEY_META | 2 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 3 |  |
-| ATTRIBUTE_KEY_TOKEN_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
 | ATTRIBUTE_KEY_BASE_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_TOKEN_TYPE | 10 |  |
-| ATTRIBUTE_KEY_FROM | 11 |  |
-| ATTRIBUTE_KEY_TO | 12 |  |
-| ATTRIBUTE_KEY_PERM | 13 |  |
-| ATTRIBUTE_KEY_TO_TOKEN_ID | 14 |  |
-| ATTRIBUTE_KEY_FROM_TOKEN_ID | 15 |  |
-| ATTRIBUTE_KEY_APPROVER | 16 |  |
-| ATTRIBUTE_KEY_PROXY | 17 |  |
-| ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID | 18 |  |
-| ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID | 19 |  |
 | ATTRIBUTE_KEY_URI | 20 |  |
-
-
-
-<a name="lbm.collection.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/collection.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_CREATE_COLLECTION | 1 |  |
-| EVENT_TYPE_ISSUE_FT | 2 |  |
-| EVENT_TYPE_ISSUE_NFT | 3 |  |
-| EVENT_TYPE_MINT_FT | 4 |  |
-| EVENT_TYPE_BURN_FT | 5 |  |
-| EVENT_TYPE_MINT_NFT | 6 |  |
-| EVENT_TYPE_BURN_NFT | 7 |  |
-| EVENT_TYPE_BURN_FT_FROM | 8 |  |
-| EVENT_TYPE_BURN_NFT_FROM | 9 |  |
-| EVENT_TYPE_MODIFY_COLLECTION | 10 |  |
-| EVENT_TYPE_MODIFY_TOKEN_TYPE | 11 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 12 |  |
-| EVENT_TYPE_TRANSFER | 13 |  |
-| EVENT_TYPE_TRANSFER_FT | 14 |  |
-| EVENT_TYPE_TRANSFER_NFT | 15 |  |
-| EVENT_TYPE_TRANSFER_FT_FROM | 16 |  |
-| EVENT_TYPE_TRANSFER_NFT_FROM | 17 |  |
-| EVENT_TYPE_GRANT_PERM | 18 |  |
-| EVENT_TYPE_REVOKE_PERM | 19 |  |
-| EVENT_TYPE_ATTACH | 20 |  |
-| EVENT_TYPE_DETACH | 21 |  |
-| EVENT_TYPE_ATTACH_FROM | 22 |  |
-| EVENT_TYPE_DETACH_FROM | 23 |  |
-| EVENT_TYPE_APPROVE_COLLECTION | 24 |  |
-| EVENT_TYPE_DISAPPROVE_COLLECTION | 25 |  |
-| EVENT_TYPE_OPERATION_TRANSFER_NFT | 26 |  |
-| EVENT_TYPE_OPERATION_BURN_NFT | 27 |  |
-| EVENT_TYPE_OPERATION_ROOT_CHANGED | 28 |  |
 
 
  <!-- end enums -->
@@ -13166,43 +13105,9 @@ AttributeKey enumerates the valid attribute keys on x/token.
 | ---- | ------ | ----------- |
 | ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | ATTRIBUTE_KEY_NAME | 1 |  |
-| ATTRIBUTE_KEY_SYMBOL | 2 |  |
 | ATTRIBUTE_KEY_META | 3 |  |
-| ATTRIBUTE_KEY_CONTRACT_ID | 4 |  |
-| ATTRIBUTE_KEY_OWNER | 5 |  |
-| ATTRIBUTE_KEY_AMOUNT | 6 |  |
-| ATTRIBUTE_KEY_DECIMALS | 7 |  |
 | ATTRIBUTE_KEY_IMG_URI | 8 | deprecated: use ATTRIBUTE_KEY_URI |
-| ATTRIBUTE_KEY_MINTABLE | 9 |  |
-| ATTRIBUTE_KEY_FROM | 10 |  |
-| ATTRIBUTE_KEY_TO | 11 |  |
-| ATTRIBUTE_KEY_PERM | 12 |  |
-| ATTRIBUTE_KEY_APPROVER | 13 |  |
-| ATTRIBUTE_KEY_PROXY | 14 |  |
 | ATTRIBUTE_KEY_URI | 15 |  |
-
-
-
-<a name="lbm.token.v1.EventType"></a>
-
-### EventType
-Deprecated: use typed events.
-
-EventType enumerates the valid event types on x/token.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EVENT_TYPE_UNSPECIFIED | 0 |  |
-| EVENT_TYPE_ISSUE | 1 |  |
-| EVENT_TYPE_MINT | 2 |  |
-| EVENT_TYPE_BURN | 3 |  |
-| EVENT_TYPE_BURN_FROM | 4 |  |
-| EVENT_TYPE_MODIFY_TOKEN | 5 |  |
-| EVENT_TYPE_TRANSFER | 6 |  |
-| EVENT_TYPE_TRANSFER_FROM | 7 |  |
-| EVENT_TYPE_GRANT_PERM | 8 |  |
-| EVENT_TYPE_REVOKE_PERM | 9 |  |
-| EVENT_TYPE_APPROVE_TOKEN | 10 |  |
 
 
  <!-- end enums -->

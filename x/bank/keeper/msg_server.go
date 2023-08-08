@@ -60,13 +60,6 @@ func (k msgServer) Send(goCtx context.Context, msg *types.MsgSend) (*types.MsgSe
 		}
 	}()
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-		),
-	)
-
 	return &types.MsgSendResponse{}, nil
 }
 
@@ -92,13 +85,6 @@ func (k msgServer) MultiSend(goCtx context.Context, msg *types.MsgMultiSend) (*t
 	if err != nil {
 		return nil, err
 	}
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-		),
-	)
 
 	return &types.MsgMultiSendResponse{}, nil
 }

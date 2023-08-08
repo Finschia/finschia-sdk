@@ -86,13 +86,6 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 		if err != nil {
 			return err
 		}
-
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				sdk.EventTypeMessage,
-				sdk.NewAttribute(types.AttributeKeySender, in.Address),
-			),
-		)
 	}
 
 	for _, out := range outputs {
@@ -150,18 +143,14 @@ func (k BaseSendKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAd
 		k.ak.SetAccount(ctx, k.ak.NewAccountWithAddress(ctx, toAddr))
 	}
 
-	ctx.EventManager().EmitEvents(sdk.Events{
+	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeyRecipient, toAddr.String()),
 			sdk.NewAttribute(types.AttributeKeySender, fromAddr.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, amt.String()),
 		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(types.AttributeKeySender, fromAddr.String()),
-		),
-	})
+	)
 
 	return nil
 }

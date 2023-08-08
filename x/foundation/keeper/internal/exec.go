@@ -48,9 +48,9 @@ func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 		proposal.ExecutorResult != foundation.PROPOSAL_EXECUTOR_RESULT_SUCCESS {
 		logger := ctx.Logger().With("module", fmt.Sprintf("x/%s", foundation.ModuleName))
 		// Caching context so that we don't update the store in case of failure.
-		ctx, flush := ctx.CacheContext()
+		cacheCtx, flush := ctx.CacheContext()
 
-		if results, err := k.doExecuteMsgs(ctx, *proposal); err != nil {
+		if results, err := k.doExecuteMsgs(cacheCtx, *proposal); err != nil {
 			proposal.ExecutorResult = foundation.PROPOSAL_EXECUTOR_RESULT_FAILURE
 			logs = fmt.Sprintf("proposal execution failed on proposal %d, because of error %s", proposalID, err.Error())
 			logger.Info("proposal execution failed", "cause", err, "proposalID", proposal.Id)

@@ -197,6 +197,17 @@ func (e Event) AppendAttributes(attrs ...Attribute) Event {
 	return e
 }
 
+// GetAttribute returns an attribute for a given key present in an event.
+// If the key is not found, the boolean value will be false.
+func (e Event) GetAttribute(key string) (Attribute, bool) {
+	for _, attr := range e.Attributes {
+		if string(attr.Key) == key {
+			return Attribute{Key: string(attr.Key), Value: string(attr.Value)}, true
+		}
+	}
+	return Attribute{}, false
+}
+
 // AppendEvent adds an Event to a slice of events.
 func (e Events) AppendEvent(event Event) Events {
 	return append(e, event)
@@ -229,8 +240,21 @@ func toBytes(i interface{}) []byte {
 	}
 }
 
+// GetAttributes returns all attributes matching a given key present in events.
+// If the key is not found, the boolean value will be false.
+func (e Events) GetAttributes(key string) ([]Attribute, bool) {
+	attrs := make([]Attribute, 0)
+	for _, event := range e {
+		if attr, found := event.GetAttribute(key); found {
+			attrs = append(attrs, attr)
+		}
+	}
+
+	return attrs, len(attrs) > 0
+}
+
 // Common event types and attribute keys
-var (
+const (
 	EventTypeTx = "tx"
 
 	AttributeKeyAccountSequence = "acc_seq"

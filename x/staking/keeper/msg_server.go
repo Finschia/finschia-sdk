@@ -114,11 +114,6 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Value.String()),
 		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
-		),
 	})
 
 	return &types.MsgCreateValidatorResponse{}, nil
@@ -177,11 +172,6 @@ func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValida
 			sdk.NewAttribute(types.AttributeKeyCommissionRate, validator.Commission.String()),
 			sdk.NewAttribute(types.AttributeKeyMinSelfDelegation, validator.MinSelfDelegation.String()),
 		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddress),
-		),
 	})
 
 	return &types.MsgEditValidatorResponse{}, nil
@@ -235,11 +225,6 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyNewShares, newShares.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
 		),
 	})
 
@@ -302,11 +287,6 @@ func (k msgServer) BeginRedelegate(goCtx context.Context, msg *types.MsgBeginRed
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyCompletionTime, completionTime.Format(time.RFC3339)),
 		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
-		),
 	})
 
 	return &types.MsgBeginRedelegateResponse{
@@ -362,11 +342,6 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyCompletionTime, completionTime.Format(time.RFC3339)),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
 		),
 	})
 

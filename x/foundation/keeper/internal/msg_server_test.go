@@ -466,12 +466,12 @@ func (s *KeeperTestSuite) TestMsgExec() {
 		valid      bool
 	}{
 		"valid request (execute)": {
-			proposalID: s.votedProposal,
+			proposalID: s.activeProposal,
 			signer:     s.members[0],
 			valid:      true,
 		},
 		"valid request (not finalized)": {
-			proposalID: s.activeProposal,
+			proposalID: s.votedProposal,
 			signer:     s.members[0],
 			valid:      true,
 		},

@@ -16,22 +16,14 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		Meta:       contract.Meta,
 		Uri:        contract.Uri,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
 
-	eventGrant := collection.EventGranted{
-		ContractId: contractID,
-		Grantee:    creator.String(),
-	}
-	ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenHead(eventGrant))
 	// 0 is "unspecified"
 	for i := 1; i < len(collection.Permission_value); i++ {
 		p := collection.Permission(i)
 
-		eventGrant.Permission = p
-		ctx.EventManager().EmitEvent(collection.NewEventGrantPermTokenBody(eventGrant))
 		k.Grant(ctx, contractID, []byte{}, creator, p)
 	}
 
@@ -256,9 +248,8 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 	for _, coin := range amount {
 		burntAmount = append(burntAmount, coin)
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			// legacy
+			// retain gas consumption
 			k.iterateDescendants(ctx, contractID, coin.TokenId, func(descendantID string, _ int) (stop bool) {
-				ctx.EventManager().EmitEvent(collection.NewEventOperationBurnNFT(contractID, descendantID))
 				return false
 			})
 

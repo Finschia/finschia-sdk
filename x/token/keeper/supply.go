@@ -19,7 +19,6 @@ func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAd
 		Decimals:   class.Decimals,
 		Mintable:   class.Mintable,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventIssueToken(event, to, amount)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -34,15 +33,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAd
 		)
 	}
 
-	// legacy
-	eventGrant := token.EventGranted{
-		ContractId: contractID,
-		Grantee:    to.String(),
-	}
-	ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenHead(eventGrant))
 	for _, permission := range permissions {
-		eventGrant.Permission = permission
-		ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenBody(eventGrant))
 		k.Grant(ctx, contractID, nil, owner, permission)
 	}
 
@@ -104,7 +95,6 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 		To:         to.String(),
 		Amount:     amount,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventMintToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -144,7 +134,6 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 		From:       from.String(),
 		Amount:     amount,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventBurnToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -174,7 +163,6 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 		From:       from.String(),
 		Amount:     amount,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventBurnTokenFrom(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -275,7 +263,6 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 		Operator:   grantee.String(),
 		Changes:    changes,
 	}
-	ctx.EventManager().EmitEvents(token.NewEventModifyToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -318,7 +305,6 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 		Grantee:    grantee.String(),
 		Permission: permission,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -336,7 +322,6 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 		Grantee:    grantee.String(),
 		Permission: permission,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}

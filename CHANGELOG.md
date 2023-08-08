@@ -59,6 +59,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#961](https://github.com/line/lbm-sdk/pull/961) Do not loop enum in x/collection
 
 ### Removed
+* (x/collection,token) [\#966](https://github.com/line/lbm-sdk/pull/966) Remove legacy events on x/collection and x/token
 
 ### Breaking Changes
 * (proto) [\#923](https://github.com/line/lbm-sdk/pull/923) deprecate broadcast mode `block`
