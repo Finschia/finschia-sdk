@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // NewValidatorSigningInfo creates a new ValidatorSigningInfo instance

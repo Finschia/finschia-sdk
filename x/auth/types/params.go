@@ -5,7 +5,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 // Default parameter values

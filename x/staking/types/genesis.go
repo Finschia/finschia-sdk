@@ -3,8 +3,8 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
 )
 
 // NewGenesisState creates a new GenesisState instanc e

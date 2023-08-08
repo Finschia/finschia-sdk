@@ -1,10 +1,10 @@
 package v043
 
 import (
-	"github.com/Finschia/finschia-sdk/store/prefix"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/address"
-	v040auth "github.com/Finschia/finschia-sdk/x/auth/legacy/v040"
+	"github.com/Finschia/finschia-rdk/store/prefix"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/address"
+	v040auth "github.com/Finschia/finschia-rdk/x/auth/legacy/v040"
 )
 
 // MigratePrefixAddress is a helper function that migrates all keys of format:

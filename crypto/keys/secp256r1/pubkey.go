@@ -4,8 +4,8 @@ import (
 	tmcrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/gogo/protobuf/proto"
 
-	ecdsa "github.com/Finschia/finschia-sdk/crypto/keys/internal/ecdsa"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	ecdsa "github.com/Finschia/finschia-rdk/crypto/keys/internal/ecdsa"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // String implements proto.Message interface.

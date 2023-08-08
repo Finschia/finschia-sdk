@@ -1,10 +1,10 @@
 package internal
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 
-	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-rdk/x/foundation"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) foundation.Params {

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/types"
 )
 
 var coinStrs = []string{

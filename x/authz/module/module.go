@@ -10,17 +10,17 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdkclient "github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	"github.com/Finschia/finschia-sdk/x/authz/client/cli"
-	"github.com/Finschia/finschia-sdk/x/authz/keeper"
-	"github.com/Finschia/finschia-sdk/x/authz/simulation"
+	sdkclient "github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	"github.com/Finschia/finschia-rdk/x/authz/client/cli"
+	"github.com/Finschia/finschia-rdk/x/authz/keeper"
+	"github.com/Finschia/finschia-rdk/x/authz/simulation"
 )
 
 var (

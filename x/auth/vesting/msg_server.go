@@ -3,15 +3,15 @@ package vesting
 import (
 	"context"
 
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
 
 	"github.com/armon/go-metrics"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/auth/keeper"
-	"github.com/Finschia/finschia-sdk/x/auth/vesting/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/auth/keeper"
+	"github.com/Finschia/finschia-rdk/x/auth/vesting/types"
 )
 
 type msgServer struct {

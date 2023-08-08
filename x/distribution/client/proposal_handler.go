@@ -1,8 +1,8 @@
 package client
 
 import (
-	"github.com/Finschia/finschia-sdk/x/distribution/client/cli"
-	govclient "github.com/Finschia/finschia-sdk/x/gov/client"
+	"github.com/Finschia/finschia-rdk/x/distribution/client/cli"
+	govclient "github.com/Finschia/finschia-rdk/x/gov/client"
 )
 
 // ProposalHandler is the community spend proposal handler.

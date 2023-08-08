@@ -8,8 +8,8 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
-	"github.com/Finschia/finschia-sdk/types/kv"
+	snapshottypes "github.com/Finschia/finschia-rdk/snapshots/types"
+	"github.com/Finschia/finschia-rdk/types/kv"
 )
 
 type Store interface {

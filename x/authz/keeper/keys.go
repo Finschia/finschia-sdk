@@ -1,11 +1,11 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/internal/conv"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/address"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	"github.com/Finschia/finschia-sdk/x/authz"
+	"github.com/Finschia/finschia-rdk/internal/conv"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/address"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-rdk/x/authz"
 )
 
 // Keys for store prefixes

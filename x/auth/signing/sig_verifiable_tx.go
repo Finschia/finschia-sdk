@@ -1,9 +1,9 @@
 package signing
 
 import (
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 // SigVerifiableTx defines a transaction interface for all signature verification

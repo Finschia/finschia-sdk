@@ -14,15 +14,15 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/module"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	"github.com/Finschia/finschia-sdk/x/upgrade"
-	"github.com/Finschia/finschia-sdk/x/upgrade/keeper"
-	"github.com/Finschia/finschia-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	storetypes "github.com/Finschia/finschia-rdk/store/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/module"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/x/upgrade"
+	"github.com/Finschia/finschia-rdk/x/upgrade/keeper"
+	"github.com/Finschia/finschia-rdk/x/upgrade/types"
 )
 
 type TestSuite struct {

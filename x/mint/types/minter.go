@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // NewMinter returns a new Minter object with the given inflation and annual

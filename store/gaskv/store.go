@@ -4,8 +4,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/store/types"
-	"github.com/Finschia/finschia-sdk/telemetry"
+	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
 )
 
 var _ types.KVStore = &Store{}

@@ -3,12 +3,12 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/testutil"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	stakingcli "github.com/Finschia/finschia-sdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/testutil"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	stakingcli "github.com/Finschia/finschia-rdk/x/staking/client/cli"
 )
 
 var commonArgs = []string{

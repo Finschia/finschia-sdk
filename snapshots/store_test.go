@@ -14,9 +14,9 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/snapshots"
-	"github.com/Finschia/finschia-sdk/snapshots/types"
-	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-rdk/snapshots"
+	"github.com/Finschia/finschia-rdk/snapshots/types"
+	"github.com/Finschia/finschia-rdk/testutil"
 )
 
 func setupStore(t *testing.T) *snapshots.Store {

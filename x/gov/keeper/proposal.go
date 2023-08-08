@@ -3,10 +3,10 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/client"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/client"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // SubmitProposal create new proposal given a content

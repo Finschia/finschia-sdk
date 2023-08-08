@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-rdk/client"
 )
 
 // Default constants

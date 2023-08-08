@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/token"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/token"
 )
 
 // iterate through the balances of a contract and perform the provided function

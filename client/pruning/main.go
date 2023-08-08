@@ -11,12 +11,12 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/server"
-	servertypes "github.com/Finschia/finschia-sdk/server/types"
-	"github.com/Finschia/finschia-sdk/store/rootmulti"
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/server"
+	servertypes "github.com/Finschia/finschia-rdk/server/types"
+	"github.com/Finschia/finschia-rdk/store/rootmulti"
+	storetypes "github.com/Finschia/finschia-rdk/store/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 const FlagAppDBBackend = "app-db-backend"

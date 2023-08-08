@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/types"
 	"github.com/stretchr/testify/require"
 )
 

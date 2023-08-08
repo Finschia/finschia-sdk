@@ -2,7 +2,7 @@
 package types
 
 import (
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // x/evidence module sentinel errors

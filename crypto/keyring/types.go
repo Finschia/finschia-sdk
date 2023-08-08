@@ -1,8 +1,8 @@
 package keyring
 
 import (
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // Language is a language to create the BIP 39 mnemonic in.

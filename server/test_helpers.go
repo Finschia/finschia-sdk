@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // Get a free address for a test ostracon server

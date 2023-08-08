@@ -8,12 +8,12 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/slashing"
-	"github.com/Finschia/finschia-sdk/x/staking"
-	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/slashing"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	"github.com/Finschia/finschia-rdk/x/staking/teststaking"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func TestBeginBlocker(t *testing.T) {

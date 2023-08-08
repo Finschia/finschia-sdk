@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/feegrant"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/feegrant"
 )
 
 func (suite *KeeperTestSuite) TestFeeAllowance() {

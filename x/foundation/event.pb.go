@@ -5,9 +5,9 @@ package foundation
 
 import (
 	fmt "fmt"
-	types1 "github.com/Finschia/finschia-sdk/codec/types"
-	github_com_Finschia_finschia_sdk_types "github.com/Finschia/finschia-sdk/types"
-	types "github.com/Finschia/finschia-sdk/types"
+	types1 "github.com/Finschia/finschia-rdk/codec/types"
+	github_com_Finschia_finschia_rdk_types "github.com/Finschia/finschia-rdk/types"
+	types "github.com/Finschia/finschia-rdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	_ "github.com/regen-network/cosmos-proto"
@@ -75,7 +75,7 @@ func (m *EventUpdateParams) GetParams() Params {
 // EventFundTreasury is an event emitted when one funds the treasury.
 type EventFundTreasury struct {
 	From   string                                       `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	Amount github_com_Finschia_finschia_sdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coins" json:"amount"`
+	Amount github_com_Finschia_finschia_rdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.Coins" json:"amount"`
 }
 
 func (m *EventFundTreasury) Reset()         { *m = EventFundTreasury{} }
@@ -118,7 +118,7 @@ func (m *EventFundTreasury) GetFrom() string {
 	return ""
 }
 
-func (m *EventFundTreasury) GetAmount() github_com_Finschia_finschia_sdk_types.Coins {
+func (m *EventFundTreasury) GetAmount() github_com_Finschia_finschia_rdk_types.Coins {
 	if m != nil {
 		return m.Amount
 	}
@@ -128,7 +128,7 @@ func (m *EventFundTreasury) GetAmount() github_com_Finschia_finschia_sdk_types.C
 // EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 type EventWithdrawFromTreasury struct {
 	To     string                                       `protobuf:"bytes,1,opt,name=to,proto3" json:"to,omitempty"`
-	Amount github_com_Finschia_finschia_sdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coins" json:"amount"`
+	Amount github_com_Finschia_finschia_rdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.Coins" json:"amount"`
 }
 
 func (m *EventWithdrawFromTreasury) Reset()         { *m = EventWithdrawFromTreasury{} }
@@ -171,7 +171,7 @@ func (m *EventWithdrawFromTreasury) GetTo() string {
 	return ""
 }
 
-func (m *EventWithdrawFromTreasury) GetAmount() github_com_Finschia_finschia_sdk_types.Coins {
+func (m *EventWithdrawFromTreasury) GetAmount() github_com_Finschia_finschia_rdk_types.Coins {
 	if m != nil {
 		return m.Amount
 	}
@@ -701,7 +701,7 @@ var fileDescriptor_2b66c645bbb34fbc = []byte{
 	0x41, 0x08, 0x8a, 0x1d, 0x4a, 0x22, 0x49, 0x36, 0x65, 0x4b, 0x1b, 0xfa, 0xa0, 0x84, 0x22, 0x92,
 	0xc6, 0xbc, 0x32, 0x51, 0x9b, 0x94, 0x25, 0x54, 0x6b, 0xa2, 0x19, 0x53, 0x35, 0x63, 0xae, 0x91,
 	0x20, 0x6e, 0x3e, 0x10, 0x25, 0xbe, 0x7c, 0xaf, 0xde, 0xf5, 0x03, 0xde, 0x4d, 0x1d, 0xd3, 0x25,
-	0x91, 0xd5, 0x0a, 0x62, 0xe6, 0x76, 0x03, 0x64, 0x75, 0x94, 0x51, 0x67, 0xde, 0xbe, 0xc5, 0x7b,
+	0x91, 0xd5, 0x0a, 0x62, 0xe6, 0x76, 0x03, 0x64, 0x75, 0x94, 0x51, 0xa7, 0xde, 0xbe, 0xc5, 0x7b,
 	0x09, 0x66, 0x12, 0xc4, 0x6c, 0x45, 0x6f, 0x7c, 0xd4, 0xc0, 0xbc, 0x94, 0xf4, 0x2a, 0xe0, 0x5d,
 	0x8f, 0xa2, 0x77, 0x2d, 0x4a, 0xa2, 0x81, 0xb4, 0x32, 0x98, 0xe0, 0x44, 0x09, 0x9b, 0xe0, 0xe4,
 	0xcf, 0xc9, 0x72, 0x01, 0x1c, 0x9a, 0xfb, 0x36, 0x8e, 0x1c, 0x4c, 0x19, 0xdc, 0x06, 0xe5, 0x48,
@@ -729,7 +729,7 @@ var fileDescriptor_2b66c645bbb34fbc = []byte{
 	0xf9, 0xbb, 0xbd, 0x04, 0xef, 0xd1, 0xb0, 0xb9, 0x71, 0x72, 0xae, 0x6b, 0x67, 0xe7, 0xba, 0xf6,
 	0xe3, 0x5c, 0xd7, 0x8e, 0x2e, 0xf4, 0xc2, 0xd9, 0x85, 0x5e, 0xf8, 0x7a, 0xa1, 0x17, 0x5e, 0xd7,
 	0x7f, 0x43, 0xeb, 0xe5, 0x50, 0x9d, 0x92, 0x6c, 0xf6, 0xfe, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0xd4, 0x73, 0x42, 0xfd, 0x38, 0x06, 0x00, 0x00,
+	0xe6, 0x2f, 0x43, 0xc7, 0x38, 0x06, 0x00, 0x00,
 }
 
 func (m *EventUpdateParams) Marshal() (dAtA []byte, err error) {

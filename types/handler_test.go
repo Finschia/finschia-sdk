@@ -6,8 +6,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/tests/mocks"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/tests/mocks"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 type handlerTestSuite struct {

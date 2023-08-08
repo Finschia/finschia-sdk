@@ -8,8 +8,8 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/store/iavl"
-	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/store/iavl"
+	"github.com/Finschia/finschia-rdk/store/types"
 )
 
 func newMemTestKVStore(t *testing.T) types.KVStore {

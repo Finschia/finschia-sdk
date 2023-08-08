@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // The code in this file is adapted from agl/ed25519.

@@ -5,14 +5,14 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/store/cachekv"
+	"github.com/Finschia/finschia-rdk/store/cachekv"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/store/dbadapter"
-	"github.com/Finschia/finschia-sdk/store/types"
-	"github.com/Finschia/finschia-sdk/tests/mocks"
+	"github.com/Finschia/finschia-rdk/store/dbadapter"
+	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-rdk/tests/mocks"
 )
 
 var errFoo = errors.New("dummy")

@@ -3,13 +3,13 @@ package feegrant
 import (
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // TODO: Revisit this once we have propoer gas fee framework.
-// Tracking issues https://github.com/cosmos/cosmos-sdk/issues/9054, https://github.com/Finschia/finschia-sdk/discussions/9072
+// Tracking issues https://github.com/cosmos/cosmos-sdk/issues/9054, https://github.com/Finschia/finschia-rdk/discussions/9072
 const (
 	gasCostPerIteration = uint64(10)
 )

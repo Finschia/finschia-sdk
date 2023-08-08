@@ -3,8 +3,8 @@ package server
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Deprecated: GenerateCoinKey generates a new key mnemonic along with its addrress.

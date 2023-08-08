@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	datest "github.com/Finschia/finschia-sdk/x/or/da/testutil"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	datest "github.com/Finschia/finschia-rdk/x/or/da/testutil"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 func TestGetParams(t *testing.T) {

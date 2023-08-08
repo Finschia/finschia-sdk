@@ -11,12 +11,12 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/client/tx"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
-	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/client/tx"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
+	authsigning "github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 func TestRegisterMsgService(t *testing.T) {

@@ -13,17 +13,17 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	govclient "github.com/Finschia/finschia-sdk/x/gov/client"
-	"github.com/Finschia/finschia-sdk/x/gov/client/cli"
-	"github.com/Finschia/finschia-sdk/x/gov/keeper"
-	"github.com/Finschia/finschia-sdk/x/gov/simulation"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	govclient "github.com/Finschia/finschia-rdk/x/gov/client"
+	"github.com/Finschia/finschia-rdk/x/gov/client/cli"
+	"github.com/Finschia/finschia-rdk/x/gov/keeper"
+	"github.com/Finschia/finschia-rdk/x/gov/simulation"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 var (

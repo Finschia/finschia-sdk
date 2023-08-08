@@ -1,7 +1,7 @@
 package feegrant
 
 import (
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // Codes for governance errors

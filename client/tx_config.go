@@ -1,9 +1,9 @@
 package client
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	signingtypes "github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/signing"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	signingtypes "github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 type (

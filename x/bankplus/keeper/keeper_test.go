@@ -6,14 +6,14 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	authkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
-	bankpluskeeper "github.com/Finschia/finschia-sdk/x/bankplus/keeper"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	authkeeper "github.com/Finschia/finschia-rdk/x/auth/keeper"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
+	bankpluskeeper "github.com/Finschia/finschia-rdk/x/bankplus/keeper"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
 )
 
 const (

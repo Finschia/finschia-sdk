@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	gov "github.com/Finschia/finschia-sdk/x/gov/types"
+	gov "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 const (

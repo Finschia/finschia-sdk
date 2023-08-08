@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 // ParamStoreKeyConstantFee sets the key for constant fee parameter

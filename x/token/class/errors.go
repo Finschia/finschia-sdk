@@ -1,7 +1,7 @@
 package class
 
 import (
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const contractCodespace = "contract"

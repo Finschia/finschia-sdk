@@ -3,7 +3,7 @@ package authz
 import (
 	"github.com/gogo/protobuf/proto"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Authorization represents the interface of various Authorization types implemented

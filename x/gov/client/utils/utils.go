@@ -3,7 +3,7 @@ package utils
 import (
 	"strings"
 
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // NormalizeVoteOption - normalize user specified vote option

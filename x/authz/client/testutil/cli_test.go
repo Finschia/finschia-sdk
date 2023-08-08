@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/testutil/network"
+	"github.com/Finschia/finschia-rdk/testutil/network"
 )
 
 func TestIntegrationTestSuite(t *testing.T) {

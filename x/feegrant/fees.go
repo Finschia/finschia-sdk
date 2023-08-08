@@ -1,7 +1,7 @@
 package feegrant
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // FeeAllowance implementations are tied to a given fee delegator and delegatee,

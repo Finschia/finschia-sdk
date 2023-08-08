@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 
 import "lbm/token/v1/token.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/token";
+option go_package = "github.com/Finschia/finschia-rdk/x/token";
 
 // AttributeKey enumerates the valid attribute keys on x/token.
 enum AttributeKey {
@@ -38,7 +38,7 @@ message EventSent {
   string to = 4;
   // number of tokens sent.
   string amount = 5
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
@@ -128,7 +128,7 @@ message EventMinted {
   string to = 3;
   // number of tokens minted.
   string amount = 4
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventBurned is emitted when tokens are burnt.
@@ -143,7 +143,7 @@ message EventBurned {
   string from = 3;
   // number of tokens burned.
   string amount = 4
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventModified is emitted when the information of a contract is modified.

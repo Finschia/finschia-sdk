@@ -16,14 +16,14 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	ostrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	"github.com/Finschia/finschia-sdk/server/config"
-	"github.com/Finschia/finschia-sdk/telemetry"
-	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	"github.com/Finschia/finschia-rdk/server/config"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	grpctypes "github.com/Finschia/finschia-rdk/types/grpc"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
+	_ "github.com/Finschia/finschia-rdk/client/docs/statik"
 )
 
 // Server defines the server's API interface.

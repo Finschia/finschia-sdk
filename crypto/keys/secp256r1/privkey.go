@@ -1,8 +1,8 @@
 package secp256r1
 
 import (
-	"github.com/Finschia/finschia-sdk/crypto/keys/internal/ecdsa"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/internal/ecdsa"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // GenPrivKey generates a new secp256r1 private key. It uses operating system randomness.

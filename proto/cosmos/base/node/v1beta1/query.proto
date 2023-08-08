@@ -3,7 +3,7 @@ package cosmos.base.node.v1beta1;
 
 import "google/api/annotations.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/client/grpc/node";
+option go_package = "github.com/Finschia/finschia-rdk/client/grpc/node";
 
 // Service defines the gRPC querier service for node related queries.
 service Service {

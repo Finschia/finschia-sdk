@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_Finschia_finschia_sdk_types "github.com/Finschia/finschia-sdk/types"
+	github_com_Finschia_finschia_rdk_types "github.com/Finschia/finschia-rdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -27,9 +27,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // Minter represents the minting state.
 type Minter struct {
 	// current annual inflation rate
-	Inflation github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,1,opt,name=inflation,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"inflation"`
+	Inflation github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,1,opt,name=inflation,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"inflation"`
 	// current annual expected provisions
-	AnnualProvisions github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,2,opt,name=annual_provisions,json=annualProvisions,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"annual_provisions" yaml:"annual_provisions"`
+	AnnualProvisions github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,2,opt,name=annual_provisions,json=annualProvisions,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"annual_provisions" yaml:"annual_provisions"`
 }
 
 func (m *Minter) Reset()         { *m = Minter{} }
@@ -70,13 +70,13 @@ type Params struct {
 	// type of coin to mint
 	MintDenom string `protobuf:"bytes,1,opt,name=mint_denom,json=mintDenom,proto3" json:"mint_denom,omitempty"`
 	// maximum annual change in inflation rate
-	InflationRateChange github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,2,opt,name=inflation_rate_change,json=inflationRateChange,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"inflation_rate_change" yaml:"inflation_rate_change"`
+	InflationRateChange github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,2,opt,name=inflation_rate_change,json=inflationRateChange,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"inflation_rate_change" yaml:"inflation_rate_change"`
 	// maximum inflation rate
-	InflationMax github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,3,opt,name=inflation_max,json=inflationMax,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"inflation_max" yaml:"inflation_max"`
+	InflationMax github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,3,opt,name=inflation_max,json=inflationMax,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"inflation_max" yaml:"inflation_max"`
 	// minimum inflation rate
-	InflationMin github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,4,opt,name=inflation_min,json=inflationMin,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"inflation_min" yaml:"inflation_min"`
+	InflationMin github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,4,opt,name=inflation_min,json=inflationMin,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"inflation_min" yaml:"inflation_min"`
 	// goal of percent bonded atoms
-	GoalBonded github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,5,opt,name=goal_bonded,json=goalBonded,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"goal_bonded" yaml:"goal_bonded"`
+	GoalBonded github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,5,opt,name=goal_bonded,json=goalBonded,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"goal_bonded" yaml:"goal_bonded"`
 	// expected blocks per year
 	BlocksPerYear uint64 `protobuf:"varint,6,opt,name=blocks_per_year,json=blocksPerYear,proto3" json:"blocks_per_year,omitempty" yaml:"blocks_per_year"`
 }
@@ -147,7 +147,7 @@ var fileDescriptor_2df116d183c1e223 = []byte{
 	0x08, 0xb7, 0x4f, 0xb8, 0xb4, 0x4c, 0x93, 0x1e, 0xee, 0x70, 0x79, 0x5a, 0x83, 0xe5, 0x4a, 0x86,
 	0x68, 0x0f, 0xed, 0x77, 0xb2, 0xa7, 0x97, 0x93, 0x38, 0xf8, 0x3e, 0x89, 0x9f, 0x54, 0xdc, 0x0e,
 	0xce, 0x8b, 0x6e, 0xa9, 0x44, 0xfa, 0x82, 0x4b, 0x53, 0x0e, 0x38, 0xa4, 0xa7, 0x8b, 0xc3, 0x81,
-	0xe9, 0x9f, 0xa5, 0x76, 0x3c, 0x64, 0xa6, 0x7b, 0xcc, 0x4a, 0xba, 0x0a, 0x21, 0xef, 0xf1, 0x7d,
+	0xee, 0x9f, 0xa5, 0x76, 0x3c, 0x64, 0xa6, 0x7b, 0xcc, 0x4a, 0xba, 0x0a, 0x21, 0xef, 0xf1, 0x7d,
 	0x90, 0xf2, 0x1c, 0xea, 0x7c, 0xa8, 0xd5, 0x05, 0x37, 0x5c, 0x49, 0x13, 0xde, 0x70, 0xc9, 0x6f,
 	0xfe, 0x3f, 0x79, 0x3e, 0x89, 0xc3, 0x31, 0x88, 0xfa, 0x28, 0xf9, 0x23, 0x34, 0xa1, 0xf7, 0xbc,
 	0xd7, 0x5b, 0x59, 0x5f, 0x5a, 0xb8, 0xdd, 0x03, 0x0d, 0xc2, 0x90, 0xc7, 0x18, 0x37, 0x57, 0x91,
@@ -163,7 +163,7 @@ var fileDescriptor_2df116d183c1e223 = []byte{
 	0xd0, 0x47, 0xad, 0x4f, 0x9f, 0xe3, 0x20, 0x7b, 0x79, 0x39, 0x8d, 0xd0, 0xd5, 0x34, 0x42, 0x3f,
 	0xa6, 0x11, 0xfa, 0x38, 0x8b, 0x82, 0xab, 0x59, 0x14, 0x7c, 0x9b, 0x45, 0xc1, 0xbb, 0x83, 0x7f,
 	0x36, 0x1e, 0xf9, 0x47, 0xea, 0x8a, 0x17, 0x6d, 0xf7, 0xe6, 0x9e, 0xfd, 0x0c, 0x00, 0x00, 0xff,
-	0xff, 0x07, 0x73, 0x5c, 0xaa, 0xc0, 0x03, 0x00, 0x00,
+	0xff, 0x90, 0xb0, 0x86, 0x37, 0xc0, 0x03, 0x00, 0x00,
 }
 
 func (m *Minter) Marshal() (dAtA []byte, err error) {

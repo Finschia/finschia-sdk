@@ -14,17 +14,17 @@ import (
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/Finschia/ostracon/rpc/client/http"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/testutil/network"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
-	banktestutil "github.com/Finschia/finschia-sdk/x/bank/client/testutil"
-	"github.com/Finschia/finschia-sdk/x/staking/client/cli"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/testutil/network"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	banktestutil "github.com/Finschia/finschia-rdk/x/bank/client/testutil"
+	"github.com/Finschia/finschia-rdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 type IntegrationTestSuite struct {

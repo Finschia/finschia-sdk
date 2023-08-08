@@ -4,9 +4,9 @@ import (
 	occrypto "github.com/Finschia/ostracon/crypto"
 	octypes "github.com/Finschia/ostracon/types"
 
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // GetOcConsPubKey gets the validator's public key as an occrypto.PubKey.

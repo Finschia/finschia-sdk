@@ -4,7 +4,7 @@ import (
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-rdk/client/flags"
 )
 
 // Commands registers a sub-tree of commands to interact with

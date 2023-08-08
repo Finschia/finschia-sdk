@@ -1,7 +1,7 @@
 package types
 
 import (
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
 

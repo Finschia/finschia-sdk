@@ -7,10 +7,10 @@ import (
 	octypes "github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking/keeper"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking/keeper"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // InitGenesis sets the pool and parameters for the provided keeper.  For each

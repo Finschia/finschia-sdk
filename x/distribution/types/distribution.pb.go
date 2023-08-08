@@ -5,8 +5,8 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_Finschia_finschia_sdk_types "github.com/Finschia/finschia-sdk/types"
-	types "github.com/Finschia/finschia-sdk/types"
+	github_com_Finschia_finschia_rdk_types "github.com/Finschia/finschia-rdk/types"
+	types "github.com/Finschia/finschia-rdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -27,9 +27,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the set of params for the distribution module.
 type Params struct {
-	CommunityTax        github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,1,opt,name=community_tax,json=communityTax,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"community_tax" yaml:"community_tax"`
-	BaseProposerReward  github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,2,opt,name=base_proposer_reward,json=baseProposerReward,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"base_proposer_reward" yaml:"base_proposer_reward"`
-	BonusProposerReward github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,3,opt,name=bonus_proposer_reward,json=bonusProposerReward,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"bonus_proposer_reward" yaml:"bonus_proposer_reward"`
+	CommunityTax        github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,1,opt,name=community_tax,json=communityTax,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"community_tax" yaml:"community_tax"`
+	BaseProposerReward  github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,2,opt,name=base_proposer_reward,json=baseProposerReward,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"base_proposer_reward" yaml:"base_proposer_reward"`
+	BonusProposerReward github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,3,opt,name=bonus_proposer_reward,json=bonusProposerReward,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"bonus_proposer_reward" yaml:"bonus_proposer_reward"`
 	WithdrawAddrEnabled bool                                       `protobuf:"varint,4,opt,name=withdraw_addr_enabled,json=withdrawAddrEnabled,proto3" json:"withdraw_addr_enabled,omitempty" yaml:"withdraw_addr_enabled"`
 }
 
@@ -85,7 +85,7 @@ func (m *Params) GetWithdrawAddrEnabled() bool {
 //  read that record)
 //  + one per validator for the zeroeth period, set on initialization
 type ValidatorHistoricalRewards struct {
-	CumulativeRewardRatio github_com_Finschia_finschia_sdk_types.DecCoins `protobuf:"bytes,1,rep,name=cumulative_reward_ratio,json=cumulativeRewardRatio,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.DecCoins" json:"cumulative_reward_ratio" yaml:"cumulative_reward_ratio"`
+	CumulativeRewardRatio github_com_Finschia_finschia_rdk_types.DecCoins `protobuf:"bytes,1,rep,name=cumulative_reward_ratio,json=cumulativeRewardRatio,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.DecCoins" json:"cumulative_reward_ratio" yaml:"cumulative_reward_ratio"`
 	ReferenceCount        uint32                                          `protobuf:"varint,2,opt,name=reference_count,json=referenceCount,proto3" json:"reference_count,omitempty" yaml:"reference_count"`
 }
 
@@ -122,7 +122,7 @@ func (m *ValidatorHistoricalRewards) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ValidatorHistoricalRewards proto.InternalMessageInfo
 
-func (m *ValidatorHistoricalRewards) GetCumulativeRewardRatio() github_com_Finschia_finschia_sdk_types.DecCoins {
+func (m *ValidatorHistoricalRewards) GetCumulativeRewardRatio() github_com_Finschia_finschia_rdk_types.DecCoins {
 	if m != nil {
 		return m.CumulativeRewardRatio
 	}
@@ -140,7 +140,7 @@ func (m *ValidatorHistoricalRewards) GetReferenceCount() uint32 {
 // period for a validator kept as a running counter and incremented
 // each block as long as the validator's tokens remain constant.
 type ValidatorCurrentRewards struct {
-	Rewards github_com_Finschia_finschia_sdk_types.DecCoins `protobuf:"bytes,1,rep,name=rewards,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.DecCoins" json:"rewards"`
+	Rewards github_com_Finschia_finschia_rdk_types.DecCoins `protobuf:"bytes,1,rep,name=rewards,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.DecCoins" json:"rewards"`
 	Period  uint64                                          `protobuf:"varint,2,opt,name=period,proto3" json:"period,omitempty"`
 }
 
@@ -177,7 +177,7 @@ func (m *ValidatorCurrentRewards) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ValidatorCurrentRewards proto.InternalMessageInfo
 
-func (m *ValidatorCurrentRewards) GetRewards() github_com_Finschia_finschia_sdk_types.DecCoins {
+func (m *ValidatorCurrentRewards) GetRewards() github_com_Finschia_finschia_rdk_types.DecCoins {
 	if m != nil {
 		return m.Rewards
 	}
@@ -194,7 +194,7 @@ func (m *ValidatorCurrentRewards) GetPeriod() uint64 {
 // ValidatorAccumulatedCommission represents accumulated commission
 // for a validator kept as a running counter, can be withdrawn at any time.
 type ValidatorAccumulatedCommission struct {
-	Commission github_com_Finschia_finschia_sdk_types.DecCoins `protobuf:"bytes,1,rep,name=commission,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.DecCoins" json:"commission"`
+	Commission github_com_Finschia_finschia_rdk_types.DecCoins `protobuf:"bytes,1,rep,name=commission,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.DecCoins" json:"commission"`
 }
 
 func (m *ValidatorAccumulatedCommission) Reset()         { *m = ValidatorAccumulatedCommission{} }
@@ -230,7 +230,7 @@ func (m *ValidatorAccumulatedCommission) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ValidatorAccumulatedCommission proto.InternalMessageInfo
 
-func (m *ValidatorAccumulatedCommission) GetCommission() github_com_Finschia_finschia_sdk_types.DecCoins {
+func (m *ValidatorAccumulatedCommission) GetCommission() github_com_Finschia_finschia_rdk_types.DecCoins {
 	if m != nil {
 		return m.Commission
 	}
@@ -240,7 +240,7 @@ func (m *ValidatorAccumulatedCommission) GetCommission() github_com_Finschia_fin
 // ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
 // for a validator inexpensive to track, allows simple sanity checks.
 type ValidatorOutstandingRewards struct {
-	Rewards github_com_Finschia_finschia_sdk_types.DecCoins `protobuf:"bytes,1,rep,name=rewards,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.DecCoins" json:"rewards" yaml:"rewards"`
+	Rewards github_com_Finschia_finschia_rdk_types.DecCoins `protobuf:"bytes,1,rep,name=rewards,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.DecCoins" json:"rewards" yaml:"rewards"`
 }
 
 func (m *ValidatorOutstandingRewards) Reset()         { *m = ValidatorOutstandingRewards{} }
@@ -276,7 +276,7 @@ func (m *ValidatorOutstandingRewards) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ValidatorOutstandingRewards proto.InternalMessageInfo
 
-func (m *ValidatorOutstandingRewards) GetRewards() github_com_Finschia_finschia_sdk_types.DecCoins {
+func (m *ValidatorOutstandingRewards) GetRewards() github_com_Finschia_finschia_rdk_types.DecCoins {
 	if m != nil {
 		return m.Rewards
 	}
@@ -289,7 +289,7 @@ func (m *ValidatorOutstandingRewards) GetRewards() github_com_Finschia_finschia_
 // for delegations which are withdrawn after a slash has occurred.
 type ValidatorSlashEvent struct {
 	ValidatorPeriod uint64                                     `protobuf:"varint,1,opt,name=validator_period,json=validatorPeriod,proto3" json:"validator_period,omitempty" yaml:"validator_period"`
-	Fraction        github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,2,opt,name=fraction,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"fraction"`
+	Fraction        github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,2,opt,name=fraction,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"fraction"`
 }
 
 func (m *ValidatorSlashEvent) Reset()         { *m = ValidatorSlashEvent{} }
@@ -378,7 +378,7 @@ func (m *ValidatorSlashEvents) GetValidatorSlashEvents() []ValidatorSlashEvent {
 
 // FeePool is the global fee pool for distribution.
 type FeePool struct {
-	CommunityPool github_com_Finschia_finschia_sdk_types.DecCoins `protobuf:"bytes,1,rep,name=community_pool,json=communityPool,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.DecCoins" json:"community_pool" yaml:"community_pool"`
+	CommunityPool github_com_Finschia_finschia_rdk_types.DecCoins `protobuf:"bytes,1,rep,name=community_pool,json=communityPool,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.DecCoins" json:"community_pool" yaml:"community_pool"`
 }
 
 func (m *FeePool) Reset()         { *m = FeePool{} }
@@ -414,7 +414,7 @@ func (m *FeePool) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FeePool proto.InternalMessageInfo
 
-func (m *FeePool) GetCommunityPool() github_com_Finschia_finschia_sdk_types.DecCoins {
+func (m *FeePool) GetCommunityPool() github_com_Finschia_finschia_rdk_types.DecCoins {
 	if m != nil {
 		return m.CommunityPool
 	}
@@ -428,7 +428,7 @@ type CommunityPoolSpendProposal struct {
 	Title       string                                       `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 	Description string                                       `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	Recipient   string                                       `protobuf:"bytes,3,opt,name=recipient,proto3" json:"recipient,omitempty"`
-	Amount      github_com_Finschia_finschia_sdk_types.Coins `protobuf:"bytes,4,rep,name=amount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coins" json:"amount"`
+	Amount      github_com_Finschia_finschia_rdk_types.Coins `protobuf:"bytes,4,rep,name=amount,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.Coins" json:"amount"`
 }
 
 func (m *CommunityPoolSpendProposal) Reset()      { *m = CommunityPoolSpendProposal{} }
@@ -471,7 +471,7 @@ var xxx_messageInfo_CommunityPoolSpendProposal proto.InternalMessageInfo
 // thus sdk.Dec is used.
 type DelegatorStartingInfo struct {
 	PreviousPeriod uint64                                     `protobuf:"varint,1,opt,name=previous_period,json=previousPeriod,proto3" json:"previous_period,omitempty" yaml:"previous_period"`
-	Stake          github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,2,opt,name=stake,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"stake" yaml:"stake"`
+	Stake          github_com_Finschia_finschia_rdk_types.Dec `protobuf:"bytes,2,opt,name=stake,proto3,customtype=github.com/Finschia/finschia-rdk/types.Dec" json:"stake" yaml:"stake"`
 	Height         uint64                                     `protobuf:"varint,3,opt,name=height,proto3" json:"creation_height" yaml:"creation_height"`
 }
 
@@ -526,7 +526,7 @@ func (m *DelegatorStartingInfo) GetHeight() uint64 {
 // of a delegator's delegation reward.
 type DelegationDelegatorReward struct {
 	ValidatorAddress string                                          `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty" yaml:"validator_address"`
-	Reward           github_com_Finschia_finschia_sdk_types.DecCoins `protobuf:"bytes,2,rep,name=reward,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.DecCoins" json:"reward"`
+	Reward           github_com_Finschia_finschia_rdk_types.DecCoins `protobuf:"bytes,2,rep,name=reward,proto3,castrepeated=github.com/Finschia/finschia-rdk/types.DecCoins" json:"reward"`
 }
 
 func (m *DelegationDelegatorReward) Reset()         { *m = DelegationDelegatorReward{} }
@@ -639,7 +639,7 @@ var fileDescriptor_cd78a31ea281a992 = []byte{
 	0xae, 0x5d, 0xce, 0x8c, 0x4b, 0xfc, 0xfb, 0x38, 0xcc, 0x1d, 0x10, 0x41, 0x5a, 0x12, 0x71, 0x38,
 	0xe3, 0xf2, 0x56, 0xab, 0xe3, 0x33, 0x75, 0x5a, 0x55, 0xe4, 0xa4, 0x00, 0xd6, 0xc1, 0xc6, 0x35,
 	0xfb, 0xed, 0x87, 0x81, 0x95, 0xf9, 0x35, 0xb0, 0x5e, 0xae, 0x33, 0xd5, 0xe8, 0xd4, 0x4a, 0x2e,
-	0x6f, 0x95, 0xf7, 0x98, 0x2f, 0xdd, 0x06, 0x23, 0xe5, 0x23, 0xf3, 0x71, 0x47, 0x7a, 0xf7, 0xcb,
+	0x6f, 0x95, 0xf7, 0x98, 0x2f, 0xdd, 0x06, 0x23, 0xe5, 0x23, 0xf3, 0x71, 0x47, 0x78, 0xf7, 0xcb,
 	0xea, 0xb4, 0x4d, 0x65, 0x69, 0x87, 0xba, 0xbd, 0xc0, 0xca, 0x9f, 0x92, 0x56, 0x73, 0x0b, 0x0f,
 	0x38, 0xc4, 0xce, 0x74, 0xf2, 0x7f, 0x8f, 0x9c, 0xa0, 0x4f, 0x01, 0xcc, 0x87, 0xbc, 0xaa, 0x6d,
 	0xc1, 0xdb, 0x5c, 0x52, 0x51, 0x15, 0xf4, 0x98, 0x08, 0xaf, 0x30, 0x16, 0x05, 0x7e, 0xef, 0x4a,
@@ -694,7 +694,7 @@ var fileDescriptor_cd78a31ea281a992 = []byte{
 	0x38, 0x98, 0x05, 0xec, 0xc4, 0x26, 0xa9, 0x44, 0xf6, 0xe1, 0xf7, 0xe7, 0x45, 0xf0, 0xf0, 0xbc,
 	0x08, 0x1e, 0x9d, 0x17, 0xc1, 0x6f, 0xe7, 0x45, 0xf0, 0xe5, 0x45, 0x31, 0xf3, 0xe8, 0xa2, 0x98,
 	0xf9, 0xe5, 0xa2, 0x98, 0xf9, 0xf8, 0xf5, 0xff, 0xcd, 0xc1, 0xc9, 0xe0, 0x83, 0x3c, 0x4a, 0x49,
-	0x2d, 0x17, 0xbd, 0x97, 0x5f, 0xfd, 0x27, 0x00, 0x00, 0xff, 0xff, 0xf2, 0x04, 0x25, 0xde, 0xb4,
+	0x2d, 0x17, 0xbd, 0x97, 0x5f, 0xfd, 0x27, 0x00, 0x00, 0xff, 0xff, 0xbf, 0x1f, 0xfa, 0xa6, 0xb4,
 	0x0b, 0x00, 0x00,
 }
 

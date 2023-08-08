@@ -5,9 +5,9 @@ import (
 
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/query"
 )
 
 // Paginate returns the correct starting and ending index for a paginated query,

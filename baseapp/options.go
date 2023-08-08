@@ -6,11 +6,11 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/snapshots"
-	"github.com/Finschia/finschia-sdk/store"
-	"github.com/Finschia/finschia-sdk/store/cache"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/snapshots"
+	"github.com/Finschia/finschia-rdk/store"
+	"github.com/Finschia/finschia-rdk/store/cache"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // File for storing in-package BaseApp optional functions,

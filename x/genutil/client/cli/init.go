@@ -17,13 +17,13 @@ import (
 	ostrand "github.com/Finschia/ostracon/libs/rand"
 	"github.com/Finschia/ostracon/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/client/input"
-	"github.com/Finschia/finschia-sdk/server"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	"github.com/Finschia/finschia-sdk/x/genutil"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/client/input"
+	"github.com/Finschia/finschia-rdk/server"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	"github.com/Finschia/finschia-rdk/x/genutil"
 )
 
 const (

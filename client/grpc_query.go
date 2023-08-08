@@ -13,10 +13,10 @@ import (
 	"google.golang.org/grpc/encoding/proto"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-	"github.com/Finschia/finschia-sdk/types/tx"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	grpctypes "github.com/Finschia/finschia-rdk/types/grpc"
+	"github.com/Finschia/finschia-rdk/types/tx"
 )
 
 var _ gogogrpc.ClientConn = Context{}

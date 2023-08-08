@@ -8,16 +8,16 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
-	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
-	"github.com/Finschia/finschia-sdk/x/stakingplus"
-	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
-	"github.com/Finschia/finschia-sdk/x/stakingplus/testutil"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
+	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/x/stakingplus"
+	"github.com/Finschia/finschia-rdk/x/stakingplus/keeper"
+	"github.com/Finschia/finschia-rdk/x/stakingplus/testutil"
 )
 
 type KeeperTestSuite struct {
