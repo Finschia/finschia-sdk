@@ -12,17 +12,17 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking"
-	"github.com/Finschia/finschia-sdk/x/staking/keeper"
-	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	"github.com/Finschia/finschia-rdk/x/staking/keeper"
+	"github.com/Finschia/finschia-rdk/x/staking/teststaking"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func bootstrapHandlerGenesisTest(t *testing.T, power int64, numAddrs int, accAmount sdk.Int) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress) {

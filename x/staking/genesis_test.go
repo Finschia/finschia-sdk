@@ -10,13 +10,13 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking"
-	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	"github.com/Finschia/finschia-rdk/x/staking/teststaking"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func bootstrapGenesisTest(numAddrs int) (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {

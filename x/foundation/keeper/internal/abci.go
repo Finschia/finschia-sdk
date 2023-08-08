@@ -3,9 +3,9 @@ package internal
 import (
 	"time"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
 )
 
 // BeginBlocker withdraws rewards from fee-collector before the distribution

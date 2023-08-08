@@ -1,8 +1,8 @@
 package multisig
 
 import (
-	"github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 // PubKey defines a type which supports multi-signature verification via MultiSignatureData

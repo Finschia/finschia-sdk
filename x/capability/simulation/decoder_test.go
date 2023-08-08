@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	"github.com/Finschia/finschia-sdk/x/capability/simulation"
-	"github.com/Finschia/finschia-sdk/x/capability/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-rdk/x/capability/simulation"
+	"github.com/Finschia/finschia-rdk/x/capability/types"
 )
 
 func TestDecodeStore(t *testing.T) {

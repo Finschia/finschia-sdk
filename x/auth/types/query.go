@@ -1,6 +1,6 @@
 package types
 
-import codectypes "github.com/Finschia/finschia-sdk/codec/types"
+import codectypes "github.com/Finschia/finschia-rdk/codec/types"
 
 func (m *QueryAccountResponse) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	var account AccountI

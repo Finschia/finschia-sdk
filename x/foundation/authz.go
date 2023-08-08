@@ -3,8 +3,8 @@ package foundation
 import (
 	"github.com/gogo/protobuf/proto"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // Authorization represents the interface of various Authorization types implemented

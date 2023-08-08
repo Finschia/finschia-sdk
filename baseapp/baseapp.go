@@ -16,14 +16,14 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/server/config"
-	"github.com/Finschia/finschia-sdk/snapshots"
-	"github.com/Finschia/finschia-sdk/store"
-	"github.com/Finschia/finschia-sdk/store/rootmulti"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/server/config"
+	"github.com/Finschia/finschia-rdk/snapshots"
+	"github.com/Finschia/finschia-rdk/store"
+	"github.com/Finschia/finschia-rdk/store/rootmulti"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
 )
 
 var _ abci.Application = (*BaseApp)(nil)

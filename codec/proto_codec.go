@@ -9,7 +9,7 @@ import (
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-rdk/codec/types"
 )
 
 // ProtoCodecMarshaler defines an interface for codecs that utilize Protobuf for both

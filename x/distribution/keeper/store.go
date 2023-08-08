@@ -3,8 +3,8 @@ package keeper
 import (
 	gogotypes "github.com/gogo/protobuf/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/distribution/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/distribution/types"
 )
 
 // get the delegator withdraw address, defaulting to the delegator address

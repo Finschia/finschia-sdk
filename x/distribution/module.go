@@ -11,16 +11,16 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdkclient "github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/distribution/client/cli"
-	"github.com/Finschia/finschia-sdk/x/distribution/keeper"
-	"github.com/Finschia/finschia-sdk/x/distribution/simulation"
-	"github.com/Finschia/finschia-sdk/x/distribution/types"
+	sdkclient "github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/distribution/client/cli"
+	"github.com/Finschia/finschia-rdk/x/distribution/keeper"
+	"github.com/Finschia/finschia-rdk/x/distribution/simulation"
+	"github.com/Finschia/finschia-rdk/x/distribution/types"
 )
 
 var (

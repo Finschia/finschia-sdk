@@ -1,8 +1,8 @@
 package ledger
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptoAmino "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-rdk/codec"
+	cryptoAmino "github.com/Finschia/finschia-rdk/crypto/codec"
 )
 
 var cdc = codec.NewLegacyAmino()

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/testutil/network"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/testutil/network"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 func TestAccountRetriever(t *testing.T) {

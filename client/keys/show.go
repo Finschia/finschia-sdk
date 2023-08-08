@@ -7,13 +7,13 @@ import (
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	"github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	"github.com/Finschia/finschia-sdk/crypto/ledger"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerr "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-rdk/crypto/ledger"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerr "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

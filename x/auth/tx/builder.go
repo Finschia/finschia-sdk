@@ -3,15 +3,15 @@ package tx
 import (
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/client"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/tx"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/ante"
-	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-rdk/client"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/tx"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/ante"
+	authsigning "github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 // wrapper is a wrapper around the tx.Tx proto.Message which retain the raw

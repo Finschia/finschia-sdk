@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"sort"
 
-	"github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/types/simulation"
 )
 
 // entry kinds for use within OperationEntry

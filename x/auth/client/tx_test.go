@@ -7,17 +7,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
-	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authclient "github.com/Finschia/finschia-rdk/x/auth/client"
+	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 var (

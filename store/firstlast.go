@@ -3,8 +3,8 @@ package store
 import (
 	"bytes"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkkv "github.com/Finschia/finschia-sdk/types/kv"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkkv "github.com/Finschia/finschia-rdk/types/kv"
 )
 
 // Gets the first item.

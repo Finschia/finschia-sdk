@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/Finschia/finschia-sdk/x/collection"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 func (s *KeeperTestSuite) TestImportExportGenesis() {

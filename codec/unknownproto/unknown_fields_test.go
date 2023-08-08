@@ -8,8 +8,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
 )
 
 func TestRejectUnknownFieldsRepeated(t *testing.T) {

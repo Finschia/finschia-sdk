@@ -3,7 +3,7 @@ package baseapp
 import (
 	"sync"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 type AccountWGs struct {

@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "finschia/or/da/v1/params.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
+option go_package = "github.com/Finschia/finschia-rdk/x/or/da/types";
 
 enum CompressionOption {
   option (gogoproto.goproto_enum_prefix) = false;

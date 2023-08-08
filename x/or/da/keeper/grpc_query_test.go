@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"time"
 
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 func (s *KeeperTestSuite) TestParams() {

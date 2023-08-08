@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/snapshots"
+	"github.com/Finschia/finschia-rdk/snapshots"
 )
 
 func TestChunkWriter(t *testing.T) {

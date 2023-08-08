@@ -7,11 +7,11 @@ import (
 
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	"github.com/Finschia/finschia-sdk/x/authz/client/cli"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	"github.com/Finschia/finschia-rdk/x/authz/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestQueryAuthorizations() {

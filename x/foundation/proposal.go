@@ -1,10 +1,10 @@
 package foundation
 
 import (
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 const (

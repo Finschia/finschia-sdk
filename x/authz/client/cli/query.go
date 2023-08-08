@@ -6,12 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/version"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	bank "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/version"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	bank "github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

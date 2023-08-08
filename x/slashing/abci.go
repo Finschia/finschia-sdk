@@ -5,10 +5,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/slashing/keeper"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/slashing/keeper"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
 )
 
 // BeginBlocker check for infraction evidence or downtime of validators

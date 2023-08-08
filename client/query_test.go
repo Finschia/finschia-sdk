@@ -8,7 +8,7 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 func (s *IntegrationTestSuite) TestQueryABCIHeight() {

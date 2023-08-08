@@ -6,11 +6,11 @@ import (
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	"github.com/Finschia/finschia-rdk/x/foundation/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdParams() {

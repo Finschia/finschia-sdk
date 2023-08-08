@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 func TestKeyTable(t *testing.T) {

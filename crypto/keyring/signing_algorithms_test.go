@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
 )
 
 func TestNewSigningAlgoByString(t *testing.T) {

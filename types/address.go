@@ -12,11 +12,11 @@ import (
 	"github.com/hashicorp/golang-lru/simplelru"
 	yaml "gopkg.in/yaml.v2"
 
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/internal/conv"
-	"github.com/Finschia/finschia-sdk/types/address"
-	"github.com/Finschia/finschia-sdk/types/bech32"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/internal/conv"
+	"github.com/Finschia/finschia-rdk/types/address"
+	"github.com/Finschia/finschia-rdk/types/bech32"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

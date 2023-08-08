@@ -6,7 +6,7 @@ import "google/protobuf/any.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+option go_package = "github.com/Finschia/finschia-rdk/x/or/rollup/types";
 
 message Rollup {
   string rollup_name = 1;

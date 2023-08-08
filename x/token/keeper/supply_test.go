@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/token"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/token"
 )
 
 func (s *KeeperTestSuite) TestIssue() {

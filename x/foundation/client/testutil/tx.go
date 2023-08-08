@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	txtypes "github.com/Finschia/finschia-sdk/types/tx"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	txtypes "github.com/Finschia/finschia-rdk/types/tx"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	"github.com/Finschia/finschia-rdk/x/foundation/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewTxCmdUpdateParams() {

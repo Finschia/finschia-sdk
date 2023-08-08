@@ -4,16 +4,16 @@ import (
 	"errors"
 	"math/rand"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/simapp/helpers"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/simulation"
-	"github.com/Finschia/finschia-sdk/x/slashing/keeper"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
-	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/simapp/helpers"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/simulation"
+	"github.com/Finschia/finschia-rdk/x/slashing/keeper"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
+	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
 )
 
 // nolint: gosec

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
+	"github.com/Finschia/finschia-rdk/x/or/rollup/types"
 	"github.com/stretchr/testify/require"
 )
 

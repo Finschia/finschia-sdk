@@ -3,8 +3,8 @@ package legacy
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // RegisterAminoMsg first checks that the msgName is <40 chars

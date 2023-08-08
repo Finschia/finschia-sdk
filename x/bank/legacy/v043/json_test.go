@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	v043bank "github.com/Finschia/finschia-sdk/x/bank/legacy/v043"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	v043bank "github.com/Finschia/finschia-rdk/x/bank/legacy/v043"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 func TestMigrateJSON(t *testing.T) {

@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/store/types"
 )
 
 // Import cosmos-sdk/types/store.go for convenience.

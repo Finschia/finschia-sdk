@@ -9,9 +9,9 @@ import (
 	"github.com/Finschia/ostracon/crypto/xsalsa20symmetric"
 	"github.com/tendermint/crypto/bcrypt"
 
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

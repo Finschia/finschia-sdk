@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/store/prefix"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
+	"github.com/Finschia/finschia-rdk/store/prefix"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/or/rollup/types"
 )
 
 func (k Keeper) GetRollup(ctx sdk.Context, rollupName string) (val types.Rollup, found bool) {

@@ -14,7 +14,7 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-rdk/codec"
 )
 
 // ----------------------------------------------------------------------------

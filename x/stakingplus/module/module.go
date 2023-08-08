@@ -5,18 +5,18 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/types/module"
 
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 
-	"github.com/Finschia/finschia-sdk/x/stakingplus"
-	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
+	"github.com/Finschia/finschia-rdk/x/stakingplus"
+	"github.com/Finschia/finschia-rdk/x/stakingplus/keeper"
 
-	"github.com/Finschia/finschia-sdk/x/staking"
-	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 var (

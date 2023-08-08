@@ -1,7 +1,7 @@
 package internal
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Migrator is a struct for handling in-place store migrations.

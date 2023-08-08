@@ -7,7 +7,7 @@ import "cosmos_proto/cosmos.proto";
 
 import "lbm/collection/v1/collection.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/collection";
+option go_package = "github.com/Finschia/finschia-rdk/x/collection";
 
 // GenesisState defines the collection module's genesis state.
 message GenesisState {
@@ -71,7 +71,7 @@ message ClassStatistics {
   string class_id = 1;
   // statistics
   string amount = 2
-      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int"];
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Int"];
 }
 
 // Balance defines a balance of an address.
@@ -121,10 +121,10 @@ message NextClassIDs {
   string contract_id = 1;
   // id for the fungible tokens.
   string fungible = 2
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Uint", (gogoproto.nullable) = false];
   // id for the non-fungible tokens.
   string non_fungible = 3
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Uint", (gogoproto.nullable) = false];
 }
 
 // ContractNextTokenIDs defines the next token ids belong to a contract.
@@ -138,7 +138,7 @@ message NextTokenID {
   // class id associated with the token class.
   string class_id = 1;
   // id for the token.
-  string id = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
+  string id = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Uint", (gogoproto.nullable) = false];
 }
 
 // ContractTokenRelations defines token relations belong to a contract.

@@ -6,13 +6,13 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/Finschia/finschia-sdk/store/cache"
-	"github.com/Finschia/finschia-sdk/store/iavl"
+	"github.com/Finschia/finschia-rdk/store/cache"
+	"github.com/Finschia/finschia-rdk/store/iavl"
 
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	storetypes "github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

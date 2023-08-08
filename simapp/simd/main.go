@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/Finschia/finschia-sdk/server"
-	svrcmd "github.com/Finschia/finschia-sdk/server/cmd"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/simapp/simd/cmd"
+	"github.com/Finschia/finschia-rdk/server"
+	svrcmd "github.com/Finschia/finschia-rdk/server/cmd"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp/simd/cmd"
 )
 
 func main() {

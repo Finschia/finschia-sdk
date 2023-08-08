@@ -3,11 +3,11 @@ package tx
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/types/tx"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/types/tx"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 // SignatureDataToModeInfoAndSig converts a SignatureData to a ModeInfo and raw bytes signature

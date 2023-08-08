@@ -3,10 +3,10 @@ package tx
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
-	"github.com/Finschia/finschia-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 // ConvertTxToStdTx converts a transaction to the legacy StdTx format

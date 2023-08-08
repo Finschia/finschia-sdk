@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/bankplus/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/bankplus/types"
 )
 
 // Keys for bankplus store but this prefix must not be overlap with bank key prefix.

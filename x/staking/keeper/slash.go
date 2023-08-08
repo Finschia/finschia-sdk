@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	types "github.com/Finschia/finschia-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	types "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // Slash a validator for an infraction committed at a known height

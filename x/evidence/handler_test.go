@@ -9,13 +9,13 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/evidence"
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
-	"github.com/Finschia/finschia-sdk/x/evidence/keeper"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/evidence"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/x/evidence/keeper"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 )
 
 type HandlerTestSuite struct {

@@ -1,7 +1,7 @@
 package stakingplus
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // FoundationKeeper defines the expected foundation keeper

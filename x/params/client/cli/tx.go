@@ -6,13 +6,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/tx"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/version"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	paramscutils "github.com/Finschia/finschia-sdk/x/params/client/utils"
-	paramproposal "github.com/Finschia/finschia-sdk/x/params/types/proposal"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/tx"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/version"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
+	paramscutils "github.com/Finschia/finschia-rdk/x/params/client/utils"
+	paramproposal "github.com/Finschia/finschia-rdk/x/params/types/proposal"
 )
 
 // NewSubmitParamChangeProposalTxCmd returns a CLI command handler for creating

@@ -9,7 +9,7 @@ import "tendermint/types/block.proto";
 import "tendermint/types/types.proto";
 import "tendermint/abci/types.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/client/grpc/tmservice";
+option go_package = "github.com/Finschia/finschia-rdk/client/grpc/tmservice";
 
 // Service defines the gRPC querier service for ostracon queries.
 service Service {

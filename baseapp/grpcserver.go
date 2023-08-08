@@ -12,9 +12,9 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	grpctypes "github.com/Finschia/finschia-rdk/types/grpc"
 )
 
 // GRPCQueryRouter returns the GRPCQueryRouter of a BaseApp.

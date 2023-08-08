@@ -1,13 +1,13 @@
 package legacytx
 
 import (
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	txtypes "github.com/Finschia/finschia-sdk/types/tx"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	txtypes "github.com/Finschia/finschia-rdk/types/tx"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 // Interface implementation checks

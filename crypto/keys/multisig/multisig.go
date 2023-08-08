@@ -5,10 +5,10 @@ import (
 
 	occrypto "github.com/Finschia/ostracon/crypto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	multisigtypes "github.com/Finschia/finschia-sdk/crypto/types/multisig"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	multisigtypes "github.com/Finschia/finschia-rdk/crypto/types/multisig"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 var (

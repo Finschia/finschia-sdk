@@ -8,7 +8,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/foundation";
+option go_package = "github.com/Finschia/finschia-rdk/x/foundation";
 
 option (gogoproto.equal_all)           = false;
 option (gogoproto.goproto_getters_all) = false;
@@ -77,7 +77,7 @@ message MsgUpdateParamsResponse {}
 message MsgFundTreasury {
   string   from                            = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-rdk/types.Coins"];
 }
 
 // MsgFundTreasuryResponse is the Msg/FundTreasury response type.
@@ -89,7 +89,7 @@ message MsgWithdrawFromTreasury {
   string   authority                       = 1;
   string   to                              = 2;
   repeated cosmos.base.v1beta1.Coin amount = 3
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-rdk/types.Coins"];
 }
 
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
@@ -232,7 +232,7 @@ message MsgGrant {
   string grantee   = 2;
 
   google.protobuf.Any authorization = 3
-      [(cosmos_proto.accepts_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization"];
+      [(cosmos_proto.accepts_interface) = "github.com/Finschia/finschia-rdk/x/foundation.Authorization"];
 }
 
 // MsgGrantResponse is the Msg/MsgGrant response type.

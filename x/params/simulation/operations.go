@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/params/types/proposal"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/params/types/proposal"
 )
 
 func min(a int, b int) int {

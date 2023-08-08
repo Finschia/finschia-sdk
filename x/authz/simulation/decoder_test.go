@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	"github.com/Finschia/finschia-sdk/x/authz/keeper"
-	"github.com/Finschia/finschia-sdk/x/authz/simulation"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	"github.com/Finschia/finschia-rdk/x/authz/keeper"
+	"github.com/Finschia/finschia-rdk/x/authz/simulation"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 func TestDecodeStore(t *testing.T) {

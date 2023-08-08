@@ -6,7 +6,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // NewCapability returns a reference to a new Capability to be used as an

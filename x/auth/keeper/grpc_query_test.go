@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryAccounts() {

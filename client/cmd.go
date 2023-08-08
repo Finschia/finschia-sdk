@@ -9,9 +9,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // ClientContextKey defines the context key used to retrieve a client.Context from

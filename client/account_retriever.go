@@ -1,8 +1,8 @@
 package client
 
 import (
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Account defines a read-only version of the auth module's AccountI.

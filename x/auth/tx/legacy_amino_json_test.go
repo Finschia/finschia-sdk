@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	signingtypes "github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
-	"github.com/Finschia/finschia-sdk/x/auth/signing"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	signingtypes "github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 var (

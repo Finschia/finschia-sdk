@@ -8,7 +8,7 @@ import (
 
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
 )
 
 const (

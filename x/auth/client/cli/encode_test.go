@@ -7,11 +7,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	"github.com/Finschia/finschia-sdk/testutil"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/client"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	"github.com/Finschia/finschia-rdk/testutil"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 func TestGetCommandEncode(t *testing.T) {

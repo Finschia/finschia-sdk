@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"github.com/gogo/protobuf/proto"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 func (s *KeeperTestSuite) TestQueryBalance() {

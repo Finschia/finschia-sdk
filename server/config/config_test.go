@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	storetypes "github.com/Finschia/finschia-rdk/store/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 func TestDefaultConfig(t *testing.T) {

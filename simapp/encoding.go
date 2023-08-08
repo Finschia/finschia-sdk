@@ -1,8 +1,8 @@
 package simapp
 
 import (
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	"github.com/Finschia/finschia-sdk/std"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	"github.com/Finschia/finschia-rdk/std"
 )
 
 // MakeTestEncodingConfig creates an EncodingConfig for testing. This function

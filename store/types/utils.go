@@ -3,7 +3,7 @@ package types
 import (
 	"bytes"
 
-	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-rdk/types/kv"
 )
 
 // Iterator over all the keys with a certain prefix in ascending order

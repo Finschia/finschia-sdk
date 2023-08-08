@@ -1,7 +1,7 @@
 package authz
 
 import (
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
 )
 
 // NewGenesisState creates new GenesisState object

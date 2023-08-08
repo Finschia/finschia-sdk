@@ -4,7 +4,7 @@ import (
 	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	"github.com/gogo/protobuf/proto"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Evidence defines the contract which concrete evidence types of misbehavior

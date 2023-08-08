@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // iterate through the classes and perform the provided function

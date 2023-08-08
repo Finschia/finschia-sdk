@@ -3,11 +3,11 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/token"
-	"github.com/Finschia/finschia-sdk/x/token/client/cli"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/token"
+	"github.com/Finschia/finschia-rdk/x/token/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewTxCmdSend() {

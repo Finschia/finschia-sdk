@@ -3,10 +3,10 @@
 package types
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	auth "github.com/Finschia/finschia-sdk/x/auth/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	auth "github.com/Finschia/finschia-rdk/x/auth/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // AccountKeeper expected account keeper

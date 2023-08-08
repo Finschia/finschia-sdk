@@ -6,8 +6,8 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	sdkmaps "github.com/Finschia/finschia-sdk/store/internal/maps"
-	sdkproofs "github.com/Finschia/finschia-sdk/store/internal/proofs"
+	sdkmaps "github.com/Finschia/finschia-rdk/store/internal/maps"
+	sdkproofs "github.com/Finschia/finschia-rdk/store/internal/proofs"
 )
 
 // GetHash returns the GetHash from the CommitID.

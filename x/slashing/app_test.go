@@ -9,14 +9,14 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 var (

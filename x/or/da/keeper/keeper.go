@@ -5,11 +5,11 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
-	sdktypes "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	storetypes "github.com/Finschia/finschia-rdk/store/types"
+	sdktypes "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 type Keeper struct {

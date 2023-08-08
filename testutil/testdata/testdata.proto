@@ -4,7 +4,7 @@ package testdata;
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/testutil/testdata";
+option go_package = "github.com/Finschia/finschia-rdk/testutil/testdata";
 
 message Dog {
   string size = 1;

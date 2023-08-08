@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/pflag"
 
-	govutils "github.com/Finschia/finschia-sdk/x/gov/client/utils"
+	govutils "github.com/Finschia/finschia-rdk/x/gov/client/utils"
 )
 
 func (p proposal) validate() error {

@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
-	sdktypes "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	sdktypes "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 type msgServer struct {

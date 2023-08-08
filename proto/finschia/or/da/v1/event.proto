@@ -4,7 +4,7 @@ package finschia.or.da.v1;
 import "gogoproto/gogo.proto";
 import "finschia/or/da/v1/params.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
+option go_package = "github.com/Finschia/finschia-rdk/x/or/da/types";
 
 // EventUpdateParams is emitted after updating foundation parameters.
 message EventUpdateParams {

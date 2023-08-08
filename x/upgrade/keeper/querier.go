@@ -3,14 +3,14 @@ package keeper
 import (
 	"encoding/binary"
 
-	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-rdk/codec"
 
-	"github.com/Finschia/finschia-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-rdk/x/upgrade/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // NewQuerier creates a querier for upgrade cli and REST endpoints

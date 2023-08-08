@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/x/capability/types"
+	"github.com/Finschia/finschia-rdk/x/capability/types"
 )
 
 func TestCapabilityKey(t *testing.T) {

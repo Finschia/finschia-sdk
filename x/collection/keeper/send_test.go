@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 func (s *KeeperTestSuite) TestSendCoins() {

@@ -3,9 +3,9 @@ package internal
 import (
 	"time"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/foundation"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/foundation"
 )
 
 func (k Keeper) newProposalID(ctx sdk.Context) uint64 {

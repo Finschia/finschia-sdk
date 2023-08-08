@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/client/rpc"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/testutil/network"
+	"github.com/Finschia/finschia-rdk/client/rpc"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/testutil/network"
 )
 
 type IntegrationTestSuite struct {

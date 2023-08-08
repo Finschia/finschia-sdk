@@ -1,14 +1,14 @@
 package v043
 
 import (
-	"github.com/Finschia/finschia-sdk/client"
-	v040bank "github.com/Finschia/finschia-sdk/x/bank/legacy/v040"
-	v043bank "github.com/Finschia/finschia-sdk/x/bank/legacy/v043"
-	bank "github.com/Finschia/finschia-sdk/x/bank/types"
-	"github.com/Finschia/finschia-sdk/x/genutil/types"
-	v040gov "github.com/Finschia/finschia-sdk/x/gov/legacy/v040"
-	v043gov "github.com/Finschia/finschia-sdk/x/gov/legacy/v043"
-	gov "github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/client"
+	v040bank "github.com/Finschia/finschia-rdk/x/bank/legacy/v040"
+	v043bank "github.com/Finschia/finschia-rdk/x/bank/legacy/v043"
+	bank "github.com/Finschia/finschia-rdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/x/genutil/types"
+	v040gov "github.com/Finschia/finschia-rdk/x/gov/legacy/v040"
+	v043gov "github.com/Finschia/finschia-rdk/x/gov/legacy/v043"
+	gov "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // Migrate migrates exported state from v0.40 to a v0.43 genesis state.

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 const (

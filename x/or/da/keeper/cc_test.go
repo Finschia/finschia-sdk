@@ -7,8 +7,8 @@ import (
 
 	"github.com/klauspost/compress/zstd"
 
-	sdktypes "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	sdktypes "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 func (s *KeeperTestSuite) TestDecompressCCBatch() {

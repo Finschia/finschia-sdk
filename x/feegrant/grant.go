@@ -3,9 +3,9 @@ package feegrant
 import (
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 var _ types.UnpackInterfacesMessage = &Grant{}

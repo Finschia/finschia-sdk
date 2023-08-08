@@ -1,9 +1,9 @@
 package rollup
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/or/rollup/keeper"
-	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/or/rollup/keeper"
+	"github.com/Finschia/finschia-rdk/x/or/rollup/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

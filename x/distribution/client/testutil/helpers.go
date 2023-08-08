@@ -5,8 +5,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/client"
-	distrcli "github.com/Finschia/finschia-sdk/x/distribution/client/cli"
+	"github.com/Finschia/finschia-rdk/client"
+	distrcli "github.com/Finschia/finschia-rdk/x/distribution/client/cli"
 )
 
 func MsgWithdrawDelegatorRewardExec(clientCtx client.Context, valAddr fmt.Stringer, extraArgs ...string) ([]byte, error) {

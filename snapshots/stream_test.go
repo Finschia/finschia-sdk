@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/snapshots"
+	"github.com/Finschia/finschia-rdk/snapshots"
 )
 
 func TestStreamWriter(t *testing.T) {

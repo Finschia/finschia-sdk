@@ -4,8 +4,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/internal/benchmarking"
-	"github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/internal/benchmarking"
+	"github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 func BenchmarkKeyGeneration(b *testing.B) {

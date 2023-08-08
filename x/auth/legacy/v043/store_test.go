@@ -8,15 +8,15 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/auth/vesting/exported"
-	"github.com/Finschia/finschia-sdk/x/auth/vesting/types"
-	"github.com/Finschia/finschia-sdk/x/staking"
-	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authkeeper "github.com/Finschia/finschia-rdk/x/auth/keeper"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/auth/vesting/exported"
+	"github.com/Finschia/finschia-rdk/x/auth/vesting/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func TestMigrateVestingAccounts(t *testing.T) {

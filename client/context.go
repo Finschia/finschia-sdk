@@ -15,10 +15,10 @@ import (
 
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Context implements a typical context created in SDK modules for transaction

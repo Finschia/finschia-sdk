@@ -8,9 +8,9 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 // Staking params default values

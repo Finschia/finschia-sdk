@@ -5,15 +5,15 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	"github.com/Finschia/finschia-sdk/testutil"
-	"github.com/Finschia/finschia-sdk/testutil/rest"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/staking/client/cli"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/testutil"
+	"github.com/Finschia/finschia-rdk/testutil/rest"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	grpctypes "github.com/Finschia/finschia-rdk/types/grpc"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) TestGRPCQueryValidatorsHandler() {

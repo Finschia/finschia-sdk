@@ -5,11 +5,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
-	"github.com/Finschia/finschia-sdk/x/evidence/keeper"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/x/evidence/keeper"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 )
 
 // InitGenesis initializes the evidence module's state from a provided genesis

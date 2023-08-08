@@ -3,8 +3,8 @@ package simapp
 import (
 	"errors"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 var _ authtypes.GenesisAccount = (*SimGenesisAccount)(nil)

@@ -3,7 +3,7 @@ package rootmulti
 import (
 	"github.com/Finschia/ostracon/crypto/merkle"
 
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
+	storetypes "github.com/Finschia/finschia-rdk/store/types"
 )
 
 // RequireProof returns whether proof is required for the subpath.

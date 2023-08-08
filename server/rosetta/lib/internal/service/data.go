@@ -5,8 +5,8 @@ import (
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 
-	"github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
-	crgtypes "github.com/Finschia/finschia-sdk/server/rosetta/lib/types"
+	"github.com/Finschia/finschia-rdk/server/rosetta/lib/errors"
+	crgtypes "github.com/Finschia/finschia-rdk/server/rosetta/lib/types"
 )
 
 // AccountBalance retrieves the account balance of an address

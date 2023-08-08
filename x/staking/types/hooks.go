@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // combine multiple staking hooks, all hook functions are run in array sequence

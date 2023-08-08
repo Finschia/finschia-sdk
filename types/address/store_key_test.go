@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/types/address"
+	"github.com/Finschia/finschia-rdk/types/address"
 )
 
 func TestStoreKeySuite(t *testing.T) {

@@ -1,9 +1,9 @@
 package auth
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/keeper"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/keeper"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 // InitGenesis - Init store state from genesis data

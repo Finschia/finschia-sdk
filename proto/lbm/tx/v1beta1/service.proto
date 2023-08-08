@@ -9,7 +9,7 @@ import "tendermint/types/block.proto";
 import "tendermint/types/types.proto";
 
 option (gogoproto.goproto_registration) = true;
-option go_package                       = "github.com/Finschia/finschia-sdk/types/tx2";
+option go_package                       = "github.com/Finschia/finschia-rdk/types/tx2";
 
 // Service defines a gRPC service for interacting with transactions.
 service Service {

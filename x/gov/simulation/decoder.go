@@ -5,9 +5,9 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

@@ -5,14 +5,14 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/client"
-	kmultisig "github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/crypto/types/multisig"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	signingtypes "github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-rdk/client"
+	kmultisig "github.com/Finschia/finschia-rdk/crypto/keys/multisig"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/types/multisig"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	signingtypes "github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 // TxConfigTestSuite provides a test suite that can be used to test that a TxConfig implementation is correct.

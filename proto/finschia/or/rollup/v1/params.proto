@@ -3,7 +3,7 @@ package finschia.or.rollup.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+option go_package = "github.com/Finschia/finschia-rdk/x/or/rollup/types";
 
 // Params defines the parameters for the module.
 message Params {

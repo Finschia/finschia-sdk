@@ -3,12 +3,12 @@ package keeper
 import (
 	"context"
 
-	"github.com/Finschia/finschia-sdk/types/errors"
-	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/types/errors"
+	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/stakingplus"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/stakingplus"
 )
 
 type msgServer struct {

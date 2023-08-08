@@ -8,8 +8,8 @@ import (
 	gogotypes "github.com/gogo/protobuf/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // BlockValidatorUpdates calculates the ValidatorUpdates for the current block

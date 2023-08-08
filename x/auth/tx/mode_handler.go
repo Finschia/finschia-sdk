@@ -3,8 +3,8 @@ package tx
 import (
 	"fmt"
 
-	signingtypes "github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/signing"
+	signingtypes "github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 // DefaultSignModes are the default sign modes enabled for protobuf transactions.

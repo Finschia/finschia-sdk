@@ -8,7 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-rdk/codec/types"
 )
 
 type Animal interface {

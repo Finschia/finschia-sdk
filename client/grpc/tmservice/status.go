@@ -5,7 +5,7 @@ import (
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-rdk/client"
 )
 
 func getNodeStatus(ctx context.Context, clientCtx client.Context) (*ctypes.ResultStatus, error) {

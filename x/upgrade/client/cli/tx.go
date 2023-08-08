@@ -3,12 +3,12 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/tx"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/gov/client/cli"
-	gov "github.com/Finschia/finschia-sdk/x/gov/types"
-	"github.com/Finschia/finschia-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/tx"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/gov/client/cli"
+	gov "github.com/Finschia/finschia-rdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/x/upgrade/types"
 )
 
 const (
@@ -34,7 +34,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 		Short: "Submit a software upgrade proposal",
 		Long: "Submit a software upgrade along with an initial deposit.\n" +
 			"Please specify a unique name and height for the upgrade to take effect.\n" +
-			"You may include info to reference a binary download link, in a format compatible with: https://github.com/Finschia/finschia-sdk/tree/master/cosmovisor",
+			"You may include info to reference a binary download link, in a format compatible with: https://github.com/Finschia/finschia-rdk/tree/master/cosmovisor",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

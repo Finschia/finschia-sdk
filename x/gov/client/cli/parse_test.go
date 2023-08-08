@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-rdk/testutil"
 )
 
 func TestParseSubmitProposalFlags(t *testing.T) {

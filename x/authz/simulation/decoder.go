@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	"github.com/Finschia/finschia-sdk/x/authz/keeper"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	"github.com/Finschia/finschia-rdk/x/authz/keeper"
 )
 
 // NewDecodeStore returns a decoder function closure that umarshals the KVPair's

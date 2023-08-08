@@ -3,7 +3,7 @@ package lbm.bankplus.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/bankplus/types";
+option go_package = "github.com/Finschia/finschia-rdk/x/bankplus/types";
 
 // InactiveAddr models the blocked address for the bankplus module
 message InactiveAddr {

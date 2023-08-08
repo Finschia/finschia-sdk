@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/simulation"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/simulation"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // ParamChanges defines the parameters that can be modified by param change proposals

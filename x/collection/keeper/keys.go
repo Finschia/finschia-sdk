@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 
-	"github.com/Finschia/finschia-sdk/x/collection"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 var (

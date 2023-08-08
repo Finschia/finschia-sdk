@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/token"
-	"github.com/Finschia/finschia-sdk/x/token/class"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/token"
+	"github.com/Finschia/finschia-rdk/x/token/class"
 )
 
 // Keeper defines the token module Keeper

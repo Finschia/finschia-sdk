@@ -3,10 +3,10 @@ package da
 import (
 	"time"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/or/da/keeper"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {

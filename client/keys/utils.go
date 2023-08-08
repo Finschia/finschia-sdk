@@ -6,7 +6,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	cryptokeyring "github.com/Finschia/finschia-sdk/crypto/keyring"
+	cryptokeyring "github.com/Finschia/finschia-rdk/crypto/keyring"
 )
 
 // available output formats.

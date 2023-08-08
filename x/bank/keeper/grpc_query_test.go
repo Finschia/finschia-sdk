@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	vestingtypes "github.com/Finschia/finschia-sdk/x/auth/vesting/types"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	vestingtypes "github.com/Finschia/finschia-rdk/x/auth/vesting/types"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
 )
 
 func (suite *IntegrationTestSuite) TestQueryBalance() {

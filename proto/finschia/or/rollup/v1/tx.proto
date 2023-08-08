@@ -7,7 +7,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "finschia/or/rollup/v1/rollup.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
+option go_package = "github.com/Finschia/finschia-rdk/x/or/rollup/types";
 
 service Msg {
   rpc CreateRollup(MsgCreateRollup) returns (MsgCreateRollupResponse);

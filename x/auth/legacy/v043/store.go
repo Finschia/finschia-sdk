@@ -27,14 +27,14 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/auth/vesting/exported"
-	vestingtypes "github.com/Finschia/finschia-sdk/x/auth/vesting/types"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/auth/vesting/exported"
+	vestingtypes "github.com/Finschia/finschia-rdk/x/auth/vesting/types"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 const (

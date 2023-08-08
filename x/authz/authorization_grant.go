@@ -5,8 +5,8 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // NewGrant returns new Grant

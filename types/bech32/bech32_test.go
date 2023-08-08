@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/types/bech32"
+	"github.com/Finschia/finschia-rdk/types/bech32"
 )
 
 func TestEncodeAndDecode(t *testing.T) {

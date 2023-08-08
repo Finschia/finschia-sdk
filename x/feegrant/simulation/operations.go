@@ -3,14 +3,14 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/codec"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/feegrant"
-	"github.com/Finschia/finschia-sdk/x/feegrant/keeper"
-	"github.com/Finschia/finschia-sdk/x/simulation"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/codec"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/feegrant"
+	"github.com/Finschia/finschia-rdk/x/feegrant/keeper"
+	"github.com/Finschia/finschia-rdk/x/simulation"
 )
 
 // nolint:gosec

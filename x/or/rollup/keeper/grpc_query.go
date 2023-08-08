@@ -3,10 +3,10 @@ package keeper
 import (
 	"context"
 
-	"github.com/Finschia/finschia-sdk/store/prefix"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
+	"github.com/Finschia/finschia-rdk/store/prefix"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/or/rollup/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

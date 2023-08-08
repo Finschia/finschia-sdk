@@ -10,12 +10,12 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/store/dbadapter"
-	"github.com/Finschia/finschia-sdk/store/listenkv"
-	"github.com/Finschia/finschia-sdk/store/prefix"
-	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codecTypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/store/dbadapter"
+	"github.com/Finschia/finschia-rdk/store/listenkv"
+	"github.com/Finschia/finschia-rdk/store/prefix"
+	"github.com/Finschia/finschia-rdk/store/types"
 )
 
 func bz(s string) []byte { return []byte(s) }
