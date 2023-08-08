@@ -9,7 +9,7 @@ import "finschia/or/rollup/v1/params.proto";
 option go_package = "github.com/Finschia/finschia-sdk/x/or/rollup/types";
 
 message GenesisState {
-    repeated Rollup rollup_list = 1 [(gogoproto.nullable) = false];
-    repeated Sequencer sequencer_list = 2 [(gogoproto.nullable) = false];
-    Params params = 3 [(gogoproto.nullable) = false];
+  repeated Rollup    rollup_list    = 1 [(gogoproto.nullable) = false];
+  repeated Sequencer sequencer_list = 2 [(gogoproto.nullable) = false];
+  Params             params         = 3 [(gogoproto.nullable) = false];
 }

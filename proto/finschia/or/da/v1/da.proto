@@ -45,7 +45,7 @@ message CCBatchElement {
 }
 
 message CCBatchFrame {
-  CCBatchHeader header = 1;
+  CCBatchHeader           header   = 1;
   repeated CCBatchElement elements = 2;
 }
 
@@ -78,7 +78,7 @@ message L1toL2Queue {
   // the queue tx will be expired based on this height.
   int64 l1_height = 2;
 
-  bytes txraw = 3;
+  bytes         txraw  = 3;
   QueueTxStatus status = 4;
 }
 
@@ -119,7 +119,7 @@ message CCRef {
 message CCState {
   // Assumed to contain all contiguous batches between base and height (inclusive).
   // height is the latest batch height.
-  uint64 base = 1;
+  uint64 base   = 1;
   uint64 height = 2;
 
   // The latest batch timestamp.
@@ -172,7 +172,7 @@ message SCCRef {
 // BatchChainState is the state of target batch chain.
 message SCCState {
   // Assumed to contain all contiguous batches between base and height (inclusive).
-  uint64 base = 1;
+  uint64 base   = 1;
   uint64 height = 2;
 
   // The latest batch timestamp when the sequencer submits.
