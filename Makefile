@@ -570,9 +570,9 @@ libsodium:
 	fi
 .PHONY: libsodium
 
-error-doc:
+error-doc-gen:
 	cd ./tools/error_doc && go run ./
-.PHONY: error-doc
+.PHONY: error-doc-gen
 
 ###############################################################################
 ###                                release                                  ###

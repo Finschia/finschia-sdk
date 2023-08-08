@@ -61,7 +61,7 @@ func getConst(line string) (string, string, error) {
 	return "", "", errors.New("failed to get the value in: " + line)
 }
 
-func (mi *moduleInfo) errorsFileParse() error {
+func (mi *moduleInfo) parseErrorsFile() error {
 	// var errorDict []errorInfo
 	// constDict := make(map[string]string)
 	file, err := os.Open(mi.filepath)

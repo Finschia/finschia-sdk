@@ -18,7 +18,7 @@ func getCodeSpace(line string) (string, string, error) {
 	return "", "", errors.New("failed to get the value in: " + line)
 }
 
-func (mi *moduleInfo) keysFileParse() error {
+func (mi *moduleInfo) parseKeysFile() error {
 	// find keys.go or key.go
 	possibleFileNames := []string{"keys.go", "key.go"}
 	var keyFilePath string

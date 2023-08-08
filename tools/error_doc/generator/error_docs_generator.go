@@ -33,6 +33,22 @@ func NewErrorDocumentGenerator(p string) *ErrorDocumentGenerator {
 	}
 }
 
+func (edg *ErrorDocumentGenerator) listUpErrorsGoFiles(startPath, errorsFileName string) error {
+	err := filepath.Walk(startPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && info.Name() == errorsFileName {
+			edg.errorsFiles = append(edg.errorsFiles, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (edg *ErrorDocumentGenerator) extractModuleName() error {
 	for _, filepath := range edg.errorsFiles {
 		var moduleName string
@@ -75,10 +91,10 @@ func (edg *ErrorDocumentGenerator) generateContent() error {
 	for _, moduleName := range edg.modules {
 		mods := edg.errorDocument[moduleName]
 		for _, mod := range mods {
-			if err := mod.errorsFileParse(); err != nil {
+			if err := mod.parseErrorsFile(); err != nil {
 				return err
 			}
-			if err := mod.keysFileParse(); err != nil {
+			if err := mod.parseKeysFile(); err != nil {
 				return err
 			}
 		}
