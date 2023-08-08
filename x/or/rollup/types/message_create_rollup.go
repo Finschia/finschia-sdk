@@ -13,10 +13,11 @@ const (
 
 var _ sdk.Msg = (*MsgCreateRollup)(nil)
 
-func NewMsgCreateRollup(rollupName, creator string, permissionedAddresses *Sequencers) *MsgCreateRollup {
+func NewMsgCreateRollup(rollupName, creator string, l1ToL2GasRatio uint64, permissionedAddresses *Sequencers) *MsgCreateRollup {
 	return &MsgCreateRollup{
 		RollupName:            rollupName,
 		Creator:               creator,
+		L1ToL2GasRatio:        l1ToL2GasRatio,
 		PermissionedAddresses: *permissionedAddresses,
 	}
 }

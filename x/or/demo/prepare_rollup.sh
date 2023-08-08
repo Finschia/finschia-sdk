@@ -22,7 +22,7 @@ INITBALANCE=$(simd query bank balances $SEQUENCERADDRESS --home $BASE_DIR --outp
 echo $INITBALANCE
 
 echo "# Create rollup"
-simd tx rollup create-rollup $ROLLUPNAME --from $SEQUENCER --keyring-backend=test --home $BASE_DIR --chain-id sim -y
+simd tx rollup create-rollup $ROLLUPNAME 5 --from $SEQUENCER --keyring-backend=test --home $BASE_DIR --chain-id sim -y
 
 sleep 5
 
