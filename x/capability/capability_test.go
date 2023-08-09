@@ -3,9 +3,8 @@ package capability_test
 import (
 	"testing"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/stretchr/testify/suite"
+	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/codec"

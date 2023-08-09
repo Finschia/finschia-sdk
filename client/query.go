@@ -10,12 +10,12 @@ import (
 	"google.golang.org/grpc/status"
 
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/bytes"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/Finschia/finschia-sdk/store/rootmulti"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an
@@ -45,7 +45,7 @@ func (ctx Context) QueryWithData(path string, data []byte) ([]byte, int64, error
 // QueryStore performs a query to a Tendermint node with the provided key and
 // store name. It returns the result and height of the query upon success
 // or an error if the query fails.
-func (ctx Context) QueryStore(key ostbytes.HexBytes, storeName string) ([]byte, int64, error) {
+func (ctx Context) QueryStore(key bytes.HexBytes, storeName string) ([]byte, int64, error) {
 	return ctx.queryStore(key, storeName, "key")
 }
 
@@ -124,7 +124,7 @@ func sdkErrorToGRPCError(resp abci.ResponseQuery) error {
 // query performs a query to a Tendermint node with the provided store name
 // and path. It returns the result and height of the query upon success
 // or an error if the query fails.
-func (ctx Context) query(path string, key ostbytes.HexBytes) ([]byte, int64, error) {
+func (ctx Context) query(path string, key bytes.HexBytes) ([]byte, int64, error) {
 	resp, err := ctx.queryABCI(abci.RequestQuery{
 		Path:   path,
 		Data:   key,
@@ -140,7 +140,7 @@ func (ctx Context) query(path string, key ostbytes.HexBytes) ([]byte, int64, err
 // queryStore performs a query to a Tendermint node with the provided a store
 // name and path. It returns the result and height of the query upon success
 // or an error if the query fails.
-func (ctx Context) queryStore(key ostbytes.HexBytes, storeName, endPath string) ([]byte, int64, error) {
+func (ctx Context) queryStore(key bytes.HexBytes, storeName, endPath string) ([]byte, int64, error) {
 	path := fmt.Sprintf("/store/%s/%s", storeName, endPath)
 	return ctx.query(path, key)
 }
