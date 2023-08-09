@@ -26,6 +26,12 @@ type moduleInfo struct {
 	errorDict []errorInfo
 }
 
+type sortByCodespace []*moduleInfo
+
+func (b sortByCodespace) Len() int           { return len(b) }
+func (b sortByCodespace) Less(i, j int) bool { return b[i].codespace < b[j].codespace }
+func (b sortByCodespace) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+
 func NewErrorDocumentGenerator(p string) *ErrorDocumentGenerator {
 	return &ErrorDocumentGenerator{
 		targetPath:    p,
@@ -67,10 +73,10 @@ func (edg *ErrorDocumentGenerator) extractModuleName() error {
 			errorDict: []errorInfo{},
 		})
 	}
-	// sort keys and filepaths
+	// sort by key and codespace
 	for moduleName := range edg.errorDocument {
 		edg.modules = append(edg.modules, moduleName)
-		// sort.Strings(edg.errorDocument[moduleName])
+		sort.Sort(sortByCodespace(edg.errorDocument[moduleName]))
 	}
 	sort.Strings(edg.modules)
 	return nil
