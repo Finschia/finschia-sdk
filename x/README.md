@@ -26,3 +26,5 @@ Here are some production-grade modules that can be used in Cosmos SDK applicatio
 - [Upgrade](upgrade/spec/README.md) - Software upgrades handling and coordination.
 
 To learn more about the process of building modules, visit the [building modules reference documentation](../docs/building-modules/README.md).
+
+To learn more about the error information of modules, visit the [error documentation](./ERRORS.md).
