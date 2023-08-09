@@ -60,5 +60,3 @@ func (t TestAnteDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 	*t.called = true
 	return next(ctx, tx, simulate)
 }
-
-// 鷹見さんのコードを参考にした
