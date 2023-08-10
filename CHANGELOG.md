@@ -40,10 +40,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 
 ### Improvements
-* [#14356](https://github.com/cosmos/cosmos-sdk/pull/14356) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s).
 
 ### Bug Fixes
 * (x/foundation) [\#1061](https://github.com/Finschia/finschia-sdk/pull/1061) Make x/foundation MsgExec propagate events (backport #1053)
+* (baseapp) [\#1075](https://github.com/cosmos/cosmos-sdk/pull/1075) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s) (backport cosmos/cosmos-sdk#14356)
 
 ### Removed
 
