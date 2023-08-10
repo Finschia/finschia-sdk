@@ -850,10 +850,13 @@ func createEvents(events sdk.Events, msg sdk.Msg) sdk.Events {
 	// verify that events have no module attribute set
 	if _, found := events.GetAttributes(sdk.AttributeKeyModule); !found {
 		// here we assume that routes module name is the second element of the route
-		// e.g. "cosmos.bank.v1beta1.MsgSend" => "bank"
+		// e.g. "/cosmos.bank.v1beta1.MsgSend" => "bank"
 		moduleName := strings.Split(eventMsgName, ".")
 		if len(moduleName) > 1 {
-			msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeyModule, moduleName[1]))
+			// NOTE(0Tech): please remove this condition check after applying ibc-go v7, because it's hard coding for the ibc
+			if moduleName[0] != "/ibc" {
+				msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeyModule, moduleName[1]))
+			}
 		}
 	}
 
