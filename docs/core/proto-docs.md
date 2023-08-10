@@ -9732,6 +9732,7 @@ Msg defines the Msg service.
 | ----- | ---- | ----- | ----------- |
 | `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
+| `l1_to_l2_gas_ratio` | [uint64](#uint64) |  |  |
 | `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
 
 
@@ -10055,6 +10056,7 @@ Params defines the parameters for the module.
 | ----- | ---- | ----- | ----------- |
 | `rollup_name` | [string](#string) |  |  |
 | `creator` | [string](#string) |  |  |
+| `l1_to_l2_gas_ratio` | [uint64](#uint64) |  |  |
 | `permissioned_addresses` | [Sequencers](#finschia.or.rollup.v1.Sequencers) |  |  |
 
 

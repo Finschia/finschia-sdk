@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -40,14 +41,18 @@ func GetTxCmd() *cobra.Command {
 func NewCreateRollupCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		// TODO: If rollup:sequencer=1:N, add [max-sequencers] parameter
-		Use:   "create-rollup [rollup_name] [permissioned-addresses]",
+		Use:   "create-rollup [rollup_name] [l1_to_l2_gas_ratio] [permissioned-addresses]",
 		Short: "Create a new rollup",
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  cobra.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRollupName := args[0]
+			argL1ToL2GasRatio, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
 			argPermissionedAddresses := new(types.Sequencers)
-			if len(args) == 2 {
-				err = json.Unmarshal([]byte(args[1]), argPermissionedAddresses)
+			if len(args) == 3 {
+				err = json.Unmarshal([]byte(args[2]), argPermissionedAddresses)
 				if err != nil {
 					return err
 				}
@@ -61,6 +66,7 @@ func NewCreateRollupCmd() *cobra.Command {
 			msg := types.NewMsgCreateRollup(
 				argRollupName,
 				clientCtx.GetFromAddress().String(),
+				argL1ToL2GasRatio,
 				argPermissionedAddresses,
 			)
 

@@ -3,7 +3,6 @@ package keeper
 import (
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
 	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
 )
 
@@ -24,7 +23,7 @@ func (k Keeper) SetRollup(ctx sdk.Context, rollup types.Rollup) {
 	store.Set(types.RollupKey(rollup.RollupName), b)
 }
 
-func (k Keeper) GetAllRollup(ctx sdk.Context, pagination *query.PageRequest) (list []types.Rollup) {
+func (k Keeper) GetAllRollup(ctx sdk.Context) (list []types.Rollup) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RollupKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
