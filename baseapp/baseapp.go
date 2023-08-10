@@ -814,7 +814,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		}
 
 		// create message events
-		msgEvents := createEvents(msg).AppendEvents(msgResult.GetEvents())
+		msgEvents := createEvents(msgResult.GetEvents(), msg)
 
 		// append message events, data and logs
 		//
@@ -838,7 +838,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 	}, nil
 }
 
-func createEvents(msg sdk.Msg) sdk.Events {
+func createEvents(events sdk.Events, msg sdk.Msg) sdk.Events {
 	eventMsgName := sdk.MsgTypeURL(msg)
 	msgEvent := sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, eventMsgName))
 
@@ -847,12 +847,15 @@ func createEvents(msg sdk.Msg) sdk.Events {
 		msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeySender, msg.GetSigners()[0].String()))
 	}
 
-	// here we assume that routes module name is the second element of the route
-	// e.g. "cosmos.bank.v1beta1.MsgSend" => "bank"
-	moduleName := strings.Split(eventMsgName, ".")
-	if len(moduleName) > 1 {
-		msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeyModule, moduleName[1]))
+	// verify that events have no module attribute set
+	if _, found := events.GetAttributes(sdk.AttributeKeyModule); !found {
+		// here we assume that routes module name is the second element of the route
+		// e.g. "cosmos.bank.v1beta1.MsgSend" => "bank"
+		moduleName := strings.Split(eventMsgName, ".")
+		if len(moduleName) > 1 {
+			msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeyModule, moduleName[1]))
+		}
 	}
 
-	return sdk.Events{msgEvent}
+	return sdk.Events{msgEvent}.AppendEvents(events)
 }
