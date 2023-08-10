@@ -17,9 +17,9 @@ back these foundation-specific functionalities.
 ## Contents
 
 * [Concepts](#concepts)
+* [Parameters](#parameters)
 * [State](#state)
 * [Msg Service](#msg-service)
-    * [Msg/UpdateParams](#msgupdateparams)
     * [Msg/UpdateDecisionPolicy](#msgupdatedecisionpolicy)
     * [Msg/UpdateMembers](#msgupdatemembers)
     * [Msg/LeaveFoundation](#msgleavefoundation)
@@ -33,7 +33,6 @@ back these foundation-specific functionalities.
     * [Msg/FundTreasury](#msgfundtreasury)
     * [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury)
 * [Events](#events)
-    * [EventUpdateFoundationParams](#eventupdatefoundationparams)
     * [EventUpdateDecisionPolicy](#eventupdatedecisionpolicy)
     * [EventUpdateMembers](#eventupdatedmembers)
     * [EventLeaveFoundation](#eventleavefoundation)
@@ -269,19 +268,15 @@ The foundation can withdraw coins from the treasury. The recipient must have
 the corresponding authorization (`ReceiveFromTreasuryAuthorization`) prior to
 sending the message `Msg/WithdrawFromTreasury`.
 
-**Note:** After setting the tax rate to zero, you cannot set it to a non-zero
-value again (irreversible), which means you must set it to a non-zero value in
-the genesis to make it work.
+# Parameters
 
-# State
-
-## Params
-
-* Params: `0x00 -> PropocolBuffer(Params)`.
-
-### FoundationTax
+## FoundationTax
 
 The value of `FoundationTax` is the foundation tax rate.
+
+* FoundationTax: `sdk.Dec`
+
+# State
 
 ## FoundationInfo
 
@@ -349,17 +344,6 @@ Authorization) tuple.
 * Grant: `0x21 | len(grant.Grantee) (1 byte) | []byte(grant.Grantee) | []byte(grant.Authorization.MsgTypeURL()) -> ProtocolBuffer(Authorization)`
 
 # Msg Service
-
-## Msg/UpdateParams
-
-The `MsgUpdateParams` can be used to update the parameters of `foundation`.
-
-+++ https://github.com/Finschia/finschia-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L62-L71
-
-It's expected to fail if:
-
-* the authority is not the module's authority.
-* the parameters introduces any new foundation-specific features.
 
 ## Msg/UpdateDecisionPolicy
 
@@ -525,15 +509,6 @@ The message handling should fail if:
   `ReceiveFromTreasuryAuthorization`.
 
 # Events
-
-## EventUpdateFoundationParams
-
-`EventUpdateFoundationParams` is an event emitted when the foundation
-parameters have been updated.
-
-| Attribute Key | Attribute Value |
-|---------------|-----------------|
-| params        | {params}        |
 
 ## EventUpdateDecisionPolicy
 
@@ -1009,25 +984,6 @@ simd tx foundation --help
 **Note:** Some commands must be signed by the module's authority, which means
 you cannot broadcast the message directly. The use of those commands is to make
 it easier to generate the messages by end users.
-
-#### update-params
-
-The `update-params` command allows users to update the foundation's parameters.
-
-```bash
-simd tx foundation update-params [authority] [params-json] [flags]
-```
-
-Example:
-
-```bash
-simd tx foundation update-params link1... \
-    '{
-       "foundation_tax": "0.1"
-     }'
-```
-
-**Note:** The signer MUST be the module's authority.
 
 #### update-members
 
