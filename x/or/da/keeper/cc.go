@@ -160,18 +160,18 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 }
 
 func (k Keeper) UpdateQueueTxsStatus(ctx sdktypes.Context) error {
-	rollupList := k.rollupKeeper.GetRegisteredRollups(ctx)
+	rollupList := k.rollupKeeper.GetAllRollup(ctx)
 	if rollupList == nil {
 		return nil
 	}
 
-	for _, name := range rollupList {
-		state, err := k.GetQueueTxState(ctx, name)
+	for _, rollup := range rollupList {
+		state, err := k.GetQueueTxState(ctx, rollup.RollupName)
 		if err != nil {
 			continue
 		}
 
-		if err := k.processQueueTxs(ctx, state, name); err != nil {
+		if err := k.processQueueTxs(ctx, state, rollup.RollupName); err != nil {
 			return err
 		}
 	}

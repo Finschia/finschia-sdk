@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdktypes "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
@@ -47,8 +48,8 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
-	if _, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName); err != nil {
-		return nil, err
+	if _, found := k.rollupKeeper.GetRollup(ctx, msg.RollupName); !found {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "rollup %s not found", msg.RollupName)
 	}
 
 	batch, err := k.DecompressCCBatch(ctx, msg.Batch)
@@ -69,9 +70,9 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
 
-	rollupInfo, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName)
-	if err != nil {
-		return nil, err
+	rollupInfo, found := k.rollupKeeper.GetRollup(ctx, msg.RollupName)
+	if !found {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "rollup %s not found", msg.RollupName)
 	}
 
 	if msg.Txraw == nil {

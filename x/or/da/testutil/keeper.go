@@ -18,6 +18,7 @@ import (
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	rolluptypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 )
 
 func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
@@ -35,7 +36,18 @@ func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
 	accountKeeprMock := NewMockAccountKeeper(ctrl)
 	accountKeeprMock.EXPECT().GetParams(gomock.Any()).Return(authtypes.DefaultParams()).AnyTimes()
 	rollupKeeperMock := NewMockRollupKeeper(ctrl)
-	rollupKeeperMock.EXPECT().GetRegisteredRollups(gomock.Any()).Return([]string{"rollup1"}).AnyTimes()
+	rollupKeeperMock.EXPECT().GetAllRollup(gomock.Any()).Return(
+		[]rolluptypes.Rollup{
+			{
+				RollupName:     "rollup1",
+				Creator:        "creator1",
+				L1ToL2GasRatio: 30,
+				PermissionedAddresses: rolluptypes.Sequencers{
+					Addresses: []string{"sequencer1"},
+				},
+			},
+		},
+	).AnyTimes()
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
