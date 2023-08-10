@@ -12,7 +12,6 @@ const (
 	AttributeKeyOption             = "option"
 	AttributeKeyProposalID         = "proposal_id"
 	AttributeKeyVotingPeriodStart  = "voting_period_start"
-	AttributeValueCategory         = "governance"
 	AttributeValueProposalDropped  = "proposal_dropped"  // didn't meet min deposit
 	AttributeValueProposalPassed   = "proposal_passed"   // met vote quorum
 	AttributeValueProposalRejected = "proposal_rejected" // didn't meet vote quorum

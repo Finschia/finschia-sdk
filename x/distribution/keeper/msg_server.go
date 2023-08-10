@@ -38,14 +38,6 @@ func (k msgServer) SetWithdrawAddress(goCtx context.Context, msg *types.MsgSetWi
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
-		),
-	)
-
 	return &types.MsgSetWithdrawAddressResponse{}, nil
 }
 
@@ -77,13 +69,6 @@ func (k msgServer) WithdrawDelegatorReward(goCtx context.Context, msg *types.Msg
 		}
 	}()
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
-		),
-	)
 	return &types.MsgWithdrawDelegatorRewardResponse{}, nil
 }
 
@@ -111,14 +96,6 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 		}
 	}()
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddress),
-		),
-	)
-
 	return &types.MsgWithdrawValidatorCommissionResponse{}, nil
 }
 
@@ -132,14 +109,6 @@ func (k msgServer) FundCommunityPool(goCtx context.Context, msg *types.MsgFundCo
 	if err := k.Keeper.FundCommunityPool(ctx, msg.Amount, depositer); err != nil {
 		return nil, err
 	}
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Depositor),
-		),
-	)
 
 	return &types.MsgFundCommunityPoolResponse{}, nil
 }
