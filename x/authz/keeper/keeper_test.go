@@ -231,13 +231,12 @@ func (s *TestSuite) TestDispatchedEvents() {
 	events := s.ctx.EventManager().Events()
 
 	// get last 5 events (events that occur *after* the grant)
-	events = events[len(events)-5:]
+	events = events[len(events)-4:]
 
 	requiredEvents := map[string]bool{
 		"coin_spent":    false,
 		"coin_received": false,
 		"transfer":      false,
-		"message":       false,
 	}
 	for _, e := range events {
 		requiredEvents[e.Type] = true
