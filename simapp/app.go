@@ -81,6 +81,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/mint"
 	mintkeeper "github.com/Finschia/finschia-sdk/x/mint/keeper"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	ordamodule "github.com/Finschia/finschia-sdk/x/or/da"
 	ordakeeper "github.com/Finschia/finschia-sdk/x/or/da/keeper"
 	ordatypes "github.com/Finschia/finschia-sdk/x/or/da/types"
 	"github.com/Finschia/finschia-sdk/x/or/settlement"
@@ -152,7 +153,7 @@ var (
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
 		rollup.AppModuleBasic{},
-		//ordamodule.AppModuleBasic{},
+		ordamodule.AppModuleBasic{},
 		settlement.AppModuleBasic{},
 	)
 
@@ -341,8 +342,6 @@ func NewSimApp(
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.ClassKeeper)
 	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], app.ClassKeeper)
 
-	app.SettlementKeeper = settlementkeeper.NewKeeper(appCodec, keys[settlementtypes.StoreKey], keys[settlementtypes.MemStoreKey])
-
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.StakingKeeper = *stakingKeeper.SetHooks(
@@ -379,7 +378,8 @@ func NewSimApp(
 
 	/****  Rollup ****/
 	app.RollupKeeper = rollupkeeper.NewKeeper(appCodec, app.BankKeeper, app.AccountKeeper, keys[rolluptypes.StoreKey], keys[rolluptypes.MemStoreKey], app.GetSubspace(rolluptypes.ModuleName))
-	app.Ordakeeper = ordakeeper.NewKeeper(appCodec, keys[ordatypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper, nil)
+	app.Ordakeeper = ordakeeper.NewKeeper(appCodec, keys[ordatypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper, app.RollupKeeper)
+	app.SettlementKeeper = settlementkeeper.NewKeeper(appCodec, keys[settlementtypes.StoreKey], keys[settlementtypes.MemStoreKey])
 
 	/****  Module Options ****/
 
@@ -413,7 +413,7 @@ func NewSimApp(
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		rollup.NewAppModule(appCodec, app.RollupKeeper, app.AccountKeeper, app.BankKeeper),
-		//ordamodule.NewAppModule(appCodec, app.Ordakeeper, app.AccountKeeper),
+		ordamodule.NewAppModule(appCodec, app.Ordakeeper, app.AccountKeeper),
 		settlement.NewAppModule(appCodec, app.SettlementKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
