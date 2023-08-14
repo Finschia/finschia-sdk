@@ -165,7 +165,7 @@ func Setup(isCheckTx bool) *SimApp {
 //
 //	// commit genesis changes
 //	app.Commit()
-//	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{
+//	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
 //		Height:             app.LastBlockHeight() + 1,
 //		AppHash:            app.LastCommitID().Hash,
 //		ValidatorsHash:     valSet.Hash(),
@@ -204,7 +204,7 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 	)
 
 	app.Commit()
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	return app
 }
@@ -409,7 +409,7 @@ func SignCheckDeliver(
 	}
 
 	// Simulate a sending a transaction and committing a block and recheck
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {
@@ -448,7 +448,7 @@ func SignAndDeliver(
 	require.NoError(t, err)
 
 	// Simulate a sending a transaction and committing a block
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {
