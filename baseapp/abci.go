@@ -125,7 +125,7 @@ func (app *BaseApp) SetOption(req abci.RequestSetOption) (res abci.ResponseSetOp
 }
 
 // BeginBlock implements the ABCI application interface.
-func (app *BaseApp) BeginBlock(req ocabci.RequestBeginBlock) (res abci.ResponseBeginBlock) {
+func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeginBlock) {
 	defer telemetry.MeasureSince(time.Now(), "abci", "begin_block")
 
 	if app.cms.TracingEnabled() {
@@ -228,7 +228,7 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // internal CheckTx state if the AnteHandler passes. Otherwise, the ResponseCheckTx
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
-func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) ocabci.ResponseCheckTx {
+func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
@@ -251,7 +251,7 @@ func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) ocabci.ResponseCheckTx 
 		// return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace) // TODO(dudong2): need to fix to use ResponseCheckTxWithEvents
 	}
 
-	return ocabci.ResponseCheckTx{
+	return abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	}

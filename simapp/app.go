@@ -14,7 +14,6 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/Finschia/ostracon/libs/log"
 	ostos "github.com/Finschia/ostracon/libs/os"
 
@@ -564,7 +563,7 @@ func NewSimApp(
 func (app *SimApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
-func (app *SimApp) BeginBlocker(ctx sdk.Context, req ocabci.RequestBeginBlock) abci.ResponseBeginBlock {
+func (app *SimApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return app.mm.BeginBlock(ctx, req)
 }
 
