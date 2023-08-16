@@ -230,7 +230,7 @@ func toBytes(i interface{}) []byte {
 }
 
 // Common event types and attribute keys
-var (
+const (
 	EventTypeTx = "tx"
 
 	AttributeKeyAccountSequence = "acc_seq"
