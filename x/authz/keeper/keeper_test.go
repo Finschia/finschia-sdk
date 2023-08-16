@@ -230,8 +230,8 @@ func (s *TestSuite) TestDispatchedEvents() {
 
 	events := s.ctx.EventManager().Events()
 
-	// get last 5 events (events that occur *after* the grant)
-	events = events[len(events)-4:]
+	// get last 3 events (events that occur *after* the grant)
+	events = events[len(events)-3:]
 
 	requiredEvents := map[string]bool{
 		"coin_spent":    false,
