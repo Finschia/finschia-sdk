@@ -9,11 +9,17 @@ import (
 func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName).GetAddress()
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector)
+	if feesCollectedInt.Empty() {
+		return nil
+	}
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// calculate the tax
 	taxRatio := k.GetFoundationTax(ctx)
 	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
+	if tax.Empty() {
+		return nil
+	}
 
 	// collect the tax
 	if err := k.FundTreasury(ctx, feeCollector, tax); err != nil {
