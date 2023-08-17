@@ -55,4 +55,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Build, CI
 
 ### Document Updates
-
+* (docs) [\#1081](https://github.com/Finschia/finschia-sdk/pull/1081) Document default events
