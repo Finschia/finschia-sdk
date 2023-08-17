@@ -11,8 +11,8 @@ sidebar_position: 1
 
 There are a few events that are automatically emitted for all messages, directly from `baseapp`.
 
-* `message.action`: The name of the message type.
-* `message.sender`: The address of the message signer.
+* `message.action`: The name of the message type. Exactly one exists for each transaction message, in the first ABCI `Event` of each transaction message.
+* `message.sender`: The address of the message signer. Exactly one exists for each transaction message, in the first ABCI `Event` of each transaction message.
 * `message.module`: The name of the module that emitted the message.
 
 :::tip
