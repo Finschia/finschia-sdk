@@ -122,7 +122,7 @@ changelog:
 release:
   github:
     owner: finschia
-    name: finschia-sdk
+    name: finschia-rdk
   prerelease: auto
   mode: replace
   draft: false
