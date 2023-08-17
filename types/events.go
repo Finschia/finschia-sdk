@@ -254,7 +254,7 @@ func (e Events) GetAttributes(key string) ([]Attribute, bool) {
 }
 
 // Common event types and attribute keys
-var (
+const (
 	EventTypeTx = "tx"
 
 	AttributeKeyAccountSequence = "acc_seq"
