@@ -5,7 +5,7 @@ module github.com/Finschia/finschia-sdk
 require (
 	github.com/99designs/keyring v1.1.6
 	github.com/Finschia/ostracon v1.1.0
-	github.com/Finschia/ramus v0.7.5-0.20230804040702-4acef0b7af79
+	github.com/Finschia/ramus v0.7.5-0.20230817080817-b2ed4e7050fc
 	github.com/VictoriaMetrics/fastcache v1.12.1
 	github.com/armon/go-metrics v0.4.1
 	github.com/bgentry/speakeasy v0.1.0
