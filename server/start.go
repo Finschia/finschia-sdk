@@ -3,6 +3,7 @@ package server
 // DONTCOVER
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -12,18 +13,18 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
-	"github.com/Finschia/ostracon/abci/server"
-	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
-	ostos "github.com/Finschia/ostracon/libs/os"
-	"github.com/Finschia/ostracon/node"
-	"github.com/Finschia/ostracon/p2p"
-	pvm "github.com/Finschia/ostracon/privval"
-	"github.com/Finschia/ostracon/proxy"
-	"github.com/Finschia/ostracon/rpc/client/local"
+	"github.com/tendermint/tendermint/abci/server"
+	"github.com/tendermint/tendermint/p2p"
+
+	rsconf "github.com/Finschia/ramus/config"
+	rsconv "github.com/Finschia/ramus/conv"
+	rsnode "github.com/Finschia/ramus/node"
+	rsrpc "github.com/Finschia/ramus/rpc"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/compat"
 	"github.com/Finschia/finschia-sdk/server/api"
 	"github.com/Finschia/finschia-sdk/server/config"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
@@ -34,6 +35,9 @@ import (
 	"github.com/Finschia/finschia-sdk/store/iavl"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	"github.com/Finschia/ostracon/node"
 )
 
 // Ostracon full-node start flags
@@ -186,6 +190,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 	// add support for all Ostracon-specific command line options
 	ostcmd.AddNodeFlags(cmd)
+	rsconf.AddFlags(cmd)
 	return cmd
 }
 
@@ -222,7 +227,7 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 		return fmt.Errorf("error creating listener: %v", err)
 	}
 
-	svr.SetLogger(ctx.Logger.With("module", "abci-server"))
+	svr.SetLogger(compat.NewTMLogger(ctx.Logger.With("module", "abci-server")))
 
 	err = svr.Start()
 	if err != nil {
@@ -290,11 +295,16 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	if err != nil {
 		return err
 	}
+	privValKey, err := p2p.LoadOrGenNodeKey(cfg.PrivValidatorKeyFile())
+	if err != nil {
+		return err
+	}
 
 	genDocProvider := node.DefaultGenesisDocProviderFunc(cfg)
 
 	var (
-		ocNode   *node.Node
+		ocNode   rsnode.Node
+		server   *rsrpc.Server
 		gRPCOnly = ctx.Viper.GetBool(flagGRPCOnly)
 	)
 
@@ -304,21 +314,48 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	} else {
 		ctx.Logger.Info("starting node with ABCI Ostracon in-process")
 
-		pv := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
-
-		ocNode, err = node.NewNode(
-			cfg,
-			pv,
-			nodeKey,
-			proxy.NewLocalClientCreator(app),
-			genDocProvider,
-			node.DefaultDBProvider,
-			node.DefaultMetricsProvider(cfg.Instrumentation),
-			ctx.Logger,
+		// keys in rollmint format
+		p2pKey, err := rsconv.GetNodeKey(nodeKey)
+		if err != nil {
+			return err
+		}
+		signingKey, err := rsconv.GetNodeKey(privValKey)
+		if err != nil {
+			return err
+		}
+		genesis, err := genDocProvider()
+		if err != nil {
+			return err
+		}
+		nodeConfig := rsconf.NodeConfig{}
+		err = nodeConfig.GetViperConfig(ctx.Viper)
+		if err != nil {
+			return err
+		}
+		rsconv.GetNodeConfig(&nodeConfig, cfg)
+		err = rsconv.TranslateAddresses(&nodeConfig)
+		if err != nil {
+			return err
+		}
+		ocNode, err = rsnode.NewNode(
+			context.Background(),
+			nodeConfig,
+			p2pKey,
+			signingKey,
+			compat.NewTMClientCreator(app),
+			compat.NewTMGenesisDoc(genesis),
+			compat.NewTMLogger(ctx.Logger),
 		)
 		if err != nil {
 			return err
 		}
+
+		server = rsrpc.NewServer(ocNode, compat.NewTMRPCConfig(cfg.RPC), compat.NewTMLogger(ctx.Logger))
+		err = server.Start()
+		if err != nil {
+			return err
+		}
+
 		ctx.Logger.Debug("initialization: ocNode created")
 		if err := ocNode.Start(); err != nil {
 			return err
@@ -329,8 +366,8 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
-	if (config.API.Enable || config.GRPC.Enable) && ocNode != nil {
-		clientCtx = clientCtx.WithClient(local.New(ocNode))
+	if config.API.Enable || config.GRPC.Enable {
+		clientCtx = clientCtx.WithClient(server.Client())
 
 		app.RegisterTxService(clientCtx)
 		app.RegisterTendermintService(clientCtx)

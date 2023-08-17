@@ -10,9 +10,10 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	rpcclient "github.com/Finschia/ostracon/rpc/client"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
+
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

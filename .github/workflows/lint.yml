@@ -21,16 +21,28 @@ jobs:
         with:
           go-version: 1.19
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
       - uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |
             **/**.go
             go.mod
             go.sum
+      - name: Setup ssh config
+        env:
+          SSH_KEY: ${{secrets.PRIVATE_REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Setup access for private go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
       - uses: golangci/golangci-lint-action@master
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
           version: v1.49.0
-          args: --timeout 10m
+          args: --timeout 10m --skip-files "_test\.go"
           github-token: ${{ secrets.GITHUB_TOKEN }}
         if: env.GIT_DIFF

@@ -1,18 +1,13 @@
 package network
 
 import (
+	"context"
 	"encoding/json"
 	"path/filepath"
 	"time"
 
-	ostos "github.com/Finschia/ostracon/libs/os"
-	"github.com/Finschia/ostracon/node"
-	"github.com/Finschia/ostracon/p2p"
-	pvm "github.com/Finschia/ostracon/privval"
-	"github.com/Finschia/ostracon/proxy"
-	"github.com/Finschia/ostracon/rpc/client/local"
-	"github.com/Finschia/ostracon/types"
-	osttime "github.com/Finschia/ostracon/types/time"
+	"github.com/Finschia/finschia-sdk/compat"
+	"github.com/tendermint/tendermint/privval"
 
 	"github.com/Finschia/finschia-sdk/server/api"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
@@ -21,6 +16,16 @@ import (
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/genutil"
 	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
+	ostos "github.com/Finschia/ostracon/libs/os"
+	"github.com/Finschia/ostracon/node"
+	"github.com/Finschia/ostracon/types"
+	osttime "github.com/Finschia/ostracon/types/time"
+	"github.com/tendermint/tendermint/p2p"
+
+	rollconf "github.com/Finschia/ramus/config"
+	rollconv "github.com/Finschia/ramus/conv"
+	rollnode "github.com/Finschia/ramus/node"
+	rollrpc "github.com/Finschia/ramus/rpc"
 )
 
 func startInProcess(cfg Config, val *Validator) error {
@@ -36,33 +41,60 @@ func startInProcess(cfg Config, val *Validator) error {
 	if err != nil {
 		return err
 	}
+	pval := privval.LoadOrGenFilePV(tmCfg.PrivValidatorKeyFile(), tmCfg.PrivValidatorStateFile())
+	// keys in Rollkit format
+	p2pKey, err := rollconv.GetNodeKey(nodeKey)
+	if err != nil {
+		return err
+	}
+	signingKey, err := rollconv.GetNodeKey(&p2p.NodeKey{PrivKey: pval.Key.PrivKey})
+	if err != nil {
+		return err
+	}
 
 	app := cfg.AppConstructor(*val)
-
 	genDocProvider := node.DefaultGenesisDocProviderFunc(tmCfg)
-	pv := pvm.LoadOrGenFilePV(tmCfg.PrivValidatorKeyFile(), tmCfg.PrivValidatorStateFile())
-	tmNode, err := node.NewNode(
-		tmCfg,
-		pv,
-		nodeKey,
-		proxy.NewLocalClientCreator(app),
-		genDocProvider,
-		node.DefaultDBProvider,
-		node.DefaultMetricsProvider(tmCfg.Instrumentation),
-		logger.With("module", val.Moniker),
+	genDoc, err := genDocProvider()
+	if err != nil {
+		return err
+	}
+
+	nodeConfig := rollconf.NodeConfig{}
+	err = nodeConfig.GetViperConfig(val.Ctx.Viper)
+	nodeConfig.Sequencer = true
+	nodeConfig.DALayer = "mock"
+	if err != nil {
+		return err
+	}
+	rollconv.GetNodeConfig(&nodeConfig, tmCfg)
+	err = rollconv.TranslateAddresses(&nodeConfig)
+	if err != nil {
+		return err
+	}
+	val.tmNode, err = rollnode.NewNode(
+		context.Background(),
+		nodeConfig,
+		p2pKey,
+		signingKey,
+		compat.NewTMClientCreator(app),
+		compat.NewTMGenesisDoc(genDoc),
+		compat.NewTMLogger(logger.With("module", val.Moniker)),
 	)
 	if err != nil {
 		return err
 	}
 
-	if err := tmNode.Start(); err != nil {
+	if err := val.tmNode.Start(); err != nil {
 		return err
 	}
 
-	val.tmNode = tmNode
-
 	if val.RPCAddress != "" {
-		val.RPCClient = local.New(tmNode)
+		server := rollrpc.NewServer(val.tmNode, compat.NewTMRPCConfig(tmCfg.RPC), compat.NewTMLogger(logger))
+		err = server.Start()
+		if err != nil {
+			return err
+		}
+		val.RPCClient = server.Client()
 	}
 
 	// We'll need a RPC client if the validator exposes a gRPC or REST endpoint.

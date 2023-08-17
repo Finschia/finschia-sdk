@@ -41,7 +41,8 @@ message QueryInflationRequest {}
 // method.
 message QueryInflationResponse {
   // inflation is the current minting inflation value.
-  bytes inflation = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
+  bytes inflation = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // QueryAnnualProvisionsRequest is the request type for the

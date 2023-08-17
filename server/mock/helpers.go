@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	"github.com/Finschia/ostracon/libs/log"
 )
 
 // SetupApp returns an application as well as a clean-up function
 // to be used to quickly setup a test case with an app
-func SetupApp() (ocabci.Application, func(), error) {
+func SetupApp() (abci.Application, func(), error) {
 	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout)).
 		With("module", "mock")
 	rootDir, err := os.MkdirTemp("", "mock-sdk")

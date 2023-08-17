@@ -70,7 +70,8 @@ message ThresholdDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
   // threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed.
-  string threshold = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string threshold = 1
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
 
   // windows defines the different windows for voting and execution.
   DecisionPolicyWindows windows = 2;
@@ -86,7 +87,8 @@ message PercentageDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
   // percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed.
-  string percentage = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string percentage = 1
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
 
   // windows defines the different windows for voting and execution.
   DecisionPolicyWindows windows = 2;
@@ -147,7 +149,8 @@ message FoundationInfo {
   uint64 version = 1;
 
   // total_weight is the number of the foundation members.
-  string total_weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string total_weight = 2
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
 
   // decision_policy specifies the foundation's decision policy.
   google.protobuf.Any decision_policy = 3 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
@@ -248,13 +251,16 @@ message TallyResult {
   option (gogoproto.goproto_getters) = false;
 
   // yes_count is the sum of yes votes.
-  string yes_count = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string yes_count = 1
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
 
   // abstain_count is the sum of abstainers.
-  string abstain_count = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string abstain_count = 2
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
 
   // no is the sum of no votes.
-  string no_count = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string no_count = 3
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
 
   // no_with_veto_count is the sum of veto.
   string no_with_veto_count = 4

@@ -1,6 +1,8 @@
 package codec
 
 import (
+	tmcrypto "github.com/tendermint/tendermint/crypto"
+	tmencoding "github.com/tendermint/tendermint/crypto/encoding"
 	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 	occrypto "github.com/Finschia/ostracon/crypto"
@@ -66,4 +68,12 @@ func ToOcPubKeyInterface(pk cryptotypes.PubKey) (occrypto.PubKey, error) {
 	}
 
 	return encoding.PubKeyFromProto(&ocProtoPk)
+}
+
+func FromTmPubKeyInterface(tmPk tmcrypto.PubKey) (cryptotypes.PubKey, error) {
+	tmProtoPk, err := tmencoding.PubKeyToProto(tmPk)
+	if err != nil {
+		return nil, err
+	}
+	return FromOcProtoPublicKey(tmProtoPk)
 }

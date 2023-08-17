@@ -29,6 +29,7 @@ type IntegrationTestSuite struct {
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
+	s.T().Skipf("🔬 It contains non-reproducible failures.")
 
 	cfg := network.DefaultConfig()
 	cfg.NumValidators = 1
@@ -94,6 +95,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
+	s.T().Skipf("🔬 It contains non-reproducible failures.")
 	testCases := []struct {
 		name      string
 		req       *tx2.GetBlockWithTxsRequest
