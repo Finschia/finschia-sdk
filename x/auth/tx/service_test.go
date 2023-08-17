@@ -148,10 +148,10 @@ func (s IntegrationTestSuite) TestSimulateTx_GRPC() {
 				// Check the result and gas used are correct.
 				//
 				// NOTE(0Tech): This comment should be updated after applying #11985.
-				// Events from the antehandlers would not be included in the simulation. The 5 events are:
-				// - Sending Amount to recipient: coin_spent, coin_received, transfer and message.sender=<val1>
+				// Events from the antehandlers would not be included in the simulation. The 4 events are:
+				// - Sending Amount to recipient: coin_spent, coin_received and transfer
 				// - Msg events: message.module=bank, message.action=/cosmos.bank.v1beta1.MsgSend and message.sender=<val1> (in one message)
-				s.Require().Equal(5, len(res.GetResult().GetEvents()))
+				s.Require().Equal(4, len(res.GetResult().GetEvents()))
 				s.Require().True(res.GetGasInfo().GetGasUsed() > 0) // Gas used sometimes change, just check it's not empty.
 			}
 		})
@@ -192,7 +192,7 @@ func (s IntegrationTestSuite) TestSimulateTx_GRPCGateway() {
 				err = val.ClientCtx.Codec.UnmarshalJSON(res, &result)
 				s.Require().NoError(err)
 				// Check the result and gas used are correct.
-				s.Require().Equal(5, len(result.GetResult().GetEvents())) // See TestSimulateTx_GRPC for the 5 events.
+				s.Require().Equal(4, len(result.GetResult().GetEvents())) // See TestSimulateTx_GRPC for the 4 events.
 				s.Require().True(result.GetGasInfo().GetGasUsed() > 0)    // Gas used sometimes change, just check it's not empty.
 			}
 		})
