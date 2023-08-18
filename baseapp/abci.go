@@ -229,11 +229,10 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
-	res := app.CheckTxSync(req)
-	return abci.ResponseCheckTx(res)
+	return app.CheckTxSync(req)
 }
 
-func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) ocabci.ResponseCheckTx {
+func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
@@ -256,7 +255,7 @@ func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) ocabci.ResponseCheckTx 
 		// return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace) // TODO(dudong2): need to fix to use ResponseCheckTxWithEvents
 	}
 
-	return ocabci.ResponseCheckTx{
+	return abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	}

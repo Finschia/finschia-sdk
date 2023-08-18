@@ -3,6 +3,7 @@ package baseapp
 import (
 	"sync"
 
+	abci "github.com/tendermint/tendermint/abci/types"
 	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	sdk "github.com/Finschia/finschia-rdk/types"
@@ -52,7 +53,7 @@ func (app *BaseApp) checkTxAsync(req *RequestCheckTxAsync, waits []*sync.WaitGro
 		return
 	}
 
-	req.callback(ocabci.ResponseCheckTx{
+	req.callback(abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	})
