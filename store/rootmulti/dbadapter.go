@@ -2,7 +2,7 @@ package rootmulti
 
 import (
 	"github.com/Finschia/finschia-rdk/store/dbadapter"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 var commithash = []byte("FAKE_HASH")

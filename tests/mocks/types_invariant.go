@@ -7,7 +7,7 @@ package mocks
 import (
 	reflect "reflect"
 
-	types "github.com/Finschia/finschia-rdk/types"
+	types "github.com/Finschia/finschia-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )
 

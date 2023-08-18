@@ -7,8 +7,8 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
-	"github.com/Finschia/finschia-rdk/x/simulation"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 // Profile with:

@@ -21,12 +21,12 @@ import (
 
 	crgerrs "github.com/Finschia/finschia-rdk/server/rosetta/lib/errors"
 	crgtypes "github.com/Finschia/finschia-rdk/server/rosetta/lib/types"
-	sdk "github.com/Finschia/finschia-rdk/types"
-	grpctypes "github.com/Finschia/finschia-rdk/types/grpc"
 	"github.com/Finschia/finschia-rdk/version"
-	authtx "github.com/Finschia/finschia-rdk/x/auth/tx"
-	auth "github.com/Finschia/finschia-rdk/x/auth/types"
-	bank "github.com/Finschia/finschia-rdk/x/bank/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
+	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
+	auth "github.com/Finschia/finschia-sdk/x/auth/types"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // interface assertion

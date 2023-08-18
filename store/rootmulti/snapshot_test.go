@@ -14,11 +14,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-rdk/snapshots"
-	snapshottypes "github.com/Finschia/finschia-rdk/snapshots/types"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-rdk/store/iavl"
 	"github.com/Finschia/finschia-rdk/store/rootmulti"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 	dbm "github.com/tendermint/tm-db"
 )
 

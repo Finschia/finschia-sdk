@@ -8,7 +8,7 @@ import (
 
 	crgerrs "github.com/Finschia/finschia-rdk/server/rosetta/lib/errors"
 
-	sdk "github.com/Finschia/finschia-rdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // ---------- cosmos-rosetta-gateway.types.NetworkInformationProvider implementation ------------ //

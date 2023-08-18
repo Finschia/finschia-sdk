@@ -21,11 +21,11 @@ import (
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc/codes"
 
-	"github.com/Finschia/finschia-rdk/client/grpc/tmservice"
-	"github.com/Finschia/finschia-rdk/codec"
-	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 	"github.com/Finschia/finschia-rdk/testutil/network"
-	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
+	"github.com/Finschia/finschia-sdk/codec"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
 // https://github.com/improbable-eng/grpc-web/blob/master/go/grpcweb/wrapper_test.go used as a reference

@@ -9,7 +9,7 @@ import (
 	svrcmd "github.com/Finschia/finschia-rdk/server/cmd"
 	"github.com/Finschia/finschia-rdk/simapp"
 	"github.com/Finschia/finschia-rdk/simapp/simd/cmd"
-	"github.com/Finschia/finschia-rdk/x/genutil/client/cli"
+	"github.com/Finschia/finschia-sdk/x/genutil/client/cli"
 )
 
 func TestInitCmd(t *testing.T) {

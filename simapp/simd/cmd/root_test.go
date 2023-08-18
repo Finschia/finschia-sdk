@@ -12,10 +12,10 @@ import (
 	octypes "github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-rdk/client/flags"
 	"github.com/Finschia/finschia-rdk/server"
 	"github.com/Finschia/finschia-rdk/simapp"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func TestNewApp(t *testing.T) {

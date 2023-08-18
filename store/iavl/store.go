@@ -17,10 +17,10 @@ import (
 	"github.com/Finschia/finschia-rdk/store/cachekv"
 	"github.com/Finschia/finschia-rdk/store/listenkv"
 	"github.com/Finschia/finschia-rdk/store/tracekv"
-	"github.com/Finschia/finschia-rdk/store/types"
-	"github.com/Finschia/finschia-rdk/telemetry"
-	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
-	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/kv"
 )
 
 const (

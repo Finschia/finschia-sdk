@@ -12,9 +12,9 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	bam "github.com/Finschia/finschia-rdk/baseapp"
-	"github.com/Finschia/finschia-rdk/codec"
-	storetypes "github.com/Finschia/finschia-rdk/store/types"
-	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	storetypes "github.com/Finschia/finschia-sdk/store/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewApp creates a simple mock kvstore app for testing. It should work

@@ -21,20 +21,20 @@ import (
 	rsnode "github.com/Finschia/ramus/node"
 	rsrpc "github.com/Finschia/ramus/rpc"
 
-	"github.com/Finschia/finschia-rdk/client"
-	"github.com/Finschia/finschia-rdk/client/flags"
-	"github.com/Finschia/finschia-rdk/codec"
 	"github.com/Finschia/finschia-rdk/compat"
-	"github.com/Finschia/finschia-rdk/server/api"
-	"github.com/Finschia/finschia-rdk/server/config"
 	servergrpc "github.com/Finschia/finschia-rdk/server/grpc"
 	"github.com/Finschia/finschia-rdk/server/rosetta"
 	crgserver "github.com/Finschia/finschia-rdk/server/rosetta/lib/server"
-	"github.com/Finschia/finschia-rdk/server/types"
 	"github.com/Finschia/finschia-rdk/store/cache"
 	"github.com/Finschia/finschia-rdk/store/iavl"
-	storetypes "github.com/Finschia/finschia-rdk/store/types"
-	"github.com/Finschia/finschia-rdk/telemetry"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/server/api"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/server/types"
+	storetypes "github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/telemetry"
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
 	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/Finschia/ostracon/node"
@@ -366,16 +366,16 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
-	if config.API.Enable || config.GRPC.Enable {
-		clientCtx = clientCtx.WithClient(server.Client())
+	// if config.API.Enable || config.GRPC.Enable {
+	// 	clientCtx = clientCtx.WithClient(server.Client())
 
-		app.RegisterTxService(clientCtx)
-		app.RegisterTendermintService(clientCtx)
+	// 	app.RegisterTxService(clientCtx)
+	// 	app.RegisterTendermintService(clientCtx)
 
-		if a, ok := app.(types.ApplicationQueryService); ok {
-			a.RegisterNodeService(clientCtx)
-		}
-	}
+	// 	if a, ok := app.(types.ApplicationQueryService); ok {
+	// 		a.RegisterNodeService(clientCtx)
+	// 	}
+	// }
 
 	metrics, err := startTelemetry(config)
 	if err != nil {

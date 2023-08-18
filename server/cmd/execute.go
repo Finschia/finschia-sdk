@@ -7,9 +7,9 @@ import (
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-rdk/client"
-	"github.com/Finschia/finschia-rdk/client/flags"
 	"github.com/Finschia/finschia-rdk/server"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
 )
 
 const (

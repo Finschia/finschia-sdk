@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-sdk/client/flags"
 )
 
 var cancelledInPreRun = errors.New("Cancelled in prerun")

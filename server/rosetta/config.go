@@ -10,8 +10,8 @@ import (
 
 	crg "github.com/Finschia/finschia-rdk/server/rosetta/lib/server"
 
-	"github.com/Finschia/finschia-rdk/codec"
-	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 )
 
 // configuration defaults constants
