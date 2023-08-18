@@ -11,7 +11,7 @@ protoc_gen_gocosmos() {
     return 1
   fi
 
-  go get github.com/regen-network/cosmos-proto/protoc-gen-gocosmos@latest
+  go get github.com/regen-network/cosmos-proto/protoc-gen-gocosmos@latest 2>/dev/null
 }
 
 protoc_gen_gocosmos
