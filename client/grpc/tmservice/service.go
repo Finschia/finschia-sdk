@@ -2,14 +2,14 @@ package tmservice
 
 import (
 	"context"
-	"crypto/sha256"
-
-	gogogrpc "github.com/gogo/protobuf/grpc"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	gogogrpc "github.com/gogo/protobuf/grpc"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	tmtypes "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	octypes "github.com/Finschia/ostracon/proto/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/rpc"
@@ -40,7 +40,7 @@ func NewQueryServer(clientCtx client.Context, interfaceRegistry codectypes.Inter
 
 // GetSyncing implements ServiceServer.GetSyncing
 func (s queryServer) GetSyncing(ctx context.Context, _ *GetSyncingRequest) (*GetSyncingResponse, error) {
-	status, err := getNodeStatus(ctx, s.clientCtx)
+	status, err := GetNodeStatus(ctx, s.clientCtx)
 	if err != nil {
 		return nil, err
 	}
@@ -49,9 +49,19 @@ func (s queryServer) GetSyncing(ctx context.Context, _ *GetSyncingRequest) (*Get
 	}, nil
 }
 
+// ConvertOcProtoBlockToTmProtoBlock convert from ostracon proto block to tendermint proto block.
+func ConvertOcProtoBlockToTmProtoBlock(block *octypes.Block) *tmtypes.Block {
+	return &tmtypes.Block{
+		Header:     block.Header,
+		Data:       block.Data,
+		Evidence:   block.Evidence,
+		LastCommit: block.LastCommit,
+	}
+}
+
 // GetLatestBlock implements ServiceServer.GetLatestBlock
 func (s queryServer) GetLatestBlock(ctx context.Context, _ *GetLatestBlockRequest) (*GetLatestBlockResponse, error) {
-	status, err := getBlock(ctx, s.clientCtx, nil)
+	status, err := GetBlock(ctx, s.clientCtx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +74,7 @@ func (s queryServer) GetLatestBlock(ctx context.Context, _ *GetLatestBlockReques
 
 	return &GetLatestBlockResponse{
 		BlockId: &protoBlockID,
-		Block:   protoBlock,
+		Block:   ConvertOcProtoBlockToTmProtoBlock(protoBlock),
 	}, nil
 }
 
@@ -85,51 +95,7 @@ func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeight
 	}
 	return &GetBlockByHeightResponse{
 		BlockId: &protoBlockID,
-		Block:   protoBlock,
-	}, nil
-}
-
-// GetBlockByHash implements ServiceServer.GetBlockByHash
-func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashRequest) (*GetBlockByHashResponse, error) {
-	if n := len(req.Hash); n != sha256.Size {
-		if n == 0 {
-			return nil, status.Error(codes.InvalidArgument, "block hash cannot be empty")
-		}
-		return nil, status.Error(codes.InvalidArgument, "the length of block hash must be 32")
-	}
-
-	res, err := getBlockByHash(s.clientCtx, req.Hash)
-	if err != nil {
-		return nil, err
-	}
-	protoBlockID := res.BlockID.ToProto()
-	protoBlock, err := res.Block.ToProto()
-	if err != nil {
-		return nil, err
-	}
-	return &GetBlockByHashResponse{
-		BlockId: &protoBlockID,
-		Block:   protoBlock,
-	}, nil
-}
-
-// GetBlockResultsByHeight implements ServiceServer.GetBlockResultsByHeight
-func (s queryServer) GetBlockResultsByHeight(_ context.Context, req *GetBlockResultsByHeightRequest) (*GetBlockResultsByHeightResponse, error) {
-	res, err := getBlockResultsByHeight(s.clientCtx, &req.Height)
-	if err != nil {
-		return nil, err
-	}
-	return &GetBlockResultsByHeightResponse{
-		Height:     res.Height,
-		TxsResults: res.TxsResults,
-		ResBeginBlock: &abci.ResponseBeginBlock{
-			Events: res.BeginBlockEvents,
-		},
-		ResEndBlock: &abci.ResponseEndBlock{
-			ValidatorUpdates:      res.ValidatorUpdates,
-			ConsensusParamUpdates: res.ConsensusParamUpdates,
-			Events:                res.EndBlockEvents,
-		},
+		Block:   ConvertOcProtoBlockToTmProtoBlock(protoBlock),
 	}, nil
 }
 
@@ -207,7 +173,7 @@ func validatorsOutput(ctx context.Context, cctx client.Context, height *int64, p
 
 // GetNodeInfo implements ServiceServer.GetNodeInfo
 func (s queryServer) GetNodeInfo(ctx context.Context, req *GetNodeInfoRequest) (*GetNodeInfoResponse, error) {
-	status, err := getNodeStatus(ctx, s.clientCtx)
+	status, err := GetNodeStatus(ctx, s.clientCtx)
 	if err != nil {
 		return nil, err
 	}
@@ -228,14 +194,14 @@ func (s queryServer) GetNodeInfo(ctx context.Context, req *GetNodeInfoRequest) (
 	resp := GetNodeInfoResponse{
 		DefaultNodeInfo: protoNodeInfo,
 		ApplicationVersion: &VersionInfo{
-			AppName:       nodeInfo.AppName,
-			Name:          nodeInfo.Name,
-			GitCommit:     nodeInfo.GitCommit,
-			GoVersion:     nodeInfo.GoVersion,
-			Version:       nodeInfo.Version,
-			BuildTags:     nodeInfo.BuildTags,
-			BuildDeps:     deps,
-			LbmSdkVersion: nodeInfo.LbmSdkVersion,
+			AppName:          nodeInfo.AppName,
+			Name:             nodeInfo.Name,
+			GitCommit:        nodeInfo.GitCommit,
+			GoVersion:        nodeInfo.GoVersion,
+			Version:          nodeInfo.Version,
+			BuildTags:        nodeInfo.BuildTags,
+			BuildDeps:        deps,
+			CosmosSdkVersion: nodeInfo.LbmSdkVersion,
 		},
 	}
 	return &resp, nil

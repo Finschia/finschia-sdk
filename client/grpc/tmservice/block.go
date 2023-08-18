@@ -10,7 +10,7 @@ import (
 	"github.com/Finschia/finschia-sdk/client"
 )
 
-func getBlock(ctx context.Context, clientCtx client.Context, height *int64) (*ctypes.ResultBlock, error) {
+func GetBlock(ctx context.Context, clientCtx client.Context, height *int64) (*ctypes.ResultBlock, error) {
 	// get the node
 	node, err := clientCtx.GetNode()
 	if err != nil {
@@ -20,7 +20,7 @@ func getBlock(ctx context.Context, clientCtx client.Context, height *int64) (*ct
 	return node.Block(ctx, height)
 }
 
-func getBlockByHash(clientCtx client.Context, hash []byte) (*ctypes.ResultBlock, error) {
+func GetBlockByHash(clientCtx client.Context, hash []byte) (*ctypes.ResultBlock, error) {
 	// get the node
 	node, err := clientCtx.GetNode()
 	if err != nil {
@@ -30,7 +30,7 @@ func getBlockByHash(clientCtx client.Context, hash []byte) (*ctypes.ResultBlock,
 	return node.BlockByHash(context.Background(), hash)
 }
 
-func getBlockResultsByHeight(clientCtx client.Context, height *int64) (*ctypes.ResultBlockResults, error) {
+func GetBlockResultsByHeight(clientCtx client.Context, height *int64) (*ctypes.ResultBlockResults, error) {
 	// get the node
 	node, err := clientCtx.GetNode()
 	if err != nil {
@@ -41,7 +41,7 @@ func getBlockResultsByHeight(clientCtx client.Context, height *int64) (*ctypes.R
 }
 
 func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64) (tmproto.BlockID, *ocproto.Block, error) {
-	block, err := getBlock(ctx, clientCtx, height)
+	block, err := GetBlock(ctx, clientCtx, height)
 	if err != nil {
 		return tmproto.BlockID{}, nil, err
 	}
