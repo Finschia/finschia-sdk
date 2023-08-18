@@ -43,8 +43,6 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d h1:nalkkPQcITbvhmL4+C4cKA87NW0tfm3Kl9VXRoPywFg=
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:URdX5+vg25ts3aCh8H5IFZybJYKWhJHYMTnf+ULtoC4=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
-github.com/Finschia/ostracon v1.1.2-0.20230810030810-5836604d7dd0 h1:Egfr/T7uj5ZzxpvNFIWqb254e4PVBgdtAgB4L4OKuhQ=
-github.com/Finschia/ostracon v1.1.2-0.20230810030810-5836604d7dd0/go.mod h1:jzv79jl0uNMxg8Lvi00zzS8uMgY4sFmHkZwl8n9S2Ns=
 github.com/Finschia/r2ishiguro_vrf v0.1.2 h1:lDBz6NQMx1pw5I3End6xFmXpM//7KcmTr3Ka983e7v8=
 github.com/Finschia/r2ishiguro_vrf v0.1.2/go.mod h1:OHRtvzcJnfIrcJ0bvPNktJozRFAyZFuv56E9R3/qB+Y=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
@@ -673,6 +671,8 @@ github.com/ugorji/go v1.1.7/go.mod h1:kZn38zHttfInRq0xu/PH0az30d+z6vm202qpg1oXVM
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/ugorji/go/codec v1.1.7 h1:2SvQaVZ1ouYrrKKwoSk2pzd4A9evlKJb9oTL+OaLUSs=
 github.com/ugorji/go/codec v1.1.7/go.mod h1:Ax+UKWsSmolVDwsd+7N3ZtXu+yMGCf907BLYF3GoBXY=
+github.com/ulbqb/ostracon v1.0.6-0.20230818180353-9468a158a23f h1:NmqY7Bk2eL9lyrXIDfKqObVBh++H1CYf0ppEMqU+7M4=
+github.com/ulbqb/ostracon v1.0.6-0.20230818180353-9468a158a23f/go.mod h1:jzv79jl0uNMxg8Lvi00zzS8uMgY4sFmHkZwl8n9S2Ns=
 github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/urfave/cli v1.22.1/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
