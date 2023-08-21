@@ -124,9 +124,29 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 	s.Require().Equal(val.ClientCtx.ChainID, block.Header.ChainID)
 }
 
+func (s IntegrationTestSuite) TestGetLatestBlock() {
+	val := s.network.Validators[0]
+	latestHeight, err := s.network.LatestHeight()
+	s.Require().NoError(err)
+
+	blockRes, err := s.queryClient.GetLatestBlock(context.Background(), &ocservice.GetLatestBlockRequest{})
+	s.Require().NoError(err)
+	s.Require().NotNil(blockRes)
+	s.Require().Equal(latestHeight, blockRes.Block.Header.Height)
+
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blocks/latest", val.APIAddress))
+	s.Require().NoError(err)
+	var blockInfoRes ocservice.GetLatestBlockResponse
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+	s.Require().Equal(blockRes.Block.Header.Height, blockInfoRes.Block.Header.Height)
+}
+
 func (s IntegrationTestSuite) TestQueryBlockByHeight() {
 	val := s.network.Validators[0]
-	_, err := s.queryClient.GetBlockByHeight(context.Background(), &ocservice.GetBlockByHeightRequest{Height: 1})
+	_, err := s.queryClient.GetBlockByHeight(context.Background(), &ocservice.GetBlockByHeightRequest{})
+	s.Require().Error(err)
+
+	_, err = s.queryClient.GetBlockByHeight(context.Background(), &ocservice.GetBlockByHeightRequest{Height: 1})
 	s.Require().NoError(err)
 
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blocks/%d", val.APIAddress, 1))
