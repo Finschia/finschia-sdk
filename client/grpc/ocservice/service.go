@@ -3,7 +3,6 @@ package ocservice
 import (
 	"context"
 	"crypto/sha256"
-	"fmt"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -52,7 +51,6 @@ func (s queryServer) GetSyncing(ctx context.Context, _ *GetSyncingRequest) (*Get
 
 // GetLatestBlock implements ServiceServer.GetLatestBlock
 func (s queryServer) GetLatestBlock(ctx context.Context, _ *GetLatestBlockRequest) (*GetLatestBlockResponse, error) {
-	fmt.Printf("GetLatestBlock1 s.clientCtx:%v\n", s.clientCtx)
 	status, err := tmservice.GetBlock(ctx, s.clientCtx, nil)
 	if err != nil {
 		return nil, err
@@ -60,13 +58,9 @@ func (s queryServer) GetLatestBlock(ctx context.Context, _ *GetLatestBlockReques
 
 	protoBlockID := status.BlockID.ToProto()
 	protoBlock, err := status.Block.ToProto()
-	fmt.Printf("GetLatestBlock1 status:%v\n", status)
-	fmt.Printf("GetLatestBlock1 status.Block:%v\n", status.Block)
-	fmt.Printf("GetLatestBlock1 protoBlock:%v\n", protoBlock)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("GetLatestBlock2 protoBlock:%v\n", protoBlock)
 
 	return &GetLatestBlockResponse{
 		BlockId: &protoBlockID,
