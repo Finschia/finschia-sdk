@@ -4,8 +4,6 @@ package server
 
 import (
 	"fmt"
-	"github.com/Finschia/ostracon/config"
-	pvm "github.com/Finschia/ostracon/privval"
 	"net/http"
 	"os"
 	"runtime/pprof"
@@ -17,9 +15,11 @@ import (
 
 	"github.com/Finschia/ostracon/abci/server"
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	"github.com/Finschia/ostracon/config"
 	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/Finschia/ostracon/node"
 	"github.com/Finschia/ostracon/p2p"
+	pvm "github.com/Finschia/ostracon/privval"
 	"github.com/Finschia/ostracon/proxy"
 	"github.com/Finschia/ostracon/rpc/client/local"
 
