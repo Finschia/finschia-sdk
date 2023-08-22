@@ -805,6 +805,10 @@ type ServiceClient interface {
 	// GetBlockWithTxs fetches a block with decoded txs.
 	//
 	// Since: cosmos-sdk 0.45.2
+	// WARNING: In `GetBlockWithTxs` for compatibility with cosmos-sdk API, the result converted from Ostracon block type
+	// to tendermint block type without `entropy` is returned.
+	// Therefore, verification fails with the tendermint block validation method.
+	// For original information, please check `GetBlockWithTxs` in `lbm/tx/v1beta1/service.proto`.
 	GetBlockWithTxs(ctx context.Context, in *GetBlockWithTxsRequest, opts ...grpc.CallOption) (*GetBlockWithTxsResponse, error)
 }
 
@@ -874,6 +878,10 @@ type ServiceServer interface {
 	// GetBlockWithTxs fetches a block with decoded txs.
 	//
 	// Since: cosmos-sdk 0.45.2
+	// WARNING: In `GetBlockWithTxs` for compatibility with cosmos-sdk API, the result converted from Ostracon block type
+	// to tendermint block type without `entropy` is returned.
+	// Therefore, verification fails with the tendermint block validation method.
+	// For original information, please check `GetBlockWithTxs` in `lbm/tx/v1beta1/service.proto`.
 	GetBlockWithTxs(context.Context, *GetBlockWithTxsRequest) (*GetBlockWithTxsResponse, error)
 }
 
