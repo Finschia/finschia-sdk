@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"compress/zlib"
 	"fmt"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -34,7 +35,7 @@ type IntegrationTestSuite struct {
 var commonArgs = []string{
 	fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 	fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100))).String()),
+	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
 }
 
 const rollupName = "test-rollup"
@@ -56,24 +57,23 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.sequencer = s.createAccount("sequencer")
 
-	s.createRollup(s.sequencer.GetAddress())
-	s.registerSequencer(s.sequencer.GetPubKey())
+	s.createRollup()
+	s.registerSequencer()
 	s.enqueue(s.sequencer.GetAddress())
 
 	batch := types.CCBatch{
-		ShouldStartAtFrame: 30,
+		ShouldStartAtFrame: 0,
 		Frames: []*types.CCBatchFrame{
 			{
 				Header: &types.CCBatchHeader{
 					ParentHash: []byte("parent_hash"),
 					Timestamp:  time.Now().UTC(),
-					L2Height:   10,
+					L2Height:   1,
 					L1Height:   100,
 				},
 				Elements: []*types.CCBatchElement{
 					{
-						Txraw:      []byte("Transactions"),
-						QueueIndex: 10,
+						Txraw: []byte("Transactions"),
 					},
 				},
 			},
@@ -121,12 +121,15 @@ func (s *IntegrationTestSuite) createAccount(uid string) keyring.Info {
 	return keyInfo
 }
 
-func (s *IntegrationTestSuite) createRollup(sequencer sdk.Address) {
+func (s *IntegrationTestSuite) createRollup() {
 	val := s.network.Validators[0]
+	sequencer := s.sequencer.GetAddress()
+
 	args := append([]string{
 		rollupName,
 		"100",
-		fmt.Sprintf(`{Addresses: ["%s"]}`, sequencer.String()),
+		fmt.Sprintf(`{"addresses": ["%s"]}`, sequencer.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, sequencer.String()),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, rollupcli.NewCreateRollupCmd(), args)
@@ -137,12 +140,18 @@ func (s *IntegrationTestSuite) createRollup(sequencer sdk.Address) {
 	s.Require().EqualValues(0, res.Code, out.String())
 }
 
-func (s *IntegrationTestSuite) registerSequencer(sequencerPk cryptotypes.PubKey) {
+func (s *IntegrationTestSuite) registerSequencer() {
 	val := s.network.Validators[0]
+	apk, err := codectypes.NewAnyWithValue(s.sequencer.GetPubKey())
+	s.Require().NoError(err)
+	bz, err := codec.ProtoMarshalJSON(apk, nil)
+	s.Require().NoError(err)
+
 	args := append([]string{
 		rollupName,
-		sequencerPk.String(),
+		string(bz),
 		sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000)).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.sequencer.GetAddress().String()),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, rollupcli.NewRegisterSequencerCmd(), args)
@@ -159,7 +168,7 @@ func (s *IntegrationTestSuite) enqueue(sequencer sdk.Address) {
 		sequencer.String(),
 		rollupName,
 		"test",
-		fmt.Sprintf("--%s=%d", dacli.FlagL2GasLimit, 100000),
+		fmt.Sprintf("--%s=%d", dacli.FlagL2GasLimit, 300000),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, dacli.CmdTxEnqueue(), args)
