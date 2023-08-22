@@ -3668,6 +3668,11 @@ VersionInfo is the type for the GetNodeInfoResponse message.
 ### Service
 Service defines the gRPC querier service for tendermint queries.
 
+WARNING: For compatibility with cosmos-sdk API, the result converted from Ostracon block type
+to tendermint block type without `entropy` is returned.
+Therefore, verification fails with the tendermint block validation method.
+For original information, please check `lbm/base/ostracon/v1/query.proto`.
+
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `GetNodeInfo` | [GetNodeInfoRequest](#cosmos.base.tendermint.v1beta1.GetNodeInfoRequest) | [GetNodeInfoResponse](#cosmos.base.tendermint.v1beta1.GetNodeInfoResponse) | GetNodeInfo queries the current node info. | GET|/cosmos/base/tendermint/v1beta1/node_info|
