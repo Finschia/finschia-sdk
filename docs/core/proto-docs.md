@@ -189,6 +189,25 @@
 - [cosmos/base/store/v1beta1/listening.proto](#cosmos/base/store/v1beta1/listening.proto)
     - [StoreKVPair](#cosmos.base.store.v1beta1.StoreKVPair)
   
+- [cosmos/base/tendermint/v1beta1/query.proto](#cosmos/base/tendermint/v1beta1/query.proto)
+    - [GetBlockByHeightRequest](#cosmos.base.tendermint.v1beta1.GetBlockByHeightRequest)
+    - [GetBlockByHeightResponse](#cosmos.base.tendermint.v1beta1.GetBlockByHeightResponse)
+    - [GetLatestBlockRequest](#cosmos.base.tendermint.v1beta1.GetLatestBlockRequest)
+    - [GetLatestBlockResponse](#cosmos.base.tendermint.v1beta1.GetLatestBlockResponse)
+    - [GetLatestValidatorSetRequest](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetRequest)
+    - [GetLatestValidatorSetResponse](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetResponse)
+    - [GetNodeInfoRequest](#cosmos.base.tendermint.v1beta1.GetNodeInfoRequest)
+    - [GetNodeInfoResponse](#cosmos.base.tendermint.v1beta1.GetNodeInfoResponse)
+    - [GetSyncingRequest](#cosmos.base.tendermint.v1beta1.GetSyncingRequest)
+    - [GetSyncingResponse](#cosmos.base.tendermint.v1beta1.GetSyncingResponse)
+    - [GetValidatorSetByHeightRequest](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightRequest)
+    - [GetValidatorSetByHeightResponse](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightResponse)
+    - [Module](#cosmos.base.tendermint.v1beta1.Module)
+    - [Validator](#cosmos.base.tendermint.v1beta1.Validator)
+    - [VersionInfo](#cosmos.base.tendermint.v1beta1.VersionInfo)
+  
+    - [Service](#cosmos.base.tendermint.v1beta1.Service)
+  
 - [cosmos/capability/v1beta1/capability.proto](#cosmos/capability/v1beta1/capability.proto)
     - [Capability](#cosmos.capability.v1beta1.Capability)
     - [CapabilityOwners](#cosmos.capability.v1beta1.CapabilityOwners)
@@ -3396,6 +3415,272 @@ Since: cosmos-sdk 0.43
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/base/tendermint/v1beta1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/base/tendermint/v1beta1/query.proto
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetBlockByHeightRequest"></a>
+
+### GetBlockByHeightRequest
+GetBlockByHeightRequest is the request type for the Query/GetBlockByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetBlockByHeightResponse"></a>
+
+### GetBlockByHeightResponse
+GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetLatestBlockRequest"></a>
+
+### GetLatestBlockRequest
+GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC method.
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetLatestBlockResponse"></a>
+
+### GetLatestBlockResponse
+GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `block_id` | [tendermint.types.BlockID](#tendermint.types.BlockID) |  |  |
+| `block` | [tendermint.types.Block](#tendermint.types.Block) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetLatestValidatorSetRequest"></a>
+
+### GetLatestValidatorSetRequest
+GetLatestValidatorSetRequest is the request type for the Query/GetValidatorSetByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetLatestValidatorSetResponse"></a>
+
+### GetLatestValidatorSetResponse
+GetLatestValidatorSetResponse is the response type for the Query/GetValidatorSetByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `block_height` | [int64](#int64) |  |  |
+| `validators` | [Validator](#cosmos.base.tendermint.v1beta1.Validator) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetNodeInfoRequest"></a>
+
+### GetNodeInfoRequest
+GetNodeInfoRequest is the request type for the Query/GetNodeInfo RPC method.
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetNodeInfoResponse"></a>
+
+### GetNodeInfoResponse
+GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `default_node_info` | [tendermint.p2p.DefaultNodeInfo](#tendermint.p2p.DefaultNodeInfo) |  |  |
+| `application_version` | [VersionInfo](#cosmos.base.tendermint.v1beta1.VersionInfo) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetSyncingRequest"></a>
+
+### GetSyncingRequest
+GetSyncingRequest is the request type for the Query/GetSyncing RPC method.
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetSyncingResponse"></a>
+
+### GetSyncingResponse
+GetSyncingResponse is the response type for the Query/GetSyncing RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `syncing` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightRequest"></a>
+
+### GetValidatorSetByHeightRequest
+GetValidatorSetByHeightRequest is the request type for the Query/GetValidatorSetByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightResponse"></a>
+
+### GetValidatorSetByHeightResponse
+GetValidatorSetByHeightResponse is the response type for the Query/GetValidatorSetByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `block_height` | [int64](#int64) |  |  |
+| `validators` | [Validator](#cosmos.base.tendermint.v1beta1.Validator) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.Module"></a>
+
+### Module
+Module is the type for VersionInfo
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [string](#string) |  | module path |
+| `version` | [string](#string) |  | module version |
+| `sum` | [string](#string) |  | checksum |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.Validator"></a>
+
+### Validator
+Validator is the type for the validator-set.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `voting_power` | [int64](#int64) |  |  |
+| `proposer_priority` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.tendermint.v1beta1.VersionInfo"></a>
+
+### VersionInfo
+VersionInfo is the type for the GetNodeInfoResponse message.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  |  |
+| `app_name` | [string](#string) |  |  |
+| `version` | [string](#string) |  |  |
+| `git_commit` | [string](#string) |  |  |
+| `build_tags` | [string](#string) |  |  |
+| `go_version` | [string](#string) |  |  |
+| `build_deps` | [Module](#cosmos.base.tendermint.v1beta1.Module) | repeated |  |
+| `cosmos_sdk_version` | [string](#string) |  | Since: cosmos-sdk 0.43 |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cosmos.base.tendermint.v1beta1.Service"></a>
+
+### Service
+Service defines the gRPC querier service for tendermint queries.
+
+WARNING: For compatibility with cosmos-sdk API, the result converted from Ostracon block type
+to tendermint block type without `entropy` is returned.
+Therefore, verification fails with the tendermint block validation method.
+For original information, please check `lbm/base/ostracon/v1/query.proto`.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GetNodeInfo` | [GetNodeInfoRequest](#cosmos.base.tendermint.v1beta1.GetNodeInfoRequest) | [GetNodeInfoResponse](#cosmos.base.tendermint.v1beta1.GetNodeInfoResponse) | GetNodeInfo queries the current node info. | GET|/cosmos/base/tendermint/v1beta1/node_info|
+| `GetSyncing` | [GetSyncingRequest](#cosmos.base.tendermint.v1beta1.GetSyncingRequest) | [GetSyncingResponse](#cosmos.base.tendermint.v1beta1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/cosmos/base/tendermint/v1beta1/syncing|
+| `GetLatestBlock` | [GetLatestBlockRequest](#cosmos.base.tendermint.v1beta1.GetLatestBlockRequest) | [GetLatestBlockResponse](#cosmos.base.tendermint.v1beta1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/cosmos/base/tendermint/v1beta1/blocks/latest|
+| `GetBlockByHeight` | [GetBlockByHeightRequest](#cosmos.base.tendermint.v1beta1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#cosmos.base.tendermint.v1beta1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/cosmos/base/tendermint/v1beta1/blocks/{height}|
+| `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/cosmos/base/tendermint/v1beta1/validatorsets/latest|
+| `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/cosmos/base/tendermint/v1beta1/validatorsets/{height}|
 
  <!-- end services -->
 
