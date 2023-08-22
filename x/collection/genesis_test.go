@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/collection"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 func TestValidateGenesis(t *testing.T) {

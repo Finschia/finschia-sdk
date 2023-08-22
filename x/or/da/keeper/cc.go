@@ -8,9 +8,9 @@ import (
 	"io"
 	"time"
 
-	sdktypes "github.com/Finschia/finschia-sdk/types"
-	sdkerror "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	sdktypes "github.com/Finschia/finschia-rdk/types"
+	sdkerror "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, gasLimit, L1ToL2GasRatio uint64) error {

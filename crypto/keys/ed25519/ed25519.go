@@ -10,9 +10,9 @@ import (
 	"github.com/Finschia/ostracon/crypto/tmhash"
 	"github.com/hdevalence/ed25519consensus"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/types/errors"
 )
 
 //-------------------------------------

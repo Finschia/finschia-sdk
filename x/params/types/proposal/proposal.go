@@ -6,7 +6,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 const (

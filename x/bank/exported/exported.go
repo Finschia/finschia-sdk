@@ -1,7 +1,7 @@
 package exported
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // GenesisBalance defines a genesis balance interface that allows for account

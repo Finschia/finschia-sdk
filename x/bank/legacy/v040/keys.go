@@ -3,9 +3,9 @@
 package v040
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	v040auth "github.com/Finschia/finschia-sdk/x/auth/legacy/v040"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	v040auth "github.com/Finschia/finschia-rdk/x/auth/legacy/v040"
 )
 
 const (

@@ -1,11 +1,11 @@
 package internal_test
 
 import (
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 func (s *KeeperTestSuite) TestProposalHandler() {

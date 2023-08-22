@@ -1,11 +1,11 @@
 package std
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/types"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	txtypes "github.com/Finschia/finschia-sdk/types/tx"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	txtypes "github.com/Finschia/finschia-rdk/types/tx"
 )
 
 // RegisterLegacyAminoCodec registers types with the Amino codec.

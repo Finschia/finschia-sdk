@@ -9,18 +9,18 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	kmultisig "github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/ante"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	kmultisig "github.com/Finschia/finschia-rdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/ante"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
 )
 
 // Test that simulate transaction accurately estimates gas cost

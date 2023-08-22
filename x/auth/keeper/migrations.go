@@ -3,9 +3,9 @@ package keeper
 import (
 	"github.com/gogo/protobuf/grpc"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	v043 "github.com/Finschia/finschia-sdk/x/auth/legacy/v043"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	v043 "github.com/Finschia/finschia-rdk/x/auth/legacy/v043"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 // Migrator is a struct for handling in-place store migrations.

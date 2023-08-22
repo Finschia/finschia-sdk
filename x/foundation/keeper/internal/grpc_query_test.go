@@ -8,13 +8,13 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
-	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	"github.com/Finschia/finschia-rdk/x/foundation/keeper"
+	"github.com/Finschia/finschia-rdk/x/foundation/keeper/internal"
 )
 
 type FoundationTestSuite struct {

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
+	crgerrs "github.com/Finschia/finschia-rdk/server/rosetta/lib/errors"
 )
 
 // timeToMilliseconds converts time to milliseconds timestamp

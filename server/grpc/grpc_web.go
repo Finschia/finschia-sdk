@@ -8,8 +8,8 @@ import (
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/grpc"
 
-	"github.com/Finschia/finschia-sdk/server/config"
-	"github.com/Finschia/finschia-sdk/server/types"
+	"github.com/Finschia/finschia-rdk/server/config"
+	"github.com/Finschia/finschia-rdk/server/types"
 )
 
 // StartGRPCWeb starts a gRPC-Web server on the given address.

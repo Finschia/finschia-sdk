@@ -1,10 +1,10 @@
 package slashing
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/slashing/keeper"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/slashing/keeper"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // InitGenesis initialize default parameters

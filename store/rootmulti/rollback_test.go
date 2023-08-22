@@ -12,7 +12,7 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp"
 )
 
 func setup(withGenesis bool, invCheckPeriod uint, db dbm.DB) (*simapp.SimApp, simapp.GenesisState) {

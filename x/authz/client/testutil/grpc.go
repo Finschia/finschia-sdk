@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/testutil/rest"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	"github.com/Finschia/finschia-sdk/x/authz/client/cli"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/testutil/rest"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	"github.com/Finschia/finschia-rdk/x/authz/client/cli"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 func (s *IntegrationTestSuite) TestQueryGrantGRPC() {

@@ -8,16 +8,16 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	keeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
-	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	keeper "github.com/Finschia/finschia-rdk/x/foundation/keeper"
+	"github.com/Finschia/finschia-rdk/x/foundation/keeper/internal"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
 )
 
 type KeeperTestSuite struct {

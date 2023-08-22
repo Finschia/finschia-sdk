@@ -7,16 +7,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	"github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/testutil"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/testutil"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 func Test_multiSigKey_Properties(t *testing.T) {

@@ -11,12 +11,12 @@ import (
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
-	"github.com/Finschia/finschia-sdk/x/gov/client/utils"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-rdk/x/gov/client/utils"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 type TxSearchMock struct {

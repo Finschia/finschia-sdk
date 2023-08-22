@@ -6,11 +6,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/testutil"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-rdk/testutil"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	grpctypes "github.com/Finschia/finschia-rdk/types/grpc"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
 )
 
 func (s *IntegrationTestSuite) TestGRPCQueries() {

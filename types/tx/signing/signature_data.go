@@ -1,7 +1,7 @@
 package signing
 
 import (
-	"github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // SignatureData represents either a *SingleSignatureData or *MultiSignatureData.

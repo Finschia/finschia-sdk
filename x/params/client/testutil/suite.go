@@ -7,9 +7,9 @@ import (
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/testutil/network"
-	"github.com/Finschia/finschia-sdk/x/params/client/cli"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/testutil/network"
+	"github.com/Finschia/finschia-rdk/x/params/client/cli"
 )
 
 type IntegrationTestSuite struct {

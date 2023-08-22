@@ -8,14 +8,14 @@ import (
 	octypes "github.com/Finschia/ostracon/types"
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/version"
-	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/version"
+	authtx "github.com/Finschia/finschia-rdk/x/auth/tx"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 const (

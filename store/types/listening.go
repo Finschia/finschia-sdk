@@ -3,7 +3,7 @@ package types
 import (
 	"io"
 
-	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-rdk/codec"
 )
 
 // WriteListener interface for streaming data out from a listenkv.Store

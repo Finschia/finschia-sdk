@@ -7,13 +7,13 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 // Factory defines a client transaction factory that facilitates generating and

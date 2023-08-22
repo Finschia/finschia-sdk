@@ -11,17 +11,17 @@ import (
 
 	osttime "github.com/Finschia/ostracon/types/time"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
-	authkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/auth/vesting/exported"
-	vesting "github.com/Finschia/finschia-sdk/x/auth/vesting/types"
-	"github.com/Finschia/finschia-sdk/x/bank/keeper"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
+	authkeeper "github.com/Finschia/finschia-rdk/x/auth/keeper"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/auth/vesting/exported"
+	vesting "github.com/Finschia/finschia-rdk/x/auth/vesting/types"
+	"github.com/Finschia/finschia-rdk/x/bank/keeper"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
 )
 
 const (

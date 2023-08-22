@@ -3,11 +3,11 @@ package params
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	"github.com/Finschia/finschia-sdk/x/params/keeper"
-	"github.com/Finschia/finschia-sdk/x/params/types/proposal"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/x/params/keeper"
+	"github.com/Finschia/finschia-rdk/x/params/types/proposal"
 )
 
 // NewParamChangeProposalHandler creates a new governance Handler for a ParamChangeProposal

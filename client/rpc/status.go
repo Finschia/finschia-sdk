@@ -9,10 +9,10 @@ import (
 	"github.com/tendermint/tendermint/p2p"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // ValidatorInfo is info about the node's validator, same as Ostracon,

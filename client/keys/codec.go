@@ -1,8 +1,8 @@
 package keys
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	"github.com/Finschia/finschia-rdk/codec"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
 )
 
 // TODO: remove this file https://github.com/cosmos/cosmos-sdk/issues/8047

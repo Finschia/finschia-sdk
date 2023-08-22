@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/address"
-	"github.com/Finschia/finschia-sdk/types/kv"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/address"
+	"github.com/Finschia/finschia-rdk/types/kv"
 )
 
 const (

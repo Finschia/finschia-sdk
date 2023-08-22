@@ -8,12 +8,12 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	store "github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	"github.com/Finschia/finschia-sdk/x/upgrade/keeper"
-	"github.com/Finschia/finschia-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	store "github.com/Finschia/finschia-rdk/store/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	"github.com/Finschia/finschia-rdk/x/upgrade/keeper"
+	"github.com/Finschia/finschia-rdk/x/upgrade/types"
 )
 
 type KeeperTestSuite struct {

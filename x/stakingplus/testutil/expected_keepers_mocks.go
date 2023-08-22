@@ -7,7 +7,7 @@ package testutil
 import (
 	reflect "reflect"
 
-	types "github.com/Finschia/finschia-sdk/types"
+	types "github.com/Finschia/finschia-rdk/types"
 	gomock "github.com/golang/mock/gomock"
 )
 

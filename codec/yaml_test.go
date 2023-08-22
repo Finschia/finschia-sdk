@@ -3,12 +3,12 @@ package codec_test
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-rdk/codec"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
 )
 
 func TestMarshalYAML(t *testing.T) {

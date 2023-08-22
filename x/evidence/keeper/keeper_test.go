@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
-	"github.com/Finschia/finschia-sdk/x/evidence/keeper"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
-	"github.com/Finschia/finschia-sdk/x/staking"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/x/evidence/keeper"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
 )
 
 var (

@@ -3,15 +3,15 @@ package rollup
 import (
 	"math/rand"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	rollupsimulation "github.com/Finschia/finschia-sdk/x/or/rollup/simulation"
-	rolluptest "github.com/Finschia/finschia-sdk/x/or/rollup/testutil"
-	"github.com/Finschia/finschia-sdk/x/or/rollup/types"
-	"github.com/Finschia/finschia-sdk/x/simulation"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	rollupsimulation "github.com/Finschia/finschia-rdk/x/or/rollup/simulation"
+	rolluptest "github.com/Finschia/finschia-rdk/x/or/rollup/testutil"
+	"github.com/Finschia/finschia-rdk/x/or/rollup/types"
+	"github.com/Finschia/finschia-rdk/x/simulation"
 )
 
 // avoid unused import issue

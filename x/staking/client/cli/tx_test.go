@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
 )
 
 func TestPrepareConfigForTxCreateValidator(t *testing.T) {

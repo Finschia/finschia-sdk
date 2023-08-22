@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
-	"github.com/Finschia/finschia-sdk/x/or/da/testutil"
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/or/da/keeper"
+	"github.com/Finschia/finschia-rdk/x/or/da/testutil"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 )
 
 type KeeperTestSuite struct {

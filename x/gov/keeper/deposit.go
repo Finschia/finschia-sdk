@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // GetDeposit gets the deposit of a specific depositor on a specific proposal

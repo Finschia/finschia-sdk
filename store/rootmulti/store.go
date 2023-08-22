@@ -19,16 +19,16 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
-	"github.com/Finschia/finschia-sdk/store/cachemulti"
-	"github.com/Finschia/finschia-sdk/store/dbadapter"
-	"github.com/Finschia/finschia-sdk/store/iavl"
-	"github.com/Finschia/finschia-sdk/store/listenkv"
-	"github.com/Finschia/finschia-sdk/store/mem"
-	"github.com/Finschia/finschia-sdk/store/tracekv"
-	"github.com/Finschia/finschia-sdk/store/transient"
-	"github.com/Finschia/finschia-sdk/store/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	snapshottypes "github.com/Finschia/finschia-rdk/snapshots/types"
+	"github.com/Finschia/finschia-rdk/store/cachemulti"
+	"github.com/Finschia/finschia-rdk/store/dbadapter"
+	"github.com/Finschia/finschia-rdk/store/iavl"
+	"github.com/Finschia/finschia-rdk/store/listenkv"
+	"github.com/Finschia/finschia-rdk/store/mem"
+	"github.com/Finschia/finschia-rdk/store/tracekv"
+	"github.com/Finschia/finschia-rdk/store/transient"
+	"github.com/Finschia/finschia-rdk/store/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // TokensToConsensusPower - convert input tokens to potential consensus-engine power

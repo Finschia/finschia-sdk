@@ -11,8 +11,8 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
 )
 
 func (gi GasInfo) String() string {

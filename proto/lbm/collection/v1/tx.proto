@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 
 import "lbm/collection/v1/collection.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/collection";
+option go_package = "github.com/Finschia/finschia-rdk/x/collection";
 
 option (gogoproto.equal_all) = false;
 
@@ -303,7 +303,7 @@ message MsgIssueFT {
   // Note: if you provide negative amount, a panic may result.
   // Note: amount may be zero.
   string amount = 8
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-rdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.

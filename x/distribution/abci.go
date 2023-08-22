@@ -5,10 +5,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/distribution/keeper"
-	"github.com/Finschia/finschia-sdk/x/distribution/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/distribution/keeper"
+	"github.com/Finschia/finschia-rdk/x/distribution/types"
 )
 
 // BeginBlocker sets the proposer for determining distribution during endblock

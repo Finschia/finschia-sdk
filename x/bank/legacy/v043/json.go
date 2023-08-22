@@ -1,8 +1,8 @@
 package v043
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 // pruneZeroBalancesJSON removes the zero balance addresses from exported genesis.

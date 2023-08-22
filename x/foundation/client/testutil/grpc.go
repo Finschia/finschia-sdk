@@ -5,10 +5,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/testutil/rest"
+	"github.com/Finschia/finschia-rdk/testutil/rest"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
 )
 
 func (s *IntegrationTestSuite) TestGRPCParams() {

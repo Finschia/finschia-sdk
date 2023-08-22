@@ -1,8 +1,8 @@
 package types // noalias
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 // StakingKeeper defines the expected staking keeper

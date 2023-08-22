@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // Keeper defines the class module Keeper

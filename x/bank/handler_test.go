@@ -7,16 +7,16 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/bank"
-	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/bank"
+	bankkeeper "github.com/Finschia/finschia-rdk/x/bank/keeper"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func TestInvalidMsg(t *testing.T) {

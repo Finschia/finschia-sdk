@@ -12,9 +12,9 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/store/cachekv"
-	"github.com/Finschia/finschia-sdk/store/types"
-	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-rdk/store/cachekv"
+	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-rdk/types/kv"
 )
 
 var (

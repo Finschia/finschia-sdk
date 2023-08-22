@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/x/authz"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 func TestGenericAuthorization(t *testing.T) {

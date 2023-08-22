@@ -6,17 +6,17 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/Finschia/finschia-sdk/client"
-	tx2 "github.com/Finschia/finschia-sdk/client/tx"
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/simapp/params"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	signing2 "github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
-	"github.com/Finschia/finschia-sdk/x/auth/tx"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/client"
+	tx2 "github.com/Finschia/finschia-rdk/client/tx"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp/params"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	signing2 "github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
+	"github.com/Finschia/finschia-rdk/x/auth/tx"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 const (

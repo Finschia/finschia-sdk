@@ -12,12 +12,12 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

@@ -1,9 +1,9 @@
 package multisig
 
 import (
-	types "github.com/Finschia/finschia-sdk/codec/types"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	types "github.com/Finschia/finschia-rdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // tmMultisig implements a K of N threshold multisig. It is used for

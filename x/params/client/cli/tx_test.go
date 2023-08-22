@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/testutil"
-	"github.com/Finschia/finschia-sdk/x/params/client/utils"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/testutil"
+	"github.com/Finschia/finschia-rdk/x/params/client/utils"
 )
 
 func TestParseProposal(t *testing.T) {

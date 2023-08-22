@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/store/transient"
-	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/store/transient"
+	"github.com/Finschia/finschia-rdk/store/types"
 )
 
 var k, v = []byte("hello"), []byte("world")

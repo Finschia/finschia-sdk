@@ -9,8 +9,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/Finschia/finschia-sdk/snapshots/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/snapshots/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

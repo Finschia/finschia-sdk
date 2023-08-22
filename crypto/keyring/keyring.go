@@ -16,14 +16,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
 
-	"github.com/Finschia/finschia-sdk/client/input"
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	"github.com/Finschia/finschia-sdk/crypto"
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	"github.com/Finschia/finschia-sdk/crypto/ledger"
-	"github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/client/input"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	"github.com/Finschia/finschia-rdk/crypto"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/ledger"
+	"github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // Backend options for Keyring

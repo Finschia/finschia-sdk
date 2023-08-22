@@ -1,7 +1,7 @@
 package feegrant
 
 import (
-	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-rdk/codec/types"
 )
 
 var _ types.UnpackInterfacesMessage = GenesisState{}

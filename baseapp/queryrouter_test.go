@@ -7,7 +7,7 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 var testQuerier = func(_ sdk.Context, _ []string, _ abci.RequestQuery) ([]byte, error) {

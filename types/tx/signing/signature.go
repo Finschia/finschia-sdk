@@ -3,8 +3,8 @@ package signing
 import (
 	"fmt"
 
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // SignatureV2 is a convenience type that is easier to use in application logic

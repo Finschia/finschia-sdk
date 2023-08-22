@@ -11,16 +11,16 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/staking/client/cli"
-	"github.com/Finschia/finschia-sdk/x/staking/keeper"
-	"github.com/Finschia/finschia-sdk/x/staking/simulation"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-rdk/x/staking/keeper"
+	"github.com/Finschia/finschia-rdk/x/staking/simulation"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 var (

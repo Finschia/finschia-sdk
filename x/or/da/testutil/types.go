@@ -1,8 +1,8 @@
 package testutil
 
 import (
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 func AccAddressString() string {

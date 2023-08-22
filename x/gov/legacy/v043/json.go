@@ -1,7 +1,7 @@
 package v043
 
 import (
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // migrateWeightedVotes migrates the ADR-037 weighted votes.

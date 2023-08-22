@@ -6,12 +6,12 @@ import (
 
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	"github.com/Finschia/finschia-sdk/testutil"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/x/auth/client/cli"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	"github.com/Finschia/finschia-rdk/testutil"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/x/auth/client/cli"
 )
 
 func TxSignExec(clientCtx client.Context, from fmt.Stringer, filename string, extraArgs ...string) (testutil.BufferWriter, error) {

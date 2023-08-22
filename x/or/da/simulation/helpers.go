@@ -1,8 +1,8 @@
 package simulation
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
 )
 
 // FindAccount find a specific address from an account list

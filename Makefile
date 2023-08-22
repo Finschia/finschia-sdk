@@ -93,12 +93,12 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/Finschia/finschia-sdk/version.Name=sim \
-		  -X github.com/Finschia/finschia-sdk/version.AppName=simd \
-		  -X github.com/Finschia/finschia-sdk/version.Version=$(VERSION) \
-		  -X github.com/Finschia/finschia-sdk/version.Commit=$(COMMIT) \
-		  -X github.com/Finschia/finschia-sdk/types.DBBackend=$(DB_BACKEND) \
-		  -X "github.com/Finschia/finschia-sdk/version.BuildTags=$(build_tags_comma_sep)"
+ldflags = -X github.com/Finschia/finschia-rdk/version.Name=sim \
+		  -X github.com/Finschia/finschia-rdk/version.AppName=simd \
+		  -X github.com/Finschia/finschia-rdk/version.Version=$(VERSION) \
+		  -X github.com/Finschia/finschia-rdk/version.Commit=$(COMMIT) \
+		  -X github.com/Finschia/finschia-rdk/types.DBBackend=$(DB_BACKEND) \
+		  -X "github.com/Finschia/finschia-rdk/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
@@ -191,7 +191,7 @@ update-swagger-docs: statik
 .PHONY: update-swagger-docs
 
 godocs:
-	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/Finschia/finschia-sdk/types"
+	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/Finschia/finschia-rdk/types"
 	godoc -http=:6060
 
 # This builds a docs site for each branch/tag in `./docs/versions`
@@ -377,12 +377,12 @@ format:
 DEVDOC_SAVE = docker commit `docker ps -a -n 1 -q` devdoc:local
 
 devdoc-init:
-	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/Finschia/finschia-sdk" -w "/go/src/github.com/Finschia/finschia-sdk" tendermint/devdoc echo
+	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/Finschia/finschia-rdk" -w "/go/src/github.com/Finschia/finschia-rdk" tendermint/devdoc echo
 	# TODO make this safer
 	$(call DEVDOC_SAVE)
 
 devdoc:
-	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/Finschia/finschia-sdk" -w "/go/src/github.com/Finschia/finschia-sdk" devdoc:local bash
+	$(DOCKER) run -it -v "$(CURDIR):/go/src/github.com/Finschia/finschia-rdk" -w "/go/src/github.com/Finschia/finschia-rdk" devdoc:local bash
 
 devdoc-save:
 	# TODO make this safer
@@ -583,7 +583,7 @@ GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
 GORELEASER_IMAGE         ?= line/goreleaserx:1.13.1-1.19.3
 GORELEASER_RELEASE       ?= false
-GO_MOD_NAME              := github.com/Finschia/finschia-sdk
+GO_MOD_NAME              := github.com/Finschia/finschia-rdk
 
 ifeq ($(GORELEASER_RELEASE),true)
 	GORELEASER_SKIP_VALIDATE := false

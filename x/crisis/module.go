@@ -9,15 +9,15 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	"github.com/Finschia/finschia-sdk/x/crisis/client/cli"
-	"github.com/Finschia/finschia-sdk/x/crisis/keeper"
-	"github.com/Finschia/finschia-sdk/x/crisis/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	"github.com/Finschia/finschia-rdk/x/crisis/client/cli"
+	"github.com/Finschia/finschia-rdk/x/crisis/keeper"
+	"github.com/Finschia/finschia-rdk/x/crisis/types"
 )
 
 var (

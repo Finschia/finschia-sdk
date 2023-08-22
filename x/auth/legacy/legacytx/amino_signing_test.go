@@ -5,11 +5,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	signingtypes "github.com/Finschia/finschia-sdk/types/tx/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/signing"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	signingtypes "github.com/Finschia/finschia-rdk/types/tx/signing"
+	"github.com/Finschia/finschia-rdk/x/auth/signing"
 )
 
 func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {

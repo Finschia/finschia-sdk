@@ -8,15 +8,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/client/tx"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/version"
-	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
-	"github.com/Finschia/finschia-sdk/x/authz"
-	bank "github.com/Finschia/finschia-sdk/x/bank/types"
-	staking "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/client/tx"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/version"
+	authclient "github.com/Finschia/finschia-rdk/x/auth/client"
+	"github.com/Finschia/finschia-rdk/x/authz"
+	bank "github.com/Finschia/finschia-rdk/x/bank/types"
+	staking "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // Flag names and values

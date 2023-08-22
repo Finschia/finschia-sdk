@@ -3,7 +3,7 @@ package simulation_test
 import (
 	"math/big"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 func init() {

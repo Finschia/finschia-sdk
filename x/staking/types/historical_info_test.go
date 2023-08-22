@@ -8,10 +8,10 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 var header = tmproto.Header{

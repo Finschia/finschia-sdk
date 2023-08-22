@@ -1,15 +1,15 @@
 package foundation
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	"github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/msgservice"
-	authzcodec "github.com/Finschia/finschia-sdk/x/authz/codec"
-	fdncodec "github.com/Finschia/finschia-sdk/x/foundation/codec"
-	govcodec "github.com/Finschia/finschia-sdk/x/gov/codec"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/msgservice"
+	authzcodec "github.com/Finschia/finschia-rdk/x/authz/codec"
+	fdncodec "github.com/Finschia/finschia-rdk/x/foundation/codec"
+	govcodec "github.com/Finschia/finschia-rdk/x/gov/codec"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec

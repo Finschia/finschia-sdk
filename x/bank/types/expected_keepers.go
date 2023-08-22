@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 // AccountKeeper defines the account contract that must be fulfilled when

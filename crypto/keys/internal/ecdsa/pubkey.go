@@ -9,8 +9,8 @@ import (
 
 	tmcrypto "github.com/Finschia/ostracon/crypto"
 
-	"github.com/Finschia/finschia-sdk/types/address"
-	"github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/address"
+	"github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // signatureFromBytes function roughly copied from secp256k1_nocgo.go

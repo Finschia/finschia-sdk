@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 func TestBaseAddressPubKey(t *testing.T) {

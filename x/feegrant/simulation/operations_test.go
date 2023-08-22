@@ -9,12 +9,12 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/feegrant"
-	"github.com/Finschia/finschia-sdk/x/feegrant/simulation"
+	"github.com/Finschia/finschia-rdk/simapp"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/feegrant"
+	"github.com/Finschia/finschia-rdk/x/feegrant/simulation"
 )
 
 type SimTestSuite struct {

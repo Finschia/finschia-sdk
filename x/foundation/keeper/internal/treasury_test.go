@@ -1,9 +1,9 @@
 package internal_test
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
 )
 
 func (s *KeeperTestSuite) TestCollectFoundationTax() {

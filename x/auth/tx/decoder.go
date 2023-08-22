@@ -5,11 +5,11 @@ import (
 
 	"google.golang.org/protobuf/encoding/protowire"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/unknownproto"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/types/tx"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/unknownproto"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/types/tx"
 )
 
 // DefaultTxDecoder returns a default protobuf TxDecoder using the provided Marshaler.

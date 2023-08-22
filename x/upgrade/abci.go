@@ -6,10 +6,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/upgrade/keeper"
-	"github.com/Finschia/finschia-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/upgrade/keeper"
+	"github.com/Finschia/finschia-rdk/x/upgrade/types"
 )
 
 // BeginBlock will check if there is a scheduled plan and if it is ready to be executed.

@@ -8,10 +8,10 @@ import (
 	occrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/Finschia/ostracon/crypto/encoding"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // FromOcProtoPublicKey converts a OC's tmprotocrypto.PublicKey into our own PubKey.

@@ -3,10 +3,10 @@ package multisig
 import (
 	"github.com/Finschia/ostracon/crypto/sr25519"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // TODO: Figure out API for others to either add their own pubkey types, or

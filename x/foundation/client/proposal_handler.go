@@ -1,8 +1,8 @@
 package client
 
 import (
-	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
-	govclient "github.com/Finschia/finschia-sdk/x/gov/client"
+	"github.com/Finschia/finschia-rdk/x/foundation/client/cli"
+	govclient "github.com/Finschia/finschia-rdk/x/gov/client"
 )
 
 // ProposalHandler is the param change proposal handler.

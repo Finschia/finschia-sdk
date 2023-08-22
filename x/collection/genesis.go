@@ -1,10 +1,10 @@
 package collection
 
 import (
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

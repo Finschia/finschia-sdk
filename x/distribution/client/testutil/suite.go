@@ -11,13 +11,13 @@ import (
 
 	ostcli "github.com/Finschia/ostracon/libs/cli"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/testutil"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/testutil/network"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/distribution/client/cli"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/testutil"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/testutil/network"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/distribution/client/cli"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
 )
 
 type IntegrationTestSuite struct {

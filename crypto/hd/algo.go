@@ -3,8 +3,8 @@ package hd
 import (
 	bip39 "github.com/cosmos/go-bip39"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // PubKeyType defines an algorithm to derive key-pairs which can be used for cryptographic signing.

@@ -1,11 +1,11 @@
 package internal
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 func validateMetadata(metadata string, config foundation.Config) error {

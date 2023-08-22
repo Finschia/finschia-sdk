@@ -3,7 +3,7 @@ package types
 // DONTCOVER
 
 import (
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // x/capability module sentinel errors

@@ -1,11 +1,11 @@
 package upgrade
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	"github.com/Finschia/finschia-sdk/x/upgrade/keeper"
-	"github.com/Finschia/finschia-sdk/x/upgrade/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/x/upgrade/keeper"
+	"github.com/Finschia/finschia-rdk/x/upgrade/types"
 )
 
 // NewSoftwareUpgradeProposalHandler creates a governance handler to manage new proposal types.

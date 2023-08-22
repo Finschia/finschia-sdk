@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"strings"
 
-	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp"
 
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )

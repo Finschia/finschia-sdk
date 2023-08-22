@@ -1,15 +1,15 @@
 package types
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/msgservice"
-	authzcodec "github.com/Finschia/finschia-sdk/x/authz/codec"
-	fdncodec "github.com/Finschia/finschia-sdk/x/foundation/codec"
-	govcodec "github.com/Finschia/finschia-sdk/x/gov/codec"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/msgservice"
+	authzcodec "github.com/Finschia/finschia-rdk/x/authz/codec"
+	fdncodec "github.com/Finschia/finschia-rdk/x/foundation/codec"
+	govcodec "github.com/Finschia/finschia-rdk/x/gov/codec"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {

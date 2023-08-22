@@ -8,9 +8,9 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/store/rootmulti"
-	"github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/store/rootmulti"
+	"github.com/Finschia/finschia-rdk/store/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 type storeTestSuite struct {

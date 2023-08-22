@@ -18,7 +18,7 @@ ENV PACKAGES curl make git libc-dev bash gcc g++ linux-headers eudev-dev python3
 RUN apk add --update --no-cache $PACKAGES
 
 # Set working directory for the build
-WORKDIR /go/src/github.com/Finschia/finschia-sdk
+WORKDIR /go/src/github.com/Finschia/finschia-rdk
 
 # prepare dbbackend before building; this can be cached
 COPY ./Makefile ./
@@ -26,8 +26,8 @@ COPY ./contrib ./contrib
 #RUN make dbbackend
 
 # Install GO dependencies
-COPY ./go.mod /go/src/github.com/Finschia/finschia-sdk/go.mod
-COPY ./go.sum /go/src/github.com/Finschia/finschia-sdk/go.sum
+COPY ./go.mod /go/src/github.com/Finschia/finschia-rdk/go.mod
+COPY ./go.sum /go/src/github.com/Finschia/finschia-rdk/go.sum
 RUN go mod download
 
 # Add source files
@@ -44,7 +44,7 @@ RUN apk add --update --no-cache  ca-certificates libstdc++
 WORKDIR /root
 
 # Copy over binaries from the build-env
-COPY --from=build-env /go/src/github.com/Finschia/finschia-sdk/build/simd /usr/bin/simd
+COPY --from=build-env /go/src/github.com/Finschia/finschia-rdk/build/simd /usr/bin/simd
 
 EXPOSE 26656 26657 1317 9090
 

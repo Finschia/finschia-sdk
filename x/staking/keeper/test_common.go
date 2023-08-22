@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"math/rand"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // does a certain by-power index record exist

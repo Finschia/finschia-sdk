@@ -6,9 +6,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/params/types/proposal"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/params/types/proposal"
 )
 
 var _ proposal.QueryServer = Keeper{}

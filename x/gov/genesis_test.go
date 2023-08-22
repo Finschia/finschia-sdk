@@ -11,13 +11,13 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	"github.com/Finschia/finschia-sdk/x/gov"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/x/gov"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 func TestImportExportQueues(t *testing.T) {

@@ -10,12 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/types"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	ed25519 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	ed25519 "github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 func TestSignAndValidateEd25519(t *testing.T) {

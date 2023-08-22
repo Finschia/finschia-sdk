@@ -12,8 +12,8 @@ import (
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 type MockClient struct {

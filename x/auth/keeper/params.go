@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 // SetParams sets the auth module's parameters.

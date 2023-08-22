@@ -3,10 +3,10 @@ package signing
 import (
 	"fmt"
 
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/crypto/types/multisig"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/crypto/types/multisig"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/tx/signing"
 )
 
 // VerifySignature verifies a transaction signature contained in SignatureData abstracting over different signing modes

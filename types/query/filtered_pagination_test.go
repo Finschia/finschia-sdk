@@ -3,13 +3,13 @@ package query_test
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/store/prefix"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/address"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/store/prefix"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/address"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 var addr1 = sdk.AccAddress([]byte("addr1"))

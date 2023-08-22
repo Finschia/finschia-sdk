@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp"
 )
 
 var (

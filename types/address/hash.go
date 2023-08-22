@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/Finschia/finschia-sdk/internal/conv"
-	"github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/internal/conv"
+	"github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // Len is the length of base addresses

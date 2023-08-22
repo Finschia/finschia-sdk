@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/distribution/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/distribution/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // initialize starting info for a new delegation

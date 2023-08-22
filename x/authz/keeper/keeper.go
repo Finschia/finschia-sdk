@@ -10,12 +10,12 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/authz"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/authz"
 )
 
 type Keeper struct {

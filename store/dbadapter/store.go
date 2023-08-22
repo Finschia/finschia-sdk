@@ -5,10 +5,10 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-sdk/store/cachekv"
-	"github.com/Finschia/finschia-sdk/store/listenkv"
-	"github.com/Finschia/finschia-sdk/store/tracekv"
-	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/store/cachekv"
+	"github.com/Finschia/finschia-rdk/store/listenkv"
+	"github.com/Finschia/finschia-rdk/store/tracekv"
+	"github.com/Finschia/finschia-rdk/store/types"
 )
 
 // Wrapper type for dbm.DB with implementation of KVStore

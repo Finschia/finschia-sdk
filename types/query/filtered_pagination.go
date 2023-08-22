@@ -3,8 +3,8 @@ package query
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/store/types"
 )
 
 // FilteredPaginate does pagination of all the results in the PrefixStore based on the

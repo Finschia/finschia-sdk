@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-rdk/client/flags"
 )
 
 func TestParseGasSetting(t *testing.T) {

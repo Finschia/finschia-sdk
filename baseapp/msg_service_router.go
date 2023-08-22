@@ -8,9 +8,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"google.golang.org/grpc"
 
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // MsgServiceRouter routes fully-qualified Msg service methods to their handler.

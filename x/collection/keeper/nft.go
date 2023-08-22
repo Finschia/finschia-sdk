@@ -3,8 +3,8 @@ package keeper
 import (
 	gogotypes "github.com/gogo/protobuf/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenID string) error {

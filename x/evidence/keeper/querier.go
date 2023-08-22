@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )

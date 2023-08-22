@@ -6,10 +6,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	svrcmd "github.com/Finschia/finschia-sdk/server/cmd"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/simapp/simd/cmd"
-	"github.com/Finschia/finschia-sdk/x/genutil/client/cli"
+	svrcmd "github.com/Finschia/finschia-rdk/server/cmd"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/simapp/simd/cmd"
+	"github.com/Finschia/finschia-rdk/x/genutil/client/cli"
 )
 
 func TestInitCmd(t *testing.T) {

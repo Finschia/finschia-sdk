@@ -6,12 +6,12 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 // AccountKeeperI is the interface contract that x/auth's keeper implements.

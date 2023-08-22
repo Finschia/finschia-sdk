@@ -1,9 +1,9 @@
 package ante
 
 import (
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 type HasExtensionOptionsTx interface {

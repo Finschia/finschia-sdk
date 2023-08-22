@@ -1,8 +1,8 @@
 package client
 
 import (
-	govclient "github.com/Finschia/finschia-sdk/x/gov/client"
-	"github.com/Finschia/finschia-sdk/x/upgrade/client/cli"
+	govclient "github.com/Finschia/finschia-rdk/x/gov/client"
+	"github.com/Finschia/finschia-rdk/x/upgrade/client/cli"
 )
 
 var (

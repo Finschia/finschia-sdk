@@ -1,12 +1,12 @@
 package codec
 
 import (
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256r1"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/crypto/keys/multisig"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/crypto/keys/secp256r1"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // RegisterInterfaces registers the sdk.Tx interface.

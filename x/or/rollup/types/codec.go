@@ -1,10 +1,10 @@
 package types
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/msgservice"
+	"github.com/Finschia/finschia-rdk/codec"
+	cdctypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/msgservice"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Finschia/finschia-sdk/version"
+	"github.com/Finschia/finschia-rdk/version"
 )
 
 // DefaultKeyringServiceName defines a default service name for the keyring.

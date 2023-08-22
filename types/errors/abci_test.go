@@ -125,7 +125,7 @@ func (s *abciTestSuite) TestABCIInfoStacktrace() {
 		},
 	}
 
-	const thisTestSrc = "github.com/Finschia/finschia-sdk/types/errors.(*abciTestSuite).TestABCIInfoStacktrace"
+	const thisTestSrc = "github.com/Finschia/finschia-rdk/types/errors.(*abciTestSuite).TestABCIInfoStacktrace"
 
 	for testName, tc := range cases {
 		s.T().Run(testName, func(t *testing.T) {

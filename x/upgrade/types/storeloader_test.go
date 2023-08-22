@@ -13,10 +13,10 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/store/rootmulti"
-	store "github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/store/rootmulti"
+	store "github.com/Finschia/finschia-rdk/store/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 func useUpgradeLoader(height int64, upgrades *store.StoreUpgrades) func(*baseapp.BaseApp) {

@@ -5,8 +5,8 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
 )
 
 var _ types.UnpackInterfacesMessage = GenesisState{}

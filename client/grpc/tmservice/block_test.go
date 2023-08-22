@@ -3,8 +3,8 @@ package tmservice_test
 import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
-	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-rdk/client/grpc/tmservice"
+	"github.com/Finschia/finschia-rdk/simapp"
 )
 
 func (s IntegrationTestSuite) TestGetProtoBlock() {

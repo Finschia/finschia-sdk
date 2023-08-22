@@ -7,9 +7,9 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {

@@ -14,8 +14,8 @@ import (
 	octypes "github.com/Finschia/ostracon/types"
 	"github.com/cosmos/go-bip39"
 
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 )
 
 // ExportGenesisFile creates and writes the genesis configuration to disk. An

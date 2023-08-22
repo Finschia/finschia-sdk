@@ -13,10 +13,10 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	octypes "github.com/Finschia/ostracon/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/server/api"
-	"github.com/Finschia/finschia-sdk/server/config"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/server/api"
+	"github.com/Finschia/finschia-rdk/server/config"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // ServerStartTime defines the time duration that the server need to stay running after startup

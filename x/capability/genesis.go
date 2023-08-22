@@ -1,9 +1,9 @@
 package capability
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/capability/keeper"
-	"github.com/Finschia/finschia-sdk/x/capability/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/capability/keeper"
+	"github.com/Finschia/finschia-rdk/x/capability/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

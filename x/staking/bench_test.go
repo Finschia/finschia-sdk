@@ -3,11 +3,11 @@ package staking_test
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/staking"
-	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
-	"github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	"github.com/Finschia/finschia-rdk/x/staking/teststaking"
+	"github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func BenchmarkValidateGenesis10Validators(b *testing.B) {

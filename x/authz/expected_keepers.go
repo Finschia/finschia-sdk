@@ -1,8 +1,8 @@
 package authz
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 // AccountKeeper defines the expected account keeper (noalias)

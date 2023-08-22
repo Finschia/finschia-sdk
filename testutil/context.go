@@ -6,8 +6,8 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/store"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/store"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // DefaultContext creates a sdk.Context with a fresh dbm that can be used in tests.

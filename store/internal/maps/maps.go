@@ -8,7 +8,7 @@ import (
 	"github.com/Finschia/ostracon/crypto/merkle"
 	"github.com/Finschia/ostracon/crypto/tmhash"
 
-	"github.com/Finschia/finschia-sdk/types/kv"
+	"github.com/Finschia/finschia-rdk/types/kv"
 )
 
 // merkleMap defines a merkle-ized tree from a map. Leave values are treated as

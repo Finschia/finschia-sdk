@@ -5,8 +5,8 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 // Parameter keys

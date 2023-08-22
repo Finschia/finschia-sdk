@@ -9,15 +9,15 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	distrtypes "github.com/Finschia/finschia-sdk/x/distribution/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
-	"github.com/Finschia/finschia-sdk/x/slashing/simulation"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	distrtypes "github.com/Finschia/finschia-rdk/x/distribution/types"
+	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
+	"github.com/Finschia/finschia-rdk/x/slashing/simulation"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 // TestWeightedOperations tests the weights of the operations.

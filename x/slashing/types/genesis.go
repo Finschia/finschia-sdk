@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // NewGenesisState creates a new GenesisState object

@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/capability/simulation"
-	"github.com/Finschia/finschia-sdk/x/capability/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/capability/simulation"
+	"github.com/Finschia/finschia-rdk/x/capability/types"
 )
 
 // TestRandomizedGenState tests the normal scenario of applying RandomizedGenState.

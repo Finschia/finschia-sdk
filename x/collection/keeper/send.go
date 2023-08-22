@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/collection"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/collection"
 )
 
 func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount []collection.Coin) error {

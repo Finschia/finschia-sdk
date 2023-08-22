@@ -5,8 +5,8 @@ import (
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 
-	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
-	crgtypes "github.com/Finschia/finschia-sdk/server/rosetta/lib/types"
+	crgerrs "github.com/Finschia/finschia-rdk/server/rosetta/lib/errors"
+	crgtypes "github.com/Finschia/finschia-rdk/server/rosetta/lib/types"
 )
 
 // NewOffline instantiates the instance of an offline network

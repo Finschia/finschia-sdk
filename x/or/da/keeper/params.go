@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"github.com/Finschia/finschia-rdk/x/or/da/types"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // GetParams get all parameters as types.Params

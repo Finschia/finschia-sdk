@@ -3,12 +3,12 @@ package keyring
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec/legacy"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	"github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/codec/legacy"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/keys/multisig"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	"github.com/Finschia/finschia-rdk/types"
 )
 
 // Info is the publicly exposed information about a keypair

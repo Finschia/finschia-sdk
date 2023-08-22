@@ -1,12 +1,12 @@
 package stakingplus
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/types"
-	authzcodec "github.com/Finschia/finschia-sdk/x/authz/codec"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	fdncodec "github.com/Finschia/finschia-sdk/x/foundation/codec"
-	govcodec "github.com/Finschia/finschia-sdk/x/gov/codec"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/codec/types"
+	authzcodec "github.com/Finschia/finschia-rdk/x/authz/codec"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	fdncodec "github.com/Finschia/finschia-rdk/x/foundation/codec"
+	govcodec "github.com/Finschia/finschia-rdk/x/gov/codec"
 )
 
 // RegisterLegacyAminoCodec registers the necessary x/authz interfaces and concrete types

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
 )
 
 // SignatureAlgo defines the interface for a keyring supported algorithm.

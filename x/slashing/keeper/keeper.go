@@ -5,10 +5,10 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
 )
 
 // Keeper of the slashing store

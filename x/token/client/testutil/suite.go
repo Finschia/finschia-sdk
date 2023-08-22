@@ -9,15 +9,15 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/testutil/network"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/cli"
-	"github.com/Finschia/finschia-sdk/x/token"
-	"github.com/Finschia/finschia-sdk/x/token/client/cli"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	"github.com/Finschia/finschia-rdk/crypto/keyring"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/testutil/network"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	bankcli "github.com/Finschia/finschia-rdk/x/bank/client/cli"
+	"github.com/Finschia/finschia-rdk/x/token"
+	"github.com/Finschia/finschia-rdk/x/token/client/cli"
 )
 
 type IntegrationTestSuite struct {

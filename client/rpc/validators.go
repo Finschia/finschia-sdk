@@ -10,12 +10,12 @@ import (
 
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/query"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	cryptocodec "github.com/Finschia/finschia-rdk/crypto/codec"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/query"
 )
 
 // TODO these next two functions feel kinda hacky based on their placement

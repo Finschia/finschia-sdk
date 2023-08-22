@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	// banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	// banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 	"github.com/stretchr/testify/require"
 )
 

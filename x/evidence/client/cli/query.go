@@ -8,11 +8,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/types/query"
-	"github.com/Finschia/finschia-sdk/version"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	"github.com/Finschia/finschia-rdk/types/query"
+	"github.com/Finschia/finschia-rdk/version"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 )
 
 // GetQueryCmd returns the CLI command with all evidence module query commands

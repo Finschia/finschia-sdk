@@ -6,9 +6,9 @@ import (
 
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/types/kv"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/types/kv"
+	"github.com/Finschia/finschia-rdk/x/auth/types"
 )
 
 type AuthUnmarshaler interface {

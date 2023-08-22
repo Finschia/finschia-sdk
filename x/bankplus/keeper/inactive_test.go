@@ -10,14 +10,14 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/store"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	accountkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
-	accounttypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/store"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	accountkeeper "github.com/Finschia/finschia-rdk/x/auth/keeper"
+	accounttypes "github.com/Finschia/finschia-rdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
+	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
 )
 
 func genAddress() sdk.AccAddress {

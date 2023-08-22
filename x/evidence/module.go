@@ -12,17 +12,17 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	eviclient "github.com/Finschia/finschia-sdk/x/evidence/client"
-	"github.com/Finschia/finschia-sdk/x/evidence/client/cli"
-	"github.com/Finschia/finschia-sdk/x/evidence/keeper"
-	"github.com/Finschia/finschia-sdk/x/evidence/simulation"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/types/module"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	eviclient "github.com/Finschia/finschia-rdk/x/evidence/client"
+	"github.com/Finschia/finschia-rdk/x/evidence/client/cli"
+	"github.com/Finschia/finschia-rdk/x/evidence/keeper"
+	"github.com/Finschia/finschia-rdk/x/evidence/simulation"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 )
 
 var (

@@ -9,11 +9,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/config"
-	"github.com/Finschia/finschia-sdk/client/flags"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
-	"github.com/Finschia/finschia-sdk/x/staking/client/cli"
+	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-rdk/client/config"
+	"github.com/Finschia/finschia-rdk/client/flags"
+	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
+	"github.com/Finschia/finschia-rdk/x/staking/client/cli"
 )
 
 const (

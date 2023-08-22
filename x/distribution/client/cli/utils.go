@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/internal/os"
-	"github.com/Finschia/finschia-sdk/x/distribution/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	"github.com/Finschia/finschia-rdk/internal/os"
+	"github.com/Finschia/finschia-rdk/x/distribution/types"
 )
 
 // ParseCommunityPoolSpendProposalWithDeposit reads and parses a CommunityPoolSpendProposalWithDeposit from a file.

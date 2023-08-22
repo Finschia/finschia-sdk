@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/baseapp"
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-rdk/baseapp"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/foundation"
+	"github.com/Finschia/finschia-rdk/x/foundation/keeper/internal"
+	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 type Keeper interface {

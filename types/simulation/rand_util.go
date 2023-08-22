@@ -7,7 +7,7 @@ import (
 	"time"
 	"unsafe"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 const (

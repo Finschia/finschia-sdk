@@ -3,7 +3,7 @@ package testutil
 import (
 	"testing"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 
 	"github.com/stretchr/testify/require"
 )

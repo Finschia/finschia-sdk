@@ -11,8 +11,8 @@ import (
 	ocbytes "github.com/Finschia/ostracon/libs/bytes"
 	"github.com/Finschia/ostracon/libs/log"
 
-	"github.com/Finschia/finschia-sdk/store/gaskv"
-	stypes "github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-rdk/store/gaskv"
+	stypes "github.com/Finschia/finschia-rdk/store/types"
 )
 
 /*

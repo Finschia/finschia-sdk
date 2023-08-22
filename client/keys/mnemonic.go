@@ -8,7 +8,7 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
 
-	"github.com/Finschia/finschia-sdk/client/input"
+	"github.com/Finschia/finschia-rdk/client/input"
 )
 
 const (

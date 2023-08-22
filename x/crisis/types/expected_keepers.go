@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // SupplyKeeper defines the expected supply keeper (noalias)

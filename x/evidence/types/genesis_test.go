@@ -8,11 +8,11 @@ import (
 	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/x/evidence/exported"
-	"github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-rdk/codec"
+	codectypes "github.com/Finschia/finschia-rdk/codec/types"
+	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-rdk/x/evidence/exported"
+	"github.com/Finschia/finschia-rdk/x/evidence/types"
 )
 
 func TestDefaultGenesisState(t *testing.T) {

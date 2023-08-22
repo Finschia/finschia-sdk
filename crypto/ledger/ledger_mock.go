@@ -14,10 +14,10 @@ import (
 
 	"github.com/Finschia/ostracon/crypto"
 
-	"github.com/Finschia/finschia-sdk/crypto/hd"
-	csecp256k1 "github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-rdk/crypto/hd"
+	csecp256k1 "github.com/Finschia/finschia-rdk/crypto/keys/secp256k1"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // If ledger support (build tag) has been enabled, which implies a CGO dependency,

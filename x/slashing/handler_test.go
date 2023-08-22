@@ -9,16 +9,16 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/slashing"
-	"github.com/Finschia/finschia-sdk/x/slashing/keeper"
-	"github.com/Finschia/finschia-sdk/x/slashing/testslashing"
-	"github.com/Finschia/finschia-sdk/x/slashing/types"
-	"github.com/Finschia/finschia-sdk/x/staking"
-	"github.com/Finschia/finschia-sdk/x/staking/teststaking"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-rdk/simapp"
+	"github.com/Finschia/finschia-rdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/slashing"
+	"github.com/Finschia/finschia-rdk/x/slashing/keeper"
+	"github.com/Finschia/finschia-rdk/x/slashing/testslashing"
+	"github.com/Finschia/finschia-rdk/x/slashing/types"
+	"github.com/Finschia/finschia-rdk/x/staking"
+	"github.com/Finschia/finschia-rdk/x/staking/teststaking"
+	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
 )
 
 func TestCannotUnjailUnlessJailed(t *testing.T) {

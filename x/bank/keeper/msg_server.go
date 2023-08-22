@@ -5,10 +5,10 @@ import (
 
 	"github.com/armon/go-metrics"
 
-	"github.com/Finschia/finschia-sdk/telemetry"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-rdk/telemetry"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-rdk/x/bank/types"
 )
 
 type msgServer struct {

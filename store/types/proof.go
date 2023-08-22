@@ -6,7 +6,7 @@ import (
 	"github.com/Finschia/ostracon/crypto/merkle"
 	ics23 "github.com/confio/ics23/go"
 
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 const (

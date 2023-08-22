@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/x/staking/simulation"
+	"github.com/Finschia/finschia-rdk/x/staking/simulation"
 )
 
 func TestParamChanges(t *testing.T) {

@@ -5,8 +5,8 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/gov/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-rdk/x/gov/types"
 )
 
 // RegisterInvariants registers all governance invariants

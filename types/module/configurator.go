@@ -5,9 +5,9 @@ import (
 
 	"github.com/gogo/protobuf/grpc"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-rdk/codec"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
 )
 
 // Configurator provides the hooks to allow modules to configure and register

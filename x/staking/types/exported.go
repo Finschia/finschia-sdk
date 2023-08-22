@@ -3,8 +3,8 @@ package types
 import (
 	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
+	sdk "github.com/Finschia/finschia-rdk/types"
 )
 
 // DelegationI delegation bond for a delegated proof of stake system

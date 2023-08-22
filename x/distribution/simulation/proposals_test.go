@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/simapp"
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/distribution/simulation"
+	"github.com/Finschia/finschia-rdk/simapp"
+	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
+	sdk "github.com/Finschia/finschia-rdk/types"
+	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
+	"github.com/Finschia/finschia-rdk/x/distribution/simulation"
 )
 
 func TestProposalContents(t *testing.T) {
