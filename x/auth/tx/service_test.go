@@ -636,7 +636,7 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC_2() {
+func (s IntegrationTestSuite) TestGetBlockWithTxs() {
 	srv := tx2.NewTxServer(client.Context{}, nil, nil)
 
 	_, err := srv.GetBlockWithTxs(context.Background(), nil)
