@@ -29,6 +29,7 @@ import (
 	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
 	authtest "github.com/Finschia/finschia-sdk/x/auth/client/testutil"
+	tx2 "github.com/Finschia/finschia-sdk/x/auth/tx"
 	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/testutil"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
@@ -633,6 +634,13 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 			}
 		})
 	}
+}
+
+func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC_2() {
+	srv := tx2.NewTxServer(client.Context{}, nil, nil)
+
+	_, err := srv.GetBlockWithTxs(context.Background(), nil)
+	s.Require().Contains(err.Error(), "request cannot be nil")
 }
 
 func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
