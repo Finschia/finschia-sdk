@@ -167,7 +167,7 @@ func (s *IntegrationTestSuite) enqueue(sequencer sdk.Address) {
 	args := append([]string{
 		sequencer.String(),
 		rollupName,
-		"test",
+		string(s.genMockTxs(1)[0]),
 		fmt.Sprintf("--%s=%d", dacli.FlagL2GasLimit, 300000),
 	}, commonArgs...)
 
