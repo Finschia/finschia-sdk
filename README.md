@@ -4,7 +4,7 @@ This is forked from [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) at 2021
 
 **WARNING**: Breaking changes may occur because this repository is still in the pre-release development phase.
 
-**Note**: Requires [Go 1.19+](https://golang.org/dl/)
+**Note**: Requires [Go 1.20+](https://golang.org/dl/)
 
 ## What is the Finschia SDK?
 
@@ -63,7 +63,7 @@ simd start --home ~/.simapp/simapp1
 
 **Visit with your browser**
 * Node: http://localhost:26657/
-* REST: http://localhost:1317/swagger-ui/
+* REST: http://localhost:1317/swagger/
 
 &nbsp;
 

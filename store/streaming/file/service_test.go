@@ -12,8 +12,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/store/types"
@@ -29,7 +27,7 @@ var (
 
 	// test abci message types
 	mockHash          = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	testBeginBlockReq = ocabci.RequestBeginBlock{
+	testBeginBlockReq = abci.RequestBeginBlock{
 		Header: tmproto.Header{
 			Height: 1,
 		},

@@ -44,6 +44,7 @@ func (s *FoundationTestSuite) SetupTest() {
 		authtypes.FeeCollectorName,
 		foundation.DefaultConfig(),
 		foundation.DefaultAuthority().String(),
+		s.app.GetSubspace(foundation.ModuleName),
 	)
 }
 

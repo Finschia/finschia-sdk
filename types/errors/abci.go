@@ -5,8 +5,6 @@ import (
 	"reflect"
 
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 )
 
 const (
@@ -43,9 +41,9 @@ func ABCIInfo(err error, debug bool) (codespace string, code uint32, log string)
 
 // ResponseCheckTx returns an ABCI ResponseCheckTx object with fields filled in
 // from the given error and gas values.
-func ResponseCheckTx(err error, gw, gu uint64, debug bool) ocabci.ResponseCheckTx {
+func ResponseCheckTx(err error, gw, gu uint64, debug bool) abci.ResponseCheckTx {
 	space, code, log := ABCIInfo(err, debug)
-	return ocabci.ResponseCheckTx{
+	return abci.ResponseCheckTx{
 		Codespace: space,
 		Code:      code,
 		Log:       log,
@@ -56,9 +54,9 @@ func ResponseCheckTx(err error, gw, gu uint64, debug bool) ocabci.ResponseCheckT
 
 // ResponseCheckTxWithEvents returns an ABCI ResponseCheckTx object with fields filled in
 // from the given error, gas values and events.
-func ResponseCheckTxWithEvents(err error, gw, gu uint64, events []abci.Event, debug bool) ocabci.ResponseCheckTx {
+func ResponseCheckTxWithEvents(err error, gw, gu uint64, events []abci.Event, debug bool) abci.ResponseCheckTx {
 	space, code, log := ABCIInfo(err, debug)
-	return ocabci.ResponseCheckTx{
+	return abci.ResponseCheckTx{
 		Codespace: space,
 		Code:      code,
 		Log:       log,

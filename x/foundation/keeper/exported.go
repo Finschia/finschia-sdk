@@ -7,6 +7,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 type Keeper interface {
@@ -30,6 +31,7 @@ func NewKeeper(
 	feeCollectorName string,
 	config foundation.Config,
 	authority string,
+	paramspace paramtypes.Subspace,
 ) Keeper {
 	return &keeper{
 		impl: internal.NewKeeper(
@@ -41,6 +43,7 @@ func NewKeeper(
 			feeCollectorName,
 			config,
 			authority,
+			paramspace,
 		),
 	}
 }
@@ -90,4 +93,11 @@ func EndBlocker(ctx sdk.Context, k Keeper) {
 func NewFoundationProposalsHandler(k Keeper) govtypes.Handler {
 	impl := k.(*keeper).impl
 	return internal.NewFoundationProposalsHandler(impl)
+}
+
+type Migrator = internal.Migrator
+
+func NewMigrator(k Keeper) Migrator {
+	impl := k.(*keeper).impl
+	return internal.NewMigrator(impl)
 }
