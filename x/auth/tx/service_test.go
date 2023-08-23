@@ -29,6 +29,7 @@ import (
 	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
 	authtest "github.com/Finschia/finschia-sdk/x/auth/client/testutil"
+	tx2 "github.com/Finschia/finschia-sdk/x/auth/tx"
 	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/testutil"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 )
@@ -603,14 +604,16 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 		req       *tx.GetBlockWithTxsRequest
 		expErr    bool
 		expErrMsg string
+		expTxsLen int
 	}{
-		{"nil request", nil, true, "request cannot be nil"},
-		{"empty request", &tx.GetBlockWithTxsRequest{}, true, "service not supported"},
-		{"bad height", &tx.GetBlockWithTxsRequest{Height: 99999999}, true, "service not supported"},
-		{"bad pagination", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 1000, Limit: 100}}, true, "service not supported"},
-		{"good request", &tx.GetBlockWithTxsRequest{Height: s.txHeight}, true, "service not supported"},
-		{"with pagination request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 1}}, true, "service not supported"},
-		{"page all request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 100}}, true, "service not supported"},
+		{"nil request", nil, true, "request cannot be nil", 0},
+		{"empty request", &tx.GetBlockWithTxsRequest{}, true, "height must not be less than 1 or greater than the current height", 0},
+		{"bad height", &tx.GetBlockWithTxsRequest{Height: 99999999}, true, "height must not be less than 1 or greater than the current height", 0},
+		{"bad pagination", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 1000, Limit: 100}}, true, "out of range", 0},
+		{"good request", &tx.GetBlockWithTxsRequest{Height: s.txHeight}, false, "", 1},
+		{"with pagination request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 1}}, false, "", 1},
+		{"page all request", &tx.GetBlockWithTxsRequest{Height: s.txHeight, Pagination: &query.PageRequest{Offset: 0, Limit: 100}}, false, "", 1},
+		{"block with 0 tx", &tx.GetBlockWithTxsRequest{Height: s.txHeight - 1, Pagination: &query.PageRequest{Offset: 0, Limit: 100}}, false, "", 0},
 	}
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
@@ -621,7 +624,9 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 				s.Require().Contains(err.Error(), tc.expErrMsg)
 			} else {
 				s.Require().NoError(err)
-				s.Require().Equal("foobar", grpcRes.Txs[0].Body.Memo)
+				if tc.expTxsLen > 0 {
+					s.Require().Equal("foobar", grpcRes.Txs[0].Body.Memo)
+				}
 				s.Require().Equal(grpcRes.Block.Header.Height, tc.req.Height)
 				if tc.req.Pagination != nil {
 					s.Require().LessOrEqual(len(grpcRes.Txs), int(tc.req.Pagination.Limit))
@@ -629,6 +634,13 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 			}
 		})
 	}
+}
+
+func (s IntegrationTestSuite) TestGetBlockWithTxs() {
+	srv := tx2.NewTxServer(client.Context{}, nil, nil)
+
+	_, err := srv.GetBlockWithTxs(context.Background(), nil)
+	s.Require().Contains(err.Error(), "request cannot be nil")
 }
 
 func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
@@ -642,17 +654,17 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
 		{
 			"empty params",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/block/0", val.APIAddress),
-			true, "service not supported",
+			true, "height must not be less than 1 or greater than the current height",
 		},
 		{
 			"bad height",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/block/%d", val.APIAddress, 9999999),
-			true, "service not supported",
+			true, "height must not be less than 1 or greater than the current height",
 		},
 		{
 			"good request",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/block/%d", val.APIAddress, s.txHeight),
-			true, "service not supported",
+			false, "",
 		},
 	}
 	for _, tc := range testCases {

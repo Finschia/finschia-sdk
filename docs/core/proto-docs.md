@@ -8553,7 +8553,7 @@ Service defines a gRPC service for interacting with transactions.
 | `GetTxsEvent` | [GetTxsEventRequest](#cosmos.tx.v1beta1.GetTxsEventRequest) | [GetTxsEventResponse](#cosmos.tx.v1beta1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/cosmos/tx/v1beta1/txs|
 | `GetBlockWithTxs` | [GetBlockWithTxsRequest](#cosmos.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#cosmos.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
 
-Since: cosmos-sdk 0.45.2 | GET|/cosmos/tx/v1beta1/txs/block/{height}|
+Since: cosmos-sdk 0.45.2 WARNING: In `GetBlockWithTxs` for compatibility with cosmos-sdk API, the result converted from Ostracon block type to tendermint block type without `entropy` is returned. Therefore, verification fails with the tendermint block validation method. For original information, please check `GetBlockWithTxs` in `lbm/tx/v1beta1/service.proto`. | GET|/cosmos/tx/v1beta1/txs/block/{height}|
 
  <!-- end services -->
 
