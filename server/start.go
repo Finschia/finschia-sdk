@@ -366,16 +366,16 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
-	// if config.API.Enable || config.GRPC.Enable {
-	// 	clientCtx = clientCtx.WithClient(server.Client())
+	if config.API.Enable || config.GRPC.Enable {
+		clientCtx = clientCtx.WithClient(server.Client())
 
-	// 	app.RegisterTxService(clientCtx)
-	// 	app.RegisterTendermintService(clientCtx)
+		app.RegisterTxService(clientCtx)
+		app.RegisterTendermintService(clientCtx)
 
-	// 	if a, ok := app.(types.ApplicationQueryService); ok {
-	// 		a.RegisterNodeService(clientCtx)
-	// 	}
-	// }
+		if a, ok := app.(types.ApplicationQueryService); ok {
+			a.RegisterNodeService(clientCtx)
+		}
+	}
 
 	metrics, err := startTelemetry(config)
 	if err != nil {
