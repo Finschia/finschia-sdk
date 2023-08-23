@@ -56,7 +56,8 @@ func (s *IntegrationTestSuite) TestCmdTxAppendCCBatch() {
 					_, err := w.Write(serializedBatch)
 					s.Require().NoError(err)
 					err = w.Close()
-					return string(b.Bytes())
+					s.Require().NoError(err)
+					return b.String()
 				}(),
 				fmt.Sprintf("--%s=%d", dacli.FlagCompression, 1),
 			},
@@ -85,9 +86,8 @@ func (s *IntegrationTestSuite) TestCmdTxAppendCCBatch() {
 			if tc.valid {
 				s.Require().EqualValues(0, res.Code, out.String())
 				return
-			} else {
-				s.Require().NotEqualValues(0, res.Code, out.String())
 			}
+			s.Require().NotEqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -131,9 +131,8 @@ func (s *IntegrationTestSuite) TestCmdTxEnqueue() {
 			if tc.valid {
 				s.Require().EqualValues(0, res.Code, out.String())
 				return
-			} else {
-				s.Require().NotEqualValues(0, res.Code, out.String())
 			}
+			s.Require().NotEqualValues(0, res.Code, out.String())
 		})
 	}
 }

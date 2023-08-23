@@ -1,7 +1,6 @@
 package testutil
 
 import (
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	"testing"
 
 	"github.com/Finschia/ostracon/libs/log"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	"github.com/Finschia/finschia-sdk/store"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"

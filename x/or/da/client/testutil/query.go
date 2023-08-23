@@ -20,13 +20,14 @@ func (s *IntegrationTestSuite) TestCmdQueryParams() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdQueryParams()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.valid {
 				s.Require().NoError(err)
 				var res types.QueryParamsResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			} else {
 				s.Require().Error(err)
 			}
@@ -56,13 +57,14 @@ func (s *IntegrationTestSuite) TestCmdQueryCCState() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdQueryCCState()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.valid {
 				s.Require().NoError(err)
 				var res types.QueryCCStateResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			} else {
 				s.Require().Error(err)
 			}
@@ -101,13 +103,14 @@ func (s *IntegrationTestSuite) TestCmdCCRef() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdCCRef()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.valid {
 				s.Require().NoError(err)
 				var res types.QueryCCRefResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			} else {
 				s.Require().Error(err)
 			}
@@ -137,12 +140,13 @@ func (s *IntegrationTestSuite) TestCmdCCRefs() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdCCRefs()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			s.Require().NoError(err)
 			var res types.QueryCCRefsResponse
-			s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			if tc.valid {
 				s.Require().NotNil(res.Refs)
 			} else {
@@ -174,13 +178,14 @@ func (s *IntegrationTestSuite) TestQueueTxState() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdQueueTxState()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.valid {
 				s.Require().NoError(err)
 				var res types.QueryQueueTxStateResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			} else {
 				s.Require().Error(err)
 			}
@@ -219,6 +224,7 @@ func (s *IntegrationTestSuite) TestQueueTx() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdQueueTx()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
@@ -226,7 +232,7 @@ func (s *IntegrationTestSuite) TestQueueTx() {
 			if tc.valid {
 				s.Require().NoError(err)
 				var res types.QueryQueueTxResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			} else {
 				s.Require().Error(err)
 			}
@@ -256,12 +262,13 @@ func (s *IntegrationTestSuite) TestQueueTxs() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdQueueTxs()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			s.Require().NoError(err)
 			var res types.QueryQueueTxsResponse
-			s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 
 			if tc.valid {
 				s.Require().NotEqual(0, len(res.Txs))
@@ -304,13 +311,14 @@ func (s *IntegrationTestSuite) TestMappedBatch() {
 	}
 
 	for name, tc := range tcs {
+		tc := tc
 		s.Run(name, func() {
 			cmd := dacli.CmdMappedBatch()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.valid {
 				s.Require().NoError(err)
 				var res types.QueryMappedBatchResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &res))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
 			} else {
 				s.Require().Error(err)
 			}

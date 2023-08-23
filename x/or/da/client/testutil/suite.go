@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"compress/zlib"
 	"fmt"
-	"github.com/Finschia/finschia-sdk/codec"
-	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"time"
 
 	"github.com/stretchr/testify/suite"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	"github.com/Finschia/finschia-sdk/crypto/keyring"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
