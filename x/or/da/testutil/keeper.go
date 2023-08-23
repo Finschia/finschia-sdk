@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	"testing"
 
 	"github.com/Finschia/ostracon/libs/log"
@@ -21,7 +22,7 @@ import (
 	rolluptypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 )
 
-func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
+func DaKeeper(t testing.TB, encCfg simappparams.EncodingConfig) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 
 	db := tmdb.NewMemDB()
@@ -48,7 +49,10 @@ func DaKeeper(t testing.TB) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
 			},
 		},
 	).AnyTimes()
+
+	simappparams.MakeTestEncodingConfig()
 	k := keeper.NewKeeper(
+		encCfg.TxConfig,
 		cdc,
 		storeKey,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),

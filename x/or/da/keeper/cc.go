@@ -14,6 +14,11 @@ import (
 )
 
 func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, gasLimit, L1ToL2GasRatio uint64) error {
+	_, err := k.txCfg.TxDecoder()(tx)
+	if err != nil {
+		return sdkerror.ErrTxDecode.Wrap("wrong queue tx format")
+	}
+
 	// Transactions submitted to the queue lack a method for paying gas fees to the Sequencer.
 	// For transaction with a high L2 gas limit, we burn some extra gas on L1.
 	gasToConsume := (gasLimit - k.EnqueueL2GasPrepaid(ctx, tx)) / L1ToL2GasRatio
