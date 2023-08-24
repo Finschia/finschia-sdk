@@ -11,8 +11,6 @@ const (
 	AttributeKeyRecipient = "recipient"
 	AttributeKeySender    = "sender"
 
-	AttributeValueCategory = ModuleName
-
 	// supply and balance tracking events name and attributes
 	EventTypeCoinSpent    = "coin_spent"
 	EventTypeCoinReceived = "coin_received"

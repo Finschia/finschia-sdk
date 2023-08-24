@@ -18,5 +18,4 @@ const (
 	AttributeKeyDelegator         = "delegator"
 	AttributeKeyCompletionTime    = "completion_time"
 	AttributeKeyNewShares         = "new_shares"
-	AttributeValueCategory        = ModuleName
 )
