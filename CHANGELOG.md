@@ -47,6 +47,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (third_party/proto) [\#1037](https://github.com/Finschia/finschia-sdk/pull/1037) change the proof.proto path to third_party/proto/confio
 * (ostracon) [\#1057](https://github.com/Finschia/finschia-sdk/pull/1057) Bump up Ostracon from to v1.1.1
 * (x/foundation) [\#1072](https://github.com/Finschia/finschia-sdk/pull/1072) Address generation of the empty coins in x/foundation (backport #952)
+* (ostracon) [\#1089](https://github.com/Finschia/finschia-sdk/pull/1089) Bump up ostracon from v1.1.1 to v1.1.1-449aa3148b12
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) fix a bug(unable to connect nano S plus ledger on ubuntu)
