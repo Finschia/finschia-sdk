@@ -9,10 +9,13 @@ import (
 
 func TestGenPvFileOnlyWhenKmsAddressEmptyGenerateFiles(t *testing.T) {
 	cfg := config.DefaultConfig()
-	cfg.PrivValidatorKey = "./key.json"
-	cfg.PrivValidatorState = "./state.json"
-	defer os.Remove(cfg.PrivValidatorKey)
-	defer os.Remove(cfg.PrivValidatorState)
+	dir, err := os.MkdirTemp("", "start_test")
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	defer os.RemoveAll(dir)
+	cfg.PrivValidatorKey = dir + "/key.json"
+	cfg.PrivValidatorState = dir + "/state.json"
 
 	pv := genPvFileOnlyWhenKmsAddressEmpty(cfg)
 
