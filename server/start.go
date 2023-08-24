@@ -367,7 +367,8 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
 	if config.API.Enable || config.GRPC.Enable {
-		clientCtx = clientCtx.WithClient(server.Client())
+		ocClient := compat.NewOCRpcClient(server.Client())
+		clientCtx = clientCtx.WithClient(ocClient)
 
 		app.RegisterTxService(clientCtx)
 		app.RegisterTendermintService(clientCtx)
