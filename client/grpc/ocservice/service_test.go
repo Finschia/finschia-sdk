@@ -172,7 +172,7 @@ func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	s.Require().Equal(0, len(txResult))
 
 	beginBlock := blockResultsRes.GetResBeginBlock()
-	s.Require().Equal(7, len(beginBlock.Events)) // coinbase event (6) + transfer mintModule to feeCollectorName(5) - foundation abci (4)
+	s.Require().Equal(6, len(beginBlock.Events)) // coinbase event (2) + transfer mintModule to feeCollectorName(3) + mint event
 
 	endBlock := blockResultsRes.GetResEndBlock()
 	s.Require().Equal(0, len(endBlock.Events))
