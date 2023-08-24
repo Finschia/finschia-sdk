@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-rdk/server"
+	"github.com/Finschia/finschia-rdk/x/genutil"
+	genutiltypes "github.com/Finschia/finschia-rdk/x/genutil/types"
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/keyring"
@@ -16,8 +18,6 @@ import (
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	authvesting "github.com/Finschia/finschia-sdk/x/auth/vesting/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	"github.com/Finschia/finschia-sdk/x/genutil"
-	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 )
 
 const (

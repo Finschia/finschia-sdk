@@ -27,6 +27,7 @@ import (
 	"github.com/Finschia/finschia-rdk/simapp"
 	"github.com/Finschia/finschia-rdk/simapp/params"
 	"github.com/Finschia/finschia-rdk/testutil"
+	"github.com/Finschia/finschia-rdk/x/genutil"
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/tx"
 	"github.com/Finschia/finschia-sdk/codec"
@@ -41,7 +42,6 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	"github.com/Finschia/finschia-sdk/x/genutil"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 
 	rollnode "github.com/Finschia/ramus/node"

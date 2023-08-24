@@ -20,6 +20,8 @@ import (
 
 	"github.com/Finschia/finschia-rdk/server"
 	"github.com/Finschia/finschia-rdk/testutil"
+	"github.com/Finschia/finschia-rdk/x/genutil"
+	genutiltypes "github.com/Finschia/finschia-rdk/x/genutil/types"
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
@@ -31,8 +33,6 @@ import (
 	"github.com/Finschia/finschia-sdk/types/module"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	"github.com/Finschia/finschia-sdk/x/genutil"
-	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 

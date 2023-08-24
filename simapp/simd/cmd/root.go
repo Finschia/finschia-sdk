@@ -28,6 +28,7 @@ import (
 	serverconfig "github.com/Finschia/finschia-sdk/server/config"
 	servertypes "github.com/Finschia/finschia-sdk/server/types"
 
+	genutilcli "github.com/Finschia/finschia-rdk/x/genutil/client/cli"
 	"github.com/Finschia/finschia-sdk/client/rpc"
 	"github.com/Finschia/finschia-sdk/snapshots"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -35,7 +36,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/auth/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/crisis"
-	genutilcli "github.com/Finschia/finschia-sdk/x/genutil/client/cli"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the

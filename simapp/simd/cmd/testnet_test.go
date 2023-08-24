@@ -12,11 +12,11 @@ import (
 
 	"github.com/Finschia/finschia-rdk/server"
 	"github.com/Finschia/finschia-rdk/simapp"
+	genutiltest "github.com/Finschia/finschia-rdk/x/genutil/client/testutil"
+	genutiltypes "github.com/Finschia/finschia-rdk/x/genutil/types"
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
-	genutiltest "github.com/Finschia/finschia-sdk/x/genutil/client/testutil"
-	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 )
 
 func Test_TestnetCmd(t *testing.T) {
