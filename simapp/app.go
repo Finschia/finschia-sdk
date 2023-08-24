@@ -70,10 +70,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/feegrant"
 	feegrantkeeper "github.com/Finschia/finschia-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/Finschia/finschia-sdk/x/feegrant/module"
-	"github.com/Finschia/finschia-sdk/x/foundation"
 	foundationclient "github.com/Finschia/finschia-sdk/x/foundation/client"
-	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
-	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
 	"github.com/Finschia/finschia-sdk/x/gov"
 	govkeeper "github.com/Finschia/finschia-sdk/x/gov/keeper"
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
@@ -129,7 +126,7 @@ var (
 		stakingplusmodule.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
-		foundationmodule.AppModuleBasic{},
+		//foundationmodule.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			paramsclient.ProposalHandler,
 			distrclient.ProposalHandler,
@@ -153,10 +150,10 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		foundation.ModuleName:          nil,
-		foundation.TreasuryName:        nil,
+		authtypes.FeeCollectorName: nil,
+		distrtypes.ModuleName:      nil,
+		//foundation.ModuleName:          nil,
+		//foundation.TreasuryName:        nil,
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
@@ -198,7 +195,7 @@ type SimApp struct {
 	SlashingKeeper   slashingkeeper.Keeper
 	MintKeeper       mintkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
-	FoundationKeeper foundationkeeper.Keeper
+	//FoundationKeeper foundationkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
@@ -260,7 +257,7 @@ func NewSimApp(
 		evidencetypes.StoreKey,
 		capabilitytypes.StoreKey,
 		feegrant.StoreKey,
-		foundation.StoreKey,
+		//foundation.StoreKey,
 		class.StoreKey,
 		token.StoreKey,
 		collection.StoreKey,
@@ -328,8 +325,8 @@ func NewSimApp(
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
 
-	foundationConfig := foundation.DefaultConfig()
-	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig, foundation.DefaultAuthority().String(), app.GetSubspace(foundation.ModuleName))
+	//foundationConfig := foundation.DefaultConfig()
+	//app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig, foundation.DefaultAuthority().String(), app.GetSubspace(foundation.ModuleName))
 
 	app.ClassKeeper = classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.ClassKeeper)
@@ -348,8 +345,8 @@ func NewSimApp(
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
+	//AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -392,12 +389,12 @@ func NewSimApp(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		foundationmodule.NewAppModule(appCodec, app.FoundationKeeper),
+		//foundationmodule.NewAppModule(appCodec, app.FoundationKeeper),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		stakingplusmodule.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.FoundationKeeper),
+		//stakingplusmodule.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.FoundationKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
@@ -417,7 +414,7 @@ func NewSimApp(
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
-		foundation.ModuleName,
+		//foundation.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -453,7 +450,7 @@ func NewSimApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		foundation.ModuleName,
+		//foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
 		rolluptypes.ModuleName,
@@ -474,7 +471,7 @@ func NewSimApp(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
-		foundation.ModuleName,
+		//foundation.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
