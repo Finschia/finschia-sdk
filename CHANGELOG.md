@@ -53,7 +53,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) fix a bug(unable to connect nano S plus ledger on ubuntu)
 * (x/foundation) [\#1053](https://github.com/Finschia/finschia-sdk/pull/1053) Make x/foundation MsgExec propagate events
 * (baseapp) [\#1091](https://github.com/cosmos/cosmos-sdk/pull/1091) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s) (backport #1075)
-* (baseapp) [\#1079](https://github.com/cosmos/cosmos-sdk/pull/1079) Do not add `module` attribute in case of ibc messages
+* (baseapp) [\#1092](https://github.com/cosmos/cosmos-sdk/pull/1092) Do not add `module` attribute in case of ibc messages (backport #1079)
 
 ### Removed
 
