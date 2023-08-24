@@ -100,7 +100,7 @@ func startInProcess(cfg Config, val *Validator) error {
 	// We'll need a RPC client if the validator exposes a gRPC or REST endpoint.
 	if val.APIAddress != "" || val.AppConfig.GRPC.Enable {
 		val.ClientCtx = val.ClientCtx.
-			WithClient(val.RPCClient)
+			WithClient(compat.NewOCRpcClient(val.RPCClient))
 
 		app.RegisterTxService(val.ClientCtx)
 		app.RegisterTendermintService(val.ClientCtx)

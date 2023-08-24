@@ -10,24 +10,23 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/compat"
-
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 	abci_server "github.com/tendermint/tendermint/abci/server"
 
-	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-
+	"github.com/Finschia/finschia-rdk/compat"
 	"github.com/Finschia/finschia-rdk/server"
 	"github.com/Finschia/finschia-rdk/x/genutil"
 	genutilcli "github.com/Finschia/finschia-rdk/x/genutil/client/cli"
 	genutiltest "github.com/Finschia/finschia-rdk/x/genutil/client/testutil"
+
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/server/mock"
 	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
