@@ -228,7 +228,7 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // internal CheckTx state if the AnteHandler passes. Otherwise, the ResponseCheckTx
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
-func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
+func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
