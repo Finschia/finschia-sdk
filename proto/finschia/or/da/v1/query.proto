@@ -3,6 +3,7 @@ package finschia.or.da.v1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "finschia/or/da/v1/params.proto";
 import "finschia/or/da/v1/da.proto";
@@ -49,6 +50,22 @@ service Query {
   // MappedBatch queries the CC batch reference containing the corresponding L2 block height
   rpc MappedBatch(QueryMappedBatchRequest) returns (QueryMappedBatchResponse) {
     option (google.api.http).get = "/finschia/or/da/v1/cc/mappedbatch/{rollup_name}/{l2_height}";
+  }
+
+  rpc SCCState(QuerySCCStateRequest) returns (QuerySCCStateResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/scc/state/{rollup_name}";
+  }
+
+  rpc SCCRef(QuerySCCRefRequest) returns (QuerySCCRefResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/scc/ref/{rollup_name}/{batch_height}";
+  }
+
+  rpc SCCRefs(QuerySCCRefsRequest) returns (QuerySCCRefsResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/scc/refs/{rollup_name}";
+  }
+
+  rpc LastSequencerTimestamp(QueryLastSequencerTimestampRequest) returns (QueryLastSequencerTimestampResponse) {
+    option (google.api.http).get = "/finschia/or/da/v1/scc/lst/{rollup_name}";
   }
 }
 
@@ -122,4 +139,39 @@ message QueryMappedBatchRequest {
 
 message QueryMappedBatchResponse {
     CCRef ref = 1;
+}
+
+message QuerySCCStateRequest {
+  string rollup_name = 1;
+}
+
+message QuerySCCStateResponse {
+  SCCState state = 1;
+}
+
+message QuerySCCRefRequest {
+  string rollup_name = 1;
+  uint64 batch_height = 2;
+}
+
+message QuerySCCRefResponse {
+  SCCRes ref = 1;
+}
+
+message QuerySCCRefsRequest {
+  string rollup_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySCCRefsResponse {
+  repeated SCCRes refs = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryLastSequencerTimestampRequest {
+  string rollup_name = 1;
+}
+
+message QueryLastSequencerTimestampResponse {
+  google.protobuf.Timestamp last_sequencer_submit = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
