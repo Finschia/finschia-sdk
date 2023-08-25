@@ -68,4 +68,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Document Updates
 * (readme) [\#997](https://github.com/finschia/finschia-sdk/pull/997) fix swagger url
-* (docs) [\#1081](https://github.com/Finschia/finschia-sdk/pull/1081) Document default events
+* (docs) [\#1094](https://github.com/Finschia/finschia-sdk/pull/1094) Document default events (backport #1081)
