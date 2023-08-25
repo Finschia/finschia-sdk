@@ -13,4 +13,6 @@ var (
 	ErrQueueTxStateNotFound     = sdkerrors.Register(ModuleName, 1105, "queue tx state not found")
 	ErrQueueTxNotFound          = sdkerrors.Register(ModuleName, 1106, "queue tx not found")
 	ErrL2HeightBatchMapNotFound = sdkerrors.Register(ModuleName, 1107, "this l2 height does not match any processed batches")
+	ErrSCCStateNotFound         = sdkerrors.Register(ModuleName, 1103, "scc state not found")
+	ErrSCCRefNotFound           = sdkerrors.Register(ModuleName, 1104, "scc reference not found")
 )
