@@ -197,7 +197,7 @@ func (t TMClientWrapper) TxSearch(
 	orderBy string,
 ) (*ocrpctypes.ResultTxSearch, error) {
 	tmResultTxSearch, err := t.client.TxSearch(ctx, query, prove, page, perPage, orderBy)
-	var ocResultTxs []*ocrpctypes.ResultTx
+	ocResultTxs := make([]*ocrpctypes.ResultTx, len(tmResultTxSearch.Txs))
 	for _, v := range tmResultTxSearch.Txs {
 		ocResultTx := &ocrpctypes.ResultTx{
 			Hash:     ocbytes.HexBytes(v.Hash),
@@ -222,7 +222,7 @@ func (t TMClientWrapper) BlockSearch(
 	orderBy string,
 ) (*ocrpctypes.ResultBlockSearch, error) {
 	tmResultBlockSearch, err := t.client.BlockSearch(ctx, query, page, perPage, orderBy)
-	var ocResultBlocks []*ocrpctypes.ResultBlock
+	ocResultBlocks := make([]*ocrpctypes.ResultBlock, len(tmResultBlockSearch.Blocks))
 	for _, v := range tmResultBlockSearch.Blocks {
 		ocResultBlock := &ocrpctypes.ResultBlock{
 			BlockID: OCBlockIDFrom(v.BlockID),
@@ -303,7 +303,7 @@ func (t TMClientWrapper) NetInfo(ctx context.Context) (*ocrpctypes.ResultNetInfo
 
 func (t TMClientWrapper) DumpConsensusState(ctx context.Context) (*ocrpctypes.ResultDumpConsensusState, error) {
 	tmResultDumpConsensusState, err := t.client.DumpConsensusState(ctx)
-	var ocPeers []ocrpctypes.PeerStateInfo
+	ocPeers := make([]ocrpctypes.PeerStateInfo, len(tmResultDumpConsensusState.Peers))
 	for _, v := range tmResultDumpConsensusState.Peers {
 		ocPeer := ocrpctypes.PeerStateInfo{
 			NodeAddress: v.NodeAddress,

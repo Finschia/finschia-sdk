@@ -145,7 +145,7 @@ func OCBlockFrom(block *tmtypes.Block) *ostypes.Block {
 }
 
 func OCBlockMetasFrom(blockMetas []*tmtypes.BlockMeta) []*ostypes.BlockMeta {
-	var osBlockMetas []*ostypes.BlockMeta
+	osBlockMetas := make([]*ostypes.BlockMeta, len(blockMetas))
 	for _, v := range blockMetas {
 		osBlockMeta := &ostypes.BlockMeta{
 			BlockID:   OCBlockIDFrom(v.BlockID),
@@ -187,7 +187,7 @@ func OCTxsFrom(txs tmtypes.Txs) ostypes.Txs {
 }
 
 func OCCommitFrom(commit *tmtypes.Commit) *ostypes.Commit {
-	var osSignatures []ostypes.CommitSig
+	osSignatures := make([]ostypes.CommitSig, len(commit.Signatures))
 	for _, v := range commit.Signatures {
 		osCommitSig := ostypes.CommitSig{
 			BlockIDFlag:      ostypes.BlockIDFlag(v.BlockIDFlag),
@@ -207,7 +207,7 @@ func OCCommitFrom(commit *tmtypes.Commit) *ostypes.Commit {
 }
 
 func OCValidatorsFrom(validators []*tmtypes.Validator) []*ostypes.Validator {
-	var osValidators []*ostypes.Validator
+	osValidators := make([]*ostypes.Validator, len(validators))
 	for _, v := range validators {
 		var pubKey oscrypto.PubKey
 		copy(pubKey, v.PubKey.Bytes())
@@ -256,7 +256,7 @@ func OCTxProofFrom(proof tmtypes.TxProof) ostypes.TxProof {
 }
 
 func OCConnectionStatusFrom(connectionStatus tmp2p.ConnectionStatus) osp2p.ConnectionStatus {
-	var osChannels []osp2pconn.ChannelStatus
+	osChannels := make([]osp2pconn.ChannelStatus, len(connectionStatus.Channels))
 	for _, v := range connectionStatus.Channels {
 		osChannel := osp2pconn.ChannelStatus{
 			ID:                v.ID,
@@ -304,7 +304,7 @@ func OCConnectionStatusFrom(connectionStatus tmp2p.ConnectionStatus) osp2p.Conne
 }
 
 func OCPeersFrom(peers []tmrpctypes.Peer) []ocrpctypes.Peer {
-	var osPeers []ocrpctypes.Peer
+	osPeers := make([]ocrpctypes.Peer, len(peers))
 	for _, v := range peers {
 		osPeer := ocrpctypes.Peer{
 			NodeInfo:         OCNodeInfoFrom(v.NodeInfo),
