@@ -86,7 +86,6 @@ import (
 	slashingkeeper "github.com/Finschia/finschia-sdk/x/slashing/keeper"
 	slashingtypes "github.com/Finschia/finschia-sdk/x/slashing/types"
 	"github.com/Finschia/finschia-sdk/x/staking"
-	stakingmodule "github.com/Finschia/finschia-sdk/x/staking"
 	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 	"github.com/Finschia/finschia-sdk/x/token"
@@ -117,7 +116,7 @@ var (
 		genutil.AppModuleBasic{},
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
-		stakingmodule.AppModuleBasic{},
+		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
 		//foundationmodule.AppModuleBasic{},
@@ -376,7 +375,7 @@ func NewSimApp(
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		stakingmodule.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
