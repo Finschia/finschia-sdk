@@ -1,4 +1,7 @@
-package simapp
+//go:build test_l2
+// +build test_l2
+
+package l2app
 
 import (
 	"encoding/json"
