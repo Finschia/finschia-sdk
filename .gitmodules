@@ -1,3 +1,0 @@
-[submodule "tools/libsodium"]
-	path = tools/libsodium
-	url = https://github.com/algorand/libsodium.git
