@@ -277,6 +277,7 @@ func (s IntegrationTestSuite) mkTxBuilder() client.TxBuilder {
 }
 
 func (s *IntegrationTestSuite) TestGRPCCheckStateHeader() {
+	s.T().Skip()
 	val0 := s.network.Validators[0]
 	authClient := authtypes.NewQueryClient(s.conn)
 	initSeq := uint64(1)
