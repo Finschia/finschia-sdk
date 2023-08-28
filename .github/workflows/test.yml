@@ -134,10 +134,6 @@ jobs:
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
         if: env.GIT_DIFF
-      - name: install libsodium
-        run: |
-          make libsodium
-        if: env.GIT_DIFF
       - name: test & coverage report creation
         env:
           USE_PRELOAD: 1,4
@@ -145,7 +141,7 @@ jobs:
           CGO_CFLAGS: "-I${{ github.workspace }}/tools/sodium/linux_amd64/include"
           CGO_LDFLAGS: "-L${{ github.workspace }}/tools/sodium/linux_amd64/lib -lsodium"
         run: |
-          cat pkgs.txt.part.${{ matrix.part }} | xargs go test -mod=readonly -timeout 30m -coverprofile=${{ matrix.part }}profile.out -covermode=atomic -tags='norace ledger test_ledger_mock goleveldb gcc libsodium'
+          cat pkgs.txt.part.${{ matrix.part }} | xargs go test -mod=readonly -timeout 30m -coverprofile=${{ matrix.part }}profile.out -covermode=atomic -tags='norace ledger test_ledger_mock goleveldb'
         if: env.GIT_DIFF
       - uses: actions/upload-artifact@v3
         with:
@@ -222,10 +218,6 @@ jobs:
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
         if: env.GIT_DIFF
-      - name: install libsodium
-        run: |
-          make libsodium
-        if: env.GIT_DIFF
       - name: test & coverage report creation
         env:
           USE_PREFETCH: NO
@@ -234,7 +226,7 @@ jobs:
           CGO_CFLAGS: "-I${{ github.workspace }}/tools/sodium/linux_amd64/include"
           CGO_LDFLAGS: "-L${{ github.workspace }}/tools/sodium/linux_amd64/lib -lsodium"
         run: |
-          xargs --arg-file=pkgs.txt.part.${{ matrix.part }} go test -mod=readonly -timeout 30m -race -tags='cgo ledger test_ledger_mock goleveldb gcc libsodium'
+          xargs --arg-file=pkgs.txt.part.${{ matrix.part }} go test -mod=readonly -timeout 30m -race -tags='cgo ledger test_ledger_mock goleveldb'
         if: env.GIT_DIFF
       - uses: actions/upload-artifact@v3
         with:
