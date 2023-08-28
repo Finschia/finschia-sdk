@@ -53,6 +53,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 * (x/foundation) [\#999](https://github.com/Finschia/finschia-sdk/pull/999) migrate x/foundation FoundationTax into x/params
+* (ostracon) [\#1098](https://github.com/Finschia/finschia-sdk/pull/1098) feat!: remove libsodium vrf library.
 
 ### Build, CI
 * (build,ci) [\#1043](https://github.com/Finschia/finschia-sdk/pull/1043) Update golang version to 1.20
