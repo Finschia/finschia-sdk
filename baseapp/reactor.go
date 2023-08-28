@@ -3,8 +3,8 @@ package baseapp
 import (
 	"sync"
 
-	abci "github.com/tendermint/tendermint/abci/types"
 	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
