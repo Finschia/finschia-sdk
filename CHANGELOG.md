@@ -40,19 +40,28 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 * (x/auth) [\#1011](https://github.com/Finschia/finschia-sdk/pull/1011) add the api for querying next account number
 * (server/grpc) [\#1017](https://github.com/Finschia/finschia-sdk/pull/1017) support custom r/w gRPC options (backport cosmos/cosmos-sdk#11889)
+* (x/auth) [\#1085](https://github.com/Finschia/finschia-sdk/pull/1085) rollback GetBlockWithTxs of cosmos service.proto for compatibility with cosmos-sdk APIs
+* (proto) [\#1087](https://github.com/Finschia/finschia-sdk/pull/1087) add tendermint query apis for compatibility with cosmos-sdk
 
 ### Improvements
 * (third_party/proto) [\#1037](https://github.com/Finschia/finschia-sdk/pull/1037) change the proof.proto path to third_party/proto/confio
 * (ostracon) [\#1057](https://github.com/Finschia/finschia-sdk/pull/1057) Bump up Ostracon from to v1.1.1
+* (x/foundation) [\#1072](https://github.com/Finschia/finschia-sdk/pull/1072) Address generation of the empty coins in x/foundation (backport #952)
+* (cli) [\#1086](https://github.com/Finschia/finschia-sdk/pull/1086) Fix for redundant key generation. With running kms, generating priv-key is unnecessary.
+* (ostracon) [\#1089](https://github.com/Finschia/finschia-sdk/pull/1089) Bump up ostracon from v1.1.1 to v1.1.1-449aa3148b12
 
 ### Bug Fixes
-* (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) fix a bug(unable to connect nano S plus ledger on ubuntu)
+* (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) Fix a bug(unable to connect nano S plus ledger on ubuntu)
 * (x/foundation) [\#1053](https://github.com/Finschia/finschia-sdk/pull/1053) Make x/foundation MsgExec propagate events
+* (baseapp) [\#1091](https://github.com/cosmos/cosmos-sdk/pull/1091) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s) (backport #1075)
+* (baseapp) [\#1092](https://github.com/cosmos/cosmos-sdk/pull/1092) Do not add `module` attribute in case of ibc messages (backport #1079)
 
 ### Removed
 
 ### Breaking Changes
 * (x/foundation) [\#999](https://github.com/Finschia/finschia-sdk/pull/999) migrate x/foundation FoundationTax into x/params
+* (refactor) [\#1090](https://github.com/Finschia/finschia-sdk/pull/1090) Automate EventTypeMessage inclusion in every message execution (backport #1063)
+* (x/bank) [#1093](https://github.com/Finschia/finschia-sdk/pull/1093) Remove message events including `sender` attribute whose information is already present in the relevant events (backport #1066)
 * (ostracon) [\#1098](https://github.com/Finschia/finschia-sdk/pull/1098) feat!: remove libsodium vrf library.
 
 ### Build, CI
@@ -60,4 +69,5 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Document Updates
 * (readme) [\#997](https://github.com/finschia/finschia-sdk/pull/997) fix swagger url
-* (docs) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
+* (docs) [\#1094](https://github.com/Finschia/finschia-sdk/pull/1094) Document default events (backport #1081)
+

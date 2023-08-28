@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"runtime/pprof"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/Finschia/ostracon/abci/server"
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	"github.com/Finschia/ostracon/config"
 	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/Finschia/ostracon/node"
 	"github.com/Finschia/ostracon/p2p"
@@ -304,7 +306,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	} else {
 		ctx.Logger.Info("starting node with ABCI Ostracon in-process")
 
-		pv := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
+		pv := genPvFileOnlyWhenKmsAddressEmpty(cfg)
 
 		ocNode, err = node.NewNode(
 			cfg,
@@ -469,6 +471,13 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 	// wait for signal capture and gracefully return
 	return WaitForQuitSignals()
+}
+
+func genPvFileOnlyWhenKmsAddressEmpty(cfg *config.Config) *pvm.FilePV {
+	if len(strings.TrimSpace(cfg.PrivValidatorListenAddr)) == 0 {
+		return pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
+	}
+	return nil
 }
 
 func startTelemetry(cfg serverconfig.Config) (*telemetry.Metrics, error) {

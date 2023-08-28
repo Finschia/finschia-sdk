@@ -42,7 +42,7 @@ func (msg *MsgCounter2) ValidateBasic() error {
 var _ sdk.Msg = &MsgKeyValue{}
 
 func (msg *MsgKeyValue) GetSigners() []sdk.AccAddress {
-	if msg.Signer == "" {
+	if len(msg.Signer) == 0 {
 		return []sdk.AccAddress{}
 	}
 
