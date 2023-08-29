@@ -9,13 +9,13 @@ import (
 	"github.com/Finschia/finschia-rdk/compat"
 	"github.com/tendermint/tendermint/privval"
 
-	"github.com/Finschia/finschia-rdk/server/api"
 	servergrpc "github.com/Finschia/finschia-rdk/server/grpc"
-	srvtypes "github.com/Finschia/finschia-rdk/server/types"
-	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
-	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
 	"github.com/Finschia/finschia-rdk/x/genutil"
 	genutiltypes "github.com/Finschia/finschia-rdk/x/genutil/types"
+	"github.com/Finschia/finschia-sdk/server/api"
+	srvtypes "github.com/Finschia/finschia-sdk/server/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/Finschia/ostracon/node"
 	"github.com/Finschia/ostracon/types"
@@ -100,7 +100,7 @@ func startInProcess(cfg Config, val *Validator) error {
 	// We'll need a RPC client if the validator exposes a gRPC or REST endpoint.
 	if val.APIAddress != "" || val.AppConfig.GRPC.Enable {
 		val.ClientCtx = val.ClientCtx.
-			WithClient(val.RPCClient)
+			WithClient(compat.NewOCRpcClient(val.RPCClient))
 
 		app.RegisterTxService(val.ClientCtx)
 		app.RegisterTendermintService(val.ClientCtx)

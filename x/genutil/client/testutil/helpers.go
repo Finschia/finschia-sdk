@@ -9,12 +9,12 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/viper"
 
-	"github.com/Finschia/finschia-rdk/client"
-	"github.com/Finschia/finschia-rdk/codec"
 	"github.com/Finschia/finschia-rdk/server"
-	"github.com/Finschia/finschia-rdk/testutil"
-	"github.com/Finschia/finschia-rdk/types/module"
 	genutilcli "github.com/Finschia/finschia-rdk/x/genutil/client/cli"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/testutil"
+	"github.com/Finschia/finschia-sdk/types/module"
 )
 
 func ExecInitCmd(testMbm module.BasicManager, home string, cdc codec.Codec) error {

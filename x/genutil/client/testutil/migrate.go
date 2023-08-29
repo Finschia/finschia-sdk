@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-rdk/testutil"
-	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
 	"github.com/Finschia/finschia-rdk/x/genutil/client/cli"
+	"github.com/Finschia/finschia-sdk/testutil"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 )
 
 func TestGetMigrationCallback(t *testing.T) {

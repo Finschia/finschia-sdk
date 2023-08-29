@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/Finschia/finschia-rdk/store/types"
-	"github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-sdk/store/types"
+	"github.com/Finschia/finschia-sdk/types/errors"
 )
 
 const (

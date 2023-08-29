@@ -11,7 +11,7 @@ import (
 
 	"github.com/Finschia/finschia-rdk/store/cache"
 	iavlstore "github.com/Finschia/finschia-rdk/store/iavl"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func TestGetOrSetStoreCache(t *testing.T) {

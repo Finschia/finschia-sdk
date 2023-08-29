@@ -18,98 +18,88 @@ import (
 	ostos "github.com/Finschia/ostracon/libs/os"
 
 	"github.com/Finschia/finschia-rdk/baseapp"
-	"github.com/Finschia/finschia-rdk/client"
-	nodeservice "github.com/Finschia/finschia-rdk/client/grpc/node"
-	"github.com/Finschia/finschia-rdk/client/grpc/tmservice"
-	"github.com/Finschia/finschia-rdk/codec"
-	"github.com/Finschia/finschia-rdk/codec/types"
-	"github.com/Finschia/finschia-rdk/server/api"
-	"github.com/Finschia/finschia-rdk/server/config"
-	servertypes "github.com/Finschia/finschia-rdk/server/types"
 	simappparams "github.com/Finschia/finschia-rdk/simapp/params"
 	"github.com/Finschia/finschia-rdk/store/streaming"
-	"github.com/Finschia/finschia-rdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-rdk/types"
-	"github.com/Finschia/finschia-rdk/types/module"
 	"github.com/Finschia/finschia-rdk/version"
-	"github.com/Finschia/finschia-rdk/x/auth"
-	"github.com/Finschia/finschia-rdk/x/auth/ante"
-	authkeeper "github.com/Finschia/finschia-rdk/x/auth/keeper"
-	authsims "github.com/Finschia/finschia-rdk/x/auth/simulation"
-	authtx "github.com/Finschia/finschia-rdk/x/auth/tx"
-	authtx2 "github.com/Finschia/finschia-rdk/x/auth/tx2"
-	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
-	"github.com/Finschia/finschia-rdk/x/auth/vesting"
-	vestingtypes "github.com/Finschia/finschia-rdk/x/auth/vesting/types"
-	"github.com/Finschia/finschia-rdk/x/authz"
-	authzkeeper "github.com/Finschia/finschia-rdk/x/authz/keeper"
-	authzmodule "github.com/Finschia/finschia-rdk/x/authz/module"
-	"github.com/Finschia/finschia-rdk/x/bank"
-	bankkeeper "github.com/Finschia/finschia-rdk/x/bank/keeper"
-	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
-	"github.com/Finschia/finschia-rdk/x/bankplus"
-	bankpluskeeper "github.com/Finschia/finschia-rdk/x/bankplus/keeper"
-	"github.com/Finschia/finschia-rdk/x/capability"
-	capabilitykeeper "github.com/Finschia/finschia-rdk/x/capability/keeper"
-	capabilitytypes "github.com/Finschia/finschia-rdk/x/capability/types"
-	"github.com/Finschia/finschia-rdk/x/collection"
-	collectionkeeper "github.com/Finschia/finschia-rdk/x/collection/keeper"
-	collectionmodule "github.com/Finschia/finschia-rdk/x/collection/module"
-	"github.com/Finschia/finschia-rdk/x/crisis"
-	crisiskeeper "github.com/Finschia/finschia-rdk/x/crisis/keeper"
-	crisistypes "github.com/Finschia/finschia-rdk/x/crisis/types"
-	distr "github.com/Finschia/finschia-rdk/x/distribution"
-	distrclient "github.com/Finschia/finschia-rdk/x/distribution/client"
-	distrkeeper "github.com/Finschia/finschia-rdk/x/distribution/keeper"
-	distrtypes "github.com/Finschia/finschia-rdk/x/distribution/types"
-	"github.com/Finschia/finschia-rdk/x/evidence"
-	evidencekeeper "github.com/Finschia/finschia-rdk/x/evidence/keeper"
-	evidencetypes "github.com/Finschia/finschia-rdk/x/evidence/types"
-	"github.com/Finschia/finschia-rdk/x/feegrant"
-	feegrantkeeper "github.com/Finschia/finschia-rdk/x/feegrant/keeper"
-	feegrantmodule "github.com/Finschia/finschia-rdk/x/feegrant/module"
-	"github.com/Finschia/finschia-rdk/x/foundation"
-	foundationclient "github.com/Finschia/finschia-rdk/x/foundation/client"
-	foundationkeeper "github.com/Finschia/finschia-rdk/x/foundation/keeper"
-	foundationmodule "github.com/Finschia/finschia-rdk/x/foundation/module"
 	"github.com/Finschia/finschia-rdk/x/genutil"
 	genutiltypes "github.com/Finschia/finschia-rdk/x/genutil/types"
-	"github.com/Finschia/finschia-rdk/x/gov"
-	govkeeper "github.com/Finschia/finschia-rdk/x/gov/keeper"
-	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
-	"github.com/Finschia/finschia-rdk/x/mint"
-	mintkeeper "github.com/Finschia/finschia-rdk/x/mint/keeper"
-	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
-	ordakeeper "github.com/Finschia/finschia-rdk/x/or/da/keeper"
-	ordatypes "github.com/Finschia/finschia-rdk/x/or/da/types"
-	"github.com/Finschia/finschia-rdk/x/params"
-	paramsclient "github.com/Finschia/finschia-rdk/x/params/client"
-	paramskeeper "github.com/Finschia/finschia-rdk/x/params/keeper"
-	paramstypes "github.com/Finschia/finschia-rdk/x/params/types"
-	paramproposal "github.com/Finschia/finschia-rdk/x/params/types/proposal"
-	"github.com/Finschia/finschia-rdk/x/slashing"
-	slashingkeeper "github.com/Finschia/finschia-rdk/x/slashing/keeper"
-	slashingtypes "github.com/Finschia/finschia-rdk/x/slashing/types"
-	"github.com/Finschia/finschia-rdk/x/staking"
-	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
-	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
-	stakingplusmodule "github.com/Finschia/finschia-rdk/x/stakingplus/module"
-	"github.com/Finschia/finschia-rdk/x/token"
-	"github.com/Finschia/finschia-rdk/x/token/class"
-	classkeeper "github.com/Finschia/finschia-rdk/x/token/class/keeper"
-	tokenkeeper "github.com/Finschia/finschia-rdk/x/token/keeper"
-	tokenmodule "github.com/Finschia/finschia-rdk/x/token/module"
-	"github.com/Finschia/finschia-rdk/x/upgrade"
-	upgradeclient "github.com/Finschia/finschia-rdk/x/upgrade/client"
-	upgradekeeper "github.com/Finschia/finschia-rdk/x/upgrade/keeper"
-	upgradetypes "github.com/Finschia/finschia-rdk/x/upgrade/types"
-
-	"github.com/Finschia/finschia-rdk/x/or/rollup"
-	rollupkeeper "github.com/Finschia/finschia-rdk/x/or/rollup/keeper"
-	rolluptypes "github.com/Finschia/finschia-rdk/x/or/rollup/types"
+	"github.com/Finschia/finschia-sdk/client"
+	nodeservice "github.com/Finschia/finschia-sdk/client/grpc/node"
+	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
+	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/server/api"
+	"github.com/Finschia/finschia-sdk/server/config"
+	servertypes "github.com/Finschia/finschia-sdk/server/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/x/auth"
+	"github.com/Finschia/finschia-sdk/x/auth/ante"
+	authkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
+	authsims "github.com/Finschia/finschia-sdk/x/auth/simulation"
+	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
+	authtx2 "github.com/Finschia/finschia-sdk/x/auth/tx2"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/auth/vesting"
+	vestingtypes "github.com/Finschia/finschia-sdk/x/auth/vesting/types"
+	"github.com/Finschia/finschia-sdk/x/authz"
+	authzkeeper "github.com/Finschia/finschia-sdk/x/authz/keeper"
+	authzmodule "github.com/Finschia/finschia-sdk/x/authz/module"
+	"github.com/Finschia/finschia-sdk/x/bank"
+	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/bankplus"
+	bankpluskeeper "github.com/Finschia/finschia-sdk/x/bankplus/keeper"
+	"github.com/Finschia/finschia-sdk/x/capability"
+	capabilitykeeper "github.com/Finschia/finschia-sdk/x/capability/keeper"
+	capabilitytypes "github.com/Finschia/finschia-sdk/x/capability/types"
+	"github.com/Finschia/finschia-sdk/x/collection"
+	collectionkeeper "github.com/Finschia/finschia-sdk/x/collection/keeper"
+	collectionmodule "github.com/Finschia/finschia-sdk/x/collection/module"
+	"github.com/Finschia/finschia-sdk/x/crisis"
+	crisiskeeper "github.com/Finschia/finschia-sdk/x/crisis/keeper"
+	crisistypes "github.com/Finschia/finschia-sdk/x/crisis/types"
+	distr "github.com/Finschia/finschia-sdk/x/distribution"
+	distrclient "github.com/Finschia/finschia-sdk/x/distribution/client"
+	distrkeeper "github.com/Finschia/finschia-sdk/x/distribution/keeper"
+	distrtypes "github.com/Finschia/finschia-sdk/x/distribution/types"
+	"github.com/Finschia/finschia-sdk/x/evidence"
+	evidencekeeper "github.com/Finschia/finschia-sdk/x/evidence/keeper"
+	evidencetypes "github.com/Finschia/finschia-sdk/x/evidence/types"
+	"github.com/Finschia/finschia-sdk/x/feegrant"
+	feegrantkeeper "github.com/Finschia/finschia-sdk/x/feegrant/keeper"
+	feegrantmodule "github.com/Finschia/finschia-sdk/x/feegrant/module"
+	foundationclient "github.com/Finschia/finschia-sdk/x/foundation/client"
+	"github.com/Finschia/finschia-sdk/x/gov"
+	govkeeper "github.com/Finschia/finschia-sdk/x/gov/keeper"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	"github.com/Finschia/finschia-sdk/x/mint"
+	mintkeeper "github.com/Finschia/finschia-sdk/x/mint/keeper"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/x/params"
+	paramsclient "github.com/Finschia/finschia-sdk/x/params/client"
+	paramskeeper "github.com/Finschia/finschia-sdk/x/params/keeper"
+	paramstypes "github.com/Finschia/finschia-sdk/x/params/types"
+	paramproposal "github.com/Finschia/finschia-sdk/x/params/types/proposal"
+	"github.com/Finschia/finschia-sdk/x/slashing"
+	slashingkeeper "github.com/Finschia/finschia-sdk/x/slashing/keeper"
+	slashingtypes "github.com/Finschia/finschia-sdk/x/slashing/types"
+	"github.com/Finschia/finschia-sdk/x/staking"
+	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/x/token"
+	"github.com/Finschia/finschia-sdk/x/token/class"
+	classkeeper "github.com/Finschia/finschia-sdk/x/token/class/keeper"
+	tokenkeeper "github.com/Finschia/finschia-sdk/x/token/keeper"
+	tokenmodule "github.com/Finschia/finschia-sdk/x/token/module"
+	"github.com/Finschia/finschia-sdk/x/upgrade"
+	upgradeclient "github.com/Finschia/finschia-sdk/x/upgrade/client"
+	upgradekeeper "github.com/Finschia/finschia-sdk/x/upgrade/keeper"
+	upgradetypes "github.com/Finschia/finschia-sdk/x/upgrade/types"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/Finschia/finschia-rdk/client/docs/statik"
+	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 )
 
 const appName = "SimApp"
@@ -126,10 +116,10 @@ var (
 		genutil.AppModuleBasic{},
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
-		stakingplusmodule.AppModuleBasic{},
+		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
-		foundationmodule.AppModuleBasic{},
+		//foundationmodule.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			paramsclient.ProposalHandler,
 			distrclient.ProposalHandler,
@@ -147,21 +137,18 @@ var (
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
-		rollup.AppModuleBasic{},
-		//ordamodule.AppModuleBasic{},
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		foundation.ModuleName:          nil,
-		foundation.TreasuryName:        nil,
+		authtypes.FeeCollectorName: nil,
+		distrtypes.ModuleName:      nil,
+		//foundation.ModuleName:          nil,
+		//foundation.TreasuryName:        nil,
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
-		rolluptypes.ModuleName:         {authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -198,7 +185,7 @@ type SimApp struct {
 	SlashingKeeper   slashingkeeper.Keeper
 	MintKeeper       mintkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
-	FoundationKeeper foundationkeeper.Keeper
+	//FoundationKeeper foundationkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
@@ -209,9 +196,6 @@ type SimApp struct {
 	ClassKeeper      classkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
-	Ordakeeper       ordakeeper.Keeper
-
-	RollupKeeper rollupkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -260,13 +244,11 @@ func NewSimApp(
 		evidencetypes.StoreKey,
 		capabilitytypes.StoreKey,
 		feegrant.StoreKey,
-		foundation.StoreKey,
+		//foundation.StoreKey,
 		class.StoreKey,
 		token.StoreKey,
 		collection.StoreKey,
 		authzkeeper.StoreKey,
-		rolluptypes.StoreKey,
-		ordatypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
@@ -328,8 +310,8 @@ func NewSimApp(
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
 
-	foundationConfig := foundation.DefaultConfig()
-	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig, foundation.DefaultAuthority().String())
+	//foundationConfig := foundation.DefaultConfig()
+	//app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig, foundation.DefaultAuthority().String(), app.GetSubspace(foundation.ModuleName))
 
 	app.ClassKeeper = classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.ClassKeeper)
@@ -348,8 +330,8 @@ func NewSimApp(
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
+	//AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -368,10 +350,6 @@ func NewSimApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
-
-	/****  Rollup ****/
-	app.RollupKeeper = rollupkeeper.NewKeeper(appCodec, app.BankKeeper, app.AccountKeeper, keys[rolluptypes.StoreKey], keys[rolluptypes.MemStoreKey], app.GetSubspace(rolluptypes.ModuleName))
-	app.Ordakeeper = ordakeeper.NewKeeper(appCodec, keys[ordatypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String(), app.AccountKeeper, nil)
 
 	/****  Module Options ****/
 
@@ -392,20 +370,18 @@ func NewSimApp(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		foundationmodule.NewAppModule(appCodec, app.FoundationKeeper),
+		//foundationmodule.NewAppModule(appCodec, app.FoundationKeeper),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		stakingplusmodule.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.FoundationKeeper),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		rollup.NewAppModule(appCodec, app.RollupKeeper, app.AccountKeeper, app.BankKeeper),
-		//ordamodule.NewAppModule(appCodec, app.Ordakeeper, app.AccountKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -417,7 +393,7 @@ func NewSimApp(
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
-		foundation.ModuleName,
+		//foundation.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -433,8 +409,6 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
-		rolluptypes.ModuleName,
-		ordatypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -453,11 +427,9 @@ func NewSimApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		foundation.ModuleName,
+		//foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
-		rolluptypes.ModuleName,
-		ordatypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -474,7 +446,7 @@ func NewSimApp(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
-		foundation.ModuleName,
+		//foundation.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -485,8 +457,6 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
-		rolluptypes.ModuleName,
-		ordatypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
@@ -737,8 +707,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
-
-	paramsKeeper.Subspace(rolluptypes.ModuleName)
 
 	return paramsKeeper
 }

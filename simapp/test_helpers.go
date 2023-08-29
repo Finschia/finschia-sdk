@@ -23,16 +23,16 @@ import (
 	octypes "github.com/Finschia/ostracon/types"
 
 	bam "github.com/Finschia/finschia-rdk/baseapp"
-	"github.com/Finschia/finschia-rdk/client"
-	"github.com/Finschia/finschia-rdk/crypto/keys/ed25519"
-	cryptotypes "github.com/Finschia/finschia-rdk/crypto/types"
 	"github.com/Finschia/finschia-rdk/simapp/helpers"
-	"github.com/Finschia/finschia-rdk/snapshots"
-	sdk "github.com/Finschia/finschia-rdk/types"
-	"github.com/Finschia/finschia-rdk/types/errors"
-	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
-	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
-	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/errors"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in

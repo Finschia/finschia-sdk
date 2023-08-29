@@ -13,7 +13,7 @@ import (
 	"github.com/Finschia/finschia-rdk/store/dbadapter"
 	"github.com/Finschia/finschia-rdk/store/prefix"
 	"github.com/Finschia/finschia-rdk/store/tracekv"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func bz(s string) []byte { return []byte(s) }

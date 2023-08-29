@@ -4,9 +4,10 @@ import (
 	"sync"
 
 	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/Finschia/finschia-rdk/types"
-	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func (app *BaseApp) startReactors() {
@@ -52,7 +53,7 @@ func (app *BaseApp) checkTxAsync(req *RequestCheckTxAsync, waits []*sync.WaitGro
 		return
 	}
 
-	req.callback(ocabci.ResponseCheckTx{
+	req.callback(abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	})

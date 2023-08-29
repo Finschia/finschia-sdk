@@ -17,7 +17,7 @@ import (
 	"github.com/Finschia/ostracon/types"
 	ostversion "github.com/Finschia/ostracon/version"
 
-	sdk "github.com/Finschia/finschia-rdk/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // ShowNodeIDCmd - ported from Ostracon, dump node ID to stdout

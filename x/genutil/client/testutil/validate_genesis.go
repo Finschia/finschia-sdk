@@ -1,9 +1,9 @@
 package testutil
 
 import (
-	"github.com/Finschia/finschia-rdk/testutil"
-	clitestutil "github.com/Finschia/finschia-rdk/testutil/cli"
 	"github.com/Finschia/finschia-rdk/x/genutil/client/cli"
+	"github.com/Finschia/finschia-sdk/testutil"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 )
 
 // An example exported genesis file from a 0.37 chain. Note that evidence

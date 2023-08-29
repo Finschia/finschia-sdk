@@ -16,14 +16,15 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-rdk/codec/types"
-	"github.com/Finschia/finschia-rdk/server/config"
-	"github.com/Finschia/finschia-rdk/snapshots"
 	"github.com/Finschia/finschia-rdk/store"
 	"github.com/Finschia/finschia-rdk/store/rootmulti"
-	sdk "github.com/Finschia/finschia-rdk/types"
-	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
-	"github.com/Finschia/finschia-rdk/x/auth/legacy/legacytx"
+	sdkbaseapp "github.com/Finschia/finschia-sdk/baseapp"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/snapshots"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 )
 
 var _ abci.Application = (*BaseApp)(nil)
@@ -125,10 +126,10 @@ type appStore struct {
 }
 
 type moduleRouter struct {
-	router           sdk.Router        // handle any kind of message
-	queryRouter      sdk.QueryRouter   // router for redirecting query calls
-	grpcQueryRouter  *GRPCQueryRouter  // router for redirecting gRPC query calls
-	msgServiceRouter *MsgServiceRouter // router for redirecting Msg service messages
+	router           sdk.Router                   // handle any kind of message
+	queryRouter      sdk.QueryRouter              // router for redirecting query calls
+	grpcQueryRouter  *GRPCQueryRouter             // router for redirecting gRPC query calls
+	msgServiceRouter *sdkbaseapp.MsgServiceRouter // router for redirecting Msg service messages
 }
 
 type abciData struct {
@@ -179,7 +180,7 @@ func NewBaseApp(
 			router:           NewRouter(),
 			queryRouter:      NewQueryRouter(),
 			grpcQueryRouter:  NewGRPCQueryRouter(),
-			msgServiceRouter: NewMsgServiceRouter(),
+			msgServiceRouter: sdkbaseapp.NewMsgServiceRouter(),
 		},
 		txDecoder:       txDecoder,
 		checkAccountWGs: NewAccountWGs(),
@@ -232,7 +233,7 @@ func (app *BaseApp) Trace() bool {
 }
 
 // MsgServiceRouter returns the MsgServiceRouter of a BaseApp.
-func (app *BaseApp) MsgServiceRouter() *MsgServiceRouter { return app.msgServiceRouter }
+func (app *BaseApp) MsgServiceRouter() *sdkbaseapp.MsgServiceRouter { return app.msgServiceRouter }
 
 // MountStores mounts all IAVL or DB stores to the provided keys in the BaseApp
 // multistore.
@@ -843,22 +844,6 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		Log:    strings.TrimSpace(msgLogs.String()),
 		Events: events.ToABCIEvents(),
 	}, nil
-}
-
-// following is from rollkit/cosmos-sdk
-func (app *BaseApp) GetAppHash(hash abci.RequestGetAppHash) abci.ResponseGetAppHash {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (app *BaseApp) GenerateFraudProof(proof abci.RequestGenerateFraudProof) abci.ResponseGenerateFraudProof {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (app *BaseApp) VerifyFraudProof(proof abci.RequestVerifyFraudProof) abci.ResponseVerifyFraudProof {
-	// TODO implement me
-	panic("implement me")
 }
 
 // Close is called in start cmd to gracefully cleanup resources.

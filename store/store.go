@@ -6,7 +6,7 @@ import (
 
 	"github.com/Finschia/finschia-rdk/store/cache"
 	"github.com/Finschia/finschia-rdk/store/rootmulti"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func NewCommitMultiStore(db dbm.DB) types.CommitMultiStore {

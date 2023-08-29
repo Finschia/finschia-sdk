@@ -4,7 +4,7 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-rdk/store/dbadapter"
-	"github.com/Finschia/finschia-rdk/store/types"
+	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 var (

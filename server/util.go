@@ -22,11 +22,11 @@ import (
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/Finschia/finschia-rdk/client/flags"
-	"github.com/Finschia/finschia-rdk/server/config"
-	"github.com/Finschia/finschia-rdk/server/types"
-	sdk "github.com/Finschia/finschia-rdk/types"
 	"github.com/Finschia/finschia-rdk/version"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server/config"
+	"github.com/Finschia/finschia-sdk/server/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // DONTCOVER

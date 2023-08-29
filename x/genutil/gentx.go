@@ -6,12 +6,12 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-rdk/client"
-	"github.com/Finschia/finschia-rdk/codec"
-	sdk "github.com/Finschia/finschia-rdk/types"
-	bankexported "github.com/Finschia/finschia-rdk/x/bank/exported"
 	"github.com/Finschia/finschia-rdk/x/genutil/types"
-	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	bankexported "github.com/Finschia/finschia-sdk/x/bank/exported"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // SetGenTxsInAppGenesisState - sets the genesis transactions in the app genesis state

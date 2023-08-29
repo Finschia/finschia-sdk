@@ -15,14 +15,14 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-rdk/codec"
-	codecTypes "github.com/Finschia/finschia-rdk/codec/types"
 	"github.com/Finschia/finschia-rdk/store/cachemulti"
 	"github.com/Finschia/finschia-rdk/store/iavl"
 	sdkmaps "github.com/Finschia/finschia-rdk/store/internal/maps"
 	"github.com/Finschia/finschia-rdk/store/listenkv"
-	"github.com/Finschia/finschia-rdk/store/types"
-	sdkerrors "github.com/Finschia/finschia-rdk/types/errors"
+	"github.com/Finschia/finschia-sdk/codec"
+	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/store/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func TestStoreType(t *testing.T) {

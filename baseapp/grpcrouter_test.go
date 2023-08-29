@@ -10,10 +10,10 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-rdk/baseapp"
-	"github.com/Finschia/finschia-rdk/codec/types"
 	"github.com/Finschia/finschia-rdk/simapp"
-	"github.com/Finschia/finschia-rdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-rdk/types"
+	"github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestGRPCGatewayRouter(t *testing.T) {

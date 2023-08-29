@@ -7,8 +7,8 @@ import (
 
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
 
-	"github.com/Finschia/finschia-rdk/client/flags"
-	"github.com/Finschia/finschia-rdk/server/types"
+	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/server/types"
 )
 
 // NewRollbackCmd creates a command to rollback tendermint and multistore state by one height.

@@ -1,4 +1,7 @@
-package simapp
+//go:build test_l2
+// +build test_l2
+
+package l2app
 
 import (
 	"encoding/json"
@@ -18,20 +21,20 @@ import (
 	"github.com/Finschia/finschia-rdk/simapp/helpers"
 	"github.com/Finschia/finschia-rdk/store"
 	"github.com/Finschia/finschia-rdk/store/cache"
-	sdk "github.com/Finschia/finschia-rdk/types"
-	simtypes "github.com/Finschia/finschia-rdk/types/simulation"
-	authtypes "github.com/Finschia/finschia-rdk/x/auth/types"
-	authzkeeper "github.com/Finschia/finschia-rdk/x/authz/keeper"
-	banktypes "github.com/Finschia/finschia-rdk/x/bank/types"
-	capabilitytypes "github.com/Finschia/finschia-rdk/x/capability/types"
-	distrtypes "github.com/Finschia/finschia-rdk/x/distribution/types"
-	evidencetypes "github.com/Finschia/finschia-rdk/x/evidence/types"
-	govtypes "github.com/Finschia/finschia-rdk/x/gov/types"
-	minttypes "github.com/Finschia/finschia-rdk/x/mint/types"
-	paramtypes "github.com/Finschia/finschia-rdk/x/params/types"
-	"github.com/Finschia/finschia-rdk/x/simulation"
-	slashingtypes "github.com/Finschia/finschia-rdk/x/slashing/types"
-	stakingtypes "github.com/Finschia/finschia-rdk/x/staking/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	authzkeeper "github.com/Finschia/finschia-sdk/x/authz/keeper"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
+	capabilitytypes "github.com/Finschia/finschia-sdk/x/capability/types"
+	distrtypes "github.com/Finschia/finschia-sdk/x/distribution/types"
+	evidencetypes "github.com/Finschia/finschia-sdk/x/evidence/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
+	"github.com/Finschia/finschia-sdk/x/simulation"
+	slashingtypes "github.com/Finschia/finschia-sdk/x/slashing/types"
+	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
 // Get flags every time the simulator is run

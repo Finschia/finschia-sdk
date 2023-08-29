@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/Finschia/finschia-rdk/baseapp"
-	"github.com/Finschia/finschia-rdk/client"
+	"github.com/Finschia/finschia-sdk/client"
 
 	"github.com/Finschia/finschia-rdk/simapp/params"
 
-	"github.com/Finschia/finschia-rdk/codec"
-	bankkeeper "github.com/Finschia/finschia-rdk/x/bank/keeper"
-	stakingkeeper "github.com/Finschia/finschia-rdk/x/staking/keeper"
+	"github.com/Finschia/finschia-sdk/codec"
+	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
+	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 )
 
 type TestSupport struct {
