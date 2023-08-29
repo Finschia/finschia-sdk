@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/Finschia/finschia-rdk/simapp"
 	"github.com/Finschia/finschia-rdk/x/genutil/types"
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
