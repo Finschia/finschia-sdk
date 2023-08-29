@@ -55,6 +55,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#1053](https://github.com/Finschia/finschia-sdk/pull/1053) Make x/foundation MsgExec propagate events
 * (baseapp) [\#1091](https://github.com/cosmos/cosmos-sdk/pull/1091) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s) (backport #1075)
 * (baseapp) [\#1092](https://github.com/cosmos/cosmos-sdk/pull/1092) Do not add `module` attribute in case of ibc messages (backport #1079)
+* (x/collection) [\#1102](https://github.com/finschia/finschia-sdk/pull/1102) Reject modifying NFT class with token index filled in MsgModify
 
 ### Removed
 
