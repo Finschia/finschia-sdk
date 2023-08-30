@@ -55,7 +55,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#1053](https://github.com/Finschia/finschia-sdk/pull/1053) Make x/foundation MsgExec propagate events
 * (baseapp) [\#1091](https://github.com/finschia/finschia-sdk/pull/1091) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s) (backport #1075)
 * (baseapp) [\#1092](https://github.com/finschia/finschia-sdk/pull/1092) Do not add `module` attribute in case of ibc messages (backport #1079)
-* (x/collection) [\#1102](https://github.com/finschia/finschia-sdk/pull/1102) Reject modifying NFT class with token index filled in MsgModify
 
 ### Removed
 
@@ -64,6 +63,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (refactor) [\#1090](https://github.com/Finschia/finschia-sdk/pull/1090) Automate EventTypeMessage inclusion in every message execution (backport #1063)
 * (x/bank) [#1093](https://github.com/Finschia/finschia-sdk/pull/1093) Remove message events including `sender` attribute whose information is already present in the relevant events (backport #1066)
 * (ostracon) [\#1099](https://github.com/Finschia/finschia-sdk/pull/1099) feat!: remove libsodium vrf library.
+* (x/collection) [\#1102](https://github.com/finschia/finschia-sdk/pull/1102) Reject modifying NFT class with token index filled in MsgModify
 
 ### Build, CI
 * (build,ci) [\#1043](https://github.com/Finschia/finschia-sdk/pull/1043) Update golang version to 1.20
