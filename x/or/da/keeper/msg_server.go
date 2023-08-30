@@ -69,6 +69,9 @@ func (k msgServer) AppendCCBatch(goCtx context.Context, msg *types.MsgAppendCCBa
 
 func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types.MsgEnqueueResponse, error) {
 	ctx := sdktypes.UnwrapSDKContext(goCtx)
+	if _, err := sdktypes.AccAddressFromBech32(msg.FromAddress); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
+	}
 
 	rollupInfo, found := k.rollupKeeper.GetRollup(ctx, msg.RollupName)
 	if !found {
