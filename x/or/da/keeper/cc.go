@@ -105,9 +105,10 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	ccState.Height++
 
 	for i, frame := range batch.Frames {
-		if len(frame.Elements) == 0 {
-			return types.ErrInvalidCCBatch.Wrapf("frame %d has empty elements", i)
-		}
+		// TODO: do not check frame elements until ramus is ready
+		//if len(frame.Elements) == 0 {
+		//	return types.ErrInvalidCCBatch.Wrapf("frame %d has empty elements", i)
+		//}
 
 		if frame.Header.GetL2Height() != ccState.ProcessedL2Block+1 {
 			return types.ErrInvalidCCBatch.Wrapf("frame %d has invalid l2 height %d, expected %d", i, frame.Header.GetL2Height(), ccState.ProcessedL2Block+1)

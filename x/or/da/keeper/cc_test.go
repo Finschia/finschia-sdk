@@ -135,20 +135,21 @@ func (s *KeeperTestSuite) TestSaveCCBatch() {
 			},
 			isErr: true,
 		},
-		"empty frame": {
-			src: &types.CCBatch{
-				Frames: []*types.CCBatchFrame{
-					{
-						Elements: nil,
-					},
-				},
-			},
-			malleate: func(b *types.CCBatch) {
-				_ = prepareCCPreset(s, rollupName)
-				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
-			},
-			isErr: true,
-		},
+		// TODO: do not check frame elements until ramus is ready
+		//"empty frame": {
+		//	src: &types.CCBatch{
+		//		Frames: []*types.CCBatchFrame{
+		//			{
+		//				Elements: nil,
+		//			},
+		//		},
+		//	},
+		//	malleate: func(b *types.CCBatch) {
+		//		_ = prepareCCPreset(s, rollupName)
+		//		b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+		//	},
+		//	isErr: true,
+		//},
 		"wrong frame header l2 height": {
 			src: &types.CCBatch{
 				Frames: []*types.CCBatchFrame{
