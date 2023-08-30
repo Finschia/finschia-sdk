@@ -962,6 +962,10 @@ func (m MsgModify) ValidateBasic() error {
 		if err := ValidateTokenID(tokenID); err != nil {
 			return ErrInvalidTokenIndex.Wrap(err.Error())
 		}
+		// reject modifying nft class with token index filled (daphne compat.)
+		if ValidateLegacyNFTID(tokenID) == nil && ValidateFTID(tokenID) == nil {
+			return ErrInvalidTokenIndex.Wrap("cannot modify nft class with index filled")
+		}
 	}
 
 	validator := validateTokenClassChange

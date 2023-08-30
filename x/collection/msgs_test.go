@@ -1238,6 +1238,14 @@ func TestMsgModify(t *testing.T) {
 			owner:      addrs[0],
 			changes:    changes,
 		},
+		"invalid nft class modification": {
+			contractID: "deadbeef",
+			tokenType:  "deadbeef",
+			tokenIndex: "00000000",
+			owner:      addrs[0],
+			changes:    changes,
+			err:        collection.ErrInvalidTokenIndex,
+		},
 		"valid nft modification": {
 			contractID: "deadbeef",
 			tokenType:  "deadbeef",
