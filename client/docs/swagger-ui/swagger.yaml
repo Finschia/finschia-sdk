@@ -32018,16 +32018,16 @@ paths:
                     title: 2. SCC-related
                   fraud_proof_window:
                     type: string
-                    format: uint64
+                    format: int64
                     title: >-
                       Number of seconds that the verifier is allowed to submit a
                       fraud proof.
 
-                      Currnet scc batch header timestamp + fraud_proof_window =
-                      challenge period
+                      Currnet scc batch header timestamp +
+                      fraud_proof_window(seconds) = challenge period
                   sequencer_publish_window:
                     type: string
-                    format: uint64
+                    format: int64
                     title: >-
                       Number of seconds that the sequencer is exclusively
                       allowed to post state roots
@@ -54397,16 +54397,16 @@ definitions:
         title: 2. SCC-related
       fraud_proof_window:
         type: string
-        format: uint64
+        format: int64
         title: >-
           Number of seconds that the verifier is allowed to submit a fraud
           proof.
 
-          Currnet scc batch header timestamp + fraud_proof_window = challenge
-          period
+          Currnet scc batch header timestamp + fraud_proof_window(seconds) =
+          challenge period
       sequencer_publish_window:
         type: string
-        format: uint64
+        format: int64
         title: >-
           Number of seconds that the sequencer is exclusively allowed to post
           state roots
@@ -54617,16 +54617,16 @@ definitions:
             title: 2. SCC-related
           fraud_proof_window:
             type: string
-            format: uint64
+            format: int64
             title: >-
               Number of seconds that the verifier is allowed to submit a fraud
               proof.
 
-              Currnet scc batch header timestamp + fraud_proof_window =
+              Currnet scc batch header timestamp + fraud_proof_window(seconds) =
               challenge period
           sequencer_publish_window:
             type: string
-            format: uint64
+            format: int64
             title: >-
               Number of seconds that the sequencer is exclusively allowed to
               post state roots

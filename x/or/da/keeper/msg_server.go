@@ -93,9 +93,19 @@ func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types
 }
 
 func (k msgServer) AppendSCCBatch(goCtx context.Context, msg *types.MsgAppendSCCBatch) (*types.MsgAppendSCCBatchResponse, error) {
-	panic("implement me")
-}
+	ctx := sdktypes.UnwrapSDKContext(goCtx)
+	if _, err := sdktypes.AccAddressFromBech32(msg.FromAddress); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
+	}
 
-func (k msgServer) RemoveSCCBatch(goCtx context.Context, msg *types.MsgRemoveSCCBatch) (*types.MsgRemoveSCCBatchResponse, error) {
-	panic("implement me")
+	_, found := k.rollupKeeper.GetRollup(ctx, msg.RollupName)
+	if !found {
+		return nil, sdkerrors.ErrNotFound.Wrapf("rollup %s not found", msg.RollupName)
+	}
+
+	if err := k.SaveSCCBatch(ctx, msg.FromAddress, msg.RollupName, &msg.Batch); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgAppendSCCBatchResponse{}, nil
 }

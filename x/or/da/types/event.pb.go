@@ -7,15 +7,19 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -229,45 +233,191 @@ func (m *EventSaveQueueTx) GetL2GasLimit() uint64 {
 	return 0
 }
 
+type EventAppendSCCBatch struct {
+	RollupName          string    `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
+	BatchIndex          uint64    `protobuf:"varint,2,opt,name=batch_index,json=batchIndex,proto3" json:"batch_index,omitempty"`
+	TotalFrames         uint64    `protobuf:"varint,3,opt,name=total_frames,json=totalFrames,proto3" json:"total_frames,omitempty"`
+	BatchSize           uint32    `protobuf:"varint,4,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	BatchRoot           []byte    `protobuf:"bytes,5,opt,name=batch_root,json=batchRoot,proto3" json:"batch_root,omitempty"`
+	LastSequencerSubmit time.Time `protobuf:"bytes,6,opt,name=last_sequencer_submit,json=lastSequencerSubmit,proto3,stdtime" json:"last_sequencer_submit"`
+}
+
+func (m *EventAppendSCCBatch) Reset()         { *m = EventAppendSCCBatch{} }
+func (m *EventAppendSCCBatch) String() string { return proto.CompactTextString(m) }
+func (*EventAppendSCCBatch) ProtoMessage()    {}
+func (*EventAppendSCCBatch) Descriptor() ([]byte, []int) {
+	return fileDescriptor_58900962c0403d56, []int{3}
+}
+func (m *EventAppendSCCBatch) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventAppendSCCBatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventAppendSCCBatch.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventAppendSCCBatch) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventAppendSCCBatch.Merge(m, src)
+}
+func (m *EventAppendSCCBatch) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventAppendSCCBatch) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventAppendSCCBatch.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventAppendSCCBatch proto.InternalMessageInfo
+
+func (m *EventAppendSCCBatch) GetRollupName() string {
+	if m != nil {
+		return m.RollupName
+	}
+	return ""
+}
+
+func (m *EventAppendSCCBatch) GetBatchIndex() uint64 {
+	if m != nil {
+		return m.BatchIndex
+	}
+	return 0
+}
+
+func (m *EventAppendSCCBatch) GetTotalFrames() uint64 {
+	if m != nil {
+		return m.TotalFrames
+	}
+	return 0
+}
+
+func (m *EventAppendSCCBatch) GetBatchSize() uint32 {
+	if m != nil {
+		return m.BatchSize
+	}
+	return 0
+}
+
+func (m *EventAppendSCCBatch) GetBatchRoot() []byte {
+	if m != nil {
+		return m.BatchRoot
+	}
+	return nil
+}
+
+func (m *EventAppendSCCBatch) GetLastSequencerSubmit() time.Time {
+	if m != nil {
+		return m.LastSequencerSubmit
+	}
+	return time.Time{}
+}
+
+type EventDeleteSCCBatch struct {
+	RollupName    string `protobuf:"bytes,1,opt,name=rollup_name,json=rollupName,proto3" json:"rollup_name,omitempty"`
+	NewBatchIndex uint64 `protobuf:"varint,2,opt,name=new_batch_index,json=newBatchIndex,proto3" json:"new_batch_index,omitempty"`
+}
+
+func (m *EventDeleteSCCBatch) Reset()         { *m = EventDeleteSCCBatch{} }
+func (m *EventDeleteSCCBatch) String() string { return proto.CompactTextString(m) }
+func (*EventDeleteSCCBatch) ProtoMessage()    {}
+func (*EventDeleteSCCBatch) Descriptor() ([]byte, []int) {
+	return fileDescriptor_58900962c0403d56, []int{4}
+}
+func (m *EventDeleteSCCBatch) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventDeleteSCCBatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventDeleteSCCBatch.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventDeleteSCCBatch) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventDeleteSCCBatch.Merge(m, src)
+}
+func (m *EventDeleteSCCBatch) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventDeleteSCCBatch) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventDeleteSCCBatch.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventDeleteSCCBatch proto.InternalMessageInfo
+
+func (m *EventDeleteSCCBatch) GetRollupName() string {
+	if m != nil {
+		return m.RollupName
+	}
+	return ""
+}
+
+func (m *EventDeleteSCCBatch) GetNewBatchIndex() uint64 {
+	if m != nil {
+		return m.NewBatchIndex
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*EventUpdateParams)(nil), "finschia.or.da.v1.EventUpdateParams")
 	proto.RegisterType((*EventAppendCCBatch)(nil), "finschia.or.da.v1.EventAppendCCBatch")
 	proto.RegisterType((*EventSaveQueueTx)(nil), "finschia.or.da.v1.EventSaveQueueTx")
+	proto.RegisterType((*EventAppendSCCBatch)(nil), "finschia.or.da.v1.EventAppendSCCBatch")
+	proto.RegisterType((*EventDeleteSCCBatch)(nil), "finschia.or.da.v1.EventDeleteSCCBatch")
 }
 
 func init() { proto.RegisterFile("finschia/or/da/v1/event.proto", fileDescriptor_58900962c0403d56) }
 
 var fileDescriptor_58900962c0403d56 = []byte{
-	// 457 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0x86, 0xb3, 0x25, 0x04, 0x75, 0x53, 0x50, 0x62, 0x40, 0x32, 0x95, 0xea, 0x86, 0x9c, 0x2c,
-	0x01, 0xb6, 0x1a, 0x0e, 0x9c, 0x49, 0x44, 0x29, 0x52, 0x84, 0x20, 0x85, 0x0b, 0x17, 0x6b, 0x62,
-	0x4f, 0x6d, 0xab, 0xb6, 0xd7, 0xec, 0xae, 0x2d, 0xd3, 0xa7, 0xe0, 0xc8, 0x43, 0xf0, 0x20, 0x3d,
-	0xf6, 0xc8, 0x09, 0xa1, 0xe4, 0x45, 0xd0, 0xee, 0x3a, 0x2d, 0x28, 0x87, 0xde, 0xac, 0xef, 0xfb,
-	0x3d, 0xb3, 0x33, 0x1a, 0x7a, 0x70, 0x96, 0x16, 0x22, 0x4c, 0x52, 0xf0, 0x19, 0xf7, 0x23, 0xf0,
-	0xeb, 0x23, 0x1f, 0x6b, 0x2c, 0xa4, 0x57, 0x72, 0x26, 0x99, 0x35, 0xdc, 0x68, 0x8f, 0x71, 0x2f,
-	0x02, 0xaf, 0x3e, 0xda, 0x7f, 0x14, 0xb3, 0x98, 0x69, 0xeb, 0xab, 0x2f, 0x13, 0xdc, 0x77, 0xb6,
-	0xeb, 0x94, 0xc0, 0x21, 0x17, 0xc6, 0x8f, 0xe7, 0x74, 0xf8, 0x46, 0xd5, 0xfd, 0x5c, 0x46, 0x20,
-	0xf1, 0x83, 0x56, 0xd6, 0x2b, 0xda, 0x33, 0x21, 0x9b, 0x8c, 0x88, 0xdb, 0x9f, 0x3c, 0xf1, 0xb6,
-	0xda, 0x79, 0x26, 0x3a, 0xed, 0x5e, 0xfe, 0x3e, 0xec, 0x2c, 0xda, 0xf8, 0xf8, 0xc7, 0x0e, 0xb5,
-	0x74, 0xb9, 0xd7, 0x65, 0x89, 0x45, 0x34, 0x9b, 0x4d, 0x41, 0x86, 0x89, 0x75, 0x48, 0xfb, 0x9c,
-	0x65, 0x59, 0x55, 0x06, 0x05, 0xe4, 0xa8, 0x8b, 0xee, 0x2e, 0xa8, 0x41, 0xef, 0x21, 0x47, 0x15,
-	0x58, 0xaa, 0x64, 0x90, 0x16, 0x11, 0x36, 0xf6, 0xce, 0x88, 0xb8, 0xdd, 0x05, 0xd5, 0xe8, 0x9d,
-	0x22, 0xd6, 0x84, 0x3e, 0x2e, 0x39, 0x0b, 0x51, 0x08, 0x8c, 0x82, 0xaf, 0x15, 0x56, 0xd8, 0x46,
-	0xef, 0xe8, 0xe8, 0xc3, 0x6b, 0xf9, 0x51, 0x39, 0xf3, 0xcf, 0x53, 0xba, 0x27, 0x99, 0x84, 0x2c,
-	0x38, 0xe3, 0x90, 0xa3, 0xb0, 0xbb, 0x3a, 0xda, 0xd7, 0xec, 0x58, 0x23, 0xeb, 0x80, 0x9a, 0x26,
-	0x81, 0x48, 0x2f, 0xd0, 0xbe, 0x3b, 0x22, 0xee, 0xfd, 0xc5, 0xae, 0x26, 0xa7, 0xe9, 0x05, 0xde,
-	0xe8, 0x04, 0x44, 0x62, 0xf7, 0x46, 0xc4, 0xdd, 0x6b, 0xf5, 0x09, 0x88, 0xc4, 0x7a, 0x46, 0x87,
-	0x37, 0x8f, 0xca, 0x26, 0xcb, 0x8c, 0x85, 0xe7, 0xf6, 0x3d, 0xdd, 0x65, 0x70, 0x2d, 0xe6, 0x86,
-	0x8f, 0x7f, 0x12, 0x3a, 0xd0, 0xab, 0x39, 0x85, 0x1a, 0xf5, 0x2b, 0x3f, 0x35, 0xb7, 0x2f, 0xc6,
-	0xa5, 0x83, 0x02, 0x1b, 0xf9, 0xdf, 0xc8, 0x66, 0x3b, 0x0f, 0x14, 0xff, 0x67, 0xda, 0xe7, 0xd4,
-	0xc2, 0x46, 0x72, 0x08, 0x42, 0x56, 0x88, 0x2a, 0xc7, 0x28, 0x88, 0x41, 0xb4, 0xeb, 0x19, 0x68,
-	0x33, 0x6b, 0xc5, 0x5b, 0x10, 0xaa, 0x71, 0x36, 0x89, 0x41, 0x04, 0x59, 0x9a, 0xa7, 0xb2, 0x5d,
-	0x0d, 0xd5, 0x68, 0xae, 0xc8, 0xf4, 0xe4, 0x72, 0xe5, 0x90, 0xab, 0x95, 0x43, 0xfe, 0xac, 0x1c,
-	0xf2, 0x7d, 0xed, 0x74, 0xae, 0xd6, 0x4e, 0xe7, 0xd7, 0xda, 0xe9, 0x7c, 0xf1, 0xe2, 0x54, 0x26,
-	0xd5, 0xd2, 0x0b, 0x59, 0xee, 0x1f, 0x6f, 0x8e, 0x6b, 0x73, 0x1f, 0x2f, 0x44, 0x74, 0xee, 0x37,
-	0xed, 0xad, 0xc9, 0x6f, 0x25, 0x8a, 0x65, 0x4f, 0x1f, 0xda, 0xcb, 0xbf, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0xa5, 0x5e, 0xb2, 0x5e, 0xd2, 0x02, 0x00, 0x00,
+	// 585 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xcd, 0x6e, 0xd3, 0x40,
+	0x18, 0x8c, 0xdb, 0x10, 0xe8, 0xb6, 0x85, 0xc4, 0xa1, 0x92, 0x89, 0x54, 0x27, 0xe4, 0x80, 0x22,
+	0x01, 0xb6, 0x1a, 0x0e, 0x9c, 0x49, 0xa0, 0x14, 0x29, 0x42, 0xe0, 0x14, 0x09, 0x71, 0x60, 0xb5,
+	0xb6, 0xbf, 0xd8, 0x56, 0x6d, 0xaf, 0xeb, 0x5d, 0xa7, 0xa1, 0x4f, 0x51, 0x71, 0xe2, 0x21, 0x78,
+	0x90, 0x1e, 0x7b, 0xe4, 0x04, 0x28, 0x79, 0x11, 0xb4, 0x6b, 0x3b, 0x2d, 0x44, 0xa8, 0x1c, 0xb8,
+	0x25, 0x33, 0xe3, 0xef, 0x67, 0x66, 0x3f, 0xb4, 0x3b, 0x09, 0x62, 0xe6, 0xf8, 0x01, 0x31, 0x69,
+	0x6a, 0xba, 0xc4, 0x9c, 0xee, 0x99, 0x30, 0x85, 0x98, 0x1b, 0x49, 0x4a, 0x39, 0x55, 0x1b, 0x25,
+	0x6d, 0xd0, 0xd4, 0x70, 0x89, 0x31, 0xdd, 0x6b, 0xdd, 0xf5, 0xa8, 0x47, 0x25, 0x6b, 0x8a, 0x5f,
+	0xb9, 0xb0, 0xd5, 0xf6, 0x28, 0xf5, 0x42, 0x30, 0xe5, 0x3f, 0x3b, 0x9b, 0x98, 0x3c, 0x88, 0x80,
+	0x71, 0x12, 0x25, 0x85, 0x40, 0x5f, 0x6d, 0x94, 0x90, 0x94, 0x44, 0x2c, 0xe7, 0xbb, 0x23, 0xd4,
+	0x78, 0x21, 0x1a, 0xbf, 0x4b, 0x5c, 0xc2, 0xe1, 0x8d, 0xa4, 0xd4, 0xa7, 0xa8, 0x96, 0x8b, 0x34,
+	0xa5, 0xa3, 0xf4, 0x36, 0xfb, 0xf7, 0x8c, 0x95, 0x79, 0x8c, 0x5c, 0x3a, 0xa8, 0x9e, 0x7f, 0x6f,
+	0x57, 0xac, 0x42, 0xde, 0xfd, 0xb2, 0x86, 0x54, 0x59, 0xee, 0x59, 0x92, 0x40, 0xec, 0x0e, 0x87,
+	0x03, 0xc2, 0x1d, 0x5f, 0x6d, 0xa3, 0xcd, 0x94, 0x86, 0x61, 0x96, 0xe0, 0x98, 0x44, 0x20, 0x8b,
+	0x6e, 0x58, 0x28, 0x87, 0x5e, 0x93, 0x08, 0x84, 0xc0, 0x16, 0x4a, 0x1c, 0xc4, 0x2e, 0xcc, 0xb4,
+	0xb5, 0x8e, 0xd2, 0xab, 0x5a, 0x48, 0x42, 0xaf, 0x04, 0xa2, 0xf6, 0xd1, 0x4e, 0x92, 0x52, 0x07,
+	0x18, 0x03, 0x17, 0x1f, 0x67, 0x90, 0x41, 0x21, 0x5d, 0x97, 0xd2, 0xe6, 0x92, 0x7c, 0x2b, 0xb8,
+	0xfc, 0x9b, 0xfb, 0x68, 0x8b, 0x53, 0x4e, 0x42, 0x3c, 0x49, 0x49, 0x04, 0x4c, 0xab, 0x4a, 0xe9,
+	0xa6, 0xc4, 0xf6, 0x25, 0xa4, 0xee, 0xa2, 0xbc, 0x09, 0x66, 0xc1, 0x29, 0x68, 0x37, 0x3a, 0x4a,
+	0x6f, 0xdb, 0xda, 0x90, 0xc8, 0x38, 0x38, 0x85, 0x4b, 0xda, 0x27, 0xcc, 0xd7, 0x6a, 0x1d, 0xa5,
+	0xb7, 0x55, 0xd0, 0x07, 0x84, 0xf9, 0xea, 0x43, 0xd4, 0xb8, 0x1c, 0x2a, 0xec, 0xdb, 0x21, 0x75,
+	0x8e, 0xb4, 0x9b, 0xb2, 0x4b, 0x7d, 0x49, 0x8c, 0x72, 0xbc, 0xfb, 0x55, 0x41, 0x75, 0x69, 0xcd,
+	0x98, 0x4c, 0x41, 0x4e, 0x79, 0x38, 0xbb, 0xde, 0x98, 0x1e, 0xaa, 0xc7, 0x30, 0xe3, 0xbf, 0xad,
+	0x9c, 0xbb, 0x73, 0x5b, 0xe0, 0x57, 0xb6, 0x7d, 0x84, 0x54, 0x98, 0xf1, 0x94, 0x60, 0x87, 0xc6,
+	0x2c, 0x8b, 0xc0, 0xc5, 0x1e, 0x61, 0x85, 0x3d, 0x75, 0xc9, 0x0c, 0x0b, 0xe2, 0x25, 0x61, 0xa2,
+	0x71, 0xd8, 0xf7, 0x08, 0xc3, 0x61, 0x10, 0x05, 0xbc, 0xb0, 0x06, 0x49, 0x68, 0x24, 0x90, 0xee,
+	0xe7, 0x35, 0xd4, 0xbc, 0x92, 0xe4, 0xf8, 0xff, 0x45, 0xf9, 0x67, 0x2c, 0xeb, 0xd7, 0xc5, 0x52,
+	0xfd, 0x6b, 0x2c, 0x29, 0xa5, 0x5c, 0xa6, 0x56, 0xc6, 0x62, 0x51, 0xca, 0xd5, 0xf7, 0x68, 0x27,
+	0x24, 0x8c, 0x63, 0x06, 0xc7, 0x19, 0xc4, 0x0e, 0xa4, 0x98, 0x65, 0xb6, 0xd8, 0xb2, 0x26, 0x1f,
+	0x73, 0xcb, 0xc8, 0x6f, 0xc6, 0x28, 0x6f, 0xc6, 0x38, 0x2c, 0x6f, 0x66, 0x70, 0x4b, 0xbc, 0xe6,
+	0xb3, 0x1f, 0x6d, 0xc5, 0x6a, 0x8a, 0x12, 0xe3, 0xb2, 0xc2, 0x58, 0x16, 0xe8, 0x7e, 0x2c, 0x3c,
+	0x79, 0x0e, 0x21, 0x70, 0xf8, 0x77, 0x4f, 0x1e, 0xa0, 0x3b, 0x31, 0x9c, 0xe0, 0x55, 0x5f, 0xb6,
+	0x63, 0x38, 0x19, 0x2c, 0xad, 0x19, 0x1c, 0x9c, 0xcf, 0x75, 0xe5, 0x62, 0xae, 0x2b, 0x3f, 0xe7,
+	0xba, 0x72, 0xb6, 0xd0, 0x2b, 0x17, 0x0b, 0xbd, 0xf2, 0x6d, 0xa1, 0x57, 0x3e, 0x18, 0x5e, 0xc0,
+	0xfd, 0xcc, 0x36, 0x1c, 0x1a, 0x99, 0xfb, 0xe5, 0x45, 0x97, 0x47, 0xf9, 0x98, 0xb9, 0x47, 0xe6,
+	0xac, 0x38, 0x70, 0xfe, 0x29, 0x01, 0x66, 0xd7, 0xe4, 0x72, 0x4f, 0x7e, 0x05, 0x00, 0x00, 0xff,
+	0xff, 0x8b, 0x4b, 0x56, 0x9c, 0x68, 0x04, 0x00, 0x00,
 }
 
 func (m *EventUpdateParams) Marshal() (dAtA []byte, err error) {
@@ -410,6 +560,101 @@ func (m *EventSaveQueueTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *EventAppendSCCBatch) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventAppendSCCBatch) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventAppendSCCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LastSequencerSubmit, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LastSequencerSubmit):])
+	if err2 != nil {
+		return 0, err2
+	}
+	i -= n2
+	i = encodeVarintEvent(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x32
+	if len(m.BatchRoot) > 0 {
+		i -= len(m.BatchRoot)
+		copy(dAtA[i:], m.BatchRoot)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.BatchRoot)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.BatchSize != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.BatchSize))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.TotalFrames != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.TotalFrames))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.BatchIndex != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.BatchIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.RollupName) > 0 {
+		i -= len(m.RollupName)
+		copy(dAtA[i:], m.RollupName)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RollupName)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventDeleteSCCBatch) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventDeleteSCCBatch) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventDeleteSCCBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.NewBatchIndex != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.NewBatchIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.RollupName) > 0 {
+		i -= len(m.RollupName)
+		copy(dAtA[i:], m.RollupName)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RollupName)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintEvent(dAtA []byte, offset int, v uint64) int {
 	offset -= sovEvent(v)
 	base := offset
@@ -482,6 +727,50 @@ func (m *EventSaveQueueTx) Size() (n int) {
 	}
 	if m.L2GasLimit != 0 {
 		n += 1 + sovEvent(uint64(m.L2GasLimit))
+	}
+	return n
+}
+
+func (m *EventAppendSCCBatch) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RollupName)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	if m.BatchIndex != 0 {
+		n += 1 + sovEvent(uint64(m.BatchIndex))
+	}
+	if m.TotalFrames != 0 {
+		n += 1 + sovEvent(uint64(m.TotalFrames))
+	}
+	if m.BatchSize != 0 {
+		n += 1 + sovEvent(uint64(m.BatchSize))
+	}
+	l = len(m.BatchRoot)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LastSequencerSubmit)
+	n += 1 + l + sovEvent(uint64(l))
+	return n
+}
+
+func (m *EventDeleteSCCBatch) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RollupName)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
+	if m.NewBatchIndex != 0 {
+		n += 1 + sovEvent(uint64(m.NewBatchIndex))
 	}
 	return n
 }
@@ -900,6 +1189,313 @@ func (m *EventSaveQueueTx) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.L2GasLimit |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventAppendSCCBatch) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventAppendSCCBatch: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventAppendSCCBatch: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BatchIndex", wireType)
+			}
+			m.BatchIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BatchIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalFrames", wireType)
+			}
+			m.TotalFrames = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TotalFrames |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BatchSize", wireType)
+			}
+			m.BatchSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BatchSize |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BatchRoot", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BatchRoot = append(m.BatchRoot[:0], dAtA[iNdEx:postIndex]...)
+			if m.BatchRoot == nil {
+				m.BatchRoot = []byte{}
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastSequencerSubmit", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LastSequencerSubmit, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventDeleteSCCBatch) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventDeleteSCCBatch: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventDeleteSCCBatch: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewBatchIndex", wireType)
+			}
+			m.NewBatchIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NewBatchIndex |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

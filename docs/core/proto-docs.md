@@ -609,6 +609,8 @@
   
 - [finschia/or/da/v1/event.proto](#finschia/or/da/v1/event.proto)
     - [EventAppendCCBatch](#finschia.or.da.v1.EventAppendCCBatch)
+    - [EventAppendSCCBatch](#finschia.or.da.v1.EventAppendSCCBatch)
+    - [EventDeleteSCCBatch](#finschia.or.da.v1.EventDeleteSCCBatch)
     - [EventSaveQueueTx](#finschia.or.da.v1.EventSaveQueueTx)
     - [EventUpdateParams](#finschia.or.da.v1.EventUpdateParams)
   
@@ -653,8 +655,6 @@
     - [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse)
     - [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue)
     - [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse)
-    - [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch)
-    - [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse)
     - [MsgUpdateParams](#finschia.or.da.v1.MsgUpdateParams)
     - [MsgUpdateParamsResponse](#finschia.or.da.v1.MsgUpdateParamsResponse)
   
@@ -8866,8 +8866,8 @@ Params defines the parameters for the module.
 | `enqueue_l2gas_prepaid` | [uint64](#uint64) |  | enqueue_l2gas_prepaid is the base cost of calling enqueue function. |
 | `queue_tx_expiration_window` | [uint64](#uint64) |  | A sequencer must submit a queue tx to L2 before this time. |
 | `scc_batch_max_bytes` | [uint64](#uint64) |  | 2. SCC-related |
-| `fraud_proof_window` | [uint64](#uint64) |  | Number of seconds that the verifier is allowed to submit a fraud proof. Currnet scc batch header timestamp + fraud_proof_window = challenge period |
-| `sequencer_publish_window` | [uint64](#uint64) |  | Number of seconds that the sequencer is exclusively allowed to post state roots |
+| `fraud_proof_window` | [int64](#int64) |  | Number of seconds that the verifier is allowed to submit a fraud proof. Currnet scc batch header timestamp + fraud_proof_window(seconds) = challenge period |
+| `sequencer_publish_window` | [int64](#int64) |  | Number of seconds that the sequencer is exclusively allowed to post state roots |
 
 
 
@@ -9172,6 +9172,42 @@ BatchChainState is the state of target batch chain.
 | `batch_size` | [uint32](#uint32) |  |  |
 | `batch_hash` | [bytes](#bytes) |  |  |
 | `processed_l2block` | [uint64](#uint64) |  | processed_l2block is the last l2block height that has been processed by L1. |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.EventAppendSCCBatch"></a>
+
+### EventAppendSCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `batch_index` | [uint64](#uint64) |  |  |
+| `total_frames` | [uint64](#uint64) |  |  |
+| `batch_size` | [uint32](#uint32) |  |  |
+| `batch_root` | [bytes](#bytes) |  |  |
+| `last_sequencer_submit` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="finschia.or.da.v1.EventDeleteSCCBatch"></a>
+
+### EventDeleteSCCBatch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rollup_name` | [string](#string) |  |  |
+| `new_batch_index` | [uint64](#uint64) |  |  |
 
 
 
@@ -9797,33 +9833,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="finschia.or.da.v1.MsgRemoveSCCBatch"></a>
-
-### MsgRemoveSCCBatch
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authority` | [string](#string) |  | authority must be settlement module address. |
-| `rollup_name` | [string](#string) |  |  |
-| `batch_index` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="finschia.or.da.v1.MsgRemoveSCCBatchResponse"></a>
-
-### MsgRemoveSCCBatchResponse
-
-
-
-
-
-
-
 <a name="finschia.or.da.v1.MsgUpdateParams"></a>
 
 ### MsgUpdateParams
@@ -9869,7 +9878,6 @@ Msg defines the Msg service.
 | `AppendCCBatch` | [MsgAppendCCBatch](#finschia.or.da.v1.MsgAppendCCBatch) | [MsgAppendCCBatchResponse](#finschia.or.da.v1.MsgAppendCCBatchResponse) | Allow the sequencer to append a batch of transactions. | |
 | `Enqueue` | [MsgEnqueue](#finschia.or.da.v1.MsgEnqueue) | [MsgEnqueueResponse](#finschia.or.da.v1.MsgEnqueueResponse) | Add a L2 transaction to the queue to process forcibly. | |
 | `AppendSCCBatch` | [MsgAppendSCCBatch](#finschia.or.da.v1.MsgAppendSCCBatch) | [MsgAppendSCCBatchResponse](#finschia.or.da.v1.MsgAppendSCCBatchResponse) | Allow the proposer to append a state batch | |
-| `RemoveSCCBatch` | [MsgRemoveSCCBatch](#finschia.or.da.v1.MsgRemoveSCCBatch) | [MsgRemoveSCCBatchResponse](#finschia.or.da.v1.MsgRemoveSCCBatchResponse) | Removes a batch and all subsequent batches from SCC. | |
 
  <!-- end services -->
 

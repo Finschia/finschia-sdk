@@ -13,8 +13,8 @@ const (
 	DefaultMaxQueueTxSize          uint64 = math.MaxUint16
 	DefaultMinQueueTxGas           uint64 = 300000
 	DefaultQueueTxExpirationWindow uint64 = 600
-	DefaultFraudProofWindow        uint64 = 7 * 24 * 60 * 60 / 6
-	DefaultSequencerPublishWindow  uint64 = 600
+	DefaultFraudProofWindow        int64  = 7 * 24 * 60 * 60 / 6
+	DefaultSequencerPublishWindow  int64  = 600
 )
 
 // NewParams creates a new Params instance
@@ -24,8 +24,8 @@ func NewParams(
 	MinQueueTxGas uint64,
 	QueueTxExpirationWindow uint64,
 	SCCBatchMaxBytes uint64,
-	FraudProofWindow uint64,
-	SequencerPublishWindow uint64,
+	FraudProofWindow int64,
+	SequencerPublishWindow int64,
 ) Params {
 	return Params{
 		CCBatchMaxBytes:         CCBatchMaxBytes,

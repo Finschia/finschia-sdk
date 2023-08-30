@@ -65,3 +65,12 @@ func (k Keeper) validateSequencerAuthority(authority string) error {
 
 	return nil
 }
+
+func (k Keeper) validateSettlementAuthority(authority string) error {
+	if _, err := sdktypes.AccAddressFromBech32(authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+	}
+	// TODO: check if authority is a settlement module
+
+	return nil
+}

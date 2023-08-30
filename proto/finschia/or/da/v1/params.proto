@@ -36,8 +36,8 @@ message Params {
   uint64 scc_batch_max_bytes = 7 [(gogoproto.customname) = "SCCBatchMaxBytes"];
 
   // Number of seconds that the verifier is allowed to submit a fraud proof.
-  // Currnet scc batch header timestamp + fraud_proof_window = challenge period
-  uint64 fraud_proof_window = 8;
+  // Currnet scc batch header timestamp + fraud_proof_window(seconds) = challenge period
+  int64 fraud_proof_window = 8;
   // Number of seconds that the sequencer is exclusively allowed to post state roots
-  uint64 sequencer_publish_window = 9;
+  int64 sequencer_publish_window = 9;
 }
