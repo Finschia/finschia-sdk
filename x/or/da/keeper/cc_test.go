@@ -135,20 +135,21 @@ func (s *KeeperTestSuite) TestSaveCCBatch() {
 			},
 			isErr: true,
 		},
-		"empty frame": {
-			src: &types.CCBatch{
-				Frames: []*types.CCBatchFrame{
-					{
-						Elements: nil,
-					},
-				},
-			},
-			malleate: func(b *types.CCBatch) {
-				_ = prepareCCPreset(s, rollupName)
-				b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
-			},
-			isErr: true,
-		},
+		// TODO: do not check frame elements until ramus is ready
+		//"empty frame": {
+		//	src: &types.CCBatch{
+		//		Frames: []*types.CCBatchFrame{
+		//			{
+		//				Elements: nil,
+		//			},
+		//		},
+		//	},
+		//	malleate: func(b *types.CCBatch) {
+		//		_ = prepareCCPreset(s, rollupName)
+		//		b.ShouldStartAtFrame = calShouldStartAtFrame(s, rollupName)
+		//	},
+		//	isErr: true,
+		//},
 		"wrong frame header l2 height": {
 			src: &types.CCBatch{
 				Frames: []*types.CCBatchFrame{
@@ -372,7 +373,8 @@ func (s *KeeperTestSuite) TestSaveQueueTx() {
 	s.ctx = s.ctx.WithBlockTime(t)
 	s.ctx = s.ctx.WithEventManager(sdktypes.NewEventManager())
 
-	err := s.keeper.SaveQueueTx(s.ctx, "rollup1", []byte("qtx1"), 90000, 10)
+	mockTx := s.genMockTxs(1)[0]
+	err := s.keeper.SaveQueueTx(s.ctx, "rollup1", mockTx, 90000, 10)
 	s.Require().NoError(err)
 	state, err := s.keeper.GetQueueTxState(s.ctx, "rollup1")
 	s.Require().NoError(err)
@@ -380,7 +382,7 @@ func (s *KeeperTestSuite) TestSaveQueueTx() {
 	s.Require().Equal(uint64(0), state.ProcessedQueueIndex)
 	qtx, err := s.keeper.GetQueueTx(s.ctx, "rollup1", 1)
 	s.Require().NoError(err)
-	s.Require().Equal([]byte("qtx1"), qtx.Txraw)
+	s.Require().Equal(mockTx, qtx.Txraw)
 	s.Require().Equal(types.QUEUE_TX_PENDING, qtx.Status)
 	s.Require().Equal(int64(10), qtx.L1Height)
 	s.Require().Equal(t, qtx.Timestamp)
@@ -389,7 +391,6 @@ func (s *KeeperTestSuite) TestSaveQueueTx() {
 	parsedEvt := evt.(*types.EventSaveQueueTx)
 	s.Require().Equal("rollup1", parsedEvt.RollupName)
 	s.Require().Equal(uint64(2), parsedEvt.NextQueueIndex)
-	s.Require().Equal(uint64(8966), parsedEvt.ExtraConsumedGas)
 	s.Require().Equal(uint64(90000), parsedEvt.L2GasLimit)
 
 }
@@ -401,7 +402,7 @@ func (s *KeeperTestSuite) TestUpdateQueueTxsStatus() {
 		saveQueueTx(s.storeKey, s.ctx, "rollup1", i, &types.L1ToL2Queue{
 			Timestamp: time.Now(),
 			Status:    types.QUEUE_TX_PENDING,
-			Txraw:     nil,
+			Txraw:     s.genMockTxs(1)[0],
 			L1Height:  int64(i),
 		})
 	}

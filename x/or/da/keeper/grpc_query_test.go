@@ -304,7 +304,7 @@ func (s *KeeperTestSuite) TestQueueTx() {
 			"",
 			func(res *types.QueryQueueTxResponse) {
 				s.Require().Equal(&types.L1ToL2Queue{
-					Txraw:  []byte("first qtx"),
+					Txraw:  s.initQtxs[0],
 					Status: types.QUEUE_TX_SUBMITTED,
 				}, res.Tx)
 			},
@@ -355,11 +355,11 @@ func (s *KeeperTestSuite) TestQueueTxs() {
 			func(res *types.QueryQueueTxsResponse) {
 				expected := []*types.L1ToL2Queue{
 					{
-						Txraw:  []byte("first qtx"),
+						Txraw:  s.initQtxs[0],
 						Status: types.QUEUE_TX_SUBMITTED,
 					},
 					{
-						Txraw:  []byte("second qtx"),
+						Txraw:  s.initQtxs[1],
 						Status: types.QUEUE_TX_PENDING,
 					},
 				}

@@ -7,9 +7,12 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/simapp/params"
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdktypes "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
 	"github.com/Finschia/finschia-sdk/x/or/da/testutil"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
@@ -24,18 +27,20 @@ type KeeperTestSuite struct {
 	keeper      keeper.Keeper
 	queryServer types.QueryServer
 	msgServer   types.MsgServer
-	encCfg      params.EncodingConfig
+	encCfg      simappparams.EncodingConfig
 
-	addrs []sdk.AccAddress
+	addrs    []sdk.AccAddress
+	initQtxs [][]byte
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	k, ctx, skey := testutil.DaKeeper(s.T())
+	s.encCfg = simapp.MakeTestEncodingConfig()
+	testdata.RegisterInterfaces(s.encCfg.InterfaceRegistry)
+	k, ctx, skey := testutil.DaKeeper(s.T(), s.encCfg)
 	s.storeKey = skey
 	s.ctx = ctx
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = k
-	s.encCfg = simapp.MakeTestEncodingConfig()
 	s.msgServer = keeper.NewMsgServerImpl(s.keeper)
 	s.queryServer = s.keeper
 
@@ -46,11 +51,13 @@ func (s *KeeperTestSuite) SetupTest() {
 	err := s.keeper.SetParams(s.ctx, types.DefaultParams())
 	s.Require().NoError(err)
 
-	err = s.keeper.SaveQueueTx(s.ctx, "default-rollup1", []byte("first qtx"), 100000, 5)
+	mockTxs := s.genMockTxs(3)
+	s.initQtxs = mockTxs
+	err = s.keeper.SaveQueueTx(s.ctx, "default-rollup1", mockTxs[0], 100000, 5)
 	s.Require().NoError(err)
-	err = s.keeper.SaveQueueTx(s.ctx, "default-rollup1", []byte("second qtx"), 100000, 5)
+	err = s.keeper.SaveQueueTx(s.ctx, "default-rollup1", mockTxs[1], 100000, 5)
 	s.Require().NoError(err)
-	err = s.keeper.SaveQueueTx(s.ctx, "default-rollup2", []byte("first qtx"), 100000, 5)
+	err = s.keeper.SaveQueueTx(s.ctx, "default-rollup2", mockTxs[2], 100000, 5)
 	s.Require().NoError(err)
 
 	batches := dummyBatches()
@@ -127,4 +134,19 @@ func dummyBatches() []*types.CCBatch {
 				},
 			}},
 	}
+}
+
+func (s *KeeperTestSuite) genMockTxs(numToGenerate int) [][]byte {
+	msg := testdata.NewTestMsg(s.addrs[0])
+	txCfg := simappparams.MakeTestEncodingConfig().TxConfig
+	txs, err := simapp.GenSequenceOfTxs(txCfg, []sdktypes.Msg{msg}, []uint64{0}, []uint64{uint64(0)}, numToGenerate, secp256k1.GenPrivKey())
+	s.Require().NoError(err)
+
+	serializedTxs := make([][]byte, numToGenerate)
+	for i := 0; i < numToGenerate; i++ {
+		serializedTxs[i], err = txCfg.TxEncoder()(txs[i])
+		s.Require().NoError(err)
+	}
+
+	return serializedTxs
 }
