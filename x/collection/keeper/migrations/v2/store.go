@@ -81,7 +81,7 @@ func evalContractFTSupplies(store storetypes.KVStore, contractID string) (map[st
 }
 
 func updateContractFTStatistics(store storetypes.KVStore, contractID string, supplies map[string]sdk.Int) error {
-	bz := store.Get(nextClassIDKey(contractID))
+	bz := store.Get(NextClassIDKey(contractID))
 	if bz == nil {
 		return fmt.Errorf("no next class ids of contract %s", contractID)
 	}
@@ -95,7 +95,7 @@ func updateContractFTStatistics(store storetypes.KVStore, contractID string, sup
 		classID := fmt.Sprintf("%08x", intClassID)
 
 		// update supply
-		supplyKey := statisticKey(supplyKeyPrefix, contractID, classID)
+		supplyKey := StatisticKey(SupplyKeyPrefix, contractID, classID)
 		supply, ok := supplies[classID]
 		if ok {
 			bz, err := supply.Marshal()
@@ -108,7 +108,7 @@ func updateContractFTStatistics(store storetypes.KVStore, contractID string, sup
 		}
 
 		// get burnt
-		burntKey := statisticKey(burntKeyPrefix, contractID, classID)
+		burntKey := StatisticKey(BurntKeyPrefix, contractID, classID)
 		burnt := sdk.ZeroInt()
 		if bz := store.Get(burntKey); bz != nil {
 			if err := burnt.Unmarshal(bz); err != nil {
@@ -118,7 +118,7 @@ func updateContractFTStatistics(store storetypes.KVStore, contractID string, sup
 
 		// update minted
 		minted := supply.Add(burnt)
-		mintedKey := statisticKey(mintedKeyPrefix, contractID, classID)
+		mintedKey := StatisticKey(MintedKeyPrefix, contractID, classID)
 		if !minted.IsZero() {
 			bz, err := minted.Marshal()
 			if err != nil {
