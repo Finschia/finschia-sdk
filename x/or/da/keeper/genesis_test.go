@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	datest "github.com/Finschia/finschia-sdk/x/or/da/testutil"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
@@ -16,7 +17,7 @@ func TestGenesis(t *testing.T) {
 		CCList: dummyCCList(),
 	}
 
-	k, ctx, _ := datest.DaKeeper(t)
+	k, ctx, _ := datest.DaKeeper(t, simappparams.MakeTestEncodingConfig())
 	k.InitGenesis(ctx, genesisState)
 	got := k.ExportGenesis(ctx)
 	require.NotNil(t, got)

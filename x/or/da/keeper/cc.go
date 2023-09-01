@@ -14,6 +14,11 @@ import (
 )
 
 func (k Keeper) SaveQueueTx(ctx sdktypes.Context, rollupName string, tx []byte, gasLimit, L1ToL2GasRatio uint64) error {
+	_, err := k.txCfg.TxDecoder()(tx)
+	if err != nil {
+		return sdkerror.ErrTxDecode.Wrap("wrong queue tx format")
+	}
+
 	// Transactions submitted to the queue lack a method for paying gas fees to the Sequencer.
 	// For transaction with a high L2 gas limit, we burn some extra gas on L1.
 	gasToConsume := (gasLimit - k.EnqueueL2GasPrepaid(ctx, tx)) / L1ToL2GasRatio
@@ -100,9 +105,10 @@ func (k Keeper) SaveCCBatch(ctx sdktypes.Context, rollupName string, batch *type
 	ccState.Height++
 
 	for i, frame := range batch.Frames {
-		if len(frame.Elements) == 0 {
-			return types.ErrInvalidCCBatch.Wrapf("frame %d has empty elements", i)
-		}
+		// TODO: do not check frame elements until ramus is ready
+		//if len(frame.Elements) == 0 {
+		//	return types.ErrInvalidCCBatch.Wrapf("frame %d has empty elements", i)
+		//}
 
 		if frame.Header.GetL2Height() != ccState.ProcessedL2Block+1 {
 			return types.ErrInvalidCCBatch.Wrapf("frame %d has invalid l2 height %d, expected %d", i, frame.Header.GetL2Height(), ccState.ProcessedL2Block+1)
@@ -165,13 +171,13 @@ func (k Keeper) UpdateQueueTxsStatus(ctx sdktypes.Context) error {
 		return nil
 	}
 
-	for _, r := range rollupList {
-		state, err := k.GetQueueTxState(ctx, r.RollupName)
+	for _, rollup := range rollupList {
+		state, err := k.GetQueueTxState(ctx, rollup.RollupName)
 		if err != nil {
 			continue
 		}
 
-		if err := k.processQueueTxs(ctx, state, r.RollupName); err != nil {
+		if err := k.processQueueTxs(ctx, state, rollup.RollupName); err != nil {
 			return err
 		}
 	}

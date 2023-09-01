@@ -14,6 +14,7 @@ func (k Keeper) InitGenesis(ctx sdktypes.Context, genState types.GenesisState) {
 	}
 
 	for _, cc := range genState.CCList {
+		cc := cc
 		name := cc.RollupName
 		k.setCCState(ctx, name, &cc.CCState)
 		k.setQueueTxState(ctx, name, &cc.QueueTxState)

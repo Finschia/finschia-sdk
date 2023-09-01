@@ -5,6 +5,7 @@ import (
 
 	"github.com/Finschia/ostracon/libs/log"
 
+	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdktypes "github.com/Finschia/finschia-sdk/types"
@@ -14,6 +15,7 @@ import (
 
 type Keeper struct {
 	cdc      codec.BinaryCodec
+	txCfg    client.TxConfig
 	storeKey storetypes.StoreKey
 
 	// the address capable of executing a MsgUpdateParams message. Typically, this
@@ -25,6 +27,7 @@ type Keeper struct {
 }
 
 func NewKeeper(
+	txCfg client.TxConfig,
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	authority string,
@@ -33,6 +36,7 @@ func NewKeeper(
 ) Keeper {
 
 	return Keeper{
+		txCfg:         txCfg,
 		cdc:           cdc,
 		storeKey:      storeKey,
 		authority:     authority,
