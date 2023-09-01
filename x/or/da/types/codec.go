@@ -17,7 +17,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgEnqueue{}, "finshcia-sdk/or/MsgEnqueue")
 	legacy.RegisterAminoMsg(cdc, &MsgAppendCCBatch{}, "finschia-sdk/or/MsgAppendCCBatch")
 	legacy.RegisterAminoMsg(cdc, &MsgAppendSCCBatch{}, "finshcia-sdk/or/MsgAppendSCCBatch")
-	legacy.RegisterAminoMsg(cdc, &MsgRemoveSCCBatch{}, "finshcia-sdk/or/MsgRemoveSCCBatch")
 
 	cdc.RegisterConcrete(Params{}, "finschia-sdk/x/or/da/Params", nil)
 }
@@ -29,7 +28,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgEnqueue{},
 		&MsgAppendCCBatch{},
 		&MsgAppendSCCBatch{},
-		&MsgRemoveSCCBatch{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

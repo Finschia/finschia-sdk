@@ -10,13 +10,11 @@ var (
 	_ sdk.Msg = (*MsgAppendCCBatch)(nil)
 	_ sdk.Msg = (*MsgEnqueue)(nil)
 	_ sdk.Msg = (*MsgAppendSCCBatch)(nil)
-	_ sdk.Msg = (*MsgRemoveSCCBatch)(nil)
 
 	_ legacytx.LegacyMsg = (*MsgUpdateParams)(nil)
 	_ legacytx.LegacyMsg = (*MsgAppendCCBatch)(nil)
 	_ legacytx.LegacyMsg = (*MsgEnqueue)(nil)
 	_ legacytx.LegacyMsg = (*MsgAppendSCCBatch)(nil)
-	_ legacytx.LegacyMsg = (*MsgRemoveSCCBatch)(nil)
 )
 
 func NewMsgUpdateParams(params Params, authority sdk.AccAddress) *MsgUpdateParams {
@@ -66,16 +64,6 @@ func (msg MsgAppendSCCBatch) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgRemoveSCCBatch) GetSigners() []sdk.AccAddress {
-	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{authority}
-}
-
-func (msg MsgRemoveSCCBatch) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
 // Deprecated: those methods will be removed after merge the upstream.
 // move ValidateBasic to msg server, please refer to https://github.com/cosmos/cosmos-sdk/issues/15648
 func (msg MsgUpdateParams) ValidateBasic() error   { return nil }
@@ -90,6 +78,3 @@ func (msg MsgEnqueue) Type() string                { return sdk.MsgTypeURL(&msg)
 func (msg MsgAppendSCCBatch) ValidateBasic() error { return nil }
 func (msg MsgAppendSCCBatch) Route() string        { return RouterKey }
 func (msg MsgAppendSCCBatch) Type() string         { return sdk.MsgTypeURL(&msg) }
-func (msg MsgRemoveSCCBatch) ValidateBasic() error { return nil }
-func (msg MsgRemoveSCCBatch) Route() string        { return RouterKey }
-func (msg MsgRemoveSCCBatch) Type() string         { return sdk.MsgTypeURL(&msg) }
