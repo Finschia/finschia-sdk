@@ -18,6 +18,6 @@ func NewSCCRef(totalFrames uint64, batchSize uint32, batchRoot []byte, ISRs [][]
 		BatchSize:              batchSize,
 		BatchRoot:              batchRoot,
 		IntermediateStateRoots: ISRs,
-		Timestamp:              blockTime,
+		Deadline:               blockTime,
 	}
 }

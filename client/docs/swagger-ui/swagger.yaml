@@ -32122,11 +32122,11 @@ paths:
                         type: integer
                         format: int64
                         description: Number of AppHash(ISRs) in the batch.
-                      timestamp:
+                      deadline:
                         type: string
                         format: date-time
                         description: >-
-                          timestamp is data to determine if this batch is within
+                          deadline is data to determine if this batch is within
                           the challenge period.
                       batch_root:
                         type: string
@@ -32205,11 +32205,11 @@ paths:
                           type: integer
                           format: int64
                           description: Number of AppHash(ISRs) in the batch.
-                        timestamp:
+                        deadline:
                           type: string
                           format: date-time
                           description: >-
-                            timestamp is data to determine if this batch is
+                            deadline is data to determine if this batch is
                             within the challenge period.
                         batch_root:
                           type: string
@@ -54767,11 +54767,11 @@ definitions:
                 type: integer
                 format: int64
                 description: Number of AppHash(ISRs) in the batch.
-              timestamp:
+              deadline:
                 type: string
                 format: date-time
                 description: >-
-                  timestamp is data to determine if this batch is within the
+                  deadline is data to determine if this batch is within the
                   challenge period.
               batch_root:
                 type: string
@@ -54810,11 +54810,11 @@ definitions:
                   type: integer
                   format: int64
                   description: Number of AppHash(ISRs) in the batch.
-                timestamp:
+                deadline:
                   type: string
                   format: date-time
                   description: >-
-                    timestamp is data to determine if this batch is within the
+                    deadline is data to determine if this batch is within the
                     challenge period.
                 batch_root:
                   type: string
@@ -54917,11 +54917,11 @@ definitions:
         type: integer
         format: int64
         description: Number of AppHash(ISRs) in the batch.
-      timestamp:
+      deadline:
         type: string
         format: date-time
         description: >-
-          timestamp is data to determine if this batch is within the challenge
+          deadline is data to determine if this batch is within the challenge
           period.
       batch_root:
         type: string
@@ -54947,11 +54947,11 @@ definitions:
             type: integer
             format: int64
             description: Number of AppHash(ISRs) in the batch.
-          timestamp:
+          deadline:
             type: string
             format: date-time
             description: >-
-              timestamp is data to determine if this batch is within the
+              deadline is data to determine if this batch is within the
               challenge period.
           batch_root:
             type: string

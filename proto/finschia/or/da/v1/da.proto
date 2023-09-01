@@ -160,8 +160,8 @@ message SCCRef {
   // Number of AppHash(ISRs) in the batch.
   uint32 batch_size = 2;
 
-  // timestamp is data to determine if this batch is within the challenge period.
-  google.protobuf.Timestamp timestamp = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  // deadline is data to determine if this batch is within the challenge period.
+  google.protobuf.Timestamp deadline = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // Merkle Root of ISRs.
   bytes batch_root = 4;

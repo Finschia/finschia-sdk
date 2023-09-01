@@ -9073,7 +9073,7 @@ SCCRef is a data type that forms an element of State Commitment Chain.
 | ----- | ---- | ----- | ----------- |
 | `total_frames` | [uint64](#uint64) |  | Reference for accessing batch data. |
 | `batch_size` | [uint32](#uint32) |  | Number of AppHash(ISRs) in the batch. |
-| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp is data to determine if this batch is within the challenge period. |
+| `deadline` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | deadline is data to determine if this batch is within the challenge period. |
 | `batch_root` | [bytes](#bytes) |  | Merkle Root of ISRs. |
 | `IntermediateStateRoots` | [bytes](#bytes) | repeated |  |
 

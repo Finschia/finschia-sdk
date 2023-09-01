@@ -190,3 +190,110 @@ func (k Keeper) MappedBatch(goCtx context.Context, req *types.QueryMappedBatchRe
 
 	return &types.QueryMappedBatchResponse{Ref: ccRef}, nil
 }
+
+func (k Keeper) SCCState(goCtx context.Context, req *types.QuerySCCStateRequest) (*types.QuerySCCStateResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.RollupName == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty rollup name")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sccState, err := k.GetSCCState(ctx, req.RollupName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QuerySCCStateResponse{State: sccState}, nil
+}
+
+func (k Keeper) SCCRef(goCtx context.Context, req *types.QuerySCCRefRequest) (*types.QuerySCCRefResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.RollupName == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty rollup name")
+	}
+
+	if req.BatchHeight < 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid batch height %d: must be greater than 1", req.BatchHeight)
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sccRef, err := k.GetSCCRef(ctx, req.RollupName, req.BatchHeight)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	res := new(types.SCCRes)
+	res.Ref = *sccRef
+	isSCCConfirmed(ctx, res)
+
+	return &types.QuerySCCRefResponse{Ref: res}, nil
+}
+
+func (k Keeper) SCCRefs(goCtx context.Context, req *types.QuerySCCRefsRequest) (*types.QuerySCCRefsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.RollupName == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty rollup name")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	key := types.GenRollupPrefix(req.RollupName, types.SCCBatchIndexPrefix)
+	qtxStore := prefix.NewStore(ctx.KVStore(k.storeKey), key)
+	sccRefs, pageRes, err := query.GenericFilteredPaginate(k.cdc, qtxStore, req.Pagination,
+		func(key []byte, value *types.SCCRef) (*types.SCCRef, error) {
+			if len(key) != 8 {
+				panic(fmt.Sprintf("unexpected key length %d", len(key)))
+			}
+
+			return value, nil
+		},
+		func() *types.SCCRef { return &types.SCCRef{} },
+	)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	var allRes []*types.SCCRes
+	for _, sccRef := range sccRefs {
+		res := new(types.SCCRes)
+		res.Ref = *sccRef
+		isSCCConfirmed(ctx, res)
+		allRes = append(allRes, res)
+	}
+
+	return &types.QuerySCCRefsResponse{Refs: allRes, Pagination: pageRes}, nil
+}
+
+func (k Keeper) LastSequencerTimestamp(goCtx context.Context, req *types.QueryLastSequencerTimestampRequest) (*types.QueryLastSequencerTimestampResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.RollupName == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty rollup name")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	state, err := k.GetSCCState(ctx, req.RollupName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryLastSequencerTimestampResponse{LastSequencerSubmit: state.LastSequencerSubmit}, nil
+}
+
+func isSCCConfirmed(ctx sdk.Context, target *types.SCCRes) {
+	if ctx.BlockTime().UTC().After(target.Ref.Deadline) {
+		target.IsConfirmed = true
+	} else {
+		target.IsConfirmed = false
+	}
+}
