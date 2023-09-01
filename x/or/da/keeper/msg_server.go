@@ -73,9 +73,9 @@ func (k msgServer) Enqueue(goCtx context.Context, msg *types.MsgEnqueue) (*types
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	rollupInfo, err := k.rollupKeeper.GetRollupInfo(ctx, msg.RollupName)
-	if err != nil {
-		return nil, err
+	rollupInfo, found := k.rollupKeeper.GetRollup(ctx, msg.RollupName)
+	if !found {
+		return nil, sdkerrors.ErrNotFound.Wrapf("rollup %s not found", msg.RollupName)
 	}
 
 	if msg.Txraw == nil {

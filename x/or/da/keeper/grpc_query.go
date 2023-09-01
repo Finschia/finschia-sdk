@@ -261,7 +261,7 @@ func (k Keeper) SCCRefs(goCtx context.Context, req *types.QuerySCCRefsRequest) (
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	var allRes []*types.SCCRes
+	allRes := make([]*types.SCCRes, len(sccRefs))
 	for _, sccRef := range sccRefs {
 		res := new(types.SCCRes)
 		res.Ref = *sccRef

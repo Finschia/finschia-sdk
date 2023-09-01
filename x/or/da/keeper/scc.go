@@ -3,11 +3,11 @@ package keeper
 import (
 	"bytes"
 	"crypto/sha256"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	rutypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 
 	sdktypes "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	rutypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 )
 
 // SaveSC

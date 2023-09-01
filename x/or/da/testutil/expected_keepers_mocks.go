@@ -12,7 +12,6 @@ import (
 	types "github.com/Finschia/finschia-sdk/types"
 	types0 "github.com/Finschia/finschia-sdk/x/auth/types"
 	types1 "github.com/Finschia/finschia-sdk/x/or/rollup/types"
-	gomock "github.com/golang/mock/gomock"
 )
 
 // MockAccountKeeper is a mock of AccountKeeper interface.

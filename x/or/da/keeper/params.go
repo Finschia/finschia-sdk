@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
 	"time"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
 // GetParams get all parameters as types.Params
