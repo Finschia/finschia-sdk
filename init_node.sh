@@ -22,7 +22,7 @@ redirect() {
 }
 
 BINARY=simd
-BASE_DIR=~/.simapp
+BASE_DIR=~/.l2simapp
 CHAIN_DIR_PREFIX="${BASE_DIR}/simapp"
 GENTXS_DIR="${BASE_DIR}/gentxs"
 CHAIN_ID=$1
