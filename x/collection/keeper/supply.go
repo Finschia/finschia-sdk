@@ -183,8 +183,8 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, am
 }
 
 func (k Keeper) mintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, classID string, amount sdk.Int) {
-	tokenID := collection.NewFTID(classID)
-	k.setBalance(ctx, contractID, to, tokenID, amount)
+	coins := collection.NewCoins(collection.NewFTCoin(classID, amount))
+	k.addCoins(ctx, contractID, to, coins)
 
 	// update statistics
 	supply := k.GetSupply(ctx, contractID, classID)

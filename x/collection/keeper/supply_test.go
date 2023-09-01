@@ -101,6 +101,16 @@ func (s *KeeperTestSuite) TestMintFT() {
 			}
 		})
 	}
+
+	// accumulation test
+	s.Run("accumulation test", func() {
+		ctx, _ := s.ctx.CacheContext()
+		numMints := int64(10)
+		for i := int64(1); i <= numMints; i++ {
+			s.keeper.MintFT(ctx, s.contractID, s.stranger, collection.NewCoins(collection.NewFTCoin(s.ftClassID, sdk.OneInt())))
+			s.Require().Equal(sdk.NewInt(i), s.keeper.GetBalance(ctx, s.contractID, s.stranger, collection.NewFTID(s.ftClassID)))
+		}
+	})
 }
 
 func (s *KeeperTestSuite) TestMintNFT() {
