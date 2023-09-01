@@ -6,7 +6,6 @@ import (
 
 var (
 	contractKeyPrefix    = []byte{0x10}
-	classKeyPrefix       = []byte{0x11}
 	nextClassIDKeyPrefix = []byte{0x12}
 
 	balanceKeyPrefix = []byte{0x20}

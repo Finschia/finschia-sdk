@@ -31,7 +31,7 @@ func fixFTStatistics(store storetypes.KVStore, cdc codec.BinaryCodec) error {
 			return err
 		}
 
-		if err := fixContractFTStatistics(store, cdc, contract.Id); err != nil {
+		if err := fixContractFTStatistics(store, contract.Id); err != nil {
 			return err
 		}
 	}
@@ -39,7 +39,7 @@ func fixFTStatistics(store storetypes.KVStore, cdc codec.BinaryCodec) error {
 	return nil
 }
 
-func fixContractFTStatistics(store storetypes.KVStore, cdc codec.BinaryCodec, contractID string) error {
+func fixContractFTStatistics(store storetypes.KVStore, contractID string) error {
 	supplies, err := evalContractFTSupplies(store, contractID)
 	if err != nil {
 		return err
