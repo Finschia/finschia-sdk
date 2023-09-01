@@ -107,7 +107,9 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	collection.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	collection.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
-	keeper.NewMigrator(am.keeper).Register(cfg.RegisterMigration)
+	if err := keeper.NewMigrator(am.keeper).Register(cfg.RegisterMigration); err != nil {
+		panic(err)
+	}
 }
 
 // InitGenesis performs genesis initialization for the collection module. It returns
