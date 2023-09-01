@@ -29,6 +29,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdTxAppendCCBatch(),
 		CmdTxEnqueue(),
+		CmdTxAppendSCCBatch(),
 	)
 
 	return cmd
@@ -120,5 +121,42 @@ When using '--dry-run' a key name cannot be used, only a bech32 address.
 		return nil
 	}
 
+	return cmd
+}
+
+func CmdTxAppendSCCBatch() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "append-scc-batch [from_key_or_address] [rollup_name] [scc_batch_json]",
+		Short: "append a scc batch that matches a specific cc batch",
+		Long: `append a scc batch that matches a specific cc batch.
+Note, the '--from' flag is ignored as it is implied from [from_key_or_address].
+When using '--dry-run' a key name cannot be used, only a bech32 address.`,
+		Args: cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			err := cmd.Flags().Set(flags.FlagFrom, args[0])
+			if err != nil {
+				return err
+			}
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sccBatch := new(types.SCCBatch)
+			clientCtx.Codec.MustUnmarshalJSON([]byte(args[2]), sccBatch)
+			msg := &types.MsgAppendSCCBatch{
+				FromAddress: args[0],
+				RollupName:  args[1],
+				Batch:       *sccBatch,
+			}
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
