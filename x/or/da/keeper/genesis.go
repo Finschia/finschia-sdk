@@ -37,8 +37,9 @@ func (k Keeper) InitGenesis(ctx sdktypes.Context, genState types.GenesisState) {
 // ExportGenesis returns the module's exported genesis
 func (k Keeper) ExportGenesis(ctx sdktypes.Context) *types.GenesisState {
 	return &types.GenesisState{
-		Params: k.GetParams(ctx),
-		CCList: k.GetAllCCs(ctx),
+		Params:  k.GetParams(ctx),
+		CCList:  k.GetAllCCs(ctx),
+		SCCList: k.GetAllSCCs(ctx),
 	}
 }
 
@@ -64,6 +65,24 @@ func (k Keeper) GetAllCCs(ctx sdktypes.Context) []types.CC {
 	}
 
 	return ccs
+}
+
+func (k Keeper) GetAllSCCs(ctx sdktypes.Context) []types.SCC {
+	m := make(map[string]types.SCC)
+	sccStates := k.GetAllSCCStates(ctx)
+	sccRefs := k.GetAllSCCRefs(ctx)
+
+	sccs := make([]types.SCC, len(m))
+	for k, v := range sccStates {
+		scc := types.SCC{}
+		scc.State = v
+		scc.History = sccRefs[k]
+		scc.RollupName = k
+
+		sccs = append(sccs, scc)
+	}
+
+	return sccs
 }
 
 func (k Keeper) GetAllCCRefs(ctx sdktypes.Context) map[string][]types.CCRef {
@@ -195,6 +214,60 @@ func (k Keeper) iterateAllL2BatchMaps(ctx sdktypes.Context, prefix []byte, cb fu
 		batchMap.L2Height = h
 
 		if cb(name, batchMap) {
+			break
+		}
+	}
+}
+
+func (k Keeper) GetAllSCCRefs(ctx sdktypes.Context) map[string][]types.SCCRef {
+	m := make(map[string][]types.SCCRef)
+	k.iterateAllSCCRefs(ctx, []byte{types.SCCBatchIndexPrefix}, func(rollupName string, sccRef types.SCCRef) bool {
+		m[rollupName] = append(m[rollupName], sccRef)
+		return false
+	})
+	return m
+}
+
+func (k Keeper) iterateAllSCCRefs(ctx sdktypes.Context, prefix []byte, cb func(rollupName string, sccRef types.SCCRef) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdktypes.KVStorePrefixIterator(store, prefix)
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		var sccRef types.SCCRef
+		k.cdc.MustUnmarshal(iter.Value(), &sccRef)
+		_, name, _ := types.SplitPrefixIndexKey(iter.Key())
+
+		if cb(name, sccRef) {
+			break
+		}
+	}
+}
+
+func (k Keeper) GetAllSCCStates(ctx sdktypes.Context) map[string]types.SCCState {
+	m := make(map[string]types.SCCState)
+	k.iterateAllSCCStates(ctx, []byte{types.SCCStateStoreKey}, func(rollupName string, sccState types.SCCState) bool {
+		_, ok := m[rollupName]
+		if ok {
+			panic("duplicate scc state")
+		}
+		m[rollupName] = sccState
+		return false
+	})
+	return m
+}
+
+func (k Keeper) iterateAllSCCStates(ctx sdktypes.Context, prefix []byte, cb func(rollupName string, sccState types.SCCState) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdktypes.KVStorePrefixIterator(store, prefix)
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		var sccState types.SCCState
+		k.cdc.MustUnmarshal(iter.Value(), &sccState)
+		_, name := types.SplitPrefixKey(iter.Key())
+
+		if cb(name, sccState) {
 			break
 		}
 	}
