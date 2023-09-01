@@ -91,7 +91,7 @@ func updateContractFTStatistics(store storetypes.KVStore, contractID string, sup
 		return err
 	}
 
-	for intClassID := uint64(1); intClassID < nextClassIDs.Fungible.Uint64(); intClassID++ {
+	for intClassID := uint64(0); intClassID < nextClassIDs.Fungible.Uint64(); intClassID++ {
 		classID := fmt.Sprintf("%08x", intClassID)
 
 		// update supply
@@ -104,6 +104,7 @@ func updateContractFTStatistics(store storetypes.KVStore, contractID string, sup
 			}
 			store.Set(supplyKey, bz)
 		} else {
+			supply = sdk.ZeroInt()
 			store.Delete(supplyKey)
 		}
 
