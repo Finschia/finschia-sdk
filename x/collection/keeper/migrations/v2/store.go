@@ -91,6 +91,8 @@ func updateContractFTStatistics(store storetypes.KVStore, contractID string, sup
 		return err
 	}
 
+	// In the old chains, classID of fungible tokens starts from zero
+	// In the new chains, it starts from one, but it does not hurts because amount of zero is not set to the store.
 	for intClassID := uint64(0); intClassID < nextClassIDs.Fungible.Uint64(); intClassID++ {
 		classID := fmt.Sprintf("%08x", intClassID)
 
