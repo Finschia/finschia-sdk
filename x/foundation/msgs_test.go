@@ -2,6 +2,7 @@ package foundation_test
 
 import (
 	"fmt"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"testing"
 	"time"
 
@@ -25,21 +26,12 @@ func TestMsgUpdateParams(t *testing.T) {
 		params    foundation.Params
 		valid     bool
 	}{
-		"valid msg": {
+		"handler for MsgUpdateParams removed, ValidateBasic should throw error always": {
 			authority: addrs[0],
 			params: foundation.Params{
 				FoundationTax: sdk.ZeroDec(),
 			},
-			valid: true,
-		},
-		"invalid authority": {
-			params: foundation.Params{
-				FoundationTax: sdk.ZeroDec(),
-			},
-		},
-		"invalid params": {
-			authority: addrs[0],
-			params:    foundation.Params{},
+			valid: false,
 		},
 	}
 
@@ -51,13 +43,8 @@ func TestMsgUpdateParams(t *testing.T) {
 			}
 
 			err := msg.ValidateBasic()
-			if !tc.valid {
-				require.Error(t, err)
-				return
-			}
-			require.NoError(t, err)
-
-			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+			require.Error(t, err)
+			require.ErrorIs(t, err, sdkerrors.ErrUnknownRequest)
 		})
 		msg := foundation.MsgUpdateParams{
 			addrs[0].String(),

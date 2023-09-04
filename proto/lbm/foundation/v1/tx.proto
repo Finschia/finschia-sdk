@@ -76,6 +76,7 @@ message MsgWithdrawFromTreasury {
 
 // Deprecated: MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
+  option deprecated = true;
   // authority is the address of the privileged account.
   string authority = 1;
 
@@ -86,7 +87,9 @@ message MsgUpdateParams {
 }
 
 // Deprecated: MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-message MsgUpdateParamsResponse {}
+message MsgUpdateParamsResponse {
+  option deprecated = true;
+}
 
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 message MsgWithdrawFromTreasuryResponse {}
