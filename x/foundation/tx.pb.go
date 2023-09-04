@@ -103,7 +103,7 @@ func (m *MsgFundTreasury) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFundTreasury proto.InternalMessageInfo
 
-// MsgFundTreasuryResponse is the Msg/FundTreasury response type.
+// Deprecated: MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 type MsgFundTreasuryResponse struct {
 }
 
@@ -140,7 +140,7 @@ func (m *MsgFundTreasuryResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFundTreasuryResponse proto.InternalMessageInfo
 
-// MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
+// Deprecated: MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 type MsgWithdrawFromTreasury struct {
 	// authority is the address of the privileged account.
 	Authority string                                       `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`

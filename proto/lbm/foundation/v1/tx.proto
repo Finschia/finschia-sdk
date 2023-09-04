@@ -62,10 +62,10 @@ message MsgFundTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
-// MsgFundTreasuryResponse is the Msg/FundTreasury response type.
+// Deprecated: MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 message MsgFundTreasuryResponse {}
 
-// MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
+// Deprecated: MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 message MsgWithdrawFromTreasury {
   // authority is the address of the privileged account.
   string   authority                       = 1;
