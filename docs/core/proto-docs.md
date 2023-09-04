@@ -866,6 +866,8 @@
     - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
     - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
     - [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse)
+    - [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse)
     - [MsgVote](#lbm.foundation.v1.MsgVote)
     - [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse)
     - [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury)
@@ -12884,6 +12886,34 @@ MsgUpdateMembers is the Msg/UpdateMembers request type.
 
 ### MsgUpdateMembersResponse
 MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+MsgUpdateParams is the Msg/UpdateParams request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+MsgUpdateParamsResponse is the Msg/UpdateParams response type.
 
 
 

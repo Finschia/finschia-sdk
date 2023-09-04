@@ -74,6 +74,20 @@ message MsgWithdrawFromTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  // authority is the address of the privileged account.
+  string authority = 1;
+
+  // params defines the x/foundation parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+message MsgUpdateParamsResponse {}
+
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 message MsgWithdrawFromTreasuryResponse {}
 
