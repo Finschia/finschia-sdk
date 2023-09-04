@@ -59,6 +59,22 @@ func TestMsgUpdateParams(t *testing.T) {
 
 			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
 		})
+		msg := foundation.MsgUpdateParams{
+			addrs[0].String(),
+			foundation.Params{},
+		}
+		// Note: Dummy test for coverage of deprecated message
+		_ = msg.GetSigners()
+		_ = msg.String()
+		_, _ = msg.Descriptor()
+		_ = msg.GetSignBytes()
+		_, _ = msg.Marshal()
+		msg.ProtoMessage()
+		msg.Reset()
+		_ = msg.Route()
+		_ = msg.Size()
+		_ = msg.Type()
+		_ = msg.XXX_Size()
 	}
 }
 
