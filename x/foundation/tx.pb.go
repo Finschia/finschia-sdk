@@ -103,7 +103,7 @@ func (m *MsgFundTreasury) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFundTreasury proto.InternalMessageInfo
 
-// Deprecated: MsgFundTreasuryResponse is the Msg/FundTreasury response type.
+// MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 type MsgFundTreasuryResponse struct {
 }
 
@@ -140,7 +140,7 @@ func (m *MsgFundTreasuryResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFundTreasuryResponse proto.InternalMessageInfo
 
-// Deprecated: MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
+// MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 type MsgWithdrawFromTreasury struct {
 	// authority is the address of the privileged account.
 	Authority string                                       `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
@@ -181,7 +181,7 @@ func (m *MsgWithdrawFromTreasury) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgWithdrawFromTreasury proto.InternalMessageInfo
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
+// Deprecated: MsgUpdateParams is the Msg/UpdateParams request type.
 type MsgUpdateParams struct {
 	// authority is the address of the privileged account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
@@ -224,7 +224,7 @@ func (m *MsgUpdateParams) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
 
-// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+// Deprecated: MsgUpdateParamsResponse is the Msg/UpdateParams response type.
 type MsgUpdateParamsResponse struct {
 }
 

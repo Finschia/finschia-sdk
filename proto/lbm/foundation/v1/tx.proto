@@ -62,10 +62,10 @@ message MsgFundTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
-// Deprecated: MsgFundTreasuryResponse is the Msg/FundTreasury response type.
+// MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 message MsgFundTreasuryResponse {}
 
-// Deprecated: MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
+// MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 message MsgWithdrawFromTreasury {
   // authority is the address of the privileged account.
   string   authority                       = 1;
@@ -74,7 +74,7 @@ message MsgWithdrawFromTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
+// Deprecated: MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
   // authority is the address of the privileged account.
   string authority = 1;
@@ -85,7 +85,7 @@ message MsgUpdateParams {
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
-// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+// Deprecated: MsgUpdateParamsResponse is the Msg/UpdateParams response type.
 message MsgUpdateParamsResponse {}
 
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.

@@ -12694,7 +12694,7 @@ MsgFundTreasury is the Msg/FundTreasury request type.
 <a name="lbm.foundation.v1.MsgFundTreasuryResponse"></a>
 
 ### MsgFundTreasuryResponse
-Deprecated: MsgFundTreasuryResponse is the Msg/FundTreasury response type.
+MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 
 
 
@@ -12895,7 +12895,7 @@ MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
 <a name="lbm.foundation.v1.MsgUpdateParams"></a>
 
 ### MsgUpdateParams
-MsgUpdateParams is the Msg/UpdateParams request type.
+Deprecated: MsgUpdateParams is the Msg/UpdateParams request type.
 
 
 | Field | Type | Label | Description |
@@ -12913,7 +12913,7 @@ NOTE: All parameters must be supplied. |
 <a name="lbm.foundation.v1.MsgUpdateParamsResponse"></a>
 
 ### MsgUpdateParamsResponse
-MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+Deprecated: MsgUpdateParamsResponse is the Msg/UpdateParams response type.
 
 
 
@@ -12952,7 +12952,7 @@ MsgVoteResponse is the Msg/Vote response type.
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasury"></a>
 
 ### MsgWithdrawFromTreasury
-Deprecated: MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
+MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 
 
 | Field | Type | Label | Description |
