@@ -9,6 +9,34 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/codec"
 )
 
+var _ sdk.Msg = (*MsgUpdateParams)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgUpdateParams) ValidateBasic() error {
+	return sdkerrors.ErrUnknownRequest.Wrapf("unrecognized message route: %s", m.Route())
+}
+
+// GetSigners implements Msg.
+func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgUpdateParams) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgUpdateParams) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
 // ValidateBasic implements Msg.
