@@ -12895,7 +12895,8 @@ MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
 <a name="lbm.foundation.v1.MsgUpdateParams"></a>
 
 ### MsgUpdateParams
-Deprecated: MsgUpdateParams is the Msg/UpdateParams request type.
+MsgUpdateParams is the Msg/UpdateParams request type.
+NOTE: This is for unmarshal purpose only not for tx
 
 
 | Field | Type | Label | Description |
@@ -12913,7 +12914,8 @@ NOTE: All parameters must be supplied. |
 <a name="lbm.foundation.v1.MsgUpdateParamsResponse"></a>
 
 ### MsgUpdateParamsResponse
-Deprecated: MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+NOTE: This is for unmarshal purpose only not for tx
 
 
 

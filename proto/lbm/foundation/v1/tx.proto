@@ -74,9 +74,9 @@ message MsgWithdrawFromTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coins"];
 }
 
-// Deprecated: MsgUpdateParams is the Msg/UpdateParams request type.
+// MsgUpdateParams is the Msg/UpdateParams request type.
+// NOTE: This is for unmarshal purpose only not for tx
 message MsgUpdateParams {
-  option deprecated = true;
   // authority is the address of the privileged account.
   string authority = 1;
 
@@ -86,10 +86,9 @@ message MsgUpdateParams {
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
-// Deprecated: MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-message MsgUpdateParamsResponse {
-  option deprecated = true;
-}
+// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+// NOTE: This is for unmarshal purpose only not for tx
+message MsgUpdateParamsResponse {}
 
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 message MsgWithdrawFromTreasuryResponse {}
