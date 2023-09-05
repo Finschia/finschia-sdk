@@ -182,7 +182,7 @@ func (m *MsgWithdrawFromTreasury) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgWithdrawFromTreasury proto.InternalMessageInfo
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
-// NOTE: This is for unmarshal purpose only not for tx
+// NOTE: This is not for tx
 type MsgUpdateParams struct {
 	// authority is the address of the privileged account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
@@ -226,7 +226,7 @@ func (m *MsgUpdateParams) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
 
 // MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-// NOTE: This is for unmarshal purpose only not for tx
+// NOTE: This is not for tx
 type MsgUpdateParamsResponse struct {
 }
 

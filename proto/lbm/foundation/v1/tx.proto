@@ -75,7 +75,7 @@ message MsgWithdrawFromTreasury {
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
-// NOTE: This is for unmarshal purpose only not for tx
+// NOTE: This is not for tx
 message MsgUpdateParams {
   // authority is the address of the privileged account.
   string authority = 1;
@@ -87,7 +87,7 @@ message MsgUpdateParams {
 }
 
 // MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-// NOTE: This is for unmarshal purpose only not for tx
+// NOTE: This is not for tx
 message MsgUpdateParamsResponse {}
 
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.

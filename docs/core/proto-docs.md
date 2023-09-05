@@ -12896,7 +12896,7 @@ MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
 
 ### MsgUpdateParams
 MsgUpdateParams is the Msg/UpdateParams request type.
-NOTE: This is for unmarshal purpose only not for tx
+NOTE: This is not for tx
 
 
 | Field | Type | Label | Description |
@@ -12915,7 +12915,7 @@ NOTE: All parameters must be supplied. |
 
 ### MsgUpdateParamsResponse
 MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-NOTE: This is for unmarshal purpose only not for tx
+NOTE: This is not for tx
 
 
 
