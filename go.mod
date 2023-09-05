@@ -5,7 +5,7 @@ module github.com/Finschia/finschia-rdk
 require (
 	github.com/Finschia/finschia-sdk v0.47.0-rc7.0.20230825075051-0d2a3d632ad8
 	github.com/Finschia/ostracon v1.1.2-0.20230825070344-b9cf421a361e
-	github.com/Finschia/ramus v0.7.5-0.20230828070458-5d4b38bbce19
+	github.com/Finschia/ramus v0.7.5-0.20230904043153-17c20572637d
 	github.com/VictoriaMetrics/fastcache v1.12.1
 	github.com/btcsuite/btcd v0.22.1
 	github.com/coinbase/rosetta-sdk-go v0.8.3
