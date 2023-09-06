@@ -28,6 +28,7 @@ Types of changes (Stanzas):
 "Bug Fixes" for any bug fixes.
 "Client Breaking" for breaking Protobuf, gRPC and REST routes used by end-users.
 "CLI Breaking" for breaking CLI commands.
+"Event Breaking" for breaking events.
 "API Breaking" for breaking exported APIs used by developers building on SDK.
 "State Machine Breaking" for any changes that result in a different AppState given same genesisState and txList.
 Ref: https://keepachangelog.com/en/1.0.0/
@@ -49,6 +50,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
+
+### Event Breaking
 * (refactor) [\#1063](https://github.com/Finschia/finschia-sdk/pull/1063) Automate EventTypeMessage inclusion in every message execution (backport cosmos/cosmos-sdk#13532)
 * (x/bank) [#1066](https://github.com/Finschia/finschia-sdk/pull/1066) Remove message events including `sender` attribute whose information is already present in the relevant events (backport cosmos/cosmos#17273)
 
