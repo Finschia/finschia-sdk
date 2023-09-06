@@ -354,6 +354,12 @@ func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	commitID := app.cms.Commit()
 	app.logger.Info("commit synced", "commit", fmt.Sprintf("%X", commitID))
 
+	// Reset the Check state to the latest committed.
+	//
+	// NOTE: This is safe because Tendermint holds a lock on the mempool for
+	// Commit. Use the header from this latest block.
+	app.setCheckState(header)
+
 	// empty/reset the deliver state
 	app.deliverState = nil
 
