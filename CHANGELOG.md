@@ -66,7 +66,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#1105](https://github.com/Finschia/finschia-sdk/pull/1105) Add minted coins to balance in x/collection MsgMintFT
 * (x/collection) [\#1106](https://github.com/Finschia/finschia-sdk/pull/1106) Support x/collection migration on old chains
 
-### Event Breaking
+### Event Breaking Changes
 * (refactor) [\#1090](https://github.com/Finschia/finschia-sdk/pull/1090) Automate EventTypeMessage inclusion in every message execution (backport #1063)
 * (x/bank) [#1093](https://github.com/Finschia/finschia-sdk/pull/1093) Remove message events including `sender` attribute whose information is already present in the relevant events (backport #1066)
 * (baseapp) [\#1092](https://github.com/finschia/finschia-sdk/pull/1092) Do not add `module` attribute in case of ibc messages (backport #1079)
