@@ -206,6 +206,24 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	require.Equal(t, maxGas, newCtx.ConsensusParams().Block.MaxGas)
 }
 
+func TestBaseAppCheckStateUpdated(t *testing.T) {
+	t.Parallel()
+
+	logger := defaultLogger()
+	db := dbm.NewMemDB()
+	name := t.Name()
+	app := NewBaseApp(name, logger, db, nil)
+	app.init()
+
+	// block exec
+	for i := 1; i <= 10; i++ {
+		app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: int64(i)}})
+		app.Commit()
+	}
+
+	require.Equal(t, int64(10), app.checkState.ctx.BlockHeight())
+}
+
 type paramStore struct {
 	db *dbm.MemDB
 }
