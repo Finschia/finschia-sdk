@@ -1,6 +1,5 @@
 #!/bin/bash
 L2BINARYNAME=rollupd
-GOPATH=$HOME/go
 L1_KEYRING_DIR=~/.simapp
 L2_KEYRING_DIR=~/.l2simapp
 
