@@ -23,8 +23,7 @@ const (
 	CCL2HeightToBatchPrefix = byte(0x14)
 
 	SCCStateStoreKey    = byte(0x20)
-	SCCMetadataKey      = byte(0x21)
-	SCCBatchIndexPrefix = byte(0x22)
+	SCCBatchIndexPrefix = byte(0x21)
 )
 
 func GetCCBatchIndexKey(rollupName string, i uint64) []byte {

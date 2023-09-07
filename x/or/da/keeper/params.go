@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	"github.com/Finschia/finschia-sdk/x/or/da/types"
+	"time"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/or/da/types"
 )
 
 // GetParams get all parameters as types.Params
@@ -56,12 +57,12 @@ func (k Keeper) SCCBatchMaxBytes(ctx sdk.Context) uint64 {
 	return params.SCCBatchMaxBytes
 }
 
-func (k Keeper) FraudProofWindow(ctx sdk.Context) uint64 {
+func (k Keeper) FraudProofWindow(ctx sdk.Context) time.Duration {
 	params := k.GetParams(ctx)
-	return params.FraudProofWindow
+	return time.Second * time.Duration(params.FraudProofWindow)
 }
 
-func (k Keeper) SequencerPublishWindow(ctx sdk.Context) uint64 {
+func (k Keeper) SequencerPublishWindow(ctx sdk.Context) time.Duration {
 	params := k.GetParams(ctx)
-	return params.SequencerPublishWindow
+	return time.Second * time.Duration(params.SequencerPublishWindow)
 }

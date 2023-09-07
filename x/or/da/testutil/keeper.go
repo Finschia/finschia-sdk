@@ -19,7 +19,7 @@ import (
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 	"github.com/Finschia/finschia-sdk/x/or/da/keeper"
 	"github.com/Finschia/finschia-sdk/x/or/da/types"
-	rolluptypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
+	rutypes "github.com/Finschia/finschia-sdk/x/or/rollup/types"
 )
 
 func DaKeeper(t testing.TB, encCfg simappparams.EncodingConfig) (keeper.Keeper, sdk.Context, sdk.StoreKey) {
@@ -37,20 +37,16 @@ func DaKeeper(t testing.TB, encCfg simappparams.EncodingConfig) (keeper.Keeper, 
 	accountKeeprMock := NewMockAccountKeeper(ctrl)
 	accountKeeprMock.EXPECT().GetParams(gomock.Any()).Return(authtypes.DefaultParams()).AnyTimes()
 	rollupKeeperMock := NewMockRollupKeeper(ctrl)
-	rollupKeeperMock.EXPECT().GetAllRollup(gomock.Any()).Return(
-		[]rolluptypes.Rollup{
-			{
-				RollupName:     "rollup1",
-				Creator:        "creator1",
-				L1ToL2GasRatio: 30,
-				PermissionedAddresses: rolluptypes.Sequencers{
-					Addresses: []string{"sequencer1"},
-				},
+	rollupKeeperMock.EXPECT().GetAllRollup(gomock.Any()).Return([]rutypes.Rollup{
+		{
+			RollupName:     "rollup1",
+			L1ToL2GasRatio: 100,
+			PermissionedAddresses: rutypes.Sequencers{
+				Addresses: []string{"addr1", "addr2"},
 			},
+			Creator: "creator1",
 		},
-	).AnyTimes()
-
-	simappparams.MakeTestEncodingConfig()
+	}).AnyTimes()
 	k := keeper.NewKeeper(
 		encCfg.TxConfig,
 		cdc,

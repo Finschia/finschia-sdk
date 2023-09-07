@@ -32018,16 +32018,16 @@ paths:
                     title: 2. SCC-related
                   fraud_proof_window:
                     type: string
-                    format: uint64
+                    format: int64
                     title: >-
                       Number of seconds that the verifier is allowed to submit a
                       fraud proof.
 
-                      Currnet scc batch header timestamp + fraud_proof_window =
-                      challenge period
+                      Currnet scc batch header timestamp +
+                      fraud_proof_window(seconds) = challenge period
                   sequencer_publish_window:
                     type: string
-                    format: uint64
+                    format: int64
                     title: >-
                       Number of seconds that the sequencer is exclusively
                       allowed to post state roots
@@ -32056,6 +32056,346 @@ paths:
                     value:
                       type: string
                       format: byte
+      tags:
+        - Query
+  '/finschia/or/da/v1/scc/lst/{rollup_name}':
+    get:
+      operationId: LastSequencerTimestamp
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              last_sequencer_submit:
+                type: string
+                format: date-time
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: rollup_name
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/finschia/or/da/v1/scc/ref/{rollup_name}/{batch_height}':
+    get:
+      operationId: SCCRef
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ref:
+                type: object
+                properties:
+                  ref:
+                    type: object
+                    properties:
+                      total_frames:
+                        type: string
+                        format: uint64
+                        description: Reference for accessing batch data.
+                      batch_size:
+                        type: integer
+                        format: int64
+                        description: Number of AppHash(ISRs) in the batch.
+                      deadline:
+                        type: string
+                        format: date-time
+                        description: >-
+                          deadline is data to determine if this batch is within
+                          the challenge period.
+                      batch_root:
+                        type: string
+                        format: byte
+                        description: Merkle Root of ISRs.
+                      IntermediateStateRoots:
+                        type: array
+                        items:
+                          type: string
+                          format: byte
+                    description: >-
+                      SCCRef is a data type that forms an element of State
+                      Commitment Chain.
+                  is_confirmed:
+                    type: boolean
+                    format: boolean
+                description: >-
+                  SCCRes is a data type including information on whether the
+                  corresponding SCC element is confirmed.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: rollup_name
+          in: path
+          required: true
+          type: string
+        - name: batch_height
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/finschia/or/da/v1/scc/refs/{rollup_name}':
+    get:
+      operationId: SCCRefs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              refs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    ref:
+                      type: object
+                      properties:
+                        total_frames:
+                          type: string
+                          format: uint64
+                          description: Reference for accessing batch data.
+                        batch_size:
+                          type: integer
+                          format: int64
+                          description: Number of AppHash(ISRs) in the batch.
+                        deadline:
+                          type: string
+                          format: date-time
+                          description: >-
+                            deadline is data to determine if this batch is
+                            within the challenge period.
+                        batch_root:
+                          type: string
+                          format: byte
+                          description: Merkle Root of ISRs.
+                        IntermediateStateRoots:
+                          type: array
+                          items:
+                            type: string
+                            format: byte
+                      description: >-
+                        SCCRef is a data type that forms an element of State
+                        Commitment Chain.
+                    is_confirmed:
+                      type: boolean
+                      format: boolean
+                  description: >-
+                    SCCRes is a data type including information on whether the
+                    corresponding SCC element is confirmed.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: rollup_name
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/finschia/or/da/v1/scc/state/{rollup_name}':
+    get:
+      operationId: SCCState
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              state:
+                type: object
+                properties:
+                  base:
+                    type: string
+                    format: uint64
+                    description: >-
+                      Assumed to contain all contiguous batches between base and
+                      height (inclusive).
+                  height:
+                    type: string
+                    format: uint64
+                  last_sequencer_submit:
+                    type: string
+                    format: date-time
+                    description: The latest batch timestamp when the sequencer submits.
+                description: BatchChainState is the state of target batch chain.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: rollup_name
+          in: path
+          required: true
+          type: string
       tags:
         - Query
 definitions:
@@ -54057,16 +54397,16 @@ definitions:
         title: 2. SCC-related
       fraud_proof_window:
         type: string
-        format: uint64
+        format: int64
         title: >-
           Number of seconds that the verifier is allowed to submit a fraud
           proof.
 
-          Currnet scc batch header timestamp + fraud_proof_window = challenge
-          period
+          Currnet scc batch header timestamp + fraud_proof_window(seconds) =
+          challenge period
       sequencer_publish_window:
         type: string
-        format: uint64
+        format: int64
         title: >-
           Number of seconds that the sequencer is exclusively allowed to post
           state roots
@@ -54192,6 +54532,12 @@ definitions:
               processed_l2block is the last l2block height that has been
               processed by L1.
         description: BatchChainState is the state of target batch chain.
+  finschia.or.da.v1.QueryLastSequencerTimestampResponse:
+    type: object
+    properties:
+      last_sequencer_submit:
+        type: string
+        format: date-time
   finschia.or.da.v1.QueryMappedBatchResponse:
     type: object
     properties:
@@ -54271,16 +54617,16 @@ definitions:
             title: 2. SCC-related
           fraud_proof_window:
             type: string
-            format: uint64
+            format: int64
             title: >-
               Number of seconds that the verifier is allowed to submit a fraud
               proof.
 
-              Currnet scc batch header timestamp + fraud_proof_window =
+              Currnet scc batch header timestamp + fraud_proof_window(seconds) =
               challenge period
           sequencer_publish_window:
             type: string
-            format: uint64
+            format: int64
             title: >-
               Number of seconds that the sequencer is exclusively allowed to
               post state roots
@@ -54404,6 +54750,135 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  finschia.or.da.v1.QuerySCCRefResponse:
+    type: object
+    properties:
+      ref:
+        type: object
+        properties:
+          ref:
+            type: object
+            properties:
+              total_frames:
+                type: string
+                format: uint64
+                description: Reference for accessing batch data.
+              batch_size:
+                type: integer
+                format: int64
+                description: Number of AppHash(ISRs) in the batch.
+              deadline:
+                type: string
+                format: date-time
+                description: >-
+                  deadline is data to determine if this batch is within the
+                  challenge period.
+              batch_root:
+                type: string
+                format: byte
+                description: Merkle Root of ISRs.
+              IntermediateStateRoots:
+                type: array
+                items:
+                  type: string
+                  format: byte
+            description: >-
+              SCCRef is a data type that forms an element of State Commitment
+              Chain.
+          is_confirmed:
+            type: boolean
+            format: boolean
+        description: >-
+          SCCRes is a data type including information on whether the
+          corresponding SCC element is confirmed.
+  finschia.or.da.v1.QuerySCCRefsResponse:
+    type: object
+    properties:
+      refs:
+        type: array
+        items:
+          type: object
+          properties:
+            ref:
+              type: object
+              properties:
+                total_frames:
+                  type: string
+                  format: uint64
+                  description: Reference for accessing batch data.
+                batch_size:
+                  type: integer
+                  format: int64
+                  description: Number of AppHash(ISRs) in the batch.
+                deadline:
+                  type: string
+                  format: date-time
+                  description: >-
+                    deadline is data to determine if this batch is within the
+                    challenge period.
+                batch_root:
+                  type: string
+                  format: byte
+                  description: Merkle Root of ISRs.
+                IntermediateStateRoots:
+                  type: array
+                  items:
+                    type: string
+                    format: byte
+              description: >-
+                SCCRef is a data type that forms an element of State Commitment
+                Chain.
+            is_confirmed:
+              type: boolean
+              format: boolean
+          description: >-
+            SCCRes is a data type including information on whether the
+            corresponding SCC element is confirmed.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  finschia.or.da.v1.QuerySCCStateResponse:
+    type: object
+    properties:
+      state:
+        type: object
+        properties:
+          base:
+            type: string
+            format: uint64
+            description: >-
+              Assumed to contain all contiguous batches between base and height
+              (inclusive).
+          height:
+            type: string
+            format: uint64
+          last_sequencer_submit:
+            type: string
+            format: date-time
+            description: The latest batch timestamp when the sequencer submits.
+        description: BatchChainState is the state of target batch chain.
   finschia.or.da.v1.QueueTxState:
     type: object
     properties:
@@ -54431,3 +54906,83 @@ definitions:
        - QUEUE_TX_SUBMITTED: QUEUE_TX_SUBMITTED defines the status where the Tx has been submitted to L1 batch.
        - QUEUE_TX_EXPIRED: QUEUE_TX_EXPIRED defines the status where the Tx has not been submitted until the expiration deadline.
       Sequencers get penalty if queued txs reach this status.
+  finschia.or.da.v1.SCCRef:
+    type: object
+    properties:
+      total_frames:
+        type: string
+        format: uint64
+        description: Reference for accessing batch data.
+      batch_size:
+        type: integer
+        format: int64
+        description: Number of AppHash(ISRs) in the batch.
+      deadline:
+        type: string
+        format: date-time
+        description: >-
+          deadline is data to determine if this batch is within the challenge
+          period.
+      batch_root:
+        type: string
+        format: byte
+        description: Merkle Root of ISRs.
+      IntermediateStateRoots:
+        type: array
+        items:
+          type: string
+          format: byte
+    description: SCCRef is a data type that forms an element of State Commitment Chain.
+  finschia.or.da.v1.SCCRes:
+    type: object
+    properties:
+      ref:
+        type: object
+        properties:
+          total_frames:
+            type: string
+            format: uint64
+            description: Reference for accessing batch data.
+          batch_size:
+            type: integer
+            format: int64
+            description: Number of AppHash(ISRs) in the batch.
+          deadline:
+            type: string
+            format: date-time
+            description: >-
+              deadline is data to determine if this batch is within the
+              challenge period.
+          batch_root:
+            type: string
+            format: byte
+            description: Merkle Root of ISRs.
+          IntermediateStateRoots:
+            type: array
+            items:
+              type: string
+              format: byte
+        description: SCCRef is a data type that forms an element of State Commitment Chain.
+      is_confirmed:
+        type: boolean
+        format: boolean
+    description: >-
+      SCCRes is a data type including information on whether the corresponding
+      SCC element is confirmed.
+  finschia.or.da.v1.SCCState:
+    type: object
+    properties:
+      base:
+        type: string
+        format: uint64
+        description: >-
+          Assumed to contain all contiguous batches between base and height
+          (inclusive).
+      height:
+        type: string
+        format: uint64
+      last_sequencer_submit:
+        type: string
+        format: date-time
+        description: The latest batch timestamp when the sequencer submits.
+    description: BatchChainState is the state of target batch chain.

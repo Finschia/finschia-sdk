@@ -31,6 +31,10 @@ func GetQueryCmd() *cobra.Command {
 		CmdQueueTx(),
 		CmdQueueTxs(),
 		CmdMappedBatch(),
+		CmdSCCState(),
+		CmdSCCRef(),
+		CmdSCCRefs(),
+		CmdLastSequencerTimestamp(),
 	)
 	return cmd
 }
@@ -265,6 +269,117 @@ func CmdMappedBatch() *cobra.Command {
 		},
 	}
 
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSCCState() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "scc-state [rollup-name]",
+		Short: "shows the state of the specific rollup's state commitment chain",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.SCCState(cmd.Context(), &types.QuerySCCStateRequest{
+				RollupName: args[0],
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSCCRef() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "scc-ref [rollup-name] [batch-height]",
+		Short: "shows the reference of the specific batch in the specific rollup's state commitment chain",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			h, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+			res, err := queryClient.SCCRef(cmd.Context(), &types.QuerySCCRefRequest{
+				RollupName:  args[0],
+				BatchHeight: h,
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSCCRefs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "scc-refs [rollup-name]",
+		Short: "shows all references of the specific rollup's state commitment chain",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.SCCRefs(cmd.Context(), &types.QuerySCCRefsRequest{
+				RollupName: args[0],
+				Pagination: pageReq,
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "canonical chain references")
+
+	return cmd
+}
+
+func CmdLastSequencerTimestamp() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "scc-last-sequencer-submission [rollup-name]",
+		Short: "shows the last sequencer's scc submission timestamp of the specific rollup",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.LastSequencerTimestamp(cmd.Context(), &types.QueryLastSequencerTimestampRequest{
+				RollupName: args[0],
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd

@@ -2,6 +2,7 @@ syntax = "proto3";
 package finschia.or.da.v1;
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
 import "finschia/or/da/v1/params.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/or/da/types";
@@ -28,4 +29,19 @@ message EventSaveQueueTx {
   uint64 next_queue_index = 2;
   uint64 extra_consumed_gas = 3;
   uint64 l2gas_limit = 4;
+}
+
+message EventAppendSCCBatch {
+  string rollup_name = 1;
+  uint64 batch_index = 2;
+  uint64 total_frames = 3;
+  uint32 batch_size = 4;
+  bytes batch_root = 5;
+  google.protobuf.Timestamp last_sequencer_submit = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+}
+
+message EventDeleteSCCBatch {
+  string rollup_name = 1;
+  uint64 new_batch_index = 2;
 }
