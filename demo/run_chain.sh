@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Remove data
-pkill ./L1/simd-darwin-arm64
-rm -rf ~/.simapp
-
 # Prepare chain
 TEST_MNEMONIC="mind flame tobacco sense move hammer drift crime ring globe art gaze cinnamon helmet cruise special produce notable negative wait path scrap recall have"
 BASE_DIR=~/.simapp
