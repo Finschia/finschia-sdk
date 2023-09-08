@@ -420,6 +420,61 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 	}
 }
 
+func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
+	}
+
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				foundation.CensorshipAuthorityGovernance.String(),
+			},
+			true,
+		},
+		"wrong number of args": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				foundation.CensorshipAuthorityGovernance.String(),
+				"extra",
+			},
+			false,
+		},
+		"invalid new authority": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				"invalid-new-authority",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdUpdateCensorship()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res txtypes.Tx
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
+		})
+	}
+}
+
 func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
