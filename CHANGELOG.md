@@ -36,26 +36,18 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
-## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.47.2...HEAD)
+## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.47.3...HEAD)
 
 ### Features
 
 ### Improvements
 
 ### Bug Fixes
-* (x/foundation) [\#1061](https://github.com/Finschia/finschia-sdk/pull/1061) Make x/foundation MsgExec propagate events (backport #1053)
-* (baseapp) [\#1075](https://github.com/cosmos/cosmos-sdk/pull/1075) Add `events.GetAttributes` and `event.GetAttribute` methods to simplify the retrieval of an attribute from event(s) (backport cosmos/cosmos-sdk#14356)
-* (baseapp) [\#1079](https://github.com/cosmos/cosmos-sdk/pull/1079) Do not add `module` attribute in case of ibc messages
 
 ### Removed
 
 ### Breaking Changes
 
-### Event Breaking Changes
-* (refactor) [\#1063](https://github.com/Finschia/finschia-sdk/pull/1063) Automate EventTypeMessage inclusion in every message execution (backport cosmos/cosmos-sdk#13532)
-* (x/bank) [#1066](https://github.com/Finschia/finschia-sdk/pull/1066) Remove message events including `sender` attribute whose information is already present in the relevant events (backport cosmos/cosmos#17273)
-
 ### Build, CI
 
 ### Document Updates
-* (docs) [\#1081](https://github.com/Finschia/finschia-sdk/pull/1081) Document default events
