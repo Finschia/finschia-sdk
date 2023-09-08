@@ -589,7 +589,7 @@ Parameters:
 			}
 
 			msg := foundation.MsgUpdateCensorship{
-				Authority:  args[0],
+				Authority: args[0],
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: args[1],
 					Authority:  newAuthority,
