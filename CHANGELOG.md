@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 * (third_party/proto) [\#1037](https://github.com/Finschia/finschia-sdk/pull/1037) change the proof.proto path to third_party/proto/confio
 * (ostracon) [\#1057](https://github.com/Finschia/finschia-sdk/pull/1057) Bump up Ostracon from to v1.1.1
+* (feat) [\#1121](https://github.com/Finschia/finschia-sdk/pull/1121) Add update-censorship cmd to x/foundation cli
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) fix a bug(unable to connect nano S plus ledger on ubuntu)
