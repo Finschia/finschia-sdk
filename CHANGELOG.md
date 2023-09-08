@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#1072](https://github.com/Finschia/finschia-sdk/pull/1072) Address generation of the empty coins in x/foundation (backport #952)
 * (cli) [\#1086](https://github.com/Finschia/finschia-sdk/pull/1086) Fix for redundant key generation. With running kms, generating priv-key is unnecessary.
 * (ostracon) [\#1089](https://github.com/Finschia/finschia-sdk/pull/1089) Bump up ostracon from v1.1.1 to v1.1.1-449aa3148b12
+* (ostracon) [\#1099](https://github.com/Finschia/finschia-sdk/pull/1099) feat!: remove libsodium vrf library.
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) Fix a bug(unable to connect nano S plus ledger on ubuntu)
@@ -60,7 +61,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
-* (ostracon) [\#1099](https://github.com/Finschia/finschia-sdk/pull/1099) feat!: remove libsodium vrf library.
 
 ### State Machine Breaking
 * (x/foundation) [\#999](https://github.com/Finschia/finschia-sdk/pull/999) migrate x/foundation FoundationTax into x/params
