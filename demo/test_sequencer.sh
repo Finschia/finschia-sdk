@@ -61,18 +61,18 @@ else
     echo "send failed..."
 fi
 
-## NOTE: There is a bug in the current Ramus that only validators can execute tx.
-# ${L2BINARYNAME} keys add bob --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test
-# sleep 1
-# BOB_ADDR=$(${L2BINARYNAME} keys show bob -a --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test)
-# echo $ALICE_ADDR
-# ${L2BINARYNAME} tx bank send $ALICE_ADDR $BOB_ADDR 10stake --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test --chain-id $L2_CHAIN_ID -y
-# sleep 30
+# NOTE: There is a bug in the current Ramus that only validators can execute tx.
+${L2BINARYNAME} keys add bob --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test
+sleep 1
+BOB_ADDR=$(${L2BINARYNAME} keys show bob -a --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test)
+echo $ALICE_ADDR
+${L2BINARYNAME} tx bank send $ALICE_ADDR $BOB_ADDR 10stake --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test --chain-id $L2_CHAIN_ID -y
+sleep 30
 
-# # Check alice's balance
-# BALANCE=$(${L2BINARYNAME} query bank balances $BOB_ADDR --home $L2_KEYRING_DIR/$SEQUENCER_DIR --output json | jq -r '.balances[0].amount')
-# if [ 10 -eq ${BALANCE} ]; then
-#     echo "send success!"
-# else
-#     echo "send failed..."
-# fi
+# Check alice's balance
+BALANCE=$(${L2BINARYNAME} query bank balances $BOB_ADDR --home $L2_KEYRING_DIR/$SEQUENCER_DIR --output json | jq -r '.balances[0].amount')
+if [ 10 -eq ${BALANCE} ]; then
+    echo "send success!"
+else
+    echo "send failed..."
+fi
