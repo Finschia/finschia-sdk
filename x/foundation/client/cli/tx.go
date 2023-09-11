@@ -92,6 +92,16 @@ func execFromString(execStr string) foundation.Exec {
 	return exec
 }
 
+func normalizeVoteOption(option string) string {
+	prefix := getEnumPrefix(foundation.VoteOption_name[0])
+	candidate := strings.ToUpper(prefix + option)
+	if _, ok := foundation.VoteOption_value[candidate]; ok {
+		return candidate
+	}
+
+	return option
+}
+
 func normalizeCensorshipAuthority(option string) string {
 	prefix := getEnumPrefix(foundation.CensorshipAuthority_name[0])
 	candidate := strings.ToUpper(prefix + option)
@@ -485,11 +495,11 @@ Parameters:
     proposal-id: unique ID of the proposal
     voter: voter account addresses.
     vote-option: choice of the voter(s)
-        VOTE_OPTION_UNSPECIFIED: no-op
-        VOTE_OPTION_NO: no
-        VOTE_OPTION_YES: yes
-        VOTE_OPTION_ABSTAIN: abstain
-        VOTE_OPTION_NO_WITH_VETO: no-with-veto
+        unspecified: no-op
+        no: no
+        yes: yes
+        abstain: abstain
+        no_with_veto: no-with-veto
     metadata: metadata for the vote
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -508,7 +518,7 @@ Parameters:
 				return err
 			}
 
-			option, err := voteOptionFromString(args[2])
+			option, err := voteOptionFromString(normalizeVoteOption(args[2]))
 			if err != nil {
 				return err
 			}

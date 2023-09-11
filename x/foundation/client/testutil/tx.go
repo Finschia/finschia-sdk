@@ -335,7 +335,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			[]string{
 				fmt.Sprint(id),
 				s.permanentMember.String(),
-				"VOTE_OPTION_YES",
+				foundation.VOTE_OPTION_YES.String(),
+				"test vote",
+			},
+			true,
+		},
+		"valid abbreviation": {
+			[]string{
+				fmt.Sprint(id),
+				s.permanentMember.String(),
+				"yes",
 				"test vote",
 			},
 			true,
@@ -344,7 +353,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			[]string{
 				fmt.Sprint(id),
 				s.permanentMember.String(),
-				"VOTE_OPTION_YES",
+				foundation.VOTE_OPTION_YES.String(),
 				"test vote",
 				"extra",
 			},
