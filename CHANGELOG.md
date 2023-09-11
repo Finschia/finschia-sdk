@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Build, CI
 * (build,ci) [\#1043](https://github.com/Finschia/finschia-sdk/pull/1043) Update golang version to 1.20
+* (ci) [\#1078](https://github.com/Finschia/finschia-sdk/pull/1078) fix tag comments in github actions workflow docker.yml
 
 ### Document Updates
 * (readme) [\#997](https://github.com/finschia/finschia-sdk/pull/997) fix swagger url
