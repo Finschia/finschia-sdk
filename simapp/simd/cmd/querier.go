@@ -8,11 +8,11 @@ import (
 	"github.com/ulbqb/statelesskit/querier"
 )
 
-func SetRoute(db dbm.DB) func(*baseapp.BaseApp) {
+func SetCustomStoreQueryRoute(db dbm.DB) func(*baseapp.BaseApp) {
 	return func(bapp *baseapp.BaseApp) {
-		preimageQuerier := func(_ sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
-			return querier.MakePreimageQuerier(db)(path, req)
+		customStoreQuerier := func(_ sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
+			return querier.MakeCustomStoreQuerier(db)(path, req)
 		}
-		bapp.QueryRouter().AddRoute("preimage", preimageQuerier)
+		bapp.QueryRouter().AddRoute("store", customStoreQuerier)
 	}
 }
