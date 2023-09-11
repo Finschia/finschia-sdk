@@ -438,6 +438,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 			},
 			true,
 		},
+		"valid abbreviation": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				"governance",
+			},
+			true,
+		},
 		"wrong number of args": {
 			[]string{
 				s.authority.String(),

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -89,6 +90,22 @@ func execFromString(execStr string) foundation.Exec {
 		exec = foundation.Exec_EXEC_TRY
 	}
 	return exec
+}
+
+func normalizeCensorshipAuthority(option string) string {
+	prefix := getEnumPrefix(foundation.CensorshipAuthority_name[0])
+	candidate := strings.ToUpper(prefix + option)
+	if _, ok := foundation.CensorshipAuthority_value[candidate]; ok {
+		return candidate
+	}
+
+	return option
+}
+
+func getEnumPrefix(str string) string {
+	delimiter := "_"
+	splitted := strings.Split(str, delimiter)
+	return strings.Join(splitted[:len(splitted) - 1], delimiter) + delimiter
 }
 
 // VoteOptionFromString returns a VoteOption from a string. It returns an error
@@ -569,9 +586,9 @@ Parameters:
     authority: the current authority of the censorship
     msg-type-url: the message type url of the censorship
     new-authority: a new authority of the censorship
-        CENSORSHIP_AUTHORITY_UNSPECIFIED: no authority, which means removing the censorship
-        CENSORSHIP_AUTHORITY_GOVERNANCE: x/gov
-        CENSORSHIP_AUTHORITY_FOUNDATION: x/foundation
+        unspecified: no authority, which means removing the censorship
+        governance: x/gov
+        foundation: x/foundation
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := validateGenerateOnly(cmd); err != nil {
@@ -583,7 +600,7 @@ Parameters:
 				return err
 			}
 
-			newAuthority, err := censorshipAuthorityFromString(args[2])
+			newAuthority, err := censorshipAuthorityFromString(normalizeCensorshipAuthority(args[2]))
 			if err != nil {
 				return err
 			}
