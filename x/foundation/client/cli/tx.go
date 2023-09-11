@@ -93,23 +93,24 @@ func execFromString(execStr string) foundation.Exec {
 }
 
 func normalizeVoteOption(option string) string {
-	prefix := getEnumPrefix(foundation.VoteOption_name[0])
-	candidate := strings.ToUpper(prefix + option)
-	if _, ok := foundation.VoteOption_value[candidate]; ok {
-		return candidate
-	}
-
-	return option
+	normalizer := normalizer(foundation.VoteOption_name, foundation.VoteOption_value)
+	return normalizer(option)
 }
 
-func normalizeCensorshipAuthority(option string) string {
-	prefix := getEnumPrefix(foundation.CensorshipAuthority_name[0])
-	candidate := strings.ToUpper(prefix + option)
-	if _, ok := foundation.CensorshipAuthority_value[candidate]; ok {
-		return candidate
-	}
+func normalizeCensorshipAuthority(authority string) string {
+	normalizer := normalizer(foundation.CensorshipAuthority_name, foundation.CensorshipAuthority_value)
+	return normalizer(authority)
+}
 
-	return option
+func normalizer(mapToName map[int32]string, mapToValue map[string]int32) func(string) string {
+	return func(str string) string {
+		prefix := getEnumPrefix(mapToName[0])
+		candidate := strings.ToUpper(prefix + str)
+		if _, ok := mapToValue[candidate]; ok {
+			return candidate
+		}
+		return str
+	}
 }
 
 func getEnumPrefix(str string) string {
