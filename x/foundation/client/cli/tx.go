@@ -105,7 +105,7 @@ func normalizeCensorshipAuthority(option string) string {
 func getEnumPrefix(str string) string {
 	delimiter := "_"
 	splitted := strings.Split(str, delimiter)
-	return strings.Join(splitted[:len(splitted) - 1], delimiter) + delimiter
+	return strings.Join(splitted[:len(splitted)-1], delimiter) + delimiter
 }
 
 // VoteOptionFromString returns a VoteOption from a string. It returns an error
