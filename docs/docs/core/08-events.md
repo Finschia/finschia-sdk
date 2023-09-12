@@ -11,9 +11,15 @@ sidebar_position: 1
 
 There are a few events that are automatically emitted for all messages, directly from `baseapp`.
 
-* `message.action`: The name of the message type. Exactly one exists for each transaction message, in the first ABCI `Event` of each transaction message.
-* `message.sender`: The address of the message signer. Exactly one exists for each transaction message, in the first ABCI `Event` of each transaction message.
+* `message.action`: The name of the message type.
+* `message.sender`: The address of the message signer.
 * `message.module`: The name of the module that emitted the message.
+
+:::tip
+`baseapp` emits exactly one `message` event for each message before any other events emitted by the message.
+The `message` event contains at least 2 attributes, exactly one `action` and exactly one `sender`.
+The position of the event may change in the next major version.
+:::
 
 :::tip
 The module name is assumed by `baseapp` to be the second element of the message route: `"cosmos.bank.v1beta1.MsgSend" -> "bank"`.
