@@ -2,7 +2,6 @@
 
 L2BINARYNAME=rollupd
 ROLLUP_NAME=test-rollup
-GOPATH=$HOME/go
 L1_CHAIN_ID=sim
 L2_CHAIN_ID=sim2
 L1_KEYRING_DIR=~/.simapp
