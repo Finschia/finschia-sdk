@@ -33,7 +33,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
       - name: docker build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: ${{github.event_name != 'pull_request'}}
           build-args: ARCH=x86_64
