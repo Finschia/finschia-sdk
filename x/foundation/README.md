@@ -85,13 +85,14 @@ creating custom decision policies, as long as they adhere to the
 `DecisionPolicy` interface:
 
 +++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
-+++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
 
 ### Threshold decision policy
 
 A threshold decision policy defines a threshold of yes votes (based on a tally
 of voter weights) that must be achieved in order for a proposal to pass. For
 this decision policy, abstain and veto are simply treated as no's.
+
++++ https://github.com/Finschia/finschia-sdk/blob/ba75f8e7845a740afdce6e5f1c91f1a97433b7e2/proto/lbm/foundation/v1/foundation.proto#L63-L77
 
 ### Percentage decision policy
 
@@ -101,12 +102,16 @@ It's more suited for a foundation where the membership can be updated, as the
 percentage threshold stays the same, and doesn't depend on how the number of
 members get updated.
 
++++ https://github.com/Finschia/finschia-sdk/blob/ba75f8e7845a740afdce6e5f1c91f1a97433b7e2/proto/lbm/foundation/v1/foundation.proto#L79-L93
+
 ### Outsourcing decision policy
 
 A outsourcing decision policy is a policy set after `x/foundation` decides to
 outsource its proposal relevant features to other modules (e.g. `x/group`).
 It means one can expect that any states relevant to the feature must be removed
 in the update to this policy.
+
++++ https://github.com/Finschia/finschia-sdk/blob/ba75f8e7845a740afdce6e5f1c91f1a97433b7e2/proto/lbm/foundation/v1/foundation.proto#L115-L121
 
 ## Proposal
 
@@ -243,8 +248,6 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 
 +++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/authz.proto#L9-L13
 
-+++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/authz.pb.go#L27-L30
-
 ### CreateValidatorAuthorization
 
 `CreateValidatorAuthorization` implements the `Authorization` interface for the
@@ -256,8 +259,6 @@ if `Msg/CreateValidator` is being censored (`CensoredMsgTypeUrls` contains the
 url of `Msg/CreateValidator`), or the chain cannot be started.
 
 +++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/stakingplus/v1/authz.proto#L9-L15
-
-+++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/stakingplus/authz.pb.go#L27-L31
 
 ## Foundation Treasury
 
@@ -451,7 +452,7 @@ The authority of the following modules are candidates of censorship authority:
 
 One may specify `CENSORSHIP_AUTHORITY_UNSPECIFIED` to remove the censorship.
 
-+++ https://github.com/Finschia/finschia-sdk/blob/d9428ec5d825dfd9964f510e32bd03a01adade8c/proto/lbm/foundation/v1/tx.proto#L25-L34
++++ https://github.com/Finschia/finschia-sdk/blob/d9428ec5d825dfd9964f510e32bd03a01adade8c/proto/lbm/foundation/v1/foundation.proto#L26-L35
 
 The message handling should fail if:
 
