@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: login to the registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: github.event_name != 'pull_request'
         with:
           registry: ${{env.registry}}
@@ -27,7 +27,7 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
       - name: extract metadata for docker
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{env.registry}}/${{env.repository}}
           tags: |
