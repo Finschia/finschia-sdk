@@ -3,9 +3,9 @@ go 1.20
 module github.com/Finschia/finschia-rdk
 
 require (
-	github.com/Finschia/finschia-sdk v0.47.0-rc7.0.20230825075051-0d2a3d632ad8
+	github.com/Finschia/finschia-sdk v0.47.0-rc7.0.20230907054755-0e8b532b14f7
 	github.com/Finschia/ostracon v1.1.2-0.20230825070344-b9cf421a361e
-	github.com/Finschia/ramus v0.7.5-0.20230904043153-17c20572637d
+	github.com/Finschia/ramus v0.7.5-0.20230913025231-31ce853b82a3
 	github.com/VictoriaMetrics/fastcache v1.12.1
 	github.com/btcsuite/btcd v0.22.1
 	github.com/coinbase/rosetta-sdk-go v0.8.3
@@ -21,7 +21,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/improbable-eng/grpc-web v0.15.0
-	github.com/jhump/protoreflect v1.12.1-0.20220721211354-060cc04fc18b
+	github.com/jhump/protoreflect v1.15.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.16.0
 	github.com/rakyll/statik v0.1.7
@@ -223,7 +223,9 @@ require (
 	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/tools v0.11.0 // indirect
 	gonum.org/v1/gonum v0.13.0 // indirect
-	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
+	google.golang.org/genproto v0.0.0-20230726155614-23370e0ffb3e // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230803162519-f966b187b2e5 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230803162519-f966b187b2e5 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
