@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-sims') && contains(github.event.pull_request.labels.*.name, 'release')"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4.0.1
         with:
           go-version: '1.20'
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4.0.1
         with:
           go-version: '1.20'
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, install-runsim, test-sim-multi-seed-long-part1]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4.0.1
         with:
           go-version: '1.20'
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, install-runsim, test-sim-multi-seed-long-part2]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4.0.1
         with:
           go-version: '1.20'
