@@ -496,7 +496,6 @@ Parameters:
     proposal-id: unique ID of the proposal
     voter: voter account addresses.
     vote-option: choice of the voter(s)
-        unspecified: no-op
         no: no
         yes: yes
         abstain: abstain
