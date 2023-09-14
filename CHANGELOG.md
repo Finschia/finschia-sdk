@@ -46,6 +46,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ostracon) [\#1057](https://github.com/Finschia/finschia-sdk/pull/1057) Bump up Ostracon from to v1.1.1
 * (docs) [\#1120](https://github.com/Finschia/finschia-sdk/pull/1120) Update links in x/foundation README.md
 * (feat) [\#1121](https://github.com/Finschia/finschia-sdk/pull/1121) Add update-censorship cmd to x/foundation cli
+* (feat) [\#1127](https://github.com/Finschia/finschia-sdk/pull/1127) Add abbreviated vote option to x/foundation vote cli
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) fix a bug(unable to connect nano S plus ledger on ubuntu)
