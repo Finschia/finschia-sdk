@@ -276,7 +276,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	id := s.submitProposal(testdata.NewTestMsg(s.authority))
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -326,8 +326,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
-	id2 := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	id := s.submitProposal(testdata.NewTestMsg(s.authority))
+	id2 := s.submitProposal(testdata.NewTestMsg(s.authority))
 	testCases := map[string]struct {
 		args  []string
 		valid bool
