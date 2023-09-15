@@ -327,6 +327,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 	}
 
 	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	id2 := s.submitProposal(testdata.NewTestMsg(s.authority), false)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -342,7 +343,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		},
 		"valid abbreviation": {
 			[]string{
-				fmt.Sprint(id),
+				fmt.Sprint(id2),
 				s.permanentMember.String(),
 				"yes",
 				"test vote",
