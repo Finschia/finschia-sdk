@@ -1,6 +1,26 @@
 # Demo
 
-- Run the test script, start the L1 chain and L2 sequencer, and then run the tx.
+1. Reset L1 and L2 data
+```
+./reset.sh
+```
+
+2. Run L1 chain
+```
+./run_chain.sh
+```
+
+3. Create rollup & register sequencer info
+```
+./prepare_rollup.sh
+```
+
+3. Run L2 sequencer
+```
+./run_sequencer.sh
+```
+
+4. Execute bank tx
 ```
 ./test_sequencer.sh
 ```
