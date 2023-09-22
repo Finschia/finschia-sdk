@@ -274,49 +274,49 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 		err        error
 		events     sdk.Events
 	}{
-		"contract not found": { // tc1
+		"contract not found": {
 			contractID: "fee1dead",
 			granter:    s.vendor,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionModify.String(),
 			err:        class.ErrContractNotExist,
 		},
-		"contract has no permission - MINT": { // tc5
+		"contract has no permission - MINT": {
 			contractID: s.unmintableContractId,
 			granter:    s.vendor,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionMint.String(),
 			err:        token.ErrTokenNoPermission,
 		},
-		"contract has no permission - BURN": { // tc6
+		"contract has no permission - BURN": {
 			contractID: s.unmintableContractId,
 			granter:    s.vendor,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionBurn.String(),
 			err:        token.ErrTokenNoPermission,
 		},
-		"granter has no permission - MINT": { // tc9
+		"granter has no permission - MINT": {
 			contractID: s.contractID,
 			granter:    s.customer,
 			grantee:    s.stranger,
 			permission: token.LegacyPermissionMint.String(),
 			err:        token.ErrTokenNoPermission,
 		},
-		"granter has no permission - BURN": { // tc10
+		"granter has no permission - BURN": {
 			contractID: s.contractID,
 			granter:    s.customer,
 			grantee:    s.stranger,
 			permission: token.LegacyPermissionBurn.String(),
 			err:        token.ErrTokenNoPermission,
 		},
-		"granter has no permission - MODIFY": { // tc11
+		"granter has no permission - MODIFY": {
 			contractID: s.contractID,
 			granter:    s.customer,
 			grantee:    s.stranger,
 			permission: token.LegacyPermissionModify.String(),
 			err:        token.ErrTokenNoPermission,
 		},
-		"valid request - MINT": { // tc12
+		"valid request - MINT": {
 			contractID: s.contractID,
 			granter:    s.vendor,
 			grantee:    s.operator,
@@ -325,7 +325,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false}, {Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false}}},
 			},
 		},
-		"valid request - BURN": { // tc13
+		"valid request - BURN": {
 			contractID: s.contractID,
 			granter:    s.vendor,
 			grantee:    s.operator,
@@ -334,7 +334,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false}, {Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false}}},
 			},
 		},
-		"valid request - MODIFY": { // tc14
+		"valid request - MODIFY": {
 			contractID: s.contractID,
 			granter:    s.vendor,
 			grantee:    s.operator,
