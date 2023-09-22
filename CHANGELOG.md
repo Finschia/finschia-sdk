@@ -52,6 +52,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ostracon) [\#1089](https://github.com/Finschia/finschia-sdk/pull/1089) Bump up ostracon from v1.1.1 to v1.1.1-449aa3148b12
 * (ostracon) [\#1099](https://github.com/Finschia/finschia-sdk/pull/1099) Remove libsodium vrf library.
 * (refactor) [\#1114](https://github.com/Finschia/finschia-sdk/pull/1114) Check statistics and balance on x/collection mint and burn operations
+* (x/token) [\#1128](https://github.com/Finschia/finschia-sdk/pull/1128) add more unittest for MsgIssue of x/token
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) Fix a bug(unable to connect nano S plus ledger on ubuntu)
