@@ -389,23 +389,59 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 		err        error
 		events     sdk.Events
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			from:       s.operator,
-			permission: token.LegacyPermissionMint.String(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e}, Value: []uint8{0x22, 0x50, 0x45, 0x52, 0x4d, 0x49, 0x53, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x49, 0x4e, 0x54, 0x22}, Index: false}}}},
-		},
 		"contract not found": {
 			contractID: "fee1dead",
 			from:       s.operator,
 			permission: token.LegacyPermissionMint.String(),
 			err:        class.ErrContractNotExist,
 		},
-		"not granted yet": {
-			contractID: s.contractID,
+		"contract has no permission - MINT": {
+			contractID: s.unmintableContractId,
 			from:       s.operator,
+			permission: token.LegacyPermissionMint.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"contract has no permission - BURN": {
+			contractID: s.unmintableContractId,
+			from:       s.operator,
+			permission: token.LegacyPermissionBurn.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"grantee has no permission - MINT": {
+			contractID: s.contractID,
+			from:       s.customer,
+			permission: token.LegacyPermissionMint.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"grantee has no permission - BURN": {
+			contractID: s.contractID,
+			from:       s.customer,
+			permission: token.LegacyPermissionBurn.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"grantee has no permission - MODIFY": {
+			contractID: s.contractID,
+			from:       s.customer,
 			permission: token.LegacyPermissionModify.String(),
 			err:        token.ErrTokenNoPermission,
+		},
+		"valid request - revoke MINT": {
+			contractID: s.contractID,
+			from:       s.operator,
+			permission: token.LegacyPermissionMint.String(),
+			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false}}}},
+		},
+		"valid request - revoke BURN": {
+			contractID: s.contractID,
+			from:       s.operator,
+			permission: token.LegacyPermissionBurn.String(),
+			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false}}}},
+		},
+		"valid request - revoke MODIFY": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			permission: token.LegacyPermissionModify.String(),
+			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}}},
 		},
 	}
 
@@ -425,10 +461,21 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			}
 
 			s.Require().NotNil(res)
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// check to remove permission
+			per, err := s.queryServer.GranteeGrants(sdk.WrapSDKContext(ctx), &token.QueryGranteeGrantsRequest{
+				ContractId: tc.contractID,
+				Grantee:    tc.from.String(),
+				Pagination: nil,
+			})
+			s.Require().NoError(err)
+			s.Require().NotNil(per)
+			expectPermission := token.Grant{
+				Grantee:    tc.from.String(),
+				Permission: token.Permission(token.LegacyPermissionFromString(tc.permission)),
 			}
+			s.Require().NotContains(per.Grants, expectPermission)
 		})
 	}
 }
