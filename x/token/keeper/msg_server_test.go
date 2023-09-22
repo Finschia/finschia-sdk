@@ -228,15 +228,66 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 }
 
 func (s *KeeperTestSuite) TestMsgIssue() {
+	ownerAddr := s.vendor.String()
+	toAddr := s.vendor.String()
+
 	testCases := map[string]struct {
-		amount sdk.Int
-		err    error
-		events sdk.Events
+		mintable bool
+		amount   sdk.Int
+		err      error
+		events   sdk.Events
 	}{
-		"valid request": {
-			amount: sdk.OneInt(),
-			events: sdk.Events{sdk.Event{Type: "lbm.token.v1.EventIssued", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x66, 0x65, 0x65, 0x31, 0x35, 0x61, 0x37, 0x34, 0x22}, Index: false}, {Key: []uint8{0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x73}, Value: []uint8{0x30}, Index: false}, {Key: []uint8{0x6d, 0x65, 0x74, 0x61}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65}, Value: []uint8{0x66, 0x61, 0x6c, 0x73, 0x65}, Index: false}, {Key: []uint8{0x6e, 0x61, 0x6d, 0x65}, Value: []uint8{0x22, 0x74, 0x65, 0x73, 0x74, 0x22}, Index: false}, {Key: []uint8{0x73, 0x79, 0x6d, 0x62, 0x6f, 0x6c}, Value: []uint8{0x22, 0x54, 0x54, 0x22}, Index: false}, {Key: []uint8{0x75, 0x72, 0x69}, Value: []uint8{0x22, 0x22}, Index: false}}}, sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x66, 0x65, 0x65, 0x31, 0x35, 0x61, 0x37, 0x34, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x72}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e}, Value: []uint8{0x22, 0x50, 0x45, 0x52, 0x4d, 0x49, 0x53, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x4f, 0x44, 0x49, 0x46, 0x59, 0x22}, Index: false}}}, sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x66, 0x65, 0x65, 0x31, 0x35, 0x61, 0x37, 0x34, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+		"mintable true": {
+			mintable: true,
+			amount:   sdk.NewInt(10),
+			events: sdk.Events{
+				sdk.Event{Type: "lbm.token.v1.EventIssued", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("decimals"), Value: []uint8("0"), Index: false}, {Key: []uint8("meta"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("mintable"), Value: []uint8("true"), Index: false}, {Key: []uint8("name"), Value: []uint8("\"test\""), Index: false}, {Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false}, {Key: []uint8("uri"), Value: []uint8("\"\""), Index: false}}},
+				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}},
+				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false}}},
+				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false}}},
+				sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false}, {Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}}},
+			},
 		},
+		"mintable false": {
+			mintable: false,
+			amount:   sdk.NewInt(10),
+			events: sdk.Events{
+				sdk.Event{Type: "lbm.token.v1.EventIssued", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("decimals"), Value: []uint8("0"), Index: false}, {Key: []uint8("meta"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("mintable"), Value: []uint8("false"), Index: false}, {Key: []uint8("name"), Value: []uint8("\"test\""), Index: false}, {Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false}, {Key: []uint8("uri"), Value: []uint8("\"\""), Index: false}}},
+				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}},
+				sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false}, {Key: []uint8("contract_id"), Value: []uint8("\"fee15a74\""), Index: false}, {Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}}},
+			},
+		},
+	}
+
+	// define a function to check MsgIssue result
+	checkerIssueResult := func(ctx sdk.Context, contractId string, expectedMintable bool, expectedAmount sdk.Int) {
+		// check contract
+		contract, err := s.queryServer.Contract(sdk.WrapSDKContext(ctx), &token.QueryContractRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedMintable, contract.Contract.Mintable)
+
+		// check supply
+		supply, err := s.queryServer.Supply(sdk.WrapSDKContext(ctx), &token.QuerySupplyRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedAmount, supply.Amount)
+
+		// check mint
+		mint, err := s.queryServer.Minted(sdk.WrapSDKContext(ctx), &token.QueryMintedRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedAmount, mint.Amount)
+
+		// check burnt
+		burn, err := s.queryServer.Burnt(sdk.WrapSDKContext(ctx), &token.QueryBurntRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(sdk.ZeroInt(), burn.Amount)
+
+		// check owner balance
+		balance, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &token.QueryBalanceRequest{
+			ContractId: contractId,
+			Address:    s.vendor.String(),
+		})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedAmount, balance.Amount)
 	}
 
 	for name, tc := range testCases {
@@ -244,11 +295,12 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgIssue{
-				Owner:  s.vendor.String(),
-				To:     s.vendor.String(),
-				Name:   "test",
-				Symbol: "TT",
-				Amount: tc.amount,
+				Owner:    s.vendor.String(),
+				To:       s.vendor.String(),
+				Mintable: tc.mintable,
+				Name:     "test",
+				Symbol:   "TT",
+				Amount:   tc.amount,
 			}
 			res, err := s.msgServer.Issue(sdk.WrapSDKContext(ctx), req)
 			s.Require().ErrorIs(err, tc.err)
@@ -257,10 +309,20 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			}
 
 			s.Require().NotNil(res)
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// check result status
+			checkerIssueResult(ctx, res.ContractId, tc.mintable, tc.amount)
+
+			// Second request for the same request
+			res2, err := s.msgServer.Issue(sdk.WrapSDKContext(ctx), req)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
+				return
 			}
+			// check result status
+			checkerIssueResult(ctx, res2.ContractId, tc.mintable, tc.amount)
+			s.Require().NotEqual(res.ContractId, res2.ContractId)
 		})
 	}
 }
