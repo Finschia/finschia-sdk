@@ -37,8 +37,8 @@ type KeeperTestSuite struct {
 	balance sdk.Int
 }
 
-func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
-	if s.deterministic {
+func createRandomAccounts(accNum int, deterministic bool) []sdk.AccAddress {
+	if deterministic {
 		addresses := make([]sdk.AccAddress, accNum)
 		for i := range addresses {
 			addresses[i] = sdk.AccAddress(fmt.Sprintf("address%d", i))
@@ -79,7 +79,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		&s.customer,
 		&s.stranger,
 	}
-	for i, address := range s.createRandomAccounts(len(addresses)) {
+	for i, address := range createRandomAccounts(len(addresses), s.deterministic) {
 		*addresses[i] = address
 	}
 
