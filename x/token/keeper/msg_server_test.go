@@ -773,7 +773,7 @@ func (s *KeeperTestSuite) TestMsgMintNegativeCase() {
 
 		"mint(contractID, vendor, customer, 1) throws no permission error": {
 			req: &token.MsgMint{
-				ContractId: s.unmintableContractID,
+				ContractId: s.unmintableContractId,
 				From:       s.vendor.String(),
 				To:         s.customer.String(),
 				Amount:     sdk.OneInt(),
