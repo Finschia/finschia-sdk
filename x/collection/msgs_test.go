@@ -638,6 +638,16 @@ func TestMsgIssueFT(t *testing.T) {
 			amount:     sdk.OneInt(),
 			err:        collection.ErrInvalidTokenDecimals,
 		},
+		"invalid decimals - negative": {
+			contractID: contractID,
+			owner:      addrs[0],
+			to:         addrs[1],
+			name:       name,
+			meta:       meta,
+			decimals:   -1,
+			amount:     sdk.OneInt(),
+			err:        collection.ErrInvalidTokenDecimals,
+		},
 		"daphne compat": {
 			contractID: contractID,
 			owner:      addrs[0],
