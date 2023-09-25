@@ -241,20 +241,92 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			mintable: true,
 			amount:   sdk.NewInt(10),
 			events: sdk.Events{
-				sdk.Event{Type: "lbm.token.v1.EventIssued", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("decimals"), Value: []uint8("0"), Index: false}, {Key: []uint8("meta"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("mintable"), Value: []uint8("true"), Index: false}, {Key: []uint8("name"), Value: []uint8("\"test\""), Index: false}, {Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false}, {Key: []uint8("uri"), Value: []uint8("\"\""), Index: false}}},
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}},
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false}}},
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false}}},
-				sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false}, {Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}}},
+				sdk.Event{
+					Type: "lbm.token.v1.EventIssued",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
+						{Key: []uint8("decimals"), Value: []uint8("0"), Index: false},
+						{Key: []uint8("meta"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("mintable"), Value: []uint8("true"), Index: false},
+						{Key: []uint8("name"), Value: []uint8("\"test\""), Index: false},
+						{Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false},
+						{Key: []uint8("uri"), Value: []uint8("\"\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
+						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+					},
+				},
 			},
 		},
 		"mintable false": {
 			mintable: false,
 			amount:   sdk.NewInt(10),
 			events: sdk.Events{
-				sdk.Event{Type: "lbm.token.v1.EventIssued", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("decimals"), Value: []uint8("0"), Index: false}, {Key: []uint8("meta"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("mintable"), Value: []uint8("false"), Index: false}, {Key: []uint8("name"), Value: []uint8("\"test\""), Index: false}, {Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false}, {Key: []uint8("uri"), Value: []uint8("\"\""), Index: false}}},
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("granter"), Value: []uint8("\"\""), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}},
-				sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false}, {Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false}, {Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false}, {Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false}}},
+				sdk.Event{
+					Type: "lbm.token.v1.EventIssued",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
+						{Key: []uint8("decimals"), Value: []uint8("0"), Index: false},
+						{Key: []uint8("meta"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("mintable"), Value: []uint8("false"), Index: false},
+						{Key: []uint8("name"), Value: []uint8("\"test\""), Index: false},
+						{Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false},
+						{Key: []uint8("uri"), Value: []uint8("\"\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
+						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
+						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+					},
+				},
 			},
 		},
 	}
@@ -384,7 +456,15 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			grantee:    s.operator,
 			permission: token.LegacyPermissionMint.String(),
 			events: sdk.Events{
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false}, {Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false}}},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false},
+						{Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false},
+					},
+				},
 			},
 		},
 		"valid request - BURN": {
@@ -393,7 +473,15 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			grantee:    s.operator,
 			permission: token.LegacyPermissionBurn.String(),
 			events: sdk.Events{
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false}, {Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false}}},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false},
+						{Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false},
+					},
+				},
 			},
 		},
 		"valid request - MODIFY": {
@@ -402,7 +490,15 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			grantee:    s.operator,
 			permission: token.LegacyPermissionModify.String(),
 			events: sdk.Events{
-				sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false}, {Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false},
+						{Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+					},
+				},
 			},
 		},
 	}
@@ -491,19 +587,43 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			contractID: s.contractID,
 			from:       s.operator,
 			permission: token.LegacyPermissionMint.String(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRenounced",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false},
+					},
+				}},
 		},
 		"valid request - revoke BURN": {
 			contractID: s.contractID,
 			from:       s.operator,
 			permission: token.LegacyPermissionBurn.String(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRenounced",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false},
+					},
+				}},
 		},
 		"valid request - revoke MODIFY": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			permission: token.LegacyPermissionModify.String(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false}, {Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false}, {Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRenounced",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+					},
+				}},
 		},
 	}
 
