@@ -3,17 +3,12 @@ package keeper_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Finschia/finschia-sdk/simapp"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/token"
 	"github.com/Finschia/finschia-sdk/x/token/class"
-	"github.com/Finschia/finschia-sdk/x/token/keeper"
-	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"strings"
-	"testing"
 )
 
 func (s *KeeperTestSuite) TestMsgSend() {
@@ -775,6 +770,16 @@ func (s *KeeperTestSuite) TestMsgMintNegativeCase() {
 		req           *token.MsgMint
 		expectedError error
 	}{
+
+		"mint(contractID, vendor, customer, 1) throws no permission error": {
+			req: &token.MsgMint{
+				ContractId: s.unmintableContractID,
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
+		},
 		"mint(nonExistingContractId, from, to, 1)": {
 			req: &token.MsgMint{
 				ContractId: "fee1dead",
@@ -1172,77 +1177,4 @@ func (s *KeeperTestSuite) TestMsgModifyNegativeCase() {
 // wrapQuot ("text") -> `"text"`
 func wrapQuot(s string) string {
 	return `"` + strings.TrimSpace(s) + `"`
-}
-
-type KeeperTestSuiteNotMintable struct {
-	suite.Suite
-	ctx        sdk.Context
-	keeper     keeper.Keeper
-	msgServer  token.MsgServer
-	contractID string
-	vendor     sdk.AccAddress
-	operator   sdk.AccAddress
-	customer   sdk.AccAddress
-	stranger   sdk.AccAddress
-}
-
-func (s *KeeperTestSuiteNotMintable) SetupTest() {
-	checkTx := false
-	app := simapp.Setup(checkTx)
-	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
-	s.keeper = app.TokenKeeper
-	s.msgServer = keeper.NewMsgServer(s.keeper)
-	addresses := []*sdk.AccAddress{
-		&s.vendor,
-		&s.operator,
-		&s.customer,
-		&s.stranger,
-	}
-	for i, address := range createRandomAccounts(len(addresses), false) {
-		*addresses[i] = address
-	}
-
-	class := token.Contract{
-		Name:     "NotMintable",
-		Symbol:   "NO",
-		Mintable: false,
-	}
-	s.contractID = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, sdk.OneInt())
-	s.Require().NotEmpty(s.contractID)
-}
-
-func TestKeeperTestSuiteNotMintable(t *testing.T) {
-	suite.Run(t, &KeeperTestSuiteNotMintable{})
-}
-
-func (s *KeeperTestSuiteNotMintable) TestMsgMintNegative() {
-	testCases := map[string]struct {
-		req           *token.MsgMint
-		expectedError error
-	}{
-		"mint(contractID, vendor, customer, 1) throws no permission error": {
-			req: &token.MsgMint{
-				ContractId: s.contractID,
-				From:       s.vendor.String(),
-				To:         s.customer.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedError: token.ErrTokenNoPermission,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			// Arrange
-			ctx, _ := s.ctx.CacheContext()
-			s.Require().NoError(tc.req.ValidateBasic())
-
-			// Act
-			res, err := s.msgServer.Mint(sdk.WrapSDKContext(ctx), tc.req)
-
-			// Assert
-			s.Require().Nil(res)
-			s.Require().ErrorIs(err, tc.expectedError)
-		})
-	}
 }
