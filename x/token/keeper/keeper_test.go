@@ -31,7 +31,8 @@ type KeeperTestSuite struct {
 	customer sdk.AccAddress
 	stranger sdk.AccAddress
 
-	contractID string
+	contractID           string
+	unmintableContractId string
 
 	balance sdk.Int
 }
@@ -122,6 +123,12 @@ func (s *KeeperTestSuite) SetupTest() {
 	notTokenContractID := app.ClassKeeper.NewID(s.ctx)
 	err = keeper.ValidateLegacyContract(s.keeper, s.ctx, notTokenContractID)
 	s.Require().ErrorIs(err, token.ErrTokenNotExist)
+
+	s.unmintableContractId = s.keeper.Issue(s.ctx, token.Contract{
+		Name:     "Unmintable",
+		Symbol:   "UMT",
+		Mintable: false,
+	}, s.vendor, s.vendor, s.balance)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
