@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"strings"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/token"
 	"github.com/Finschia/finschia-sdk/x/token/class"
-	"strings"
 )
 
 func (s *KeeperTestSuite) TestMsgSend() {
