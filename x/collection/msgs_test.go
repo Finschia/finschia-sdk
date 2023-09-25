@@ -774,6 +774,12 @@ func TestMsgMintFT(t *testing.T) {
 			to:         addrs[1],
 			amount:     amount,
 		},
+		// for daphne compatible
+		"valid msg - zero amount": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
+		},
 		"invalid contract id": {
 			operator: addrs[0],
 			to:       addrs[1],
@@ -960,6 +966,11 @@ func TestMsgBurnFT(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			amount:     amount,
+		},
+		// for daphne compatible
+		"valid msg - zero amount": {
+			contractID: "deadbeef",
+			from:       addrs[0],
 		},
 		"invalid contract id": {
 			from:   addrs[0],
