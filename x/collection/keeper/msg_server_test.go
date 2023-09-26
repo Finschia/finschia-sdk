@@ -557,9 +557,25 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgMintFT() {
+	// prepare multi tokens for test
+	// create a fungible token class (mintable true)
+	mintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
+		Name:     "tibetian fox2",
+		Mintable: true,
+	})
+	s.Require().NoError(err)
+
+	// create a fungible token class (mintable false)
+	nonmintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
+		Name:     "tibetian fox3",
+		Mintable: false,
+	})
+	s.Require().NoError(err)
+
 	amount := collection.NewCoins(
 		collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
 	)
+
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -618,116 +634,6 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 				},
 			},
 		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			var prevAmount collection.Coins
-			var prevSupply []sdk.Int
-			var prevMinted []sdk.Int
-			for _, am := range tc.amount {
-				// save balance
-				bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
-					ContractId: tc.contractID,
-					Address:    s.customer.String(),
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevAmount = append(prevAmount, bal.Balance)
-
-				// save supply
-				supply, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevSupply = append(prevSupply, supply.Supply)
-
-				// save minted
-				minted, err := s.queryServer.FTMinted(sdk.WrapSDKContext(ctx), &collection.QueryFTMintedRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevMinted = append(prevMinted, minted.Minted)
-			}
-
-			req := &collection.MsgMintFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				To:         s.customer.String(),
-				Amount:     tc.amount,
-			}
-			res, err := s.msgServer.MintFT(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
-			// check results
-			for i, am := range tc.amount {
-				bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
-					ContractId: tc.contractID,
-					Address:    s.customer.String(),
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				expected := collection.Coin{
-					TokenId: am.TokenId,
-					Amount:  prevAmount[i].Amount.Add(am.Amount),
-				}
-				s.Require().Equal(expected, bal.Balance)
-
-				// check total supply
-				supply, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				expectedSupply := prevSupply[i].Add(am.Amount)
-				s.Require().True(expectedSupply.Equal(supply.Supply))
-
-				// check minted
-				minted, err := s.queryServer.FTMinted(sdk.WrapSDKContext(ctx), &collection.QueryFTMintedRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				expectedMinted := prevMinted[i].Add(am.Amount)
-				s.Require().True(expectedMinted.Equal(minted.Minted))
-			}
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgMintFTMultiTokens() {
-	// prepare multi tokens for test
-	// create a fungible token class (mintable true)
-	mintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
-		Name:     "tibetian fox2",
-		Mintable: true,
-	})
-	s.Require().NoError(err)
-
-	// create a fungible token class (mintable false)
-	nonmintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
-		Name:     "tibetian fox3",
-		Mintable: false,
-	})
-	s.Require().NoError(err)
-
-	testCases := map[string]struct {
-		contractID string
-		from       sdk.AccAddress
-		amount     []collection.Coin
-		err        error
-		events     sdk.Events
-	}{
 		"include invalid tokenId among 2 tokens": {
 			contractID: s.contractID,
 			from:       s.vendor,
@@ -773,21 +679,41 @@ func (s *KeeperTestSuite) TestMsgMintFTMultiTokens() {
 		},
 	}
 
+	// query the values to be effected by MintFT
+	queryMintFTDatas := func(ctx sdk.Context, coins collection.Coins, contractID string) (balances collection.Coins, supply []sdk.Int, minted []sdk.Int) {
+		for _, am := range coins {
+			// save balance
+			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
+				ContractId: contractID,
+				Address:    s.customer.String(),
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			balances = append(balances, bal.Balance)
+
+			// save supply
+			res, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			supply = append(supply, res.Supply)
+
+			// save minted
+			m, err := s.queryServer.FTMinted(sdk.WrapSDKContext(ctx), &collection.QueryFTMintedRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			minted = append(minted, m.Minted)
+		}
+		return
+	}
+
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-
-			// save previous amount
-			var prevAmount collection.Coins
-			for _, am := range tc.amount {
-				bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
-					ContractId: tc.contractID,
-					Address:    s.customer.String(),
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevAmount = append(prevAmount, bal.Balance)
-			}
+			prevAmount, prevSupply, prevMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
 
 			req := &collection.MsgMintFT{
 				ContractId: tc.contractID,
@@ -805,18 +731,19 @@ func (s *KeeperTestSuite) TestMsgMintFTMultiTokens() {
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
 			// check results
+			afterAmount, afterSupply, afterMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
 			for i, am := range tc.amount {
-				bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
-					ContractId: tc.contractID,
-					Address:    s.customer.String(),
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				expected := collection.Coin{
+				expectedBalance := collection.Coin{
 					TokenId: am.TokenId,
 					Amount:  prevAmount[i].Amount.Add(am.Amount),
 				}
-				s.Require().Equal(expected, bal.Balance)
+				s.Require().Equal(expectedBalance, afterAmount[i])
+
+				expectedSupply := prevSupply[i].Add(am.Amount)
+				s.Require().True(expectedSupply.Equal(afterSupply[i]))
+
+				expectedMinted := prevMinted[i].Add(am.Amount)
+				s.Require().True(expectedMinted.Equal(afterMinted[i]))
 			}
 		})
 	}
@@ -965,14 +892,14 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount: collection.NewCoins(
-				collection.NewFTCoin(s.ftClassID, s.balance),
-				mintedCoin,
+				collection.NewFTCoin(s.ftClassID, sdk.NewInt(50000)),
+				collection.NewFTCoin(*mintableFTClassID, sdk.NewInt(60000)),
 			),
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"1000000\"},{\"token_id\":\"0000000200000000\",\"amount\":\"1000000\"}]"), Index: false},
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"50000\"},{\"token_id\":\"0000000200000000\",\"amount\":\"60000\"}]"), Index: false},
 						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
 						{Key: []uint8("from"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
 						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
@@ -991,40 +918,41 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		},
 	}
 
+	// query the values to be effected by BurnFT
+	queryBurnTDatas := func(ctx sdk.Context, coins collection.Coins, contractID, from string) (balances collection.Coins, supply []sdk.Int, burnt []sdk.Int) {
+		for _, am := range coins {
+			// save balance
+			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
+				ContractId: contractID,
+				Address:    from,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			balances = append(balances, bal.Balance)
+
+			// save supply
+			res, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			supply = append(supply, res.Supply)
+
+			// save minted
+			b, err := s.queryServer.FTBurnt(sdk.WrapSDKContext(ctx), &collection.QueryFTBurntRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			burnt = append(burnt, b.Burnt)
+		}
+		return
+	}
+
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-
-			// save previous amount
-			var prevAmount collection.Coins
-			var prevSupply []sdk.Int
-			var prevBurnt []sdk.Int
-			for _, am := range tc.amount {
-				// save balance
-				bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
-					ContractId: tc.contractID,
-					Address:    tc.from.String(),
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevAmount = append(prevAmount, bal.Balance)
-
-				// save supply
-				supply, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevSupply = append(prevSupply, supply.Supply)
-
-				// save burnt
-				burnt, err := s.queryServer.FTBurnt(sdk.WrapSDKContext(ctx), &collection.QueryFTBurntRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
-				prevBurnt = append(prevBurnt, burnt.Burnt)
-			}
+			prevAmount, prevSupply, prevBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
 
 			req := &collection.MsgBurnFT{
 				ContractId: tc.contractID,
@@ -1041,35 +969,17 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
 			// check changed amount
+			afterAmount, afterSupply, afterBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
 			for i, am := range tc.amount {
-				// check balance
-				bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
-					ContractId: tc.contractID,
-					Address:    tc.from.String(),
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
 				expectedBalance := prevAmount[i].Amount.Sub(am.Amount)
-				s.Require().Equal(am.TokenId, bal.Balance.TokenId)
-				s.Require().True(expectedBalance.Equal(bal.Balance.Amount))
+				s.Require().Equal(am.TokenId, afterAmount[i].TokenId)
+				s.Require().True(expectedBalance.Equal(afterAmount[i].Amount))
 
-				// check total supply
-				supply, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
 				expectedSupply := prevSupply[i].Sub(am.Amount)
-				s.Require().True(expectedSupply.Equal(supply.Supply))
+				s.Require().True(expectedSupply.Equal(afterSupply[i]))
 
-				// check burnt
-				burnt, err := s.queryServer.FTBurnt(sdk.WrapSDKContext(ctx), &collection.QueryFTBurntRequest{
-					ContractId: tc.contractID,
-					TokenId:    am.TokenId,
-				})
-				s.Require().NoError(err)
 				expectedBurnt := prevBurnt[i].Add(am.Amount)
-				s.Require().True(expectedBurnt.Equal(burnt.Burnt))
+				s.Require().True(expectedBurnt.Equal(afterBurnt[i]))
 			}
 		})
 	}
