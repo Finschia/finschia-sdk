@@ -8,6 +8,7 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/token"
 	"github.com/Finschia/finschia-sdk/x/token/class"
 )
@@ -665,49 +666,23 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgMintVerifyEvent() {
-	testCases := map[string]struct {
-		req           *token.MsgMint
-		expectedEvent sdk.Event
-	}{
-		"MsgMint emits EventMinted event": {
-			req: &token.MsgMint{
-				ContractId: s.contractID,
-				From:       s.vendor.String(),
-				To:         s.customer.String(),
-				Amount:     sdk.OneInt(),
+func (s *KeeperTestSuite) TestMsgMint() {
+	helperBuildMintedEvent := func(contractID string, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+		return sdk.Event{
+			Type: "lbm.token.v1.EventMinted",
+			Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(wrapQuot(amount.String())), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
+				{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
+				{Key: []byte("to"), Value: []byte(wrapQuot(to.String())), Index: false},
 			},
-			expectedEvent: sdk.Event{
-				Type: "lbm.token.v1.EventMinted",
-				Attributes: []abci.EventAttribute{
-					{Key: []byte("amount"), Value: []byte(wrapQuot(sdk.OneInt().String())), Index: false},
-					{Key: []byte("contract_id"), Value: []byte(wrapQuot(s.contractID)), Index: false},
-					{Key: []byte("operator"), Value: []byte(wrapQuot(s.vendor.String())), Index: false},
-					{Key: []byte("to"), Value: []byte(wrapQuot(s.customer.String())), Index: false},
-				},
-			},
-		},
+		}
 	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			res, err := s.msgServer.Mint(sdk.WrapSDKContext(ctx), tc.req)
-			s.Require().NotNil(res)
-			s.Require().NoError(err)
-			events := ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgMintPositiveCase() {
-	const eventType = "lbm.token.v1.EventMinted"
 	testCases := map[string]struct {
-		req               *token.MsgMint
-		expectedEventType string
+		isNegativeCase bool
+		req            *token.MsgMint
+		expectedEvent  sdk.Event
+		expectedError  *sdkerrors.Error
 	}{
 		"mint(contractID, from, to, 10)": {
 			req: &token.MsgMint{
@@ -716,7 +691,7 @@ func (s *KeeperTestSuite) TestMsgMintPositiveCase() {
 				To:         s.customer.String(),
 				Amount:     sdk.NewInt(10),
 			},
-			expectedEventType: eventType,
+			expectedEvent: helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
 		},
 		"mint(contractID, from, from, 10)": {
 			req: &token.MsgMint{
@@ -725,7 +700,37 @@ func (s *KeeperTestSuite) TestMsgMintPositiveCase() {
 				To:         s.customer.String(),
 				Amount:     sdk.NewInt(10),
 			},
-			expectedEventType: eventType,
+			expectedEvent: helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+		},
+		"mint(contractID, vendor, customer, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgMint{
+				ContractId: s.unmintableContractId,
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
+		},
+		"mint(nonExistingContractId, from, to, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgMint{
+				ContractId: "fee1dead",
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: class.ErrContractNotExist,
+		},
+		"mint(contractID, from, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgMint{
+				ContractId: s.contractID,
+				From:       s.stranger.String(),
+				To:         s.vendor.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
 		},
 	}
 
@@ -741,15 +746,24 @@ func (s *KeeperTestSuite) TestMsgMintPositiveCase() {
 			prevMint := s.keeper.GetMinted(s.ctx, tc.req.ContractId)
 			prevSupplyAmount := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
 			s.Require().NoError(tc.req.ValidateBasic())
+			prevEvtCnt := len(s.ctx.EventManager().Events())
 
 			// Act
 			res, err := s.msgServer.Mint(sdk.WrapSDKContext(s.ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				return
+			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
 			// Assert
 			events := s.ctx.EventManager().Events()
-			s.Require().Equal(events[len(events)-1].Type, tc.expectedEventType)
+			lastEvent := events[len(events)-1]
+			s.Require().Equal(tc.expectedEvent, lastEvent)
+			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
 
 			mintAmount := tc.req.Amount
 			curMinted := s.keeper.GetMinted(s.ctx, tc.req.ContractId)
@@ -766,100 +780,12 @@ func (s *KeeperTestSuite) TestMsgMintPositiveCase() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgMintNegativeCase() {
+func (s *KeeperTestSuite) TestMsgBurn() {
 	testCases := map[string]struct {
-		req           *token.MsgMint
-		expectedError error
-	}{
-
-		"mint(contractID, vendor, customer, 1) throws no permission error": {
-			req: &token.MsgMint{
-				ContractId: s.unmintableContractId,
-				From:       s.vendor.String(),
-				To:         s.customer.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedError: token.ErrTokenNoPermission,
-		},
-		"mint(nonExistingContractId, from, to, 1)": {
-			req: &token.MsgMint{
-				ContractId: "fee1dead",
-				From:       s.vendor.String(),
-				To:         s.customer.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedError: class.ErrContractNotExist,
-		},
-		"mint(contractID, from, unauthorized account, 1)": {
-			req: &token.MsgMint{
-				ContractId: s.contractID,
-				From:       s.stranger.String(),
-				To:         s.vendor.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedError: token.ErrTokenNoPermission,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			// Arrange
-			ctx, _ := s.ctx.CacheContext()
-			s.Require().NoError(tc.req.ValidateBasic())
-
-			// Act
-			res, err := s.msgServer.Mint(sdk.WrapSDKContext(ctx), tc.req)
-
-			// Assert
-			s.Require().Nil(res)
-			s.Require().ErrorIs(err, tc.expectedError)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgBurnVerifyEvents() {
-	testCases := map[string]struct {
-		req           *token.MsgBurn
-		expectedEvent sdk.Event
-	}{
-		"MsgBurn emits EventBurned event": {
-			req: &token.MsgBurn{
-				ContractId: s.contractID,
-				From:       s.vendor.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedEvent: sdk.Event{
-				Type: "lbm.token.v1.EventBurned",
-				Attributes: []abci.EventAttribute{
-					{Key: []byte("amount"), Value: []byte(wrapQuot(sdk.OneInt().String())), Index: false},
-					{Key: []byte("contract_id"), Value: []byte(wrapQuot(s.contractID)), Index: false},
-					{Key: []byte("from"), Value: []byte(wrapQuot(s.vendor.String())), Index: false},
-					{Key: []byte("operator"), Value: []byte(wrapQuot(s.vendor.String())), Index: false},
-				},
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), tc.req)
-			s.Require().NotNil(res)
-			s.Require().NoError(err)
-
-			events := ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgBurnPositive() {
-	const eventType = "lbm.token.v1.EventBurned"
-	testCases := map[string]struct {
-		req               *token.MsgBurn
-		expectedEventType string
+		isNegativeCase bool
+		req            *token.MsgBurn
+		expectedEvent  sdk.Event
+		expectedError  *sdkerrors.Error
 	}{
 		"burn(contractID, from, amount)": {
 			req: &token.MsgBurn{
@@ -867,7 +793,25 @@ func (s *KeeperTestSuite) TestMsgBurnPositive() {
 				From:       s.vendor.String(),
 				Amount:     sdk.OneInt(),
 			},
-			expectedEventType: eventType,
+			expectedEvent: helperBuildBurnedEvt(s.contractID, s.vendor, s.vendor, sdk.OneInt()),
+		},
+		"burn(nonExistingContractId, from, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgBurn{
+				ContractId: "fee1dead",
+				From:       s.vendor.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: class.ErrContractNotExist,
+		},
+		"burn(contractID, from, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgBurn{
+				ContractId: s.contractID,
+				From:       s.stranger.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
 		},
 	}
 
@@ -880,15 +824,24 @@ func (s *KeeperTestSuite) TestMsgBurnPositive() {
 			prevBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
 			prevSupplyAmount := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
 			s.Require().NoError(tc.req.ValidateBasic())
+			prevEvtCnt := len(s.ctx.EventManager().Events())
 
 			// Act
 			res, err := s.msgServer.Burn(sdk.WrapSDKContext(s.ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				return
+			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
 			// Assert
 			events := s.ctx.EventManager().Events()
-			s.Require().Equal(events[len(events)-1].Type, tc.expectedEventType)
+			lastEvent := events[len(events)-1]
+			s.Require().Equal(tc.expectedEvent, lastEvent)
+			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
 
 			curBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
 			curSupply := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
@@ -901,59 +854,41 @@ func (s *KeeperTestSuite) TestMsgBurnPositive() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgBurnNegativeCase() {
+func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 	testCases := map[string]struct {
-		req           *token.MsgBurn
-		expectedError error
+		isNegativeCase bool
+		req            *token.MsgOperatorBurn
+		expectedEvent  sdk.Event
+		expectedError  *sdkerrors.Error
 	}{
-		"burn(nonExistingContractId, from, 1)": {
-			req: &token.MsgBurn{
-				ContractId: "fee1dead",
-				From:       s.vendor.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedError: class.ErrContractNotExist,
-		},
-		"burn(contractID, from, unauthorized account, 1)": {
-			req: &token.MsgBurn{
-				ContractId: s.contractID,
-				From:       s.stranger.String(),
-				Amount:     sdk.OneInt(),
-			},
-			expectedError: token.ErrTokenNoPermission,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			// Arrange
-			ctx, _ := s.ctx.CacheContext()
-			s.Require().NoError(tc.req.ValidateBasic())
-
-			// Act
-			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), tc.req)
-
-			// Assert
-			s.Require().Nil(res)
-			s.Require().ErrorIs(err, tc.expectedError)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgOperatorBurnPositive() {
-	const eventType = "lbm.token.v1.EventBurned"
-	testCases := map[string]struct {
-		req               *token.MsgOperatorBurn
-		expectedEventType string
-	}{
-		"operatorBurn(contractID, operator, from, amount)": {
+		"operatorBurn(contractID, operator, from, 1)": {
 			req: &token.MsgOperatorBurn{
 				ContractId: s.contractID,
 				Operator:   s.operator.String(),
 				From:       s.customer.String(),
 				Amount:     sdk.OneInt(),
 			},
-			expectedEventType: eventType,
+			expectedEvent: helperBuildBurnedEvt(s.contractID, s.customer, s.operator, sdk.OneInt()),
+		},
+		"operatorBurn(nonExistingContractId, operator, from, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgOperatorBurn{
+				ContractId: "fee1dead",
+				Operator:   s.operator.String(),
+				From:       s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: class.ErrContractNotExist,
+		},
+		"operatorBurn(contractID, operator, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgOperatorBurn{
+				ContractId: s.contractID,
+				Operator:   s.operator.String(),
+				From:       s.stranger.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNotApproved,
 		},
 	}
 
@@ -969,15 +904,23 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnPositive() {
 			prevBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
 			prevSupplyAmount := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
 			s.Require().NoError(tc.req.ValidateBasic())
+			prevEvtCnt := len(s.ctx.EventManager().Events())
 
 			// Act
 			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(s.ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				return
+			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
 			// Assert
 			events := s.ctx.EventManager().Events()
-			s.Require().Equal(events[len(events)-1].Type, tc.expectedEventType)
+			s.Require().Equal(events[len(events)-1], tc.expectedEvent)
+			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
 
 			curBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
 			curSupply := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
@@ -994,43 +937,99 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnPositive() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgOperatorBurnNegativeCase() {
+func helperBuildBurnedEvt(contractID string, from, operator sdk.AccAddress, amount sdk.Int) sdk.Event {
+	return sdk.Event{
+		Type: "lbm.token.v1.EventBurned",
+		Attributes: []abci.EventAttribute{
+			{Key: []byte("amount"), Value: []byte(wrapQuot(amount.String())), Index: false},
+			{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
+			{Key: []byte("from"), Value: []byte(wrapQuot(from.String())), Index: false},
+			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
+		},
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgModify() {
+	helperBuildModifiedEvt := func(contractID string, operator sdk.AccAddress, changes []token.Attribute) sdk.Event {
+		return sdk.Event{
+			Type: "lbm.token.v1.EventModified",
+			Attributes: []abci.EventAttribute{
+				{Key: []byte("changes"), Value: []byte(asJsonStr(changes)), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
+				{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
+			},
+		}
+	}
+	changesUriAndName := []token.Attribute{
+		{Key: token.AttributeKeyURI.String(), Value: "uri"},
+		{Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"},
+	}
+	changesUri := []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}
+
 	testCases := map[string]struct {
-		req           *token.MsgOperatorBurn
-		expectedError error
+		isNegativeCase bool
+		req            *token.MsgModify
+		expectedEvent  sdk.Event
+		expectedError  *sdkerrors.Error
 	}{
-		"operatorBurn(nonExistingContractId, operator, from, 1)": {
-			req: &token.MsgOperatorBurn{
+		"modify(contractID, owner, changes:uri,name)": {
+			req: &token.MsgModify{
+				ContractId: s.contractID,
+				Owner:      s.vendor.String(),
+				Changes:    changesUriAndName,
+			},
+			expectedEvent: helperBuildModifiedEvt(s.contractID, s.vendor, changesUriAndName),
+		},
+		"modify(contractID, owner, changes:uri)": {
+			req: &token.MsgModify{
+				ContractId: s.contractID,
+				Owner:      s.vendor.String(),
+				Changes:    changesUri,
+			},
+			expectedEvent: helperBuildModifiedEvt(s.contractID, s.vendor, changesUri),
+		},
+		"modify(nonExistingContractId, from, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgModify{
 				ContractId: "fee1dead",
-				Operator:   s.operator.String(),
-				From:       s.customer.String(),
-				Amount:     sdk.OneInt(),
+				Owner:      s.vendor.String(),
+				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
 			},
 			expectedError: class.ErrContractNotExist,
 		},
-		"operatorBurn(contractID, operator, unauthorized account, 1)": {
-			req: &token.MsgOperatorBurn{
+		"modify(contractID, from, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgModify{
 				ContractId: s.contractID,
-				Operator:   s.operator.String(),
-				From:       s.stranger.String(),
-				Amount:     sdk.OneInt(),
+				Owner:      s.stranger.String(),
+				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
 			},
-			expectedError: token.ErrTokenNotApproved,
+			expectedError: token.ErrTokenNoPermission,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
-			ctx, _ := s.ctx.CacheContext()
 			s.Require().NoError(tc.req.ValidateBasic())
+			prevEvtCnt := len(s.ctx.EventManager().Events())
 
 			// Act
-			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), tc.req)
+			res, err := s.msgServer.Modify(sdk.WrapSDKContext(s.ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				return
+			}
+			s.Require().NotNil(res)
+			s.Require().NoError(err)
 
 			// Assert
-			s.Require().Nil(res)
-			s.Require().ErrorIs(err, tc.expectedError)
+			events := s.ctx.EventManager().Events()
+			lastEvent := events[len(events)-1]
+			s.Require().Equal(tc.expectedEvent, lastEvent)
+			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
 		})
 	}
 }
@@ -1040,139 +1039,6 @@ func asJsonStr(attrs []token.Attribute) string {
 	enc := json.NewEncoder(&buf)
 	enc.Encode(attrs)
 	return strings.TrimSpace(buf.String())
-}
-
-func (s *KeeperTestSuite) TestMsgModifyVerifyEvent() {
-	changes1 := []token.Attribute{
-		{Key: token.AttributeKeyURI.String(), Value: "uri"},
-		{Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"},
-	}
-	changes2 := []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}
-
-	testCases := map[string]struct {
-		req           *token.MsgModify
-		expectedEvent sdk.Event
-	}{
-		"MsgBurn emits EventBurned event(uri, name)": {
-			req: &token.MsgModify{
-				ContractId: s.contractID,
-				Owner:      s.vendor.String(),
-				Changes:    changes1,
-			},
-			expectedEvent: sdk.Event{
-				Type: "lbm.token.v1.EventModified",
-				Attributes: []abci.EventAttribute{
-					{Key: []byte("changes"), Value: []byte(asJsonStr(changes1)), Index: false},
-					{Key: []byte("contract_id"), Value: []byte(wrapQuot(s.contractID)), Index: false},
-					{Key: []byte("operator"), Value: []byte(wrapQuot(s.vendor.String())), Index: false},
-				},
-			},
-		},
-		"MsgBurn emits EventBurned event(uri)": {
-			req: &token.MsgModify{
-				ContractId: s.contractID,
-				Owner:      s.vendor.String(),
-				Changes:    changes2,
-			},
-			expectedEvent: sdk.Event{
-				Type: "lbm.token.v1.EventModified",
-				Attributes: []abci.EventAttribute{
-					{Key: []byte("changes"), Value: []byte(asJsonStr(changes2)), Index: false},
-					{Key: []byte("contract_id"), Value: []byte(wrapQuot(s.contractID)), Index: false},
-					{Key: []byte("operator"), Value: []byte(wrapQuot(s.vendor.String())), Index: false},
-				},
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			res, err := s.msgServer.Modify(sdk.WrapSDKContext(s.ctx), tc.req)
-			s.Require().NotNil(res)
-			s.Require().NoError(err)
-
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgModifyPositive() {
-	const eventType = "lbm.token.v1.EventModified"
-	testCases := map[string]struct {
-		req               *token.MsgModify
-		expectedEventType string
-	}{
-		"modify(contractID, owner, changes)": {
-			req: &token.MsgModify{
-				ContractId: s.contractID,
-				Owner:      s.vendor.String(),
-				Changes: []token.Attribute{
-					{Key: token.AttributeKeyImageURI.String(), Value: "uri"},
-					{Key: token.AttributeKeyName.String(), Value: "<><><><>"},
-					{Key: token.AttributeKeyMeta.String(), Value: "<><><><><<>>"},
-				},
-			},
-			expectedEventType: eventType,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			// Arrange
-			err := tc.req.ValidateBasic()
-			s.Require().NoError(err)
-
-			// Act
-			res, err := s.msgServer.Modify(sdk.WrapSDKContext(s.ctx), tc.req)
-			s.Require().NotNil(res)
-			s.Require().NoError(err)
-
-			// Assert
-			events := s.ctx.EventManager().Events()
-			s.Require().Equal(events[len(events)-1].Type, tc.expectedEventType)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgModifyNegativeCase() {
-	testCases := map[string]struct {
-		req           *token.MsgModify
-		expectedError error
-	}{
-		"modify(nonExistingContractId, from, 1)": {
-			req: &token.MsgModify{
-				ContractId: "fee1dead",
-				Owner:      s.vendor.String(),
-				Changes:    []token.Attribute{{Key: token.AttributeKeyImageURI.String(), Value: "uri"}},
-			},
-			expectedError: class.ErrContractNotExist,
-		},
-		"modify(contractID, from, unauthorized account, 1)": {
-			req: &token.MsgModify{
-				ContractId: s.contractID,
-				Owner:      s.stranger.String(),
-				Changes:    []token.Attribute{{Key: token.AttributeKeyImageURI.String(), Value: "uri"}},
-			},
-			expectedError: token.ErrTokenNoPermission,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			// Arrange
-			ctx, _ := s.ctx.CacheContext()
-			s.Require().NoError(tc.req.ValidateBasic())
-
-			// Act
-			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), tc.req)
-
-			// Assert
-			s.Require().Nil(res)
-			s.Require().ErrorIs(err, tc.expectedError)
-		})
-	}
 }
 
 // wrapQuot ("text") -> `"text"`
