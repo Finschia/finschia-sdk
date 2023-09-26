@@ -54,6 +54,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (refactor) [\#1114](https://github.com/Finschia/finschia-sdk/pull/1114) Check statistics and balance on x/collection mint and burn operations
 * (x/token) [\#1128](https://github.com/Finschia/finschia-sdk/pull/1128) add more unittest for MsgIssue of x/token
 * (x/token) [\#1129](https://github.com/Finschia/finschia-sdk/pull/1129) add more unittest for `MsgGrantPermission` and `MsgRevokePermission` of x/token
+* (x/collection) [\#1131](https://github.com/Finschia/finschia-sdk/pull/1131) add additional unittest of x/collection(`MsgIssueFT`, `MsgMintFT`, `MsgBurnFT`)
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) Fix a bug(unable to connect nano S plus ledger on ubuntu)
