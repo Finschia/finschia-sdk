@@ -573,7 +573,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 	s.Require().NoError(err)
 
 	amount := collection.NewCoins(
-		collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
+		collection.NewFTCoin(s.ftClassID, sdk.NewInt(100000)),
 	)
 
 	testCases := map[string]struct {
@@ -591,7 +591,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 				sdk.Event{
 					Type: "lbm.collection.v1.EventMintedFT",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"1\"}]"), Index: false},
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"100000\"}]"), Index: false},
 						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
 						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
 						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
@@ -662,14 +662,14 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount: collection.NewCoins(
-				collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
-				collection.NewFTCoin(*mintableFTClassID, sdk.OneInt()),
+				collection.NewFTCoin(s.ftClassID, sdk.NewInt(100000)),
+				collection.NewFTCoin(*mintableFTClassID, sdk.NewInt(200000)),
 			),
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventMintedFT",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"1\"},{\"token_id\":\"0000000200000000\",\"amount\":\"1\"}]"), Index: false},
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"100000\"},{\"token_id\":\"0000000200000000\",\"amount\":\"200000\"}]"), Index: false},
 						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
 						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
 						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
@@ -712,38 +712,43 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			// test multiple times
 			ctx, _ := s.ctx.CacheContext()
-			prevAmount, prevSupply, prevMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
+			for t := 0; t < 3; t++ {
+				ctx, _ = ctx.CacheContext()
 
-			req := &collection.MsgMintFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				To:         s.customer.String(),
-				Amount:     tc.amount,
-			}
-			res, err := s.msgServer.MintFT(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
+				prevAmount, prevSupply, prevMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
 
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
-			// check results
-			afterAmount, afterSupply, afterMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
-			for i, am := range tc.amount {
-				expectedBalance := collection.Coin{
-					TokenId: am.TokenId,
-					Amount:  prevAmount[i].Amount.Add(am.Amount),
+				req := &collection.MsgMintFT{
+					ContractId: tc.contractID,
+					From:       tc.from.String(),
+					To:         s.customer.String(),
+					Amount:     tc.amount,
 				}
-				s.Require().Equal(expectedBalance, afterAmount[i])
+				res, err := s.msgServer.MintFT(sdk.WrapSDKContext(ctx), req)
+				s.Require().ErrorIs(err, tc.err)
+				if tc.err != nil {
+					return
+				}
 
-				expectedSupply := prevSupply[i].Add(am.Amount)
-				s.Require().True(expectedSupply.Equal(afterSupply[i]))
+				s.Require().NotNil(res)
+				s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-				expectedMinted := prevMinted[i].Add(am.Amount)
-				s.Require().True(expectedMinted.Equal(afterMinted[i]))
+				// check results
+				afterAmount, afterSupply, afterMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
+				for i, am := range tc.amount {
+					expectedBalance := collection.Coin{
+						TokenId: am.TokenId,
+						Amount:  prevAmount[i].Amount.Add(am.Amount),
+					}
+					s.Require().Equal(expectedBalance, afterAmount[i])
+
+					expectedSupply := prevSupply[i].Add(am.Amount)
+					s.Require().True(expectedSupply.Equal(afterSupply[i]))
+
+					expectedMinted := prevMinted[i].Add(am.Amount)
+					s.Require().True(expectedMinted.Equal(afterMinted[i]))
+				}
 			}
 		})
 	}
@@ -840,12 +845,14 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		"valid request": { // tc10
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     amount,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, sdk.NewInt(50000)),
+			),
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"1000000\"}]"), Index: false},
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"50000\"}]"), Index: false},
 						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
 						{Key: []uint8("from"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
 						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
@@ -951,35 +958,39 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			// test multiple times
 			ctx, _ := s.ctx.CacheContext()
-			prevAmount, prevSupply, prevBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
+			for t := 0; t < 3; t++ {
+				ctx, _ = ctx.CacheContext()
+				prevAmount, prevSupply, prevBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
 
-			req := &collection.MsgBurnFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				Amount:     tc.amount,
-			}
-			res, err := s.msgServer.BurnFT(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
+				req := &collection.MsgBurnFT{
+					ContractId: tc.contractID,
+					From:       tc.from.String(),
+					Amount:     tc.amount,
+				}
+				res, err := s.msgServer.BurnFT(sdk.WrapSDKContext(ctx), req)
+				s.Require().ErrorIs(err, tc.err)
+				if tc.err != nil {
+					return
+				}
 
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
+				s.Require().NotNil(res)
+				s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			// check changed amount
-			afterAmount, afterSupply, afterBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
-			for i, am := range tc.amount {
-				expectedBalance := prevAmount[i].Amount.Sub(am.Amount)
-				s.Require().Equal(am.TokenId, afterAmount[i].TokenId)
-				s.Require().True(expectedBalance.Equal(afterAmount[i].Amount))
+				// check changed amount
+				afterAmount, afterSupply, afterBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
+				for i, am := range tc.amount {
+					expectedBalance := prevAmount[i].Amount.Sub(am.Amount)
+					s.Require().Equal(am.TokenId, afterAmount[i].TokenId)
+					s.Require().True(expectedBalance.Equal(afterAmount[i].Amount))
 
-				expectedSupply := prevSupply[i].Sub(am.Amount)
-				s.Require().True(expectedSupply.Equal(afterSupply[i]))
+					expectedSupply := prevSupply[i].Sub(am.Amount)
+					s.Require().True(expectedSupply.Equal(afterSupply[i]))
 
-				expectedBurnt := prevBurnt[i].Add(am.Amount)
-				s.Require().True(expectedBurnt.Equal(afterBurnt[i]))
+					expectedBurnt := prevBurnt[i].Add(am.Amount)
+					s.Require().True(expectedBurnt.Equal(afterBurnt[i]))
+				}
 			}
 		})
 	}
