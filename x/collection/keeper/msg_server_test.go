@@ -680,7 +680,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 	}
 
 	// query the values to be effected by MintFT
-	queryMintFTDatas := func(ctx sdk.Context, coins collection.Coins, contractID string) (balances collection.Coins, supply []sdk.Int, minted []sdk.Int) {
+	queryValuesEffectedByMintFT := func(ctx sdk.Context, coins collection.Coins, contractID string) (balances collection.Coins, supply []sdk.Int, minted []sdk.Int) {
 		for _, am := range coins {
 			// save balance
 			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
@@ -717,7 +717,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			for t := 0; t < 3; t++ {
 				ctx, _ = ctx.CacheContext()
 
-				prevAmount, prevSupply, prevMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
+				prevAmount, prevSupply, prevMinted := queryValuesEffectedByMintFT(ctx, tc.amount, tc.contractID)
 
 				req := &collection.MsgMintFT{
 					ContractId: tc.contractID,
@@ -735,7 +735,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 
 				// check results
-				afterAmount, afterSupply, afterMinted := queryMintFTDatas(ctx, tc.amount, tc.contractID)
+				afterAmount, afterSupply, afterMinted := queryValuesEffectedByMintFT(ctx, tc.amount, tc.contractID)
 				for i, am := range tc.amount {
 					expectedBalance := collection.Coin{
 						TokenId: am.TokenId,
@@ -926,7 +926,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 	}
 
 	// query the values to be effected by BurnFT
-	queryBurnTDatas := func(ctx sdk.Context, coins collection.Coins, contractID, from string) (balances collection.Coins, supply []sdk.Int, burnt []sdk.Int) {
+	queryValuesAffectedByBurnFT := func(ctx sdk.Context, coins collection.Coins, contractID, from string) (balances collection.Coins, supply []sdk.Int, burnt []sdk.Int) {
 		for _, am := range coins {
 			// save balance
 			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
@@ -962,7 +962,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			ctx, _ := s.ctx.CacheContext()
 			for t := 0; t < 3; t++ {
 				ctx, _ = ctx.CacheContext()
-				prevAmount, prevSupply, prevBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
+				prevAmount, prevSupply, prevBurnt := queryValuesAffectedByBurnFT(ctx, tc.amount, tc.contractID, tc.from.String())
 
 				req := &collection.MsgBurnFT{
 					ContractId: tc.contractID,
@@ -979,7 +979,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
 
 				// check changed amount
-				afterAmount, afterSupply, afterBurnt := queryBurnTDatas(ctx, tc.amount, tc.contractID, tc.from.String())
+				afterAmount, afterSupply, afterBurnt := queryValuesAffectedByBurnFT(ctx, tc.amount, tc.contractID, tc.from.String())
 				for i, am := range tc.amount {
 					expectedBalance := prevAmount[i].Amount.Sub(am.Amount)
 					s.Require().Equal(am.TokenId, afterAmount[i].TokenId)
