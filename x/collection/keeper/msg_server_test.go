@@ -713,7 +713,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// test multiple times
-			ctx, _ := s.ctx.CacheContext()
+			ctx := s.ctx
 			for t := 0; t < 3; t++ {
 				ctx, _ = ctx.CacheContext()
 
@@ -959,7 +959,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// test multiple times
-			ctx, _ := s.ctx.CacheContext()
+			ctx := s.ctx
 			for t := 0; t < 3; t++ {
 				ctx, _ = ctx.CacheContext()
 				prevAmount, prevSupply, prevBurnt := queryValuesAffectedByBurnFT(ctx, tc.amount, tc.contractID, tc.from.String())
