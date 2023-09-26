@@ -842,7 +842,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		err        error
 		events     sdk.Events
 	}{
-		"valid request": { // tc10
+		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount: collection.NewCoins(
@@ -860,19 +860,19 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 				},
 			},
 		},
-		"contract not found": { // tc1
+		"contract not found": {
 			contractID: "deadbeef",
 			from:       s.vendor,
 			amount:     amount,
 			err:        class.ErrContractNotExist,
 		},
-		"no permission": { // tc5
+		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
 			amount:     amount,
 			err:        collection.ErrTokenNoPermission,
 		},
-		"insufficient funds": { // tc7
+		"insufficient funds": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount: collection.NewCoins(
@@ -880,7 +880,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			),
 			err: collection.ErrInsufficientToken,
 		},
-		"no amount - valid": { // tc8
+		"no amount - valid": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			events: sdk.Events{
@@ -895,7 +895,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 				},
 			},
 		},
-		"valid multi amount burn": { // tc11
+		"valid multi amount burn": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount: collection.NewCoins(
@@ -914,7 +914,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 				},
 			},
 		},
-		"include insufficient funds amount 2 amounts": { // tc9
+		"include insufficient funds amount 2 amounts": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount: collection.NewCoins(
