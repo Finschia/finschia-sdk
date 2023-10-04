@@ -519,11 +519,18 @@ func TestMsgMint(t *testing.T) {
 			amount:     sdk.OneInt(),
 			err:        sdkerrors.ErrInvalidAddress,
 		},
-		"invalid amount": {
+		"zero amount": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			to:         addrs[1],
 			amount:     sdk.ZeroInt(),
+			err:        token.ErrInvalidAmount,
+		},
+		"negative amount": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			to:         addrs[1],
+			amount:     sdk.NewInt(-10),
 			err:        token.ErrInvalidAmount,
 		},
 	}
@@ -579,6 +586,12 @@ func TestMsgBurn(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			amount:     sdk.ZeroInt(),
+			err:        token.ErrInvalidAmount,
+		},
+		"negative amount": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			amount:     sdk.NewInt(-10),
 			err:        token.ErrInvalidAmount,
 		},
 	}
@@ -721,6 +734,18 @@ func TestMsgModify(t *testing.T) {
 				{Key: token.AttributeKeyURI.String(), Value: "world"},
 			},
 			err: token.ErrDuplicateChangesField,
+		},
+		"over max length changes(uri)": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: string(make([]rune, 1001))}},
+			err:        token.ErrInvalidImageURILength,
+		},
+		"over max length changes(meta)": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			changes:    []token.Attribute{{Key: token.AttributeKeyMeta.String(), Value: string(make([]rune, 1001))}},
+			err:        token.ErrInvalidMetaLength,
 		},
 	}
 
