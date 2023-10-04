@@ -140,7 +140,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 				Operator:   s.operator.String(),
 				From:       s.customer.String(),
 				To:         s.vendor.String(),
-				Amount:     collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance)),
+				Amount:     collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance.Add(sdk.OneInt()))),
 			},
 			expectedError: collection.ErrInsufficientToken,
 		},
