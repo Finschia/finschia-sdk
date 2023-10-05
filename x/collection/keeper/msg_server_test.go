@@ -3,10 +3,11 @@ package keeper_test
 import (
 	"fmt"
 
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/token/class"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func (s *KeeperTestSuite) TestMsgSendFT() {
