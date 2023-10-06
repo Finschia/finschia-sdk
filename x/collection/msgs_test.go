@@ -638,6 +638,16 @@ func TestMsgIssueFT(t *testing.T) {
 			amount:     sdk.OneInt(),
 			err:        collection.ErrInvalidTokenDecimals,
 		},
+		"invalid decimals - negative": {
+			contractID: contractID,
+			owner:      addrs[0],
+			to:         addrs[1],
+			name:       name,
+			meta:       meta,
+			decimals:   -1,
+			amount:     sdk.OneInt(),
+			err:        collection.ErrInvalidTokenDecimals,
+		},
 		"daphne compat": {
 			contractID: contractID,
 			owner:      addrs[0],
@@ -763,6 +773,12 @@ func TestMsgMintFT(t *testing.T) {
 			operator:   addrs[0],
 			to:         addrs[1],
 			amount:     amount,
+		},
+		// for daphne compatible
+		"valid msg - zero amount": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
 		},
 		"invalid contract id": {
 			operator: addrs[0],
@@ -950,6 +966,11 @@ func TestMsgBurnFT(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			amount:     amount,
+		},
+		// for daphne compatible
+		"valid msg - zero amount": {
+			contractID: "deadbeef",
+			from:       addrs[0],
 		},
 		"invalid contract id": {
 			from:   addrs[0],

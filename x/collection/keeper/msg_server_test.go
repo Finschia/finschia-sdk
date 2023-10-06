@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -415,13 +417,48 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			contractID: s.contractID,
 			owner:      s.vendor,
 			amount:     sdk.ZeroInt(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.collection.v1.EventCreatedFTClass", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x73}, Value: []uint8{0x30}, Index: false}, {Key: []uint8{0x6d, 0x65, 0x74, 0x61}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65}, Value: []uint8{0x66, 0x61, 0x6c, 0x73, 0x65}, Index: false}, {Key: []uint8{0x6e, 0x61, 0x6d, 0x65}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventCreatedFTClass",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("decimals"), Value: []uint8("0"), Index: false},
+						{Key: []uint8("meta"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("mintable"), Value: []uint8("false"), Index: false},
+						{Key: []uint8("name"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("token_id"), Value: []uint8("\"0000000200000000\""), Index: false},
+					},
+				},
+			},
 		},
 		"valid request with supply": {
 			contractID: s.contractID,
 			owner:      s.vendor,
 			amount:     sdk.OneInt(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.collection.v1.EventCreatedFTClass", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x73}, Value: []uint8{0x30}, Index: false}, {Key: []uint8{0x6d, 0x65, 0x74, 0x61}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65}, Value: []uint8{0x66, 0x61, 0x6c, 0x73, 0x65}, Index: false}, {Key: []uint8{0x6e, 0x61, 0x6d, 0x65}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22}, Index: false}}}, sdk.Event{Type: "lbm.collection.v1.EventMintedFT", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x5b, 0x7b, 0x22, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x22, 0x3a, 0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x2c, 0x22, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x3a, 0x22, 0x31, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventCreatedFTClass",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("decimals"), Value: []uint8("0"), Index: false},
+						{Key: []uint8("meta"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("mintable"), Value: []uint8("false"), Index: false},
+						{Key: []uint8("name"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("token_id"), Value: []uint8("\"0000000200000000\""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.collection.v1.EventMintedFT",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000200000000\",\"amount\":\"1\"}]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -454,10 +491,21 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			}
 
 			s.Require().NotNil(res)
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// check balance and tokenId
+			tokenId := collection.NewFTID(res.TokenId)
+			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
+				ContractId: s.contractID,
+				Address:    s.customer.String(),
+				TokenId:    tokenId,
+			})
+			s.Require().NoError(err)
+			expectedCoin := collection.Coin{
+				TokenId: tokenId,
+				Amount:  tc.amount,
 			}
+			s.Require().Equal(expectedCoin, bal.Balance)
 		})
 	}
 }
@@ -510,9 +558,25 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgMintFT() {
+	// prepare multi tokens for test
+	// create a fungible token class (mintable true)
+	mintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
+		Name:     "tibetian fox2",
+		Mintable: true,
+	})
+	s.Require().NoError(err)
+
+	// create a fungible token class (mintable false)
+	nonmintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
+		Name:     "tibetian fox3",
+		Mintable: false,
+	})
+	s.Require().NoError(err)
+
 	amount := collection.NewCoins(
-		collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
+		collection.NewFTCoin(s.ftClassID, sdk.NewInt(100000)),
 	)
+
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -524,7 +588,17 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			contractID: s.contractID,
 			from:       s.vendor,
 			amount:     amount,
-			events:     sdk.Events{sdk.Event{Type: "lbm.collection.v1.EventMintedFT", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x5b, 0x7b, 0x22, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x22, 0x3a, 0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x2c, 0x22, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x3a, 0x22, 0x31, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventMintedFT",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"100000\"}]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -546,28 +620,136 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			),
 			err: collection.ErrTokenNotExist,
 		},
+		"valid request - empty amount": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventMintedFT",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
+					},
+				},
+			},
+		},
+		"include invalid tokenId among 2 tokens": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
+				collection.NewFTCoin("00bab10b", sdk.OneInt()), // no exist tokenId
+			),
+			err: collection.ErrTokenNotExist,
+		},
+		"mintable false tokenId": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			amount:     collection.NewCoins(collection.NewFTCoin(*nonmintableFTClassID, sdk.OneInt())),
+			err:        collection.ErrTokenNotMintable,
+		},
+		"include mintable false among 2 tokens": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(*mintableFTClassID, sdk.OneInt()),
+				collection.NewFTCoin(*nonmintableFTClassID, sdk.OneInt()),
+			),
+			err: collection.ErrTokenNotMintable,
+		},
+		"valid request - multi tokens": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, sdk.NewInt(100000)),
+				collection.NewFTCoin(*mintableFTClassID, sdk.NewInt(200000)),
+			),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventMintedFT",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"100000\"},{\"token_id\":\"0000000200000000\",\"amount\":\"200000\"}]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
+					},
+				},
+			},
+		},
+	}
+
+	// query the values to be effected by MintFT
+	queryValuesEffectedByMintFT := func(ctx sdk.Context, coins collection.Coins, contractID string) (balances collection.Coins, supply []sdk.Int, minted []sdk.Int) {
+		for _, am := range coins {
+			// save balance
+			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
+				ContractId: contractID,
+				Address:    s.customer.String(),
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			balances = append(balances, bal.Balance)
+
+			// save supply
+			res, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			supply = append(supply, res.Supply)
+
+			// save minted
+			m, err := s.queryServer.FTMinted(sdk.WrapSDKContext(ctx), &collection.QueryFTMintedRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			minted = append(minted, m.Minted)
+		}
+		return
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
+			// test multiple times
+			ctx := s.ctx
+			for t := 0; t < 3; t++ {
+				ctx, _ = ctx.CacheContext()
 
-			req := &collection.MsgMintFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				To:         s.customer.String(),
-				Amount:     tc.amount,
-			}
-			res, err := s.msgServer.MintFT(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
+				prevAmount, prevSupply, prevMinted := queryValuesEffectedByMintFT(ctx, tc.amount, tc.contractID)
 
-			s.Require().NotNil(res)
+				req := &collection.MsgMintFT{
+					ContractId: tc.contractID,
+					From:       tc.from.String(),
+					To:         s.customer.String(),
+					Amount:     tc.amount,
+				}
+				res, err := s.msgServer.MintFT(sdk.WrapSDKContext(ctx), req)
+				s.Require().ErrorIs(err, tc.err)
+				if tc.err != nil {
+					return
+				}
 
-			if s.deterministic {
+				s.Require().NotNil(res)
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
+
+				// check results
+				afterAmount, afterSupply, afterMinted := queryValuesEffectedByMintFT(ctx, tc.amount, tc.contractID)
+				for i, am := range tc.amount {
+					expectedBalance := collection.Coin{
+						TokenId: am.TokenId,
+						Amount:  prevAmount[i].Amount.Add(am.Amount),
+					}
+					s.Require().Equal(expectedBalance, afterAmount[i])
+
+					expectedSupply := prevSupply[i].Add(am.Amount)
+					s.Require().True(expectedSupply.Equal(afterSupply[i]))
+
+					expectedMinted := prevMinted[i].Add(am.Amount)
+					s.Require().True(expectedMinted.Equal(afterMinted[i]))
+				}
 			}
 		})
 	}
@@ -638,9 +820,22 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnFT() {
+	// prepare mutli token burn test
 	amount := collection.NewCoins(
 		collection.NewFTCoin(s.ftClassID, s.balance),
 	)
+
+	// create a fungible token class
+	mintableFTClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
+		Name:     "tibetian fox2",
+		Mintable: true,
+	})
+	s.Require().NoError(err)
+	// mintft
+	mintedCoin := collection.NewFTCoin(*mintableFTClassID, sdk.NewInt(1000000))
+	err = s.keeper.MintFT(s.ctx, s.contractID, s.vendor, []collection.Coin{mintedCoin})
+	s.Require().NoError(err)
+
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -651,8 +846,20 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     amount,
-			events:     sdk.Events{sdk.Event{Type: "lbm.collection.v1.EventBurned", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x5b, 0x7b, 0x22, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x22, 0x3a, 0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x2c, 0x22, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x3a, 0x22, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, sdk.NewInt(50000)),
+			),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventBurned",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"50000\"}]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("from"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -674,27 +881,117 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			),
 			err: collection.ErrInsufficientToken,
 		},
+		"no amount - valid": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventBurned",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("from"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+					},
+				},
+			},
+		},
+		"valid multi amount burn": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, sdk.NewInt(50000)),
+				collection.NewFTCoin(*mintableFTClassID, sdk.NewInt(60000)),
+			),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventBurned",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8("[{\"token_id\":\"0000000100000000\",\"amount\":\"50000\"},{\"token_id\":\"0000000200000000\",\"amount\":\"60000\"}]"), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
+						{Key: []uint8("from"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
+					},
+				},
+			},
+		},
+		"include insufficient funds amount 2 amounts": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, s.balance),
+				collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			),
+			err: collection.ErrInsufficientToken,
+		},
+	}
+
+	// query the values to be effected by BurnFT
+	queryValuesAffectedByBurnFT := func(ctx sdk.Context, coins collection.Coins, contractID, from string) (balances collection.Coins, supply []sdk.Int, burnt []sdk.Int) {
+		for _, am := range coins {
+			// save balance
+			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
+				ContractId: contractID,
+				Address:    from,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			balances = append(balances, bal.Balance)
+
+			// save supply
+			res, err := s.queryServer.FTSupply(sdk.WrapSDKContext(ctx), &collection.QueryFTSupplyRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			supply = append(supply, res.Supply)
+
+			// save minted
+			b, err := s.queryServer.FTBurnt(sdk.WrapSDKContext(ctx), &collection.QueryFTBurntRequest{
+				ContractId: contractID,
+				TokenId:    am.TokenId,
+			})
+			s.Require().NoError(err)
+			burnt = append(burnt, b.Burnt)
+		}
+		return
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
+			// test multiple times
+			ctx := s.ctx
+			for t := 0; t < 3; t++ {
+				ctx, _ = ctx.CacheContext()
+				prevAmount, prevSupply, prevBurnt := queryValuesAffectedByBurnFT(ctx, tc.amount, tc.contractID, tc.from.String())
 
-			req := &collection.MsgBurnFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				Amount:     tc.amount,
-			}
-			res, err := s.msgServer.BurnFT(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
+				req := &collection.MsgBurnFT{
+					ContractId: tc.contractID,
+					From:       tc.from.String(),
+					Amount:     tc.amount,
+				}
+				res, err := s.msgServer.BurnFT(sdk.WrapSDKContext(ctx), req)
+				s.Require().ErrorIs(err, tc.err)
+				if tc.err != nil {
+					return
+				}
 
-			s.Require().NotNil(res)
-
-			if s.deterministic {
+				s.Require().NotNil(res)
 				s.Require().Equal(tc.events, ctx.EventManager().Events())
+
+				// check changed amount
+				afterAmount, afterSupply, afterBurnt := queryValuesAffectedByBurnFT(ctx, tc.amount, tc.contractID, tc.from.String())
+				for i, am := range tc.amount {
+					expectedBalance := prevAmount[i].Amount.Sub(am.Amount)
+					s.Require().Equal(am.TokenId, afterAmount[i].TokenId)
+					s.Require().True(expectedBalance.Equal(afterAmount[i].Amount))
+
+					expectedSupply := prevSupply[i].Sub(am.Amount)
+					s.Require().True(expectedSupply.Equal(afterSupply[i]))
+
+					expectedBurnt := prevBurnt[i].Add(am.Amount)
+					s.Require().True(expectedBurnt.Equal(afterBurnt[i]))
+				}
 			}
 		})
 	}
