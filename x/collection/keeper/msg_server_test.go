@@ -17,7 +17,7 @@ func (s *KeeperTestSuite) TestMsgSendFT() {
 		isNegativeCase bool
 		req            *collection.MsgSendFT
 		ftID           string
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  error
 	}{
 		"valid request": {
@@ -28,9 +28,9 @@ func (s *KeeperTestSuite) TestMsgSendFT() {
 				Amount:     collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance)),
 			},
 			ftID: collection.NewFTID(s.ftClassID),
-			expectedEvent: helperBuildEventSent(s.contractID, s.vendor, s.customer, s.vendor, collection.NewCoins(
-				collection.NewFTCoin(s.ftClassID, s.balance),
-			)),
+			expectedEvents: sdk.Events{
+				helperBuildEventSent(s.contractID, s.vendor, s.customer, s.vendor, collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance))),
+			},
 		},
 		"contract not found": {
 			isNegativeCase: true,
@@ -59,17 +59,17 @@ func (s *KeeperTestSuite) TestMsgSendFT() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
+			s.Require().NoError(tc.req.ValidateBasic())
 			from, err := sdk.AccAddressFromBech32(tc.req.From)
 			s.Require().NoError(err)
 			to, err := sdk.AccAddressFromBech32(tc.req.To)
 			s.Require().NoError(err)
-			prevFromBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from, tc.ftID)
-			prevToBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, to, tc.ftID)
-			s.Require().NoError(tc.req.ValidateBasic())
-			prevEvtCnt := len(s.ctx.EventManager().Events())
+			ctx, _ := s.ctx.CacheContext()
+			prevFromBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, from, tc.ftID)
+			prevToBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, to, tc.ftID)
 
 			// Act
-			res, err := s.msgServer.SendFT(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.SendFT(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return
@@ -78,12 +78,10 @@ func (s *KeeperTestSuite) TestMsgSendFT() {
 			s.Require().NotNil(res)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
-			curFromBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from, tc.ftID)
-			curToBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, to, tc.ftID)
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
+			curFromBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, from, tc.ftID)
+			curToBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, to, tc.ftID)
 			s.Require().Equal(prevFromBalance.Sub(tc.req.Amount[0].Amount).Abs(), curFromBalance.Abs())
 			s.Require().Equal(prevToBalance.Add(tc.req.Amount[0].Amount), curToBalance)
 		})
@@ -95,7 +93,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 		isNegativeCase bool
 		req            *collection.MsgOperatorSendFT
 		ftID           string
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  error
 	}{
 		"valid request": {
@@ -107,9 +105,9 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 				Amount:     collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance)),
 			},
 			ftID: collection.NewFTID(s.ftClassID),
-			expectedEvent: helperBuildEventSent(s.contractID, s.customer, s.vendor, s.operator, collection.NewCoins(
-				collection.NewFTCoin(s.ftClassID, s.balance),
-			)),
+			expectedEvents: sdk.Events{
+				helperBuildEventSent(s.contractID, s.customer, s.vendor, s.operator, collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance))),
+			},
 		},
 		"contract not found": {
 			isNegativeCase: true,
@@ -149,20 +147,20 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
+			s.Require().NoError(tc.req.ValidateBasic())
 			from, err := sdk.AccAddressFromBech32(tc.req.From)
 			s.Require().NoError(err)
 			to, err := sdk.AccAddressFromBech32(tc.req.To)
 			s.Require().NoError(err)
 			operator, err := sdk.AccAddressFromBech32(tc.req.Operator)
 			s.Require().NoError(err)
-			prevFromBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from, tc.ftID)
-			prevToBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, to, tc.ftID)
-			prevOperatorBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, operator, tc.ftID)
-			s.Require().NoError(tc.req.ValidateBasic())
-			prevEvtCnt := len(s.ctx.EventManager().Events())
+			ctx, _ := s.ctx.CacheContext()
+			prevFromBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, from, tc.ftID)
+			prevToBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, to, tc.ftID)
+			prevOperatorBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, operator, tc.ftID)
 
 			// Act
-			res, err := s.msgServer.OperatorSendFT(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.OperatorSendFT(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return
@@ -171,13 +169,11 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 			s.Require().NotNil(res)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
-			curFromBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from, tc.ftID)
-			curToBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, to, tc.ftID)
-			curOperatorBalance := s.keeper.GetBalance(s.ctx, tc.req.ContractId, operator, tc.ftID)
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
+			curFromBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, from, tc.ftID)
+			curToBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, to, tc.ftID)
+			curOperatorBalance := s.keeper.GetBalance(ctx, tc.req.ContractId, operator, tc.ftID)
 			s.Require().Equal(prevFromBalance.Sub(tc.req.Amount[0].Amount).Abs(), curFromBalance.Abs())
 			s.Require().Equal(prevToBalance.Add(tc.req.Amount[0].Amount), curToBalance)
 			s.Require().Equal(prevOperatorBalance, curOperatorBalance)
@@ -195,6 +191,36 @@ func helperBuildEventSent(contractID string, from, to, operator sdk.AccAddress, 
 			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
 			{Key: []byte("to"), Value: []byte(wrapQuot(to.String())), Index: false},
 		},
+	}
+}
+
+func (s *KeeperTestSuite) TestHelperBuildEventSent() {
+	testCases := map[string]struct {
+		expectedEvent sdk.Event
+		contractID    string
+		from          sdk.AccAddress
+		to            sdk.AccAddress
+		operator      sdk.AccAddress
+		amount        collection.Coins
+	}{
+		"should keep event compatibility": {
+			expectedEvent: sdk.Event{Type: "lbm.collection.v1.EventSent", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x5b, 0x7b, 0x22, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x22, 0x3a, 0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x2c, 0x22, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x3a, 0x22, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []byte{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}},
+			contractID:    s.contractID,
+			from:          s.vendor,
+			to:            s.customer,
+			operator:      s.vendor,
+			amount:        collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance)),
+		},
+	}
+	if !s.deterministic {
+		return
+	}
+	for _, tc := range testCases {
+		// Act
+		event := helperBuildEventSent(tc.contractID, tc.from, tc.to, tc.from, tc.amount)
+
+		// Assert
+		s.Require().Equal(tc.expectedEvent, event)
 	}
 }
 
@@ -342,7 +368,7 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 	testCases := map[string]struct {
 		isNegativeCase bool
 		req            *collection.MsgAuthorizeOperator
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  error
 	}{
 		"valid request": {
@@ -351,7 +377,9 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 				Holder:     s.customer.String(),
 				Operator:   s.vendor.String(),
 			},
-			expectedEvent: helperBuildEventAuthRelated(authorizedOperatorEventType, s.contractID, s.customer, s.vendor),
+			expectedEvents: sdk.Events{
+				helperBuildEventAuthRelated(authorizedOperatorEventType, s.contractID, s.customer, s.vendor),
+			},
 		},
 		"contract not found": {
 			isNegativeCase: true,
@@ -376,15 +404,16 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
-			prevEvtCnt := len(s.ctx.EventManager().Events())
+			s.Require().NoError(tc.req.ValidateBasic())
 			holder, err := sdk.AccAddressFromBech32(tc.req.Holder)
 			s.Require().NoError(err)
 			operator, err := sdk.AccAddressFromBech32(tc.req.Operator)
 			s.Require().NoError(err)
-			prevAuth, _ := s.keeper.GetAuthorization(s.ctx, tc.req.ContractId, holder, operator)
+			ctx, _ := s.ctx.CacheContext()
+			prevAuth, _ := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
 
 			// Act
-			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return
@@ -393,11 +422,9 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			s.Require().NotNil(res)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
-			curAuth, err := s.keeper.GetAuthorization(s.ctx, tc.req.ContractId, holder, operator)
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
+			curAuth, err := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
 			s.Require().NoError(err)
 			s.Require().Nil(prevAuth)
 			s.Require().Equal(tc.req.Holder, curAuth.Holder)
@@ -411,7 +438,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 	testCases := map[string]struct {
 		isNegativeCase bool
 		req            *collection.MsgRevokeOperator
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  error
 	}{
 		"valid request": {
@@ -420,7 +447,9 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 				Holder:     s.customer.String(),
 				Operator:   s.operator.String(),
 			},
-			expectedEvent: helperBuildEventAuthRelated(revokedOperatorEventType, s.contractID, s.customer, s.operator),
+			expectedEvents: sdk.Events{
+				helperBuildEventAuthRelated(revokedOperatorEventType, s.contractID, s.customer, s.operator),
+			},
 		},
 		"contract not found": {
 			isNegativeCase: true,
@@ -445,15 +474,16 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
-			prevEvtCnt := len(s.ctx.EventManager().Events())
+			s.Require().NoError(tc.req.ValidateBasic())
 			holder, err := sdk.AccAddressFromBech32(tc.req.Holder)
 			s.Require().NoError(err)
 			operator, err := sdk.AccAddressFromBech32(tc.req.Operator)
 			s.Require().NoError(err)
-			prevAuth, _ := s.keeper.GetAuthorization(s.ctx, tc.req.ContractId, holder, operator)
+			ctx, _ := s.ctx.CacheContext()
+			prevAuth, _ := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
 
 			// Act
-			res, err := s.msgServer.RevokeOperator(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.RevokeOperator(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return
@@ -462,14 +492,12 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			s.Require().NotNil(res)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
 			s.Require().NotNil(prevAuth)
 			s.Require().Equal(tc.req.Holder, prevAuth.Holder)
 			s.Require().Equal(tc.req.Operator, prevAuth.Operator)
-			curAuth, err := s.keeper.GetAuthorization(s.ctx, tc.req.ContractId, holder, operator)
+			curAuth, err := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
 			s.Require().ErrorIs(err, collection.ErrCollectionNotApproved)
 			s.Require().Nil(curAuth)
 		})
@@ -484,6 +512,38 @@ func helperBuildEventAuthRelated(evtType, contractID string, holder, operator sd
 			{Key: []byte("holder"), Value: []byte(wrapQuot(holder.String())), Index: false},
 			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
 		},
+	}
+}
+
+func (s *KeeperTestSuite) TestHelperBuildAuthRelatedEvent() {
+	testCases := map[string]struct {
+		expectedEvent sdk.Event
+		contractID    string
+		holder        sdk.AccAddress
+		operator      sdk.AccAddress
+	}{
+		"should keep event compatibility for authorize ": {
+			expectedEvent: sdk.Event{Type: "lbm.collection.v1.EventAuthorizedOperator", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}},
+			contractID:    s.contractID,
+			holder:        s.customer,
+			operator:      s.vendor,
+		},
+		"should keep event compatibility for revoke ": {
+			expectedEvent: sdk.Event{Type: "lbm.collection.v1.EventRevokedOperator", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}}},
+			contractID:    s.contractID,
+			holder:        s.customer,
+			operator:      s.operator,
+		},
+	}
+	if !s.deterministic {
+		return
+	}
+	for _, tc := range testCases {
+		// Act
+		event := helperBuildEventAuthRelated(tc.expectedEvent.Type, tc.contractID, tc.holder, tc.operator)
+
+		// Assert
+		s.Require().Equal(tc.expectedEvent, event)
 	}
 }
 
