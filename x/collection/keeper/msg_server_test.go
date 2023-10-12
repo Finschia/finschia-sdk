@@ -1199,6 +1199,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 	amount := collection.NewCoins(
 		collection.NewFTCoin(s.ftClassID, s.balance),
 	)
+
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -1212,7 +1213,15 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 			operator:   s.operator,
 			from:       s.customer,
 			amount:     amount,
-			events:     sdk.Events{sdk.Event{Type: "lbm.collection.v1.EventBurned", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x5b, 0x7b, 0x22, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x22, 0x3a, 0x22, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x2c, 0x22, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x3a, 0x22, 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventBurned",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: []uint8(fmt.Sprintf("[{\"token_id\":\"%s\",\"amount\":\"%s\"}]", strings.Split(amount.String(), ":")[0], strings.Split(amount.String(), ":")[1])), Index: false},
+						{Key: []uint8("contract_id"), Value: []uint8(fmt.Sprintf("\"%s\"", s.contractID)), Index: false},
+						{Key: []uint8("from"), Value: []uint8(fmt.Sprintf("\"%s\"", s.customer)), Index: false},
+						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false},
+					}}},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -1235,7 +1244,16 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 			amount:     amount,
 			err:        collection.ErrTokenNoPermission,
 		},
-		"insufficient funds": {
+		"insufficient funds - exist token": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			from:       s.customer,
+			amount: collection.NewCoins(
+				collection.NewFTCoin(s.ftClassID, s.balance.Add(sdk.OneInt())),
+			),
+			err: collection.ErrInsufficientToken,
+		},
+		"insufficient funds - non-exist token": {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
@@ -1263,10 +1281,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
