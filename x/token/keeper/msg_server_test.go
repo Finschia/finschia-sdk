@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"testing"
 
+	"github.com/stretchr/testify/assert"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -782,31 +784,41 @@ func helperBuildMintedEvent(contractID string, operator, to sdk.AccAddress, amou
 	}
 }
 
-func (s *KeeperTestSuite) TestHelperBuildMintedEvent() {
+func TestHelperBuildMintedEvent(t *testing.T) {
 	testCases := map[string]struct {
 		expectedEvent sdk.Event
 		contractID    string
-		from          sdk.AccAddress
-		to            sdk.AccAddress
+		from          string
+		to            string
 		amount        sdk.Int
 	}{
-		"should keep event compatibility for EventMinted": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}},
-			contractID:    s.contractID,
-			from:          s.operator,
-			to:            s.customer,
-			amount:        sdk.OneInt(),
+		"helper function should keep event compatibility for EventMinted": {
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(`"1"`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenzw08p6t"`), Index: false},
+				{Key: []byte("to"), Value: []byte(`"link1v9jxgun9wdenyjqyyxu"`), Index: false},
+			}},
+			contractID: "9be17165",
+			from:       "link1v9jxgun9wdenzw08p6t",
+			to:         "link1v9jxgun9wdenyjqyyxu",
+			amount:     sdk.OneInt(),
 		},
 	}
-	if !s.deterministic {
-		return
-	}
-	for _, tc := range testCases {
-		// Act
-		event := helperBuildMintedEvent(tc.contractID, tc.from, tc.to, tc.amount)
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			from, err := sdk.AccAddressFromBech32(tc.from)
+			assert.NoError(t, err)
+			to, err := sdk.AccAddressFromBech32(tc.to)
+			assert.NoError(t, err)
 
-		// Assert
-		s.Require().Equal(tc.expectedEvent, event)
+			// Act
+			event := helperBuildMintedEvent(tc.contractID, from, to, tc.amount)
+
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
+		})
 	}
 }
 
@@ -979,38 +991,54 @@ func helperBuildBurnedEvt(contractID string, from, operator sdk.AccAddress, amou
 	}
 }
 
-func (s *KeeperTestSuite) TestHelperBuildBurnedEvent() {
+func TestHelperBuildBurnedEvent(t *testing.T) {
 	testCases := map[string]struct {
 		expectedEvent sdk.Event
 		contractID    string
-		operator      sdk.AccAddress
-		from          sdk.AccAddress
+		from          string
+		operator      string
 		amount        sdk.Int
 	}{
 		"should keep event compatibility for EventBurned": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}},
-			contractID:    s.contractID,
-			operator:      s.vendor,
-			from:          s.vendor,
-			amount:        s.balance,
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(`"1000"`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("from"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
+			}},
+			contractID: "9be17165",
+			from:       "link1v9jxgun9wdenqa2xzfx",
+			operator:   "link1v9jxgun9wdenqa2xzfx",
+			amount:     sdk.NewInt(1000),
 		},
 		"should keep event compatibility for EventBurned(operatorBurn)": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}}},
-			contractID:    s.contractID,
-			operator:      s.operator,
-			from:          s.customer,
-			amount:        s.balance,
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(`"1000"`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("from"), Value: []byte(`"link1v9jxgun9wdenyjqyyxu"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenzw08p6t"`), Index: false},
+			}},
+			contractID: "9be17165",
+			from:       "link1v9jxgun9wdenyjqyyxu",
+			operator:   "link1v9jxgun9wdenzw08p6t",
+			amount:     sdk.NewInt(1000),
 		},
 	}
-	if !s.deterministic {
-		return
-	}
-	for _, tc := range testCases {
-		// Act
-		event := helperBuildBurnedEvt(tc.contractID, tc.from, tc.operator, tc.amount)
 
-		// Assert
-		s.Require().Equal(tc.expectedEvent, event)
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			from, err := sdk.AccAddressFromBech32(tc.from)
+			assert.NoError(t, err)
+			operator, err := sdk.AccAddressFromBech32(tc.operator)
+			assert.NoError(t, err)
+
+			// Act
+			event := helperBuildBurnedEvt(tc.contractID, from, operator, tc.amount)
+
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
+		})
 	}
 }
 
@@ -1102,29 +1130,36 @@ func helperBuildModifiedEvt(contractID string, operator sdk.AccAddress, changes 
 	}
 }
 
-func (s *KeeperTestSuite) TestHelperBuildModifiedEvent() {
+func TestHelperBuildModifiedEvent(t *testing.T) {
 	testCases := map[string]struct {
 		expectedEvent sdk.Event
 		contractID    string
-		owner         sdk.AccAddress
+		owner         string
 		changes       []token.Attribute
 	}{
 		"should keep event compatibility for EventModified": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventModified", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73}, Value: []uint8{0x5b, 0x7b, 0x22, 0x6b, 0x65, 0x79, 0x22, 0x3a, 0x22, 0x75, 0x72, 0x69, 0x22, 0x2c, 0x22, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x3a, 0x22, 0x75, 0x72, 0x69, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}},
-			contractID:    s.contractID,
-			owner:         s.vendor,
-			changes:       []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventModified", Attributes: []abci.EventAttribute{
+				{Key: []byte("changes"), Value: []byte(`[{"key":"uri","value":"uri"}]`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
+			}},
+			contractID: "9be17165",
+			owner:      "link1v9jxgun9wdenqa2xzfx",
+			changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
 		},
 	}
-	if !s.deterministic {
-		return
-	}
-	for _, tc := range testCases {
-		// Act
-		event := helperBuildModifiedEvt(tc.contractID, tc.owner, tc.changes)
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			owner, err := sdk.AccAddressFromBech32(tc.owner)
+			assert.NoError(t, err)
 
-		// Assert
-		s.Require().Equal(tc.expectedEvent, event)
+			// Act
+			event := helperBuildModifiedEvt(tc.contractID, owner, tc.changes)
+
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
+		})
 	}
 }
 
