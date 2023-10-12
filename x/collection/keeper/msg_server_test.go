@@ -220,16 +220,18 @@ func TestHelperBuildEventSent(t *testing.T) {
 			amount:     collection.NewCoins(collection.NewFTCoin("00000001", sdk.NewInt(1000000))),
 		},
 	}
-	for _, tc := range testCases {
-		// Act
-		from, err := sdk.AccAddressFromBech32(tc.from)
-		assert.NoError(t, err)
-		to, err := sdk.AccAddressFromBech32(tc.to)
-		assert.NoError(t, err)
-		event := helperBuildEventSent(tc.contractID, from, to, from, tc.amount)
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Act
+			from, err := sdk.AccAddressFromBech32(tc.from)
+			assert.NoError(t, err)
+			to, err := sdk.AccAddressFromBech32(tc.to)
+			assert.NoError(t, err)
+			event := helperBuildEventSent(tc.contractID, from, to, from, tc.amount)
 
-		// Assert
-		assert.Equal(t, tc.expectedEvent, event)
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
+		})
 	}
 }
 
@@ -552,16 +554,18 @@ func TestHelperBuildAuthRelatedEvent(t *testing.T) {
 			operator:   "link1v9jxgun9wdenzw08p6t",
 		},
 	}
-	for _, tc := range testCases {
-		// Act
-		holder, err := sdk.AccAddressFromBech32(tc.holder)
-		assert.NoError(t, err)
-		operator, err := sdk.AccAddressFromBech32(tc.operator)
-		assert.NoError(t, err)
-		event := helperBuildEventAuthRelated(tc.expectedEvent.Type, tc.contractID, holder, operator)
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Act
+			holder, err := sdk.AccAddressFromBech32(tc.holder)
+			assert.NoError(t, err)
+			operator, err := sdk.AccAddressFromBech32(tc.operator)
+			assert.NoError(t, err)
+			event := helperBuildEventAuthRelated(tc.expectedEvent.Type, tc.contractID, holder, operator)
 
-		// Assert
-		assert.Equal(t, tc.expectedEvent, event)
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
+		})
 	}
 }
 
