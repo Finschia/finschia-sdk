@@ -197,23 +197,8 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgSendNFT() {
-	allTokenIDs := make([]string, 0)
-	allTokenIDs = append(allTokenIDs, collection.NewNFTID(s.nftClassID, 1))
-	cursor := allTokenIDs[0]
-	for {
-		ctx, _ := s.ctx.CacheContext()
-		res, err := s.queryServer.Children(sdk.WrapSDKContext(ctx), &collection.QueryChildrenRequest{
-			s.contractID,
-			cursor,
-			&query.PageRequest{},
-		})
-		s.Require().NoError(err)
-		if res.Children == nil {
-			break
-		}
-		allTokenIDs = append(allTokenIDs, res.Children[0].TokenId)
-		cursor = allTokenIDs[len(allTokenIDs)-1]
-	}
+	rootNFTID := collection.NewNFTID(s.nftClassID, 1)
+	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
 
 	testCases := map[string]struct {
 		contractID string
@@ -223,7 +208,7 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			tokenID:    collection.NewNFTID(s.nftClassID, 1),
+			tokenID:    rootNFTID,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventOwnerChanged",
@@ -231,7 +216,7 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(allTokenIDs[1]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedTokenIDs[1]), Index: false},
 					},
 				},
 				sdk.Event{
@@ -240,7 +225,7 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(allTokenIDs[2]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedTokenIDs[2]), Index: false},
 					},
 				},
 				sdk.Event{
@@ -249,13 +234,13 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(allTokenIDs[3]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedTokenIDs[3]), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventSent",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: allTokenIDs[0], Amount: sdk.OneInt()})), Index: false},
+						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: issuedTokenIDs[0], Amount: sdk.OneInt()})), Index: false},
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.customer.String()), Index: false},
@@ -309,24 +294,8 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
-	tokenID := collection.NewNFTID(s.nftClassID, 1)
-	allTokenIDs := make([]string, 0)
-	allTokenIDs = append(allTokenIDs, tokenID)
-	cursor := allTokenIDs[0]
-	for {
-		ctx, _ := s.ctx.CacheContext()
-		res, err := s.queryServer.Children(sdk.WrapSDKContext(ctx), &collection.QueryChildrenRequest{
-			ContractId: s.contractID,
-			TokenId:    cursor,
-			Pagination: &query.PageRequest{},
-		})
-		s.Require().NoError(err)
-		if res.Children == nil {
-			break
-		}
-		allTokenIDs = append(allTokenIDs, res.Children[0].TokenId)
-		cursor = allTokenIDs[len(allTokenIDs)-1]
-	}
+	rootNFTID := collection.NewNFTID(s.nftClassID, 1)
+	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
 
 	testCases := map[string]struct {
 		contractID string
@@ -340,7 +309,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
-			tokenID:    tokenID,
+			tokenID:    rootNFTID,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventOwnerChanged",
@@ -348,7 +317,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(allTokenIDs[1]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedTokenIDs[1]), Index: false},
 					},
 				},
 				sdk.Event{
@@ -357,7 +326,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(allTokenIDs[2]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedTokenIDs[2]), Index: false},
 					},
 				},
 				sdk.Event{
@@ -366,13 +335,13 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(allTokenIDs[3]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedTokenIDs[3]), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventSent",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: allTokenIDs[0], Amount: sdk.OneInt()})), Index: false},
+						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: issuedTokenIDs[0], Amount: sdk.OneInt()})), Index: false},
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.operator.String()), Index: false},
@@ -384,14 +353,14 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 			contractID: "deadbeef",
 			operator:   s.operator,
 			from:       s.customer,
-			tokenID:    tokenID,
+			tokenID:    rootNFTID,
 			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			from:       s.customer,
-			tokenID:    tokenID,
+			tokenID:    rootNFTID,
 			err:        collection.ErrCollectionNotApproved,
 		},
 		"not found": {
@@ -585,7 +554,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 }
 
 func (s *KeeperTestSuite) TestMsgCreateContract() {
-	newContractID := "3336b76f"
+	expectedNewContractID := "3336b76f"
 	testCases := map[string]struct {
 		owner  sdk.AccAddress
 		err    error
@@ -597,7 +566,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				sdk.Event{
 					Type: "lbm.collection.v1.EventCreatedContract",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("contract_id"), Value: testutil.W(newContractID), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(expectedNewContractID), Index: false},
 						{Key: []byte("creator"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("meta"), Value: testutil.W(""), Index: false},
 						{Key: []byte("name"), Value: testutil.W(""), Index: false},
@@ -607,7 +576,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("contract_id"), Value: testutil.W(newContractID), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(expectedNewContractID), Index: false},
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionIssue).String()), Index: false},
@@ -615,7 +584,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("contract_id"), Value: testutil.W(newContractID), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(expectedNewContractID), Index: false},
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionModify).String()), Index: false},
@@ -623,7 +592,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("contract_id"), Value: testutil.W(newContractID), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(expectedNewContractID), Index: false},
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
@@ -631,7 +600,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("contract_id"), Value: testutil.W(newContractID), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(expectedNewContractID), Index: false},
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionBurn).String()), Index: false},
@@ -647,7 +616,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				Owner: tc.owner.String(),
 			}
 			res, err := s.msgServer.CreateContract(sdk.WrapSDKContext(ctx), req)
-			s.Require().Equal(newContractID, res.ContractId)
+			s.Require().Equal(expectedNewContractID, res.ContractId)
 			s.Require().ErrorIs(err, tc.err)
 			if tc.err != nil {
 				return
@@ -1122,7 +1091,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 
 func (s *KeeperTestSuite) TestMsgBurnFT() {
 	// prepare mutli token burn test
-	amount := collection.NewCoins(
+	singleAmount := collection.NewCoins(
 		collection.NewFTCoin(s.ftClassID, sdk.NewInt(50000)),
 	)
 
@@ -1132,7 +1101,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		Mintable: true,
 	})
 	s.Require().NoError(err)
-	amounts := collection.NewCoins(
+	multiAmounts := collection.NewCoins(
 		collection.NewFTCoin(s.ftClassID, sdk.NewInt(50000)),
 		collection.NewFTCoin(*mintableFTClassID, sdk.NewInt(60000)),
 	)
@@ -1152,7 +1121,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     amount,
+			amount:     singleAmount,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
@@ -1170,12 +1139,12 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		"valid multi amount burn": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     amounts,
+			amount:     multiAmounts,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(amounts), Index: false},
+						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(multiAmounts), Index: false},
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.vendor.String()), Index: false},
@@ -1201,13 +1170,13 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			from:       s.vendor,
-			amount:     amount,
+			amount:     singleAmount,
 			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			amount:     amount,
+			amount:     singleAmount,
 			err:        collection.ErrTokenNoPermission,
 		},
 		"insufficient funds": {
@@ -1301,7 +1270,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
-	amount := collection.NewCoins(
+	singleAmount := collection.NewCoins(
 		collection.NewFTCoin(s.ftClassID, s.balance),
 	)
 
@@ -1317,12 +1286,12 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
-			amount:     amount,
+			amount:     singleAmount,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
 					Attributes: []abci.EventAttribute{
-						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(amount), Index: false},
+						{Key: []byte("amount"), Value: testutil.MustJSONMarshal(singleAmount), Index: false},
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.operator.String()), Index: false},
@@ -1332,21 +1301,21 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 			contractID: "deadbeef",
 			operator:   s.operator,
 			from:       s.customer,
-			amount:     amount,
+			amount:     singleAmount,
 			err:        class.ErrContractNotExist,
 		},
 		"no authorization": {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			from:       s.customer,
-			amount:     amount,
+			amount:     singleAmount,
 			err:        collection.ErrCollectionNotApproved,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			operator:   s.stranger,
 			from:       s.customer,
-			amount:     amount,
+			amount:     singleAmount,
 			err:        collection.ErrTokenNoPermission,
 		},
 		"insufficient funds - exist token": {
@@ -1392,27 +1361,10 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnNFT() {
-	tokenID := collection.NewNFTID(s.nftClassID, s.numNFTs*2+1)
-	target := []string{tokenID}
-	tokenIDs := make([]string, 0)
-	tokenIDs = append(tokenIDs, tokenID)
-	cursor := tokenIDs[0]
-	for {
-		ctx, _ := s.ctx.CacheContext()
-		res, err := s.queryServer.Children(sdk.WrapSDKContext(ctx), &collection.QueryChildrenRequest{
-			ContractId: s.contractID,
-			TokenId:    cursor,
-			Pagination: &query.PageRequest{},
-		})
-		s.Require().NoError(err)
-		if res.Children == nil {
-			break
-		}
-		tokenIDs = append(tokenIDs, res.Children[0].TokenId)
-		cursor = tokenIDs[len(tokenIDs)-1]
-	}
+	rootNFTID := collection.NewNFTID(s.nftClassID, s.numNFTs*2+1)
+	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
 	coins := make([]collection.Coin, 0)
-	for _, id := range tokenIDs {
+	for _, id := range issuedTokenIDs {
 		coins = append(coins, collection.NewCoin(id, sdk.NewInt(1)))
 	}
 
@@ -1426,7 +1378,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
@@ -1440,13 +1392,13 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			from:       s.vendor,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			err:        collection.ErrTokenNoPermission,
 		},
 		"not found": {
@@ -1497,27 +1449,10 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
-	tokenID := collection.NewNFTID(s.nftClassID, 1)
-	target := []string{tokenID}
-	tokenIDs := make([]string, 0)
-	tokenIDs = append(tokenIDs, tokenID)
-	cursor := tokenIDs[0]
-	for {
-		ctx, _ := s.ctx.CacheContext()
-		res, err := s.queryServer.Children(sdk.WrapSDKContext(ctx), &collection.QueryChildrenRequest{
-			ContractId: s.contractID,
-			TokenId:    cursor,
-			Pagination: &query.PageRequest{},
-		})
-		s.Require().NoError(err)
-		if res.Children == nil {
-			break
-		}
-		tokenIDs = append(tokenIDs, res.Children[0].TokenId)
-		cursor = tokenIDs[len(tokenIDs)-1]
-	}
+	rootNFTID := collection.NewNFTID(s.nftClassID, 1)
+	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
 	coins := make([]collection.Coin, 0)
-	for _, id := range tokenIDs {
+	for _, id := range issuedTokenIDs {
 		coins = append(coins, collection.NewCoin(id, sdk.NewInt(1)))
 	}
 
@@ -1533,7 +1468,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventBurned",
@@ -1548,21 +1483,21 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 			contractID: "deadbeef",
 			operator:   s.operator,
 			from:       s.customer,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			err:        class.ErrContractNotExist,
 		},
 		"no authorization": {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			from:       s.customer,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			err:        collection.ErrCollectionNotApproved,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			operator:   s.stranger,
 			from:       s.customer,
-			tokenIDs:   target,
+			tokenIDs:   []string{rootNFTID},
 			err:        collection.ErrTokenNoPermission,
 		},
 		"not found": {
@@ -1618,7 +1553,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgModify() {
-	tokenIndex := collection.NewNFTID(s.nftClassID, 1)[8:]
+	expectedTokenIndex := collection.NewNFTID(s.nftClassID, 1)[8:]
 	changes := []collection.Attribute{{
 		Key:   collection.AttributeKeyName.String(),
 		Value: "test",
@@ -1652,7 +1587,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			contractID: s.contractID,
 			operator:   s.customer,
 			tokenType:  s.nftClassID,
-			tokenIndex: tokenIndex,
+			tokenIndex: expectedTokenIndex,
 			err:        collection.ErrTokenNoPermission,
 		},
 		"nft not found": {
@@ -1880,9 +1815,9 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 }
 
 func (s *KeeperTestSuite) TestMsgDetach() {
-	nfts := make([]string, s.depthLimit)
+	issuedNfts := make([]string, s.depthLimit)
 	for i := 1; i <= s.depthLimit; i++ {
-		nfts[i-1] = collection.NewNFTID(s.nftClassID, i)
+		issuedNfts[i-1] = collection.NewNFTID(s.nftClassID, i)
 	}
 
 	testCases := map[string]struct {
@@ -1893,7 +1828,7 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subjectID:  nfts[1],
+			subjectID:  issuedNfts[1],
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventDetached",
@@ -1901,24 +1836,24 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("holder"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.customer.String()), Index: false},
-						{Key: []byte("previous_parent"), Value: testutil.W(nfts[0]), Index: false},
-						{Key: []byte("subject"), Value: testutil.W(nfts[1]), Index: false},
+						{Key: []byte("previous_parent"), Value: testutil.W(issuedNfts[0]), Index: false},
+						{Key: []byte("subject"), Value: testutil.W(issuedNfts[1]), Index: false},
 					}},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventRootChanged",
 					Attributes: []abci.EventAttribute{
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
-						{Key: []byte("from"), Value: testutil.W(nfts[0]), Index: false},
-						{Key: []byte("to"), Value: testutil.W(nfts[1]), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(nfts[2]), Index: false},
+						{Key: []byte("from"), Value: testutil.W(issuedNfts[0]), Index: false},
+						{Key: []byte("to"), Value: testutil.W(issuedNfts[1]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedNfts[2]), Index: false},
 					}},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventRootChanged",
 					Attributes: []abci.EventAttribute{
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
-						{Key: []byte("from"), Value: testutil.W(nfts[0]), Index: false},
-						{Key: []byte("to"), Value: testutil.W(nfts[1]), Index: false},
-						{Key: []byte("token_id"), Value: testutil.W(nfts[3]), Index: false},
+						{Key: []byte("from"), Value: testutil.W(issuedNfts[0]), Index: false},
+						{Key: []byte("to"), Value: testutil.W(issuedNfts[1]), Index: false},
+						{Key: []byte("token_id"), Value: testutil.W(issuedNfts[3]), Index: false},
 					}},
 			},
 		},
@@ -2117,4 +2052,25 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 
 		})
 	}
+}
+
+func (s *KeeperTestSuite) extractChainedNFTIDs(root string) []string {
+	allTokenIDs := make([]string, 0)
+	allTokenIDs = append(allTokenIDs, root)
+	cursor := allTokenIDs[0]
+	for {
+		ctx, _ := s.ctx.CacheContext()
+		res, err := s.queryServer.Children(sdk.WrapSDKContext(ctx), &collection.QueryChildrenRequest{
+			ContractId: s.contractID,
+			TokenId:    cursor,
+			Pagination: &query.PageRequest{},
+		})
+		s.Require().NoError(err)
+		if res.Children == nil {
+			break
+		}
+		allTokenIDs = append(allTokenIDs, res.Children[0].TokenId)
+		cursor = allTokenIDs[len(allTokenIDs)-1]
+	}
+	return allTokenIDs
 }
