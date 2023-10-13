@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"testing"
 
+	"github.com/stretchr/testify/assert"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -667,21 +669,10 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 }
 
 func (s *KeeperTestSuite) TestMsgMint() {
-	helperBuildMintedEvent := func(contractID string, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
-		return sdk.Event{
-			Type: "lbm.token.v1.EventMinted",
-			Attributes: []abci.EventAttribute{
-				{Key: []byte("amount"), Value: []byte(wrapQuot(amount.String())), Index: false},
-				{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
-				{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
-				{Key: []byte("to"), Value: []byte(wrapQuot(to.String())), Index: false},
-			},
-		}
-	}
 	testCases := map[string]struct {
 		isNegativeCase bool
 		req            *token.MsgMint
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  *sdkerrors.Error
 	}{
 		"mint(contractID, from, to, 10)": {
@@ -691,7 +682,9 @@ func (s *KeeperTestSuite) TestMsgMint() {
 				To:         s.customer.String(),
 				Amount:     sdk.NewInt(10),
 			},
-			expectedEvent: helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+			expectedEvents: sdk.Events{
+				helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+			},
 		},
 		"mint(contractID, from, from, 10)": {
 			req: &token.MsgMint{
@@ -700,7 +693,9 @@ func (s *KeeperTestSuite) TestMsgMint() {
 				To:         s.customer.String(),
 				Amount:     sdk.NewInt(10),
 			},
-			expectedEvent: helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+			expectedEvents: sdk.Events{
+				helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+			},
 		},
 		"mint(contractID, vendor, customer, 1) -> error": {
 			isNegativeCase: true,
@@ -737,45 +732,92 @@ func (s *KeeperTestSuite) TestMsgMint() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
+			s.Require().NoError(tc.req.ValidateBasic())
 			from, err := sdk.AccAddressFromBech32(tc.req.From)
 			s.Require().NoError(err)
 			to, err := sdk.AccAddressFromBech32(tc.req.To)
 			s.Require().NoError(err)
-			prevFrom := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from)
-			prevTo := s.keeper.GetBalance(s.ctx, tc.req.ContractId, to)
-			prevMint := s.keeper.GetMinted(s.ctx, tc.req.ContractId)
-			prevSupplyAmount := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
-			s.Require().NoError(tc.req.ValidateBasic())
-			prevEvtCnt := len(s.ctx.EventManager().Events())
+			ctx, _ := s.ctx.CacheContext()
+			prevFrom := s.keeper.GetBalance(ctx, tc.req.ContractId, from)
+			prevTo := s.keeper.GetBalance(ctx, tc.req.ContractId, to)
+			prevMint := s.keeper.GetMinted(ctx, tc.req.ContractId)
+			prevSupplyAmount := s.keeper.GetSupply(ctx, tc.req.ContractId)
 
 			// Act
-			res, err := s.msgServer.Mint(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.Mint(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().Nil(res)
 				s.Require().ErrorIs(err, tc.expectedError)
-				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				s.Require().Equal(0, len(ctx.EventManager().Events()))
 				return
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
-
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
 			mintAmount := tc.req.Amount
-			curMinted := s.keeper.GetMinted(s.ctx, tc.req.ContractId)
-			curSupply := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
-			curToAmount := s.keeper.GetBalance(s.ctx, s.contractID, to)
+			curMinted := s.keeper.GetMinted(ctx, tc.req.ContractId)
+			curSupply := s.keeper.GetSupply(ctx, tc.req.ContractId)
+			curToAmount := s.keeper.GetBalance(ctx, s.contractID, to)
 			s.Require().Equal(prevMint.Add(mintAmount), curMinted)
 			s.Require().Equal(prevSupplyAmount.Add(mintAmount), curSupply)
 			s.Require().Equal(prevTo.Add(mintAmount), curToAmount)
 			if !from.Equals(to) {
-				curFrom := s.keeper.GetBalance(s.ctx, s.contractID, from)
+				curFrom := s.keeper.GetBalance(ctx, s.contractID, from)
 				s.Require().Equal(prevFrom, curFrom)
 			}
+		})
+	}
+}
+
+func helperBuildMintedEvent(contractID string, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+	return sdk.Event{
+		Type: "lbm.token.v1.EventMinted",
+		Attributes: []abci.EventAttribute{
+			{Key: []byte("amount"), Value: []byte(wrapQuot(amount.String())), Index: false},
+			{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
+			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
+			{Key: []byte("to"), Value: []byte(wrapQuot(to.String())), Index: false},
+		},
+	}
+}
+
+func TestHelperBuildMintedEvent(t *testing.T) {
+	testCases := map[string]struct {
+		expectedEvent sdk.Event
+		contractID    string
+		from          string
+		to            string
+		amount        sdk.Int
+	}{
+		"helper function should keep event compatibility for EventMinted": {
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(`"1"`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenzw08p6t"`), Index: false},
+				{Key: []byte("to"), Value: []byte(`"link1v9jxgun9wdenyjqyyxu"`), Index: false},
+			}},
+			contractID: "9be17165",
+			from:       "link1v9jxgun9wdenzw08p6t",
+			to:         "link1v9jxgun9wdenyjqyyxu",
+			amount:     sdk.OneInt(),
+		},
+	}
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			from, err := sdk.AccAddressFromBech32(tc.from)
+			assert.NoError(t, err)
+			to, err := sdk.AccAddressFromBech32(tc.to)
+			assert.NoError(t, err)
+
+			// Act
+			event := helperBuildMintedEvent(tc.contractID, from, to, tc.amount)
+
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
 		})
 	}
 }
@@ -784,7 +826,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 	testCases := map[string]struct {
 		isNegativeCase bool
 		req            *token.MsgBurn
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  *sdkerrors.Error
 	}{
 		"burn(contractID, from, amount)": {
@@ -793,7 +835,9 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 				From:       s.vendor.String(),
 				Amount:     sdk.OneInt(),
 			},
-			expectedEvent: helperBuildBurnedEvt(s.contractID, s.vendor, s.vendor, sdk.OneInt()),
+			expectedEvents: sdk.Events{
+				helperBuildBurnedEvt(s.contractID, s.vendor, s.vendor, sdk.OneInt()),
+			},
 		},
 		"burn(nonExistingContractId, from, 1) -> error": {
 			isNegativeCase: true,
@@ -820,32 +864,30 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 			// Arrange
 			from, err := sdk.AccAddressFromBech32(tc.req.From)
 			s.Require().NoError(err)
-			prevFrom := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from)
-			prevBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
-			prevSupplyAmount := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
+			ctx, _ := s.ctx.CacheContext()
+			prevFrom := s.keeper.GetBalance(ctx, tc.req.ContractId, from)
+			prevBurnt := s.keeper.GetBurnt(ctx, tc.req.ContractId)
+			prevSupplyAmount := s.keeper.GetSupply(ctx, tc.req.ContractId)
 			s.Require().NoError(tc.req.ValidateBasic())
-			prevEvtCnt := len(s.ctx.EventManager().Events())
 
 			// Act
-			res, err := s.msgServer.Burn(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().Nil(res)
 				s.Require().ErrorIs(err, tc.expectedError)
-				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				s.Require().Equal(0, len(ctx.EventManager().Events()))
 				return
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
 
-			curBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
-			curSupply := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
-			curFromAmount := s.keeper.GetBalance(s.ctx, s.contractID, from)
+			curBurnt := s.keeper.GetBurnt(ctx, tc.req.ContractId)
+			curSupply := s.keeper.GetSupply(ctx, tc.req.ContractId)
+			curFromAmount := s.keeper.GetBalance(ctx, s.contractID, from)
 			burnAmount := tc.req.Amount
 			s.Require().Equal(prevBurnt.Add(burnAmount), curBurnt)
 			s.Require().Equal(prevSupplyAmount.Sub(burnAmount), curSupply)
@@ -949,17 +991,58 @@ func helperBuildBurnedEvt(contractID string, from, operator sdk.AccAddress, amou
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgModify() {
-	helperBuildModifiedEvt := func(contractID string, operator sdk.AccAddress, changes []token.Attribute) sdk.Event {
-		return sdk.Event{
-			Type: "lbm.token.v1.EventModified",
-			Attributes: []abci.EventAttribute{
-				{Key: []byte("changes"), Value: []byte(asJsonStr(changes)), Index: false},
-				{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
-				{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
-			},
-		}
+func TestHelperBuildBurnedEvent(t *testing.T) {
+	testCases := map[string]struct {
+		expectedEvent sdk.Event
+		contractID    string
+		from          string
+		operator      string
+		amount        sdk.Int
+	}{
+		"should keep event compatibility for EventBurned": {
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(`"1000"`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("from"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
+			}},
+			contractID: "9be17165",
+			from:       "link1v9jxgun9wdenqa2xzfx",
+			operator:   "link1v9jxgun9wdenqa2xzfx",
+			amount:     sdk.NewInt(1000),
+		},
+		"should keep event compatibility for EventBurned(operatorBurn)": {
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{
+				{Key: []byte("amount"), Value: []byte(`"1000"`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("from"), Value: []byte(`"link1v9jxgun9wdenyjqyyxu"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenzw08p6t"`), Index: false},
+			}},
+			contractID: "9be17165",
+			from:       "link1v9jxgun9wdenyjqyyxu",
+			operator:   "link1v9jxgun9wdenzw08p6t",
+			amount:     sdk.NewInt(1000),
+		},
 	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			from, err := sdk.AccAddressFromBech32(tc.from)
+			assert.NoError(t, err)
+			operator, err := sdk.AccAddressFromBech32(tc.operator)
+			assert.NoError(t, err)
+
+			// Act
+			event := helperBuildBurnedEvt(tc.contractID, from, operator, tc.amount)
+
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgModify() {
 	changesUriAndName := []token.Attribute{
 		{Key: token.AttributeKeyURI.String(), Value: "uri"},
 		{Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"},
@@ -969,7 +1052,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 	testCases := map[string]struct {
 		isNegativeCase bool
 		req            *token.MsgModify
-		expectedEvent  sdk.Event
+		expectedEvents sdk.Events
 		expectedError  *sdkerrors.Error
 	}{
 		"modify(contractID, owner, changes:uri,name)": {
@@ -978,7 +1061,9 @@ func (s *KeeperTestSuite) TestMsgModify() {
 				Owner:      s.vendor.String(),
 				Changes:    changesUriAndName,
 			},
-			expectedEvent: helperBuildModifiedEvt(s.contractID, s.vendor, changesUriAndName),
+			expectedEvents: []sdk.Event{
+				helperBuildModifiedEvt(s.contractID, s.vendor, changesUriAndName),
+			},
 		},
 		"modify(contractID, owner, changes:uri)": {
 			req: &token.MsgModify{
@@ -986,7 +1071,9 @@ func (s *KeeperTestSuite) TestMsgModify() {
 				Owner:      s.vendor.String(),
 				Changes:    changesUri,
 			},
-			expectedEvent: helperBuildModifiedEvt(s.contractID, s.vendor, changesUri),
+			expectedEvents: []sdk.Event{
+				helperBuildModifiedEvt(s.contractID, s.vendor, changesUri),
+			},
 		},
 		"modify(nonExistingContractId, from, 1) -> error": {
 			isNegativeCase: true,
@@ -1012,24 +1099,66 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		s.Run(name, func() {
 			// Arrange
 			s.Require().NoError(tc.req.ValidateBasic())
-			prevEvtCnt := len(s.ctx.EventManager().Events())
+			ctx, _ := s.ctx.CacheContext()
 
 			// Act
-			res, err := s.msgServer.Modify(sdk.WrapSDKContext(s.ctx), tc.req)
+			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), tc.req)
 			if tc.isNegativeCase {
 				s.Require().Nil(res)
 				s.Require().ErrorIs(err, tc.expectedError)
-				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
+				s.Require().Equal(0, len(ctx.EventManager().Events()))
 				return
 			}
 			s.Require().NotNil(res)
 			s.Require().NoError(err)
 
 			// Assert
-			events := s.ctx.EventManager().Events()
-			lastEvent := events[len(events)-1]
-			s.Require().Equal(tc.expectedEvent, lastEvent)
-			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
+		})
+	}
+}
+
+func helperBuildModifiedEvt(contractID string, operator sdk.AccAddress, changes []token.Attribute) sdk.Event {
+	return sdk.Event{
+		Type: "lbm.token.v1.EventModified",
+		Attributes: []abci.EventAttribute{
+			{Key: []byte("changes"), Value: []byte(asJsonStr(changes)), Index: false},
+			{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
+			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
+		},
+	}
+}
+
+func TestHelperBuildModifiedEvent(t *testing.T) {
+	testCases := map[string]struct {
+		expectedEvent sdk.Event
+		contractID    string
+		owner         string
+		changes       []token.Attribute
+	}{
+		"should keep event compatibility for EventModified": {
+			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventModified", Attributes: []abci.EventAttribute{
+				{Key: []byte("changes"), Value: []byte(`[{"key":"uri","value":"uri"}]`), Index: false},
+				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
+				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
+			}},
+			contractID: "9be17165",
+			owner:      "link1v9jxgun9wdenqa2xzfx",
+			changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
+		},
+	}
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			owner, err := sdk.AccAddressFromBech32(tc.owner)
+			assert.NoError(t, err)
+
+			// Act
+			event := helperBuildModifiedEvt(tc.contractID, owner, tc.changes)
+
+			// Assert
+			assert.Equal(t, tc.expectedEvent, event)
 		})
 	}
 }
