@@ -1,14 +1,9 @@
 package keeper_test
 
 import (
-	"encoding/json"
-	"fmt"
-	"strings"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/token"
@@ -25,7 +20,18 @@ func (s *KeeperTestSuite) TestMsgSend() {
 		"valid request": {
 			contractID: s.contractID,
 			amount:     s.balance,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventSent", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventSent",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(s.balance), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("from"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.customer), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -56,10 +62,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
@@ -78,7 +81,18 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			operator:   s.operator,
 			from:       s.customer,
 			amount:     s.balance,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventSent", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventSent",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(s.balance), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("from"), Value: testutil.W(s.customer), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.operator), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -121,10 +135,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
@@ -141,7 +152,16 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			contractID: s.contractID,
 			holder:     s.customer,
 			operator:   s.operator,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRevokedOperator", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRevokedOperator",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("holder"), Value: testutil.W(s.customer), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.operator), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -173,10 +193,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
@@ -193,7 +210,16 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			contractID: s.contractID,
 			holder:     s.customer,
 			operator:   s.vendor,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventAuthorizedOperator", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventAuthorizedOperator",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("holder"), Value: testutil.W(s.customer), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -225,18 +251,12 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgIssue() {
-	ownerAddr := s.vendor.String()
-	toAddr := s.vendor.String()
-
 	testCases := map[string]struct {
 		mintable bool
 		amount   sdk.Int
@@ -250,50 +270,50 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventIssued",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
-						{Key: []uint8("decimals"), Value: []uint8("0"), Index: false},
-						{Key: []uint8("meta"), Value: []uint8("\"\""), Index: false},
-						{Key: []uint8("mintable"), Value: []uint8("true"), Index: false},
-						{Key: []uint8("name"), Value: []uint8("\"test\""), Index: false},
-						{Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false},
-						{Key: []uint8("uri"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("creator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("decimals"), Value: []byte("0"), Index: false},
+						{Key: []uint8("meta"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("mintable"), Value: []byte("true"), Index: false},
+						{Key: []uint8("name"), Value: testutil.W("test"), Index: false},
+						{Key: []uint8("symbol"), Value: testutil.W("TT"), Index: false},
+						{Key: []uint8("uri"), Value: testutil.W(""), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
-						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
-						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
-						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.token.v1.EventMinted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false},
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
-						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+						{Key: []uint8("amount"), Value: testutil.W("10"), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("to"), Value: testutil.W(s.vendor), Index: false},
 					},
 				},
 			},
@@ -305,32 +325,32 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventIssued",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("creator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
-						{Key: []uint8("decimals"), Value: []uint8("0"), Index: false},
-						{Key: []uint8("meta"), Value: []uint8("\"\""), Index: false},
-						{Key: []uint8("mintable"), Value: []uint8("false"), Index: false},
-						{Key: []uint8("name"), Value: []uint8("\"test\""), Index: false},
-						{Key: []uint8("symbol"), Value: []uint8("\"TT\""), Index: false},
-						{Key: []uint8("uri"), Value: []uint8("\"\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("creator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("decimals"), Value: []byte("0"), Index: false},
+						{Key: []uint8("meta"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("mintable"), Value: []byte("false"), Index: false},
+						{Key: []uint8("name"), Value: testutil.W("test"), Index: false},
+						{Key: []uint8("symbol"), Value: testutil.W("TT"), Index: false},
+						{Key: []uint8("uri"), Value: testutil.W(""), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
-						{Key: []uint8("granter"), Value: []uint8("\"\""), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
 					},
 				},
 				sdk.Event{
 					Type: "lbm.token.v1.EventMinted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("amount"), Value: []uint8("\"10\""), Index: false},
-						{Key: []uint8("contract_id"), Value: []uint8("\"ca8bfd79\""), Index: false},
-						{Key: []uint8("operator"), Value: []uint8(fmt.Sprintf("\"%s\"", ownerAddr)), Index: false},
-						{Key: []uint8("to"), Value: []uint8(fmt.Sprintf("\"%s\"", toAddr)), Index: false},
+						{Key: []uint8("amount"), Value: testutil.W(sdk.NewInt(10)), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("to"), Value: testutil.W(s.vendor), Index: false},
 					},
 				},
 			},
@@ -465,10 +485,10 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false},
-						{Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
 					},
 				},
 			},
@@ -482,10 +502,10 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false},
-						{Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
 					},
 				},
 			},
@@ -499,10 +519,10 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator.String())), Index: false},
-						{Key: []uint8("granter"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor.String())), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
 					},
 				},
 			},
@@ -597,9 +617,9 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventRenounced",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MINT\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
 					},
 				}},
 		},
@@ -611,9 +631,9 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventRenounced",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.operator)), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_BURN\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
 					},
 				}},
 		},
@@ -625,9 +645,9 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 				sdk.Event{
 					Type: "lbm.token.v1.EventRenounced",
 					Attributes: []abci.EventAttribute{
-						{Key: []uint8("contract_id"), Value: []uint8("\"9be17165\""), Index: false},
-						{Key: []uint8("grantee"), Value: []uint8(fmt.Sprintf("\"%s\"", s.vendor)), Index: false},
-						{Key: []uint8("permission"), Value: []uint8("\"PERMISSION_MODIFY\""), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
 					},
 				}},
 		},
@@ -683,7 +703,15 @@ func (s *KeeperTestSuite) TestMsgMint() {
 				Amount:     sdk.NewInt(10),
 			},
 			expectedEvents: sdk.Events{
-				helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(sdk.NewInt(10)), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.customer), Index: false},
+					},
+				},
 			},
 		},
 		"mint(contractID, from, from, 10)": {
@@ -694,7 +722,15 @@ func (s *KeeperTestSuite) TestMsgMint() {
 				Amount:     sdk.NewInt(10),
 			},
 			expectedEvents: sdk.Events{
-				helperBuildMintedEvent(s.contractID, s.vendor, s.customer, sdk.NewInt(10)),
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(sdk.NewInt(10)), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.customer), Index: false},
+					},
+				},
 			},
 		},
 		"mint(contractID, vendor, customer, 1) -> error": {
@@ -772,56 +808,6 @@ func (s *KeeperTestSuite) TestMsgMint() {
 	}
 }
 
-func helperBuildMintedEvent(contractID string, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
-	return sdk.Event{
-		Type: "lbm.token.v1.EventMinted",
-		Attributes: []abci.EventAttribute{
-			{Key: []byte("amount"), Value: []byte(wrapQuot(amount.String())), Index: false},
-			{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
-			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
-			{Key: []byte("to"), Value: []byte(wrapQuot(to.String())), Index: false},
-		},
-	}
-}
-
-func TestHelperBuildMintedEvent(t *testing.T) {
-	testCases := map[string]struct {
-		expectedEvent sdk.Event
-		contractID    string
-		from          string
-		to            string
-		amount        sdk.Int
-	}{
-		"helper function should keep event compatibility for EventMinted": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{
-				{Key: []byte("amount"), Value: []byte(`"1"`), Index: false},
-				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
-				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenzw08p6t"`), Index: false},
-				{Key: []byte("to"), Value: []byte(`"link1v9jxgun9wdenyjqyyxu"`), Index: false},
-			}},
-			contractID: "9be17165",
-			from:       "link1v9jxgun9wdenzw08p6t",
-			to:         "link1v9jxgun9wdenyjqyyxu",
-			amount:     sdk.OneInt(),
-		},
-	}
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			// Arrange
-			from, err := sdk.AccAddressFromBech32(tc.from)
-			assert.NoError(t, err)
-			to, err := sdk.AccAddressFromBech32(tc.to)
-			assert.NoError(t, err)
-
-			// Act
-			event := helperBuildMintedEvent(tc.contractID, from, to, tc.amount)
-
-			// Assert
-			assert.Equal(t, tc.expectedEvent, event)
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestMsgBurn() {
 	testCases := map[string]struct {
 		isNegativeCase bool
@@ -836,7 +822,15 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 				Amount:     sdk.OneInt(),
 			},
 			expectedEvents: sdk.Events{
-				helperBuildBurnedEvt(s.contractID, s.vendor, s.vendor, sdk.OneInt()),
+				sdk.Event{
+					Type: "lbm.token.v1.EventBurned",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(sdk.OneInt()), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("from"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
 			},
 		},
 		"burn(nonExistingContractId, from, 1) -> error": {
@@ -910,7 +904,15 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 				From:       s.customer.String(),
 				Amount:     sdk.OneInt(),
 			},
-			expectedEvent: helperBuildBurnedEvt(s.contractID, s.customer, s.operator, sdk.OneInt()),
+			expectedEvent: sdk.Event{
+				Type: "lbm.token.v1.EventBurned",
+				Attributes: []abci.EventAttribute{
+					{Key: []byte("amount"), Value: testutil.W(sdk.OneInt()), Index: false},
+					{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+					{Key: []byte("from"), Value: testutil.W(s.customer), Index: false},
+					{Key: []byte("operator"), Value: testutil.W(s.operator), Index: false},
+				},
+			},
 		},
 		"operatorBurn(nonExistingContractId, operator, from, 1) -> error": {
 			isNegativeCase: true,
@@ -979,76 +981,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 	}
 }
 
-func helperBuildBurnedEvt(contractID string, from, operator sdk.AccAddress, amount sdk.Int) sdk.Event {
-	return sdk.Event{
-		Type: "lbm.token.v1.EventBurned",
-		Attributes: []abci.EventAttribute{
-			{Key: []byte("amount"), Value: []byte(wrapQuot(amount.String())), Index: false},
-			{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
-			{Key: []byte("from"), Value: []byte(wrapQuot(from.String())), Index: false},
-			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
-		},
-	}
-}
-
-func TestHelperBuildBurnedEvent(t *testing.T) {
-	testCases := map[string]struct {
-		expectedEvent sdk.Event
-		contractID    string
-		from          string
-		operator      string
-		amount        sdk.Int
-	}{
-		"should keep event compatibility for EventBurned": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{
-				{Key: []byte("amount"), Value: []byte(`"1000"`), Index: false},
-				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
-				{Key: []byte("from"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
-				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
-			}},
-			contractID: "9be17165",
-			from:       "link1v9jxgun9wdenqa2xzfx",
-			operator:   "link1v9jxgun9wdenqa2xzfx",
-			amount:     sdk.NewInt(1000),
-		},
-		"should keep event compatibility for EventBurned(operatorBurn)": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{
-				{Key: []byte("amount"), Value: []byte(`"1000"`), Index: false},
-				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
-				{Key: []byte("from"), Value: []byte(`"link1v9jxgun9wdenyjqyyxu"`), Index: false},
-				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenzw08p6t"`), Index: false},
-			}},
-			contractID: "9be17165",
-			from:       "link1v9jxgun9wdenyjqyyxu",
-			operator:   "link1v9jxgun9wdenzw08p6t",
-			amount:     sdk.NewInt(1000),
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			// Arrange
-			from, err := sdk.AccAddressFromBech32(tc.from)
-			assert.NoError(t, err)
-			operator, err := sdk.AccAddressFromBech32(tc.operator)
-			assert.NoError(t, err)
-
-			// Act
-			event := helperBuildBurnedEvt(tc.contractID, from, operator, tc.amount)
-
-			// Assert
-			assert.Equal(t, tc.expectedEvent, event)
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestMsgModify() {
-	changesUriAndName := []token.Attribute{
-		{Key: token.AttributeKeyURI.String(), Value: "uri"},
-		{Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"},
-	}
-	changesUri := []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}
-
 	testCases := map[string]struct {
 		isNegativeCase bool
 		req            *token.MsgModify
@@ -1059,20 +992,35 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			req: &token.MsgModify{
 				ContractId: s.contractID,
 				Owner:      s.vendor.String(),
-				Changes:    changesUriAndName,
+				Changes: []token.Attribute{
+					{Key: token.AttributeKeyURI.String(), Value: "uri"},
+					{Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"},
+				},
 			},
 			expectedEvents: []sdk.Event{
-				helperBuildModifiedEvt(s.contractID, s.vendor, changesUriAndName),
+				{
+					Type: "lbm.token.v1.EventModified",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("changes"), Value: testutil.MustJSONMarshal([]token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}, {Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"}}), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
 			},
 		},
 		"modify(contractID, owner, changes:uri)": {
 			req: &token.MsgModify{
 				ContractId: s.contractID,
 				Owner:      s.vendor.String(),
-				Changes:    changesUri,
+				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}},
 			},
-			expectedEvents: []sdk.Event{
-				helperBuildModifiedEvt(s.contractID, s.vendor, changesUri),
+			expectedEvents: []sdk.Event{{
+				Type: "lbm.token.v1.EventModified",
+				Attributes: []abci.EventAttribute{
+					{Key: []byte("changes"), Value: testutil.MustJSONMarshal([]token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}), Index: false},
+					{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+					{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+				}},
 			},
 		},
 		"modify(nonExistingContractId, from, 1) -> error": {
@@ -1117,60 +1065,4 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			s.Require().Equal(tc.expectedEvents, events)
 		})
 	}
-}
-
-func helperBuildModifiedEvt(contractID string, operator sdk.AccAddress, changes []token.Attribute) sdk.Event {
-	return sdk.Event{
-		Type: "lbm.token.v1.EventModified",
-		Attributes: []abci.EventAttribute{
-			{Key: []byte("changes"), Value: []byte(asJsonStr(changes)), Index: false},
-			{Key: []byte("contract_id"), Value: []byte(wrapQuot(contractID)), Index: false},
-			{Key: []byte("operator"), Value: []byte(wrapQuot(operator.String())), Index: false},
-		},
-	}
-}
-
-func TestHelperBuildModifiedEvent(t *testing.T) {
-	testCases := map[string]struct {
-		expectedEvent sdk.Event
-		contractID    string
-		owner         string
-		changes       []token.Attribute
-	}{
-		"should keep event compatibility for EventModified": {
-			expectedEvent: sdk.Event{Type: "lbm.token.v1.EventModified", Attributes: []abci.EventAttribute{
-				{Key: []byte("changes"), Value: []byte(`[{"key":"uri","value":"uri"}]`), Index: false},
-				{Key: []byte("contract_id"), Value: []byte(`"9be17165"`), Index: false},
-				{Key: []byte("operator"), Value: []byte(`"link1v9jxgun9wdenqa2xzfx"`), Index: false},
-			}},
-			contractID: "9be17165",
-			owner:      "link1v9jxgun9wdenqa2xzfx",
-			changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
-		},
-	}
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			// Arrange
-			owner, err := sdk.AccAddressFromBech32(tc.owner)
-			assert.NoError(t, err)
-
-			// Act
-			event := helperBuildModifiedEvt(tc.contractID, owner, tc.changes)
-
-			// Assert
-			assert.Equal(t, tc.expectedEvent, event)
-		})
-	}
-}
-
-func asJsonStr(attrs []token.Attribute) string {
-	var buf strings.Builder
-	enc := json.NewEncoder(&buf)
-	enc.Encode(attrs)
-	return strings.TrimSpace(buf.String())
-}
-
-// wrapQuot ("text") -> `"text"`
-func wrapQuot(s string) string {
-	return `"` + strings.TrimSpace(s) + `"`
 }
