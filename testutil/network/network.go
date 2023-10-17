@@ -208,6 +208,7 @@ func New(t *testing.T, cfg Config) *Network {
 
 		ctx := server.NewDefaultContext()
 		tmCfg := ctx.Config
+		tmCfg.PrivValidatorRemoteAddresses = append(tmCfg.PrivValidatorRemoteAddresses, "127.0.0.1")
 		tmCfg.Consensus.TimeoutCommit = cfg.TimeoutCommit
 
 		// Only allow the first validator to expose an RPC, API and gRPC
@@ -270,6 +271,7 @@ func New(t *testing.T, cfg Config) *Network {
 		tmCfg.P2P.ListenAddress = p2pAddr
 		tmCfg.P2P.AddrBookStrict = false
 		tmCfg.P2P.AllowDuplicateIP = true
+		tmCfg.PrivValidatorRemoteAddresses = append(tmCfg.PrivValidatorRemoteAddresses, "127.0.0.1")
 
 		nodeID, pubKey, err := genutil.InitializeNodeValidatorFiles(tmCfg)
 		require.NoError(t, err)
