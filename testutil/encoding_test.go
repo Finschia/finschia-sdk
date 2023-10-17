@@ -43,17 +43,20 @@ func TestW(t *testing.T) {
 		"sdk.Coin": {
 			acceptedType: sdk.NewInt(1),
 		},
+		"should panic for unsupported types": {
+			acceptedType: 1,
+		},
 	}
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			switch v := tc.acceptedType.(type) {
-			case string:
+			case string, fmt.Stringer:
 				require.Equal(t, []byte(fmt.Sprintf(`"%s"`, v)), testutil.W(v))
-			case fmt.Stringer:
-				require.Equal(t, []byte(fmt.Sprintf(`"%s"`, v.String())), testutil.W(v))
 			default:
-				t.Fatalf("not supported types")
+				require.Panics(t, func() {
+					testutil.W(tc.acceptedType)
+				})
 			}
 		})
 	}
