@@ -16,10 +16,14 @@ func MustJSONMarshal(v any) []byte {
 	return b
 }
 
-type FmtStringer interface {
-	string | sdk.AccAddress | sdk.Int
+// W wraps input with double quotes if it is a string or fmt.Stringer.
+func W(input any) []byte {
+	switch input.(type) {
+	case string, fmt.Stringer:
+		return []byte(fmt.Sprintf("\"%s\"", input))
+	default:
+		panic("unsupported type")
+	}
 }
-
-func W[T FmtStringer](input T) []byte {
 	return []byte(fmt.Sprintf("\"%s\"", input))
 }
