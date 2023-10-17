@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -91,6 +92,22 @@ func execFromString(execStr string) foundation.Exec {
 	return exec
 }
 
+func normalizeCensorshipAuthority(option string) string {
+	prefix := getEnumPrefix(foundation.CensorshipAuthority_name[0])
+	candidate := strings.ToUpper(prefix + option)
+	if _, ok := foundation.CensorshipAuthority_value[candidate]; ok {
+		return candidate
+	}
+
+	return option
+}
+
+func getEnumPrefix(str string) string {
+	delimiter := "_"
+	splitted := strings.Split(str, delimiter)
+	return strings.Join(splitted[:len(splitted)-1], delimiter) + delimiter
+}
+
 // VoteOptionFromString returns a VoteOption from a string. It returns an error
 // if the string is invalid.
 func voteOptionFromString(str string) (foundation.VoteOption, error) {
@@ -99,6 +116,15 @@ func voteOptionFromString(str string) (foundation.VoteOption, error) {
 		return foundation.VOTE_OPTION_UNSPECIFIED, fmt.Errorf("'%s' is not a valid vote option", str)
 	}
 	return foundation.VoteOption(vo), nil
+}
+
+// CensorshipAuthorityFromString returns a CensorshipAuthority from a string. It returns an error if the string is invalid.
+func censorshipAuthorityFromString(str string) (foundation.CensorshipAuthority, error) {
+	ca, ok := foundation.CensorshipAuthority_value[str]
+	if !ok {
+		return foundation.CensorshipAuthorityUnspecified, fmt.Errorf("'%s' is not a valid censorship authority", str)
+	}
+	return foundation.CensorshipAuthority(ca), nil
 }
 
 func parseMsgs(cdc codec.Codec, msgsJSON string) ([]sdk.Msg, error) {
@@ -537,6 +563,54 @@ func NewTxCmdExec() *cobra.Command {
 			msg := foundation.MsgExec{
 				ProposalId: proposalID,
 				Signer:     signer,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdUpdateCensorship() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-censorship [authority] [msg-type-url] [new-authority]",
+		Args:  cobra.ExactArgs(3),
+		Short: "Update censorship over a message",
+		Long: `Update censorship over a message
+
+Parameters:
+    authority: the current authority of the censorship
+    msg-type-url: the message type url of the censorship
+    new-authority: a new authority of the censorship
+        unspecified: no authority, which means removing the censorship
+        governance: x/gov
+        foundation: x/foundation
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := validateGenerateOnly(cmd); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			newAuthority, err := censorshipAuthorityFromString(normalizeCensorshipAuthority(args[2]))
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgUpdateCensorship{
+				Authority: args[0],
+				Censorship: foundation.Censorship{
+					MsgTypeUrl: args[1],
+					Authority:  newAuthority,
+				},
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
