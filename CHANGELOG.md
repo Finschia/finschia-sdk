@@ -60,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#1137](https://github.com/Finschia/finschia-sdk/pull/1137) Add test for event compatibility
 * (x/collection) [\#1139](https://github.com/Finschia/finschia-sdk/pull/1139) refactor overall unittests of `x/collection`
 * (x/token) [\#1140](https://github.com/Finschia/finschia-sdk/pull/1140) Refactor unittest for `x/token`
+* (ostracon) [\#1142](https://github.com/Finschia/finschia-sdk/pull/1142) Bump up ostracon from v1.1.2-0.20230822110903-449aa3148b12 to v1.1.2
 
 ### Bug Fixes
 * (ledger) [\#1040](https://github.com/Finschia/finschia-sdk/pull/1040) Fix a bug(unable to connect nano S plus ledger on ubuntu)
