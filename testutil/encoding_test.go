@@ -2,11 +2,13 @@ package testutil_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/testutil"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func TestMustJSONMarshal(t *testing.T) {
@@ -29,5 +31,30 @@ func TestMustJSONMarshal(t *testing.T) {
 }
 
 func TestW(t *testing.T) {
-	require.Equal(t, []byte(`"test"`), testutil.W("test"))
+	testCases := map[string]struct {
+		acceptedType any
+	}{
+		"string": {
+			acceptedType: "test",
+		},
+		"sdk.AccAddress": {
+			acceptedType: sdk.AccAddress("address"),
+		},
+		"sdk.Coin": {
+			acceptedType: sdk.NewInt(1),
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			switch v := tc.acceptedType.(type) {
+			case string:
+				require.Equal(t, []byte(fmt.Sprintf(`"%s"`, v)), testutil.W(v))
+			case fmt.Stringer:
+				require.Equal(t, []byte(fmt.Sprintf(`"%s"`, v.String())), testutil.W(v))
+			default:
+				t.Fatalf("not supported types")
+			}
+		})
+	}
 }

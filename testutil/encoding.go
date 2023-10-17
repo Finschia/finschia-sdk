@@ -3,8 +3,6 @@ package testutil
 import (
 	"encoding/json"
 	"fmt"
-
-	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 func MustJSONMarshal(v any) []byte {
@@ -24,6 +22,4 @@ func W(input any) []byte {
 	default:
 		panic("unsupported type")
 	}
-}
-	return []byte(fmt.Sprintf("\"%s\"", input))
 }
