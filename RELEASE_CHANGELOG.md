@@ -42,7 +42,7 @@
 
 ### Event Breaking Changes
 * (refactor) [\#1090](https://github.com/Finschia/finschia-sdk/pull/1090) Automate EventTypeMessage inclusion in every message execution (backport #1063)
-* (x/bank) [#1093](https://github.com/Finschia/finschia-sdk/pull/1093) Remove message events including `sender` attribute whose information is already present in the relevant events (backport #1066)
+* (x/bank) [\#1093](https://github.com/Finschia/finschia-sdk/pull/1093) Remove message events including `sender` attribute whose information is already present in the relevant events (backport #1066)
 * (baseapp) [\#1092](https://github.com/finschia/finschia-sdk/pull/1092) Do not add `module` attribute in case of ibc messages (backport #1079)
 
 ### Build, CI
