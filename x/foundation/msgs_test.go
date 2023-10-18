@@ -2,6 +2,7 @@ package foundation_test
 
 import (
 	"fmt"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"testing"
 	"time"
 
@@ -13,6 +14,56 @@ import (
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
+
+func TestMsgUpdateParams(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		authority sdk.AccAddress
+		params    foundation.Params
+		valid     bool
+	}{
+		"handler for MsgUpdateParams removed, ValidateBasic should throw error always": {
+			authority: addrs[0],
+			params: foundation.Params{
+				FoundationTax: sdk.ZeroDec(),
+			},
+			valid: false,
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgUpdateParams{
+				Authority: tc.authority.String(),
+				Params:    tc.params,
+			}
+
+			err := msg.ValidateBasic()
+			require.Error(t, err)
+			require.ErrorIs(t, err, sdkerrors.ErrUnknownRequest)
+		})
+		msg := foundation.MsgUpdateParams{
+			addrs[0].String(),
+			foundation.Params{},
+		}
+		// Note: Dummy test for coverage of deprecated message
+		_ = msg.GetSigners()
+		_ = msg.String()
+		_, _ = msg.Descriptor()
+		_ = msg.GetSignBytes()
+		_, _ = msg.Marshal()
+		msg.ProtoMessage()
+		msg.Reset()
+		_ = msg.Route()
+		_ = msg.Size()
+		_ = msg.Type()
+		_ = msg.XXX_Size()
+	}
+}
 
 func TestMsgFundTreasury(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
@@ -681,6 +732,13 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 		msg      sdk.Msg
 		expected string
 	}{
+		"MsgUpdateParams": {
+			&foundation.MsgUpdateParams{
+				Authority: addrs[0].String(),
+				Params:    foundation.Params{FoundationTax: sdk.ZeroDec()},
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateParams\",\"value\":{\"authority\":\"%s\",\"params\":{\"foundation_tax\":\"0.000000000000000000\"}}}],\"metadata\":\"MsgUpdateParams\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
+		},
 		"MsgWithdrawFromTreasury": {
 			&foundation.MsgWithdrawFromTreasury{
 				Authority: addrs[0].String(),

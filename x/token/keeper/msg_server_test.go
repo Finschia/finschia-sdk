@@ -3,7 +3,9 @@ package keeper_test
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/token"
 	"github.com/Finschia/finschia-sdk/x/token/class"
 )
@@ -18,7 +20,18 @@ func (s *KeeperTestSuite) TestMsgSend() {
 		"valid request": {
 			contractID: s.contractID,
 			amount:     s.balance,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventSent", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventSent",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(s.balance), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("from"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.customer), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -49,10 +62,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
@@ -71,7 +81,18 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			operator:   s.operator,
 			from:       s.customer,
 			amount:     s.balance,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventSent", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventSent",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(s.balance), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("from"), Value: testutil.W(s.customer), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.operator), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -114,10 +135,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
@@ -134,7 +152,16 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			contractID: s.contractID,
 			holder:     s.customer,
 			operator:   s.operator,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRevokedOperator", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRevokedOperator",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("holder"), Value: testutil.W(s.customer), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.operator), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -166,10 +193,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
@@ -186,7 +210,16 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			contractID: s.contractID,
 			holder:     s.customer,
 			operator:   s.vendor,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventAuthorizedOperator", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventAuthorizedOperator",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("holder"), Value: testutil.W(s.customer), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "fee1dead",
@@ -218,24 +251,141 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			}
 
 			s.Require().NotNil(res)
-
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgIssue() {
 	testCases := map[string]struct {
-		amount sdk.Int
-		err    error
-		events sdk.Events
+		mintable bool
+		amount   sdk.Int
+		err      error
+		events   sdk.Events
 	}{
-		"valid request": {
-			amount: sdk.OneInt(),
-			events: sdk.Events{sdk.Event{Type: "lbm.token.v1.EventIssued", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x66, 0x65, 0x65, 0x31, 0x35, 0x61, 0x37, 0x34, 0x22}, Index: false}, {Key: []uint8{0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x73}, Value: []uint8{0x30}, Index: false}, {Key: []uint8{0x6d, 0x65, 0x74, 0x61}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65}, Value: []uint8{0x66, 0x61, 0x6c, 0x73, 0x65}, Index: false}, {Key: []uint8{0x6e, 0x61, 0x6d, 0x65}, Value: []uint8{0x22, 0x74, 0x65, 0x73, 0x74, 0x22}, Index: false}, {Key: []uint8{0x73, 0x79, 0x6d, 0x62, 0x6f, 0x6c}, Value: []uint8{0x22, 0x54, 0x54, 0x22}, Index: false}, {Key: []uint8{0x75, 0x72, 0x69}, Value: []uint8{0x22, 0x22}, Index: false}}}, sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x66, 0x65, 0x65, 0x31, 0x35, 0x61, 0x37, 0x34, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x72}, Value: []uint8{0x22, 0x22}, Index: false}, {Key: []uint8{0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e}, Value: []uint8{0x22, 0x50, 0x45, 0x52, 0x4d, 0x49, 0x53, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x4f, 0x44, 0x49, 0x46, 0x59, 0x22}, Index: false}}}, sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x66, 0x65, 0x65, 0x31, 0x35, 0x61, 0x37, 0x34, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+		"mintable true": {
+			mintable: true,
+			amount:   sdk.NewInt(10),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventIssued",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("creator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("decimals"), Value: []byte("0"), Index: false},
+						{Key: []uint8("meta"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("mintable"), Value: []byte("true"), Index: false},
+						{Key: []uint8("name"), Value: testutil.W("test"), Index: false},
+						{Key: []uint8("symbol"), Value: testutil.W("TT"), Index: false},
+						{Key: []uint8("uri"), Value: testutil.W(""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: testutil.W("10"), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("to"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
+		"mintable false": {
+			mintable: false,
+			amount:   sdk.NewInt(10),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventIssued",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("creator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("decimals"), Value: []byte("0"), Index: false},
+						{Key: []uint8("meta"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("mintable"), Value: []byte("false"), Index: false},
+						{Key: []uint8("name"), Value: testutil.W("test"), Index: false},
+						{Key: []uint8("symbol"), Value: testutil.W("TT"), Index: false},
+						{Key: []uint8("uri"), Value: testutil.W(""), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(""), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
+					},
+				},
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("amount"), Value: testutil.W(sdk.NewInt(10)), Index: false},
+						{Key: []uint8("contract_id"), Value: testutil.W("ca8bfd79"), Index: false},
+						{Key: []uint8("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("to"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
+		},
+	}
+
+	// define a function to check MsgIssue result
+	checkerIssueResult := func(ctx sdk.Context, contractId string, expectedMintable bool, expectedAmount sdk.Int) {
+		// check contract
+		contract, err := s.queryServer.Contract(sdk.WrapSDKContext(ctx), &token.QueryContractRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedMintable, contract.Contract.Mintable)
+
+		// check supply
+		supply, err := s.queryServer.Supply(sdk.WrapSDKContext(ctx), &token.QuerySupplyRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedAmount, supply.Amount)
+
+		// check mint
+		mint, err := s.queryServer.Minted(sdk.WrapSDKContext(ctx), &token.QueryMintedRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedAmount, mint.Amount)
+
+		// check burnt
+		burn, err := s.queryServer.Burnt(sdk.WrapSDKContext(ctx), &token.QueryBurntRequest{ContractId: contractId})
+		s.Require().NoError(err)
+		s.Require().Equal(sdk.ZeroInt(), burn.Amount)
+
+		// check owner balance
+		balance, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &token.QueryBalanceRequest{
+			ContractId: contractId,
+			Address:    s.vendor.String(),
+		})
+		s.Require().NoError(err)
+		s.Require().Equal(expectedAmount, balance.Amount)
 	}
 
 	for name, tc := range testCases {
@@ -243,11 +393,12 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgIssue{
-				Owner:  s.vendor.String(),
-				To:     s.vendor.String(),
-				Name:   "test",
-				Symbol: "TT",
-				Amount: tc.amount,
+				Owner:    s.vendor.String(),
+				To:       s.vendor.String(),
+				Mintable: tc.mintable,
+				Name:     "test",
+				Symbol:   "TT",
+				Amount:   tc.amount,
 			}
 			res, err := s.msgServer.Issue(sdk.WrapSDKContext(ctx), req)
 			s.Require().ErrorIs(err, tc.err)
@@ -256,10 +407,20 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			}
 
 			s.Require().NotNil(res)
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// check result status
+			checkerIssueResult(ctx, res.ContractId, tc.mintable, tc.amount)
+
+			// Second request for the same request
+			res2, err := s.msgServer.Issue(sdk.WrapSDKContext(ctx), req)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
+				return
 			}
+			// check result status
+			checkerIssueResult(ctx, res2.ContractId, tc.mintable, tc.amount)
+			s.Require().NotEqual(res.ContractId, res2.ContractId)
 		})
 	}
 }
@@ -273,13 +434,6 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 		err        error
 		events     sdk.Events
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			granter:    s.vendor,
-			grantee:    s.operator,
-			permission: token.LegacyPermissionModify.String(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventGranted", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e}, Value: []uint8{0x22, 0x50, 0x45, 0x52, 0x4d, 0x49, 0x53, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x4f, 0x44, 0x49, 0x46, 0x59, 0x22}, Index: false}}}},
-		},
 		"contract not found": {
 			contractID: "fee1dead",
 			granter:    s.vendor,
@@ -287,12 +441,91 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			permission: token.LegacyPermissionModify.String(),
 			err:        class.ErrContractNotExist,
 		},
-		"granter has no permission": {
+		"contract has no permission - MINT": {
+			contractID: s.unmintableContractId,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: token.LegacyPermissionMint.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"contract has no permission - BURN": {
+			contractID: s.unmintableContractId,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: token.LegacyPermissionBurn.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"granter has no permission - MINT": {
 			contractID: s.contractID,
 			granter:    s.customer,
-			grantee:    s.operator,
+			grantee:    s.stranger,
+			permission: token.LegacyPermissionMint.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"granter has no permission - BURN": {
+			contractID: s.contractID,
+			granter:    s.customer,
+			grantee:    s.stranger,
+			permission: token.LegacyPermissionBurn.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"granter has no permission - MODIFY": {
+			contractID: s.contractID,
+			granter:    s.customer,
+			grantee:    s.stranger,
 			permission: token.LegacyPermissionModify.String(),
 			err:        token.ErrTokenNoPermission,
+		},
+		"valid request - MINT": {
+			contractID: s.contractID,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: token.LegacyPermissionMint.String(),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
+					},
+				},
+			},
+		},
+		"valid request - BURN": {
+			contractID: s.contractID,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: token.LegacyPermissionBurn.String(),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
+					},
+				},
+			},
+		},
+		"valid request - MODIFY": {
+			contractID: s.contractID,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: token.LegacyPermissionModify.String(),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventGranted",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("granter"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
+					},
+				},
+			},
 		},
 	}
 
@@ -313,10 +546,21 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			}
 
 			s.Require().NotNil(res)
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// check to grant permission
+			per, err := s.queryServer.GranteeGrants(sdk.WrapSDKContext(ctx), &token.QueryGranteeGrantsRequest{
+				ContractId: tc.contractID,
+				Grantee:    tc.grantee.String(),
+				Pagination: nil,
+			})
+			s.Require().NoError(err)
+			s.Require().NotNil(per)
+			expectPermission := token.Grant{
+				Grantee:    tc.grantee.String(),
+				Permission: token.Permission(token.LegacyPermissionFromString(tc.permission)),
 			}
+			s.Require().Contains(per.Grants, expectPermission)
 		})
 	}
 }
@@ -329,23 +573,83 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 		err        error
 		events     sdk.Events
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			from:       s.operator,
-			permission: token.LegacyPermissionMint.String(),
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventRenounced", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e}, Value: []uint8{0x22, 0x50, 0x45, 0x52, 0x4d, 0x49, 0x53, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x49, 0x4e, 0x54, 0x22}, Index: false}}}},
-		},
 		"contract not found": {
 			contractID: "fee1dead",
 			from:       s.operator,
 			permission: token.LegacyPermissionMint.String(),
 			err:        class.ErrContractNotExist,
 		},
-		"not granted yet": {
-			contractID: s.contractID,
+		"contract has no permission - MINT": {
+			contractID: s.unmintableContractId,
 			from:       s.operator,
+			permission: token.LegacyPermissionMint.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"contract has no permission - BURN": {
+			contractID: s.unmintableContractId,
+			from:       s.operator,
+			permission: token.LegacyPermissionBurn.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"grantee has no permission - MINT": {
+			contractID: s.contractID,
+			from:       s.customer,
+			permission: token.LegacyPermissionMint.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"grantee has no permission - BURN": {
+			contractID: s.contractID,
+			from:       s.customer,
+			permission: token.LegacyPermissionBurn.String(),
+			err:        token.ErrTokenNoPermission,
+		},
+		"grantee has no permission - MODIFY": {
+			contractID: s.contractID,
+			from:       s.customer,
 			permission: token.LegacyPermissionModify.String(),
 			err:        token.ErrTokenNoPermission,
+		},
+		"valid request - revoke MINT": {
+			contractID: s.contractID,
+			from:       s.operator,
+			permission: token.LegacyPermissionMint.String(),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRenounced",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
+					},
+				}},
+		},
+		"valid request - revoke BURN": {
+			contractID: s.contractID,
+			from:       s.operator,
+			permission: token.LegacyPermissionBurn.String(),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRenounced",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
+					},
+				}},
+		},
+		"valid request - revoke MODIFY": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			permission: token.LegacyPermissionModify.String(),
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventRenounced",
+					Attributes: []abci.EventAttribute{
+						{Key: []uint8("contract_id"), Value: testutil.W("9be17165"), Index: false},
+						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
+					},
+				}},
 		},
 	}
 
@@ -365,58 +669,140 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			}
 
 			s.Require().NotNil(res)
+			s.Require().Equal(tc.events, ctx.EventManager().Events())
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// check to remove permission
+			per, err := s.queryServer.GranteeGrants(sdk.WrapSDKContext(ctx), &token.QueryGranteeGrantsRequest{
+				ContractId: tc.contractID,
+				Grantee:    tc.from.String(),
+				Pagination: nil,
+			})
+			s.Require().NoError(err)
+			s.Require().NotNil(per)
+			expectPermission := token.Grant{
+				Grantee:    tc.from.String(),
+				Permission: token.Permission(token.LegacyPermissionFromString(tc.permission)),
 			}
+			s.Require().NotContains(per.Grants, expectPermission)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgMint() {
 	testCases := map[string]struct {
-		contractID string
-		grantee    sdk.AccAddress
-		err        error
-		events     sdk.Events
+		isNegativeCase bool
+		req            *token.MsgMint
+		expectedEvents sdk.Events
+		expectedError  *sdkerrors.Error
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			grantee:    s.operator,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventMinted", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}, {Key: []uint8{0x74, 0x6f}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}}}},
+		"mint(contractID, from, to, 10)": {
+			req: &token.MsgMint{
+				ContractId: s.contractID,
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.NewInt(10),
+			},
+			expectedEvents: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(sdk.NewInt(10)), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.customer), Index: false},
+					},
+				},
+			},
 		},
-		"contract not found": {
-			contractID: "fee1dead",
-			grantee:    s.operator,
-			err:        class.ErrContractNotExist,
+		"mint(contractID, from, from, 10)": {
+			req: &token.MsgMint{
+				ContractId: s.contractID,
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.NewInt(10),
+			},
+			expectedEvents: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventMinted",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(sdk.NewInt(10)), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("to"), Value: testutil.W(s.customer), Index: false},
+					},
+				},
+			},
 		},
-		"not granted": {
-			contractID: s.contractID,
-			grantee:    s.customer,
-			err:        token.ErrTokenNoPermission,
+		"mint(contractID, vendor, customer, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgMint{
+				ContractId: s.unmintableContractId,
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
+		},
+		"mint(nonExistingContractId, from, to, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgMint{
+				ContractId: "fee1dead",
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: class.ErrContractNotExist,
+		},
+		"mint(contractID, from, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgMint{
+				ContractId: s.contractID,
+				From:       s.stranger.String(),
+				To:         s.vendor.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			// Arrange
+			s.Require().NoError(tc.req.ValidateBasic())
+			from, err := sdk.AccAddressFromBech32(tc.req.From)
+			s.Require().NoError(err)
+			to, err := sdk.AccAddressFromBech32(tc.req.To)
+			s.Require().NoError(err)
 			ctx, _ := s.ctx.CacheContext()
+			prevFrom := s.keeper.GetBalance(ctx, tc.req.ContractId, from)
+			prevTo := s.keeper.GetBalance(ctx, tc.req.ContractId, to)
+			prevMint := s.keeper.GetMinted(ctx, tc.req.ContractId)
+			prevSupplyAmount := s.keeper.GetSupply(ctx, tc.req.ContractId)
 
-			req := &token.MsgMint{
-				ContractId: tc.contractID,
-				From:       tc.grantee.String(),
-				To:         s.customer.String(),
-				Amount:     sdk.OneInt(),
-			}
-			res, err := s.msgServer.Mint(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
+			// Act
+			res, err := s.msgServer.Mint(sdk.WrapSDKContext(ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(0, len(ctx.EventManager().Events()))
 				return
 			}
-
+			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// Assert
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
+			mintAmount := tc.req.Amount
+			curMinted := s.keeper.GetMinted(ctx, tc.req.ContractId)
+			curSupply := s.keeper.GetSupply(ctx, tc.req.ContractId)
+			curToAmount := s.keeper.GetBalance(ctx, s.contractID, to)
+			s.Require().Equal(prevMint.Add(mintAmount), curMinted)
+			s.Require().Equal(prevSupplyAmount.Add(mintAmount), curSupply)
+			s.Require().Equal(prevTo.Add(mintAmount), curToAmount)
+			if !from.Equals(to) {
+				curFrom := s.keeper.GetBalance(ctx, s.contractID, from)
+				s.Require().Equal(prevFrom, curFrom)
 			}
 		})
 	}
@@ -424,100 +810,172 @@ func (s *KeeperTestSuite) TestMsgMint() {
 
 func (s *KeeperTestSuite) TestMsgBurn() {
 	testCases := map[string]struct {
-		contractID string
-		from       sdk.AccAddress
-		err        error
-		events     sdk.Events
+		isNegativeCase bool
+		req            *token.MsgBurn
+		expectedEvents sdk.Events
+		expectedError  *sdkerrors.Error
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			from:       s.vendor,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+		"burn(contractID, from, amount)": {
+			req: &token.MsgBurn{
+				ContractId: s.contractID,
+				From:       s.vendor.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedEvents: sdk.Events{
+				sdk.Event{
+					Type: "lbm.token.v1.EventBurned",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("amount"), Value: testutil.W(sdk.OneInt()), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("from"), Value: testutil.W(s.vendor), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
-		"contract not found": {
-			contractID: "fee1dead",
-			from:       s.vendor,
-			err:        class.ErrContractNotExist,
+		"burn(nonExistingContractId, from, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgBurn{
+				ContractId: "fee1dead",
+				From:       s.vendor.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: class.ErrContractNotExist,
 		},
-		"not granted": {
-			contractID: s.contractID,
-			from:       s.customer,
-			err:        token.ErrTokenNoPermission,
+		"burn(contractID, from, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgBurn{
+				ContractId: s.contractID,
+				From:       s.stranger.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNoPermission,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			// Arrange
+			from, err := sdk.AccAddressFromBech32(tc.req.From)
+			s.Require().NoError(err)
 			ctx, _ := s.ctx.CacheContext()
+			prevFrom := s.keeper.GetBalance(ctx, tc.req.ContractId, from)
+			prevBurnt := s.keeper.GetBurnt(ctx, tc.req.ContractId)
+			prevSupplyAmount := s.keeper.GetSupply(ctx, tc.req.ContractId)
+			s.Require().NoError(tc.req.ValidateBasic())
 
-			req := &token.MsgBurn{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				Amount:     s.balance,
-			}
-			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
+			// Act
+			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(0, len(ctx.EventManager().Events()))
 				return
 			}
-
+			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			// Assert
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
+
+			curBurnt := s.keeper.GetBurnt(ctx, tc.req.ContractId)
+			curSupply := s.keeper.GetSupply(ctx, tc.req.ContractId)
+			curFromAmount := s.keeper.GetBalance(ctx, s.contractID, from)
+			burnAmount := tc.req.Amount
+			s.Require().Equal(prevBurnt.Add(burnAmount), curBurnt)
+			s.Require().Equal(prevSupplyAmount.Sub(burnAmount), curSupply)
+			s.Require().Equal(prevFrom.Sub(burnAmount), curFromAmount)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		from       sdk.AccAddress
-		err        error
-		events     sdk.Events
+		isNegativeCase bool
+		req            *token.MsgOperatorBurn
+		expectedEvent  sdk.Event
+		expectedError  *sdkerrors.Error
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			from:       s.customer,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventBurned", Attributes: []abci.EventAttribute{{Key: []uint8{0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74}, Value: []uint8{0x22, 0x31, 0x30, 0x30, 0x30, 0x22}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x66, 0x72, 0x6f, 0x6d}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x79, 0x6a, 0x71, 0x79, 0x79, 0x78, 0x75, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x7a, 0x77, 0x30, 0x38, 0x70, 0x36, 0x74, 0x22}, Index: false}}}},
+		"operatorBurn(contractID, operator, from, 1)": {
+			req: &token.MsgOperatorBurn{
+				ContractId: s.contractID,
+				Operator:   s.operator.String(),
+				From:       s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedEvent: sdk.Event{
+				Type: "lbm.token.v1.EventBurned",
+				Attributes: []abci.EventAttribute{
+					{Key: []byte("amount"), Value: testutil.W(sdk.OneInt()), Index: false},
+					{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+					{Key: []byte("from"), Value: testutil.W(s.customer), Index: false},
+					{Key: []byte("operator"), Value: testutil.W(s.operator), Index: false},
+				},
+			},
 		},
-		"contract not found": {
-			contractID: "fee1dead",
-			operator:   s.operator,
-			from:       s.customer,
-			err:        class.ErrContractNotExist,
+		"operatorBurn(nonExistingContractId, operator, from, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgOperatorBurn{
+				ContractId: "fee1dead",
+				Operator:   s.operator.String(),
+				From:       s.customer.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: class.ErrContractNotExist,
 		},
-		"not approved": {
-			contractID: s.contractID,
-			operator:   s.vendor,
-			from:       s.customer,
-			err:        token.ErrTokenNotApproved,
+		"operatorBurn(contractID, operator, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgOperatorBurn{
+				ContractId: s.contractID,
+				Operator:   s.operator.String(),
+				From:       s.stranger.String(),
+				Amount:     sdk.OneInt(),
+			},
+			expectedError: token.ErrTokenNotApproved,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
+			// Arrange
+			operator, err := sdk.AccAddressFromBech32(tc.req.Operator)
+			s.Require().NoError(err)
+			from, err := sdk.AccAddressFromBech32(tc.req.From)
+			s.Require().NoError(err)
+			prevOperator := s.keeper.GetBalance(s.ctx, tc.req.ContractId, operator)
+			prevFrom := s.keeper.GetBalance(s.ctx, tc.req.ContractId, from)
+			prevBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
+			prevSupplyAmount := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
+			s.Require().NoError(tc.req.ValidateBasic())
+			prevEvtCnt := len(s.ctx.EventManager().Events())
 
-			req := &token.MsgOperatorBurn{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				From:       tc.from.String(),
-				Amount:     s.balance,
-			}
-			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
+			// Act
+			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(s.ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(prevEvtCnt, len(s.ctx.EventManager().Events()))
 				return
 			}
-
+			s.Require().NoError(err)
 			s.Require().NotNil(res)
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			// Assert
+			events := s.ctx.EventManager().Events()
+			s.Require().Equal(events[len(events)-1], tc.expectedEvent)
+			s.Require().Greater(len(s.ctx.EventManager().Events()), prevEvtCnt)
+
+			curBurnt := s.keeper.GetBurnt(s.ctx, tc.req.ContractId)
+			curSupply := s.keeper.GetSupply(s.ctx, tc.req.ContractId)
+			curFromAmount := s.keeper.GetBalance(s.ctx, s.contractID, from)
+			burnAmount := tc.req.Amount
+			s.Require().Equal(prevBurnt.Add(burnAmount), curBurnt)
+			s.Require().Equal(prevSupplyAmount.Sub(burnAmount), curSupply)
+			s.Require().Equal(prevFrom.Sub(burnAmount), curFromAmount)
+			if !from.Equals(operator) {
+				curOperator := s.keeper.GetBalance(s.ctx, s.contractID, operator)
+				s.Require().Equal(prevOperator, curOperator)
 			}
 		})
 	}
@@ -525,48 +983,86 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 
 func (s *KeeperTestSuite) TestMsgModify() {
 	testCases := map[string]struct {
-		contractID string
-		grantee    sdk.AccAddress
-		err        error
-		events     sdk.Events
+		isNegativeCase bool
+		req            *token.MsgModify
+		expectedEvents sdk.Events
+		expectedError  *sdkerrors.Error
 	}{
-		"valid request": {
-			contractID: s.contractID,
-			grantee:    s.vendor,
-			events:     sdk.Events{sdk.Event{Type: "lbm.token.v1.EventModified", Attributes: []abci.EventAttribute{{Key: []uint8{0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73}, Value: []uint8{0x5b, 0x7b, 0x22, 0x6b, 0x65, 0x79, 0x22, 0x3a, 0x22, 0x75, 0x72, 0x69, 0x22, 0x2c, 0x22, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x3a, 0x22, 0x75, 0x72, 0x69, 0x22, 0x7d, 0x5d}, Index: false}, {Key: []uint8{0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64}, Value: []uint8{0x22, 0x39, 0x62, 0x65, 0x31, 0x37, 0x31, 0x36, 0x35, 0x22}, Index: false}, {Key: []uint8{0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72}, Value: []uint8{0x22, 0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x76, 0x39, 0x6a, 0x78, 0x67, 0x75, 0x6e, 0x39, 0x77, 0x64, 0x65, 0x6e, 0x71, 0x61, 0x32, 0x78, 0x7a, 0x66, 0x78, 0x22}, Index: false}}}},
+		"modify(contractID, owner, changes:uri,name)": {
+			req: &token.MsgModify{
+				ContractId: s.contractID,
+				Owner:      s.vendor.String(),
+				Changes: []token.Attribute{
+					{Key: token.AttributeKeyURI.String(), Value: "uri"},
+					{Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"},
+				},
+			},
+			expectedEvents: []sdk.Event{
+				{
+					Type: "lbm.token.v1.EventModified",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("changes"), Value: testutil.MustJSONMarshal([]token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}, {Key: token.AttributeKeyName.String(), Value: "NA<ENDSLSDN"}}), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
+			},
 		},
-		"contract not found": {
-			contractID: "fee1dead",
-			grantee:    s.vendor,
-			err:        class.ErrContractNotExist,
+		"modify(contractID, owner, changes:uri)": {
+			req: &token.MsgModify{
+				ContractId: s.contractID,
+				Owner:      s.vendor.String(),
+				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}},
+			},
+			expectedEvents: []sdk.Event{{
+				Type: "lbm.token.v1.EventModified",
+				Attributes: []abci.EventAttribute{
+					{Key: []byte("changes"), Value: testutil.MustJSONMarshal([]token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}), Index: false},
+					{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+					{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+				}},
+			},
 		},
-		"not granted": {
-			contractID: s.contractID,
-			grantee:    s.operator,
-			err:        token.ErrTokenNoPermission,
+		"modify(nonExistingContractId, from, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgModify{
+				ContractId: "fee1dead",
+				Owner:      s.vendor.String(),
+				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
+			},
+			expectedError: class.ErrContractNotExist,
+		},
+		"modify(contractID, from, unauthorized account, 1) -> error": {
+			isNegativeCase: true,
+			req: &token.MsgModify{
+				ContractId: s.contractID,
+				Owner:      s.stranger.String(),
+				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri"}},
+			},
+			expectedError: token.ErrTokenNoPermission,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			// Arrange
+			s.Require().NoError(tc.req.ValidateBasic())
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgModify{
-				ContractId: tc.contractID,
-				Owner:      tc.grantee.String(),
-				Changes:    []token.Attribute{{Key: token.AttributeKeyImageURI.String(), Value: "uri"}},
-			}
-			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
+			// Act
+			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), tc.req)
+			if tc.isNegativeCase {
+				s.Require().Nil(res)
+				s.Require().ErrorIs(err, tc.expectedError)
+				s.Require().Equal(0, len(ctx.EventManager().Events()))
 				return
 			}
-
 			s.Require().NotNil(res)
+			s.Require().NoError(err)
 
-			if s.deterministic {
-				s.Require().Equal(tc.events, ctx.EventManager().Events())
-			}
+			// Assert
+			events := ctx.EventManager().Events()
+			s.Require().Equal(tc.expectedEvents, events)
 		})
 	}
 }

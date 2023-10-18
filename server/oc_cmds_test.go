@@ -58,6 +58,7 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	}
 
 	// ostracon init & create the server config file
+	serverCtx.Config.PrivValidatorRemoteAddresses = append(serverCtx.Config.PrivValidatorRemoteAddresses, "127.0.0.1")
 	initFilesWithConfig(serverCtx.Config)
 
 	chainID, err := loadChainID(serverCtx.Config)

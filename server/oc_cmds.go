@@ -63,7 +63,7 @@ func showValidator(cmd *cobra.Command, config *cfg.Config) error {
 		}
 		serverCtx := GetServerContextFromCmd(cmd)
 		log := serverCtx.Logger
-		pv, err = node.CreateAndStartPrivValidatorSocketClient(config.PrivValidatorListenAddr, chainID, log)
+		pv, err = node.CreateAndStartPrivValidatorSocketClient(config, chainID, log)
 		if err != nil {
 			return err
 		}

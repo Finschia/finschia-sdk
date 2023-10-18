@@ -107,6 +107,9 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	collection.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	collection.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
+	if err := keeper.NewMigrator(am.keeper).Register(cfg.RegisterMigration); err != nil {
+		panic(err)
+	}
 }
 
 // InitGenesis performs genesis initialization for the collection module. It returns
@@ -126,4 +129,4 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 1 }
+func (AppModule) ConsensusVersion() uint64 { return 2 }
