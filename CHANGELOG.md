@@ -53,5 +53,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Event Breaking Changes
 
 ### Build, CI
+* (ci) [\#1149](https://github.com/Finschia/finschia-sdk/pull/1149) fix github release ci error
 
 ### Document Updates
