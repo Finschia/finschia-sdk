@@ -127,7 +127,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.createAccount("leavingmember", leavingMemberMnemonic)
 	s.createAccount("permanentmember", permanentMemberMnemonic)
 
-	s.proposalID = s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	s.proposalID = s.submitProposal(testdata.NewTestMsg(s.authority))
 	s.vote(s.proposalID, []sdk.AccAddress{s.leavingMember, s.permanentMember})
 	s.Require().NoError(s.network.WaitForNextBlock())
 
@@ -142,7 +142,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 // submit a proposal
-func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
+func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg) uint64 {
 	val := s.network.Validators[0]
 
 	proposers := []string{s.permanentMember.String()}
@@ -154,9 +154,6 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 		string(proposersBz),
 		s.msgToString(msg),
 	}, commonArgs...)
-	if try {
-		args = append(args, fmt.Sprintf("--%s=%s", cli.FlagExec, cli.ExecTry))
-	}
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdSubmitProposal(), args)
 	s.Require().NoError(err)
 

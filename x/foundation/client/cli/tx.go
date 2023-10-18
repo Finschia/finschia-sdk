@@ -92,14 +92,25 @@ func execFromString(execStr string) foundation.Exec {
 	return exec
 }
 
-func normalizeCensorshipAuthority(option string) string {
-	prefix := getEnumPrefix(foundation.CensorshipAuthority_name[0])
-	candidate := strings.ToUpper(prefix + option)
-	if _, ok := foundation.CensorshipAuthority_value[candidate]; ok {
-		return candidate
-	}
+func normalizeVoteOption(option string) string {
+	normalizer := normalizer(foundation.VoteOption_name, foundation.VoteOption_value)
+	return normalizer(option)
+}
 
-	return option
+func normalizeCensorshipAuthority(authority string) string {
+	normalizer := normalizer(foundation.CensorshipAuthority_name, foundation.CensorshipAuthority_value)
+	return normalizer(authority)
+}
+
+func normalizer(mapToName map[int32]string, mapToValue map[string]int32) func(string) string {
+	return func(str string) string {
+		prefix := getEnumPrefix(mapToName[0])
+		candidate := strings.ToUpper(prefix + str)
+		if _, ok := mapToValue[candidate]; ok {
+			return candidate
+		}
+		return str
+	}
 }
 
 func getEnumPrefix(str string) string {
@@ -485,11 +496,10 @@ Parameters:
     proposal-id: unique ID of the proposal
     voter: voter account addresses.
     vote-option: choice of the voter(s)
-        VOTE_OPTION_UNSPECIFIED: no-op
-        VOTE_OPTION_NO: no
-        VOTE_OPTION_YES: yes
-        VOTE_OPTION_ABSTAIN: abstain
-        VOTE_OPTION_NO_WITH_VETO: no-with-veto
+        no: no
+        yes: yes
+        abstain: abstain
+        no_with_veto: no-with-veto
     metadata: metadata for the vote
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -508,7 +518,7 @@ Parameters:
 				return err
 			}
 
-			option, err := voteOptionFromString(args[2])
+			option, err := voteOptionFromString(normalizeVoteOption(args[2]))
 			if err != nil {
 				return err
 			}

@@ -276,7 +276,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	id := s.submitProposal(testdata.NewTestMsg(s.authority))
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -326,7 +326,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	id := s.submitProposal(testdata.NewTestMsg(s.authority))
+	id2 := s.submitProposal(testdata.NewTestMsg(s.authority))
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -335,7 +336,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			[]string{
 				fmt.Sprint(id),
 				s.permanentMember.String(),
-				"VOTE_OPTION_YES",
+				foundation.VOTE_OPTION_YES.String(),
+				"test vote",
+			},
+			true,
+		},
+		"valid abbreviation": {
+			[]string{
+				fmt.Sprint(id2),
+				s.permanentMember.String(),
+				"yes",
 				"test vote",
 			},
 			true,
@@ -344,7 +354,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			[]string{
 				fmt.Sprint(id),
 				s.permanentMember.String(),
-				"VOTE_OPTION_YES",
+				foundation.VOTE_OPTION_YES.String(),
 				"test vote",
 				"extra",
 			},
