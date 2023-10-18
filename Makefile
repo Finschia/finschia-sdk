@@ -548,7 +548,7 @@ GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
 GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
-GORELEASER_IMAGE         ?= line/goreleaserx:1.13.1-1.19.3
+GORELEASER_IMAGE         ?= goreleaser/goreleaser-cross:v1.21-v1.20.0
 GORELEASER_RELEASE       ?= false
 GO_MOD_NAME              := github.com/Finschia/finschia-sdk
 
@@ -578,7 +578,7 @@ release-snapshot:
 		-f "$(GORELEASER_CONFIG)" \
 		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
 		--debug=$(GORELEASER_DEBUG) \
-		--rm-dist
+		--clean
 
 release:
 	docker run --rm \
@@ -594,6 +594,6 @@ release:
 		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
 		--skip-announce=true \
 		--debug=$(GORELEASER_DEBUG) \
-		--rm-dist
+		--clean
 
 .PHONY: release-snapshot release
