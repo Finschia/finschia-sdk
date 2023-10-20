@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/server/grpc/gogoreflection"
 	reflection "github.com/Finschia/finschia-sdk/server/grpc/reflection/v2"
 	"github.com/Finschia/finschia-sdk/server/types"
@@ -16,7 +17,7 @@ import (
 
 // StartGRPCServer starts a gRPC server on the given address.
 func StartGRPCServer(clientCtx client.Context, app types.Application, address string) (*grpc.Server, error) {
-	grpcSrv := grpc.NewServer()
+	grpcSrv := grpc.NewServer(grpc.ForceServerCodec(codec.NewProtoCodec(clientCtx.InterfaceRegistry).GRPCCodec()))
 	app.RegisterGRPCServer(grpcSrv)
 	// reflection allows consumers to build dynamic clients that can write
 	// to any cosmos-sdk application without relying on application packages at compile time
