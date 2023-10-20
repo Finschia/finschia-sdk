@@ -4,19 +4,15 @@ import (
 	"fmt"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
+	abci "github.com/tendermint/tendermint/abci/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding"
-	"google.golang.org/grpc/encoding/proto"
-
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/client/grpc/reflection"
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
-
-var protoCodec = encoding.GetCodec(proto.Name)
 
 // GRPCQueryRouter routes ABCI Query requests to GRPC handlers
 type GRPCQueryRouter struct {

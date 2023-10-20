@@ -8,8 +8,8 @@ import (
 
 	"github.com/gogo/protobuf/jsonpb"
 	gogoproto "github.com/gogo/protobuf/proto"
-	legacyproto "github.com/golang/protobuf/proto"
 	"google.golang.org/grpc/encoding"
+	legacyproto "google.golang.org/protobuf/proto"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 )

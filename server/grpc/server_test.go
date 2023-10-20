@@ -21,6 +21,7 @@ import (
 	"github.com/Finschia/finschia-sdk/client"
 	reflectionv1 "github.com/Finschia/finschia-sdk/client/grpc/reflection"
 	clienttx "github.com/Finschia/finschia-sdk/client/tx"
+	"github.com/Finschia/finschia-sdk/codec"
 	reflectionv2 "github.com/Finschia/finschia-sdk/server/grpc/reflection/v2"
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/testutil/network"
