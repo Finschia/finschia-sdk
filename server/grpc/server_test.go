@@ -60,6 +60,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.conn, err = grpc.Dial(
 		val0.AppConfig.GRPC.Address,
 		grpc.WithInsecure(), // Or else we get "no transport security set"
+		grpc.WithDefaultCallOptions(grpc.ForceCodec(codec.NewProtoCodec(s.app.InterfaceRegistry()).GRPCCodec())),
 	)
 	s.Require().NoError(err)
 }
