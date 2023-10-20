@@ -40,11 +40,6 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 			tax:      sdk.ZeroInt(),
 			valid:    true,
 		},
-		"send fails": {
-			fee:      fees[0].Amount,
-			taxRatio: sdk.MustNewDecFromStr("1.00000001"),
-			tax:      sdk.NewInt(987654330),
-		},
 	} {
 		s.Run(name, func() {
 			ctx, _ := ctx.CacheContext()

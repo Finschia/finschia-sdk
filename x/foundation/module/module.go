@@ -20,6 +20,10 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
 )
 
+const (
+	consensusVersion uint64 = 2
+)
+
 var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
@@ -112,6 +116,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	foundation.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	foundation.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
+	keeper.NewMigrator(am.keeper).Register(cfg.RegisterMigration)
 }
 
 // InitGenesis performs genesis initialization for the foundation module. It returns
@@ -133,7 +138,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 1 }
+func (AppModule) ConsensusVersion() uint64 { return consensusVersion }
 
 // BeginBlock performs a no-op.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ ocabci.RequestBeginBlock) {

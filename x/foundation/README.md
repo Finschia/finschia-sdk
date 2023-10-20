@@ -17,9 +17,9 @@ back these foundation-specific functionalities.
 ## Contents
 
 * [Concepts](#concepts)
+* [Parameters](#parameters)
 * [State](#state)
 * [Msg Service](#msg-service)
-    * [Msg/UpdateParams](#msgupdateparams)
     * [Msg/UpdateDecisionPolicy](#msgupdatedecisionpolicy)
     * [Msg/UpdateMembers](#msgupdatemembers)
     * [Msg/LeaveFoundation](#msgleavefoundation)
@@ -33,7 +33,6 @@ back these foundation-specific functionalities.
     * [Msg/FundTreasury](#msgfundtreasury)
     * [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury)
 * [Events](#events)
-    * [EventUpdateFoundationParams](#eventupdatefoundationparams)
     * [EventUpdateDecisionPolicy](#eventupdatedecisionpolicy)
     * [EventUpdateMembers](#eventupdatedmembers)
     * [EventLeaveFoundation](#eventleavefoundation)
@@ -86,13 +85,14 @@ creating custom decision policies, as long as they adhere to the
 `DecisionPolicy` interface:
 
 +++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
-+++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/foundation.go#L90-L103
 
 ### Threshold decision policy
 
 A threshold decision policy defines a threshold of yes votes (based on a tally
 of voter weights) that must be achieved in order for a proposal to pass. For
 this decision policy, abstain and veto are simply treated as no's.
+
++++ https://github.com/Finschia/finschia-sdk/blob/ba75f8e7845a740afdce6e5f1c91f1a97433b7e2/proto/lbm/foundation/v1/foundation.proto#L63-L77
 
 ### Percentage decision policy
 
@@ -102,12 +102,16 @@ It's more suited for a foundation where the membership can be updated, as the
 percentage threshold stays the same, and doesn't depend on how the number of
 members get updated.
 
++++ https://github.com/Finschia/finschia-sdk/blob/ba75f8e7845a740afdce6e5f1c91f1a97433b7e2/proto/lbm/foundation/v1/foundation.proto#L79-L93
+
 ### Outsourcing decision policy
 
 A outsourcing decision policy is a policy set after `x/foundation` decides to
 outsource its proposal relevant features to other modules (e.g. `x/group`).
 It means one can expect that any states relevant to the feature must be removed
 in the update to this policy.
+
++++ https://github.com/Finschia/finschia-sdk/blob/ba75f8e7845a740afdce6e5f1c91f1a97433b7e2/proto/lbm/foundation/v1/foundation.proto#L115-L121
 
 ## Proposal
 
@@ -244,8 +248,6 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 
 +++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/authz.proto#L9-L13
 
-+++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/foundation/authz.pb.go#L27-L30
-
 ### CreateValidatorAuthorization
 
 `CreateValidatorAuthorization` implements the `Authorization` interface for the
@@ -258,8 +260,6 @@ url of `Msg/CreateValidator`), or the chain cannot be started.
 
 +++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/stakingplus/v1/authz.proto#L9-L15
 
-+++ https://github.com/Finschia/finschia-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/x/stakingplus/authz.pb.go#L27-L31
-
 ## Foundation Treasury
 
 `x/foundation` intercepts the rewards prior to its distribution
@@ -269,19 +269,15 @@ The foundation can withdraw coins from the treasury. The recipient must have
 the corresponding authorization (`ReceiveFromTreasuryAuthorization`) prior to
 sending the message `Msg/WithdrawFromTreasury`.
 
-**Note:** After setting the tax rate to zero, you cannot set it to a non-zero
-value again (irreversible), which means you must set it to a non-zero value in
-the genesis to make it work.
+# Parameters
 
-# State
-
-## Params
-
-* Params: `0x00 -> PropocolBuffer(Params)`.
-
-### FoundationTax
+## FoundationTax
 
 The value of `FoundationTax` is the foundation tax rate.
+
+* FoundationTax: `sdk.Dec`
+
+# State
 
 ## FoundationInfo
 
@@ -349,17 +345,6 @@ Authorization) tuple.
 * Grant: `0x21 | len(grant.Grantee) (1 byte) | []byte(grant.Grantee) | []byte(grant.Authorization.MsgTypeURL()) -> ProtocolBuffer(Authorization)`
 
 # Msg Service
-
-## Msg/UpdateParams
-
-The `MsgUpdateParams` can be used to update the parameters of `foundation`.
-
-+++ https://github.com/Finschia/finschia-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L62-L71
-
-It's expected to fail if:
-
-* the authority is not the module's authority.
-* the parameters introduces any new foundation-specific features.
 
 ## Msg/UpdateDecisionPolicy
 
@@ -467,7 +452,7 @@ The authority of the following modules are candidates of censorship authority:
 
 One may specify `CENSORSHIP_AUTHORITY_UNSPECIFIED` to remove the censorship.
 
-+++ https://github.com/Finschia/finschia-sdk/blob/d9428ec5d825dfd9964f510e32bd03a01adade8c/proto/lbm/foundation/v1/tx.proto#L25-L34
++++ https://github.com/Finschia/finschia-sdk/blob/d9428ec5d825dfd9964f510e32bd03a01adade8c/proto/lbm/foundation/v1/foundation.proto#L26-L35
 
 The message handling should fail if:
 
@@ -525,15 +510,6 @@ The message handling should fail if:
   `ReceiveFromTreasuryAuthorization`.
 
 # Events
-
-## EventUpdateFoundationParams
-
-`EventUpdateFoundationParams` is an event emitted when the foundation
-parameters have been updated.
-
-| Attribute Key | Attribute Value |
-|---------------|-----------------|
-| params        | {params}        |
 
 ## EventUpdateDecisionPolicy
 
@@ -1009,25 +985,6 @@ simd tx foundation --help
 **Note:** Some commands must be signed by the module's authority, which means
 you cannot broadcast the message directly. The use of those commands is to make
 it easier to generate the messages by end users.
-
-#### update-params
-
-The `update-params` command allows users to update the foundation's parameters.
-
-```bash
-simd tx foundation update-params [authority] [params-json] [flags]
-```
-
-Example:
-
-```bash
-simd tx foundation update-params link1... \
-    '{
-       "foundation_tax": "0.1"
-     }'
-```
-
-**Note:** The signer MUST be the module's authority.
 
 #### update-members
 

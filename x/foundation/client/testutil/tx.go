@@ -13,52 +13,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewTxCmdUpdateParams() {
-	val := s.network.Validators[0]
-
-	commonArgs := []string{
-		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
-	}
-
-	testCases := map[string]struct {
-		args  []string
-		valid bool
-	}{
-		"valid transaction": {
-			[]string{
-				s.authority.String(),
-				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
-			},
-			true,
-		},
-		"wrong number of args": {
-			[]string{
-				s.authority.String(),
-				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
-				"extra",
-			},
-			false,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewTxCmdUpdateParams()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var res txtypes.Tx
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
@@ -462,6 +416,69 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
+	}
+
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				foundation.CensorshipAuthorityGovernance.String(),
+			},
+			true,
+		},
+		"valid abbreviation": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				"governance",
+			},
+			true,
+		},
+		"wrong number of args": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				foundation.CensorshipAuthorityGovernance.String(),
+				"extra",
+			},
+			false,
+		},
+		"invalid new authority": {
+			[]string{
+				s.authority.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				"invalid-new-authority",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdUpdateCensorship()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res txtypes.Tx
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 		})
 	}
 }

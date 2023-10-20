@@ -10,6 +10,7 @@ import (
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 func validateProposers(proposers []string) error {
@@ -72,11 +73,29 @@ func (c Censorship) ValidateBasic() error {
 }
 
 func (p Params) ValidateBasic() error {
-	if err := validateRatio(p.FoundationTax, "tax rate"); err != nil {
+	if err := validateRatio(p.FoundationTax, ParamKeyFoundationTax); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// ParamSetPairs implements params.ParamSet
+func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
+	return paramtypes.ParamSetPairs{
+		paramtypes.NewParamSetPair([]byte(ParamKeyFoundationTax), &p.FoundationTax, func(i interface{}) error {
+			v, ok := i.(sdk.Dec)
+			if !ok {
+				return sdkerrors.Wrap(sdkerrors.ErrInvalidType.Wrapf("%T", i), ParamKeyFoundationTax)
+			}
+
+			return validateRatio(v, ParamKeyFoundationTax)
+		}),
+	}
+}
+
+func ParamKeyTable() paramtypes.KeyTable {
+	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 func (m Member) ValidateBasic() error {

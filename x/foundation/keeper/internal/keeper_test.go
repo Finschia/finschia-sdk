@@ -101,6 +101,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		authtypes.FeeCollectorName,
 		foundation.DefaultConfig(),
 		foundation.DefaultAuthority().String(),
+		app.GetSubspace(foundation.ModuleName),
 	)
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
@@ -161,8 +162,14 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	// create a proposal
-	activeProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba1")})
+	// create an active proposal, voted yes by all members except the first member
+	activeProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Authority: s.authority.String(),
+			To:        s.stranger.String(),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+		},
+	})
 	s.Require().NoError(err)
 	s.activeProposal = *activeProposal
 
@@ -175,8 +182,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	// create a proposal voted by all members
-	votedProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba2")})
+	// create a proposal voted no by all members
+	votedProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba1")})
 	s.Require().NoError(err)
 	s.votedProposal = *votedProposal
 
@@ -190,7 +197,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create an withdrawn proposal
-	withdrawnProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba3")})
+	withdrawnProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba2")})
 	s.Require().NoError(err)
 	s.withdrawnProposal = *withdrawnProposal
 
@@ -275,7 +282,7 @@ func TestNewKeeper(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			newKeeper := func() keeper.Keeper {
 				app := simapp.Setup(false)
-				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
+				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String(), app.GetSubspace(foundation.ModuleName))
 			}
 
 			if tc.panics {
