@@ -60,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection,token,foundation) [\#963](https://github.com/Finschia/finschia-sdk/pull/963) Check event determinism on original modules
 * (x/collection) [\#965](https://github.com/Finschia/finschia-sdk/pull/965) Provide specific error messages on x/collection queries
 * (x/collection,token) [\#980](https://github.com/Finschia/finschia-sdk/pull/980) refactor x/token,collection query errors
+* (server, client) [\#1152](https://github.com/Finschia/finschia-sdk/pull/1152) remove grpc replace directive
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/Finschia/finschia-sdk/pull/817) remove support for composite (BLS) type
