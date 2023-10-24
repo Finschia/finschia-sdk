@@ -43,7 +43,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 * (docs) [\#1120](https://github.com/Finschia/finschia-sdk/pull/1120) Update links in x/foundation README.md
 * (feat) [\#1121](https://github.com/Finschia/finschia-sdk/pull/1121) Add update-censorship cmd to x/foundation cli
-
+* (server) [#1153](https://github.com/Finschia/finschia-sdk/pull/1153) remove grpc replace directive
 ### Bug Fixes
 
 ### Removed
