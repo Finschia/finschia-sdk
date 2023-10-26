@@ -45,6 +45,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (feat) [\#1121](https://github.com/Finschia/finschia-sdk/pull/1121) Add update-censorship cmd to x/foundation cli
 * (server) [#1153](https://github.com/Finschia/finschia-sdk/pull/1153) remove grpc replace directive
 ### Bug Fixes
+* chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
 
 ### Removed
 
