@@ -55,8 +55,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Build, CI
 * (ci) [\#1149](https://github.com/Finschia/finschia-sdk/pull/1149) fix github release ci error
-* (ci) [\#1078](https://github.com/Finschia/finschia-sdk/pull/1078) fix tag comments in github actions workflow docker.yml
-* (repo) [\#1157](https://github.com/Finschia/finschia-sdk/pull/1157) setup CODEOWNERS and backport action
 * (ci) [\#1161](https://github.com/Finschia/finschia-sdk/pull/1161) remove autopr ci (backport #1160)
 
 ### Document Updates
