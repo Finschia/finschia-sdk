@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.48.1](https://github.com/Finschia/finschia-sdk/releases/tag/v0.48.0) - 2023-10-27
+
+### Bug Fixes
+* chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
+
+### Build, CI
+* (ci) [\#1149](https://github.com/Finschia/finschia-sdk/pull/1149) fix github release ci error
+* (ci) [\#1161](https://github.com/Finschia/finschia-sdk/pull/1161) remove autopr ci (backport #1160)
+
+
 ## [v0.48.0](https://github.com/Finschia/finschia-sdk/releases/tag/v0.48.0) - 2023-10-17
 
 ### Features
