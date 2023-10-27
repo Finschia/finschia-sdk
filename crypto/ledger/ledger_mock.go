@@ -97,7 +97,7 @@ func (mock LedgerSECP256K1Mock) SignSECP256K1(derivationPath []uint32, message [
 		return nil, err
 	}
 
-	priv, _ := secp.PrivKeyFromBytes(derivedPriv)
+	priv := secp.PrivKeyFromBytes(derivedPriv)
 	sig := ecdsa.Sign(priv, crypto.Sha256(message))
 
 	return sig.Serialize(), nil
