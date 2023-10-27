@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.48.1](https://github.com/Finschia/finschia-sdk/releases/tag/v0.48.0) - 2023-10-27
+## [v0.48.1](https://github.com/Finschia/finschia-sdk/releases/tag/v0.48.1) - 2023-10-27
 
 ### Bug Fixes
 * chore(deps) [\#1158](https://github.com/Finschia/finschia-sdk/pull/1158) : compatible with Ledger (backport #1141)
