@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.48.1](https://github.com/Finschia/finschia-sdk/releases/tag/v0.48.1) - 2023-10-27
+
+### Bug Fixes
+* chore(deps) [\#1158](https://github.com/Finschia/finschia-sdk/pull/1158) : compatible with Ledger (backport #1141)
+
+### Build, CI
+* (ci) [\#1149](https://github.com/Finschia/finschia-sdk/pull/1149) fix github release ci error
+* (ci) [\#1161](https://github.com/Finschia/finschia-sdk/pull/1161) remove autopr ci (backport #1160)
+
+
 ## [v0.48.0](https://github.com/Finschia/finschia-sdk/releases/tag/v0.48.0) - 2023-10-17
 
 ### Features
