@@ -27,11 +27,11 @@ $L2NODE_BINARYNAME version
 
 # Init sequencer
 
-$L2NODE_BINARYNAME init rollupdemo --home $L2_KEYRING_DIR/$SEQUENCER_DIR --chain-id $L2_CHAIN_ID > /dev/null 2>&1
-$L2NODE_BINARYNAME keys add validator --keyring-backend=test --home $L2_KEYRING_DIR/$SEQUENCER_DIR --recover --account=0 <<< ${TEST_MNEMONIC} > /dev/null 2>&1
-$L2NODE_BINARYNAME add-genesis-account $($L2NODE_BINARYNAME --home $L2_KEYRING_DIR/$SEQUENCER_DIR keys show validator -a --keyring-backend=test) 100000000000stake,100000000000tcony --home $L2_KEYRING_DIR/$SEQUENCER_DIR > /dev/null 2>&1
-$L2NODE_BINARYNAME gentx validator 10000000000stake --keyring-backend=test --home $L2_KEYRING_DIR/$SEQUENCER_DIR --chain-id=$L2_CHAIN_ID > /dev/null 2>&1
-$L2NODE_BINARYNAME collect-gentxs --home $L2_KEYRING_DIR/$SEQUENCER_DIR > /dev/null 2>&1
+$L2NODE_BINARYNAME init rollupdemo --home $L2_KEYRING_DIR/$SEQUENCER_DIR --chain-id $L2_CHAIN_ID || exit 1
+$L2NODE_BINARYNAME keys add validator --keyring-backend=test --home $L2_KEYRING_DIR/$SEQUENCER_DIR --recover --account=0 <<< ${TEST_MNEMONIC} || exit 1
+$L2NODE_BINARYNAME add-genesis-account $($L2NODE_BINARYNAME --home $L2_KEYRING_DIR/$SEQUENCER_DIR keys show validator -a --keyring-backend=test) 100000000000stake,100000000000tcony --home $L2_KEYRING_DIR/$SEQUENCER_DIR || exit 1
+$L2NODE_BINARYNAME gentx validator 10000000000stake --keyring-backend=test --home $L2_KEYRING_DIR/$SEQUENCER_DIR --chain-id=$L2_CHAIN_ID || exit 1
+$L2NODE_BINARYNAME collect-gentxs --home $L2_KEYRING_DIR/$SEQUENCER_DIR || exit 1
 
 # Run L2 sequencer
-$L2NODE_BINARYNAME start --log_level "debug" --home $L2_KEYRING_DIR/$SEQUENCER_DIR --p2p.laddr "tcp://0.0.0.0:26555" --p2p.seeds="tcp://${TEST_SEQUENCER_P2P_ID}@127.0.0.1:26556" --rpc.laddr=tcp://0.0.0.0:26654 --grpc.address "0.0.0.0:9192" --grpc-web.address "0.0.0.0:9193" --rollkit.da_layer finschia --rollkit.da_config='{"rpc_uri":"'$RPC_URI'","chain_id":"'$L1_CHAIN_ID'","keyring_dir":"'$L1_KEYRING_DIR'","from":"'$TEST_SEQUENCER_ADDRESS'", "rollup_name":"'$ROLLUP_NAME'"}' --rollkit.namespace_id $NAMESPACE_ID  --rollkit.da_start_height $DA_BLOCK_HEIGH > $L2_KEYRING_DIR/$L2_CHAIN_ID.log 2>&1 &
+$L2NODE_BINARYNAME start --log_level "debug" --home $L2_KEYRING_DIR/$SEQUENCER_DIR --p2p.laddr "tcp://0.0.0.0:26555" --p2p.seeds="tcp://${TEST_SEQUENCER_P2P_ID}@127.0.0.1:26556" --rpc.laddr=tcp://0.0.0.0:26654 --grpc.address "0.0.0.0:9192" --grpc-web.address "0.0.0.0:9193" --rollkit.da_layer finschia --rollkit.da_config='{"rpc_uri":"'$RPC_URI'","chain_id":"'$L1_CHAIN_ID'","keyring_dir":"'$L1_KEYRING_DIR'","from":"'$TEST_SEQUENCER_ADDRESS'", "rollup_name":"'$ROLLUP_NAME'"}' --rollkit.namespace_id $NAMESPACE_ID  --rollkit.da_start_height $DA_BLOCK_HEIGHT > $L2_KEYRING_DIR/$L2_CHAIN_ID.log 2>&1 &
