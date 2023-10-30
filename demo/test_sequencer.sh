@@ -6,10 +6,8 @@ L1_CHAIN_ID=sim
 L2_CHAIN_ID=sim2
 L1_KEYRING_DIR=~/.simapp
 L2_KEYRING_DIR=~/.l2simapp
-NAMESPACE_ID=$(openssl rand -hex 8)
 RPC_URI=http://localhost:26659
 TEST_SEQUENCER_ADDRESS=link1twsfmuj28ndph54k4nw8crwu8h9c8mh3rtx705
-DA_BLOCK_HEIGH=1
 SEQUENCER_DIR=simapp0
 TEST_MNEMONIC="mind flame tobacco sense move hammer drift crime ring globe art gaze cinnamon helmet cruise special produce notable negative wait path scrap recall have"
 
