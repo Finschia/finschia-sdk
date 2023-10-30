@@ -44,6 +44,11 @@ $L2BINARYNAME collect-gentxs --home $L2_KEYRING_DIR/$SEQUENCER_DIR || exit 1
 $L2BINARYNAME start --home $L2_KEYRING_DIR/$SEQUENCER_DIR --p2p.laddr "tcp://0.0.0.0:26556" --grpc.address "0.0.0.0:9190" --grpc-web.address "0.0.0.0:9191" --rollkit.sequencer "true" --rollkit.da_layer finschia --rollkit.da_config='{"rpc_uri":"'$RPC_URI'","chain_id":"'$L1_CHAIN_ID'","keyring_dir":"'$L1_KEYRING_DIR'","from":"'$TEST_SEQUENCER_ADDRESS'", "rollup_name":"'$ROLLUP_NAME'"}' --rollkit.namespace_id $NAMESPACE_ID  --rollkit.da_start_height $DA_BLOCK_HEIGH > $L2_KEYRING_DIR/$L2_CHAIN_ID.log 2>&1 &
 sleep 10
 
+# Run L2 fullnode
+cd ./demo
+TEST_SEQUENCER_P2P_ID=$(cat $L2_KEYRING_DIR/$L2_CHAIN_ID.log | sed -n 's/.*127.0.0.1\/tcp\/26556\/p2p\/\([^ ]*\).*/\1/p')
+./run_l2node.sh $TEST_SEQUENCER_P2P_ID
+
 # Send test
 $L2BINARYNAME keys add alice --home $L2_KEYRING_DIR/$SEQUENCER_DIR --keyring-backend=test
 sleep 1

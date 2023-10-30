@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# validate arg
+if [ $# -ne 1 ]; then
+  echo "Please enter only the sequencer's p2p ID as an argument" 1>&2
+  exit 1
+fi
+
 L2NODE_BINARYNAME=rollupd2
 ROLLUP_NAME=test-rollup
 L1_CHAIN_ID=sim
@@ -8,7 +14,7 @@ L1_KEYRING_DIR=~/.simapp
 L2_KEYRING_DIR=~/.l2simapp2
 NAMESPACE_ID=$(openssl rand -hex 8)
 RPC_URI=http://localhost:26659
-TEST_SEQUENCER_P2P_ID=12D3KooWKUFu5UWCwuggvCR5sFFXRx8WxzxDJDX4dani1NQVAXWD
+TEST_SEQUENCER_P2P_ID=$1
 TEST_SEQUENCER_ADDRESS=link1twsfmuj28ndph54k4nw8crwu8h9c8mh3rtx705
 DA_BLOCK_HEIGHT=1
 SEQUENCER_DIR=simapp0
