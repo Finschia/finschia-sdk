@@ -79,7 +79,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 func NewCmdSubmitCancelUpgradeProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cancel-software-upgrade [flags]",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.NoArgs,
 		Short: "Cancel the current software upgrade proposal",
 		Long:  "Cancel a software upgrade along with an initial deposit.",
 		RunE: func(cmd *cobra.Command, args []string) error {

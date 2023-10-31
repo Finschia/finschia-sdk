@@ -33,7 +33,7 @@ func GetCurrentPlanCmd() *cobra.Command {
 		Use:   "plan",
 		Short: "get upgrade plan (if one exists)",
 		Long:  "Gets the currently scheduled upgrade plan, if one exists",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
