@@ -45,6 +45,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (feat) [\#1121](https://github.com/Finschia/finschia-sdk/pull/1121) Add update-censorship cmd to x/foundation cli
 * (server) [#1153](https://github.com/Finschia/finschia-sdk/pull/1153) remove grpc replace directive
 * (crypto) [\#1163](https://github.com/Finschia/finschia-sdk/pull/1163) Update some secp256k1 logics with latest `dcrec`
+* (x/crisis) [#1167](https://github.com/Finschia/finschia-sdk/pull/1167) Use `CacheContext()` in `AssertInvariants()`
 * (chore) [\#1168](https://github.com/Finschia/finschia-sdk/pull/1168) Replace `ExactArgs(0)` with `NoArgs()` in `x/upgrade` module
 
 ### Bug Fixes
