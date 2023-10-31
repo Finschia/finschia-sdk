@@ -25,9 +25,6 @@ func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 
 func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-		// cache, we don't want to write changes
-		ctx, _ = ctx.CacheContext()
-
 		treasuryAcc := k.authKeeper.GetModuleAccount(ctx, foundation.TreasuryName)
 		balance := k.bankKeeper.GetAllBalances(ctx, treasuryAcc.GetAddress())
 
@@ -41,14 +38,11 @@ func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 
 func TotalWeightInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-		// cache, we don't want to write changes
-		ctx, _ = ctx.CacheContext()
-
 		expected := k.GetFoundationInfo(ctx).TotalWeight
-		real := sdk.NewDec(int64(len(k.GetMembers(ctx))))
+		actual := sdk.NewDec(int64(len(k.GetMembers(ctx))))
 
-		msg := fmt.Sprintf("total weight of foundation; expected %s, got %s\n", expected, real)
-		broken := !real.Equal(expected)
+		msg := fmt.Sprintf("total weight of foundation; expected %s, got %s\n", expected, actual)
+		broken := !actual.Equal(expected)
 
 		return sdk.FormatInvariant(foundation.ModuleName, totalWeightInvariant, msg), broken
 	}
@@ -56,9 +50,6 @@ func TotalWeightInvariant(k Keeper) sdk.Invariant {
 
 func ProposalInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-		// cache, we don't want to write changes
-		ctx, _ = ctx.CacheContext()
-
 		version := k.GetFoundationInfo(ctx).Version
 		msg := fmt.Sprintf("current foundation version; %d\n", version)
 		broken := false
