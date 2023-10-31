@@ -8,7 +8,7 @@ import (
 	"io"
 	"math/big"
 
-	secp256k1 "github.com/btcsuite/btcd/btcec"
+	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"golang.org/x/crypto/ripemd160" //nolint: staticcheck // necessary for Bitcoin address format
 
 	"github.com/Finschia/ostracon/crypto"
@@ -38,7 +38,7 @@ func (privKey *PrivKey) Bytes() []byte {
 // PubKey performs the point-scalar multiplication from the privKey on the
 // generator point to get the pubkey.
 func (privKey *PrivKey) PubKey() cryptotypes.PubKey {
-	_, pubkeyObject := secp256k1.PrivKeyFromBytes(secp256k1.S256(), privKey.Key)
+	pubkeyObject := secp256k1.PrivKeyFromBytes(privKey.Key).PubKey()
 	pk := pubkeyObject.SerializeCompressed()
 	return &PubKey{Key: pk}
 }

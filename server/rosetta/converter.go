@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/btcsuite/btcd/btcec"
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
+	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
@@ -650,7 +650,7 @@ func (c converter) PubKey(pubKey *rosettatypes.PublicKey) (cryptotypes.PubKey, e
 		return nil, crgerrs.WrapError(crgerrs.ErrUnsupportedCurve, "only secp256k1 supported")
 	}
 
-	cmp, err := btcec.ParsePubKey(pubKey.Bytes, btcec.S256())
+	cmp, err := secp.ParsePubKey(pubKey.Bytes)
 	if err != nil {
 		return nil, crgerrs.WrapError(crgerrs.ErrBadArgument, err.Error())
 	}

@@ -8,7 +8,6 @@ require (
 	github.com/VictoriaMetrics/fastcache v1.12.1
 	github.com/armon/go-metrics v0.4.1
 	github.com/bgentry/speakeasy v0.1.0
-	github.com/btcsuite/btcd v0.22.1
 	github.com/coinbase/rosetta-sdk-go v0.8.3
 	github.com/coinbase/rosetta-sdk-go/types v1.0.0
 	github.com/confio/ics23/go v0.9.0
@@ -16,6 +15,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/iavl v0.19.4
 	github.com/cosmos/ledger-cosmos-go v0.13.2
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0
 	github.com/go-kit/kit v0.13.0
 	github.com/gogo/gateway v1.1.0
 	github.com/gogo/protobuf v1.3.3
@@ -42,7 +42,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
 	github.com/tendermint/tendermint v0.34.24
@@ -62,6 +61,7 @@ require (
 	github.com/Finschia/r2ishiguro_vrf v0.1.2 // indirect
 	github.com/Workiva/go-datastructures v1.1.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect

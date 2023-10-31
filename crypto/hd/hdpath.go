@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/btcsuite/btcd/btcec"
+	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 )
 
 // BIP44Params wraps BIP 44 params (5 level BIP 32 path).
@@ -237,7 +237,7 @@ func derivePrivateKey(privKeyBytes [32]byte, chainCode [32]byte, index uint32, h
 		data = append([]byte{byte(0)}, privKeyBytes[:]...)
 	} else {
 		// this can't return an error:
-		_, ecPub := btcec.PrivKeyFromBytes(btcec.S256(), privKeyBytes[:])
+		ecPub := secp.PrivKeyFromBytes(privKeyBytes[:]).PubKey()
 		pubkeyBytes := ecPub.SerializeCompressed()
 		data = pubkeyBytes
 
@@ -260,7 +260,7 @@ func addScalars(a []byte, b []byte) [32]byte {
 	aInt := new(big.Int).SetBytes(a)
 	bInt := new(big.Int).SetBytes(b)
 	sInt := new(big.Int).Add(aInt, bInt)
-	x := sInt.Mod(sInt, btcec.S256().N).Bytes()
+	x := sInt.Mod(sInt, secp.S256().N).Bytes()
 	x2 := [32]byte{}
 	copy(x2[32-len(x):], x)
 
