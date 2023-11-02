@@ -64,7 +64,6 @@ ignore:
   - "x/**/test_common.go"
   - "*_cmd.go"
   - "contrib"
-  - "statik.go"
   - "root.go"
   - "x/**/module.go"
   - "x/**/errors.go"
