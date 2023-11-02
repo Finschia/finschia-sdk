@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	ostcli "github.com/Finschia/ostracon/libs/cli"
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )

@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/gogo/protobuf/grpc"
+	"github.com/cosmos/gogoproto/grpc"
 	"github.com/spf13/cobra"
 	dbm "github.com/tendermint/tm-db"
 

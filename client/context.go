@@ -11,7 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	rpcclient "github.com/Finschia/ostracon/rpc/client"
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/pkg/errors"
 
 	"github.com/Finschia/finschia-sdk/codec"

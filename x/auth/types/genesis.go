@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"

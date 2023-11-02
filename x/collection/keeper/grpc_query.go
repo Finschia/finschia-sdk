@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/store/prefix"

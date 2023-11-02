@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

@@ -1,0 +1,5 @@
+version: v1
+deps:
+  - buf.build/cosmos/gogo-proto
+  - buf.build/cosmos/cosmos-proto
+  - buf.build/finschia/finschia-sdk

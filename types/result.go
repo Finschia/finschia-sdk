@@ -6,7 +6,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 	abci "github.com/tendermint/tendermint/abci/types"

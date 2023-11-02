@@ -10,8 +10,8 @@ import (
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 
-	"github.com/gogo/protobuf/jsonpb"
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/jsonpb"
+	"github.com/cosmos/gogoproto/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"

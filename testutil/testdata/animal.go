@@ -6,7 +6,7 @@ package testdata
 import (
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 )

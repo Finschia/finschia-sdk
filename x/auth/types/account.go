@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Finschia/ostracon/crypto"
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 	"gopkg.in/yaml.v2"
 
 	"github.com/Finschia/finschia-sdk/codec"

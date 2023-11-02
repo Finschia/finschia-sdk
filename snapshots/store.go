@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/snapshots/types"

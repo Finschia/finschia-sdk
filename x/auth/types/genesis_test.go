@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/stretchr/testify/require"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

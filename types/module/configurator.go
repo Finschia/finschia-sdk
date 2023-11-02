@@ -3,7 +3,7 @@ package module
 import (
 	"fmt"
 
-	"github.com/gogo/protobuf/grpc"
+	"github.com/cosmos/gogoproto/grpc"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"

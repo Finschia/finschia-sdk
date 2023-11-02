@@ -1,7 +1,7 @@
 package tx
 
 import (
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/client"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

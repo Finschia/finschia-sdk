@@ -3,7 +3,7 @@ package authz
 import (
 	"time"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"

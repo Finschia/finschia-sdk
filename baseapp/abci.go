@@ -11,19 +11,18 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/cosmos/gogoproto/proto"
+	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
-
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	ocabci "github.com/Finschia/ostracon/abci/types"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic

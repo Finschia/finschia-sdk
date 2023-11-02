@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gogo/gateway"
+	gateway "github.com/cosmos/gogogateway"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -21,9 +21,6 @@ import (
 	"github.com/Finschia/finschia-sdk/server/config"
 	"github.com/Finschia/finschia-sdk/telemetry"
 	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-
-	// unnamed import of statik for swagger UI support
-	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 )
 
 // Server defines the server's API interface.

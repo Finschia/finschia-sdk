@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 	"testing"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"

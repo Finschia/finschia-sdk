@@ -2,7 +2,7 @@ package types
 
 import (
 	occrypto "github.com/Finschia/ostracon/crypto"
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // PubKey defines a public key and extends proto.Message.

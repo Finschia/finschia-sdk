@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gogo/protobuf/jsonpb"
+	"github.com/cosmos/gogoproto/jsonpb"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/tx"

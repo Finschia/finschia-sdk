@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"strconv"
 
-	gogogrpc "github.com/gogo/protobuf/grpc"
-	"github.com/gogo/protobuf/proto"
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+	"github.com/cosmos/gogoproto/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding"

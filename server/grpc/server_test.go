@@ -28,7 +28,6 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-	"github.com/Finschia/finschia-sdk/types/tx"
 	txtypes "github.com/Finschia/finschia-sdk/types/tx"
 	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	authclient "github.com/Finschia/finschia-sdk/x/auth/client"
@@ -163,7 +162,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_GetTxsEvent() {
 	txServiceClient := txtypes.NewServiceClient(s.conn)
 	_, err := txServiceClient.GetTxsEvent(
 		context.Background(),
-		&tx.GetTxsEventRequest{
+		&txtypes.GetTxsEventRequest{
 			Events: []string{"message.action='send'"},
 		},
 	)

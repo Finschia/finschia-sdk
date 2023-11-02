@@ -9,7 +9,7 @@ import (
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	"github.com/Finschia/finschia-sdk/types/query"
 
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"

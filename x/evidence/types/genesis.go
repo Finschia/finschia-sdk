@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/x/evidence/exported"

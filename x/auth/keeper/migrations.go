@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/gogo/protobuf/grpc"
+	"github.com/cosmos/gogoproto/grpc"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	v043 "github.com/Finschia/finschia-sdk/x/auth/legacy/v043"

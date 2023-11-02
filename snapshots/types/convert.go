@@ -1,7 +1,7 @@
 package types
 
 import (
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"

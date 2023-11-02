@@ -413,17 +413,24 @@ proto-check-breaking:
 	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
 
 TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.22/proto/tendermint
-TM_CRYPTO_TYPES     = proto/tendermint/crypto
 TM_ABCI_TYPES       = proto/tendermint/abci
+TM_BK_TYPES         = proto/tendermint/blockchain
+TM_CONSENSUS        = proto/tendermint/consensus
+TM_CRYPTO_TYPES     = proto/tendermint/crypto
+TM_LIBS             = proto/tendermint/libs/bits
+TM_MEMPOOL          = proto/tendermint/mempool
+TM_P2P              = proto/tendermint/p2p
+TM_PRIV_TYPES       = proto/tendermint/privval
+TM_STATE_TYPES      = proto/tendermint/state
+TM_STATESYNC_TYPES  = proto/tendermint/statesync
+TM_STORE_TYPES      = proto/tendermint/store
 TM_TYPES            = proto/tendermint/types
 TM_VERSION          = proto/tendermint/version
-TM_LIBS             = proto/tendermint/libs/bits
-TM_P2P              = proto/tendermint/p2p
 
 OC_URL              = https://raw.githubusercontent.com/line/ostracon/v1.1.2/proto/ostracon
 OC_ABCI_TYPES       = proto/ostracon/abci
 OC_BK_TYPES         = proto/ostracon/blockchain
-OC_PRVI_TYPES       = proto/ostracon/privval
+OC_PRIV_TYPES       = proto/ostracon/privval
 OC_RPC_TYPES        = proto/ostracon/rpc/grpc
 OC_STATE_TYPES      = proto/ostracon/state
 OC_TYPES            = proto/ostracon/types
@@ -434,15 +441,12 @@ proto-update-deps:
 	@mkdir -p $(TM_ABCI_TYPES)
 	@curl -sSL $(TM_URL)/abci/types.proto > $(TM_ABCI_TYPES)/types.proto
 
-	@mkdir -p $(TM_VERSION)
-	@curl -sSL $(TM_URL)/version/types.proto > $(TM_VERSION)/types.proto
+	@mkdir -p $(TM_BK_TYPES)
+	@curl -sSL $(TM_URL)/blockchain/types.proto > $(TM_BK_TYPES)/types.proto
 
-	@mkdir -p $(TM_TYPES)
-	@curl -sSL $(TM_URL)/types/types.proto > $(TM_TYPES)/types.proto
-	@curl -sSL $(TM_URL)/types/evidence.proto > $(TM_TYPES)/evidence.proto
-	@curl -sSL $(TM_URL)/types/params.proto > $(TM_TYPES)/params.proto
-	@curl -sSL $(TM_URL)/types/validator.proto > $(TM_TYPES)/validator.proto
-	@curl -sSL $(TM_URL)/types/block.proto > $(TM_TYPES)/block.proto
+	@mkdir -p $(TM_CONSENSUS)
+	@curl -sSL $(TM_URL)/consensus/types.proto > $(TM_CONSENSUS)/types.proto
+	@curl -sSL $(TM_URL)/consensus/wal.proto > $(TM_CONSENSUS)/wal.proto
 
 	@mkdir -p $(TM_CRYPTO_TYPES)
 	@curl -sSL $(TM_URL)/crypto/proof.proto > $(TM_CRYPTO_TYPES)/proof.proto
@@ -451,8 +455,35 @@ proto-update-deps:
 	@mkdir -p $(TM_LIBS)
 	@curl -sSL $(TM_URL)/libs/bits/types.proto > $(TM_LIBS)/types.proto
 
+	@mkdir -p $(TM_MEMPOOL)
+	@curl -sSL $(TM_URL)/mempool/types.proto > $(TM_MEMPOOL)/types.proto
+
 	@mkdir -p $(TM_P2P)
 	@curl -sSL $(TM_URL)/p2p/types.proto > $(TM_P2P)/types.proto
+
+	@mkdir -p $(TM_PRIV_TYPES)
+	@curl -sSL $(TM_URL)/privval/types.proto > $(TM_PRIV_TYPES)/types.proto
+
+	@mkdir -p $(TM_STATE_TYPES)
+	@curl -sSL $(TM_URL)/state/types.proto > $(TM_STATE_TYPES)/types.proto
+
+	@mkdir -p $(TM_STATESYNC_TYPES)
+	@curl -sSL $(TM_URL)/statesync/types.proto > $(TM_STATESYNC_TYPES)/types.proto
+
+	@mkdir -p $(TM_STORE_TYPES)
+	@curl -sSL $(TM_URL)/store/types.proto > $(TM_STATESYNC_TYPES)/types.proto
+
+	@mkdir -p $(TM_TYPES)
+	@curl -sSL $(TM_URL)/types/block.proto > $(TM_TYPES)/block.proto
+	@curl -sSL $(TM_URL)/types/evidence.proto > $(TM_TYPES)/evidence.proto
+	@curl -sSL $(TM_URL)/types/params.proto > $(TM_TYPES)/params.proto
+	@curl -sSL $(TM_URL)/types/types.proto > $(TM_TYPES)/types.proto
+	@curl -sSL $(TM_URL)/types/validator.proto > $(TM_TYPES)/validator.proto
+	@curl -sSL $(TM_URL)/types/canonical.proto > $(TM_TYPES)/canonical.proto
+	@curl -sSL $(TM_URL)/types/events.proto > $(TM_TYPES)/events.proto
+
+	@mkdir -p $(TM_VERSION)
+	@curl -sSL $(TM_URL)/version/types.proto > $(TM_VERSION)/types.proto
 
 	@echo "Updating Protobuf dependencies (Ostracon)"
 
@@ -462,8 +493,8 @@ proto-update-deps:
 	@mkdir -p $(OC_BK_TYPES)
 	@curl -sSL $(OC_URL)/blockchain/types.proto > $(OC_BK_TYPES)/types.proto
 
-	@mkdir -p $(OC_PRVI_TYPES)
-	@curl -sSL $(OC_URL)/privval/types.proto > $(OC_PRVI_TYPES)/types.proto
+	@mkdir -p $(OC_PRIV_TYPES)
+	@curl -sSL $(OC_URL)/privval/types.proto > $(OC_PRIV_TYPES)/types.proto
 
 	@mkdir -p $(OC_RPC_TYPES)
 	@curl -sSL $(OC_URL)/rpc/grpc/types.proto > $(OC_RPC_TYPES)/types.proto
@@ -473,6 +504,7 @@ proto-update-deps:
 
 	@mkdir -p $(OC_TYPES)
 	@curl -sSL $(OC_URL)/types/types.proto > $(OC_TYPES)/types.proto
+	@curl -sSL $(OC_URL)/types/block.proto > $(OC_TYPES)/block.proto
 
 	$(DOCKER) run --rm -v $(CURDIR)/proto:/workspace --workdir /workspace $(protoImageName) buf mod update
 

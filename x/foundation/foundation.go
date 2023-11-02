@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
