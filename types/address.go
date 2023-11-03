@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	"github.com/hashicorp/golang-lru/simplelru"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/internal/conv"
@@ -291,15 +291,20 @@ func (aa AccAddress) String() string {
 }
 
 // Format implements the fmt.Formatter interface.
-// nolint: errcheck
 func (aa AccAddress) Format(s fmt.State, verb rune) {
+	var err error
 	switch verb {
 	case 's':
-		s.Write([]byte(aa.String()))
+		_, err = s.Write([]byte(aa.String()))
 	case 'p':
-		s.Write([]byte(fmt.Sprintf("%p", aa)))
+		_, err = s.Write([]byte(fmt.Sprintf("%p", aa)))
+
 	default:
-		s.Write([]byte(fmt.Sprintf("%X", []byte(aa))))
+		_, err = s.Write([]byte(fmt.Sprintf("%X", []byte(aa))))
+	}
+
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -441,15 +446,20 @@ func (va ValAddress) String() string {
 }
 
 // Format implements the fmt.Formatter interface.
-// nolint: errcheck
 func (va ValAddress) Format(s fmt.State, verb rune) {
+	var err error
+
 	switch verb {
 	case 's':
-		s.Write([]byte(va.String()))
+		_, err = s.Write([]byte(va.String()))
 	case 'p':
-		s.Write([]byte(fmt.Sprintf("%p", va)))
+		_, err = s.Write([]byte(fmt.Sprintf("%p", va)))
 	default:
-		s.Write([]byte(fmt.Sprintf("%X", []byte(va))))
+		_, err = s.Write([]byte(fmt.Sprintf("%X", []byte(va))))
+	}
+
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -620,15 +630,20 @@ func MustBech32ifyAddressBytes(prefix string, bs []byte) string {
 }
 
 // Format implements the fmt.Formatter interface.
-// nolint: errcheck
 func (ca ConsAddress) Format(s fmt.State, verb rune) {
+	var err error
+
 	switch verb {
 	case 's':
-		s.Write([]byte(ca.String()))
+		_, err = s.Write([]byte(ca.String()))
 	case 'p':
-		s.Write([]byte(fmt.Sprintf("%p", ca)))
+		_, err = s.Write([]byte(fmt.Sprintf("%p", ca)))
 	default:
-		s.Write([]byte(fmt.Sprintf("%X", []byte(ca))))
+		_, err = s.Write([]byte(fmt.Sprintf("%X", []byte(ca))))
+	}
+
+	if err != nil {
+		panic(err)
 	}
 }
 

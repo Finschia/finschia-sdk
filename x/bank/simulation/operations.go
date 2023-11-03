@@ -16,11 +16,10 @@ import (
 	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
-// nolint:gosec
 // Simulation operation weights constants
 const (
-	OpWeightMsgSend      = "op_weight_msg_send"      //nolint:gosec
-	OpWeightMsgMultiSend = "op_weight_msg_multisend" //nolint:gosec
+	OpWeightMsgSend      = "op_weight_msg_send"
+	OpWeightMsgMultiSend = "op_weight_msg_multisend"
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights

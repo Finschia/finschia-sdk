@@ -19,9 +19,9 @@ run:
 linters:
   disable-all: true
   enable:
-#    - errcheck
-#    - dogsled
-#    - exportloopref
+    - errcheck
+    - dogsled
+    - exportloopref
     - goconst
     - gocritic
     - gci
@@ -32,7 +32,7 @@ linters:
     - ineffassign
     - misspell
     - nakedret
-#    - nolintlint
+    - nolintlint
     - staticcheck
     - revive
     - stylecheck
@@ -83,9 +83,6 @@ issues:
       linters:
         - staticcheck
     - text: "SA1019: vote.Option is deprecated" # TODO remove once ready to remove from the sdk
-      linters:
-        - staticcheck
-    - text: "SA1019: legacytx." # TODO remove once ready to remove from the sdk
       linters:
         - staticcheck
     - text: "SA1019: types.QueryNextAccountNumberRequest is deprecated" # TODO remove once ready to remove from the sdk
@@ -159,7 +156,7 @@ linters-settings:
     suggest-new: true
   nolintlint:
     allow-unused: false
-    require-explanation: true
+    require-explanation: false
     require-specific: false
   gosimple:
     checks: ["all"]

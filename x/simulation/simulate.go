@@ -318,7 +318,6 @@ Comment: %s`,
 	}
 }
 
-// nolint: errcheck
 func runQueuedOperations(tb testing.TB, queueOps map[int][]simulation.Operation,
 	height int, r *rand.Rand, app *baseapp.BaseApp,
 	ctx sdk.Context, accounts []simulation.Account, logWriter LogWriter,

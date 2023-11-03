@@ -270,7 +270,7 @@ func TestMultiSigMigration(t *testing.T) {
 	require.NoError(t, multisig.AddSignatureFromPubKey(multisignature, sigs[0], pkSet[0], pkSet))
 
 	// create a StdSignature for msg, and convert it to sigV2
-	sig := legacytx.StdSignature{PubKey: pkSet[1], Signature: sigs[1].(*signing.SingleSignatureData).Signature}
+	sig := legacytx.StdSignature{PubKey: pkSet[1], Signature: sigs[1].(*signing.SingleSignatureData).Signature} //nolint:staticcheck // this will be removed when proto is ready
 	sigV2, err := legacytx.StdSignatureToSignatureV2(cdc, sig)
 	require.NoError(t, multisig.AddSignatureV2(multisignature, sigV2, pkSet))
 
