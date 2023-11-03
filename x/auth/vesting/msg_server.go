@@ -3,14 +3,13 @@ package vesting
 import (
 	"context"
 
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-
 	"github.com/armon/go-metrics"
 
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/auth/keeper"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/auth/vesting/types"
 )
 

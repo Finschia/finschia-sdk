@@ -7,10 +7,10 @@ import (
 
 	"github.com/cosmos/iavl"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/ostracon/libs/log"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/store/cachekv"
 	"github.com/Finschia/finschia-sdk/store/types"
@@ -293,7 +293,7 @@ func TestIAVLReverseIterator(t *testing.T) {
 	iavlStore.Set([]byte{0x00, 0x02}, []byte("0 2"))
 	iavlStore.Set([]byte{0x01}, []byte("1"))
 
-	testReverseIterator := func(t *testing.T, start []byte, end []byte, expected []string) {
+	testReverseIterator := func(t *testing.T, start, end []byte, expected []string) {
 		iter := iavlStore.ReverseIterator(start, end)
 		var i int
 		for i = 0; iter.Valid(); iter.Next() {
@@ -477,7 +477,6 @@ func TestIAVLGetAllVersions(t *testing.T) {
 			require.True(t, iavlStore.VersionExists(int64(ver)),
 				"Missing version %d with latest version %d. Should be storing all versions",
 				ver, i)
-
 		}
 
 		nextVersion(iavlStore)

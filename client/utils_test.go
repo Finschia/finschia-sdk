@@ -80,7 +80,6 @@ func TestPaginate(t *testing.T) {
 }
 
 func TestReadPageRequest(t *testing.T) {
-
 	testCases := []struct {
 		name                string
 		pageKey             string

@@ -5,10 +5,8 @@ import (
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"
-
-	"github.com/Finschia/finschia-sdk/simapp/params"
-
 	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp/params"
 	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
 	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 )

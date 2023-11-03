@@ -6,13 +6,12 @@ import (
 	"io"
 	"os"
 
+	"github.com/gogo/protobuf/proto"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
-
 	"gopkg.in/yaml.v2"
 
 	rpcclient "github.com/Finschia/ostracon/rpc/client"
-	"github.com/gogo/protobuf/proto"
-	"github.com/pkg/errors"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

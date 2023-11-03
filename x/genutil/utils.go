@@ -6,13 +6,14 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/cosmos/go-bip39"
+
 	cfg "github.com/Finschia/ostracon/config"
 	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
 	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/Finschia/ostracon/p2p"
 	"github.com/Finschia/ostracon/privval"
 	octypes "github.com/Finschia/ostracon/types"
-	"github.com/cosmos/go-bip39"
 
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
@@ -68,12 +69,12 @@ func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic strin
 	nodeID = string(nodeKey.ID())
 
 	pvKeyFile := config.PrivValidatorKeyFile()
-	if err := ostos.EnsureDir(filepath.Dir(pvKeyFile), 0777); err != nil {
+	if err := ostos.EnsureDir(filepath.Dir(pvKeyFile), 0o777); err != nil {
 		return "", nil, err
 	}
 
 	pvStateFile := config.PrivValidatorStateFile()
-	if err := ostos.EnsureDir(filepath.Dir(pvStateFile), 0777); err != nil {
+	if err := ostos.EnsureDir(filepath.Dir(pvStateFile), 0o777); err != nil {
 		return "", nil, err
 	}
 

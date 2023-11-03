@@ -621,7 +621,8 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
 						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MINT"), Index: false},
 					},
-				}},
+				},
+			},
 		},
 		"valid request - revoke BURN": {
 			contractID: s.contractID,
@@ -635,7 +636,8 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 						{Key: []uint8("grantee"), Value: testutil.W(s.operator), Index: false},
 						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_BURN"), Index: false},
 					},
-				}},
+				},
+			},
 		},
 		"valid request - revoke MODIFY": {
 			contractID: s.contractID,
@@ -649,7 +651,8 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 						{Key: []uint8("grantee"), Value: testutil.W(s.vendor), Index: false},
 						{Key: []uint8("permission"), Value: testutil.W("PERMISSION_MODIFY"), Index: false},
 					},
-				}},
+				},
+			},
 		},
 	}
 
@@ -1014,13 +1017,15 @@ func (s *KeeperTestSuite) TestMsgModify() {
 				Owner:      s.vendor.String(),
 				Changes:    []token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}},
 			},
-			expectedEvents: []sdk.Event{{
-				Type: "lbm.token.v1.EventModified",
-				Attributes: []abci.EventAttribute{
-					{Key: []byte("changes"), Value: testutil.MustJSONMarshal([]token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}), Index: false},
-					{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
-					{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
-				}},
+			expectedEvents: []sdk.Event{
+				{
+					Type: "lbm.token.v1.EventModified",
+					Attributes: []abci.EventAttribute{
+						{Key: []byte("changes"), Value: testutil.MustJSONMarshal([]token.Attribute{{Key: token.AttributeKeyURI.String(), Value: "uri222"}}), Index: false},
+						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
+						{Key: []byte("operator"), Value: testutil.W(s.vendor), Index: false},
+					},
+				},
 			},
 		},
 		"modify(nonExistingContractId, from, 1) -> error": {

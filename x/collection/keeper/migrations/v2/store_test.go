@@ -10,7 +10,6 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/collection"
-
 	"github.com/Finschia/finschia-sdk/x/collection/keeper/migrations/v2"
 )
 

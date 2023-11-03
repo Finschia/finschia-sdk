@@ -10,15 +10,14 @@ import (
 	"path"
 	"testing"
 
-	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
 	ostjson "github.com/Finschia/ostracon/libs/json"
 	"github.com/Finschia/ostracon/libs/log"
 	octypes "github.com/Finschia/ostracon/types"
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/client"

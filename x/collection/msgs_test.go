@@ -1745,8 +1745,8 @@ func TestMsgOperatorDetach(t *testing.T) {
 
 func TestAminoJSON(t *testing.T) {
 	tx := legacytx.StdTx{}
-	var contractId = "deadbeef"
-	var ftClassId = "00bab10c"
+	contractId := "deadbeef"
+	ftClassId := "00bab10c"
 
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {

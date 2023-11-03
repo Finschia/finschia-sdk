@@ -5,10 +5,11 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/Finschia/ostracon/crypto"
-	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/ostracon/crypto"
+	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"

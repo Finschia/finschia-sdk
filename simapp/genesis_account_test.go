@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Finschia/ostracon/crypto"
+	"github.com/stretchr/testify/require"
+
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-
-	"github.com/Finschia/ostracon/crypto"
-	"github.com/stretchr/testify/require"
 )
 
 func TestSimGenesisAccountValidate(t *testing.T) {

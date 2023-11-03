@@ -224,7 +224,7 @@ func TestSetChanCheckTxSize(t *testing.T) {
 	logger := defaultLogger()
 	db := dbm.NewMemDB()
 
-	var size = uint(100)
+	size := uint(100)
 
 	app := NewBaseApp(t.Name(), logger, db, nil, SetChanCheckTxSize(size))
 	require.Equal(t, int(size), cap(app.chCheckTx))

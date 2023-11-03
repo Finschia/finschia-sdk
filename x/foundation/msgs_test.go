@@ -2,15 +2,17 @@ package foundation_test
 
 import (
 	"fmt"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"testing"
 	"time"
+
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -726,7 +728,7 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	var proposer = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	proposer := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	testCases := map[string]struct {
 		msg      sdk.Msg

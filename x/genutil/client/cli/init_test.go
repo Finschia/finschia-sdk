@@ -16,12 +16,11 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/server"
 	"github.com/Finschia/finschia-sdk/server/mock"
 	"github.com/Finschia/finschia-sdk/testutil"

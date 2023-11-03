@@ -3,12 +3,12 @@ package keeper_test
 import (
 	"fmt"
 
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/query"
 	"github.com/Finschia/finschia-sdk/x/evidence/exported"
 	"github.com/Finschia/finschia-sdk/x/evidence/types"
-
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 )
 
 func (suite *KeeperTestSuite) TestQueryEvidence() {

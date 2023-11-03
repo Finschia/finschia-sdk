@@ -4,13 +4,11 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	liavl "github.com/cosmos/iavl"
+	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/store/cachekv"
-
 	"github.com/Finschia/finschia-sdk/store/dbadapter"
 	"github.com/Finschia/finschia-sdk/store/gaskv"
 	"github.com/Finschia/finschia-sdk/store/iavl"
@@ -257,7 +255,7 @@ func mockStoreWithStuff() types.KVStore {
 	return store
 }
 
-func checkValue(t *testing.T, store types.KVStore, key []byte, expected []byte) {
+func checkValue(t *testing.T, store types.KVStore, key, expected []byte) {
 	bz := store.Get(key)
 	require.Equal(t, expected, bz)
 }

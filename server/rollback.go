@@ -3,9 +3,8 @@ package server
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/types"

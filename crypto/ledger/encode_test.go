@@ -13,7 +13,7 @@ type byter interface {
 	Bytes() []byte
 }
 
-func checkAminoJSON(t *testing.T, src interface{}, dst interface{}, isNil bool) {
+func checkAminoJSON(t *testing.T, src, dst interface{}, isNil bool) {
 	// Marshal to JSON bytes.
 	js, err := cdc.MarshalJSON(src)
 	require.Nil(t, err, "%+v", err)
@@ -31,8 +31,8 @@ func checkAminoJSON(t *testing.T, src interface{}, dst interface{}, isNil bool) 
 // nolint: govet
 func ExamplePrintRegisteredTypes() {
 	cdc.PrintTypes(os.Stdout)
-	//| Type | Name | Prefix | Length | Notes |
-	//| ---- | ---- | ------ | ----- | ------ |
+	// | Type | Name | Prefix | Length | Notes |
+	// | ---- | ---- | ------ | ----- | ------ |
 	//| PrivKeyLedgerSecp256k1 | tendermint/PrivKeyLedgerSecp256k1 | 0x10CAB393 | variable |  |
 	//| PubKey | tendermint/PubKeySr25519 | 0x0DFB1005 | variable |  |
 	//| PubKey | tendermint/PubKeyEd25519 | 0x1624DE64 | variable |  |

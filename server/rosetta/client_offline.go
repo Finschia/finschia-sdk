@@ -7,7 +7,6 @@ import (
 	"github.com/coinbase/rosetta-sdk-go/types"
 
 	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 

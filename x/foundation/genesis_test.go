@@ -7,10 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -413,9 +412,9 @@ func TestValidateGenesis(t *testing.T) {
 			err := cdc.UnmarshalJSON(tc.raw, &unmarshalled)
 			require.NoError(t, err)
 
-			marshalled, err := cdc.MarshalJSON(&tc.data)
+			marshaled, err := cdc.MarshalJSON(&tc.data)
 			require.NoError(t, err)
-			require.Equal(t, tc.raw, marshalled)
+			require.Equal(t, tc.raw, marshaled)
 
 			err = foundation.ValidateGenesis(unmarshalled)
 			if !tc.valid {

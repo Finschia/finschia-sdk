@@ -6,12 +6,12 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	abci "github.com/tendermint/tendermint/abci/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	rpcclient "github.com/Finschia/ostracon/rpc/client"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/store/rootmulti"
 	sdk "github.com/Finschia/finschia-sdk/types"

@@ -11,7 +11,6 @@ import (
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
-
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 

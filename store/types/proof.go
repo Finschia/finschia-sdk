@@ -1,10 +1,10 @@
 package types
 
 import (
+	ics23 "github.com/confio/ics23/go"
 	tmmerkle "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 	"github.com/Finschia/ostracon/crypto/merkle"
-	ics23 "github.com/confio/ics23/go"
 
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
@@ -48,7 +48,7 @@ func NewSimpleMerkleCommitmentOp(key []byte, proof *ics23.CommitmentProof) Commi
 }
 
 // CommitmentOpDecoder takes a merkle.ProofOp and attempts to decode it into a CommitmentOp ProofOperator
-// The proofOp.Data is just a marshalled CommitmentProof. The Key of the CommitmentOp is extracted
+// The proofOp.Data is just a marshaled CommitmentProof. The Key of the CommitmentOp is extracted
 // from the unmarshalled proof.
 func CommitmentOpDecoder(pop tmmerkle.ProofOp) (merkle.ProofOperator, error) {
 	var spec *ics23.ProofSpec

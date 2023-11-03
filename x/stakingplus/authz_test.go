@@ -12,9 +12,9 @@ import (
 )
 
 func TestAminoJson(t *testing.T) {
-	var authority = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	var grantee = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	var valAddr = sdk.ValAddress(secp256k1.GenPrivKey().PubKey().Address())
+	authority := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	grantee := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	valAddr := sdk.ValAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	src := &CreateValidatorAuthorization{ValidatorAddress: valAddr.String()}
 	expected := fmt.Sprintf("{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authority\":\"%s\",\"authorization\":{\"type\":\"lbm-sdk/CreateValidatorAuthorization\",\"value\":{\"validator_address\":\"%s\"}},\"grantee\":\"%s\"}}", authority.String(), valAddr.String(), grantee.String())

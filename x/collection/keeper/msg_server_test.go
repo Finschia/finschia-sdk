@@ -36,7 +36,8 @@ func (s *KeeperTestSuite) TestMsgSendFT() {
 						{Key: []byte("operator"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("to"), Value: testutil.W(s.customer.String()), Index: false},
 					},
-				}},
+				},
+			},
 		},
 		"contract not found": {
 			isNegativeCase: true,
@@ -348,7 +349,8 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 						{Key: []byte("to"), Value: testutil.W(s.vendor.String()), Index: false},
 					},
 				},
-			}},
+			},
+		},
 		"contract not found": {
 			contractID: "deadbeef",
 			operator:   s.operator,
@@ -580,7 +582,8 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionIssue).String()), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
@@ -588,7 +591,8 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionModify).String()), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
@@ -596,7 +600,8 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
@@ -604,8 +609,10 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionBurn).String()), Index: false},
-					}},
-			}},
+					},
+				},
+			},
+		},
 	}
 
 	for name, tc := range testCases {
@@ -624,7 +631,6 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
 		})
 	}
 }
@@ -758,7 +764,8 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 						{Key: []byte("name"), Value: testutil.W(""), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("token_type"), Value: testutil.W(expectedTokenType), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
@@ -766,7 +773,8 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
@@ -774,7 +782,8 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 						{Key: []byte("grantee"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(""), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionBurn).String()), Index: false},
-					}},
+					},
+				},
 			},
 		},
 		"contract not found": {
@@ -805,7 +814,6 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
 		})
 	}
 }
@@ -935,7 +943,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 	}
 
 	// query the values to be effected by MintFT
-	queryValuesEffectedByMintFT := func(ctx sdk.Context, coins collection.Coins, contractID string) (balances collection.Coins, supply []sdk.Int, minted []sdk.Int) {
+	queryValuesEffectedByMintFT := func(ctx sdk.Context, coins collection.Coins, contractID string) (balances collection.Coins, supply, minted []sdk.Int) {
 		for _, am := range coins {
 			// save balance
 			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
@@ -1044,7 +1052,8 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 						{Key: []byte("tokens"), Value: testutil.MustJSONMarshal(expectedTokens), Index: false},
 					},
 				},
-			}},
+			},
+		},
 		"contract not found": {
 			contractID: "deadbeef",
 			from:       s.vendor,
@@ -1199,7 +1208,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 	}
 
 	// query the values to be effected by BurnFT
-	queryValuesAffectedByBurnFT := func(ctx sdk.Context, coins collection.Coins, contractID, from string) (balances collection.Coins, supply []sdk.Int, burnt []sdk.Int) {
+	queryValuesAffectedByBurnFT := func(ctx sdk.Context, coins collection.Coins, contractID, from string) (balances collection.Coins, supply, burnt []sdk.Int) {
 		for _, am := range coins {
 			// save balance
 			bal, err := s.queryServer.Balance(sdk.WrapSDKContext(ctx), &collection.QueryBalanceRequest{
@@ -1295,7 +1304,9 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.operator.String()), Index: false},
-					}}},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -1387,7 +1398,9 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.vendor.String()), Index: false},
-					}}},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -1477,7 +1490,9 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("from"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.operator.String()), Index: false},
-					}}},
+					},
+				},
+			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
@@ -1547,7 +1562,6 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
 		})
 	}
 }
@@ -1577,7 +1591,10 @@ func (s *KeeperTestSuite) TestMsgModify() {
 						{Key: []byte("changes"), Value: testutil.MustJSONMarshal(changes), Index: false},
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("operator"), Value: testutil.W(s.vendor.String()), Index: false},
-					}}}},
+					},
+				},
+			},
+		},
 		"contract not found": {
 			contractID: "deadbeef",
 			operator:   s.vendor,
@@ -1656,7 +1673,8 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 						{Key: []byte("grantee"), Value: testutil.W(s.operator.String()), Index: false},
 						{Key: []byte("granter"), Value: testutil.W(s.vendor.String()), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionModify).String()), Index: false},
-					}},
+					},
+				},
 			},
 		},
 		"contract not found": {
@@ -1716,7 +1734,8 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 						{Key: []byte("contract_id"), Value: testutil.W(s.contractID), Index: false},
 						{Key: []byte("grantee"), Value: testutil.W(s.operator.String()), Index: false},
 						{Key: []byte("permission"), Value: testutil.W(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
-					}},
+					},
+				},
 			},
 		},
 		"contract not found": {
@@ -1775,7 +1794,8 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 						{Key: []byte("operator"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("subject"), Value: testutil.W(collection.NewNFTID(s.nftClassID, s.depthLimit+1)), Index: false},
 						{Key: []byte("target"), Value: testutil.W(collection.NewNFTID(s.nftClassID, 1)), Index: false},
-					}},
+					},
+				},
 			},
 		},
 		"contract not found": {
@@ -1838,7 +1858,8 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 						{Key: []byte("operator"), Value: testutil.W(s.customer.String()), Index: false},
 						{Key: []byte("previous_parent"), Value: testutil.W(issuedNfts[0]), Index: false},
 						{Key: []byte("subject"), Value: testutil.W(issuedNfts[1]), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventRootChanged",
 					Attributes: []abci.EventAttribute{
@@ -1846,7 +1867,8 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 						{Key: []byte("from"), Value: testutil.W(issuedNfts[0]), Index: false},
 						{Key: []byte("to"), Value: testutil.W(issuedNfts[1]), Index: false},
 						{Key: []byte("token_id"), Value: testutil.W(issuedNfts[2]), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventRootChanged",
 					Attributes: []abci.EventAttribute{
@@ -1854,7 +1876,8 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 						{Key: []byte("from"), Value: testutil.W(issuedNfts[0]), Index: false},
 						{Key: []byte("to"), Value: testutil.W(issuedNfts[1]), Index: false},
 						{Key: []byte("token_id"), Value: testutil.W(issuedNfts[3]), Index: false},
-					}},
+					},
+				},
 			},
 		},
 		"contract not found": {
@@ -1891,7 +1914,6 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
 		})
 	}
 }
@@ -1919,8 +1941,10 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 						{Key: []byte("operator"), Value: testutil.W(s.operator.String()), Index: false},
 						{Key: []byte("subject"), Value: testutil.W(collection.NewNFTID(s.nftClassID, s.depthLimit+1)), Index: false},
 						{Key: []byte("target"), Value: testutil.W(collection.NewNFTID(s.nftClassID, 1)), Index: false},
-					}},
-			}},
+					},
+				},
+			},
+		},
 		"contract not found": {
 			contractID: "deadbeef",
 			operator:   s.operator,
@@ -1993,7 +2017,8 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 						{Key: []byte("operator"), Value: testutil.W(s.operator.String()), Index: false},
 						{Key: []byte("previous_parent"), Value: testutil.W(nfts[0]), Index: false},
 						{Key: []byte("subject"), Value: testutil.W(nfts[1]), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventRootChanged",
 					Attributes: []abci.EventAttribute{
@@ -2001,7 +2026,8 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 						{Key: []byte("from"), Value: testutil.W(nfts[0]), Index: false},
 						{Key: []byte("to"), Value: testutil.W(nfts[1]), Index: false},
 						{Key: []byte("token_id"), Value: testutil.W(nfts[2]), Index: false},
-					}},
+					},
+				},
 				sdk.Event{
 					Type: "lbm.collection.v1.EventRootChanged",
 					Attributes: []abci.EventAttribute{
@@ -2009,8 +2035,10 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 						{Key: []byte("from"), Value: testutil.W(nfts[0]), Index: false},
 						{Key: []byte("to"), Value: testutil.W(nfts[1]), Index: false},
 						{Key: []byte("token_id"), Value: testutil.W(nfts[3]), Index: false},
-					}},
-			}},
+					},
+				},
+			},
+		},
 		"contract not found": {
 			contractID: "deadbeef",
 			operator:   s.operator,
@@ -2049,7 +2077,6 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
-
 		})
 	}
 }

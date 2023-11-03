@@ -1,8 +1,9 @@
 package secp256r1
 
 import (
-	tmcrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/gogo/protobuf/proto"
+
+	tmcrypto "github.com/Finschia/ostracon/crypto"
 
 	ecdsa "github.com/Finschia/finschia-sdk/crypto/keys/internal/ecdsa"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
@@ -41,7 +42,7 @@ func (m *PubKey) Type() string {
 }
 
 // VerifySignature implements SDK PubKey interface.
-func (m *PubKey) VerifySignature(msg []byte, sig []byte) bool {
+func (m *PubKey) VerifySignature(msg, sig []byte) bool {
 	return m.Key.VerifySignature(msg, sig)
 }
 

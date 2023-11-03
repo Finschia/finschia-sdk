@@ -5,13 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
-	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
-
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/stretchr/testify/suite"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/client"
@@ -19,8 +14,11 @@ import (
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/server/rosetta"
 	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
+	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
@@ -37,7 +35,7 @@ type ConverterTestSuite struct {
 }
 
 // generateMsgSend generate sample unsignedTxHex and pubKeyHex
-func generateMsgSend() (unsignedTxHex []byte, pubKeyHex []byte) {
+func generateMsgSend() (unsignedTxHex, pubKeyHex []byte) {
 	cdc, _ := rosetta.MakeCodec()
 	txConfig := authtx.NewTxConfig(cdc, authtx.DefaultSignModes)
 

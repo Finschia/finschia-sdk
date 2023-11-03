@@ -74,7 +74,7 @@ func (store *Store) Get(key []byte) (value []byte) {
 }
 
 // Set implements types.KVStore.
-func (store *Store) Set(key []byte, value []byte) {
+func (store *Store) Set(key, value []byte) {
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
 
@@ -395,7 +395,7 @@ func (store *Store) deleteKeysFromUnsortedCache(unsorted []*kv.Pair) {
 // etc
 
 // Only entrypoint to mutate store.cache.
-func (store *Store) setCacheValue(key, value []byte, deleted bool, dirty bool) {
+func (store *Store) setCacheValue(key, value []byte, deleted, dirty bool) {
 	types.AssertValidKey(key)
 
 	keyStr := conv.UnsafeBytesToStr(key)

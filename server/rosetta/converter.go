@@ -8,7 +8,6 @@ import (
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/ostracon/crypto"
@@ -434,7 +433,7 @@ func (c converter) Amounts(ownedCoins []sdk.Coin, availableCoins sdk.Coins) []*r
 
 // AddOperationIndexes adds the indexes to operations adhering to specific rules:
 // operations related to messages will be always before than the balance ones
-func AddOperationIndexes(msgOps []*rosettatypes.Operation, balanceOps []*rosettatypes.Operation) (finalOps []*rosettatypes.Operation) {
+func AddOperationIndexes(msgOps, balanceOps []*rosettatypes.Operation) (finalOps []*rosettatypes.Operation) {
 	lenMsgOps := len(msgOps)
 	lenBalanceOps := len(balanceOps)
 	finalOps = make([]*rosettatypes.Operation, 0, lenMsgOps+lenBalanceOps)

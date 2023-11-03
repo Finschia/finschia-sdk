@@ -5,6 +5,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/hd"
@@ -15,7 +16,6 @@ import (
 	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/cli"
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/collection/client/cli"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type IntegrationTestSuite struct {

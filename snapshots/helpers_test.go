@@ -13,7 +13,6 @@ import (
 
 	protoio "github.com/gogo/protobuf/io"
 	"github.com/stretchr/testify/require"
-
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/snapshots"

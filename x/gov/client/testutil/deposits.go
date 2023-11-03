@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/stretchr/testify/suite"
-
 	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/stretchr/testify/suite"
 
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	"github.com/Finschia/finschia-sdk/testutil/network"

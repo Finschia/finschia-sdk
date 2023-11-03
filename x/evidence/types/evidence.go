@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Finschia/ostracon/crypto/tmhash"
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"gopkg.in/yaml.v2"
+
+	"github.com/Finschia/ostracon/crypto/tmhash"
+	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/evidence/exported"

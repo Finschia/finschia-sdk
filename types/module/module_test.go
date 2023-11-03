@@ -5,16 +5,16 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/codec/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
+
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/tests/mocks"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"

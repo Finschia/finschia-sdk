@@ -12,11 +12,10 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
-
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	ocabci "github.com/Finschia/ostracon/abci/types"
 
@@ -926,7 +925,6 @@ func splitPath(requestPath string) (path []string) {
 // createQueryContext creates a new sdk.Context for a query, taking as args
 // the block height and whether the query needs a proof or not.
 func (app *BaseApp) createQueryContextWithCheckState() sdk.Context {
-
 	cacheMS := app.checkState.CacheMultiStore()
 
 	// branch the commit-multistore for safety

@@ -38,6 +38,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 
 	msgservice.RegisterMsgServiceDesc(registry, MsgServiceDesc())
 }
+
 func init() {
 	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
 	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances

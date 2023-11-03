@@ -22,5 +22,4 @@ func TestBeach32ifPbKey(t *testing.T) {
 	require.NoError(err)
 	require.Equal("linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
 		pubKeyAddr, "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
-
 }

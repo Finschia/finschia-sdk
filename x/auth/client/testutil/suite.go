@@ -10,10 +10,9 @@ import (
 	"strings"
 	"testing"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

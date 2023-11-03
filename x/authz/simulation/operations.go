@@ -9,12 +9,10 @@ import (
 	"github.com/Finschia/finschia-sdk/simapp/helpers"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
 	"github.com/Finschia/finschia-sdk/x/authz"
-
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/authz/keeper"
-
 	banktype "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/simulation"
 )

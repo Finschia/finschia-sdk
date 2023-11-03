@@ -5,11 +5,10 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/Finschia/ostracon/rpc/client/mock"
 	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 	octypes "github.com/Finschia/ostracon/types"
+	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/simapp"
@@ -164,8 +163,8 @@ func TestGetPaginatedVotes(t *testing.T) {
 		tc := tc
 
 		t.Run(tc.description, func(t *testing.T) {
-			marshalled := make([]octypes.Tx, len(tc.msgs))
-			cli := TxSearchMock{txs: marshalled, txConfig: encCfg.TxConfig}
+			marshaled := make([]octypes.Tx, len(tc.msgs))
+			cli := TxSearchMock{txs: marshaled, txConfig: encCfg.TxConfig}
 			clientCtx := client.Context{}.
 				WithLegacyAmino(encCfg.Amino).
 				WithClient(cli).
@@ -178,7 +177,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 
 				tx, err := clientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
 				require.NoError(t, err)
-				marshalled[i] = tx
+				marshaled[i] = tx
 			}
 
 			params := types.NewQueryProposalVotesParams(0, tc.page, tc.limit)

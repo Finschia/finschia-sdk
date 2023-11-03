@@ -3,9 +3,10 @@ package tmservice
 import (
 	"context"
 
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	ocproto "github.com/Finschia/ostracon/proto/ostracon/types"
 	ctypes "github.com/Finschia/ostracon/rpc/core/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 )
