@@ -8,6 +8,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	cfg "github.com/Finschia/ostracon/config"
 	"github.com/Finschia/ostracon/crypto"
 	tmjson "github.com/Finschia/ostracon/libs/json"
@@ -18,7 +20,6 @@ import (
 	"github.com/Finschia/ostracon/privval"
 	"github.com/Finschia/ostracon/types"
 	tmtime "github.com/Finschia/ostracon/types/time"
-	"github.com/stretchr/testify/require"
 )
 
 var logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))

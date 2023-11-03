@@ -7,10 +7,11 @@ import (
 	"io"
 	"testing"
 
-	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/cosmos/go-bip39"
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

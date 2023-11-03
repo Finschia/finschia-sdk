@@ -5,12 +5,13 @@ import (
 	"testing"
 	"time"
 
-	octypes "github.com/Finschia/ostracon/types"
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	octypes "github.com/Finschia/ostracon/types"
 
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"

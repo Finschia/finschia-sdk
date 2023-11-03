@@ -14,14 +14,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
+	"google.golang.org/grpc"
+
 	ostcfg "github.com/Finschia/ostracon/config"
 	"github.com/Finschia/ostracon/libs/log"
 	ostrand "github.com/Finschia/ostracon/libs/rand"
 	"github.com/Finschia/ostracon/node"
 	ostclient "github.com/Finschia/ostracon/rpc/client"
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
-	"google.golang.org/grpc"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"

@@ -3,9 +3,10 @@ package testutil
 import (
 	"fmt"
 
-	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
+
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"

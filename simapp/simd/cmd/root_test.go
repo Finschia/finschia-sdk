@@ -5,11 +5,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Finschia/ostracon/libs/log"
-	octypes "github.com/Finschia/ostracon/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/Finschia/ostracon/libs/log"
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server"

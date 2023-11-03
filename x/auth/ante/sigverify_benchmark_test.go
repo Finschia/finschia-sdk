@@ -3,8 +3,9 @@ package ante_test
 import (
 	"testing"
 
-	tmcrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/stretchr/testify/require"
+
+	tmcrypto "github.com/Finschia/ostracon/crypto"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256r1"

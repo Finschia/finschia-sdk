@@ -14,13 +14,14 @@ import (
 	"syscall"
 	"time"
 
-	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
-	ostcfg "github.com/Finschia/ostracon/config"
-	ostlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
+
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	ostcfg "github.com/Finschia/ostracon/config"
+	ostlog "github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/config"

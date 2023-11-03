@@ -3,9 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"

@@ -10,11 +10,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/require"
+
 	abci_server "github.com/Finschia/ostracon/abci/server"
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/Finschia/ostracon/libs/log"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

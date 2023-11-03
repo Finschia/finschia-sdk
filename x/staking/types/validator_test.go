@@ -5,9 +5,10 @@ import (
 	"sort"
 	"testing"
 
-	octypes "github.com/Finschia/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"

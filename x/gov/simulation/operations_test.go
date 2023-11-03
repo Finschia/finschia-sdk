@@ -6,9 +6,10 @@ import (
 	"testing"
 	"time"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"

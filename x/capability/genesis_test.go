@@ -1,9 +1,10 @@
 package capability_test
 
 import (
-	"github.com/Finschia/ostracon/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"

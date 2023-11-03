@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Finschia/ostracon/libs/bytes"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/Finschia/ostracon/libs/bytes"
 
 	"github.com/Finschia/finschia-sdk/client/grpc/ocservice"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

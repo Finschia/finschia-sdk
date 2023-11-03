@@ -10,6 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+
 	"github.com/Finschia/ostracon/abci/server"
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
 	"github.com/Finschia/ostracon/config"
@@ -19,8 +22,6 @@ import (
 	pvm "github.com/Finschia/ostracon/privval"
 	"github.com/Finschia/ostracon/proxy"
 	"github.com/Finschia/ostracon/rpc/client/local"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
