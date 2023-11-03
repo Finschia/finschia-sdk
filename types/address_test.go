@@ -492,7 +492,7 @@ func (s *addressTestSuite) TestMustAccAddressFromBech32() {
 	addr := []byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	accBech := types.AccAddress(addr).String()
 	res := types.MustAccAddressFromBech32(accBech)
-	s.Require().Equal(types.AccAddress(res).String(), accBech)
+	s.Require().Equal(res.String(), accBech)
 
 	// Set a custom address verifier only accepts 20 byte addresses
 	types.GetConfig().SetAddressVerifier(func(bz []byte) error {
