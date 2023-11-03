@@ -14,6 +14,7 @@ import (
 )
 
 func initTestStores(t *testing.T) (types.KVStore, types.KVStore) {
+	t.Helper()
 	db := dbm.NewMemDB()
 	ms := rootmulti.NewStore(db, log.NewNopLogger())
 

@@ -52,23 +52,23 @@ func ApplyMockIODiscardOutErr(c *cobra.Command) BufferReader {
 
 // Write the given string to a new temporary file.
 // Returns an open file for the test to use.
-func WriteToNewTempFile(t testing.TB, s string) *os.File {
-	t.Helper()
+func WriteToNewTempFile(tb testing.TB, s string) *os.File {
+	tb.Helper()
 
-	fp := TempFile(t)
+	fp := TempFile(tb)
 	_, err := fp.WriteString(s)
 
-	require.Nil(t, err)
+	require.Nil(tb, err)
 
 	return fp
 }
 
 // TempFile returns a writable temporary file for the test to use.
-func TempFile(t testing.TB) *os.File {
-	t.Helper()
+func TempFile(tb testing.TB) *os.File {
+	tb.Helper()
 
-	fp, err := os.CreateTemp(t.TempDir(), "")
-	require.NoError(t, err)
+	fp, err := os.CreateTemp(tb.TempDir(), "")
+	require.NoError(tb, err)
 
 	return fp
 }

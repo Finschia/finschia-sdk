@@ -168,6 +168,7 @@ type (
 
 // New creates a new Network for integration tests.
 func New(t *testing.T, cfg Config) *Network {
+	t.Helper()
 	// only one caller/test can create and use a network at a time
 	t.Log("acquiring test network lock")
 	lock.Lock()
@@ -393,6 +394,7 @@ func New(t *testing.T, cfg Config) *Network {
 
 // New creates a new Network for integration tests without init.
 func NewWithoutInit(t *testing.T, cfg Config, baseDir string, validators []*Validator) *Network {
+	t.Helper()
 	// only one caller/test can create and use a network at a time
 	t.Log("acquiring test network lock")
 	lock.Lock()
@@ -419,6 +421,7 @@ func NewWithoutInit(t *testing.T, cfg Config, baseDir string, validators []*Vali
 }
 
 func AddNewValidator(t *testing.T, network *Network, validator *Validator) {
+	t.Helper()
 	t.Log("adding new validator...")
 
 	require.NoError(t, startInProcess(network.Config, validator))

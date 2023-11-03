@@ -20,6 +20,7 @@ import (
 )
 
 func setupStore(t *testing.T) *snapshots.Store {
+	t.Helper()
 	// os.MkdirTemp() is used instead of testing.T.TempDir()
 	// see https://github.com/cosmos/cosmos-sdk/pull/8475 for
 	// this change's rationale.

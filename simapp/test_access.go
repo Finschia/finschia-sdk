@@ -18,8 +18,8 @@ type TestSupport struct {
 	app *SimApp
 }
 
-func NewTestSupport(t testing.TB, app *SimApp) *TestSupport {
-	return &TestSupport{t: t, app: app}
+func NewTestSupport(tb testing.TB, app *SimApp) *TestSupport {
+	return &TestSupport{t: tb, app: app}
 }
 
 func (s TestSupport) AppCodec() codec.Codec {

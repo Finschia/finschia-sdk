@@ -34,6 +34,7 @@ func randBytes(numBytes int) []byte {
 
 // make a tree with data from above and save it
 func newAlohaTree(t *testing.T, db dbm.DB) (*iavl.MutableTree, types.CommitID) {
+	t.Helper()
 	tree, err := iavl.NewMutableTree(db, cacheSize, false)
 	require.NoError(t, err)
 

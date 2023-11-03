@@ -351,6 +351,7 @@ func doOp(t *testing.T, st types.CacheKVStore, truth dbm.DB, op int, args ...int
 }
 
 func doRandomOp(t *testing.T, st types.CacheKVStore, truth dbm.DB, maxKey int) {
+	t.Helper()
 	r := randInt(totalOps)
 	switch r {
 	case opSet:
@@ -380,6 +381,7 @@ func doRandomOp(t *testing.T, st types.CacheKVStore, truth dbm.DB, maxKey int) {
 
 // iterate over whole domain
 func assertIterateDomain(t *testing.T, st types.KVStore, expectedN int) {
+	t.Helper()
 	itr := st.Iterator(nil, nil)
 	i := 0
 	for ; itr.Valid(); itr.Next() {
@@ -392,6 +394,7 @@ func assertIterateDomain(t *testing.T, st types.KVStore, expectedN int) {
 }
 
 func assertIterateDomainCheck(t *testing.T, st types.KVStore, mem dbm.DB, r []keyRange) {
+	t.Helper()
 	// iterate over each and check they match the other
 	itr := st.Iterator(nil, nil)
 	itr2, err := mem.Iterator(nil, nil) // ground truth
@@ -423,6 +426,7 @@ func assertIterateDomainCheck(t *testing.T, st types.KVStore, mem dbm.DB, r []ke
 }
 
 func assertIterateDomainCompare(t *testing.T, st types.KVStore, mem dbm.DB) {
+	t.Helper()
 	// iterate over each and check they match the other
 	itr := st.Iterator(nil, nil)
 	itr2, err := mem.Iterator(nil, nil) // ground truth
@@ -432,6 +436,7 @@ func assertIterateDomainCompare(t *testing.T, st types.KVStore, mem dbm.DB) {
 }
 
 func checkIterators(t *testing.T, itr, itr2 types.Iterator) {
+	t.Helper()
 	for ; itr.Valid(); itr.Next() {
 		require.True(t, itr2.Valid())
 		k, v := itr.Key(), itr.Value()
@@ -447,6 +452,7 @@ func checkIterators(t *testing.T, itr, itr2 types.Iterator) {
 //--------------------------------------------------------
 
 func setRange(t *testing.T, st types.KVStore, mem dbm.DB, start, end int) {
+	t.Helper()
 	for i := start; i < end; i++ {
 		st.Set(keyFmt(i), valFmt(i))
 		err := mem.Set(keyFmt(i), valFmt(i))
@@ -455,6 +461,7 @@ func setRange(t *testing.T, st types.KVStore, mem dbm.DB, start, end int) {
 }
 
 func deleteRange(t *testing.T, st types.KVStore, mem dbm.DB, start, end int) {
+	t.Helper()
 	for i := start; i < end; i++ {
 		st.Delete(keyFmt(i))
 		err := mem.Delete(keyFmt(i))

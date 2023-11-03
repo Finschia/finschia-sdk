@@ -123,6 +123,7 @@ func TestExportCmd_Height(t *testing.T) {
 }
 
 func setupApp(t *testing.T, tempDir string) (*simapp.SimApp, context.Context, *octypes.GenesisDoc, *cobra.Command) {
+	t.Helper()
 	if err := createConfigFolder(tempDir); err != nil {
 		t.Fatalf("error creating config folder: %s", err)
 	}

@@ -59,6 +59,7 @@ func SimulateFromSeed(
 	config simulation.Config,
 	cdc codec.JSONCodec,
 ) (stopEarly bool, exportedParams Params, err error) {
+	tb.Helper()
 	// in case we have to end early, don't os.Exit so that we can run cleanup code.
 	testingMode, _, b := getTestingMode(tb)
 
@@ -254,6 +255,7 @@ func createBlockSimulator(testingMode bool, tb testing.TB, w io.Writer, params P
 	operationQueue OperationQueue, timeOperationQueue []simulation.FutureOperation,
 	logWriter LogWriter, config simulation.Config,
 ) blockSimFn {
+	tb.Helper()
 	lastBlockSizeState := 0 // state for [4 * uniform distribution]
 	blocksize := 0
 	selectOp := ops.getSelectOpFn()
@@ -322,6 +324,7 @@ func runQueuedOperations(queueOps map[int][]simulation.Operation,
 	ctx sdk.Context, accounts []simulation.Account, logWriter LogWriter,
 	event func(route, op, evResult string), lean bool, chainID string,
 ) (numOpsRan int) {
+	tb.Helper()
 	queuedOp, ok := queueOps[height]
 	if !ok {
 		return 0
@@ -356,6 +359,7 @@ func runQueuedTimeOperations(queueOps []simulation.FutureOperation,
 	logWriter LogWriter, event func(route, op, evResult string),
 	lean bool, chainID string,
 ) (numOpsRan int) {
+	tb.Helper()
 	numOpsRan = 0
 	for len(queueOps) > 0 && currentTime.After(queueOps[0].BlockTime) {
 

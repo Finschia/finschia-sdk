@@ -197,6 +197,7 @@ func initFilesWithConfig(config *cfg.Config) error {
 }
 
 func loadFilePVKey(t *testing.T, file string) privval.FilePVKey {
+	t.Helper()
 	// output must match the locally stored priv_validator key
 	keyJSONBytes, err := ioutil.ReadFile(file)
 	require.NoError(t, err)

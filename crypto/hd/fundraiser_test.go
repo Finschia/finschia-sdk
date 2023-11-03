@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	bip39 "github.com/cosmos/go-bip39"
+	"github.com/cosmos/go-bip39"
 
 	"github.com/Finschia/ostracon/crypto"
 
@@ -31,6 +31,7 @@ func TestFullFundraiserPath(t *testing.T) {
 }
 
 func initFundraiserTestVectors(t *testing.T) []addrData {
+	t.Helper()
 	// NOTE: atom fundraiser address
 	// var hdPath string = "m/44'/118'/0'/0/0"
 	var hdToAddrTable []addrData

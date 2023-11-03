@@ -41,6 +41,7 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 }
 
 func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
+	t.Helper()
 	db := dbm.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db)
 	stateStore.MountStoreWithDB(storeKey, sdk.StoreTypeIAVL, db)

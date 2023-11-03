@@ -153,6 +153,7 @@ func TestFileStreamingService(t *testing.T) {
 }
 
 func testListenBeginBlock(t *testing.T) {
+	t.Helper()
 	expectedBeginBlockReqBytes, err := testMarshaller.Marshal(&testBeginBlockReq)
 	require.Nil(t, err)
 	expectedBeginBlockResBytes, err := testMarshaller.Marshal(&testBeginBlockRes)
@@ -207,6 +208,7 @@ func testListenBeginBlock(t *testing.T) {
 }
 
 func testListenDeliverTx1(t *testing.T) {
+	t.Helper()
 	expectedDeliverTxReq1Bytes, err := testMarshaller.Marshal(&testDeliverTxReq1)
 	require.Nil(t, err)
 	expectedDeliverTxRes1Bytes, err := testMarshaller.Marshal(&testDeliverTxRes1)
@@ -261,6 +263,7 @@ func testListenDeliverTx1(t *testing.T) {
 }
 
 func testListenDeliverTx2(t *testing.T) {
+	t.Helper()
 	expectedDeliverTxReq2Bytes, err := testMarshaller.Marshal(&testDeliverTxReq2)
 	require.Nil(t, err)
 	expectedDeliverTxRes2Bytes, err := testMarshaller.Marshal(&testDeliverTxRes2)
@@ -315,6 +318,7 @@ func testListenDeliverTx2(t *testing.T) {
 }
 
 func testListenEndBlock(t *testing.T) {
+	t.Helper()
 	expectedEndBlockReqBytes, err := testMarshaller.Marshal(&testEndBlockReq)
 	require.Nil(t, err)
 	expectedEndBlockResBytes, err := testMarshaller.Marshal(&testEndBlockRes)
