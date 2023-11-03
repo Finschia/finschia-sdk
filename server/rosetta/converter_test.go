@@ -14,9 +14,7 @@ import (
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/server/rosetta"
 	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
 	authtx "github.com/Finschia/finschia-sdk/x/auth/tx"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
@@ -32,51 +30,6 @@ type ConverterTestSuite struct {
 	ir     codectypes.InterfaceRegistry
 	cdc    *codec.ProtoCodec
 	txConf client.TxConfig
-}
-
-// generateMsgSend generate sample unsignedTxHex and pubKeyHex
-func generateMsgSend() (unsignedTxHex, pubKeyHex []byte) {
-	cdc, _ := rosetta.MakeCodec()
-	txConfig := authtx.NewTxConfig(cdc, authtx.DefaultSignModes)
-
-	_, fromPk, fromAddr := testdata.KeyTestPubAddr()
-	_, _, toAddr := testdata.KeyTestPubAddr()
-
-	sendMsg := bank.MsgSend{
-		FromAddress: fromAddr.String(),
-		ToAddress:   toAddr.String(),
-		Amount:      sdk.NewCoins(sdk.NewInt64Coin("stake", 16)),
-	}
-
-	txBuilder := txConfig.NewTxBuilder()
-	err := txBuilder.SetMsgs(&sendMsg)
-	if err != nil {
-		return nil, nil
-	}
-	txBuilder.SetGasLimit(200000)
-	txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("stake", 1)))
-
-	sigData := signing.SingleSignatureData{
-		SignMode:  signing.SignMode_SIGN_MODE_DIRECT,
-		Signature: nil,
-	}
-	sig := signing.SignatureV2{
-		PubKey:   fromPk,
-		Data:     &sigData,
-		Sequence: 1,
-	}
-	err = txBuilder.SetSignatures(sig)
-	if err != nil {
-		return nil, nil
-	}
-
-	stdTx := txBuilder.GetTx()
-	unsignedTxHex, err = txConfig.TxEncoder()(stdTx)
-	if err != nil {
-		return nil, nil
-	}
-
-	return unsignedTxHex, fromPk.Bytes()
 }
 
 func (s *ConverterTestSuite) SetupTest() {

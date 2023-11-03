@@ -165,13 +165,6 @@ func TestGetMaximumBlockGas(t *testing.T) {
 }
 
 func TestListSnapshots(t *testing.T) {
-	type setupConfig struct {
-		blocks            uint64
-		blockTxs          int
-		snapshotInterval  uint64
-		snapshotKeepEvery uint32
-	}
-
 	app, _ := setupBaseAppWithSnapshots(t, 2, 5)
 
 	expected := abci.ResponseListSnapshots{Snapshots: []*abci.Snapshot{

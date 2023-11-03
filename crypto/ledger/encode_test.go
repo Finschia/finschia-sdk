@@ -9,10 +9,6 @@ import (
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
 
-type byter interface {
-	Bytes() []byte
-}
-
 func checkAminoJSON(t *testing.T, src, dst interface{}, isNil bool) {
 	t.Helper()
 	// Marshal to JSON bytes.
