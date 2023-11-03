@@ -319,7 +319,7 @@ func Test_runAddCmdDryRun(t *testing.T) {
 
 			appCodec := simapp.MakeTestEncodingConfig().Marshaler
 			clientCtx := client.Context{}.
-				WithJSONCodec(appCodec).
+				WithCodec(appCodec).
 				WithKeyringDir(kbHome).
 				WithKeyring(kb)
 			ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)

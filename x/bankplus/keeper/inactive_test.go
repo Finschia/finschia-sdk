@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"math/rand"
+	"crypto/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,7 +22,10 @@ import (
 
 func genAddress() sdk.AccAddress {
 	b := make([]byte, 20)
-	rand.Read(b)
+	_, err := rand.Read(b)
+	if err != nil {
+		panic(err)
+	}
 	return b
 }
 

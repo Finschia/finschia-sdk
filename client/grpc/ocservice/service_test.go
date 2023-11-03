@@ -166,7 +166,7 @@ func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blockresults/%d", val.APIAddress, 1))
 	s.Require().NoError(err)
 	var blockResultsRes ocservice.GetBlockResultsByHeightResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(restRes, &blockResultsRes))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockResultsRes))
 
 	txResult := blockResultsRes.GetTxsResults()
 	s.Require().Equal(0, len(txResult))

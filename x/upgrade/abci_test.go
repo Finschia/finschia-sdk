@@ -29,7 +29,6 @@ import (
 type TestSuite struct {
 	module  module.BeginBlockAppModule
 	keeper  keeper.Keeper
-	querier sdk.Querier
 	handler govtypes.Handler
 	ctx     sdk.Context
 }
@@ -55,7 +54,6 @@ func setupTest(height int64, skip map[int64]bool) TestSuite {
 	s.ctx = app.BaseApp.NewContext(false, tmproto.Header{Height: height, Time: time.Now()})
 
 	s.module = upgrade.NewAppModule(s.keeper)
-	s.querier = s.module.LegacyQuerierHandler(app.LegacyAmino())
 	s.handler = upgrade.NewSoftwareUpgradeProposalHandler(s.keeper)
 	return s
 }
@@ -174,9 +172,9 @@ func TestHaltIfTooNew(t *testing.T) {
 func VerifyCleared(t *testing.T, newCtx sdk.Context) {
 	t.Helper()
 	t.Log("Verify that the upgrade plan has been cleared")
-	bz, err := s.querier(newCtx, []string{types.QueryCurrent}, abci.RequestQuery{})
-	require.NoError(t, err)
-	require.Nil(t, bz)
+	plan, _ := s.keeper.GetUpgradePlan(newCtx)
+	expected := types.Plan{}
+	require.Equal(t, plan, expected)
 }
 
 func TestCanClear(t *testing.T) {

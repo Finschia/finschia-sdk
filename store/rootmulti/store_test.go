@@ -668,6 +668,7 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 		StoreKey: testStoreKey2.Name(),
 		Delete:   false,
 	})
+	require.NoError(t, err)
 	kvPairSet2Bytes := buf.Bytes()
 	buf.Reset()
 	require.Equal(t, expectedOutputKVPairSet2, kvPairSet2Bytes)
@@ -679,6 +680,7 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 		StoreKey: testStoreKey2.Name(),
 		Delete:   true,
 	})
+	require.NoError(t, err)
 	kvPairDelete2Bytes := buf.Bytes()
 	buf.Reset()
 	require.Equal(t, expectedOutputKVPairDelete2, kvPairDelete2Bytes)

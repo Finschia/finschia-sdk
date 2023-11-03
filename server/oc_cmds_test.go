@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -197,7 +196,7 @@ func initFilesWithConfig(config *cfg.Config) error {
 func loadFilePVKey(t *testing.T, file string) privval.FilePVKey {
 	t.Helper()
 	// output must match the locally stored priv_validator key
-	keyJSONBytes, err := ioutil.ReadFile(file)
+	keyJSONBytes, err := os.ReadFile(file)
 	require.NoError(t, err)
 	privKey := privval.FilePVKey{}
 	err = tmjson.Unmarshal(keyJSONBytes, &privKey)

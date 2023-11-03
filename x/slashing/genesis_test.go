@@ -42,6 +42,7 @@ func TestExportAndInitGenesis(t *testing.T) {
 	require.True(t, ok)
 
 	newInfo1, ok := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
+	require.True(t, ok)
 	require.NotEqual(t, info1, newInfo1)
 	// Initialize genesis with genesis state before tombstone
 	slashing.InitGenesis(ctx, app.SlashingKeeper, app.StakingKeeper, genesisState)
@@ -51,6 +52,7 @@ func TestExportAndInitGenesis(t *testing.T) {
 	require.False(t, ok)
 
 	newInfo1, ok = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
+	require.True(t, ok)
 	newInfo2, ok := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[1]))
 	require.True(t, ok)
 	require.Equal(t, info1, newInfo1)

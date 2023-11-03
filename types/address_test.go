@@ -2,9 +2,10 @@ package types_test
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"strings"
 	"testing"
 
@@ -16,7 +17,7 @@ import (
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/bech32/legacybech32"
+	"github.com/Finschia/finschia-sdk/types/bech32/legacybech32" //nolint:staticcheck // we're using this to support the legacy way of dealing with bech32
 )
 
 type addressTestSuite struct {
@@ -91,7 +92,8 @@ func (s *addressTestSuite) TestRandBech32AccAddrConsistency() {
 	pub := &ed25519.PubKey{Key: pubBz}
 
 	for i := 0; i < 1000; i++ {
-		rand.Read(pub.Key)
+		_, err := rand.Read(pub.Key)
+		s.Require().NoError(err)
 
 		acc := types.AccAddress(pub.Address())
 		res := types.AccAddress{}
@@ -100,7 +102,7 @@ func (s *addressTestSuite) TestRandBech32AccAddrConsistency() {
 		s.testMarshal(&acc, &res, acc.Marshal, (&res).Unmarshal)
 
 		str := acc.String()
-		res, err := types.AccAddressFromBech32(str)
+		res, err = types.AccAddressFromBech32(str)
 		s.Require().Nil(err)
 		s.Require().Equal(acc, res)
 
@@ -130,7 +132,8 @@ func (s *addressTestSuite) TestValAddr() {
 	pub := &ed25519.PubKey{Key: pubBz}
 
 	for i := 0; i < 20; i++ {
-		rand.Read(pub.Key)
+		_, err := rand.Read(pub.Key)
+		s.Require().NoError(err)
 
 		acc := types.ValAddress(pub.Address())
 		res := types.ValAddress{}
@@ -139,7 +142,7 @@ func (s *addressTestSuite) TestValAddr() {
 		s.testMarshal(&acc, &res, acc.Marshal, (&res).Unmarshal)
 
 		str := acc.String()
-		res, err := types.ValAddressFromBech32(str)
+		res, err = types.ValAddressFromBech32(str)
 		s.Require().Nil(err)
 		s.Require().Equal(acc, res)
 
@@ -171,7 +174,8 @@ func (s *addressTestSuite) TestConsAddress() {
 	pub := &ed25519.PubKey{Key: pubBz}
 
 	for i := 0; i < 20; i++ {
-		rand.Read(pub.Key[:])
+		_, err := rand.Read(pub.Key[:])
+		s.Require().NoError(err)
 
 		acc := types.ConsAddress(pub.Address())
 		res := types.ConsAddress{}
@@ -180,7 +184,7 @@ func (s *addressTestSuite) TestConsAddress() {
 		s.testMarshal(&acc, &res, acc.Marshal, (&res).Unmarshal)
 
 		str := acc.String()
-		res, err := types.ConsAddressFromBech32(str)
+		res, err = types.ConsAddressFromBech32(str)
 		s.Require().Nil(err)
 		s.Require().Equal(acc, res)
 
@@ -211,7 +215,11 @@ const letterBytes = "abcdefghijklmnopqrstuvwxyz"
 func RandString(n int) string {
 	b := make([]byte, n)
 	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+		nBig, err := rand.Int(rand.Reader, big.NewInt(int64(len(letterBytes))))
+		if err != nil {
+			panic(err)
+		}
+		b[i] = letterBytes[nBig.Int64()]
 	}
 	return string(b)
 }
@@ -221,7 +229,9 @@ func (s *addressTestSuite) TestConfiguredPrefix() {
 	pub := &ed25519.PubKey{Key: pubBz}
 	for length := 1; length < 10; length++ {
 		for times := 1; times < 20; times++ {
-			rand.Read(pub.Key[:])
+			_, err := rand.Read(pub.Key[:])
+			s.Require().NoError(err)
+
 			// Test if randomly generated prefix of a given length works
 			prefix := RandString(length)
 
@@ -275,7 +285,8 @@ func (s *addressTestSuite) TestConfiguredPrefix() {
 func (s *addressTestSuite) TestAddressInterface() {
 	pubBz := make([]byte, ed25519.PubKeySize)
 	pub := &ed25519.PubKey{Key: pubBz}
-	rand.Read(pub.Key)
+	_, err := rand.Read(pub.Key)
+	s.Require().NoError(err)
 
 	addrs := []types.Address{
 		types.ConsAddress(pub.Address()),

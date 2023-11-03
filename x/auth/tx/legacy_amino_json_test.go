@@ -71,7 +71,7 @@ func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {
 	require.NoError(t, err)
 	bldr.tx.Body.ExtensionOptions = []*cdctypes.Any{any}
 	tx = bldr.GetTx()
-	signBz, err = handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
+	_, err = handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.Error(t, err)
 
 	// expect error with non-critical extension options
@@ -79,7 +79,7 @@ func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {
 	buildTx(t, bldr)
 	bldr.tx.Body.NonCriticalExtensionOptions = []*cdctypes.Any{any}
 	tx = bldr.GetTx()
-	signBz, err = handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
+	_, err = handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.Error(t, err)
 }
 
