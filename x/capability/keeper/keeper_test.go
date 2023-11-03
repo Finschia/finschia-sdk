@@ -277,7 +277,7 @@ func (suite *KeeperTestSuite) TestReleaseCapability() {
 	suite.Require().Error(sk1.ReleaseCapability(suite.ctx, nil))
 }
 
-func (suite KeeperTestSuite) TestRevertCapability() {
+func (suite *KeeperTestSuite) TestRevertCapability() {
 	sk := suite.keeper.ScopeToModule(banktypes.ModuleName)
 
 	ms := suite.ctx.MultiStore()
