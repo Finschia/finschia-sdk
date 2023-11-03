@@ -10,8 +10,10 @@ import (
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
+const TestContractID = "deadbeef"
+
 func TestFTClass(t *testing.T) {
-	nextIDs := collection.DefaultNextClassIDs("deadbeef")
+	nextIDs := collection.DefaultNextClassIDs(TestContractID)
 	testCases := map[string]struct {
 		id       string
 		name     string
@@ -60,7 +62,7 @@ func TestFTClass(t *testing.T) {
 }
 
 func TestNFTClass(t *testing.T) {
-	nextIDs := collection.DefaultNextClassIDs("deadbeef")
+	nextIDs := collection.DefaultNextClassIDs(TestContractID)
 	testCases := map[string]struct {
 		name  string
 		meta  string
@@ -142,10 +144,10 @@ func TestParseCoins(t *testing.T) {
 			),
 		},
 		"valid multiple coins": {
-			input: "deadbeef00000001:1,00bab10c00000000:10",
+			input: fmt.Sprintf("%s00000001:1,00bab10c00000000:10", TestContractID),
 			valid: true,
 			expected: collection.NewCoins(
-				collection.NewNFTCoin("deadbeef", 1),
+				collection.NewNFTCoin(TestContractID, 1),
 				collection.NewFTCoin("00bab10c", sdk.NewInt(10)),
 			),
 		},
@@ -171,7 +173,7 @@ func TestParseCoins(t *testing.T) {
 }
 
 func TestDefaultNextClassIDs(t *testing.T) {
-	contractID := "deadbeef"
+	contractID := TestContractID
 	require.Equal(t, collection.NextClassIDs{
 		ContractId:  contractID,
 		Fungible:    sdk.NewUint(1),

@@ -22,10 +22,10 @@ linters:
 #    - errcheck
 #    - dogsled
 #    - exportloopref
-#    - goconst
-#    - gocritic
-#    - gci
-#    - gofumpt
+    - goconst
+    - gocritic
+    - gci
+    - gofumpt
     - gosec
     - gosimple
     - govet
@@ -94,6 +94,9 @@ issues:
     - text: "leading space"
       linters:
         - nolintlint
+    - path: _test\.go
+      linters:
+        - goconst
   max-issues-per-linter: 10000
   max-same-issues: 10000
 
