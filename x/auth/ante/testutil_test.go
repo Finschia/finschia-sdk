@@ -17,14 +17,13 @@ import (
 	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	"github.com/Finschia/finschia-sdk/x/auth/ante"
 	xauthsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
 type TestAccount struct {
-	acc  types.AccountI
+	acc  authtypes.AccountI
 	priv cryptotypes.PrivKey
 }
 

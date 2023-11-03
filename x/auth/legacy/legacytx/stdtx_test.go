@@ -13,7 +13,6 @@ import (
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	"github.com/Finschia/finschia-sdk/crypto/types"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -207,7 +206,7 @@ func TestSignatureV2Conversions(t *testing.T) {
 		pubKey, pubKey2,
 	})
 	dummy2 := []byte("dummySig2")
-	bitArray := types.NewCompactBitArray(2)
+	bitArray := cryptotypes.NewCompactBitArray(2)
 	bitArray.SetIndex(0, true)
 	bitArray.SetIndex(1, true)
 	msigData := &signing.MultiSignatureData{

@@ -14,7 +14,6 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
 	"github.com/Finschia/finschia-sdk/x/distribution/simulation"
-	"github.com/Finschia/finschia-sdk/x/distribution/types"
 	distrtypes "github.com/Finschia/finschia-sdk/x/distribution/types"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
@@ -38,10 +37,10 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 		opMsgRoute string
 		opMsgName  string
 	}{
-		{simappparams.DefaultWeightMsgSetWithdrawAddress, types.ModuleName, types.TypeMsgSetWithdrawAddress},
-		{simappparams.DefaultWeightMsgWithdrawDelegationReward, types.ModuleName, types.TypeMsgWithdrawDelegatorReward},
-		{simappparams.DefaultWeightMsgWithdrawValidatorCommission, types.ModuleName, types.TypeMsgWithdrawValidatorCommission},
-		{simappparams.DefaultWeightMsgFundCommunityPool, types.ModuleName, types.TypeMsgFundCommunityPool},
+		{simappparams.DefaultWeightMsgSetWithdrawAddress, distrtypes.ModuleName, distrtypes.TypeMsgSetWithdrawAddress},
+		{simappparams.DefaultWeightMsgWithdrawDelegationReward, distrtypes.ModuleName, distrtypes.TypeMsgWithdrawDelegatorReward},
+		{simappparams.DefaultWeightMsgWithdrawValidatorCommission, distrtypes.ModuleName, distrtypes.TypeMsgWithdrawValidatorCommission},
+		{simappparams.DefaultWeightMsgFundCommunityPool, distrtypes.ModuleName, distrtypes.TypeMsgFundCommunityPool},
 	}
 
 	for i, w := range weightesOps {
@@ -71,14 +70,14 @@ func (suite *SimTestSuite) TestSimulateMsgSetWithdrawAddress() {
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
 	suite.Require().NoError(err)
 
-	var msg types.MsgSetWithdrawAddress
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	var msg distrtypes.MsgSetWithdrawAddress
+	distrtypes.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Equal("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", msg.DelegatorAddress)
 	suite.Require().Equal("link1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7fmx8x8", msg.WithdrawAddress)
-	suite.Require().Equal(types.TypeMsgSetWithdrawAddress, msg.Type())
-	suite.Require().Equal(types.ModuleName, msg.Route())
+	suite.Require().Equal(distrtypes.TypeMsgSetWithdrawAddress, msg.Type())
+	suite.Require().Equal(distrtypes.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)
 }
 
@@ -112,14 +111,14 @@ func (suite *SimTestSuite) TestSimulateMsgWithdrawDelegatorReward() {
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
 	suite.Require().NoError(err)
 
-	var msg types.MsgWithdrawDelegatorReward
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	var msg distrtypes.MsgWithdrawDelegatorReward
+	distrtypes.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Equal("linkvaloper1l4s054098kk9hmr5753c6k3m2kw65h68cr83wt", msg.ValidatorAddress)
 	suite.Require().Equal("link1d6u7zhjwmsucs678d7qn95uqajd4ucl98kjf3j", msg.DelegatorAddress)
-	suite.Require().Equal(types.TypeMsgWithdrawDelegatorReward, msg.Type())
-	suite.Require().Equal(types.ModuleName, msg.Route())
+	suite.Require().Equal(distrtypes.TypeMsgWithdrawDelegatorReward, msg.Type())
+	suite.Require().Equal(distrtypes.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)
 }
 
@@ -155,10 +154,10 @@ func (suite *SimTestSuite) testSimulateMsgWithdrawValidatorCommission(tokenName 
 		sdk.NewDecCoinFromDec("stake", sdk.NewDec(1).Quo(sdk.NewDec(1))),
 	)
 
-	suite.app.DistrKeeper.SetValidatorOutstandingRewards(suite.ctx, validator0.GetOperator(), types.ValidatorOutstandingRewards{Rewards: valCommission})
+	suite.app.DistrKeeper.SetValidatorOutstandingRewards(suite.ctx, validator0.GetOperator(), distrtypes.ValidatorOutstandingRewards{Rewards: valCommission})
 
 	// setup validator accumulated commission
-	suite.app.DistrKeeper.SetValidatorAccumulatedCommission(suite.ctx, validator0.GetOperator(), types.ValidatorAccumulatedCommission{Commission: valCommission})
+	suite.app.DistrKeeper.SetValidatorAccumulatedCommission(suite.ctx, validator0.GetOperator(), distrtypes.ValidatorAccumulatedCommission{Commission: valCommission})
 
 	// begin a new block
 	suite.app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
@@ -168,13 +167,13 @@ func (suite *SimTestSuite) testSimulateMsgWithdrawValidatorCommission(tokenName 
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
 	suite.Require().NoError(err)
 
-	var msg types.MsgWithdrawValidatorCommission
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	var msg distrtypes.MsgWithdrawValidatorCommission
+	distrtypes.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Equal("linkvaloper1tnh2q55v8wyygtt9srz5safamzdengsn8rx882", msg.ValidatorAddress)
-	suite.Require().Equal(types.TypeMsgWithdrawValidatorCommission, msg.Type())
-	suite.Require().Equal(types.ModuleName, msg.Route())
+	suite.Require().Equal(distrtypes.TypeMsgWithdrawValidatorCommission, msg.Type())
+	suite.Require().Equal(distrtypes.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)
 }
 
@@ -194,14 +193,14 @@ func (suite *SimTestSuite) TestSimulateMsgFundCommunityPool() {
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
 	suite.Require().NoError(err)
 
-	var msg types.MsgFundCommunityPool
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	var msg distrtypes.MsgFundCommunityPool
+	distrtypes.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Equal("4896096stake", msg.Amount.String())
 	suite.Require().Equal("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", msg.Depositor)
-	suite.Require().Equal(types.TypeMsgFundCommunityPool, msg.Type())
-	suite.Require().Equal(types.ModuleName, msg.Route())
+	suite.Require().Equal(distrtypes.TypeMsgFundCommunityPool, msg.Type())
+	suite.Require().Equal(distrtypes.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)
 }
 
