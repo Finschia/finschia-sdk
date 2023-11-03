@@ -97,7 +97,7 @@ func TestMsgSendFT(t *testing.T) {
 			}
 
 			if tc.panic {
-				require.Panics(t, func() { msg.ValidateBasic() })
+				require.Panics(t, func() { msg.ValidateBasic() }) //nolint:errcheck
 				return
 			}
 

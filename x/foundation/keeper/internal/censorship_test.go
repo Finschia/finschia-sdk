@@ -68,10 +68,11 @@ func (s *KeeperTestSuite) TestGrant() {
 		},
 		"not being censored": {
 			malleate: func(ctx sdk.Context) {
-				s.impl.UpdateCensorship(ctx, foundation.Censorship{
+				err := s.impl.UpdateCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 					Authority:  foundation.CensorshipAuthorityUnspecified,
 				})
+				s.Require().NoError(err)
 			},
 			grantee: s.members[0],
 			auth:    &foundation.ReceiveFromTreasuryAuthorization{},
@@ -148,10 +149,11 @@ func (s *KeeperTestSuite) TestAccept() {
 		},
 		"not being censored": {
 			malleate: func(ctx sdk.Context) {
-				s.impl.UpdateCensorship(ctx, foundation.Censorship{
+				err := s.impl.UpdateCensorship(ctx, foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 					Authority:  foundation.CensorshipAuthorityUnspecified,
 				})
+				s.Require().NoError(err)
 			},
 			grantee: s.members[0],
 			msg: &foundation.MsgWithdrawFromTreasury{

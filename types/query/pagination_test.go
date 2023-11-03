@@ -342,7 +342,10 @@ func setupTest() (*simapp.SimApp, sdk.Context, codec.Codec) {
 	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 
-	ms.LoadLatestVersion()
+	err := ms.LoadLatestVersion()
+	if err != nil {
+		panic(err)
+	}
 
 	return app, ctx, appCodec
 }

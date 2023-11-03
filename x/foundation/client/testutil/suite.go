@@ -81,12 +81,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	info := foundation.DefaultFoundation()
 	info.TotalWeight = sdk.NewDecFromInt(sdk.NewInt(int64(len(foundationData.Members))))
-	info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
+	err := info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
 		Threshold: sdk.OneDec(),
 		Windows: &foundation.DecisionPolicyWindows{
 			VotingPeriod: 7 * 24 * time.Hour,
 		},
 	})
+	s.Require().NoError(err)
 	foundationData.Foundation = info
 
 	// enable censorship

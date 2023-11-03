@@ -82,11 +82,12 @@ func (s *KeeperTestSuite) TestScheduleUpgrade() {
 				Height: 123450000,
 			},
 			setup: func() {
-				s.app.UpgradeKeeper.ScheduleUpgrade(s.ctx, types.Plan{
+				err := s.app.UpgradeKeeper.ScheduleUpgrade(s.ctx, types.Plan{
 					Name:   "alt-good",
 					Info:   "new text here",
 					Height: 543210000,
 				})
+				s.Require().NoError(err)
 			},
 			expPass: true,
 		},
@@ -169,7 +170,8 @@ func (s *KeeperTestSuite) TestSetUpgradedClient() {
 			name:   "success",
 			height: 10,
 			setup: func() {
-				s.app.UpgradeKeeper.SetUpgradedClient(s.ctx, 10, cs)
+				err := s.app.UpgradeKeeper.SetUpgradedClient(s.ctx, 10, cs)
+				s.Require().NoError(err)
 			},
 			exists: true,
 		},

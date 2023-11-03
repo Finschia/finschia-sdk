@@ -844,7 +844,8 @@ func (suite *AnteTestSuite) TestAnteHandlerSetPubKey() {
 
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{1}, []uint64{0}
 				msgs = []sdk.Msg{testdata.NewTestMsg(accounts[1].acc.GetAddress())}
-				suite.txBuilder.SetMsgs(msgs...)
+				err := suite.txBuilder.SetMsgs(msgs...)
+				suite.Require().NoError(err)
 				suite.txBuilder.SetFeeAmount(feeAmount)
 				suite.txBuilder.SetGasLimit(gasLimit)
 

@@ -135,7 +135,8 @@ func (s *KeeperTestSuite) TestMintFT() {
 			mintedBefore := s.keeper.GetMinted(ctx, contractID, classID)
 			burntBefore := s.keeper.GetBurnt(ctx, contractID, classID)
 
-			s.keeper.MintFT(ctx, s.contractID, s.stranger, collection.NewCoins(collection.NewFTCoin(s.ftClassID, amount)))
+			err := s.keeper.MintFT(ctx, s.contractID, s.stranger, collection.NewCoins(collection.NewFTCoin(s.ftClassID, amount)))
+			s.Require().NoError(err)
 
 			balanceAfter := s.keeper.GetBalance(ctx, s.contractID, s.stranger, collection.NewFTID(s.ftClassID))
 			s.Require().Equal(balanceBefore.Add(amount), balanceAfter)
@@ -266,7 +267,8 @@ func (s *KeeperTestSuite) TestModifyContract() {
 			ctx, _ := s.ctx.CacheContext()
 
 			call := func() {
-				s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
+				err := s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
+				s.Require().NoError(err)
 			}
 
 			if contractID != s.contractID {

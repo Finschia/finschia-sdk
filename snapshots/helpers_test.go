@@ -61,7 +61,8 @@ func readChunks(chunks <-chan io.ReadCloser) [][]byte {
 }
 
 // snapshotItems serialize a array of bytes as SnapshotItem_ExtensionPayload, and return the chunks.
-func snapshotItems(items [][]byte) [][]byte {
+func snapshotItems(t *testing.T, items [][]byte) [][]byte {
+	t.Helper()
 	// copy the same parameters from the code
 	snapshotChunkSize := uint64(10e6)
 	snapshotBufferSize := int(snapshotChunkSize)
@@ -73,12 +74,17 @@ func snapshotItems(items [][]byte) [][]byte {
 		zWriter, _ := zlib.NewWriterLevel(bufWriter, 7)
 		protoWriter := protoio.NewDelimitedWriter(zWriter)
 		for _, item := range items {
-			snapshottypes.WriteExtensionItem(protoWriter, item)
+			err := snapshottypes.WriteExtensionItem(protoWriter, item)
+			require.NoError(t, err)
 		}
-		protoWriter.Close()
-		zWriter.Close()
-		bufWriter.Flush()
-		chunkWriter.Close()
+		err := protoWriter.Close()
+		require.NoError(t, err)
+		err = zWriter.Close()
+		require.NoError(t, err)
+		err = bufWriter.Flush()
+		require.NoError(t, err)
+		err = chunkWriter.Close()
+		require.NoError(t, err)
 	}()
 
 	var chunks [][]byte

@@ -153,7 +153,8 @@ func Test_runAddCmdBasic(t *testing.T) {
 
 		cmd.Flags().Visit(func(f *pflag.Flag) {
 			if f.Name == flagMultisig {
-				f.Value.(pflag.SliceValue).Replace([]string{})
+				err = f.Value.(pflag.SliceValue).Replace([]string{})
+				require.NoError(t, err)
 			}
 		})
 	}

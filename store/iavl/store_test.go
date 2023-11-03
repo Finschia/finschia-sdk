@@ -39,13 +39,19 @@ func newAlohaTree(t *testing.T, db dbm.DB) (*iavl.MutableTree, types.CommitID) {
 	require.NoError(t, err)
 
 	for k, v := range treeData {
-		tree.Set([]byte(k), []byte(v))
+		_, err := tree.Set([]byte(k), []byte(v))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	for i := 0; i < nMoreData; i++ {
 		key := randBytes(12)
 		value := randBytes(50)
-		tree.Set(key, value)
+		_, err := tree.Set(key, value)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	hash, ver, err := tree.SaveVersion()
@@ -597,7 +603,8 @@ func BenchmarkIAVLIteratorNext(b *testing.B) {
 	for i := 0; i < treeSize; i++ {
 		key := randBytes(4)
 		value := randBytes(50)
-		tree.Set(key, value)
+		_, err := tree.Set(key, value)
+		require.NoError(b, err)
 	}
 
 	iavlStore := UnsafeNewStore(tree)

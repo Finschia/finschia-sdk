@@ -122,8 +122,8 @@ func TestListenKVStoreSet(t *testing.T) {
 		buf.Reset()
 		store.Set(tc.key, tc.value)
 		storeKVPair := new(types.StoreKVPair)
-		testMarshaller.UnmarshalLengthPrefixed(buf.Bytes(), storeKVPair)
-
+		err := testMarshaller.UnmarshalLengthPrefixed(buf.Bytes(), storeKVPair)
+		require.NoError(t, err)
 		require.Equal(t, tc.expectedOut, storeKVPair)
 	}
 
@@ -156,8 +156,8 @@ func TestListenKVStoreDelete(t *testing.T) {
 		buf.Reset()
 		store.Delete(tc.key)
 		storeKVPair := new(types.StoreKVPair)
-		testMarshaller.UnmarshalLengthPrefixed(buf.Bytes(), storeKVPair)
-
+		err := testMarshaller.UnmarshalLengthPrefixed(buf.Bytes(), storeKVPair)
+		require.NoError(t, err)
 		require.Equal(t, tc.expectedOut, storeKVPair)
 	}
 }

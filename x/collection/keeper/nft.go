@@ -292,10 +292,13 @@ func (k Keeper) deleteChild(ctx sdk.Context, contractID, tokenID, childID string
 
 func (k Keeper) GetRoot(ctx sdk.Context, contractID, tokenID string) string {
 	id := tokenID
-	k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
+	err := k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
 		id = tokenID
 		return nil
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	return id
 }

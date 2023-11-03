@@ -352,10 +352,10 @@ func NewTxCmdIssueFT() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(FlagName, "", "set name")
-	cmd.MarkFlagRequired(FlagName)
+	_ = cmd.MarkFlagRequired(FlagName)
 	cmd.Flags().String(FlagMeta, "", "set meta")
 	cmd.Flags().String(FlagTo, "", "address to send the initial supply")
-	cmd.MarkFlagRequired(FlagTo)
+	_ = cmd.MarkFlagRequired(FlagTo)
 	cmd.Flags().Bool(FlagMintable, false, "set mintable")
 	cmd.Flags().String(FlagSupply, DefaultSupply, "initial supply")
 	cmd.Flags().Int32(FlagDecimals, DefaultDecimals, "set decimals")
@@ -506,7 +506,7 @@ func NewTxCmdMintNFT() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(FlagName, "", "set name")
 	cmd.Flags().String(FlagMeta, "", "set meta")
-	cmd.MarkFlagRequired(FlagName)
+	_ = cmd.MarkFlagRequired(FlagName)
 
 	return cmd
 }

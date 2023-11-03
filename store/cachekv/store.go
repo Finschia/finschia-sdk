@@ -368,7 +368,10 @@ func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair, sortState sort
 			// deleted element, tracked by store.deleted
 			// setting arbitrary value
 			// TODO: Don't ignore this error.
-			store.sortedCache.Set(item.Key, []byte{})
+			err := store.sortedCache.Set(item.Key, []byte{})
+			if err != nil {
+				panic(err)
+			}
 			continue
 		}
 		err := store.sortedCache.Set(item.Key, item.Value)

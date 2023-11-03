@@ -188,7 +188,8 @@ func (suite *AnteTestSuite) TestSigVerification() {
 				},
 				Sequence: tc.accSeqs[0],
 			}
-			suite.txBuilder.SetSignatures(txSigs...)
+			err := suite.txBuilder.SetSignatures(txSigs...)
+			suite.Require().NoError(err)
 			tx = suite.txBuilder.GetTx()
 		}
 

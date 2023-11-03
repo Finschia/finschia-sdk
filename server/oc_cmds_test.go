@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -34,8 +35,12 @@ func TestShowValidator(t *testing.T) {
 	}
 
 	// ostracon init & create the server config file
-	initFilesWithConfig(serverCtx.Config)
-	output := captureStdout(t, func() { ShowValidatorCmd().ExecuteContext(ctx) })
+	err := initFilesWithConfig(serverCtx.Config)
+	require.NoError(t, err)
+	output := captureStdout(t, func() {
+		err := ShowValidatorCmd().ExecuteContext(ctx)
+		require.NoError(t, err)
+	})
 
 	// output must match the locally stored priv_validator key
 	privKey := loadFilePVKey(t, serverCtx.Config.PrivValidatorKeyFile())
@@ -50,13 +55,14 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-	if err := testCommon.cmd.ExecuteContext(ctx); err != errCancelledInPreRun {
+	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
 	// ostracon init & create the server config file
 	serverCtx.Config.PrivValidatorRemoteAddresses = append(serverCtx.Config.PrivValidatorRemoteAddresses, "127.0.0.1")
-	initFilesWithConfig(serverCtx.Config)
+	err := initFilesWithConfig(serverCtx.Config)
+	require.NoError(t, err)
 
 	chainID, err := loadChainID(serverCtx.Config)
 	require.NoError(t, err)
@@ -70,7 +76,10 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	privval.WithMockKMS(t, t.TempDir(), chainID, func(addr string, privKey crypto.PrivKey) {
 		serverCtx.Config.PrivValidatorListenAddr = addr
 		require.NoFileExists(t, serverCtx.Config.PrivValidatorKeyFile())
-		output := captureStdout(t, func() { ShowValidatorCmd().ExecuteContext(ctx) })
+		output := captureStdout(t, func() {
+			err := ShowValidatorCmd().ExecuteContext(ctx)
+			require.NoError(t, err)
+		})
 		require.NoError(t, err)
 
 		// output must contains the KMS public key
@@ -92,7 +101,8 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	}
 
 	// ostracon init & create the server config file
-	initFilesWithConfig(serverCtx.Config)
+	err := initFilesWithConfig(serverCtx.Config)
+	require.NoError(t, err)
 
 	// remove config file
 	if tmos.FileExists(serverCtx.Config.PrivValidatorKeyFile()) {
@@ -101,7 +111,7 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	}
 
 	serverCtx.Config.PrivValidatorListenAddr = "127.0.0.1:inefficient"
-	err := ShowValidatorCmd().ExecuteContext(ctx)
+	err = ShowValidatorCmd().ExecuteContext(ctx)
 	require.Error(t, err)
 }
 

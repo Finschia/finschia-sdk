@@ -597,7 +597,8 @@ func TestMsgGrant(t *testing.T) {
 				Grantee:   tc.grantee.String(),
 			}
 			if tc.authorization != nil {
-				msg.SetAuthorization(tc.authorization)
+				err := msg.SetAuthorization(tc.authorization)
+				require.NoError(t, err)
 			}
 
 			err := msg.ValidateBasic()

@@ -175,7 +175,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				sig = multisig.NewMultisig(5)
 
 				require.Error(pk.VerifyMultisignature(signBytesFn, sig))
-				multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
+				err := multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
+				require.NoError(err)
 				// Add second signature manually
 				sig.Signatures = append(sig.Signatures, sigs[0])
 			},
@@ -213,8 +214,10 @@ func TestVerifyMultisignature(t *testing.T) {
 				_, sigs := generatePubKeysAndSignatures(2, msg)
 				pk = kmultisig.NewLegacyAminoPubKey(2, pubKeys)
 				sig = multisig.NewMultisig(2)
-				multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
-				multisig.AddSignatureFromPubKey(sig, sigs[1], pubKeys[1], pubKeys)
+				err := multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
+				require.NoError(err)
+				err = multisig.AddSignatureFromPubKey(sig, sigs[1], pubKeys[1], pubKeys)
+				require.NoError(err)
 			},
 			false,
 		},

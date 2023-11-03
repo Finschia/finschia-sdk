@@ -61,7 +61,7 @@ func TestManager_Take(t *testing.T) {
 	snapshotter := &mockSnapshotter{
 		items: items,
 	}
-	expectChunks := snapshotItems(items)
+	expectChunks := snapshotItems(t, items)
 	manager := snapshots.NewManager(store, snapshotter)
 
 	// nil manager should return error
@@ -125,7 +125,7 @@ func TestManager_Restore(t *testing.T) {
 		{7, 8, 9},
 	}
 
-	chunks := snapshotItems(expectItems)
+	chunks := snapshotItems(t, expectItems)
 
 	// Restore errors on invalid format
 	err := manager.Restore(types.Snapshot{

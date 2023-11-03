@@ -580,7 +580,8 @@ func TestSetInitialVersion(t *testing.T) {
 
 	require.NoError(t, multi.LoadLatestVersion())
 
-	multi.SetInitialVersion(5)
+	err := multi.SetInitialVersion(5)
+	require.NoError(t, err)
 	require.Equal(t, int64(5), multi.initialVersion)
 
 	multi.Commit()
@@ -626,7 +627,8 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 	buf := new(bytes.Buffer)
 	var db dbm.DB = dbm.NewMemDB()
 	ms := newMultiStoreWithMounts(db, types.PruneNothing)
-	ms.LoadLatestVersion()
+	err := ms.LoadLatestVersion()
+	require.NoError(t, err)
 	mockListeners := []types.WriteListener{types.NewStoreKVPairWriteListener(buf, testMarshaller)}
 	ms.AddListeners(testStoreKey1, mockListeners)
 	ms.AddListeners(testStoreKey2, mockListeners)

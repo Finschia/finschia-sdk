@@ -66,7 +66,9 @@ func NewContext(v *viper.Viper, config *ostcfg.Config, logger ostlog.Logger) *Co
 
 func bindFlags(basename string, cmd *cobra.Command, v *viper.Viper) (err error) {
 	defer func() {
-		recover()
+		if r := recover(); r != nil {
+			err = fmt.Errorf("bindFlags failed: %v", r)
+		}
 	}()
 
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
@@ -92,7 +94,7 @@ func bindFlags(basename string, cmd *cobra.Command, v *viper.Viper) (err error) 
 		}
 	})
 
-	return
+	return err
 }
 
 // InterceptConfigsPreRunHandler performs a pre-run function for the root daemon

@@ -1030,7 +1030,10 @@ func setCommitInfo(batch dbm.Batch, version int64, cInfo *types.CommitInfo) {
 	}
 
 	cInfoKey := fmt.Sprintf(commitInfoKeyFmt, version)
-	batch.Set([]byte(cInfoKey), bz)
+	err = batch.Set([]byte(cInfoKey), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func setLatestVersion(batch dbm.Batch, version int64) {
@@ -1039,7 +1042,10 @@ func setLatestVersion(batch dbm.Batch, version int64) {
 		panic(err)
 	}
 
-	batch.Set([]byte(latestVersionKey), bz)
+	err = batch.Set([]byte(latestVersionKey), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func setPruningHeights(batch dbm.Batch, pruneHeights []int64) {
@@ -1050,7 +1056,10 @@ func setPruningHeights(batch dbm.Batch, pruneHeights []int64) {
 		bz = append(bz, buf...)
 	}
 
-	batch.Set([]byte(pruneHeightsKey), bz)
+	err := batch.Set([]byte(pruneHeightsKey), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getPruningHeights(db dbm.DB) ([]int64, error) {
