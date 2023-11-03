@@ -38,8 +38,7 @@ func TestFTClass(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			var class collection.TokenClass
-			class = &collection.FTClass{
+			class := &collection.FTClass{
 				Id:       tc.id,
 				Decimals: tc.decimals,
 			}
@@ -80,8 +79,7 @@ func TestNFTClass(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			var class collection.TokenClass
-			class = &collection.NFTClass{}
+			class := &collection.NFTClass{}
 			class.SetId(&nextIDs)
 			class.SetName(tc.name)
 			class.SetMeta(tc.meta)

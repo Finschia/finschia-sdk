@@ -107,13 +107,13 @@ var (
 )
 
 func TestIntermediateWriter(t *testing.T) {
-	outChan := make(chan []byte, 0)
+	outChan := make(chan []byte)
 	iw := NewIntermediateWriter(outChan)
 	require.IsType(t, &IntermediateWriter{}, iw)
 	testBytes := []byte{1, 2, 3, 4, 5}
 	var length int
 	var err error
-	waitChan := make(chan struct{}, 0)
+	waitChan := make(chan struct{})
 	go func() {
 		length, err = iw.Write(testBytes)
 		waitChan <- struct{}{}
