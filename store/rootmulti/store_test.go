@@ -481,7 +481,7 @@ func TestMultiStoreQuery(t *testing.T) {
 	require.Equal(t, 3, len(qres.ProofOps.Ops)) // 3 mounted stores
 
 	// Test proofs second latest height
-	query.Height = query.Height - 1
+	query.Height--
 	qres = multi.Query(query)
 	require.EqualValues(t, 0, qres.Code)
 	require.NotNil(t, qres.ProofOps)

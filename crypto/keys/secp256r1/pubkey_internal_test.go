@@ -3,7 +3,7 @@ package secp256r1
 import (
 	"testing"
 
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -62,7 +62,7 @@ func (suite *PKSuite) TestEquals() {
 	require.False(suite.pk.Equals(pkOther))
 	require.True(pkOther.Equals(pkOther2))
 	require.True(pkOther2.Equals(pkOther))
-	require.True(pkOther.Equals(pkOther), "Equals must be reflexive")
+	require.True(pkOther.Equals(pkOther), "Equals must be reflexive") //nolint:gocritic // false positive
 }
 
 func (suite *PKSuite) TestMarshalProto() {
