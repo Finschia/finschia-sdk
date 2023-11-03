@@ -4,34 +4,26 @@ run:
 #   timeout: 5m
 
 linters:
-  disable-all: false
+  disable-all: true
   enable:
-    - gofmt
+#    - nolintlint
+    - dogsled
+    - exportloopref
     - goconst
-    - goimports
-    - golint
+    - gocritic
+    - gofumpt
     - gosec
     - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
-    - prealloc
-    - scopelint
     - staticcheck
+    - revive
     - stylecheck
     - typecheck
     - unconvert
     - unused
-    - unparam
-    - misspell
-  disable:
-    - gocritic
-    - maligned
-    - errcheck
-    - interfacer
-    - wsl
-    - nolintlint
 
 issues:
   exclude-rules:
