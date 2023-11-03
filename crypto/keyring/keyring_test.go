@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/99designs/keyring"
-	bip39 "github.com/cosmos/go-bip39"
+	"github.com/cosmos/go-bip39"
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/crypto"
@@ -1154,6 +1154,7 @@ func TestBackendConfigConstructors(t *testing.T) {
 }
 
 func requireEqualInfo(t *testing.T, key, mnemonic Info) {
+	t.Helper()
 	require.Equal(t, key.GetName(), mnemonic.GetName())
 	require.Equal(t, key.GetAddress(), mnemonic.GetAddress())
 	require.Equal(t, key.GetPubKey(), mnemonic.GetPubKey())

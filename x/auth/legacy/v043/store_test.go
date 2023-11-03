@@ -578,8 +578,8 @@ func TestMigrateVestingAccounts(t *testing.T) {
 			}
 
 			trackingCorrected(
-				ctx,
 				t,
+				ctx,
 				app.AccountKeeper,
 				savedAccount.GetAddress(),
 				expVested,
@@ -589,7 +589,7 @@ func TestMigrateVestingAccounts(t *testing.T) {
 	}
 }
 
-func trackingCorrected(ctx sdk.Context, t *testing.T, ak authkeeper.AccountKeeper, addr sdk.AccAddress, expDelVesting, expDelFree sdk.Coins) {
+func trackingCorrected(t *testing.T, ctx sdk.Context, ak authkeeper.AccountKeeper, addr sdk.AccAddress, expDelVesting, expDelFree sdk.Coins) {
 	t.Helper()
 	baseAccount := ak.GetAccount(ctx, addr)
 	vDA, ok := baseAccount.(exported.VestingAccount)

@@ -5,8 +5,6 @@ import (
 	"testing"
 	"time"
 
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

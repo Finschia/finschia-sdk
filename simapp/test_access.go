@@ -17,6 +17,7 @@ type TestSupport struct {
 }
 
 func NewTestSupport(tb testing.TB, app *SimApp) *TestSupport {
+	tb.Helper()
 	return &TestSupport{t: tb, app: app}
 }
 

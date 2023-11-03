@@ -63,6 +63,7 @@ func getQueriedValidatorCommission(t *testing.T, ctx sdk.Context, cdc *codec.Leg
 }
 
 func getQueriedValidatorSlashes(t *testing.T, ctx sdk.Context, cdc *codec.LegacyAmino, querier sdk.Querier, validatorAddr sdk.ValAddress, startHeight, endHeight uint64) (slashes []types.ValidatorSlashEvent) {
+	t.Helper()
 	query := abci.RequestQuery{
 		Path: strings.Join([]string{custom, types.QuerierRoute, types.QueryValidatorSlashes}, "/"),
 		Data: cdc.MustMarshalJSON(types.NewQueryValidatorSlashesParams(validatorAddr, startHeight, endHeight)),

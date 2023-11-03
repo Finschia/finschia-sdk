@@ -14,6 +14,7 @@ run:
   build-tags:
     - ledger
     - goleveldb
+    - test_ledger_mock
 
 linters:
   disable-all: true
