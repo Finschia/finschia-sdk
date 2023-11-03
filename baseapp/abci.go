@@ -18,12 +18,13 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
+
 	"github.com/Finschia/finschia-sdk/codec"
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	ocabci "github.com/Finschia/ostracon/abci/types"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic
@@ -56,7 +57,7 @@ func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitC
 	}
 
 	if app.initChainer == nil {
-		return
+		return res
 	}
 
 	// add block gas meter for any genesis transactions (allow infinite gas)

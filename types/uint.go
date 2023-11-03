@@ -241,10 +241,10 @@ func RelativePow(x Uint, n Uint, b Uint) (z Uint) {
 	if x.IsZero() {
 		if n.IsZero() {
 			z = b // 0^0 = 1
-			return
+			return z
 		}
 		z = ZeroUint() // otherwise 0^a = 0
-		return
+		return z
 	}
 
 	z = x
