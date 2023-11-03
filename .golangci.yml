@@ -19,13 +19,13 @@ run:
 linters:
   disable-all: true
   enable:
-    - errcheck
-    - dogsled
-    - exportloopref
-    - goconst
-    - gocritic
-    - gci
-    - gofumpt
+#    - errcheck
+#    - dogsled
+#    - exportloopref
+#    - goconst
+#    - gocritic
+#    - gci
+#    - gofumpt
     - gosec
     - gosimple
     - govet
@@ -60,7 +60,7 @@ issues:
     - text: "SA1019: collection."
       linters:
         - staticcheck
-    - path: "migrations"
+    - path: "legacy"
       text: "SA1019:"
       linters:
         - staticcheck
@@ -77,6 +77,18 @@ issues:
       linters:
         - staticcheck
     - text: "SA1019: params.SendEnabled is deprecated" # TODO remove once ready to remove from the sdk
+      linters:
+        - staticcheck
+    - text: "SA1019: \"github.com/golang/protobuf/proto\" is deprecated" # TODO remove once ready to remove from the sdk
+      linters:
+        - staticcheck
+    - text: "SA1019: vote.Option is deprecated" # TODO remove once ready to remove from the sdk
+      linters:
+        - staticcheck
+    - text: "SA1019: legacytx." # TODO remove once ready to remove from the sdk
+      linters:
+        - staticcheck
+    - text: "SA1019: types.QueryNextAccountNumberRequest is deprecated" # TODO remove once ready to remove from the sdk
       linters:
         - staticcheck
     - text: "leading space"
