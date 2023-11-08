@@ -175,7 +175,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				sig = multisig.NewMultisig(5)
 
 				require.Error(pk.VerifyMultisignature(signBytesFn, sig))
-				multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
+				err := multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
+				require.NoError(err)
 				// Add second signature manually
 				sig.Signatures = append(sig.Signatures, sigs[0])
 			},
@@ -213,8 +214,10 @@ func TestVerifyMultisignature(t *testing.T) {
 				_, sigs := generatePubKeysAndSignatures(2, msg)
 				pk = kmultisig.NewLegacyAminoPubKey(2, pubKeys)
 				sig = multisig.NewMultisig(2)
-				multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
-				multisig.AddSignatureFromPubKey(sig, sigs[1], pubKeys[1], pubKeys)
+				err := multisig.AddSignatureFromPubKey(sig, sigs[0], pubKeys[0], pubKeys)
+				require.NoError(err)
+				err = multisig.AddSignatureFromPubKey(sig, sigs[1], pubKeys[1], pubKeys)
+				require.NoError(err)
 			},
 			false,
 		},
@@ -267,7 +270,7 @@ func TestMultiSigMigration(t *testing.T) {
 	require.NoError(t, multisig.AddSignatureFromPubKey(multisignature, sigs[0], pkSet[0], pkSet))
 
 	// create a StdSignature for msg, and convert it to sigV2
-	sig := legacytx.StdSignature{PubKey: pkSet[1], Signature: sigs[1].(*signing.SingleSignatureData).Signature}
+	sig := legacytx.StdSignature{PubKey: pkSet[1], Signature: sigs[1].(*signing.SingleSignatureData).Signature} //nolint:staticcheck // this will be removed when proto is ready
 	sigV2, err := legacytx.StdSignatureToSignatureV2(cdc, sig)
 	require.NoError(t, multisig.AddSignatureV2(multisignature, sigV2, pkSet))
 

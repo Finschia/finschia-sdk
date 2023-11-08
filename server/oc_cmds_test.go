@@ -3,8 +3,8 @@ package server
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -22,9 +22,7 @@ import (
 	tmtime "github.com/Finschia/ostracon/types/time"
 )
 
-var (
-	logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))
-)
+var logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))
 
 func TestShowValidator(t *testing.T) {
 	testCommon := newPrecedenceCommon(t)
@@ -32,13 +30,17 @@ func TestShowValidator(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
+	if err := testCommon.cmd.ExecuteContext(ctx); err != errCancelledInPreRun {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
 	// ostracon init & create the server config file
-	initFilesWithConfig(serverCtx.Config)
-	output := captureStdout(t, func() { ShowValidatorCmd().ExecuteContext(ctx) })
+	err := initFilesWithConfig(serverCtx.Config)
+	require.NoError(t, err)
+	output := captureStdout(t, func() {
+		err := ShowValidatorCmd().ExecuteContext(ctx)
+		require.NoError(t, err)
+	})
 
 	// output must match the locally stored priv_validator key
 	privKey := loadFilePVKey(t, serverCtx.Config.PrivValidatorKeyFile())
@@ -53,13 +55,14 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
+	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
 	// ostracon init & create the server config file
 	serverCtx.Config.PrivValidatorRemoteAddresses = append(serverCtx.Config.PrivValidatorRemoteAddresses, "127.0.0.1")
-	initFilesWithConfig(serverCtx.Config)
+	err := initFilesWithConfig(serverCtx.Config)
+	require.NoError(t, err)
 
 	chainID, err := loadChainID(serverCtx.Config)
 	require.NoError(t, err)
@@ -73,7 +76,10 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	privval.WithMockKMS(t, t.TempDir(), chainID, func(addr string, privKey crypto.PrivKey) {
 		serverCtx.Config.PrivValidatorListenAddr = addr
 		require.NoFileExists(t, serverCtx.Config.PrivValidatorKeyFile())
-		output := captureStdout(t, func() { ShowValidatorCmd().ExecuteContext(ctx) })
+		output := captureStdout(t, func() {
+			err := ShowValidatorCmd().ExecuteContext(ctx)
+			require.NoError(t, err)
+		})
 		require.NoError(t, err)
 
 		// output must contains the KMS public key
@@ -90,12 +96,13 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
+	if err := testCommon.cmd.ExecuteContext(ctx); err != errCancelledInPreRun {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
 	// ostracon init & create the server config file
-	initFilesWithConfig(serverCtx.Config)
+	err := initFilesWithConfig(serverCtx.Config)
+	require.NoError(t, err)
 
 	// remove config file
 	if tmos.FileExists(serverCtx.Config.PrivValidatorKeyFile()) {
@@ -104,7 +111,7 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	}
 
 	serverCtx.Config.PrivValidatorListenAddr = "127.0.0.1:inefficient"
-	err := ShowValidatorCmd().ExecuteContext(ctx)
+	err = ShowValidatorCmd().ExecuteContext(ctx)
 	require.Error(t, err)
 }
 
@@ -112,7 +119,7 @@ func TestLoadChainID(t *testing.T) {
 	expected := "c57861"
 	config := cfg.ResetTestRootWithChainID("TestLoadChainID", expected)
 	defer func() {
-		var _ = os.RemoveAll(config.RootDir)
+		_ = os.RemoveAll(config.RootDir)
 	}()
 
 	require.FileExists(t, config.GenesisFile())
@@ -129,7 +136,7 @@ func TestLoadChainIDWithoutStateDB(t *testing.T) {
 	expected := "c34091"
 	config := cfg.ResetTestRootWithChainID("TestLoadChainID", expected)
 	defer func() {
-		var _ = os.RemoveAll(config.RootDir)
+		_ = os.RemoveAll(config.RootDir)
 	}()
 
 	config.DBBackend = "goleveldb"
@@ -197,8 +204,9 @@ func initFilesWithConfig(config *cfg.Config) error {
 }
 
 func loadFilePVKey(t *testing.T, file string) privval.FilePVKey {
+	t.Helper()
 	// output must match the locally stored priv_validator key
-	keyJSONBytes, err := ioutil.ReadFile(file)
+	keyJSONBytes, err := os.ReadFile(file)
 	require.NoError(t, err)
 	privKey := privval.FilePVKey{}
 	err = tmjson.Unmarshal(keyJSONBytes, &privKey)

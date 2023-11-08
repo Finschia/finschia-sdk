@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/codec/types"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
@@ -14,8 +13,8 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 )
 
-func NewTestInterfaceRegistry() types.InterfaceRegistry {
-	registry := types.NewInterfaceRegistry()
+func NewTestInterfaceRegistry() codectypes.InterfaceRegistry {
+	registry := codectypes.NewInterfaceRegistry()
 	registry.RegisterInterface("Animal", (*testdata.Animal)(nil))
 	registry.RegisterImplementations(
 		(*testdata.Animal)(nil),
@@ -26,7 +25,7 @@ func NewTestInterfaceRegistry() types.InterfaceRegistry {
 }
 
 func TestMarshalAny(t *testing.T) {
-	registry := types.NewInterfaceRegistry()
+	registry := codectypes.NewInterfaceRegistry()
 
 	cdc := codec.NewProtoCodec(registry)
 
@@ -53,7 +52,6 @@ func TestMarshalAny(t *testing.T) {
 	require.Equal(t, kitty, animal)
 
 	// nil should fail
-	registry = NewTestInterfaceRegistry()
 	err = cdc.UnmarshalInterface(bz, nil)
 	require.Error(t, err)
 }

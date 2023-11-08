@@ -4,7 +4,6 @@ import (
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 

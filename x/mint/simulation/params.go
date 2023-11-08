@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/Finschia/finschia-sdk/x/simulation"
-
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
 	"github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
 const (

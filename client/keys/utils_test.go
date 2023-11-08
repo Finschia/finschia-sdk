@@ -24,7 +24,8 @@ func Test_printInfos(t *testing.T) {
 	kb, err := keyring.New(types.KeyringServiceName(), keyring.BackendTest, kbHome, mockIn)
 	require.NoError(t, err)
 
-	kb.NewAccount("something", testdata.TestMnemonic, "", "", hd.Secp256k1)
+	_, err = kb.NewAccount("something", testdata.TestMnemonic, "", "", hd.Secp256k1)
+	require.NoError(t, err)
 
 	clientCtx := client.Context{}.WithKeyring(kb)
 	require.NoError(t, err)

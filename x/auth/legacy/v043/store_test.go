@@ -578,8 +578,8 @@ func TestMigrateVestingAccounts(t *testing.T) {
 			}
 
 			trackingCorrected(
-				ctx,
 				t,
+				ctx,
 				app.AccountKeeper,
 				savedAccount.GetAddress(),
 				expVested,
@@ -589,7 +589,7 @@ func TestMigrateVestingAccounts(t *testing.T) {
 	}
 }
 
-func trackingCorrected(ctx sdk.Context, t *testing.T, ak authkeeper.AccountKeeper, addr sdk.AccAddress, expDelVesting sdk.Coins, expDelFree sdk.Coins) {
+func trackingCorrected(t *testing.T, ctx sdk.Context, ak authkeeper.AccountKeeper, addr sdk.AccAddress, expDelVesting, expDelFree sdk.Coins) {
 	t.Helper()
 	baseAccount := ak.GetAccount(ctx, addr)
 	vDA, ok := baseAccount.(exported.VestingAccount)
@@ -646,6 +646,7 @@ func dirtyTrackingFields(ctx sdk.Context, vesting exported.VestingAccount, app *
 }
 
 func createValidator(t *testing.T, ctx sdk.Context, app *simapp.SimApp, powers int64) (sdk.AccAddress, sdk.ValAddress) {
+	t.Helper()
 	valTokens := sdk.TokensFromConsensusPower(powers, sdk.DefaultPowerReduction)
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, valTokens)
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)

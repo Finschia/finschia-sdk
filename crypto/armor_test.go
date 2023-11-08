@@ -7,11 +7,12 @@ import (
 	"io"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+	"github.com/tendermint/crypto/bcrypt"
+
 	ostcrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/Finschia/ostracon/crypto/armor"
 	"github.com/Finschia/ostracon/crypto/xsalsa20symmetric"
-	"github.com/stretchr/testify/require"
-	"github.com/tendermint/crypto/bcrypt"
 
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	"github.com/Finschia/finschia-sdk/crypto"
@@ -46,7 +47,7 @@ func TestArmorUnarmorPrivKey(t *testing.T) {
 	require.Contains(t, err.Error(), "unrecognized armor type")
 
 	// armor key manually
-	encryptPrivKeyFn := func(privKey cryptotypes.PrivKey, passphrase string) (saltBytes []byte, encBytes []byte) {
+	encryptPrivKeyFn := func(privKey cryptotypes.PrivKey, passphrase string) (saltBytes, encBytes []byte) {
 		saltBytes = ostcrypto.CRandBytes(16)
 		key, err := bcrypt.GenerateFromPassword(saltBytes, []byte(passphrase), crypto.BcryptSecurityParameter)
 		require.NoError(t, err)

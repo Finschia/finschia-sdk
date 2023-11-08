@@ -7,9 +7,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/cosmos/go-bip39"
 	"github.com/stretchr/testify/require"
-
-	bip39 "github.com/cosmos/go-bip39"
 
 	"github.com/Finschia/ostracon/crypto"
 
@@ -31,6 +30,7 @@ func TestFullFundraiserPath(t *testing.T) {
 }
 
 func initFundraiserTestVectors(t *testing.T) []addrData {
+	t.Helper()
 	// NOTE: atom fundraiser address
 	// var hdPath string = "m/44'/118'/0'/0/0"
 	var hdToAddrTable []addrData
@@ -77,7 +77,7 @@ func TestFundraiserCompatibility(t *testing.T) {
 
 		require.Equal(t, seedB, seed)
 		require.Equal(t, master[:], masterB, fmt.Sprintf("Expected masters to match for %d", i))
-		require.Equal(t, priv[:], privB, "Expected priv keys to match")
+		require.Equal(t, priv, privB, "Expected priv keys to match")
 		pubBFixed := make([]byte, secp256k1.PubKeySize)
 		copy(pubBFixed, pubB)
 		require.Equal(t, pub, &secp256k1.PubKey{Key: pubBFixed}, fmt.Sprintf("Expected pub keys to match for %d", i))

@@ -107,13 +107,13 @@ var (
 )
 
 func TestIntermediateWriter(t *testing.T) {
-	outChan := make(chan []byte, 0)
+	outChan := make(chan []byte)
 	iw := NewIntermediateWriter(outChan)
 	require.IsType(t, &IntermediateWriter{}, iw)
 	testBytes := []byte{1, 2, 3, 4, 5}
 	var length int
 	var err error
-	waitChan := make(chan struct{}, 0)
+	waitChan := make(chan struct{})
 	go func() {
 		length, err = iw.Write(testBytes)
 		waitChan <- struct{}{}
@@ -129,7 +129,7 @@ func TestFileStreamingService(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping TestFileStreamingService in CI environment")
 	}
-	err := os.Mkdir(testDir, 0700)
+	err := os.Mkdir(testDir, 0o700)
 	require.Nil(t, err)
 	defer os.RemoveAll(testDir)
 
@@ -143,25 +143,31 @@ func TestFileStreamingService(t *testing.T) {
 	testListener1 = testStreamingService.listeners[mockStoreKey1][0]
 	testListener2 = testStreamingService.listeners[mockStoreKey2][0]
 	wg := new(sync.WaitGroup)
-	testStreamingService.Stream(wg)
+	err = testStreamingService.Stream(wg)
+	require.NoError(t, err)
 	testListenBeginBlock(t)
 	testListenDeliverTx1(t)
 	testListenDeliverTx2(t)
 	testListenEndBlock(t)
-	testStreamingService.Close()
+	err = testStreamingService.Close()
+	require.NoError(t, err)
 	wg.Wait()
 }
 
 func testListenBeginBlock(t *testing.T) {
+	t.Helper()
 	expectedBeginBlockReqBytes, err := testMarshaller.Marshal(&testBeginBlockReq)
 	require.Nil(t, err)
 	expectedBeginBlockResBytes, err := testMarshaller.Marshal(&testBeginBlockRes)
 	require.Nil(t, err)
 
 	// write state changes
-	testListener1.OnWrite(mockStoreKey1, mockKey1, mockValue1, false)
-	testListener2.OnWrite(mockStoreKey2, mockKey2, mockValue2, false)
-	testListener1.OnWrite(mockStoreKey1, mockKey3, mockValue3, false)
+	err = testListener1.OnWrite(mockStoreKey1, mockKey1, mockValue1, false)
+	require.NoError(t, err)
+	err = testListener2.OnWrite(mockStoreKey2, mockKey2, mockValue2, false)
+	require.NoError(t, err)
+	err = testListener1.OnWrite(mockStoreKey1, mockKey3, mockValue3, false)
+	require.NoError(t, err)
 
 	// expected KV pairs
 	expectedKVPair1, err := testMarshaller.Marshal(&types.StoreKVPair{
@@ -207,15 +213,19 @@ func testListenBeginBlock(t *testing.T) {
 }
 
 func testListenDeliverTx1(t *testing.T) {
+	t.Helper()
 	expectedDeliverTxReq1Bytes, err := testMarshaller.Marshal(&testDeliverTxReq1)
 	require.Nil(t, err)
 	expectedDeliverTxRes1Bytes, err := testMarshaller.Marshal(&testDeliverTxRes1)
 	require.Nil(t, err)
 
 	// write state changes
-	testListener1.OnWrite(mockStoreKey1, mockKey1, mockValue1, false)
-	testListener2.OnWrite(mockStoreKey2, mockKey2, mockValue2, false)
-	testListener1.OnWrite(mockStoreKey2, mockKey3, mockValue3, false)
+	err = testListener1.OnWrite(mockStoreKey1, mockKey1, mockValue1, false)
+	require.NoError(t, err)
+	err = testListener2.OnWrite(mockStoreKey2, mockKey2, mockValue2, false)
+	require.NoError(t, err)
+	err = testListener1.OnWrite(mockStoreKey2, mockKey3, mockValue3, false)
+	require.NoError(t, err)
 
 	// expected KV pairs
 	expectedKVPair1, err := testMarshaller.Marshal(&types.StoreKVPair{
@@ -261,15 +271,19 @@ func testListenDeliverTx1(t *testing.T) {
 }
 
 func testListenDeliverTx2(t *testing.T) {
+	t.Helper()
 	expectedDeliverTxReq2Bytes, err := testMarshaller.Marshal(&testDeliverTxReq2)
 	require.Nil(t, err)
 	expectedDeliverTxRes2Bytes, err := testMarshaller.Marshal(&testDeliverTxRes2)
 	require.Nil(t, err)
 
 	// write state changes
-	testListener1.OnWrite(mockStoreKey2, mockKey1, mockValue1, false)
-	testListener2.OnWrite(mockStoreKey1, mockKey2, mockValue2, false)
-	testListener1.OnWrite(mockStoreKey2, mockKey3, mockValue3, false)
+	err = testListener1.OnWrite(mockStoreKey2, mockKey1, mockValue1, false)
+	require.NoError(t, err)
+	err = testListener2.OnWrite(mockStoreKey1, mockKey2, mockValue2, false)
+	require.NoError(t, err)
+	err = testListener1.OnWrite(mockStoreKey2, mockKey3, mockValue3, false)
+	require.NoError(t, err)
 
 	// expected KV pairs
 	expectedKVPair1, err := testMarshaller.Marshal(&types.StoreKVPair{
@@ -315,15 +329,19 @@ func testListenDeliverTx2(t *testing.T) {
 }
 
 func testListenEndBlock(t *testing.T) {
+	t.Helper()
 	expectedEndBlockReqBytes, err := testMarshaller.Marshal(&testEndBlockReq)
 	require.Nil(t, err)
 	expectedEndBlockResBytes, err := testMarshaller.Marshal(&testEndBlockRes)
 	require.Nil(t, err)
 
 	// write state changes
-	testListener1.OnWrite(mockStoreKey1, mockKey1, mockValue1, false)
-	testListener2.OnWrite(mockStoreKey1, mockKey2, mockValue2, false)
-	testListener1.OnWrite(mockStoreKey2, mockKey3, mockValue3, false)
+	err = testListener1.OnWrite(mockStoreKey1, mockKey1, mockValue1, false)
+	require.NoError(t, err)
+	err = testListener2.OnWrite(mockStoreKey1, mockKey2, mockValue2, false)
+	require.NoError(t, err)
+	err = testListener1.OnWrite(mockStoreKey2, mockKey3, mockValue3, false)
+	require.NoError(t, err)
 
 	// expected KV pairs
 	expectedKVPair1, err := testMarshaller.Marshal(&types.StoreKVPair{

@@ -26,15 +26,17 @@ const (
 
 // initClientContext initiates client Context for tests
 func initClientContext(t *testing.T, envVar string) (client.Context, func()) {
+	t.Helper()
 	home := t.TempDir()
 	clientCtx := client.Context{}.
 		WithHomeDir(home).
 		WithViper("").
 		WithCodec(codec.NewProtoCodec(codectypes.NewInterfaceRegistry()))
 
-	clientCtx.Viper.BindEnv(nodeEnv)
+	_ = clientCtx.Viper.BindEnv(nodeEnv)
 	if envVar != "" {
-		os.Setenv(nodeEnv, envVar)
+		err := os.Setenv(nodeEnv, envVar)
+		require.NoError(t, err)
 	}
 
 	clientCtx, err := config.ReadFromClientConfig(clientCtx)
@@ -46,7 +48,8 @@ func initClientContext(t *testing.T, envVar string) (client.Context, func()) {
 func TestConfigCmd(t *testing.T) {
 	clientCtx, cleanup := initClientContext(t, testNode1)
 	defer func() {
-		os.Unsetenv(nodeEnv)
+		err := os.Unsetenv(nodeEnv)
+		require.NoError(t, err)
 		cleanup()
 	}()
 
@@ -56,11 +59,12 @@ func TestConfigCmd(t *testing.T) {
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, args)
 	require.NoError(t, err)
 
-	//./build/simd config node //http://localhost:1
+	// ./build/simd config node //http://localhost:1
 	b := bytes.NewBufferString("")
 	cmd.SetOut(b)
 	cmd.SetArgs([]string{"node"})
-	cmd.Execute()
+	err = cmd.Execute()
+	require.NoError(t, err)
 	out, err := io.ReadAll(b)
 	require.NoError(t, err)
 	require.Equal(t, string(out), testNode1+"\n")

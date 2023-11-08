@@ -3,12 +3,11 @@ package testutil
 import (
 	"fmt"
 
+	"github.com/gogo/protobuf/proto"
+
 	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-
-	"github.com/gogo/protobuf/proto"
-
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 

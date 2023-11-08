@@ -9,7 +9,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/params/types/proposal"
 )
 
-func min(a int, b int) int {
+func min(a, b int) int {
 	if a <= b {
 		return a
 	}

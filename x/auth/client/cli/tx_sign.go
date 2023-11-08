@@ -51,7 +51,7 @@ account key. It implies --signature-only.
 	cmd.Flags().String(flags.FlagOutputDocument, "", "The document will be written to the given file instead of STDOUT")
 	cmd.Flags().Bool(flagSigOnly, true, "Print only the generated signature, then exit")
 	cmd.Flags().String(flags.FlagChainID, "", "network chain ID")
-	cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -208,7 +208,7 @@ be generated via the 'multisign' command.
 	cmd.Flags().String(flags.FlagOutputDocument, "", "The document will be written to the given file instead of STDOUT")
 	cmd.Flags().String(flags.FlagChainID, "", "The network chain ID")
 	cmd.Flags().Bool(flagAmino, false, "Generate Amino encoded JSON suitable for submiting to the txs REST endpoint")
-	cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -218,8 +218,8 @@ func preSignCmd(cmd *cobra.Command, _ []string) {
 	// Conditionally mark the account and sequence numbers required as no RPC
 	// query will be done.
 	if offline, _ := cmd.Flags().GetBool(flags.FlagOffline); offline {
-		cmd.MarkFlagRequired(flags.FlagAccountNumber)
-		cmd.MarkFlagRequired(flags.FlagSequence)
+		_ = cmd.MarkFlagRequired(flags.FlagAccountNumber)
+		_ = cmd.MarkFlagRequired(flags.FlagSequence)
 	}
 }
 

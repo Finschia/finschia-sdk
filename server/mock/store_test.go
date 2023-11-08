@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
 	dbm "github.com/tendermint/tm-db"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -36,7 +35,7 @@ func TestStore(t *testing.T) {
 
 func TestMultiStore(t *testing.T) {
 	store := multiStore{}
-	require.Panics(t, func() { store.Snapshot(1, nil) }, "Snapshot should panic")
-	require.Panics(t, func() { store.Restore(1, 1, nil) }, "Restore should panic")
+	require.Panics(t, func() { store.Snapshot(1, nil) }, "Snapshot should panic")  //nolint:errcheck
+	require.Panics(t, func() { store.Restore(1, 1, nil) }, "Restore should panic") //nolint:errcheck
 	require.Panics(t, func() { store.SetIAVLDisableFastNode(false) }, "SetIAVLDisableFastNode should panic")
 }

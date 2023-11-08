@@ -14,13 +14,14 @@ import (
 	"syscall"
 	"time"
 
-	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
-	ostcfg "github.com/Finschia/ostracon/config"
-	ostlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
+
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	ostcfg "github.com/Finschia/ostracon/config"
+	ostlog "github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/config"
@@ -65,7 +66,9 @@ func NewContext(v *viper.Viper, config *ostcfg.Config, logger ostlog.Logger) *Co
 
 func bindFlags(basename string, cmd *cobra.Command, v *viper.Viper) (err error) {
 	defer func() {
-		recover()
+		if r := recover(); r != nil {
+			err = fmt.Errorf("bindFlags failed: %v", r)
+		}
 	}()
 
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
@@ -91,7 +94,7 @@ func bindFlags(basename string, cmd *cobra.Command, v *viper.Viper) (err error) 
 		}
 	})
 
-	return
+	return err
 }
 
 // InterceptConfigsPreRunHandler performs a pre-run function for the root daemon

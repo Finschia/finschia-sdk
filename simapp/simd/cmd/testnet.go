@@ -384,16 +384,16 @@ func calculateIP(ip string, i int) (string, error) {
 	return ipv4.String(), nil
 }
 
-func writeFile(name string, dir string, contents []byte) error {
+func writeFile(name, dir string, contents []byte) error {
 	writePath := filepath.Join(dir) //nolint:gocritic
 	file := filepath.Join(writePath, name)
 
-	err := ostos.EnsureDir(writePath, 0755)
+	err := ostos.EnsureDir(writePath, 0o755)
 	if err != nil {
 		return err
 	}
 
-	err = ostos.WriteFile(file, contents, 0644)
+	err = ostos.WriteFile(file, contents, 0o644)
 	if err != nil {
 		return err
 	}

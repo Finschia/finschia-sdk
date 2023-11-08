@@ -57,7 +57,7 @@ func (s *paginationTestSuite) TestFilteredPaginations() {
 	s.Require().NotNil(res)
 	s.Require().Equal(2, len(balances))
 	s.Require().NotNil(res.NextKey)
-	s.Require().Equal(string(res.NextKey), fmt.Sprintf("test2denom"))
+	s.Require().Equal(string(res.NextKey), "test2denom")
 	s.Require().Equal(uint64(4), res.Total)
 
 	s.T().Log("verify both key and offset can't be given")
@@ -140,7 +140,7 @@ func (s *paginationTestSuite) TestReverseFilteredPaginations() {
 	s.Require().NotNil(res)
 	s.Require().Equal(2, len(balns))
 	s.Require().NotNil(res.NextKey)
-	s.Require().Equal(string(res.NextKey), fmt.Sprintf("test7denom"))
+	s.Require().Equal(string(res.NextKey), "test7denom")
 	s.Require().Equal(uint64(10), res.Total)
 
 	s.T().Log("verify both key and offset can't be given")
@@ -155,7 +155,7 @@ func (s *paginationTestSuite) TestReverseFilteredPaginations() {
 	s.Require().NotNil(res)
 	s.Require().Equal(2, len(balns))
 	s.Require().NotNil(res.NextKey)
-	s.Require().Equal(string(res.NextKey), fmt.Sprintf("test5denom"))
+	s.Require().Equal(string(res.NextKey), "test5denom")
 
 	s.T().Log("verify last page records, nextKey for query and reverse true")
 	pageReq = &query.PageRequest{Key: res.NextKey, Reverse: true}
@@ -198,7 +198,7 @@ func ExampleFilteredPaginate() {
 	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 
 	var balResult sdk.Coins
-	pageRes, err := query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
+	pageRes, err := query.FilteredPaginate(accountStore, pageReq, func(key, value []byte, accumulate bool) (bool, error) {
 		var bal sdk.Coin
 		err := appCodec.Unmarshal(value, &bal)
 		if err != nil {
@@ -229,7 +229,7 @@ func execFilterPaginate(store sdk.KVStore, pageReq *query.PageRequest, appCodec 
 	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 
 	var balResult sdk.Coins
-	res, err = query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
+	res, err = query.FilteredPaginate(accountStore, pageReq, func(key, value []byte, accumulate bool) (bool, error) {
 		var bal sdk.Coin
 		err := appCodec.Unmarshal(value, &bal)
 		if err != nil {

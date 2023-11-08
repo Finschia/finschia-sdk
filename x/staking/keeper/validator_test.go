@@ -18,13 +18,15 @@ import (
 	"github.com/Finschia/finschia-sdk/x/staking/types"
 )
 
-func newMonikerValidator(t testing.TB, operator sdk.ValAddress, pubKey cryptotypes.PubKey, moniker string) types.Validator {
+func newMonikerValidator(tb testing.TB, operator sdk.ValAddress, pubKey cryptotypes.PubKey, moniker string) types.Validator {
+	tb.Helper()
 	v, err := types.NewValidator(operator, pubKey, types.Description{Moniker: moniker})
-	require.NoError(t, err)
+	require.NoError(tb, err)
 	return v
 }
 
-func bootstrapValidatorTest(t testing.TB, power int64, numAddrs int) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress) {
+func bootstrapValidatorTest(tb testing.TB, power int64, numAddrs int) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress) {
+	tb.Helper()
 	_, app, ctx := createTestInput()
 
 	addrDels, addrVals := generateAddresses(app, ctx, numAddrs)
@@ -36,18 +38,19 @@ func bootstrapValidatorTest(t testing.TB, power int64, numAddrs int) (*simapp.Si
 	// set bonded pool supply
 	app.AccountKeeper.SetModuleAccount(ctx, notBondedPool)
 
-	require.NoError(t, simapp.FundModuleAccount(app, ctx, notBondedPool.GetName(), totalSupply))
+	require.NoError(tb, simapp.FundModuleAccount(app, ctx, notBondedPool.GetName(), totalSupply))
 
 	return app, ctx, addrDels, addrVals
 }
 
-func initValidators(t testing.TB, power int64, numAddrs int, powers []int64) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress, []types.Validator) {
-	app, ctx, addrs, valAddrs := bootstrapValidatorTest(t, power, numAddrs)
+func initValidators(tb testing.TB, power int64, numAddrs int, powers []int64) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress, []types.Validator) {
+	tb.Helper()
+	app, ctx, addrs, valAddrs := bootstrapValidatorTest(tb, power, numAddrs)
 	pks := simapp.CreateTestPubKeys(numAddrs)
 
 	vs := make([]types.Validator, len(powers))
 	for i, power := range powers {
-		vs[i] = teststaking.NewValidator(t, sdk.ValAddress(addrs[i]), pks[i])
+		vs[i] = teststaking.NewValidator(tb, sdk.ValAddress(addrs[i]), pks[i])
 		tokens := app.StakingKeeper.TokensFromConsensusPower(ctx, power)
 		vs[i], _ = vs[i].AddTokensFromDel(tokens)
 	}
@@ -186,7 +189,7 @@ func TestUpdateBondedValidatorsDecreaseCliff(t *testing.T) {
 	app.StakingKeeper.DeleteValidatorByPowerIndex(ctx, nextCliffVal)
 	shares := app.StakingKeeper.TokensFromConsensusPower(ctx, 21)
 	nextCliffVal, _ = nextCliffVal.RemoveDelShares(shares.ToDec())
-	nextCliffVal = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, nextCliffVal, true)
+	_ = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, nextCliffVal, true)
 
 	expectedValStatus := map[int]types.BondStatus{
 		9: types.Bonded, 8: types.Bonded, 7: types.Bonded, 5: types.Bonded, 4: types.Bonded,
@@ -224,7 +227,8 @@ func TestSlashToZeroPowerRemoved(t *testing.T) {
 	validator, _ = validator.AddTokensFromDel(valTokens)
 	require.Equal(t, types.Unbonded, validator.Status)
 	require.Equal(t, valTokens, validator.Tokens)
-	app.StakingKeeper.SetValidatorByConsAddr(ctx, validator)
+	err := app.StakingKeeper.SetValidatorByConsAddr(ctx, validator)
+	require.NoError(t, err)
 	validator = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validator, true)
 	require.Equal(t, valTokens, validator.Tokens, "\nvalidator %v\npool %v", validator, valTokens)
 
@@ -267,7 +271,8 @@ func TestValidatorBasics(t *testing.T) {
 
 	// set and retrieve a record
 	validators[0] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[0], true)
-	app.StakingKeeper.SetValidatorByConsAddr(ctx, validators[0])
+	err := app.StakingKeeper.SetValidatorByConsAddr(ctx, validators[0])
+	require.NoError(t, err)
 	resVal, found := app.StakingKeeper.GetValidator(ctx, addrVals[0])
 	require.True(t, found)
 	assert.True(ValEq(t, validators[0], resVal))
@@ -1097,6 +1102,7 @@ func TestUpdateValidatorCommission(t *testing.T) {
 }
 
 func applyValidatorSetUpdates(t *testing.T, ctx sdk.Context, k keeper.Keeper, expectedUpdatesLen int) []abci.ValidatorUpdate {
+	t.Helper()
 	updates, err := k.ApplyAndReturnValidatorSetUpdates(ctx)
 	require.NoError(t, err)
 	if expectedUpdatesLen >= 0 {

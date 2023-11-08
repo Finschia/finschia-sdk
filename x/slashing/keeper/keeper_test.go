@@ -250,7 +250,6 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// another block happened
 	ctx = ctx.WithBlockHeight(height)
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
-	height++
 
 	// should now be jailed & kicked
 	staking.EndBlocker(ctx, app.StakingKeeper)
@@ -299,7 +298,6 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// validator misses another block
 	ctx = ctx.WithBlockHeight(height)
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
-	height++
 
 	// validator should now be jailed & kicked
 	staking.EndBlocker(ctx, app.StakingKeeper)

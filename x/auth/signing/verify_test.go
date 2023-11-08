@@ -42,10 +42,11 @@ func TestVerifySignature(t *testing.T) {
 	balances := sdk.NewCoins(sdk.NewInt64Coin("atom", 200))
 	require.NoError(t, simapp.FundAccount(app, ctx, addr, balances))
 	acc, err := ante.GetSignerAcc(ctx, app.AccountKeeper, addr)
+	require.NoError(t, err)
 	require.NoError(t, simapp.FundAccount(app, ctx, addr, balances))
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
-	fee := legacytx.NewStdFee(50000, sdk.Coins{sdk.NewInt64Coin("atom", 150)})
+	fee := legacytx.NewStdFee(50000, sdk.Coins{sdk.NewInt64Coin("atom", 150)}) //nolint:staticcheck // this will be removed when proto is ready
 	signerData := signing.SignerData{
 		ChainID:       chainId,
 		AccountNumber: acc.GetAccountNumber(),
@@ -55,12 +56,12 @@ func TestVerifySignature(t *testing.T) {
 	signature, err := priv.Sign(signBytes)
 	require.NoError(t, err)
 
-	stdSig := legacytx.StdSignature{PubKey: pubKey, Signature: signature}
+	stdSig := legacytx.StdSignature{PubKey: pubKey, Signature: signature} //nolint:staticcheck // this will be removed when proto is ready
 	sigV2, err := legacytx.StdSignatureToSignatureV2(cdc, stdSig)
 	require.NoError(t, err)
 
 	handler := MakeTestHandlerMap()
-	stdTx := legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig}, memo)
+	stdTx := legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig}, memo) //nolint:staticcheck // this will be removed when proto is ready
 	stdTx.TimeoutHeight = 10
 	err = signing.VerifySignature(pubKey, signerData, sigV2.Data, handler, stdTx)
 	require.NoError(t, err)
@@ -73,13 +74,13 @@ func TestVerifySignature(t *testing.T) {
 
 	sig1, err := priv.Sign(multiSignBytes)
 	require.NoError(t, err)
-	stdSig1 := legacytx.StdSignature{PubKey: pubKey, Signature: sig1}
+	stdSig1 := legacytx.StdSignature{PubKey: pubKey, Signature: sig1} //nolint:staticcheck // this will be removed when proto is ready
 	sig1V2, err := legacytx.StdSignatureToSignatureV2(cdc, stdSig1)
 	require.NoError(t, err)
 
 	sig2, err := priv1.Sign(multiSignBytes)
 	require.NoError(t, err)
-	stdSig2 := legacytx.StdSignature{PubKey: pubKey, Signature: sig2}
+	stdSig2 := legacytx.StdSignature{PubKey: pubKey, Signature: sig2} //nolint:staticcheck // this will be removed when proto is ready
 	sig2V2, err := legacytx.StdSignatureToSignatureV2(cdc, stdSig2)
 	require.NoError(t, err)
 
@@ -88,7 +89,7 @@ func TestVerifySignature(t *testing.T) {
 	err = multisig.AddSignatureFromPubKey(multisignature, sig2V2.Data, pkSet[1], pkSet)
 	require.NoError(t, err)
 
-	stdTx = legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig1, stdSig2}, memo)
+	stdTx = legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig1, stdSig2}, memo) //nolint:staticcheck // this will be removed when proto is ready
 	stdTx.TimeoutHeight = 10
 
 	err = signing.VerifySignature(multisigKey, signerData, multisignature, handler, stdTx)

@@ -16,6 +16,7 @@ import (
 var TestProposal = types.NewTextProposal("Test", "description")
 
 func createValidators(t *testing.T, ctx sdk.Context, app *simapp.SimApp, powers []int64) ([]sdk.AccAddress, []sdk.ValAddress) {
+	t.Helper()
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 5, sdk.NewInt(30000000))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
 	pks := simapp.CreateTestPubKeys(5)
@@ -39,9 +40,12 @@ func createValidators(t *testing.T, ctx sdk.Context, app *simapp.SimApp, powers 
 	app.StakingKeeper.SetValidator(ctx, val1)
 	app.StakingKeeper.SetValidator(ctx, val2)
 	app.StakingKeeper.SetValidator(ctx, val3)
-	app.StakingKeeper.SetValidatorByConsAddr(ctx, val1)
-	app.StakingKeeper.SetValidatorByConsAddr(ctx, val2)
-	app.StakingKeeper.SetValidatorByConsAddr(ctx, val3)
+	err = app.StakingKeeper.SetValidatorByConsAddr(ctx, val1)
+	require.NoError(t, err)
+	err = app.StakingKeeper.SetValidatorByConsAddr(ctx, val2)
+	require.NoError(t, err)
+	err = app.StakingKeeper.SetValidatorByConsAddr(ctx, val3)
+	require.NoError(t, err)
 	app.StakingKeeper.SetNewValidatorByPowerIndex(ctx, val1)
 	app.StakingKeeper.SetNewValidatorByPowerIndex(ctx, val2)
 	app.StakingKeeper.SetNewValidatorByPowerIndex(ctx, val3)

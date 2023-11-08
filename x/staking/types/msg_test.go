@@ -105,6 +105,8 @@ func TestMsgEditValidator(t *testing.T) {
 	}
 
 	for _, tc := range tests {
+		tc := tc
+
 		description := types.NewDescription(tc.moniker, tc.identity, tc.website, tc.securityContact, tc.details)
 		newRate := sdk.ZeroDec()
 

@@ -20,6 +20,8 @@ import (
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"
+	// unnamed import of statik for swagger UI support
+	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 	nodeservice "github.com/Finschia/finschia-sdk/client/grpc/node"
 	"github.com/Finschia/finschia-sdk/client/grpc/ocservice"
 	"github.com/Finschia/finschia-sdk/client/grpc/tmservice"
@@ -103,9 +105,6 @@ import (
 	upgradeclient "github.com/Finschia/finschia-sdk/x/upgrade/client"
 	upgradekeeper "github.com/Finschia/finschia-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/Finschia/finschia-sdk/x/upgrade/types"
-
-	// unnamed import of statik for swagger UI support
-	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 )
 
 const appName = "SimApp"

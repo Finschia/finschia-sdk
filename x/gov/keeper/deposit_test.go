@@ -31,7 +31,7 @@ func TestDeposits(t *testing.T) {
 	require.True(t, proposal.TotalDeposit.IsEqual(sdk.NewCoins()))
 
 	// Check no deposits at beginning
-	deposit, found := app.GovKeeper.GetDeposit(ctx, proposalID, TestAddrs[1])
+	_, found := app.GovKeeper.GetDeposit(ctx, proposalID, TestAddrs[1])
 	require.False(t, found)
 	proposal, ok := app.GovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, ok)
@@ -41,7 +41,7 @@ func TestDeposits(t *testing.T) {
 	votingStarted, err := app.GovKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fourStake)
 	require.NoError(t, err)
 	require.False(t, votingStarted)
-	deposit, found = app.GovKeeper.GetDeposit(ctx, proposalID, TestAddrs[0])
+	deposit, found := app.GovKeeper.GetDeposit(ctx, proposalID, TestAddrs[0])
 	require.True(t, found)
 	require.Equal(t, fourStake, deposit.Amount)
 	require.Equal(t, TestAddrs[0].String(), deposit.Depositor)

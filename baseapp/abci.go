@@ -12,23 +12,23 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	ocabci "github.com/Finschia/ostracon/abci/types"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic
 // directly on the CommitMultiStore.
-func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitChain) {
+func (app *BaseApp) InitChain(req abci.RequestInitChain) abci.ResponseInitChain {
 	// On a new chain, we consider the init chain block height as 0, even though
 	// req.InitialHeight is 1 by default.
 	initHeader := tmproto.Header{ChainID: req.ChainId, Time: req.Time}
@@ -56,13 +56,13 @@ func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitC
 	}
 
 	if app.initChainer == nil {
-		return
+		return abci.ResponseInitChain{}
 	}
 
 	// add block gas meter for any genesis transactions (allow infinite gas)
 	app.deliverState.ctx = app.deliverState.ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
 
-	res = app.initChainer(app.deliverState.ctx, req)
+	res := app.initChainer(app.deliverState.ctx, req)
 
 	// sanity check
 	if len(req.Validators) > 0 {
@@ -925,7 +925,6 @@ func splitPath(requestPath string) (path []string) {
 // createQueryContext creates a new sdk.Context for a query, taking as args
 // the block height and whether the query needs a proof or not.
 func (app *BaseApp) createQueryContextWithCheckState() sdk.Context {
-
 	cacheMS := app.checkState.CacheMultiStore()
 
 	// branch the commit-multistore for safety

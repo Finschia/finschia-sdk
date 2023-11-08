@@ -17,14 +17,13 @@ import (
 	"github.com/Finschia/finschia-sdk/types/tx/signing"
 	"github.com/Finschia/finschia-sdk/x/auth/ante"
 	xauthsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
 type TestAccount struct {
-	acc  types.AccountI
+	acc  authtypes.AccountI
 	priv cryptotypes.PrivKey
 }
 
@@ -103,7 +102,7 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 }
 
 // CreateTestTx is a helper function to create a tx given multiple inputs.
-func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, accNums []uint64, accSeqs []uint64, chainID string) (xauthsigning.Tx, error) {
+func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, accNums, accSeqs []uint64, chainID string) (xauthsigning.Tx, error) {
 	// First round: we gather all the signer infos. We use the "set empty
 	// signature" hack to do that.
 	var sigsV2 []signing.SignatureV2

@@ -273,7 +273,7 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 	return burntAmount, nil
 }
 
-func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID string) sdk.Uint {
+func (k Keeper) getNextTokenID(ctx sdk.Context, contractID, classID string) sdk.Uint {
 	store := ctx.KVStore(k.storeKey)
 	key := nextTokenIDKey(contractID, classID)
 	bz := store.Get(key)
@@ -288,7 +288,7 @@ func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID strin
 	return id
 }
 
-func (k Keeper) setNextTokenID(ctx sdk.Context, contractID string, classID string, tokenID sdk.Uint) {
+func (k Keeper) setNextTokenID(ctx sdk.Context, contractID, classID string, tokenID sdk.Uint) {
 	store := ctx.KVStore(k.storeKey)
 	key := nextTokenIDKey(contractID, classID)
 
@@ -326,7 +326,7 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 	return nil
 }
 
-func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	class, err := k.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
 		// legacy error split
@@ -359,7 +359,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 	return nil
 }
 
-func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+func (k Keeper) ModifyNFT(ctx sdk.Context, contractID, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	token, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
 		return err
@@ -437,7 +437,7 @@ func (k Keeper) deleteGrant(ctx sdk.Context, contractID string, grantee sdk.AccA
 	store.Delete(key)
 }
 
-func (k Keeper) getStatistic(ctx sdk.Context, keyPrefix []byte, contractID string, classID string) sdk.Int {
+func (k Keeper) getStatistic(ctx sdk.Context, keyPrefix []byte, contractID, classID string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
 	bz := store.Get(statisticKey(keyPrefix, contractID, classID))
@@ -450,7 +450,7 @@ func (k Keeper) getStatistic(ctx sdk.Context, keyPrefix []byte, contractID strin
 	return amount
 }
 
-func (k Keeper) setStatistic(ctx sdk.Context, keyPrefix []byte, contractID string, classID string, amount sdk.Int) {
+func (k Keeper) setStatistic(ctx sdk.Context, keyPrefix []byte, contractID, classID string, amount sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
 	key := statisticKey(keyPrefix, contractID, classID)
 	if amount.IsZero() {
@@ -464,26 +464,26 @@ func (k Keeper) setStatistic(ctx sdk.Context, keyPrefix []byte, contractID strin
 	}
 }
 
-func (k Keeper) GetSupply(ctx sdk.Context, contractID string, classID string) sdk.Int {
+func (k Keeper) GetSupply(ctx sdk.Context, contractID, classID string) sdk.Int {
 	return k.getStatistic(ctx, supplyKeyPrefix, contractID, classID)
 }
 
-func (k Keeper) GetMinted(ctx sdk.Context, contractID string, classID string) sdk.Int {
+func (k Keeper) GetMinted(ctx sdk.Context, contractID, classID string) sdk.Int {
 	return k.getStatistic(ctx, mintedKeyPrefix, contractID, classID)
 }
 
-func (k Keeper) GetBurnt(ctx sdk.Context, contractID string, classID string) sdk.Int {
+func (k Keeper) GetBurnt(ctx sdk.Context, contractID, classID string) sdk.Int {
 	return k.getStatistic(ctx, burntKeyPrefix, contractID, classID)
 }
 
-func (k Keeper) setSupply(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
+func (k Keeper) setSupply(ctx sdk.Context, contractID, classID string, amount sdk.Int) {
 	k.setStatistic(ctx, supplyKeyPrefix, contractID, classID, amount)
 }
 
-func (k Keeper) setMinted(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
+func (k Keeper) setMinted(ctx sdk.Context, contractID, classID string, amount sdk.Int) {
 	k.setStatistic(ctx, mintedKeyPrefix, contractID, classID, amount)
 }
 
-func (k Keeper) setBurnt(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
+func (k Keeper) setBurnt(ctx sdk.Context, contractID, classID string, amount sdk.Int) {
 	k.setStatistic(ctx, burntKeyPrefix, contractID, classID, amount)
 }

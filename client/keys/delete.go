@@ -3,11 +3,11 @@ package keys
 import (
 	"bufio"
 
+	"github.com/spf13/cobra"
+
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/input"
 	"github.com/Finschia/finschia-sdk/crypto/keyring"
-
-	"github.com/spf13/cobra"
 )
 
 const (

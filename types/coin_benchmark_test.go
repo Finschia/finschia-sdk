@@ -11,8 +11,9 @@ func coinName(suffix int) string {
 
 func BenchmarkCoinsAdditionIntersect(b *testing.B) {
 	b.ReportAllocs()
-	benchmarkingFunc := func(numCoinsA int, numCoinsB int) func(b *testing.B) {
+	benchmarkingFunc := func(numCoinsA, numCoinsB int) func(b *testing.B) {
 		return func(b *testing.B) {
+			b.Helper()
 			b.ReportAllocs()
 			coinsA := Coins(make([]Coin, numCoinsA))
 			coinsB := Coins(make([]Coin, numCoinsB))
@@ -42,8 +43,9 @@ func BenchmarkCoinsAdditionIntersect(b *testing.B) {
 
 func BenchmarkCoinsAdditionNoIntersect(b *testing.B) {
 	b.ReportAllocs()
-	benchmarkingFunc := func(numCoinsA int, numCoinsB int) func(b *testing.B) {
+	benchmarkingFunc := func(numCoinsA, numCoinsB int) func(b *testing.B) {
 		return func(b *testing.B) {
+			b.Helper()
 			b.ReportAllocs()
 			coinsA := Coins(make([]Coin, numCoinsA))
 			coinsB := Coins(make([]Coin, numCoinsB))

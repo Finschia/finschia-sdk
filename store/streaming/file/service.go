@@ -26,7 +26,7 @@ type StreamingService struct {
 	srcChan            <-chan []byte                            // the channel that all the WriteListeners write their data out to
 	filePrefix         string                                   // optional prefix for each of the generated files
 	writeDir           string                                   // directory to write files into
-	codec              codec.BinaryCodec                        // marshaller used for re-marshalling the ABCI messages to write them out to the destination files
+	codec              codec.BinaryCodec                        // marshaller used for re-marshaling the ABCI messages to write them out to the destination files
 	stateCache         [][]byte                                 // cache the protobuf binary encoded StoreKVPairs in the order they are received
 	stateCacheLock     *sync.Mutex                              // mutex for the state cache
 	currentBlockNumber int64                                    // the current block number

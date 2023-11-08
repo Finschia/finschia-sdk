@@ -64,8 +64,10 @@ func Test_runShowCmd(t *testing.T) {
 	fakeKeyName2 := "runShowCmd_Key2"
 
 	t.Cleanup(func() {
-		kb.Delete("runShowCmd_Key1")
-		kb.Delete("runShowCmd_Key2")
+		err := kb.Delete("runShowCmd_Key1")
+		require.NoError(t, err)
+		err = kb.Delete("runShowCmd_Key2")
+		require.NoError(t, err)
 	})
 
 	path := hd.NewFundraiserParams(1, sdk.CoinType, 0).String()

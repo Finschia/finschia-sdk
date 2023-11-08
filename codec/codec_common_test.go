@@ -28,7 +28,8 @@ func testInterfaceMarshaling(require *require.Assertions, cdc interfaceMarshaler
 	var animal testdata.Animal
 	if isAminoBin {
 		require.PanicsWithValue("Unmarshal expects a pointer", func() {
-			cdc.unmarshal(bz, animal)
+			err = cdc.unmarshal(bz, animal)
+			require.Error(err)
 		})
 	} else {
 		err = cdc.unmarshal(bz, animal)
@@ -88,6 +89,7 @@ func testMarshalingTestCase(require *require.Assertions, tc testCase, m mustMars
 }
 
 func testMarshaling(t *testing.T, cdc codec.Codec) {
+	t.Helper()
 	any, err := types.NewAnyWithValue(&testdata.Dog{Name: "rufus"})
 	require.NoError(t, err)
 

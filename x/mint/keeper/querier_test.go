@@ -3,15 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/codec"
-
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	keep "github.com/Finschia/finschia-sdk/x/mint/keeper"
 	"github.com/Finschia/finschia-sdk/x/mint/types"
-
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func TestNewQuerier(t *testing.T) {

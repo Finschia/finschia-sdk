@@ -1,10 +1,10 @@
 package cli
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/x/evidence/types"
-
-	"github.com/spf13/cobra"
 )
 
 // GetTxCmd returns a CLI command that has all the native evidence module tx

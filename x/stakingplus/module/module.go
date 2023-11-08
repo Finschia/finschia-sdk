@@ -3,21 +3,19 @@ package module
 import (
 	"encoding/json"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	"github.com/Finschia/finschia-sdk/types/module"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
+	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
-
-	"github.com/Finschia/finschia-sdk/x/stakingplus"
-	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
-
+	"github.com/Finschia/finschia-sdk/types/module"
 	"github.com/Finschia/finschia-sdk/x/staking"
 	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"github.com/Finschia/finschia-sdk/x/stakingplus"
+	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
 )
 
 var (
@@ -37,7 +35,7 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 	stakingplus.RegisterInterfaces(registry)
 }
 
-//____________________________________________________________________________
+// ____________________________________________________________________________
 
 // AppModule implements an application module for the stakingplus module.
 type AppModule struct {

@@ -68,7 +68,10 @@ func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, 
 
 // Implements sdk.ValidatorHooks
 func (h Hooks) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
-	h.k.AfterValidatorCreated(ctx, valAddr)
+	err := h.k.AfterValidatorCreated(ctx, valAddr)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (h Hooks) AfterValidatorBeginUnbonding(_ sdk.Context, _ sdk.ConsAddress, _ sdk.ValAddress)  {}

@@ -3,12 +3,11 @@ package tmservice
 import (
 	"context"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	tmtypes "github.com/tendermint/tendermint/proto/tendermint/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	octypes "github.com/Finschia/ostracon/proto/ostracon/types"
 
@@ -223,5 +222,8 @@ func RegisterTendermintService(
 // RegisterGRPCGatewayRoutes mounts the tendermint service's GRPC-gateway routes on the
 // given Mux.
 func RegisterGRPCGatewayRoutes(clientConn gogogrpc.ClientConn, mux *runtime.ServeMux) {
-	RegisterServiceHandlerClient(context.Background(), mux, NewServiceClient(clientConn))
+	err := RegisterServiceHandlerClient(context.Background(), mux, NewServiceClient(clientConn))
+	if err != nil {
+		panic(err)
+	}
 }

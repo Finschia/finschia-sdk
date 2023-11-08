@@ -162,7 +162,7 @@ func (k Keeper) validateAuthority(authority string) error {
 	return nil
 }
 
-func (k Keeper) validateCensorshipAuthority(ctx sdk.Context, msgTypeURL string, authority string) error {
+func (k Keeper) validateCensorshipAuthority(ctx sdk.Context, msgTypeURL, authority string) error {
 	censorship, err := k.GetCensorship(ctx, msgTypeURL)
 	if err != nil {
 		return err

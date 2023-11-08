@@ -93,7 +93,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
+func (s *IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 	testCases := []struct {
 		name      string
 		req       *tx2.GetBlockWithTxsRequest
@@ -131,7 +131,7 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
+func (s *IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
 	val := s.network.Validators[0]
 	testCases := []struct {
 		name      string

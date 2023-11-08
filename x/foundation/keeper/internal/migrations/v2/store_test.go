@@ -9,7 +9,6 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
-
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal/migrations/v2"
 )
 

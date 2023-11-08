@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"math/rand"
+	"crypto/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,7 +22,10 @@ import (
 
 func genAddress() sdk.AccAddress {
 	b := make([]byte, 20)
-	rand.Read(b)
+	_, err := rand.Read(b)
+	if err != nil {
+		panic(err)
+	}
 	return b
 }
 
@@ -41,6 +44,7 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 }
 
 func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
+	t.Helper()
 	db := dbm.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db)
 	stateStore.MountStoreWithDB(storeKey, sdk.StoreTypeIAVL, db)

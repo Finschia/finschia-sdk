@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -14,7 +15,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/gov"
 	"github.com/Finschia/finschia-sdk/x/gov/types"
 	"github.com/Finschia/finschia-sdk/x/staking"
-	"github.com/golang/protobuf/proto"
 )
 
 func TestTickExpiredDepositPeriod(t *testing.T) {

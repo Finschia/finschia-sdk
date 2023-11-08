@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/spf13/viper"
+
 	ostcfg "github.com/Finschia/ostracon/config"
 	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/Finschia/ostracon/libs/log"
-	"github.com/spf13/viper"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

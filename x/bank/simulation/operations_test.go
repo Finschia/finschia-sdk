@@ -80,7 +80,8 @@ func (suite *SimTestSuite) TestSimulateMsgSend() {
 	suite.Require().NoError(err)
 
 	var msg types.MsgSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	suite.Require().NoError(err)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Equal("65337742stake", msg.Amount.String())
@@ -109,7 +110,8 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 	require.NoError(err)
 
 	var msg types.MsgMultiSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(err)
 
 	require.True(operationMsg.OK)
 	require.Len(msg.Inputs, 3)
@@ -147,7 +149,8 @@ func (suite *SimTestSuite) TestSimulateModuleAccountMsgSend() {
 	suite.Require().Error(err)
 
 	var msg types.MsgSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	suite.Require().Error(err)
 
 	suite.Require().False(operationMsg.OK)
 	suite.Require().Equal(operationMsg.Comment, "invalid transfers")
@@ -177,7 +180,8 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSendToModuleAccount() {
 	suite.Require().Error(err)
 
 	var msg types.MsgMultiSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	suite.Require().Error(err)
 
 	suite.Require().False(operationMsg.OK) // sending tokens to a module account should fail
 	suite.Require().Equal(operationMsg.Comment, "invalid transfers")

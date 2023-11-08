@@ -844,7 +844,8 @@ func (suite *AnteTestSuite) TestAnteHandlerSetPubKey() {
 
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{1}, []uint64{0}
 				msgs = []sdk.Msg{testdata.NewTestMsg(accounts[1].acc.GetAddress())}
-				suite.txBuilder.SetMsgs(msgs...)
+				err := suite.txBuilder.SetMsgs(msgs...)
+				suite.Require().NoError(err)
 				suite.txBuilder.SetFeeAmount(feeAmount)
 				suite.txBuilder.SetGasLimit(gasLimit)
 
@@ -904,9 +905,9 @@ func generatePubKeysAndSignatures(n int, msg []byte, _ bool) (pubkeys []cryptoty
 		// TODO: also generate ed25519 keys as below when ed25519 keys are
 		//  actually supported, https://github.com/cosmos/cosmos-sdk/issues/4789
 		// for now this fails:
-		//if rand.Int63()%2 == 0 {
+		// if rand.Int63()%2 == 0 {
 		//	privkey = ed25519.GenPrivKey()
-		//} else {
+		// } else {
 		//	privkey = secp256k1.GenPrivKey()
 		//}
 
@@ -1100,7 +1101,7 @@ func (suite *AnteTestSuite) TestAnteHandlerReCheck() {
 	tx, err = suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
 	suite.Require().NoError(err)
 	txBytes, err := json.Marshal(tx)
-	suite.Require().Nil(err, "Error marshalling tx: %v", err)
+	suite.Require().Nil(err, "Error marshaling tx: %v", err)
 	suite.ctx = suite.ctx.WithTxBytes(txBytes)
 
 	// require that state machine param-dependent checking is still run on recheck since parameters can change between check and recheck

@@ -7,13 +7,12 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	"github.com/Finschia/finschia-sdk/crypto/keyring"
+	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	"github.com/Finschia/finschia-sdk/testutil/network"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
-
-	"github.com/Finschia/finschia-sdk/client/flags"
-	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	bankcli "github.com/Finschia/finschia-sdk/x/bank/client/cli"
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -82,12 +81,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	info := foundation.DefaultFoundation()
 	info.TotalWeight = sdk.NewDecFromInt(sdk.NewInt(int64(len(foundationData.Members))))
-	info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
+	err := info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
 		Threshold: sdk.OneDec(),
 		Windows: &foundation.DecisionPolicyWindows{
 			VotingPeriod: 7 * 24 * time.Hour,
 		},
 	})
+	s.Require().NoError(err)
 	foundationData.Foundation = info
 
 	// enable censorship

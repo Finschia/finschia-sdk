@@ -13,7 +13,6 @@ import (
 
 	protoio "github.com/gogo/protobuf/io"
 	"github.com/stretchr/testify/require"
-
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/snapshots"
@@ -62,7 +61,8 @@ func readChunks(chunks <-chan io.ReadCloser) [][]byte {
 }
 
 // snapshotItems serialize a array of bytes as SnapshotItem_ExtensionPayload, and return the chunks.
-func snapshotItems(items [][]byte) [][]byte {
+func snapshotItems(t *testing.T, items [][]byte) [][]byte {
+	t.Helper()
 	// copy the same parameters from the code
 	snapshotChunkSize := uint64(10e6)
 	snapshotBufferSize := int(snapshotChunkSize)
@@ -74,12 +74,17 @@ func snapshotItems(items [][]byte) [][]byte {
 		zWriter, _ := zlib.NewWriterLevel(bufWriter, 7)
 		protoWriter := protoio.NewDelimitedWriter(zWriter)
 		for _, item := range items {
-			snapshottypes.WriteExtensionItem(protoWriter, item)
+			err := snapshottypes.WriteExtensionItem(protoWriter, item)
+			require.NoError(t, err)
 		}
-		protoWriter.Close()
-		zWriter.Close()
-		bufWriter.Flush()
-		chunkWriter.Close()
+		err := protoWriter.Close()
+		require.NoError(t, err)
+		err = zWriter.Close()
+		require.NoError(t, err)
+		err = bufWriter.Flush()
+		require.NoError(t, err)
+		err = chunkWriter.Close()
+		require.NoError(t, err)
 	}()
 
 	var chunks [][]byte
@@ -146,6 +151,7 @@ func (m *mockSnapshotter) SupportedFormats() []uint32 {
 // setupBusyManager creates a manager with an empty store that is busy creating a snapshot at height 1.
 // The snapshot will complete when the returned closer is called.
 func setupBusyManager(t *testing.T) *snapshots.Manager {
+	t.Helper()
 	// os.MkdirTemp() is used instead of testing.T.TempDir()
 	// see https://github.com/cosmos/cosmos-sdk/pull/8475 for
 	// this change's rationale.

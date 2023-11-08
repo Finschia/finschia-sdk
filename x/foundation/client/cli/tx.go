@@ -85,8 +85,7 @@ func parseAuthorization(codec codec.Codec, authorizationJSON string) (foundation
 
 func execFromString(execStr string) foundation.Exec {
 	exec := foundation.Exec_EXEC_UNSPECIFIED
-	switch execStr {
-	case ExecTry:
+	if execStr == ExecTry {
 		exec = foundation.Exec_EXEC_TRY
 	}
 	return exec

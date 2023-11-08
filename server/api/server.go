@@ -17,13 +17,12 @@ import (
 	ostrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
 
 	"github.com/Finschia/finschia-sdk/client"
+	// unnamed import of statik for swagger UI support
+	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	"github.com/Finschia/finschia-sdk/server/config"
 	"github.com/Finschia/finschia-sdk/telemetry"
 	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-
-	// unnamed import of statik for swagger UI support
-	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
 )
 
 // Server defines the server's API interface.
@@ -58,7 +57,7 @@ func CustomGRPCHeaderMatcher(key string) (string, bool) {
 
 func New(clientCtx client.Context, logger log.Logger) *Server {
 	// The default JSON marshaller used by the gRPC-Gateway is unable to marshal non-nullable non-scalar fields.
-	// Using the gogo/gateway package with the gRPC-Gateway WithMarshaler option fixes the scalar field marshalling issue.
+	// Using the gogo/gateway package with the gRPC-Gateway WithMarshaler option fixes the scalar field marshaling issue.
 	marshalerOption := &gateway.JSONPb{
 		EmitDefaults: true,
 		Indent:       "  ",
@@ -75,7 +74,7 @@ func New(clientCtx client.Context, logger log.Logger) *Server {
 			runtime.WithMarshalerOption(runtime.MIMEWildcard, marshalerOption),
 
 			// This is necessary to get error details properly
-			// marshalled in unary requests.
+			// marshaled in unary requests.
 			runtime.WithProtoErrorHandler(runtime.DefaultHTTPProtoErrorHandler),
 
 			// Custom header matcher for mapping request headers to

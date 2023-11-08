@@ -112,7 +112,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s IntegrationTestSuite) TestSimulateTx_GRPC() {
+func (s *IntegrationTestSuite) TestSimulateTx_GRPC() {
 	val := s.network.Validators[0]
 	txBuilder := s.mkTxBuilder()
 	// Convert the txBuilder to a tx.Tx.
@@ -158,7 +158,7 @@ func (s IntegrationTestSuite) TestSimulateTx_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestSimulateTx_GRPCGateway() {
+func (s *IntegrationTestSuite) TestSimulateTx_GRPCGateway() {
 	val := s.network.Validators[0]
 	txBuilder := s.mkTxBuilder()
 	// Convert the txBuilder to a tx.Tx.
@@ -199,7 +199,7 @@ func (s IntegrationTestSuite) TestSimulateTx_GRPCGateway() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetTxEvents_GRPC() {
+func (s *IntegrationTestSuite) TestGetTxEvents_GRPC() {
 	testCases := []struct {
 		name      string
 		req       *tx.GetTxsEventRequest
@@ -278,7 +278,7 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
+func (s *IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
 	val := s.network.Validators[0]
 	testCases := []struct {
 		name      string
@@ -353,7 +353,7 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetTx_GRPC() {
+func (s *IntegrationTestSuite) TestGetTx_GRPC() {
 	testCases := []struct {
 		name      string
 		req       *tx.GetTxRequest
@@ -381,7 +381,7 @@ func (s IntegrationTestSuite) TestGetTx_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
+func (s *IntegrationTestSuite) TestGetTx_GRPCGateway() {
 	val := s.network.Validators[0]
 	testCases := []struct {
 		name      string
@@ -433,7 +433,7 @@ func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
 	}
 }
 
-func (s IntegrationTestSuite) TestBroadcastTx_GRPC() {
+func (s *IntegrationTestSuite) TestBroadcastTx_GRPC() {
 	val := s.network.Validators[0]
 	txBuilder := s.mkTxBuilder()
 	txBytes, err := val.ClientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
@@ -474,7 +474,7 @@ func (s IntegrationTestSuite) TestBroadcastTx_GRPC() {
 	time.Sleep(1 * time.Second) // wait for block confirm time before executing next test
 }
 
-func (s IntegrationTestSuite) TestBroadcastTx_GRPCGateway() {
+func (s *IntegrationTestSuite) TestBroadcastTx_GRPCGateway() {
 	val := s.network.Validators[0]
 	txBuilder := s.mkTxBuilder()
 	txBytes, err := val.ClientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
@@ -535,6 +535,7 @@ func (s *IntegrationTestSuite) TestSimMultiSigTx() {
 	s.Require().NoError(err)
 
 	height, err := s.network.LatestHeight()
+	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(height + 1)
 	s.Require().NoError(err)
 
@@ -550,8 +551,10 @@ func (s *IntegrationTestSuite) TestSimMultiSigTx() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
+	s.Require().NoError(err)
 
 	height, err = s.network.LatestHeight()
+	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(height + 1)
 	s.Require().NoError(err)
 
@@ -592,7 +595,9 @@ func (s *IntegrationTestSuite) TestSimMultiSigTx() {
 
 	// convert from protoJSON to protoBinary for sim
 	sdkTx, err := val1.ClientCtx.TxConfig.TxJSONDecoder()(multiSigWith2Signatures.Bytes())
+	s.Require().NoError(err)
 	txBytes, err := val1.ClientCtx.TxConfig.TxEncoder()(sdkTx)
+	s.Require().NoError(err)
 
 	// simulate tx
 	sim := &tx.SimulateRequest{TxBytes: txBytes}
@@ -603,7 +608,7 @@ func (s *IntegrationTestSuite) TestSimMultiSigTx() {
 	s.Require().Greater(res.GasInfo.GasUsed, uint64(0))
 }
 
-func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
+func (s *IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 	testCases := []struct {
 		name      string
 		req       *tx.GetBlockWithTxsRequest
@@ -641,14 +646,14 @@ func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestGetBlockWithTxs() {
+func (s *IntegrationTestSuite) TestGetBlockWithTxs() {
 	srv := tx2.NewTxServer(client.Context{}, nil, nil)
 
 	_, err := srv.GetBlockWithTxs(context.Background(), nil)
 	s.Require().Contains(err.Error(), "request cannot be nil")
 }
 
-func (s IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
+func (s *IntegrationTestSuite) TestGetBlockWithTxs_GRPCGateway() {
 	val := s.network.Validators[0]
 	testCases := []struct {
 		name      string
@@ -693,7 +698,7 @@ func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
-func (s IntegrationTestSuite) mkTxBuilder() client.TxBuilder {
+func (s *IntegrationTestSuite) mkTxBuilder() client.TxBuilder {
 	val := s.network.Validators[0]
 	s.Require().NoError(s.network.WaitForNextBlock())
 
@@ -737,7 +742,7 @@ type protoTxProvider interface {
 // txBuilderToProtoTx converts a txBuilder into a proto tx.Tx.
 // Deprecated: It's only used for testing the deprecated Simulate gRPC endpoint
 // using a proto Tx field.
-func txBuilderToProtoTx(txBuilder client.TxBuilder) (*tx.Tx, error) { // nolint
+func txBuilderToProtoTx(txBuilder client.TxBuilder) (*tx.Tx, error) {
 	protoProvider, ok := txBuilder.(protoTxProvider)
 	if !ok {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected proto tx builder, got %T", txBuilder)

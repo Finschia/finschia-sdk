@@ -3,12 +3,11 @@ package keeper_test
 import (
 	"strings"
 
-	"github.com/Finschia/finschia-sdk/simapp"
+	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/x/evidence/exported"
 	"github.com/Finschia/finschia-sdk/x/evidence/types"
-
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 const (
