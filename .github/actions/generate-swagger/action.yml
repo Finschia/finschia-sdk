@@ -5,5 +5,3 @@ runs:
   steps:
     - run: make proto-swagger-gen
       shell: sh
-    - run: make update-swagger-docs
-      shell: sh
