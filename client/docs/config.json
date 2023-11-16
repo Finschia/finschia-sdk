@@ -164,17 +164,6 @@
     },
     {
       "url": "./tmp-swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"
-    },
-    {
-      "url": "./tmp-swagger-gen/lbm/tx/v1beta1/service.swagger.json",
-      "dereference": {
-        "circular": "ignore"
-      },
-      "operationIds": {
-        "rename": {
-          "GetBlockWithTxs": "GetBlockWithTxs2"
-        }
-      }
     }
   ]
 }
