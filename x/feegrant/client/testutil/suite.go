@@ -8,8 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -129,7 +128,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				"wrong_granter",
 				grantee.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			"decoding bech32 failed",
 			true, nil, nil,
@@ -139,7 +138,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				granter.String(),
 				"wrong_grantee",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			"decoding bech32 failed",
 			true, nil, nil,
@@ -149,7 +148,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				"link19lrl5da53xtd2yssw2799y53uyaskadqkzv0ky",
 				grantee.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			"fee-grant not found",
 			true, nil, nil,
@@ -159,7 +158,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				granter.String(),
 				grantee.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			"",
 			false,
@@ -212,7 +211,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGrantee() {
 			"wrong grantee",
 			[]string{
 				"wrong_grantee",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, nil, 0,
 		},
@@ -220,7 +219,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGrantee() {
 			"non existent grantee",
 			[]string{
 				"link19lrl5da53xtd2yssw2799y53uyaskadqkzv0ky",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesResponse{}, 0,
 		},
@@ -228,7 +227,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGrantee() {
 			"valid req",
 			[]string{
 				grantee.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesResponse{}, 1,
 		},
@@ -268,7 +267,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 			"wrong grantee",
 			[]string{
 				"wrong_grantee",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, nil, 0,
 		},
@@ -276,7 +275,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 			"non existent grantee",
 			[]string{
 				"link1nph3cfzk6trsmfxkeu943nvach5qw4vw99nwdh",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesByGranterResponse{}, 0,
 		},
@@ -284,7 +283,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 			"valid req",
 			[]string{
 				granter.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesByGranterResponse{}, 1,
 		},
@@ -851,7 +850,7 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 	args := []string{
 		granter.String(),
 		grantee.String(),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	// get filtered fee allowance and check info

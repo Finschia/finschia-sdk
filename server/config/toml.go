@@ -5,8 +5,7 @@ import (
 	"text/template"
 
 	"github.com/spf13/viper"
-
-	ostos "github.com/Finschia/ostracon/libs/os"
+	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
 const DefaultConfigTemplate = `# This is a TOML config file.
@@ -88,7 +87,7 @@ index-events = {{ .BaseConfig.IndexEvents }}
 prometheus = {{ .BaseConfig.Prometheus }}
 
 # ChanCheckTxSize is the size of RequestCheckTxAsync of BaseApp.
-# ChanCheckTxSize should be equals to or greater than the mempool size set in config.toml of Ostracon.
+# ChanCheckTxSize should be equals to or greater than the mempool size set in config.toml of tendermint.
 chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
 
 ###############################################################################
@@ -144,16 +143,16 @@ address = "{{ .API.Address }}"
 # MaxOpenConnections defines the number of maximum open connections.
 max-open-connections = {{ .API.MaxOpenConnections }}
 
-# RPCReadTimeout defines the Ostracon RPC read timeout (in seconds).
+# RPCReadTimeout defines the tendermint RPC read timeout (in seconds).
 rpc-read-timeout = {{ .API.RPCReadTimeout }}
 
-# RPCWriteTimeout defines the Ostracon RPC write timeout (in seconds).
+# RPCWriteTimeout defines the tendermint RPC write timeout (in seconds).
 rpc-write-timeout = {{ .API.RPCWriteTimeout }}
 
-# RPCIdleTimeout defines the Ostracon RPC idle timeout (in seconds).
+# RPCIdleTimeout defines the tendermint RPC idle timeout (in seconds).
 rpc-idle-timeout = {{ .API.RPCIdleTimeout }}
 
-# RPCMaxBodyBytes defines the Ostracon maximum response body (in bytes).
+# RPCMaxBodyBytes defines the tendermint maximum response body (in bytes).
 rpc-max-body-bytes = {{ .API.RPCMaxBodyBytes }}
 
 # EnableUnsafeCORS defines if CORS should be enabled (unsafe - use it at your own risk).
@@ -277,5 +276,5 @@ func WriteConfigFile(configFilePath string, config interface{}) {
 		panic(err)
 	}
 
-	ostos.MustWriteFile(configFilePath, buffer.Bytes(), 0o644)
+	tmos.MustWriteFile(configFilePath, buffer.Bytes(), 0o644)
 }

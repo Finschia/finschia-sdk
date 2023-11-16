@@ -6,12 +6,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/crypto/tmhash"
-	"github.com/Finschia/ostracon/mempool"
-	"github.com/Finschia/ostracon/rpc/client/mock"
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
-	octypes "github.com/Finschia/ostracon/types"
+	"github.com/tendermint/tendermint/crypto/tmhash"
+	"github.com/tendermint/tendermint/mempool"
+	"github.com/tendermint/tendermint/rpc/client/mock"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -22,15 +21,15 @@ type MockClient struct {
 	err error
 }
 
-func (c MockClient) BroadcastTxCommit(ctx context.Context, tx octypes.Tx) (*ctypes.ResultBroadcastTxCommit, error) {
+func (c MockClient) BroadcastTxCommit(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTxCommit, error) {
 	return nil, c.err
 }
 
-func (c MockClient) BroadcastTxAsync(ctx context.Context, tx octypes.Tx) (*ctypes.ResultBroadcastTx, error) {
+func (c MockClient) BroadcastTxAsync(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return nil, c.err
 }
 
-func (c MockClient) BroadcastTxSync(ctx context.Context, tx octypes.Tx) (*ctypes.ResultBroadcastTx, error) {
+func (c MockClient) BroadcastTxSync(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return nil, c.err
 }
 
@@ -45,7 +44,6 @@ func CreateContextWithErrorAndMode(err error, mode string) Context {
 func TestBroadcastError(t *testing.T) {
 	errors := map[error]uint32{
 		mempool.ErrTxInCache:       sdkerrors.ErrTxInMempoolCache.ABCICode(),
-		mempool.ErrTxInMap:         sdkerrors.ErrTxInMempoolCache.ABCICode(),
 		mempool.ErrTxTooLarge{}:    sdkerrors.ErrTxTooLarge.ABCICode(),
 		mempool.ErrMempoolIsFull{}: sdkerrors.ErrMempoolIsFull.ABCICode(),
 	}

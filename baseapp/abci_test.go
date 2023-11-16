@@ -9,8 +9,6 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
@@ -143,10 +141,10 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 	err := app.init()
 	require.NoError(t, err)
 
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 	app.Commit()
 
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
 	app.Commit()
 
 	testCases := []struct {
@@ -195,7 +193,7 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	require.NoError(t, err)
 
 	// set block params
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 	ctx := app.deliverState.ctx
 	maxGas := int64(123456789)
 	app.paramStore.Set(ctx, ParamStoreKeyBlockParams,
@@ -205,8 +203,8 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 	app.Commit()
 
 	// confirm consensus params updated into the context
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
-	newCtx := app.getContextForTx(app.checkState, []byte{})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
+	newCtx := app.getContextForTx(runTxModeCheck, []byte{})
 	require.Equal(t, maxGas, newCtx.ConsensusParams().Block.MaxGas)
 }
 

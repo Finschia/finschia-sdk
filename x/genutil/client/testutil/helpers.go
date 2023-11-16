@@ -5,10 +5,9 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-
-	ostcfg "github.com/Finschia/ostracon/config"
-	"github.com/Finschia/ostracon/libs/cli"
-	"github.com/Finschia/ostracon/libs/log"
+	tmcfg "github.com/tendermint/tendermint/config"
+	"github.com/tendermint/tendermint/libs/cli"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
@@ -41,10 +40,10 @@ func ExecInitCmd(testMbm module.BasicManager, home string, cdc codec.Codec) erro
 	return cmd.ExecuteContext(ctx)
 }
 
-func CreateDefaultTendermintConfig(rootDir string) (*ostcfg.Config, error) {
-	conf := ostcfg.DefaultConfig()
+func CreateDefaultTendermintConfig(rootDir string) (*tmcfg.Config, error) {
+	conf := tmcfg.DefaultConfig()
 	conf.SetRoot(rootDir)
-	ostcfg.EnsureRoot(rootDir)
+	tmcfg.EnsureRoot(rootDir)
 
 	if err := conf.ValidateBasic(); err != nil {
 		return nil, fmt.Errorf("error in config file: %v", err)

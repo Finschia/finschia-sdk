@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	ostos "github.com/Finschia/ostracon/libs/os"
-	octypes "github.com/Finschia/ostracon/types"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -67,7 +67,7 @@ func SetGenesisStateInAppState(
 // for the application.
 //
 // NOTE: The pubkey input is this machines pubkey.
-func GenesisStateFromGenDoc(genDoc octypes.GenesisDoc) (genesisState map[string]json.RawMessage, err error) {
+func GenesisStateFromGenDoc(genDoc tmtypes.GenesisDoc) (genesisState map[string]json.RawMessage, err error) {
 	if err = json.Unmarshal(genDoc.AppState, &genesisState); err != nil {
 		return genesisState, err
 	}
@@ -78,13 +78,13 @@ func GenesisStateFromGenDoc(genDoc octypes.GenesisDoc) (genesisState map[string]
 // for the application.
 //
 // NOTE: The pubkey input is this machines pubkey.
-func GenesisStateFromGenFile(genFile string) (genesisState map[string]json.RawMessage, genDoc *octypes.GenesisDoc, err error) {
-	if !ostos.FileExists(genFile) {
+func GenesisStateFromGenFile(genFile string) (genesisState map[string]json.RawMessage, genDoc *tmtypes.GenesisDoc, err error) {
+	if !tmos.FileExists(genFile) {
 		return genesisState, genDoc,
 			fmt.Errorf("%s does not exist, run `init` first", genFile)
 	}
 
-	genDoc, err = octypes.GenesisDocFromFile(genFile)
+	genDoc, err = tmtypes.GenesisDocFromFile(genFile)
 	if err != nil {
 		return genesisState, genDoc, err
 	}

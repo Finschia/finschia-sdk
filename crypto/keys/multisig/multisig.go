@@ -3,7 +3,7 @@ package multisig
 import (
 	fmt "fmt"
 
-	occrypto "github.com/Finschia/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
@@ -36,7 +36,7 @@ func NewLegacyAminoPubKey(threshold int, pubKeys []cryptotypes.PubKey) *LegacyAm
 
 // Address implements cryptotypes.PubKey Address method
 func (m *LegacyAminoPubKey) Address() cryptotypes.Address {
-	return occrypto.AddressHash(m.Bytes())
+	return tmcrypto.AddressHash(m.Bytes())
 }
 
 // Bytes returns the proto encoded version of the LegacyAminoPubKey

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Finschia/ostracon/libs/log"
+	"github.com/tendermint/tendermint/libs/log"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/crisis/types"

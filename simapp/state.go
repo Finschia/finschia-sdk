@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	ostjson "github.com/Finschia/ostracon/libs/json"
-	octypes "github.com/Finschia/ostracon/types"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
@@ -182,15 +182,15 @@ func AppStateRandomizedFn(
 
 // AppStateFromGenesisFileFn util function to generate the genesis AppState
 // from a genesis.json file.
-func AppStateFromGenesisFileFn(r io.Reader, cdc codec.JSONCodec, genesisFile string) (octypes.GenesisDoc, []simtypes.Account) {
+func AppStateFromGenesisFileFn(r io.Reader, cdc codec.JSONCodec, genesisFile string) (tmtypes.GenesisDoc, []simtypes.Account) {
 	bytes, err := os.ReadFile(genesisFile)
 	if err != nil {
 		panic(err)
 	}
 
-	var genesis octypes.GenesisDoc
+	var genesis tmtypes.GenesisDoc
 	// NOTE: Tendermint uses a custom JSON decoder for GenesisDoc
-	err = ostjson.Unmarshal(bytes, &genesis)
+	err = tmjson.Unmarshal(bytes, &genesis)
 	if err != nil {
 		panic(err)
 	}

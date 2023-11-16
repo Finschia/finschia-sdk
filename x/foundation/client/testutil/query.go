@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
@@ -18,7 +17,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -67,7 +66,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -108,7 +107,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -149,7 +148,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -207,7 +206,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -248,7 +247,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -298,7 +297,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -339,7 +338,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -399,7 +398,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -449,7 +448,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -499,7 +498,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdCensorships() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -544,7 +543,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {

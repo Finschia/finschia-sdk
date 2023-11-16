@@ -23,21 +23,6 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/lbm/base/ostracon/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "OstraconBaseParams",
-          "GetLatestBlock": "GetLatestBlock2",
-          "GetLastBlock": "GetLastBlock2",
-          "GetBlockByHeight": "GetBlockByHeight2",
-          "GetNodeInfo": "GetNodeInfo2",
-          "GetSyncing": "GetSyncing2",
-          "GetLatestValidatorSet": "GetLatestValidatorSet2",
-          "GetValidatorSetByHeight": "GetValidatorSetByHeight2"
-        }
-      }
-    },
-    {
       "url": "./tmp-swagger-gen/cosmos/base/tendermint/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {

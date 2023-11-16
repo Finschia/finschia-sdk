@@ -4,9 +4,7 @@ import (
 	"context"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocproto "github.com/Finschia/ostracon/proto/ostracon/types"
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 )
@@ -41,7 +39,7 @@ func GetBlockResultsByHeight(clientCtx client.Context, height *int64) (*ctypes.R
 	return node.BlockResults(context.Background(), height)
 }
 
-func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64) (tmproto.BlockID, *ocproto.Block, error) {
+func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64) (tmproto.BlockID, *tmproto.Block, error) {
 	block, err := GetBlock(ctx, clientCtx, height)
 	if err != nil {
 		return tmproto.BlockID{}, nil, err

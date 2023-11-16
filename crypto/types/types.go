@@ -2,8 +2,7 @@ package types
 
 import (
 	proto "github.com/gogo/protobuf/proto"
-
-	occrypto "github.com/Finschia/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/crypto"
 )
 
 // PubKey defines a public key and extends proto.Message.
@@ -40,5 +39,5 @@ type PrivKey interface {
 }
 
 type (
-	Address = occrypto.Address
+	Address = tmcrypto.Address
 )

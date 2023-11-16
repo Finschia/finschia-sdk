@@ -11,9 +11,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	ostos "github.com/Finschia/ostracon/libs/os"
-	octypes "github.com/Finschia/ostracon/types"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -83,7 +82,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 				}
 			}
 
-			genDoc, err := octypes.GenesisDocFromFile(config.GenesisFile())
+			genDoc, err := tmtypes.GenesisDocFromFile(config.GenesisFile())
 			if err != nil {
 				return errors.Wrapf(err, "failed to read genesis doc file %s", config.GenesisFile())
 			}
@@ -215,7 +214,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 func makeOutputFilepath(rootDir, nodeID string) (string, error) {
 	writePath := filepath.Join(rootDir, "config", "gentx")
-	if err := ostos.EnsureDir(writePath, 0o700); err != nil {
+	if err := tmos.EnsureDir(writePath, 0o700); err != nil {
 		return "", err
 	}
 

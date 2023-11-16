@@ -7,9 +7,8 @@ import (
 	"io"
 
 	"github.com/hdevalence/ed25519consensus"
-
-	"github.com/Finschia/ostracon/crypto"
-	"github.com/Finschia/ostracon/crypto/tmhash"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/tmhash"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

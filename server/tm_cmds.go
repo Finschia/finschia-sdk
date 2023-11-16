@@ -6,21 +6,20 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	cfg "github.com/tendermint/tendermint/config"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	ostos "github.com/tendermint/tendermint/libs/os"
+	"github.com/tendermint/tendermint/node"
+	"github.com/tendermint/tendermint/p2p"
+	pvm "github.com/tendermint/tendermint/privval"
+	"github.com/tendermint/tendermint/types"
+	tmversion "github.com/tendermint/tendermint/version"
 	yaml "gopkg.in/yaml.v2"
-
-	cfg "github.com/Finschia/ostracon/config"
-	osjson "github.com/Finschia/ostracon/libs/json"
-	ostos "github.com/Finschia/ostracon/libs/os"
-	"github.com/Finschia/ostracon/node"
-	"github.com/Finschia/ostracon/p2p"
-	pvm "github.com/Finschia/ostracon/privval"
-	"github.com/Finschia/ostracon/types"
-	ostversion "github.com/Finschia/ostracon/version"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
-// ShowNodeIDCmd - ported from Ostracon, dump node ID to stdout
+// ShowNodeIDCmd - ported from tendermint, dump node ID to stdout
 func ShowNodeIDCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "show-node-id",
@@ -39,48 +38,52 @@ func ShowNodeIDCmd() *cobra.Command {
 	}
 }
 
-// ShowValidatorCmd - ported from Ostracon, show this node's validator info
+// ShowValidatorCmd - ported from tendermint, show this node's validator info
 func ShowValidatorCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "show-validator",
-		Short: "Show this node's ostracon validator info",
+		Short: "Show this node's tendermint validator info",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
-			cfg := serverCtx.Config
-			return showValidator(cmd, cfg)
+			config := serverCtx.Config
+			return showValidator(cmd, config)
 		},
 	}
 
 	return &cmd
 }
 
-func showValidator(cmd *cobra.Command, config *cfg.Config) error {
+func showValidator(_ *cobra.Command, config *cfg.Config) error {
 	var pv types.PrivValidator
-	if config.PrivValidatorListenAddr != "" {
-		chainID, err := loadChainID(config)
-		if err != nil {
-			return err
-		}
-		serverCtx := GetServerContextFromCmd(cmd)
-		log := serverCtx.Logger
-		pv, err = node.CreateAndStartPrivValidatorSocketClient(config, chainID, log)
-		if err != nil {
-			return err
-		}
-	} else {
-		keyFilePath := config.PrivValidatorKeyFile()
-		if !ostos.FileExists(keyFilePath) {
-			return fmt.Errorf("private validator file %s does not exist", keyFilePath)
-		}
-		pv = pvm.LoadFilePV(keyFilePath, config.PrivValidatorStateFile())
+	//nolint:gocritic
+	// todo: need to fix it when node.createAndStartPrivValidatorSocketClient change to public function in cometbft
+	// This changes is applied in finschia-sdk.https://github.com/Finschia/finschia-sdk/pull/821
+	//if config.PrivValidatorListenAddr != "" {
+	//	chainID, err := loadChainID(config)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	serverCtx := GetServerContextFromCmd(cmd)
+	//	log := serverCtx.Logger
+	//	node.
+	//		pv, err = node.CreateAndStartPrivValidatorSocketClient(config, chainID, log)
+	//	if err != nil {
+	//		return err
+	//	}
+	//} else {
+	keyFilePath := config.PrivValidatorKeyFile()
+	if !ostos.FileExists(keyFilePath) {
+		return fmt.Errorf("private validator file %s does not exist", keyFilePath)
 	}
+	pv = pvm.LoadFilePV(keyFilePath, config.PrivValidatorStateFile())
+	//}
 
 	pubKey, err := pv.GetPubKey()
 	if err != nil {
 		return fmt.Errorf("can't get pubkey: %w", err)
 	}
 
-	bz, err := osjson.Marshal(pubKey)
+	bz, err := tmjson.Marshal(pubKey)
 	if err != nil {
 		return fmt.Errorf("failed to marshal private validator pubkey: %w", err)
 	}
@@ -109,7 +112,7 @@ func loadChainID(config *cfg.Config) (string, error) {
 func ShowAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-address",
-		Short: "Shows this node's ostracon validator consensus address",
+		Short: "Shows this node's tendermint validator consensus address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
@@ -124,25 +127,25 @@ func ShowAddressCmd() *cobra.Command {
 	return cmd
 }
 
-// VersionCmd prints ostracon and ABCI version numbers.
+// VersionCmd prints tendermint and ABCI version numbers.
 func VersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
-		Short: "Print ostracon libraries' version",
+		Short: "Print tendermint libraries' version",
 		Long: `Print protocols' and libraries' version numbers
 against which this app has been compiled.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			bs, err := yaml.Marshal(&struct {
-				Ostracon      string
+				Tendermint    string
 				ABCI          string
 				BlockProtocol uint64
 				P2PProtocol   uint64
 			}{
-				Ostracon:      ostversion.OCCoreSemVer,
-				ABCI:          ostversion.ABCIVersion,
-				BlockProtocol: ostversion.BlockProtocol,
-				P2PProtocol:   ostversion.P2PProtocol,
+				Tendermint:    tmversion.TMCoreSemVer,
+				ABCI:          tmversion.ABCIVersion,
+				BlockProtocol: tmversion.BlockProtocol,
+				P2PProtocol:   tmversion.P2PProtocol,
 			})
 			if err != nil {
 				return err

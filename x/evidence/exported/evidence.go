@@ -2,8 +2,7 @@ package exported
 
 import (
 	"github.com/gogo/protobuf/proto"
-
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
@@ -16,7 +15,7 @@ type Evidence interface {
 	Route() string
 	Type() string
 	String() string
-	Hash() ostbytes.HexBytes
+	Hash() tmbytes.HexBytes
 	ValidateBasic() error
 
 	// Height at which the infraction occurred

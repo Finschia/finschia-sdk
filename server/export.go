@@ -7,10 +7,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ostjson "github.com/Finschia/ostracon/libs/json"
-	octypes "github.com/Finschia/ostracon/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/types"
@@ -73,7 +72,7 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 				return fmt.Errorf("error exporting state: %v", err)
 			}
 
-			doc, err := octypes.GenesisDocFromFile(serverCtx.Config.GenesisFile())
+			doc, err := tmtypes.GenesisDocFromFile(serverCtx.Config.GenesisFile())
 			if err != nil {
 				return err
 			}
@@ -100,7 +99,7 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 			// NOTE: Tendermint uses a custom JSON decoder for GenesisDoc
 			// (except for stuff inside AppState). Inside AppState, we're free
 			// to encode as protobuf or amino.
-			encoded, err := ostjson.Marshal(doc)
+			encoded, err := tmjson.Marshal(doc)
 			if err != nil {
 				return err
 			}

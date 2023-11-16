@@ -5,8 +5,6 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -108,7 +106,7 @@ func (am AppModule) ConsensusVersion() uint64 {
 }
 
 // BeginBlock returns the begin blocker for the stakingplus module.
-func (am AppModule) BeginBlock(ctx sdk.Context, req ocabci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	am.impl.BeginBlock(ctx, req)
 }
 

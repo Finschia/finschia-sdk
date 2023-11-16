@@ -7,11 +7,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/store/rootmulti"
@@ -26,7 +25,7 @@ func useUpgradeLoader(height int64, upgrades *store.StoreUpgrades) func(*baseapp
 }
 
 func defaultLogger() log.Logger {
-	return log.NewOCLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
+	return log.NewTMLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
 }
 
 func initStore(t *testing.T, db dbm.DB, storeKey string, k, v []byte) {
@@ -127,7 +126,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			for i := int64(2); i <= upgradeHeight-1; i++ {
-				origapp.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
+				origapp.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
 				res := origapp.Commit()
 				require.NotNil(t, res.Data)
 			}
@@ -143,7 +142,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			// "execute" one block
-			app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: upgradeHeight}})
+			app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: upgradeHeight}})
 			res := app.Commit()
 			require.NotNil(t, res.Data)
 

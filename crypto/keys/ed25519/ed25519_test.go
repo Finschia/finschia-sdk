@@ -7,9 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/crypto"
-	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
+	"github.com/tendermint/tendermint/crypto"
+	tmed25519 "github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
@@ -188,7 +187,7 @@ func TestMarshalAmino(t *testing.T) {
 func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	aminoCdc := codec.NewLegacyAmino()
 	// Create Tendermint keys.
-	tmPrivKey := osted25519.GenPrivKey()
+	tmPrivKey := tmed25519.GenPrivKey()
 	tmPubKey := tmPrivKey.PubKey()
 	// Create our own keys, with the same private key as Tendermint's.
 	privKey := &ed25519.PrivKey{Key: []byte(tmPrivKey)}

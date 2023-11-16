@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/tendermint/tendermint/mempool"
+	tmtypes "github.com/tendermint/tendermint/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/Finschia/ostracon/mempool"
-	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -47,7 +46,7 @@ func (ctx Context) BroadcastTx(txBytes []byte) (res *sdk.TxResponse, err error) 
 // TODO: Avoid brittle string matching in favor of error matching. This requires
 // a change to Tendermint's RPCError type to allow retrieval or matching against
 // a concrete error type.
-func CheckTendermintError(err error, tx octypes.Tx) *sdk.TxResponse {
+func CheckTendermintError(err error, tx tmtypes.Tx) *sdk.TxResponse {
 	if err == nil {
 		return nil
 	}
@@ -56,8 +55,7 @@ func CheckTendermintError(err error, tx octypes.Tx) *sdk.TxResponse {
 	txHash := fmt.Sprintf("%X", tx.Hash())
 
 	switch {
-	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInCache.Error())),
-		strings.Contains(errStr, strings.ToLower(mempool.ErrTxInMap.Error())):
+	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInCache.Error())):
 		return &sdk.TxResponse{
 			Code:      sdkerrors.ErrTxInMempoolCache.ABCICode(),
 			Codespace: sdkerrors.ErrTxInMempoolCache.Codespace(),

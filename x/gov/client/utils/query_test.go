@@ -6,10 +6,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/rpc/client/mock"
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
-	octypes "github.com/Finschia/ostracon/types"
+	"github.com/tendermint/tendermint/rpc/client/mock"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/simapp"
@@ -22,7 +21,7 @@ import (
 type TxSearchMock struct {
 	txConfig client.TxConfig
 	mock.Client
-	txs []octypes.Tx
+	txs []tmtypes.Tx
 }
 
 func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool, page, perPage *int, orderBy string) (*ctypes.ResultTxSearch, error) {
@@ -39,7 +38,7 @@ func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool,
 	msgType := messageAction.FindStringSubmatch(query)[1]
 
 	// Filter only the txs that match the query
-	matchingTxs := make([]octypes.Tx, 0)
+	matchingTxs := make([]tmtypes.Tx, 0)
 	for _, tx := range mock.txs {
 		sdkTx, err := mock.txConfig.TxDecoder()(tx)
 		if err != nil {
@@ -72,7 +71,7 @@ func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool,
 
 func (mock TxSearchMock) Block(ctx context.Context, height *int64) (*ctypes.ResultBlock, error) {
 	// any non nil Block needs to be returned. used to get time value
-	return &ctypes.ResultBlock{Block: &octypes.Block{}}, nil
+	return &ctypes.ResultBlock{Block: &tmtypes.Block{}}, nil
 }
 
 func TestGetPaginatedVotes(t *testing.T) {
@@ -164,7 +163,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 		tc := tc
 
 		t.Run(tc.description, func(t *testing.T) {
-			marshaled := make([]octypes.Tx, len(tc.msgs))
+			marshaled := make([]tmtypes.Tx, len(tc.msgs))
 			cli := TxSearchMock{txs: marshaled, txConfig: encCfg.TxConfig}
 			clientCtx := client.Context{}.
 				WithLegacyAmino(encCfg.Amino).

@@ -11,12 +11,11 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-
-	ostconfig "github.com/Finschia/ostracon/config"
-	ostos "github.com/Finschia/ostracon/libs/os"
-	ostrand "github.com/Finschia/ostracon/libs/rand"
-	"github.com/Finschia/ostracon/types"
-	osttime "github.com/Finschia/ostracon/types/time"
+	tmconfig "github.com/tendermint/tendermint/config"
+	ostos "github.com/tendermint/tendermint/libs/os"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -44,7 +43,7 @@ var (
 	flagStartingIPAddress = "starting-ip-address"
 )
 
-// get cmd to initialize all files for ostracon testnet and application
+// get cmd to initialize all files for tendermint testnet and application
 func testnetCmd(mbm module.BasicManager, genBalIterator banktypes.GenesisBalancesIterator) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "testnet",
@@ -102,7 +101,7 @@ const nodeDirPerm = 0o755
 func InitTestnet(
 	clientCtx client.Context,
 	cmd *cobra.Command,
-	nodeConfig *ostconfig.Config,
+	nodeConfig *tmconfig.Config,
 	mbm module.BasicManager,
 	genBalIterator banktypes.GenesisBalancesIterator,
 	outputDir,
@@ -116,7 +115,7 @@ func InitTestnet(
 	numValidators int,
 ) error {
 	if chainID == "" {
-		chainID = "chain-" + ostrand.NewRand().Str(6)
+		chainID = "chain-" + tmrand.NewRand().Str(6)
 	}
 
 	nodeIDs := make([]string, numValidators)
@@ -316,12 +315,12 @@ func initGenFiles(
 }
 
 func collectGenFiles(
-	clientCtx client.Context, nodeConfig *ostconfig.Config, chainID string,
+	clientCtx client.Context, nodeConfig *tmconfig.Config, chainID string,
 	nodeIDs []string, valPubKeys []cryptotypes.PubKey, numValidators int,
 	outputDir, nodeDirPrefix, nodeDaemonHome string, genBalIterator banktypes.GenesisBalancesIterator,
 ) error {
 	var appState json.RawMessage
-	genTime := osttime.Now()
+	genTime := tmtime.Now()
 
 	for i := 0; i < numValidators; i++ {
 		nodeDirName := fmt.Sprintf("%s%d", nodeDirPrefix, i)

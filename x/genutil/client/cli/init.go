@@ -10,12 +10,11 @@ import (
 	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	cfg "github.com/Finschia/ostracon/config"
-	"github.com/Finschia/ostracon/libs/cli"
-	ostos "github.com/Finschia/ostracon/libs/os"
-	ostrand "github.com/Finschia/ostracon/libs/rand"
-	"github.com/Finschia/ostracon/types"
+	cfg "github.com/tendermint/tendermint/config"
+	"github.com/tendermint/tendermint/libs/cli"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -81,7 +80,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 
 			chainID, _ := cmd.Flags().GetString(flags.FlagChainID)
 			if chainID == "" {
-				chainID = fmt.Sprintf("test-chain-%v", ostrand.Str(6))
+				chainID = fmt.Sprintf("test-chain-%v", tmrand.Str(6))
 			}
 
 			// Get bip39 mnemonic
@@ -110,7 +109,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			genFile := config.GenesisFile()
 			overwrite, _ := cmd.Flags().GetBool(FlagOverwrite)
 
-			if !overwrite && ostos.FileExists(genFile) {
+			if !overwrite && tmos.FileExists(genFile) {
 				return fmt.Errorf("genesis.json file already exists: %v", genFile)
 			}
 

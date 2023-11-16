@@ -10,8 +10,7 @@ import (
 	"github.com/cosmos/go-bip39"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
-
-	"github.com/Finschia/ostracon/crypto"
+	"github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	csecp256k1 "github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

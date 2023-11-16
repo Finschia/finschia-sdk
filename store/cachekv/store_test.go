@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
 	dbm "github.com/tendermint/tm-db"
-
-	ostrand "github.com/Finschia/ostracon/libs/rand"
 
 	"github.com/Finschia/finschia-sdk/store/cachekv"
 	"github.com/Finschia/finschia-sdk/store/dbadapter"
@@ -321,7 +320,7 @@ const (
 )
 
 func randInt(n int) int {
-	return ostrand.NewRand().Int() % n
+	return tmrand.NewRand().Int() % n
 }
 
 // useful for replaying a error case if we find one

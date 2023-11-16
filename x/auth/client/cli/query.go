@@ -6,8 +6,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-
-	octypes "github.com/Finschia/ostracon/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -222,7 +221,7 @@ $ %s query txs --%s 'message.sender=link1...&message.action=withdraw_delegator_r
 				}
 
 				tokens := strings.Split(event, "=")
-				if tokens[0] == octypes.TxHeightKey {
+				if tokens[0] == tmtypes.TxHeightKey {
 					event = fmt.Sprintf("%s=%s", tokens[0], tokens[1])
 				} else {
 					event = fmt.Sprintf("%s='%s'", tokens[0], tokens[1])

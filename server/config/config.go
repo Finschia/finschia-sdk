@@ -118,16 +118,16 @@ type APIConfig struct {
 	// MaxOpenConnections defines the number of maximum open connections
 	MaxOpenConnections uint `mapstructure:"max-open-connections"`
 
-	// RPCReadTimeout defines the Ostracon RPC read timeout (in seconds)
+	// RPCReadTimeout defines the Tendermint RPC read timeout (in seconds)
 	RPCReadTimeout uint `mapstructure:"rpc-read-timeout"`
 
-	// RPCWriteTimeout defines the Ostracon RPC write timeout (in seconds)
+	// RPCWriteTimeout defines the Tendermint RPC write timeout (in seconds)
 	RPCWriteTimeout uint `mapstructure:"rpc-write-timeout"`
 
-	// RPCIdleTimeout defines the Ostracon RPC idle timeout (in seconds)
+	// RPCIdleTimeout defines the Tendermint RPC idle timeout (in seconds)
 	RPCIdleTimeout uint `mapstructure:"rpc-idle-timeout"`
 
-	// RPCMaxBodyBytes defines the Ostracon maximum response body (in bytes)
+	// RPCMaxBodyBytes defines the Tendermint maximum response body (in bytes)
 	RPCMaxBodyBytes uint `mapstructure:"rpc-max-body-bytes"`
 
 	// TODO: TLS/Proxy configuration.

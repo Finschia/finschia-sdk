@@ -9,8 +9,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	octypes "github.com/Finschia/ostracon/proto/ostracon/types"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/rpc"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -49,8 +47,8 @@ func (s queryServer) GetSyncing(ctx context.Context, _ *GetSyncingRequest) (*Get
 	}, nil
 }
 
-// ConvertOcProtoBlockToTmProtoBlock convert from ostracon proto block to tendermint proto block.
-func ConvertOcProtoBlockToTmProtoBlock(block *octypes.Block) *tmtypes.Block {
+// ConvertOcProtoBlockToTmProtoBlock convert from tendermint proto block to tendermint proto block.
+func ConvertOcProtoBlockToTmProtoBlock(block *tmtypes.Block) *tmtypes.Block {
 	return &tmtypes.Block{
 		Header:     block.Header,
 		Data:       block.Data,
@@ -74,7 +72,7 @@ func (s queryServer) GetLatestBlock(ctx context.Context, _ *GetLatestBlockReques
 
 	return &GetLatestBlockResponse{
 		BlockId: &protoBlockID,
-		Block:   ConvertOcProtoBlockToTmProtoBlock(protoBlock),
+		Block:   protoBlock,
 	}, nil
 }
 
@@ -95,7 +93,7 @@ func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeight
 	}
 	return &GetBlockByHeightResponse{
 		BlockId: &protoBlockID,
-		Block:   ConvertOcProtoBlockToTmProtoBlock(protoBlock),
+		Block:   protoBlock,
 	}, nil
 }
 

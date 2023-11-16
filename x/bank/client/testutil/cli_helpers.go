@@ -3,7 +3,7 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/Finschia/ostracon/libs/cli"
+	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/testutil"

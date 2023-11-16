@@ -5,14 +5,14 @@ import (
 	"path/filepath"
 	"time"
 
-	ostos "github.com/Finschia/ostracon/libs/os"
-	"github.com/Finschia/ostracon/node"
-	"github.com/Finschia/ostracon/p2p"
-	pvm "github.com/Finschia/ostracon/privval"
-	"github.com/Finschia/ostracon/proxy"
-	"github.com/Finschia/ostracon/rpc/client/local"
-	"github.com/Finschia/ostracon/types"
-	osttime "github.com/Finschia/ostracon/types/time"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	"github.com/tendermint/tendermint/node"
+	"github.com/tendermint/tendermint/p2p"
+	pvm "github.com/tendermint/tendermint/privval"
+	"github.com/tendermint/tendermint/proxy"
+	"github.com/tendermint/tendermint/rpc/client/local"
+	"github.com/tendermint/tendermint/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/Finschia/finschia-sdk/server/api"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
@@ -119,7 +119,7 @@ func startInProcess(cfg Config, val *Validator) error {
 }
 
 func collectGenFiles(cfg Config, vals []*Validator, outputDir string) error {
-	genTime := osttime.Now()
+	genTime := tmtime.Now()
 
 	for i := 0; i < cfg.NumValidators; i++ {
 		tmCfg := vals[i].Ctx.Config
@@ -198,12 +198,12 @@ func writeFile(name, dir string, contents []byte) error {
 	writePath := filepath.Join(dir) //nolint:gocritic
 	file := filepath.Join(writePath, name)
 
-	err := ostos.EnsureDir(writePath, 0o755)
+	err := tmos.EnsureDir(writePath, 0o755)
 	if err != nil {
 		return err
 	}
 
-	err = ostos.WriteFile(file, contents, 0o644)
+	err = tmos.WriteFile(file, contents, 0o644)
 	if err != nil {
 		return err
 	}

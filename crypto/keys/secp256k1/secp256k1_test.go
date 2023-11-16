@@ -12,9 +12,8 @@ import (
 	btcecdsa "github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/crypto"
-	ostsecp256k1 "github.com/Finschia/ostracon/crypto/secp256k1"
+	"github.com/tendermint/tendermint/crypto"
+	tmsecp256k1 "github.com/tendermint/tendermint/crypto/secp256k1"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
@@ -401,8 +400,8 @@ func TestMarshalAmino(t *testing.T) {
 
 func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	aminoCdc := codec.NewLegacyAmino()
-	// Create Ostracon keys.
-	ostPrivKey := ostsecp256k1.GenPrivKey()
+	// Create tendermint keys.
+	ostPrivKey := tmsecp256k1.GenPrivKey()
 	ostPubKey := ostPrivKey.PubKey()
 	// Create our own keys, with the same private key as Tendermint's.
 	privKey := &secp256k1.PrivKey{Key: []byte(ostPrivKey)}

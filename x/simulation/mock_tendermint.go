@@ -8,11 +8,9 @@ import (
 	"time"
 
 	abci "github.com/tendermint/tendermint/abci/types"
+	cryptoenc "github.com/tendermint/tendermint/crypto/encoding"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	cryptoenc "github.com/Finschia/ostracon/crypto/encoding"
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 )
 
 type mockValidator struct {
@@ -62,7 +60,7 @@ func (vals mockValidators) getKeys() []string {
 }
 
 // randomProposer picks a random proposer from the current validator set
-func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
+func (vals mockValidators) randomProposer(r *rand.Rand) tmbytes.HexBytes {
 	keys := vals.getKeys()
 	if len(keys) == 0 {
 		return nil
@@ -71,7 +69,7 @@ func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
 	key := keys[r.Intn(len(keys))]
 
 	proposer := vals[key].val
-	pk, err := cryptoenc.PubKeyFromProto(&proposer.PubKey)
+	pk, err := cryptoenc.PubKeyFromProto(proposer.PubKey)
 	if err != nil { //nolint:wsl
 		panic(err)
 	}
@@ -79,7 +77,7 @@ func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
 	return pk.Address()
 }
 
-// updateValidators mimics Ostracon's update logic.
+// updateValidators mimics tendermint's update logic.
 func updateValidators(
 	tb testing.TB,
 	r *rand.Rand,
@@ -121,9 +119,9 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 	validators mockValidators, pastTimes []time.Time,
 	pastVoteInfos [][]abci.VoteInfo,
 	event func(route, op, evResult string), header tmproto.Header,
-) ocabci.RequestBeginBlock {
+) abci.RequestBeginBlock {
 	if len(validators) == 0 {
-		return ocabci.RequestBeginBlock{
+		return abci.RequestBeginBlock{
 			Header: header,
 		}
 	}
@@ -151,7 +149,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 			event("begin_block", "signing", "missed")
 		}
 
-		pubkey, err := cryptoenc.PubKeyFromProto(&mVal.val.PubKey)
+		pubkey, err := cryptoenc.PubKeyFromProto(mVal.val.PubKey)
 		if err != nil {
 			panic(err)
 		}
@@ -167,7 +165,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 
 	// return if no past times
 	if len(pastTimes) == 0 {
-		return ocabci.RequestBeginBlock{
+		return abci.RequestBeginBlock{
 			Header: header,
 			LastCommitInfo: abci.LastCommitInfo{
 				Votes: voteInfos,
@@ -184,7 +182,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 		vals := voteInfos
 
 		if r.Float64() < params.PastEvidenceFraction() && header.Height > 1 {
-			height = int64(r.Intn(int(header.Height)-1)) + 1 // Ostracon starts at height 1
+			height = int64(r.Intn(int(header.Height)-1)) + 1 // tendermint starts at height 1
 			// array indices offset by one
 			time = pastTimes[height-1]
 			vals = pastVoteInfos[height-1]
@@ -210,7 +208,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 		event("begin_block", "evidence", "ok")
 	}
 
-	return ocabci.RequestBeginBlock{
+	return abci.RequestBeginBlock{
 		Header: header,
 		LastCommitInfo: abci.LastCommitInfo{
 			Votes: voteInfos,

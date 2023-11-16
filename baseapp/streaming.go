@@ -6,8 +6,6 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	store "github.com/Finschia/finschia-sdk/store/types"
 	"github.com/Finschia/finschia-sdk/types"
 )
@@ -15,7 +13,7 @@ import (
 // ABCIListener interface used to hook into the ABCI message processing of the BaseApp
 type ABCIListener interface {
 	// ListenBeginBlock updates the streaming service with the latest BeginBlock messages
-	ListenBeginBlock(ctx types.Context, req ocabci.RequestBeginBlock, res abci.ResponseBeginBlock) error
+	ListenBeginBlock(ctx types.Context, req abci.RequestBeginBlock, res abci.ResponseBeginBlock) error
 	// ListenEndBlock updates the steaming service with the latest EndBlock messages
 	ListenEndBlock(ctx types.Context, req abci.RequestEndBlock, res abci.ResponseEndBlock) error
 	// ListenDeliverTx updates the steaming service with the latest DeliverTx messages

@@ -1,7 +1,7 @@
 package types
 
 import (
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 
 	query "github.com/Finschia/finschia-sdk/types/query"
 )
@@ -13,7 +13,7 @@ const (
 )
 
 // NewQueryEvidenceRequest creates a new instance of QueryEvidenceRequest.
-func NewQueryEvidenceRequest(hash ostbytes.HexBytes) *QueryEvidenceRequest {
+func NewQueryEvidenceRequest(hash tmbytes.HexBytes) *QueryEvidenceRequest {
 	return &QueryEvidenceRequest{EvidenceHash: hash}
 }
 

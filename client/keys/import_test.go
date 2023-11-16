@@ -61,7 +61,7 @@ func Test_runImportCmd(t *testing.T) {
 		},
 	}
 
-	armoredKey := `-----BEGIN OSTRACON PRIVATE KEY-----
+	armoredKey := `-----BEGIN TENDERMINT PRIVATE KEY-----
 kdf: bcrypt
 salt: A53F628182B827E07DD11A96EAB9D526
 type: secp256k1
@@ -69,7 +69,7 @@ type: secp256k1
 Ax9IQsSq+jOWkPRDJQ69a5/uUm4XliPim/CbYDVoXO6D3fts5IEXcUTmIa60ynC/
 8hzYAawzYMO95Kwi0NI8WW9wUv3TseSWFv6/RpU=
 =umYd
------END OSTRACON PRIVATE KEY-----`
+-----END TENDERMINT PRIVATE KEY-----`
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -20,7 +19,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -88,7 +87,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTSupply() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewFTID(s.ftClassID)
@@ -164,7 +163,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTMinted() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewFTID(s.ftClassID)
@@ -240,7 +239,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTBurnt() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewFTID(s.ftClassID)
@@ -316,7 +315,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -391,7 +390,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -466,7 +465,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -541,7 +540,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdContract() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -596,7 +595,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenType() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -666,7 +665,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewNFTID(s.nftClassID, 1)
@@ -744,7 +743,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdRoot() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewNFTID(s.nftClassID, 2)
@@ -816,7 +815,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParent() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewNFTID(s.nftClassID, 2)
@@ -888,7 +887,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	tokenID := collection.NewNFTID(s.nftClassID, 1)
@@ -964,7 +963,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -1043,7 +1042,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdIsOperatorFor() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -1105,7 +1104,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdHoldersByOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {

@@ -9,8 +9,7 @@ import (
 
 	"github.com/cosmos/go-bip39"
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/crypto"
+	"github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"

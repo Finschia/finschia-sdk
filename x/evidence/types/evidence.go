@@ -5,10 +5,9 @@ import (
 	"time"
 
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/crypto/tmhash"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	"gopkg.in/yaml.v2"
-
-	"github.com/Finschia/ostracon/crypto/tmhash"
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/evidence/exported"
@@ -34,7 +33,7 @@ func (e *Equivocation) String() string {
 }
 
 // Hash returns the hash of an Equivocation object.
-func (e *Equivocation) Hash() ostbytes.HexBytes {
+func (e *Equivocation) Hash() tmbytes.HexBytes {
 	bz, err := e.Marshal()
 	if err != nil {
 		panic(err)
@@ -86,7 +85,7 @@ func (e Equivocation) GetValidatorPower() int64 {
 // GetTotalPower is a no-op for the Equivocation type.
 func (e Equivocation) GetTotalPower() int64 { return 0 }
 
-// FromABCIEvidence converts a Ostracon concrete Evidence type to
+// FromABCIEvidence converts a Tendermint concrete Evidence type to
 // SDK Evidence using Equivocation as the concrete type.
 func FromABCIEvidence(e abci.Evidence) exported.Evidence {
 	bech32PrefixConsAddr := sdk.GetConfig().GetBech32ConsensusAddrPrefix()

@@ -15,14 +15,14 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	tmcfg "github.com/tendermint/tendermint/config"
+	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
+	"github.com/tendermint/tendermint/libs/log"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/node"
+	tmclient "github.com/tendermint/tendermint/rpc/client"
 	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
-
-	ostcfg "github.com/Finschia/ostracon/config"
-	"github.com/Finschia/ostracon/libs/log"
-	ostrand "github.com/Finschia/ostracon/libs/rand"
-	"github.com/Finschia/ostracon/node"
-	ostclient "github.com/Finschia/ostracon/rpc/client"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"
@@ -109,7 +109,7 @@ func DefaultConfig() Config {
 		GenesisState:      simapp.ModuleBasics.DefaultGenesis(encCfg.Marshaler),
 		// 2 second confirm may make some tests to be failed with `tx already in mempool`
 		TimeoutCommit:   1 * time.Second,
-		ChainID:         "chain-" + ostrand.NewRand().Str(6),
+		ChainID:         "chain-" + tmrand.NewRand().Str(6),
 		NumValidators:   4,
 		BondDenom:       sdk.DefaultBondDenom,
 		MinGasPrices:    fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
@@ -158,7 +158,7 @@ type (
 		P2PAddress string
 		Address    sdk.AccAddress
 		ValAddress sdk.ValAddress
-		RPCClient  ostclient.Client
+		RPCClient  tmclient.Client
 
 		tmNode  *node.Node
 		api     *api.Server
@@ -210,7 +210,6 @@ func New(t *testing.T, cfg Config) *Network {
 
 		ctx := server.NewDefaultContext()
 		tmCfg := ctx.Config
-		tmCfg.PrivValidatorRemoteAddresses = append(tmCfg.PrivValidatorRemoteAddresses, "127.0.0.1")
 		tmCfg.Consensus.TimeoutCommit = cfg.TimeoutCommit
 
 		// Only allow the first validator to expose an RPC, API and gRPC
@@ -245,8 +244,8 @@ func New(t *testing.T, cfg Config) *Network {
 
 		logger := log.NewNopLogger()
 		if cfg.EnableLogging {
-			logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))
-			logger, _ = log.ParseLogLevel("info", logger, ostcfg.DefaultLogLevel)
+			logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+			logger, _ = tmflags.ParseLogLevel("info", logger, tmcfg.DefaultLogLevel)
 		}
 
 		ctx.Logger = logger
@@ -273,7 +272,6 @@ func New(t *testing.T, cfg Config) *Network {
 		tmCfg.P2P.ListenAddress = p2pAddr
 		tmCfg.P2P.AddrBookStrict = false
 		tmCfg.P2P.AllowDuplicateIP = true
-		tmCfg.PrivValidatorRemoteAddresses = append(tmCfg.PrivValidatorRemoteAddresses, "127.0.0.1")
 
 		nodeID, pubKey, err := genutil.InitializeNodeValidatorFiles(tmCfg)
 		require.NoError(t, err)

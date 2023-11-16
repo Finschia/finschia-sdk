@@ -6,8 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -176,8 +175,8 @@ func (*TestEvidence) String() string {
 func (*TestEvidence) ProtoMessage() {}
 func (*TestEvidence) Reset()        {}
 
-func (*TestEvidence) Hash() ostbytes.HexBytes {
-	return ostbytes.HexBytes([]byte("test-hash"))
+func (*TestEvidence) Hash() tmbytes.HexBytes {
+	return tmbytes.HexBytes([]byte("test-hash"))
 }
 
 func (*TestEvidence) ValidateBasic() error {

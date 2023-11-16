@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-
-	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	tmcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/types"
@@ -34,7 +33,7 @@ application.
 			}
 			app := appCreator(ctx.Logger, db, nil, ctx.Viper)
 			// rollback tendermint state
-			height, hash, err := ostcmd.RollbackState(ctx.Config)
+			height, hash, err := tmcmd.RollbackState(ctx.Config)
 			if err != nil {
 				return fmt.Errorf("failed to rollback tendermint state: %w", err)
 			}

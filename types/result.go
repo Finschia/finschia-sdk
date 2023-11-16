@@ -8,8 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -59,7 +58,7 @@ func (logs ABCIMessageLogs) String() string {
 	return ""
 }
 
-// NewResponseResultTx returns a TxResponse given a ResultTx from ostracon
+// NewResponseResultTx returns a TxResponse given a ResultTx from tendermint
 func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp string) *TxResponse {
 	if res == nil {
 		return nil
@@ -85,7 +84,7 @@ func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp 
 }
 
 // NewResponseFormatBroadcastTxCommit returns a TxResponse given a
-// ResultBroadcastTxCommit from ostracon.
+// ResultBroadcastTxCommit from tendermint.
 func NewResponseFormatBroadcastTxCommit(res *ctypes.ResultBroadcastTxCommit) *TxResponse {
 	if res == nil {
 		return nil
@@ -152,7 +151,7 @@ func newTxResponseDeliverTx(res *ctypes.ResultBroadcastTxCommit) *TxResponse {
 	}
 }
 
-// NewResponseFormatBroadcastTx returns a TxResponse given a ResultBroadcastTx from ostracon
+// NewResponseFormatBroadcastTx returns a TxResponse given a ResultBroadcastTx from tendermint
 func NewResponseFormatBroadcastTx(res *ctypes.ResultBroadcastTx) *TxResponse {
 	if res == nil {
 		return nil

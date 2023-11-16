@@ -7,9 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server"
@@ -65,7 +64,7 @@ func PruningCmd(appCreator servertypes.AppCreator) *cobra.Command {
 				return err
 			}
 
-			logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+			logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 			app := appCreator(logger, db, nil, vp)
 			cms := app.CommitMultiStore()
 

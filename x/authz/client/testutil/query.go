@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
@@ -46,7 +46,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 			[]string{
 				val.Address.String(),
 				"invalid grantee",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true,
 			"decoding bech32 failed: invalid character in string: ' '",
@@ -56,7 +56,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 			[]string{
 				"invalid granter",
 				grantee.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true,
 			"decoding bech32 failed: invalid character in string: ' '",
@@ -66,7 +66,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 			[]string{
 				val.Address.String(),
 				grantee.String(),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false,
 			``,
@@ -125,7 +125,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 				val.Address.String(),
 				"invalid grantee",
 				typeMsgSend,
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true,
 			"",
@@ -136,7 +136,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 				"invalid granter",
 				grantee.String(),
 				typeMsgSend,
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true,
 			"",
@@ -147,7 +147,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 				val.Address.String(),
 				grantee.String(),
 				"typeMsgSend",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true,
 			"",
@@ -158,7 +158,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 				val.Address.String(),
 				grantee.String(),
 				typeMsgSend,
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false,
 			`{"@type":"/cosmos.bank.v1beta1.SendAuthorization","spend_limit":[{"denom":"steak","amount":"100"}]}`,

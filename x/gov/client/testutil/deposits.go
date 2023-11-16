@@ -5,8 +5,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	"github.com/Finschia/finschia-sdk/testutil/network"
@@ -110,7 +109,7 @@ func (s *DepositTestSuite) TestQueryProposalNotEnoughDeposits() {
 	s.Require().NoError(err)
 
 	// query proposal
-	args := []string{"3", fmt.Sprintf("--%s=json", ostcli.OutputFlag)}
+	args := []string{"3", fmt.Sprintf("--%s=json", tmcli.OutputFlag)}
 	cmd := cli.GetCmdQueryProposal()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, args)
 	s.Require().NoError(err)
@@ -137,7 +136,7 @@ func (s *DepositTestSuite) TestRejectedProposalDeposits() {
 
 	// query deposits
 	var deposits types.QueryDepositsResponse
-	args := []string{"4", fmt.Sprintf("--%s=json", ostcli.OutputFlag)}
+	args := []string{"4", fmt.Sprintf("--%s=json", tmcli.OutputFlag)}
 	cmd := cli.GetCmdQueryDeposits()
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, args)
 	s.Require().NoError(err)
@@ -152,7 +151,7 @@ func (s *DepositTestSuite) TestRejectedProposalDeposits() {
 
 	time.Sleep(20 * time.Second)
 
-	args = []string{"4", fmt.Sprintf("--%s=json", ostcli.OutputFlag)}
+	args = []string{"4", fmt.Sprintf("--%s=json", tmcli.OutputFlag)}
 	cmd = cli.GetCmdQueryProposal()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, args)
 	s.Require().NoError(err)
@@ -165,7 +164,7 @@ func (s *DepositTestSuite) TestRejectedProposalDeposits() {
 }
 
 func (s *DepositTestSuite) queryDeposits(val *network.Validator, proposalID string, exceptErr bool) types.Deposits {
-	args := []string{proposalID, fmt.Sprintf("--%s=json", ostcli.OutputFlag)}
+	args := []string{proposalID, fmt.Sprintf("--%s=json", tmcli.OutputFlag)}
 	var depositsRes types.Deposits
 	cmd := cli.GetCmdQueryDeposits()
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, args)
@@ -179,7 +178,7 @@ func (s *DepositTestSuite) queryDeposits(val *network.Validator, proposalID stri
 }
 
 func (s *DepositTestSuite) queryDeposit(val *network.Validator, proposalID string, exceptErr bool) *types.Deposit {
-	args := []string{proposalID, val.Address.String(), fmt.Sprintf("--%s=json", ostcli.OutputFlag)}
+	args := []string{proposalID, val.Address.String(), fmt.Sprintf("--%s=json", tmcli.OutputFlag)}
 	var depositRes types.Deposit
 	cmd := cli.GetCmdQueryDeposit()
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, args)

@@ -12,9 +12,8 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	"github.com/Finschia/ostracon/libs/log"
-	ostrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
+	"github.com/tendermint/tendermint/libs/log"
+	tmrpcserver "github.com/tendermint/tendermint/rpc/jsonrpc/server"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec/legacy"
@@ -89,14 +88,13 @@ func New(clientCtx client.Context, logger log.Logger) *Server {
 func (s *Server) Start(cfg config.Config) error {
 	s.mtx.Lock()
 
-	ostCfg := ostrpcserver.DefaultConfig()
-	ostCfg.MaxOpenConnections = int(cfg.API.MaxOpenConnections)
-	ostCfg.ReadTimeout = time.Duration(cfg.API.RPCReadTimeout) * time.Second
-	ostCfg.WriteTimeout = time.Duration(cfg.API.RPCWriteTimeout) * time.Second
-	ostCfg.IdleTimeout = time.Duration(cfg.API.RPCIdleTimeout) * time.Second
-	ostCfg.MaxBodyBytes = int64(cfg.API.RPCMaxBodyBytes)
+	tmCfg := tmrpcserver.DefaultConfig()
+	tmCfg.MaxOpenConnections = int(cfg.API.MaxOpenConnections)
+	tmCfg.ReadTimeout = time.Duration(cfg.API.RPCReadTimeout) * time.Second
+	tmCfg.WriteTimeout = time.Duration(cfg.API.RPCWriteTimeout) * time.Second
+	tmCfg.MaxBodyBytes = int64(cfg.API.RPCMaxBodyBytes)
 
-	listener, err := ostrpcserver.Listen(cfg.API.Address, ostCfg)
+	listener, err := tmrpcserver.Listen(cfg.API.Address, tmCfg)
 	if err != nil {
 		s.mtx.Unlock()
 		return err
@@ -110,11 +108,11 @@ func (s *Server) Start(cfg config.Config) error {
 
 	if cfg.API.EnableUnsafeCORS {
 		allowAllCORS := handlers.CORS(handlers.AllowedHeaders([]string{"Content-Type"}))
-		return ostrpcserver.Serve(s.listener, allowAllCORS(h), s.logger, ostCfg)
+		return tmrpcserver.Serve(s.listener, allowAllCORS(h), s.logger, tmCfg)
 	}
 
 	s.logger.Info("starting API server...")
-	return ostrpcserver.Serve(s.listener, s.Router, s.logger, ostCfg)
+	return tmrpcserver.Serve(s.listener, s.Router, s.logger, tmCfg)
 }
 
 // Close closes the API server.

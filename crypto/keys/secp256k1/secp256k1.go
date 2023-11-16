@@ -9,9 +9,8 @@ import (
 	"math/big"
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/tendermint/tendermint/crypto"
 	"golang.org/x/crypto/ripemd160" //nolint: staticcheck // necessary for Bitcoin address format
-
-	"github.com/Finschia/ostracon/crypto"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
