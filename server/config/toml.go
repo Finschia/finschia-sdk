@@ -86,10 +86,6 @@ index-events = {{ .BaseConfig.IndexEvents }}
 # It works when tendermint's prometheus option (config.toml) is set to true.
 prometheus = {{ .BaseConfig.Prometheus }}
 
-# ChanCheckTxSize is the size of RequestCheckTxAsync of BaseApp.
-# ChanCheckTxSize should be equals to or greater than the mempool size set in config.toml of tendermint.
-chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
-
 ###############################################################################
 ###                         Telemetry Configuration                         ###
 ###############################################################################
@@ -148,9 +144,6 @@ rpc-read-timeout = {{ .API.RPCReadTimeout }}
 
 # RPCWriteTimeout defines the tendermint RPC write timeout (in seconds).
 rpc-write-timeout = {{ .API.RPCWriteTimeout }}
-
-# RPCIdleTimeout defines the tendermint RPC idle timeout (in seconds).
-rpc-idle-timeout = {{ .API.RPCIdleTimeout }}
 
 # RPCMaxBodyBytes defines the tendermint maximum response body (in bytes).
 rpc-max-body-bytes = {{ .API.RPCMaxBodyBytes }}

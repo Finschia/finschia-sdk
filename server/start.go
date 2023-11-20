@@ -53,7 +53,6 @@ const (
 	FlagTrace               = "trace"
 	FlagInvCheckPeriod      = "inv-check-period"
 	FlagPrometheus          = "prometheus"
-	FlagChanCheckTxSize     = "chan-check-tx-size"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"
@@ -182,8 +181,6 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 	cmd.Flags().Bool(FlagIAVLFastNode, true, "Enable fast node for IAVL tree")
 
 	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metric for app")
-
-	cmd.Flags().Uint(FlagChanCheckTxSize, serverconfig.DefaultChanCheckTxSize, "The size of the channel check tx")
 
 	// add support for all Tendermint-specific command line options
 	tmcmd.AddNodeFlags(cmd)
