@@ -76,12 +76,8 @@ const (
 	FlagReverse          = "reverse"
 
 	// Tendermint logging flags
-	FlagLogLevel      = "log_level"
-	FlagLogFormat     = "log_format"
-	FlagLogPath       = "log_path"
-	FlagLogMaxAge     = "log_max_age"
-	FlagLogMaxSize    = "log_max_size"
-	FlagLogMaxBackups = "log_max_backups"
+	FlagLogLevel  = "log_level"
+	FlagLogFormat = "log_format"
 )
 
 // LineBreak can be included in a command list to provide a blank line
