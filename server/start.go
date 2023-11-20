@@ -292,7 +292,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	genDocProvider := node.DefaultGenesisDocProviderFunc(cfg)
 
 	var (
-		ocNode   *node.Node
+		tmNode   *node.Node
 		gRPCOnly = ctx.Viper.GetBool(flagGRPCOnly)
 	)
 
@@ -304,7 +304,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 		pv := genPvFileOnlyWhenKmsAddressEmpty(cfg)
 
-		ocNode, err = node.NewNode(
+		tmNode, err = node.NewNode(
 			cfg,
 			pv,
 			nodeKey,
@@ -317,18 +317,18 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		if err != nil {
 			return err
 		}
-		ctx.Logger.Debug("initialization: ocNode created")
-		if err := ocNode.Start(); err != nil {
+		ctx.Logger.Debug("initialization: tmNode created")
+		if err := tmNode.Start(); err != nil {
 			return err
 		}
-		ctx.Logger.Debug("initialization: ocNode started")
+		ctx.Logger.Debug("initialization: tmNode started")
 	}
 
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local tendermint RPC client.
-	if (config.API.Enable || config.GRPC.Enable) && ocNode != nil {
-		clientCtx = clientCtx.WithClient(local.New(ocNode))
+	if (config.API.Enable || config.GRPC.Enable) && tmNode != nil {
+		clientCtx = clientCtx.WithClient(local.New(tmNode))
 
 		app.RegisterTxService(clientCtx)
 		app.RegisterTendermintService(clientCtx)
@@ -443,8 +443,8 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 
 	defer func() {
-		if ocNode.IsRunning() {
-			_ = ocNode.Stop()
+		if tmNode.IsRunning() {
+			_ = tmNode.Stop()
 		}
 
 		if cpuProfileCleanup != nil {

@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	cfg "github.com/tendermint/tendermint/config"
 	tmjson "github.com/tendermint/tendermint/libs/json"
-	ostos "github.com/tendermint/tendermint/libs/os"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/node"
 	"github.com/tendermint/tendermint/p2p"
 	pvm "github.com/tendermint/tendermint/privval"
@@ -72,7 +72,7 @@ func showValidator(_ *cobra.Command, config *cfg.Config) error {
 	//	}
 	//} else {
 	keyFilePath := config.PrivValidatorKeyFile()
-	if !ostos.FileExists(keyFilePath) {
+	if !tmos.FileExists(keyFilePath) {
 		return fmt.Errorf("private validator file %s does not exist", keyFilePath)
 	}
 	pv = pvm.LoadFilePV(keyFilePath, config.PrivValidatorStateFile())
