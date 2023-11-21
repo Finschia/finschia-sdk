@@ -103,7 +103,6 @@ linters-settings:
     sections:
       - standard # Standard section: captures all standard packages.
       - default # Default section: contains all imports that could not be matched to another section type.
-      - prefix(github.com/Finschia/ostracon)
       - prefix(github.com/Finschia/finschia-sdk)
   revive:
     rules:

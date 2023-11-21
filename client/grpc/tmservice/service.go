@@ -47,8 +47,8 @@ func (s queryServer) GetSyncing(ctx context.Context, _ *GetSyncingRequest) (*Get
 	}, nil
 }
 
-// ConvertOcProtoBlockToTmProtoBlock convert from tendermint proto block to tendermint proto block.
-func ConvertOcProtoBlockToTmProtoBlock(block *tmtypes.Block) *tmtypes.Block {
+// ConvertTmProtoBlockToTmProtoBlock convert from tendermint proto block to tendermint proto block.
+func ConvertTmProtoBlockToTmProtoBlock(block *tmtypes.Block) *tmtypes.Block {
 	return &tmtypes.Block{
 		Header:     block.Header,
 		Data:       block.Data,

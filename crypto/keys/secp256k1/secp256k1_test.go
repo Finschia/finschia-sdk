@@ -401,10 +401,10 @@ func TestMarshalAmino(t *testing.T) {
 func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	aminoCdc := codec.NewLegacyAmino()
 	// Create tendermint keys.
-	ostPrivKey := tmsecp256k1.GenPrivKey()
-	ostPubKey := ostPrivKey.PubKey()
+	tmPrivKey := tmsecp256k1.GenPrivKey()
+	tmPubKey := tmPrivKey.PubKey()
 	// Create our own keys, with the same private key as Tendermint's.
-	privKey := &secp256k1.PrivKey{Key: []byte(ostPrivKey)}
+	privKey := &secp256k1.PrivKey{Key: []byte(tmPrivKey)}
 	pubKey := privKey.PubKey().(*secp256k1.PubKey)
 
 	testCases := []struct {
@@ -415,25 +415,25 @@ func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	}{
 		{
 			"secp256k1 private key, binary",
-			ostPrivKey,
+			tmPrivKey,
 			privKey,
 			aminoCdc.Marshal,
 		},
 		{
 			"secp256k1 private key, JSON",
-			ostPrivKey,
+			tmPrivKey,
 			privKey,
 			aminoCdc.MarshalJSON,
 		},
 		{
 			"secp256k1 public key, binary",
-			ostPubKey,
+			tmPubKey,
 			pubKey,
 			aminoCdc.Marshal,
 		},
 		{
 			"secp256k1 public key, JSON",
-			ostPubKey,
+			tmPubKey,
 			pubKey,
 			aminoCdc.MarshalJSON,
 		},
