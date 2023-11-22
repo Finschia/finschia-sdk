@@ -6,8 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -52,7 +51,7 @@ func runConfigCmd(cmd *cobra.Command, args []string) error {
 			cmd.Println(conf.ChainID)
 		case flags.FlagKeyringBackend:
 			cmd.Println(conf.KeyringBackend)
-		case ostcli.OutputFlag:
+		case tmcli.OutputFlag:
 			cmd.Println(conf.Output)
 		case flags.FlagNode:
 			cmd.Println(conf.Node)
@@ -72,7 +71,7 @@ func runConfigCmd(cmd *cobra.Command, args []string) error {
 			conf.SetChainID(value)
 		case flags.FlagKeyringBackend:
 			conf.SetKeyringBackend(value)
-		case ostcli.OutputFlag:
+		case tmcli.OutputFlag:
 			conf.SetOutput(value)
 		case flags.FlagNode:
 			conf.SetNode(value)

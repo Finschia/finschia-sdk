@@ -10,8 +10,7 @@ import (
 	"github.com/cosmos/go-bip39"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
-
-	"github.com/Finschia/ostracon/crypto"
+	"github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	csecp256k1 "github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
@@ -79,7 +78,7 @@ func (mock LedgerSECP256K1Mock) GetAddressPubKeySECP256K1(derivationPath []uint3
 	compressedPublicKey := make([]byte, csecp256k1.PubKeySize)
 	copy(compressedPublicKey, cmp.SerializeCompressed())
 
-	// Generate the bech32 addr using existing ostcrypto/etc.
+	// Generate the bech32 addr using existing tmcrypto/etc.
 	pub := &csecp256k1.PubKey{Key: compressedPublicKey}
 	addr := sdk.AccAddress(pub.Address()).String()
 	return pk, addr, err

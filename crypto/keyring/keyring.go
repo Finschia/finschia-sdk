@@ -14,8 +14,7 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
-
-	occrypto "github.com/Finschia/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/client/input"
 	"github.com/Finschia/finschia-sdk/codec/legacy"
@@ -749,7 +748,7 @@ func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 				continue
 			}
 
-			saltBytes := occrypto.CRandBytes(16)
+			saltBytes := tmcrypto.CRandBytes(16)
 			passwordHash, err := bcrypt.GenerateFromPassword(saltBytes, []byte(pass), 2)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)

@@ -5,9 +5,8 @@ import (
 	"io"
 
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmstrings "github.com/tendermint/tendermint/libs/strings"
 	dbm "github.com/tendermint/tm-db"
-
-	oststrings "github.com/Finschia/ostracon/libs/strings"
 
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/types/kv"
@@ -71,7 +70,7 @@ func (s *StoreUpgrades) IsAdded(key string) bool {
 	if s == nil {
 		return false
 	}
-	return oststrings.StringInSlice(key, s.Added)
+	return tmstrings.StringInSlice(key, s.Added)
 }
 
 // IsDeleted returns true if the given key should be deleted

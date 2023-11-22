@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"

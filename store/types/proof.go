@@ -2,9 +2,8 @@ package types
 
 import (
 	ics23 "github.com/confio/ics23/go"
+	"github.com/tendermint/tendermint/crypto/merkle"
 	tmmerkle "github.com/tendermint/tendermint/proto/tendermint/crypto"
-
-	"github.com/Finschia/ostracon/crypto/merkle"
 
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )

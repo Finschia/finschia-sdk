@@ -13,10 +13,6 @@ option go_package = "github.com/Finschia/finschia-sdk/client/grpc/tmservice";
 
 // Service defines the gRPC querier service for tendermint queries.
 //
-// WARNING: For compatibility with cosmos-sdk API, the result converted from Ostracon block type
-// to tendermint block type without `entropy` is returned.
-// Therefore, verification fails with the tendermint block validation method.
-// For original information, please check `lbm/base/ostracon/v1/query.proto`.
 service Service {
   // GetNodeInfo queries the current node info.
   rpc GetNodeInfo(GetNodeInfoRequest) returns (GetNodeInfoResponse) {

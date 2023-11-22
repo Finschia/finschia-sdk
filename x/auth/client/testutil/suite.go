@@ -12,8 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -311,17 +310,17 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 		},
 		{
 			"with invalid hash",
-			[]string{"somethinginvalid", fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{"somethinginvalid", fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			true, "",
 		},
 		{
 			"with valid and not existing hash",
-			[]string{"C7E7D3A86A17AB3A321172239F3B61357937AF0F25D9FA4D2F4DCCAD9B0D7747", fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{"C7E7D3A86A17AB3A321172239F3B61357937AF0F25D9FA4D2F4DCCAD9B0D7747", fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			true, "",
 		},
 		{
 			"happy case",
-			[]string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{txRes.TxHash, fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			false,
 			sdk.MsgTypeURL(&banktypes.MsgSend{}),
 		},
@@ -367,7 +366,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// Query the tx by hash to get the inner tx.
-	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)})
+	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", tmcli.OutputFlag)})
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes))
 	protoTx := txRes.GetTx().(*tx.Tx)
@@ -383,7 +382,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				fmt.Sprintf("--type=%s", "foo"),
 				"bar",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, "unknown --type value foo",
 		},
@@ -392,7 +391,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				"--type=acc_seq",
 				"",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, "`acc_seq` type takes an argument '<addr>/<seq>'",
 		},
@@ -401,7 +400,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				"--type=acc_seq",
 				"foobar",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, "found no txs matching given address and sequence combination",
 		},
@@ -410,7 +409,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				"--type=acc_seq",
 				fmt.Sprintf("%s/%d", val.Address, protoTx.AuthInfo.SignerInfos[0].Sequence),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false, "",
 		},
@@ -419,7 +418,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				"--type=signature",
 				"",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, "argument should be comma-separated signatures",
 		},
@@ -428,7 +427,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				"--type=signature",
 				"foo",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true, "found no txs matching given signatures",
 		},
@@ -437,7 +436,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 			[]string{
 				"--type=signature",
 				base64.StdEncoding.EncodeToString(protoTx.Signatures[0]),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false, "",
 		},
@@ -481,7 +480,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// Query the tx by hash to get the inner tx.
-	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)})
+	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", tmcli.OutputFlag)})
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes))
 
@@ -496,7 +495,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 			[]string{
 				fmt.Sprintf("--events=tx.fee=%s",
 					sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false,
 			false,
@@ -506,7 +505,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 			[]string{
 				fmt.Sprintf("--events=tx.fee=%s",
 					sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(0))).String()),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			false,
 			true,
@@ -515,7 +514,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 			"wrong number of arguments",
 			[]string{
 				"extra",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			true,
 			true,
@@ -1174,7 +1173,7 @@ func (s *IntegrationTestSuite) TestGetAccountsCmd() {
 	val := s.network.Validators[0]
 
 	commonArgs := []string{
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -1238,7 +1237,7 @@ func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, authcli.QueryModuleAccountByNameCmd(), []string{
 				tc.moduleName,
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			})
 			if tc.expectErr {
 				s.Require().Error(err)
@@ -1311,12 +1310,12 @@ func (s *IntegrationTestSuite) TestQueryParamsCmd() {
 	}{
 		{
 			"happy case",
-			[]string{fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			false,
 		},
 		{
 			"with specific height",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			false,
 		},
 	}

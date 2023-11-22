@@ -39,6 +39,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.48.0...HEAD)
 
 ### Features
+* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
 
 ### Improvements
 * (docs) [\#1120](https://github.com/Finschia/finschia-sdk/pull/1120) Update links in x/foundation README.md
@@ -55,6 +56,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
+* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24 
 
 ### State Machine Breaking
 

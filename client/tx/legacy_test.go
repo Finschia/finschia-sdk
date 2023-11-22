@@ -12,7 +12,7 @@ import (
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/simapp/params"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types"
 	signing2 "github.com/Finschia/finschia-sdk/types/tx/signing"
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 	"github.com/Finschia/finschia-sdk/x/auth/tx"
@@ -26,7 +26,7 @@ const (
 )
 
 var (
-	fee            = sdk.NewCoins(sdk.NewInt64Coin("bam", 100))
+	fee            = types.NewCoins(types.NewInt64Coin("bam", 100))
 	_, pub1, addr1 = testdata.KeyTestPubAddr()
 	_, _, addr2    = testdata.KeyTestPubAddr()
 	sig            = signing2.SignatureV2{
@@ -36,8 +36,8 @@ var (
 			Signature: []byte("dummy"),
 		},
 	}
-	msg0 = banktypes.NewMsgSend(addr1, addr2, sdk.NewCoins(sdk.NewInt64Coin("wack", 1)))
-	msg1 = banktypes.NewMsgSend(addr1, addr2, sdk.NewCoins(sdk.NewInt64Coin("wack", 2)))
+	msg0 = banktypes.NewMsgSend(addr1, addr2, types.NewCoins(types.NewInt64Coin("wack", 1)))
+	msg1 = banktypes.NewMsgSend(addr1, addr2, types.NewCoins(types.NewInt64Coin("wack", 2)))
 )
 
 func buildTestTx(t *testing.T, builder client.TxBuilder) {

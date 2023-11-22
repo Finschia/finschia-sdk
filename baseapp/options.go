@@ -89,10 +89,6 @@ func SetSnapshotStore(snapshotStore *snapshots.Store) func(*BaseApp) {
 	return func(app *BaseApp) { app.SetSnapshotStore(snapshotStore) }
 }
 
-func SetChanCheckTxSize(size uint) func(*BaseApp) {
-	return func(app *BaseApp) { app.SetChanCheckTxSize(size) }
-}
-
 func (app *BaseApp) SetName(name string) {
 	if app.sealed {
 		panic("SetName() on sealed BaseApp")
@@ -251,13 +247,6 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.interfaceRegistry = registry
 	app.grpcQueryRouter.SetInterfaceRegistry(registry)
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
-}
-
-func (app *BaseApp) SetChanCheckTxSize(chanCheckTxSize uint) {
-	if app.sealed {
-		panic("SetChanCheckTxSize() on sealed BaseApp")
-	}
-	app.chCheckTxSize = chanCheckTxSize
 }
 
 func MetricsProvider(prometheus bool) cache.MetricsProvider {

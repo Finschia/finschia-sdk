@@ -5,8 +5,7 @@ import (
 	"time"
 
 	metrics "github.com/armon/go-metrics"
-
-	oststrings "github.com/Finschia/ostracon/libs/strings"
+	tmstrings "github.com/tendermint/tendermint/libs/strings"
 
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
@@ -63,7 +62,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 
 	cp := ctx.ConsensusParams()
 	if cp != nil && cp.Validator != nil {
-		if !oststrings.StringInSlice(pk.Type(), cp.Validator.PubKeyTypes) {
+		if !tmstrings.StringInSlice(pk.Type(), cp.Validator.PubKeyTypes) {
 			return nil, sdkerrors.Wrapf(
 				types.ErrValidatorPubKeyTypeNotSupported,
 				"got: %s, expected: %s", pk.Type(), cp.Validator.PubKeyTypes,

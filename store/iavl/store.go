@@ -9,10 +9,9 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	"github.com/cosmos/iavl"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/store/cachekv"
 	"github.com/Finschia/finschia-sdk/store/listenkv"

@@ -232,7 +232,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 		}
 	}
 
-	// convert ostracon's block struct to tendermint's block struct
+	// convert tendermint's block struct to tendermint's block struct
 	tmBlock := tmtypes.Block{
 		Header:     block.Header,
 		Data:       block.Data,

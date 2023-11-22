@@ -9,15 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/legacy"
-	"github.com/Finschia/finschia-sdk/server/config"
 	"github.com/Finschia/finschia-sdk/snapshots"
 	store "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -30,7 +27,7 @@ var (
 )
 
 func defaultLogger() log.Logger {
-	return log.NewOCLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
+	return log.NewTMLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
 }
 
 func newBaseApp(name string, options ...func(*BaseApp)) *BaseApp {
@@ -108,7 +105,7 @@ func TestLoadVersionPruning(t *testing.T) {
 	// Commit seven blocks, of which 7 (latest) is kept in addition to 6, 5
 	// (keep recent) and 3 (keep every).
 	for i := int64(1); i <= 7; i++ {
-		app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
+		app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
 		res := app.Commit()
 		lastCommitID = sdk.CommitID{Version: i, Hash: res.Data}
 	}
@@ -211,19 +208,6 @@ func TestSnapshotManager(t *testing.T) {
 	}
 	app.SetSnapshotStore(snapshotStore)
 	require.NotNil(t, app.SnapshotManager())
-}
-
-func TestSetChanCheckTxSize(t *testing.T) {
-	logger := defaultLogger()
-	db := dbm.NewMemDB()
-
-	size := uint(100)
-
-	app := NewBaseApp(t.Name(), logger, db, nil, SetChanCheckTxSize(size))
-	require.Equal(t, int(size), cap(app.chCheckTx))
-
-	app = NewBaseApp(t.Name(), logger, db, nil)
-	require.Equal(t, config.DefaultChanCheckTxSize, cap(app.chCheckTx))
 }
 
 func TestCreateEvents(t *testing.T) {

@@ -8,8 +8,7 @@ import (
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
-
-	"github.com/Finschia/ostracon/crypto"
+	"github.com/tendermint/tendermint/crypto"
 )
 
 // Sign creates an ECDSA signature on curve Secp256k1, using SHA256 on the msg.

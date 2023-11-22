@@ -21,12 +21,6 @@ The following work was carried out to improve performance.
 - Use [fastcache](https://github.com/victoriametrics/fastcache) for inter block cache and nodedb cache of iavl
 - Lock granularity enhancement
 
-In addition, the following functions were added:
-
-- Virtual machine using `cosmwasm` that makes smart contracts possible to be executed 
-- Use [Ostracon](https://github.com/Finschia/ostracon) as consensus engine instead of `Tendermint`
-
-
 To learn about Cosmos SDK, please refer [Cosmos SDK Docs](https://github.com/cosmos/cosmos-sdk/blob/master/docs).
 
 ## Quick Start

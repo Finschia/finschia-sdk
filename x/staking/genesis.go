@@ -5,8 +5,7 @@ import (
 	"log"
 
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	octypes "github.com/Finschia/ostracon/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -194,18 +193,18 @@ func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
 }
 
 // WriteValidators returns a slice of bonded genesis validators.
-func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []octypes.GenesisValidator, err error) {
+func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []tmtypes.GenesisValidator, err error) {
 	keeper.IterateLastValidators(ctx, func(_ int64, validator types.ValidatorI) (stop bool) {
 		pk, err := validator.ConsPubKey()
 		if err != nil {
 			return true
 		}
-		tmPk, err := cryptocodec.ToOcPubKeyInterface(pk)
+		tmPk, err := cryptocodec.ToTmPubKeyInterface(pk)
 		if err != nil {
 			return true
 		}
 
-		vals = append(vals, octypes.GenesisValidator{
+		vals = append(vals, tmtypes.GenesisValidator{
 			Address: sdk.ConsAddress(tmPk.Address()).Bytes(),
 			PubKey:  tmPk,
 			Power:   validator.GetConsensusPower(keeper.PowerReduction(ctx)),

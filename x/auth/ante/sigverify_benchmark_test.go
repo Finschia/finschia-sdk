@@ -4,14 +4,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	tmcrypto "github.com/Finschia/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256r1"
 )
 
-// This benchmark is used to asses the ante.Secp256k1ToR1GasFactor value
+// This benchmark is used to assets the ante.Secp256k1ToR1GasFactor value
 func BenchmarkSig(b *testing.B) {
 	require := require.New(b)
 	msg := tmcrypto.CRandBytes(1000)

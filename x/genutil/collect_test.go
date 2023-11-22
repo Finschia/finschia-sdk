@@ -7,8 +7,7 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-
-	octypes "github.com/Finschia/ostracon/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -57,7 +56,7 @@ func TestCollectTxsHandlesDirectories(t *testing.T) {
 	srvCtx := server.NewDefaultContext()
 	_ = srvCtx
 	cdc := codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
-	gdoc := octypes.GenesisDoc{AppState: []byte("{}")}
+	gdoc := tmtypes.GenesisDoc{AppState: []byte("{}")}
 	balItr := new(doNothingIterator)
 
 	dnc := &doNothingUnmarshalJSON{cdc}

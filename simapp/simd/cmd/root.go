@@ -9,10 +9,9 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
+	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"
@@ -132,7 +131,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		genutilcli.MigrateGenesisCmd(),
 		genutilcli.ValidateGenesisCmd(simapp.ModuleBasics),
 		AddGenesisAccountCmd(simapp.DefaultNodeHome),
-		ostcli.NewCompletionCmd(rootCmd, true),
+		tmcli.NewCompletionCmd(rootCmd, true),
 		testnetCmd(simapp.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 		debug.Cmd(),
 		config.Cmd(),
@@ -260,7 +259,6 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 		baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
 		baseapp.SetIAVLCacheSize(cast.ToInt(appOpts.Get(server.FlagIAVLCacheSize))),
 		baseapp.SetIAVLDisableFastNode(cast.ToBool(appOpts.Get(server.FlagIAVLFastNode))),
-		baseapp.SetChanCheckTxSize(cast.ToUint(appOpts.Get(server.FlagChanCheckTxSize))),
 	)
 }
 

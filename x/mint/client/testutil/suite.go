@@ -5,8 +5,7 @@ import (
 	"strings"
 
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
@@ -66,12 +65,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryParams() {
 	}{
 		{
 			"json output",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			`{"mint_denom":"stake","inflation_rate_change":"0.130000000000000000","inflation_max":"1.000000000000000000","inflation_min":"1.000000000000000000","goal_bonded":"0.670000000000000000","blocks_per_year":"6311520"}`,
 		},
 		{
 			"text output",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=text", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
 			`blocks_per_year: "6311520"
 goal_bonded: "0.670000000000000000"
 inflation_max: "1.000000000000000000"
@@ -105,12 +104,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryInflation() {
 	}{
 		{
 			"json output",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			`1.000000000000000000`,
 		},
 		{
 			"text output",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=text", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
 			`1.000000000000000000`,
 		},
 	}
@@ -139,12 +138,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryAnnualProvisions() {
 	}{
 		{
 			"json output",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
 			`500000000.000000000000000000`,
 		},
 		{
 			"text output",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=text", ostcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
 			`500000000.000000000000000000`,
 		},
 	}

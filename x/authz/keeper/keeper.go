@@ -7,8 +7,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	"github.com/Finschia/ostracon/libs/log"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/codec"

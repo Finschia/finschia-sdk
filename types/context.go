@@ -6,10 +6,9 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocbytes "github.com/Finschia/ostracon/libs/bytes"
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/store/gaskv"
 	stypes "github.com/Finschia/finschia-sdk/store/types"
@@ -27,7 +26,7 @@ type Context struct {
 	ctx           context.Context
 	ms            MultiStore
 	header        tmproto.Header
-	headerHash    ocbytes.HexBytes
+	headerHash    tmbytes.HexBytes
 	chainID       string
 	txBytes       []byte
 	logger        log.Logger
@@ -67,7 +66,7 @@ func (c Context) BlockHeader() tmproto.Header {
 }
 
 // HeaderHash returns a copy of the header hash obtained during abci.RequestBeginBlock
-func (c Context) HeaderHash() ocbytes.HexBytes {
+func (c Context) HeaderHash() tmbytes.HexBytes {
 	hash := make([]byte, len(c.headerHash))
 	copy(hash, c.headerHash)
 	return hash

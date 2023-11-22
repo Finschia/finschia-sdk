@@ -110,7 +110,7 @@ func (v Validators) Swap(i, j int) {
 // ValidatorsByVotingPower implements sort.Interface for []Validator based on
 // the VotingPower and Address fields.
 // The validators are sorted first by their voting power (descending). Secondary index - Address (ascending).
-// Copied from ostracon/types/validator_set.go
+// Copied from tendermint/types/validator_set.go
 type ValidatorsByVotingPower []Validator
 
 func (valz ValidatorsByVotingPower) Len() int { return len(valz) }
@@ -257,13 +257,13 @@ func (d Description) EnsureLength() (Description, error) {
 // ABCIValidatorUpdate returns an abci.ValidatorUpdate from a staking validator type
 // with the full validator power
 func (v Validator) ABCIValidatorUpdate(r sdk.Int) abci.ValidatorUpdate {
-	ocProtoPk, err := v.OcConsPublicKey()
+	tmProtoPk, err := v.TmConsPublicKey()
 	if err != nil {
 		panic(err)
 	}
 
 	return abci.ValidatorUpdate{
-		PubKey: ocProtoPk,
+		PubKey: tmProtoPk,
 		Power:  v.ConsensusPower(r),
 	}
 }
@@ -271,13 +271,13 @@ func (v Validator) ABCIValidatorUpdate(r sdk.Int) abci.ValidatorUpdate {
 // ABCIValidatorUpdateZero returns an abci.ValidatorUpdate from a staking validator type
 // with zero power used for validator updates.
 func (v Validator) ABCIValidatorUpdateZero() abci.ValidatorUpdate {
-	ocprotoPk, err := v.OcConsPublicKey()
+	tmProtoPk, err := v.TmConsPublicKey()
 	if err != nil {
 		panic(err)
 	}
 
 	return abci.ValidatorUpdate{
-		PubKey: ocprotoPk,
+		PubKey: tmProtoPk,
 		Power:  0,
 	}
 }
@@ -478,14 +478,14 @@ func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 	return pk, nil
 }
 
-// OcConsPublicKey casts Validator.ConsensusPubkey to tmprotocrypto.PubKey.
-func (v Validator) OcConsPublicKey() (tmprotocrypto.PublicKey, error) {
+// TmConsPublicKey casts Validator.ConsensusPubkey to tmprotocrypto.PubKey.
+func (v Validator) TmConsPublicKey() (tmprotocrypto.PublicKey, error) {
 	pk, err := v.ConsPubKey()
 	if err != nil {
 		return tmprotocrypto.PublicKey{}, err
 	}
 
-	tmPk, err := cryptocodec.ToOcProtoPublicKey(pk)
+	tmPk, err := cryptocodec.ToTmProtoPublicKey(pk)
 	if err != nil {
 		return tmprotocrypto.PublicKey{}, err
 	}

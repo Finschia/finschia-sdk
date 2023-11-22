@@ -7,24 +7,20 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
-func (app *BaseApp) Check(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, error) {
+func (app *BaseApp) Check(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, *sdk.Result, error) {
 	// runTx expects tx bytes as argument, so we encode the tx argument into
 	// bytes. Note that runTx will actually decode those bytes again. But since
 	// this helper is only used in tests/simulation, it's fine.
-	txBytes, err := txEncoder(tx)
-	if err != nil {
-		return sdk.GasInfo{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s", err)
-	}
-	return app.checkTx(txBytes, tx, false)
-}
-
-func (app *BaseApp) Simulate(txBytes []byte) (sdk.GasInfo, *sdk.Result, error) {
-	tx, err := app.txDecoder(txBytes)
+	bz, err := txEncoder(tx)
 	if err != nil {
 		return sdk.GasInfo{}, nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s", err)
 	}
+	gasInfo, result, _, err := app.runTx(runTxModeCheck, bz)
+	return gasInfo, result, err
+}
 
-	gasInfo, result, _, err := app.runTx(txBytes, tx, true)
+func (app *BaseApp) Simulate(txBytes []byte) (sdk.GasInfo, *sdk.Result, error) {
+	gasInfo, result, _, err := app.runTx(runTxModeSimulate, txBytes)
 	return gasInfo, result, err
 }
 
@@ -34,7 +30,7 @@ func (app *BaseApp) Deliver(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, *s
 	if err != nil {
 		return sdk.GasInfo{}, nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s", err)
 	}
-	gasInfo, result, _, err := app.runTx(txBytes, tx, false)
+	gasInfo, result, _, err := app.runTx(runTxModeDeliver, txBytes)
 	return gasInfo, result, err
 }
 
@@ -54,5 +50,5 @@ func (app *BaseApp) NewUncachedContext(isCheckTx bool, header tmproto.Header) sd
 }
 
 func (app *BaseApp) GetContextForDeliverTx(txBytes []byte) sdk.Context {
-	return app.getContextForTx(app.deliverState, txBytes)
+	return app.getContextForTx(runTxModeDeliver, txBytes)
 }

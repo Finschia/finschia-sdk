@@ -6,9 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/types"
+	"github.com/tendermint/tendermint/types"
 )
 
 // TestInitApp makes sure we can initialize this thing without an error
@@ -62,7 +60,7 @@ func TestDeliverTx(t *testing.T) {
 		AppHash: []byte("apphash"),
 		Height:  1,
 	}
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	dres := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 	require.Equal(t, uint32(0), dres.Code, dres.Log)
 	app.EndBlock(abci.RequestEndBlock{})

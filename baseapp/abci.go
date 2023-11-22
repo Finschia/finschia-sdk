@@ -17,8 +17,6 @@ import (
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
@@ -125,7 +123,7 @@ func (app *BaseApp) SetOption(req abci.RequestSetOption) (res abci.ResponseSetOp
 }
 
 // BeginBlock implements the ABCI application interface.
-func (app *BaseApp) BeginBlock(req ocabci.RequestBeginBlock) (res abci.ResponseBeginBlock) {
+func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeginBlock) {
 	defer telemetry.MeasureSince(time.Now(), "abci", "begin_block")
 
 	if app.cms.TracingEnabled() {
@@ -137,9 +135,6 @@ func (app *BaseApp) BeginBlock(req ocabci.RequestBeginBlock) (res abci.ResponseB
 	if err := app.validateHeight(req); err != nil {
 		panic(err)
 	}
-
-	// set the signed validators for addition to context in deliverTx
-	app.voteInfos = req.LastCommitInfo.GetVotes()
 
 	// Initialize the DeliverTx state. If this is the first block, it should
 	// already be initialized in InitChain. Otherwise app.deliverState will be
@@ -165,7 +160,6 @@ func (app *BaseApp) BeginBlock(req ocabci.RequestBeginBlock) (res abci.ResponseB
 	// NOTE: header hash is not set in NewContext, so we manually set it here
 
 	app.deliverState.ctx = app.deliverState.ctx.
-		WithVoteInfos(app.voteInfos).
 		WithBlockGasMeter(gasMeter).
 		WithHeaderHash(req.Hash).
 		WithConsensusParams(app.GetConsensusParams(app.deliverState.ctx))
@@ -228,61 +222,34 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // internal CheckTx state if the AnteHandler passes. Otherwise, the ResponseCheckTx
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
-func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) ocabci.ResponseCheckTx {
+func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
-	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
+	var mode runTxMode
+
+	switch {
+	case req.Type == abci.CheckTxType_New:
+		mode = runTxModeCheck
+
+	case req.Type == abci.CheckTxType_Recheck:
+		mode = runTxModeReCheck
+
+	default:
 		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
 	}
 
-	tx, err := app.preCheckTx(req.Tx)
+	gInfo, result, anteEvents, err := app.runTx(mode, req.Tx)
 	if err != nil {
-		return sdkerrors.ResponseCheckTx(err, 0, 0, app.trace)
+		return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace)
 	}
 
-	waits, signals := app.checkAccountWGs.Register(tx)
-
-	app.checkAccountWGs.Wait(waits)
-	defer app.checkAccountWGs.Done(signals)
-
-	gInfo, err := app.checkTx(req.Tx, tx, req.Type == abci.CheckTxType_Recheck)
-	if err != nil {
-		return sdkerrors.ResponseCheckTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace)
-		// return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace) // TODO(dudong2): need to fix to use ResponseCheckTxWithEvents
-	}
-
-	return ocabci.ResponseCheckTx{
+	return abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
+		Log:       result.Log,
+		Data:      result.Data,
+		Events:    sdk.MarkEventsToIndex(result.Events, app.indexEvents),
 	}
-}
-
-func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback ocabci.CheckTxCallback) {
-	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
-		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
-	}
-
-	reqCheckTx := &RequestCheckTxAsync{
-		txBytes:  req.Tx,
-		recheck:  req.Type == abci.CheckTxType_Recheck,
-		callback: callback,
-		prepare:  waitGroup1(),
-	}
-	app.chCheckTx <- reqCheckTx
-
-	go app.prepareCheckTx(reqCheckTx)
-}
-
-// BeginRecheckTx implements the ABCI interface and set the check state based on the given header
-func (app *BaseApp) BeginRecheckTx(req ocabci.RequestBeginRecheckTx) ocabci.ResponseBeginRecheckTx {
-	// NOTE: This is safe because Ostracon holds a lock on the mempool for Rechecking.
-	app.setCheckState(req.Header)
-	return ocabci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
-}
-
-// EndRecheckTx implements the ABCI interface.
-func (app *BaseApp) EndRecheckTx(req ocabci.RequestEndRecheckTx) ocabci.ResponseEndRecheckTx {
-	return ocabci.ResponseEndRecheckTx{Code: abci.CodeTypeOK}
 }
 
 // DeliverTx implements the ABCI interface and executes a tx in DeliverTx mode.
@@ -311,12 +278,7 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliv
 		telemetry.SetGauge(float32(gInfo.GasWanted), "tx", "gas", "wanted")
 	}()
 
-	tx, err := app.txDecoder(req.Tx)
-	if err != nil {
-		return sdkerrors.ResponseDeliverTx(err, 0, 0, app.trace)
-	}
-
-	gInfo, result, anteEvents, err := app.runTx(req.Tx, tx, false)
+	gInfo, result, anteEvents, err := app.runTx(runTxModeDeliver, req.Tx)
 	if err != nil {
 		resultStr = "failed"
 		return sdkerrors.ResponseDeliverTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, sdk.MarkEventsToIndex(anteEvents, app.indexEvents), app.trace)
@@ -349,6 +311,12 @@ func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	app.deliverState.ms.Write()
 	commitID := app.cms.Commit()
 	app.logger.Info("commit synced", "commit", fmt.Sprintf("%X", commitID))
+
+	// Reset the Check state to the latest committed.
+	//
+	// NOTE: This is safe because Tendermint holds a lock on the mempool for
+	// Commit. Use the header from this latest block.
+	app.setCheckState(header)
 
 	// empty/reset the deliver state
 	app.deliverState = nil
@@ -690,11 +658,9 @@ func (app *BaseApp) createQueryContext(height int64, prove bool) (sdk.Context, e
 	}
 
 	// branch the commit-multistore for safety
-	app.checkStateMtx.RLock()
 	ctx := sdk.NewContext(
 		cacheMS, app.checkState.ctx.BlockHeader(), true, app.logger,
 	).WithMinGasPrices(app.minGasPrices).WithBlockHeight(height)
-	app.checkStateMtx.RUnlock()
 
 	return ctx, nil
 }
@@ -928,11 +894,9 @@ func (app *BaseApp) createQueryContextWithCheckState() sdk.Context {
 	cacheMS := app.checkState.CacheMultiStore()
 
 	// branch the commit-multistore for safety
-	app.checkStateMtx.RLock()
 	ctx := sdk.NewContext(
 		cacheMS, app.checkState.ctx.BlockHeader(), true, app.logger,
 	).WithMinGasPrices(app.minGasPrices).WithBlockHeight(app.LastBlockHeight())
-	app.checkStateMtx.RUnlock()
 
 	return ctx
 }

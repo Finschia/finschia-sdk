@@ -9,13 +9,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	ostrand "github.com/Finschia/ostracon/libs/rand"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
 )
 
 func randCompactBitArray(bits int) (*CompactBitArray, []byte) {
 	numBytes := (bits + 7) / 8
-	src := ostrand.Bytes((bits + 7) / 8)
+	src := tmrand.Bytes((bits + 7) / 8)
 	bA := NewCompactBitArray(bits)
 
 	for i := 0; i < numBytes-1; i++ {

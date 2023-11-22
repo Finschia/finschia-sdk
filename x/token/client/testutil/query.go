@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
@@ -18,7 +17,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -85,7 +84,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -140,7 +139,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -215,7 +214,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdIsOperatorFor() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {
@@ -277,7 +276,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdHoldersByOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 
 	testCases := map[string]struct {

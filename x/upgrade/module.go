@@ -8,8 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -129,6 +127,6 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // BeginBlock calls the upgrade module hooks
 //
 // CONTRACT: this is registered in BeginBlocker *before* all other modules' BeginBlock functions
-func (am AppModule) BeginBlock(ctx sdk.Context, req ocabci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	BeginBlocker(am.keeper, ctx, req)
 }

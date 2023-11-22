@@ -8,10 +8,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/tests/mocks"
@@ -41,7 +40,7 @@ import (
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app := NewSimApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 
 	for acc := range maccPerms {
 		require.Equal(t, !allowedReceivingModAcc[acc], app.BankKeeper.BlockedAddr(app.AccountKeeper.GetModuleAddress(acc)),
@@ -62,7 +61,7 @@ func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	app.Commit()
 
 	// Making a new app object with the db, so that initchain hasn't been called
-	app2 := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app2 := NewSimApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 	_, err = app2.ExportAppStateAndValidators(false, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }
@@ -75,7 +74,7 @@ func TestGetMaccPerms(t *testing.T) {
 func TestRunMigrations(t *testing.T) {
 	db := dbm.NewMemDB()
 	encCfg := MakeTestEncodingConfig()
-	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 
 	// Create a new baseapp and configurator for the purpose of this test.
@@ -201,7 +200,7 @@ func TestRunMigrations(t *testing.T) {
 func TestInitGenesisOnMigration(t *testing.T) {
 	db := dbm.NewMemDB()
 	encCfg := MakeTestEncodingConfig()
-	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 	ctx := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
 
@@ -247,7 +246,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 func TestUpgradeStateOnGenesis(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app := NewSimApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 	genesisState := NewDefaultGenesisState(encCfg.Marshaler)
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	require.NoError(t, err)

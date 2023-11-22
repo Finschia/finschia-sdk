@@ -7,8 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-
-	"github.com/Finschia/ostracon/libs/cli"
+	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/keyring"

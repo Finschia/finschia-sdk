@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"math/big"
 
-	tmcrypto "github.com/Finschia/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/types/address"
 	"github.com/Finschia/finschia-sdk/types/errors"

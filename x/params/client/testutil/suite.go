@@ -5,8 +5,7 @@ import (
 	"strings"
 
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	"github.com/Finschia/finschia-sdk/testutil/network"
@@ -50,7 +49,7 @@ func (s *IntegrationTestSuite) TestNewQuerySubspaceParamsCmd() {
 			"json output",
 			[]string{
 				"staking", "MaxValidators",
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 			},
 			`{"subspace":"staking","key":"MaxValidators","value":"100"}`,
 		},
@@ -58,7 +57,7 @@ func (s *IntegrationTestSuite) TestNewQuerySubspaceParamsCmd() {
 			"text output",
 			[]string{
 				"staking", "MaxValidators",
-				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
+				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
 			},
 			`key: MaxValidators
 subspace: staking

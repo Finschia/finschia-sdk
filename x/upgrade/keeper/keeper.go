@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/Finschia/ostracon/libs/log"
-	ostos "github.com/Finschia/ostracon/libs/os"
+	"github.com/tendermint/tendermint/libs/log"
+	tmos "github.com/tendermint/tendermint/libs/os"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/store/prefix"
@@ -398,7 +398,7 @@ func (k Keeper) DumpUpgradeInfoWithInfoToDisk(height int64, name, info string) e
 // GetUpgradeInfoPath returns the upgrade info file path
 func (k Keeper) GetUpgradeInfoPath() (string, error) {
 	upgradeInfoFileDir := path.Join(k.getHomeDir(), "data")
-	err := ostos.EnsureDir(upgradeInfoFileDir, os.ModePerm)
+	err := tmos.EnsureDir(upgradeInfoFileDir, os.ModePerm)
 	if err != nil {
 		return "", err
 	}

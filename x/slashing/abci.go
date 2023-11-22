@@ -3,7 +3,7 @@ package slashing
 import (
 	"time"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -13,7 +13,7 @@ import (
 
 // BeginBlocker check for infraction evidence or downtime of validators
 // on every begin block
-func BeginBlocker(ctx sdk.Context, req ocabci.RequestBeginBlock, k keeper.Keeper) {
+func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	// Iterate over all the validators which *should* have signed this block

@@ -2,8 +2,7 @@ package secp256r1
 
 import (
 	"github.com/gogo/protobuf/proto"
-
-	tmcrypto "github.com/Finschia/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	ecdsa "github.com/Finschia/finschia-sdk/crypto/keys/internal/ecdsa"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

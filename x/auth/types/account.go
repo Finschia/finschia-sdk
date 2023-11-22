@@ -8,9 +8,8 @@ import (
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
+	"github.com/tendermint/tendermint/crypto"
 	"gopkg.in/yaml.v2"
-
-	"github.com/Finschia/ostracon/crypto"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

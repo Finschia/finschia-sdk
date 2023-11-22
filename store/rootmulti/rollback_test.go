@@ -7,11 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 )
@@ -60,7 +58,7 @@ func TestRollback(t *testing.T) {
 			Height:  ver0 + i,
 			AppHash: app.LastCommitID().Hash,
 		}
-		app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 		ctx := app.NewContext(false, header)
 		store := ctx.KVStore(app.GetKey("bank"))
 		store.Set([]byte("key"), []byte(fmt.Sprintf("value%d", i)))
@@ -88,7 +86,7 @@ func TestRollback(t *testing.T) {
 			Height:  ver0 + i,
 			AppHash: app.LastCommitID().Hash,
 		}
-		app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 		ctx := app.NewContext(false, header)
 		store := ctx.KVStore(app.GetKey("bank"))
 		store.Set([]byte("key"), []byte(fmt.Sprintf("VALUE%d", i)))

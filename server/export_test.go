@@ -13,13 +13,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	ostjson "github.com/Finschia/ostracon/libs/json"
-	"github.com/Finschia/ostracon/libs/log"
-	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -41,8 +39,8 @@ func TestExportCmd_ConsensusParams(t *testing.T) {
 	cmd.SetArgs([]string{fmt.Sprintf("--%s=%s", flags.FlagHome, tempDir)})
 	require.NoError(t, cmd.ExecuteContext(ctx))
 
-	var exportedGenDoc octypes.GenesisDoc
-	err := ostjson.Unmarshal(output.Bytes(), &exportedGenDoc)
+	var exportedGenDoc tmtypes.GenesisDoc
+	err := tmjson.Unmarshal(output.Bytes(), &exportedGenDoc)
 	if err != nil {
 		t.Fatalf("error unmarshaling exported genesis doc: %s", err)
 	}
@@ -101,7 +99,7 @@ func TestExportCmd_Height(t *testing.T) {
 
 			// Fast forward to block `tc.fastForward`.
 			for i := int64(2); i <= tc.fastForward; i++ {
-				app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
+				app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: i}})
 				app.Commit()
 			}
 
@@ -111,8 +109,8 @@ func TestExportCmd_Height(t *testing.T) {
 			cmd.SetArgs(args)
 			require.NoError(t, cmd.ExecuteContext(ctx))
 
-			var exportedGenDoc octypes.GenesisDoc
-			err := ostjson.Unmarshal(output.Bytes(), &exportedGenDoc)
+			var exportedGenDoc tmtypes.GenesisDoc
+			err := tmjson.Unmarshal(output.Bytes(), &exportedGenDoc)
 			if err != nil {
 				t.Fatalf("error unmarshaling exported genesis doc: %s", err)
 			}
@@ -122,13 +120,13 @@ func TestExportCmd_Height(t *testing.T) {
 	}
 }
 
-func setupApp(t *testing.T, tempDir string) (*simapp.SimApp, context.Context, *octypes.GenesisDoc, *cobra.Command) {
+func setupApp(t *testing.T, tempDir string) (*simapp.SimApp, context.Context, *tmtypes.GenesisDoc, *cobra.Command) {
 	t.Helper()
 	if err := createConfigFolder(tempDir); err != nil {
 		t.Fatalf("error creating config folder: %s", err)
 	}
 
-	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	db := dbm.NewMemDB()
 	encCfg := simapp.MakeTestEncodingConfig()
 	app := simapp.NewSimApp(logger, db, nil, true, map[int64]bool{}, tempDir, 0, encCfg, simapp.EmptyAppOptions{})
@@ -178,7 +176,7 @@ func createConfigFolder(dir string) error {
 	return os.Mkdir(path.Join(dir, "config"), 0o700)
 }
 
-func newDefaultGenesisDoc(cdc codec.Codec) *octypes.GenesisDoc {
+func newDefaultGenesisDoc(cdc codec.Codec) *tmtypes.GenesisDoc {
 	genesisState := simapp.NewDefaultGenesisState(cdc)
 
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
@@ -186,7 +184,7 @@ func newDefaultGenesisDoc(cdc codec.Codec) *octypes.GenesisDoc {
 		panic(err)
 	}
 
-	genDoc := &octypes.GenesisDoc{}
+	genDoc := &tmtypes.GenesisDoc{}
 	genDoc.ChainID = "theChainId"
 	genDoc.Validators = nil
 	genDoc.AppState = stateBytes
@@ -194,7 +192,7 @@ func newDefaultGenesisDoc(cdc codec.Codec) *octypes.GenesisDoc {
 	return genDoc
 }
 
-func saveGenesisFile(genDoc *octypes.GenesisDoc, dir string) error {
+func saveGenesisFile(genDoc *tmtypes.GenesisDoc, dir string) error {
 	err := genutil.ExportGenesisFile(genDoc, dir)
 	if err != nil {
 		return errors.Wrap(err, "error creating file")

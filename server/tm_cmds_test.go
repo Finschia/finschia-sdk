@@ -3,26 +3,23 @@ package server
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	cfg "github.com/Finschia/ostracon/config"
-	"github.com/Finschia/ostracon/crypto"
-	tmjson "github.com/Finschia/ostracon/libs/json"
-	"github.com/Finschia/ostracon/libs/log"
-	tmos "github.com/Finschia/ostracon/libs/os"
-	tmrand "github.com/Finschia/ostracon/libs/rand"
-	"github.com/Finschia/ostracon/p2p"
-	"github.com/Finschia/ostracon/privval"
-	"github.com/Finschia/ostracon/types"
-	tmtime "github.com/Finschia/ostracon/types/time"
+	cfg "github.com/tendermint/tendermint/config"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	"github.com/tendermint/tendermint/libs/log"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/p2p"
+	"github.com/tendermint/tendermint/privval"
+	"github.com/tendermint/tendermint/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
 )
 
-var logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+var logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 
 func TestShowValidator(t *testing.T) {
 	testCommon := newPrecedenceCommon(t)
@@ -34,7 +31,7 @@ func TestShowValidator(t *testing.T) {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
-	// ostracon init & create the server config file
+	// tendermint init & create the server config file
 	err := initFilesWithConfig(serverCtx.Config)
 	require.NoError(t, err)
 	output := captureStdout(t, func() {
@@ -49,47 +46,6 @@ func TestShowValidator(t *testing.T) {
 	require.Equal(t, string(bz), output)
 }
 
-func TestShowValidatorWithKMS(t *testing.T) {
-	testCommon := newPrecedenceCommon(t)
-
-	serverCtx := &Context{}
-	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
-
-	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
-		t.Fatalf("function failed with [%T] %v", err, err)
-	}
-
-	// ostracon init & create the server config file
-	serverCtx.Config.PrivValidatorRemoteAddresses = append(serverCtx.Config.PrivValidatorRemoteAddresses, "127.0.0.1")
-	err := initFilesWithConfig(serverCtx.Config)
-	require.NoError(t, err)
-
-	chainID, err := loadChainID(serverCtx.Config)
-	require.NoError(t, err)
-
-	// remove config file
-	if tmos.FileExists(serverCtx.Config.PrivValidatorKeyFile()) {
-		err := os.Remove(serverCtx.Config.PrivValidatorKeyFile())
-		require.NoError(t, err)
-	}
-
-	privval.WithMockKMS(t, t.TempDir(), chainID, func(addr string, privKey crypto.PrivKey) {
-		serverCtx.Config.PrivValidatorListenAddr = addr
-		require.NoFileExists(t, serverCtx.Config.PrivValidatorKeyFile())
-		output := captureStdout(t, func() {
-			err := ShowValidatorCmd().ExecuteContext(ctx)
-			require.NoError(t, err)
-		})
-		require.NoError(t, err)
-
-		// output must contains the KMS public key
-		bz, err := tmjson.Marshal(privKey.PubKey())
-		require.NoError(t, err)
-		expected := string(bz)
-		require.Contains(t, output, expected)
-	})
-}
-
 func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	testCommon := newPrecedenceCommon(t)
 
@@ -100,7 +56,7 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
-	// ostracon init & create the server config file
+	// tendermint init & create the server config file
 	err := initFilesWithConfig(serverCtx.Config)
 	require.NoError(t, err)
 

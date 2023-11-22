@@ -3,10 +3,10 @@ package cmd
 import (
 	"context"
 
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
-
-	ostcfg "github.com/Finschia/ostracon/config"
-	ostcli "github.com/Finschia/ostracon/libs/cli"
+	tmcfg "github.com/tendermint/tendermint/config"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -33,9 +33,9 @@ func Execute(rootCmd *cobra.Command, defaultHome string) error {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
 	ctx = context.WithValue(ctx, server.ServerContextKey, srvCtx)
 
-	rootCmd.PersistentFlags().String(flags.FlagLogLevel, ostcfg.DefaultPackageLogLevels(), "The logging level by modules (debug|info|error|none)")
-	rootCmd.PersistentFlags().String(flags.FlagLogFormat, ostcfg.LogFormatPlain, "The logging format (json|plain)")
+	rootCmd.PersistentFlags().String(flags.FlagLogLevel, zerolog.InfoLevel.String(), "The logging level (trace|debug|info|warn|error|fatal|panic)")
+	rootCmd.PersistentFlags().String(flags.FlagLogFormat, tmcfg.LogFormatPlain, "The logging format (json|plain)")
 
-	executor := ostcli.PrepareBaseCmd(rootCmd, envPrefix, defaultHome)
+	executor := tmcli.PrepareBaseCmd(rootCmd, envPrefix, defaultHome)
 	return executor.ExecuteContext(ctx)
 }

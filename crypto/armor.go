@@ -5,20 +5,20 @@ import (
 	"fmt"
 
 	"github.com/tendermint/crypto/bcrypt"
-
-	"github.com/Finschia/ostracon/crypto"
-	"github.com/Finschia/ostracon/crypto/armor"
-	"github.com/Finschia/ostracon/crypto/xsalsa20symmetric"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/armor"
+	"github.com/tendermint/tendermint/crypto/xsalsa20symmetric"
 
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
+// todo: need to check to migration cli keys.
 const (
-	blockTypePrivKey = "OSTRACON PRIVATE KEY"
-	blockTypeKeyInfo = "OSTRACON KEY INFO"
-	blockTypePubKey  = "OSTRACON PUBLIC KEY"
+	blockTypePrivKey = "TENDERMINT PRIVATE KEY"
+	blockTypeKeyInfo = "TENDERMINT KEY INFO"
+	blockTypePubKey  = "TENDERMINT PUBLIC KEY"
 
 	defaultAlgo = "secp256k1"
 

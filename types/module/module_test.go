@@ -10,8 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/tests/mocks"
@@ -247,7 +245,7 @@ func TestManager_BeginBlock(t *testing.T) {
 	require.NotNil(t, mm)
 	require.Equal(t, 2, len(mm.Modules))
 
-	req := ocabci.RequestBeginBlock{Hash: []byte("test")}
+	req := abci.RequestBeginBlock{Hash: []byte("test")}
 
 	mockAppModule1.EXPECT().BeginBlock(gomock.Any(), gomock.Eq(req)).Times(1)
 	mockAppModule2.EXPECT().BeginBlock(gomock.Any(), gomock.Eq(req)).Times(1)

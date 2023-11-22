@@ -3,8 +3,6 @@ package simapp
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/server/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -22,7 +20,7 @@ type App interface {
 	LegacyAmino() *codec.LegacyAmino
 
 	// Application updates every begin block.
-	BeginBlocker(ctx sdk.Context, req ocabci.RequestBeginBlock) abci.ResponseBeginBlock
+	BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock
 
 	// Application updates every end block.
 	EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock

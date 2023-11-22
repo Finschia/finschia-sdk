@@ -13,12 +13,11 @@ import (
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmrpc "github.com/tendermint/tendermint/rpc/client"
+	"github.com/tendermint/tendermint/rpc/client/http"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
-
-	ocrpc "github.com/Finschia/ostracon/rpc/client"
-	"github.com/Finschia/ostracon/rpc/client/http"
 
 	crgerrs "github.com/Finschia/finschia-sdk/server/rosetta/lib/errors"
 	crgtypes "github.com/Finschia/finschia-sdk/server/rosetta/lib/types"
@@ -46,7 +45,7 @@ type Client struct {
 
 	auth  auth.QueryClient
 	bank  bank.QueryClient
-	tmRPC ocrpc.Client
+	tmRPC tmrpc.Client
 
 	version string
 

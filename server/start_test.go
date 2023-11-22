@@ -5,8 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/Finschia/ostracon/config"
+	"github.com/tendermint/tendermint/config"
 )
 
 func TestGenPvFileOnlyWhenKmsAddressEmptyGenerateFiles(t *testing.T) {

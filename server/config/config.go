@@ -24,9 +24,6 @@ const (
 	// DefaultGRPCWebAddress defines the default address to bind the gRPC-web server to.
 	DefaultGRPCWebAddress = "0.0.0.0:9091"
 
-	// DefaultChanCheckTxSize defines the default size of channel check tx in Baseapp
-	DefaultChanCheckTxSize = 10000
-
 	// DefaultGRPCMaxRecvMsgSize defines the default gRPC max message size in
 	// bytes the server can receive.
 	DefaultGRPCMaxRecvMsgSize = 1024 * 1024 * 10
@@ -96,9 +93,6 @@ type BaseConfig struct {
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
 	Prometheus bool `mapstructure:"prometheus"`
-
-	// ChanCheckTxSize is the size of RequestCheckTxAsync of BaseApp
-	ChanCheckTxSize uint `mapstructure:"chan-check-tx-size"`
 }
 
 // APIConfig defines the API listener configuration.
@@ -118,16 +112,13 @@ type APIConfig struct {
 	// MaxOpenConnections defines the number of maximum open connections
 	MaxOpenConnections uint `mapstructure:"max-open-connections"`
 
-	// RPCReadTimeout defines the Ostracon RPC read timeout (in seconds)
+	// RPCReadTimeout defines the Tendermint RPC read timeout (in seconds)
 	RPCReadTimeout uint `mapstructure:"rpc-read-timeout"`
 
-	// RPCWriteTimeout defines the Ostracon RPC write timeout (in seconds)
+	// RPCWriteTimeout defines the Tendermint RPC write timeout (in seconds)
 	RPCWriteTimeout uint `mapstructure:"rpc-write-timeout"`
 
-	// RPCIdleTimeout defines the Ostracon RPC idle timeout (in seconds)
-	RPCIdleTimeout uint `mapstructure:"rpc-idle-timeout"`
-
-	// RPCMaxBodyBytes defines the Ostracon maximum response body (in bytes)
+	// RPCMaxBodyBytes defines the Tendermint maximum response body (in bytes)
 	RPCMaxBodyBytes uint `mapstructure:"rpc-max-body-bytes"`
 
 	// TODO: TLS/Proxy configuration.
@@ -253,7 +244,6 @@ func DefaultConfig() *Config {
 			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
 			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
 			IAVLDisableFastNode: true,
-			ChanCheckTxSize:     DefaultChanCheckTxSize,
 		},
 		Telemetry: telemetry.Config{
 			Enabled:      false,
@@ -266,7 +256,6 @@ func DefaultConfig() *Config {
 			MaxOpenConnections: 1000,
 			RPCReadTimeout:     10,
 			RPCWriteTimeout:    10,
-			RPCIdleTimeout:     60,
 			RPCMaxBodyBytes:    1000000,
 		},
 		GRPC: GRPCConfig{
@@ -326,7 +315,6 @@ func GetConfig(v *viper.Viper) (Config, error) {
 			MinRetainBlocks:     v.GetUint64("min-retain-blocks"),
 			IAVLDisableFastNode: v.GetBool("iavl-disable-fastnode"),
 			IAVLCacheSize:       v.GetUint64("iavl-cache-size"),
-			ChanCheckTxSize:     v.GetUint("chan-check-tx-size"),
 		},
 		Telemetry: telemetry.Config{
 			ServiceName:             v.GetString("telemetry.service-name"),
@@ -344,7 +332,6 @@ func GetConfig(v *viper.Viper) (Config, error) {
 			MaxOpenConnections: v.GetUint("api.max-open-connections"),
 			RPCReadTimeout:     v.GetUint("api.rpc-read-timeout"),
 			RPCWriteTimeout:    v.GetUint("api.rpc-write-timeout"),
-			RPCIdleTimeout:     v.GetUint("api.rpc-idle-timeout"),
 			RPCMaxBodyBytes:    v.GetUint("api.rpc-max-body-bytes"),
 			EnableUnsafeCORS:   v.GetBool("api.enabled-unsafe-cors"),
 		},

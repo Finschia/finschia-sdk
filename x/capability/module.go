@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -146,7 +144,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlocker calls InitMemStore to assert that the memory store is initialized.
 // It's safe to run multiple times.
-func (am AppModule) BeginBlock(ctx sdk.Context, _ ocabci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	am.keeper.InitMemStore(ctx)

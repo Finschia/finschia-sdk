@@ -12,10 +12,9 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
-
-	abci_server "github.com/Finschia/ostracon/abci/server"
-	"github.com/Finschia/ostracon/libs/cli"
-	"github.com/Finschia/ostracon/libs/log"
+	abci_server "github.com/tendermint/tendermint/abci/server"
+	"github.com/tendermint/tendermint/libs/cli"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

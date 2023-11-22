@@ -8,8 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	ocjson "github.com/Finschia/ostracon/libs/json"
+	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -113,7 +112,7 @@ $ %s migrate v0.43 /path/to/genesis.json --chain-id=test-chain-1 --genesis-time=
 				genDoc.ChainID = chainID
 			}
 
-			bz, err := ocjson.Marshal(genDoc)
+			bz, err := tmjson.Marshal(genDoc)
 			if err != nil {
 				return errors.Wrap(err, "failed to marshal genesis doc")
 			}

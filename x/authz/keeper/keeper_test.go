@@ -6,8 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	octime "github.com/Finschia/ostracon/types/time"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/simapp"
@@ -30,7 +29,7 @@ type TestSuite struct {
 func (s *TestSuite) SetupTest() {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	now := octime.Now()
+	now := tmtime.Now()
 	ctx = ctx.WithBlockHeader(tmproto.Header{Time: now})
 	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
 	authz.RegisterQueryServer(queryHelper, app.AuthzKeeper)

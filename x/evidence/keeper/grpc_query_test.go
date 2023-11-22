@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"fmt"
 
-	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/query"
@@ -34,7 +34,7 @@ func (suite *KeeperTestSuite) TestQueryEvidence() {
 		{
 			"invalid request with empty evidence hash",
 			func() {
-				req = &types.QueryEvidenceRequest{EvidenceHash: ostbytes.HexBytes{}}
+				req = &types.QueryEvidenceRequest{EvidenceHash: tmbytes.HexBytes{}}
 			},
 			false,
 			func(res *types.QueryEvidenceResponse) {},

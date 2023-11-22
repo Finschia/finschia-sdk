@@ -12,8 +12,8 @@ import (
 	"sort"
 	"strings"
 
-	cfg "github.com/Finschia/ostracon/config"
-	octypes "github.com/Finschia/ostracon/types"
+	cfg "github.com/tendermint/tendermint/config"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
@@ -25,7 +25,7 @@ import (
 
 // GenAppStateFromConfig gets the genesis app state from the config
 func GenAppStateFromConfig(cdc codec.JSONCodec, txEncodingConfig client.TxEncodingConfig,
-	config *cfg.Config, initCfg types.InitConfig, genDoc octypes.GenesisDoc, genBalIterator types.GenesisBalancesIterator,
+	config *cfg.Config, initCfg types.InitConfig, genDoc tmtypes.GenesisDoc, genBalIterator types.GenesisBalancesIterator,
 ) (appState json.RawMessage, err error) {
 	// process genesis transactions, else create default genesis.json
 	appGenTxs, persistentPeers, err := CollectTxs(
@@ -68,7 +68,7 @@ func GenAppStateFromConfig(cdc codec.JSONCodec, txEncodingConfig client.TxEncodi
 // CollectTxs processes and validates application's genesis Txs and returns
 // the list of appGenTxs, and persistent peers required to generate genesis.json.
 func CollectTxs(cdc codec.JSONCodec, txJSONDecoder sdk.TxDecoder, moniker, genTxsDir string,
-	genDoc octypes.GenesisDoc, genBalIterator types.GenesisBalancesIterator,
+	genDoc tmtypes.GenesisDoc, genBalIterator types.GenesisBalancesIterator,
 ) (appGenTxs []sdk.Tx, persistentPeers string, err error) {
 	// prepare a map of all balances in genesis state to then validate
 	// against the validators addresses

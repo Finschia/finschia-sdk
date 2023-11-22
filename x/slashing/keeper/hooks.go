@@ -3,7 +3,7 @@ package keeper
 import (
 	"time"
 
-	"github.com/Finschia/ostracon/crypto"
+	"github.com/tendermint/tendermint/crypto"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/slashing/types"

@@ -8,8 +8,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/slashing"
@@ -43,7 +41,7 @@ func TestBeginBlocker(t *testing.T) {
 	}
 
 	// mark the validator as having signed
-	req := ocabci.RequestBeginBlock{
+	req := abci.RequestBeginBlock{
 		LastCommitInfo: abci.LastCommitInfo{
 			Votes: []abci.VoteInfo{{
 				Validator:       val,
@@ -66,7 +64,7 @@ func TestBeginBlocker(t *testing.T) {
 	// for 1000 blocks, mark the validator as having signed
 	for ; height < app.SlashingKeeper.SignedBlocksWindow(ctx); height++ {
 		ctx = ctx.WithBlockHeight(height)
-		req = ocabci.RequestBeginBlock{
+		req = abci.RequestBeginBlock{
 			LastCommitInfo: abci.LastCommitInfo{
 				Votes: []abci.VoteInfo{{
 					Validator:       val,
@@ -81,7 +79,7 @@ func TestBeginBlocker(t *testing.T) {
 	// for 500 blocks, mark the validator as having not signed
 	for ; height < ((app.SlashingKeeper.SignedBlocksWindow(ctx) * 2) - app.SlashingKeeper.MinSignedPerWindow(ctx) + 1); height++ {
 		ctx = ctx.WithBlockHeight(height)
-		req = ocabci.RequestBeginBlock{
+		req = abci.RequestBeginBlock{
 			LastCommitInfo: abci.LastCommitInfo{
 				Votes: []abci.VoteInfo{{
 					Validator:       val,

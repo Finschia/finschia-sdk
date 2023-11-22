@@ -8,11 +8,9 @@ import (
 	"github.com/gogo/protobuf/grpc"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
+	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
-	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/server/api"
@@ -40,7 +38,7 @@ type (
 	// The interface defines the necessary contracts to be implemented in order
 	// to fully bootstrap and start an application.
 	Application interface {
-		ocabci.Application
+		abci.Application
 
 		RegisterAPIRoutes(*api.Server, config.APIConfig)
 
@@ -52,7 +50,7 @@ type (
 		// simulation, fetching txs by hash...).
 		RegisterTxService(client.Context)
 
-		// RegisterTendermintService registers the gRPC Query service for ostracon queries.
+		// RegisterTendermintService registers the gRPC Query service for tendermint queries.
 		RegisterTendermintService(client.Context)
 
 		// CommitMultiStore Returns the multistore instance
@@ -82,7 +80,7 @@ type (
 		// AppState is the application state as JSON.
 		AppState json.RawMessage
 		// Validators is the exported validator set.
-		Validators []octypes.GenesisValidator
+		Validators []tmtypes.GenesisValidator
 		// Height is the app's latest block height.
 		Height int64
 		// ConsensusParams are the exported consensus params for ABCI.

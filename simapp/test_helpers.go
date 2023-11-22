@@ -15,12 +15,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
-	octypes "github.com/Finschia/ostracon/types"
 
 	bam "github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"
@@ -49,7 +47,7 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 	},
 	Validator: &tmproto.ValidatorParams{
 		PubKeyTypes: []string{
-			octypes.ABCIPubKeyTypeEd25519,
+			tmtypes.ABCIPubKeyTypeEd25519,
 		},
 	},
 }
@@ -98,7 +96,7 @@ func Setup(isCheckTx bool) *SimApp {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
-// func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *SimApp {
+// func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *SimApp {
 //	app, genesisState := setup(true, 5)
 //	// set genesis accounts
 //	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
@@ -204,7 +202,7 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 	)
 
 	app.Commit()
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1}})
 
 	return app
 }
@@ -411,7 +409,7 @@ func SignCheckDeliver(
 	}
 
 	// Simulate a sending a transaction and committing a block and recheck
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {
@@ -424,9 +422,6 @@ func SignCheckDeliver(
 
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
-
-	app.BeginRecheckTx(ocabci.RequestBeginRecheckTx{Header: header})
-	app.EndRecheckTx(ocabci.RequestEndRecheckTx{})
 
 	return gInfo, res, err
 }
@@ -451,7 +446,7 @@ func SignAndDeliver(
 	require.NoError(t, err)
 
 	// Simulate a sending a transaction and committing a block
-	app.BeginBlock(ocabci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(txCfg.TxEncoder(), tx)
 
 	if expPass {

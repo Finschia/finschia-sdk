@@ -7,10 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
+	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
-	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server"
@@ -26,13 +25,13 @@ func TestNewApp(t *testing.T) {
 	ctx := server.NewDefaultContext()
 	ctx.Viper.Set(flags.FlagHome, tempDir)
 	ctx.Viper.Set(server.FlagPruning, types.PruningOptionNothing)
-	app := a.newApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, ctx.Viper)
+	app := a.newApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, ctx.Viper)
 	require.NotNil(t, app)
 }
 
 func TestAppExport(t *testing.T) {
 	encodingConfig := simapp.MakeTestEncodingConfig()
-	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	a := appCreator{encodingConfig}
 	db := dbm.NewMemDB()
 	tempDir := t.TempDir()
@@ -45,7 +44,7 @@ func TestAppExport(t *testing.T) {
 	genesisState := simapp.NewDefaultGenesisState(encodingConfig.Marshaler)
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	require.NoError(t, err)
-	genDoc := &octypes.GenesisDoc{}
+	genDoc := &tmtypes.GenesisDoc{}
 	genDoc.ChainID = "theChainId"
 	genDoc.Validators = nil
 	genDoc.AppState = stateBytes

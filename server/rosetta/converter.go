@@ -9,10 +9,9 @@ import (
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	secp "github.com/decred/dcrd/dcrec/secp256k1/v4"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	"github.com/Finschia/ostracon/crypto"
-	ostcoretypes "github.com/Finschia/ostracon/rpc/core/types"
-	octypes "github.com/Finschia/ostracon/types"
+	"github.com/tendermint/tendermint/crypto"
+	tmcoretypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	sdkclient "github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
@@ -50,7 +49,7 @@ type Converter interface {
 // tendermint types to rosetta known types
 type ToRosettaConverter interface {
 	// BlockResponse returns a block response given a result block
-	BlockResponse(block *ostcoretypes.ResultBlock) crgtypes.BlockResponse
+	BlockResponse(block *tmcoretypes.ResultBlock) crgtypes.BlockResponse
 	// BeginBlockToTx converts the given begin block hash to rosetta transaction hash
 	BeginBlockTxHash(blockHash []byte) string
 	// EndBlockTxHash converts the given endblock hash to rosetta transaction hash
@@ -68,15 +67,15 @@ type ToRosettaConverter interface {
 	// SigningComponents returns rosetta's components required to build a signable transaction
 	SigningComponents(tx authsigning.Tx, metadata *ConstructionMetadata, rosPubKeys []*rosettatypes.PublicKey) (txBytes []byte, payloadsToSign []*rosettatypes.SigningPayload, err error)
 	// Tx converts a tendermint transaction and tx result if provided to a rosetta tx
-	Tx(rawTx octypes.Tx, txResult *abci.ResponseDeliverTx) (*rosettatypes.Transaction, error)
+	Tx(rawTx tmtypes.Tx, txResult *abci.ResponseDeliverTx) (*rosettatypes.Transaction, error)
 	// TxIdentifiers converts a tendermint tx to transaction identifiers
-	TxIdentifiers(txs []octypes.Tx) []*rosettatypes.TransactionIdentifier
+	TxIdentifiers(txs []tmtypes.Tx) []*rosettatypes.TransactionIdentifier
 	// BalanceOps converts events to balance operations
 	BalanceOps(status string, events []abci.Event) []*rosettatypes.Operation
 	// SyncStatus converts a tendermint status to sync status
-	SyncStatus(status *ostcoretypes.ResultStatus) *rosettatypes.SyncStatus
+	SyncStatus(status *tmcoretypes.ResultStatus) *rosettatypes.SyncStatus
 	// Peers converts tendermint peers to rosetta
-	Peers(peers []ostcoretypes.Peer) []*rosettatypes.Peer
+	Peers(peers []tmcoretypes.Peer) []*rosettatypes.Peer
 }
 
 // ToSDKConverter is an interface that exposes
@@ -259,7 +258,7 @@ func (c converter) Ops(status string, msg sdk.Msg) ([]*rosettatypes.Operation, e
 }
 
 // Tx converts a tendermint raw transaction and its result (if provided) to a rosetta transaction
-func (c converter) Tx(rawTx octypes.Tx, txResult *abci.ResponseDeliverTx) (*rosettatypes.Transaction, error) {
+func (c converter) Tx(rawTx tmtypes.Tx, txResult *abci.ResponseDeliverTx) (*rosettatypes.Transaction, error) {
 	// decode tx
 	tx, err := c.txDecode(rawTx)
 	if err != nil {
@@ -501,7 +500,7 @@ func (c converter) HashToTxType(hashBytes []byte) (txType TransactionType, realH
 }
 
 // StatusToSyncStatus converts a tendermint status to rosetta sync status
-func (c converter) SyncStatus(status *ostcoretypes.ResultStatus) *rosettatypes.SyncStatus {
+func (c converter) SyncStatus(status *tmcoretypes.ResultStatus) *rosettatypes.SyncStatus {
 	// determine sync status
 	stage := StatusPeerSynced
 	if status.SyncInfo.CatchingUp {
@@ -516,7 +515,7 @@ func (c converter) SyncStatus(status *ostcoretypes.ResultStatus) *rosettatypes.S
 }
 
 // TxIdentifiers converts a tendermint raw transactions into an array of rosetta tx identifiers
-func (c converter) TxIdentifiers(txs []octypes.Tx) []*rosettatypes.TransactionIdentifier {
+func (c converter) TxIdentifiers(txs []tmtypes.Tx) []*rosettatypes.TransactionIdentifier {
 	converted := make([]*rosettatypes.TransactionIdentifier, len(txs))
 	for i, tx := range txs {
 		converted[i] = &rosettatypes.TransactionIdentifier{Hash: fmt.Sprintf("%X", tx.Hash())}
@@ -526,7 +525,7 @@ func (c converter) TxIdentifiers(txs []octypes.Tx) []*rosettatypes.TransactionId
 }
 
 // tmResultBlockToRosettaBlockResponse converts a tendermint result block to block response
-func (c converter) BlockResponse(block *ostcoretypes.ResultBlock) crgtypes.BlockResponse {
+func (c converter) BlockResponse(block *tmcoretypes.ResultBlock) crgtypes.BlockResponse {
 	var parentBlock *rosettatypes.BlockIdentifier
 
 	switch block.Block.Height {
@@ -553,7 +552,7 @@ func (c converter) BlockResponse(block *ostcoretypes.ResultBlock) crgtypes.Block
 }
 
 // Peers converts tm peers to rosetta peers
-func (c converter) Peers(peers []ostcoretypes.Peer) []*rosettatypes.Peer {
+func (c converter) Peers(peers []tmcoretypes.Peer) []*rosettatypes.Peer {
 	converted := make([]*rosettatypes.Peer, len(peers))
 
 	for i, peer := range peers {

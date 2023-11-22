@@ -6,8 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/Finschia/ostracon/types/time"
+	"github.com/tendermint/tendermint/types/time"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/simapp"
