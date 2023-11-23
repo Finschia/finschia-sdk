@@ -9,7 +9,6 @@ import (
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	tmtypes "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -232,18 +231,10 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 		}
 	}
 
-	// convert tendermint's block struct to tendermint's block struct
-	tmBlock := tmtypes.Block{
-		Header:     block.Header,
-		Data:       block.Data,
-		Evidence:   block.Evidence,
-		LastCommit: block.LastCommit,
-	}
-
 	return &txtypes.GetBlockWithTxsResponse{
 		Txs:     txs,
 		BlockId: &blockID,
-		Block:   &tmBlock,
+		Block:   block,
 		Pagination: &pagination.PageResponse{
 			Total: blockTxsLn,
 		},
