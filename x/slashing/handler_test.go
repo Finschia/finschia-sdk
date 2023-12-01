@@ -139,7 +139,7 @@ func TestInvalidMsg(t *testing.T) {
 }
 
 // Test a validator through uptime, downtime, revocation,
-// unrevocation, voter set counter reset, and revocation again
+// unrevocation, starting height reset, and revocation again
 func TestHandleAbsentValidator(t *testing.T) {
 	// initial setup
 	app := simapp.Setup(false)
@@ -260,7 +260,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// validator should have been slashed
 	require.True(t, amt.Sub(slashAmt).Equal(app.BankKeeper.GetBalance(ctx, bondPool.GetAddress(), app.StakingKeeper.BondDenom(ctx)).Amount))
 
-	// Validator voter set counter should not have been changed
+	// Validator start height should not have been changed
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
 	require.Equal(t, int64(0), info.StartHeight)

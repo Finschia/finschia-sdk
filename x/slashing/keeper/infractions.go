@@ -26,7 +26,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 	}
 
 	// this is a relative index, so it counts blocks the validator *should* have signed
-	// will use the 0-value default signing info if not present, except for the beginning
+	// will use the 0-value default signing info if not present, except for start height
 	index := signInfo.IndexOffset % k.SignedBlocksWindow(ctx)
 	signInfo.IndexOffset++
 
@@ -69,12 +69,11 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 		)
 	}
 
-	numVotes := signInfo.IndexOffset
-	minVotes := k.SignedBlocksWindow(ctx)
+	minHeight := signInfo.StartHeight + k.SignedBlocksWindow(ctx)
 	maxMissed := k.SignedBlocksWindow(ctx) - minSignedPerWindow
 
-	// if we have joined enough times to voter set and the validator has missed too many blocks, punish them
-	if numVotes >= minVotes && signInfo.MissedBlocksCounter > maxMissed {
+	// if we are past the minimum height and the validator has missed too many blocks, punish them
+	if height > minHeight && signInfo.MissedBlocksCounter > maxMissed {
 		validator := k.sk.ValidatorByConsAddr(ctx, consAddr)
 		if validator != nil && !validator.IsJailed() {
 			// Downtime confirmed: slash and jail the validator
@@ -108,7 +107,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 				"slashing and jailing validator due to liveness fault",
 				"height", height,
 				"validator", consAddr.String(),
-				"min_votes", minVotes,
+				"min_height", minHeight,
 				"threshold", minSignedPerWindow,
 				"slashed", k.SlashFractionDowntime(ctx).String(),
 				"jailed_until", signInfo.JailedUntil,
