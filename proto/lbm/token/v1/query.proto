@@ -1,0 +1,163 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "google/api/annotations.proto";
+import "lbm/token/v1/token.proto";
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/token";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Balance queries the number of tokens of a given contract owned by the address.
+  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/balances/{address}";
+  }
+
+  // Supply queries the number of tokens from the given contract id.
+  rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/supply";
+  }
+
+  // Minted queries the number of minted tokens from the given contract id.
+  rpc Minted(QueryMintedRequest) returns (QueryMintedResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/minted";
+  }
+
+  // Burnt queries the number of burnt tokens from the given contract id.
+  rpc Burnt(QueryBurntRequest) returns (QueryBurntResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/burnt";
+  }
+
+  // Contract queries an token metadata based on its contract id.
+  rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}";
+  }
+
+  // GranteeGrants queries permissions on a given grantee.
+  rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}";
+  }
+
+  // IsOperatorFor queries authorization on a given operator holder pair.
+  rpc IsOperatorFor(QueryIsOperatorForRequest) returns (QueryIsOperatorForResponse) {}
+
+  // HoldersByOperator queries holders on a given operator.
+  rpc HoldersByOperator(QueryHoldersByOperatorRequest) returns (QueryHoldersByOperatorResponse) {}
+}
+
+// QueryBalanceRequest is the request type for the Query/Balance RPC method
+message QueryBalanceRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address is the address to query balance for.
+  string address = 2;
+}
+
+// QueryBalanceResponse is the response type for the Query/Balance RPC method
+message QueryBalanceResponse {
+  // the balance of the tokens.
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// QuerySupplyRequest is the request type for the Query/Supply RPC method
+message QuerySupplyRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+}
+
+// QuerySupplyResponse is the response type for the Query/Supply RPC method
+message QuerySupplyResponse {
+  // the supply of the tokens.
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// QueryMintedRequest is the request type for the Query/Minted RPC method
+message QueryMintedRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+}
+
+// QueryMintedResponse is the response type for the Query/Minted RPC method
+message QueryMintedResponse {
+  // the amount of the minted tokens.
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// QueryBurntRequest is the request type for the Query/Burnt RPC method
+message QueryBurntRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+}
+
+// QueryBurntResponse is the response type for the Query/Burnt RPC method
+message QueryBurntResponse {
+  // the amount of the burnt tokens.
+  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// QueryContractRequest is the request type for the Query/Contract RPC method
+message QueryContractRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+}
+
+// QueryContractResponse is the response type for the Query/Contract RPC method
+message QueryContractResponse {
+  Contract contract = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
+message QueryGranteeGrantsRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // grantee which has permissions on the contract.
+  string grantee = 2;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
+message QueryGranteeGrantsResponse {
+  // all the grants on the grantee.
+  repeated Grant grants = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryIsOperatorForRequest is the request type for the Query/IsOperatorFor RPC method
+message QueryIsOperatorForRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator which the authorization is granted to.
+  string operator = 2;
+  // address of the holder of the authorization.
+  string holder = 3;
+}
+
+// QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method
+message QueryIsOperatorForResponse {
+  bool authorized = 1;
+}
+
+// QueryHoldersByOperatorRequest is the request type for the Query/HoldersByOperator RPC method
+message QueryHoldersByOperatorRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator which the authorization is granted to.
+  string operator = 2;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method
+message QueryHoldersByOperatorResponse {
+  // holder addresses
+  repeated string holders = 1;
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

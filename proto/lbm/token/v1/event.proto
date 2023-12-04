@@ -1,0 +1,158 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+import "gogoproto/gogo.proto";
+
+import "lbm/token/v1/token.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/token";
+
+// AttributeKey enumerates the valid attribute keys on x/token.
+enum AttributeKey {
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
+
+  ATTRIBUTE_KEY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
+
+  ATTRIBUTE_KEY_NAME = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
+  reserved 2;
+  ATTRIBUTE_KEY_META = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
+  reserved 4 to 7;
+  // deprecated: use ATTRIBUTE_KEY_URI
+  ATTRIBUTE_KEY_IMG_URI = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
+  reserved 9 to 14;
+  ATTRIBUTE_KEY_URI = 15 [(gogoproto.enumvalue_customname) = "AttributeKeyURI"];
+}
+
+// EventSent is emitted when tokens are transferred.
+//
+// Since: 0.46.0 (finschia)
+message EventSent {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the send.
+  string operator = 2;
+  // holder whose tokens were sent.
+  string from = 3;
+  // recipient of the tokens
+  string to = 4;
+  // number of tokens sent.
+  string amount = 5 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+//
+// Since: 0.46.0 (finschia)
+message EventAuthorizedOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of a holder which authorized the `operator` address as an operator.
+  string holder = 2;
+  // address which became an operator of `holder`.
+  string operator = 3;
+}
+
+// EventRevokedOperator is emitted when an authorization is revoked.
+//
+// Since: 0.46.0 (finschia)
+message EventRevokedOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of a holder which revoked the `operator` address as an operator.
+  string holder = 2;
+  // address which was revoked as an operator of `holder`.
+  string operator = 3;
+}
+
+// EventIssued is emitted when a new contract is created.
+//
+// Since: 0.46.0 (finschia)
+message EventIssued {
+  // address which created the contract.
+  string creator = 1;
+  // contract id associated with the contract.
+  string contract_id = 2;
+  // name defines the human-readable name of the contract.
+  string name = 3;
+  // symbol is an abbreviated name for contract.
+  string symbol = 4;
+  // uri is an uri for the resource of the contract stored off chain.
+  string uri = 5;
+  // meta is a brief description of contract.
+  string meta = 6;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 7;
+  // mintable represents whether the token is allowed to mint.
+  bool mintable = 8;
+}
+
+// EventGranted is emitted when a granter grants its permission to a grantee.
+//
+// Info: `granter` would be empty if the permission is granted by an issuance.
+//
+// Since: 0.46.0 (finschia)
+message EventGranted {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which granted the permission to `grantee`.
+  // it would be empty where the event is triggered by the issuance.
+  string granter = 2;
+  // address of the grantee.
+  string grantee = 3;
+  // permission on the contract.
+  Permission permission = 4;
+}
+
+// EventRenounced is emitted when a grantee renounces its permission.
+//
+// Since: 0.46.0 (finschia)
+message EventRenounced {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which abandons its grant.
+  string grantee = 2;
+  // permission on the contract.
+  Permission permission = 3;
+}
+
+// EventMinted is emitted when tokens are minted.
+//
+// Since: 0.46.0 (finschia)
+message EventMinted {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the mint.
+  string operator = 2;
+  // recipient of the tokens.
+  string to = 3;
+  // number of tokens minted.
+  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventBurned is emitted when tokens are burnt.
+//
+// Since: 0.46.0 (finschia)
+message EventBurned {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the burn.
+  string operator = 2;
+  // holder whose tokens were burned.
+  string from = 3;
+  // number of tokens burned.
+  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventModified is emitted when the information of a contract is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModified {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2;
+  // changes on the metadata of the class.
+  // possible attribute keys are same as those of MsgModify.
+  // deprecated "img_uri" has been replaced by "uri" in the events.
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
+}
