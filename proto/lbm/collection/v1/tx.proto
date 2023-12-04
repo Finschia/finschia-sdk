@@ -2,7 +2,9 @@ syntax = "proto3";
 package lbm.collection.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
 
 import "lbm/collection/v1/collection.proto";
 
@@ -114,7 +116,7 @@ service Msg {
 // MsgSendFT is the Msg/SendFT request type.
 message MsgSendFT {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgSendFT";
+  option (amino.name)           = "lbm-sdk/MsgSendFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -133,7 +135,7 @@ message MsgSendFTResponse {}
 // MsgOperatorSendFT is the Msg/OperatorSendFT request type.
 message MsgOperatorSendFT {
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorSendFT";
+  option (amino.name)           = "lbm-sdk/MsgOperatorSendFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -154,7 +156,7 @@ message MsgOperatorSendFTResponse {}
 // MsgSendNFT is the Msg/SendNFT request type.
 message MsgSendNFT {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgSendNFT";
+  option (amino.name)           = "lbm-sdk/MsgSendNFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -172,7 +174,7 @@ message MsgSendNFTResponse {}
 // MsgOperatorSendNFT is the Msg/OperatorSendNFT request type.
 message MsgOperatorSendNFT {
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorSendNFT";
+  option (amino.name)           = "lbm-sdk/MsgOperatorSendNFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -192,7 +194,7 @@ message MsgOperatorSendNFTResponse {}
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
 message MsgAuthorizeOperator {
   option (cosmos.msg.v1.signer) = "holder";
-  option (amino.name) = "lbm-sdk/collection/MsgAuthorizeOperator";
+  option (amino.name)           = "lbm-sdk/collection/MsgAuthorizeOperator";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -208,7 +210,7 @@ message MsgAuthorizeOperatorResponse {}
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
 message MsgRevokeOperator {
   option (cosmos.msg.v1.signer) = "holder";
-  option (amino.name) = "lbm-sdk/collection/MsgRevokeOperator";
+  option (amino.name)           = "lbm-sdk/collection/MsgRevokeOperator";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -224,7 +226,7 @@ message MsgRevokeOperatorResponse {}
 // MsgCreateContract is the Msg/CreateContract request type.
 message MsgCreateContract {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "lbm-sdk/MsgCreateContract";
+  option (amino.name)           = "lbm-sdk/MsgCreateContract";
 
   // address which all the permissions on the contract will be granted to (not a permanent property).
   string owner = 1;
@@ -246,7 +248,7 @@ message MsgCreateContractResponse {
 // MsgIssueFT is the Msg/IssueFT request type.
 message MsgIssueFT {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "lbm-sdk/MsgIssueFT";
+  option (amino.name)           = "lbm-sdk/MsgIssueFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -267,7 +269,8 @@ message MsgIssueFT {
   // the amount of tokens to mint on the issuance.
   // Note: if you provide negative amount, a panic may result.
   // Note: amount may be zero.
-  string amount = 8 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 8
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.
@@ -279,7 +282,7 @@ message MsgIssueFTResponse {
 // MsgIssueNFT is the Msg/IssueNFT request type.
 message MsgIssueNFT {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "lbm-sdk/MsgIssueNFT";
+  option (amino.name)           = "lbm-sdk/MsgIssueNFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -302,7 +305,7 @@ message MsgIssueNFTResponse {
 // MsgMintFT is the Msg/MintFT request type.
 message MsgMintFT {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgMintFT";
+  option (amino.name)           = "lbm-sdk/MsgMintFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -321,7 +324,7 @@ message MsgMintFTResponse {}
 // MsgMintNFT is the Msg/MintNFT request type.
 message MsgMintNFT {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgMintNFT";
+  option (amino.name)           = "lbm-sdk/MsgMintNFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -356,7 +359,7 @@ message MintNFTParam {
 // MsgBurnFT is the Msg/BurnFT request type.
 message MsgBurnFT {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgBurnFT";
+  option (amino.name)           = "lbm-sdk/MsgBurnFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -374,7 +377,7 @@ message MsgBurnFTResponse {}
 // MsgOperatorBurnFT is the Msg/OperatorBurnFT request type.
 message MsgOperatorBurnFT {
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorBurnFT";
+  option (amino.name)           = "lbm-sdk/MsgOperatorBurnFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -395,7 +398,7 @@ message MsgOperatorBurnFTResponse {}
 // MsgBurnNFT is the Msg/BurnNFT request type.
 message MsgBurnNFT {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgBurnNFT";
+  option (amino.name)           = "lbm-sdk/MsgBurnNFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -413,7 +416,7 @@ message MsgBurnNFTResponse {}
 // MsgOperatorBurnNFT is the Msg/OperatorBurnNFT request type.
 message MsgOperatorBurnNFT {
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorBurnNFT";
+  option (amino.name)           = "lbm-sdk/MsgOperatorBurnNFT";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -434,7 +437,7 @@ message MsgOperatorBurnNFTResponse {}
 // MsgModify is the Msg/Modify request type.
 message MsgModify {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "lbm-sdk/collection/MsgModify";
+  option (amino.name)           = "lbm-sdk/collection/MsgModify";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -460,7 +463,7 @@ message MsgModifyResponse {}
 // MsgGrantPermission is the Msg/GrantPermission request type.
 message MsgGrantPermission {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/collection/MsgGrantPermission";
+  option (amino.name)           = "lbm-sdk/collection/MsgGrantPermission";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -478,7 +481,7 @@ message MsgGrantPermissionResponse {}
 // MsgRevokePermission is the Msg/RevokePermission request type.
 message MsgRevokePermission {
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/collection/MsgRevokePermission";
+  option (amino.name)           = "lbm-sdk/collection/MsgRevokePermission";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -496,7 +499,7 @@ message MsgAttach {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgAttach";
+  option (amino.name)           = "lbm-sdk/MsgAttach";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -518,7 +521,7 @@ message MsgDetach {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgDetach";
+  option (amino.name)           = "lbm-sdk/MsgDetach";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -538,7 +541,7 @@ message MsgOperatorAttach {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorAttach";
+  option (amino.name)           = "lbm-sdk/MsgOperatorAttach";
 
   // contract id associated with the contract.
   string contract_id = 1;
@@ -562,7 +565,7 @@ message MsgOperatorDetach {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorDetach";
+  option (amino.name)           = "lbm-sdk/MsgOperatorDetach";
 
   // contract id associated with the contract.
   string contract_id = 1;

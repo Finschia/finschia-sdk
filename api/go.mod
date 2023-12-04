@@ -1,4 +1,4 @@
-module cosmossdk.io/api
+module github.com/Finschia/finschia-sdk/api
 
 go 1.20
 

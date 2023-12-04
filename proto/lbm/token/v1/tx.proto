@@ -2,8 +2,10 @@ syntax = "proto3";
 package lbm.token.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "lbm/token/v1/token.proto";
+import "amino/amino.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/token";
 
@@ -20,7 +22,7 @@ message MsgSend {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgSend";
+  option (amino.name)           = "lbm-sdk/MsgSend";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -29,7 +31,8 @@ message MsgSend {
   // recipient of the tokens.
   string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // number of tokens to send.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgSendResponse defines the Msg/Send response type.
@@ -42,7 +45,7 @@ message MsgOperatorSend {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorSend";
+  option (amino.name)           = "lbm-sdk/MsgOperatorSend";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -53,7 +56,8 @@ message MsgOperatorSend {
   // the address which the transfer is to.
   string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // the amount of the transfer.
-  string amount = 5 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 5
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgOperatorSendResponse defines the Msg/OperatorSend response type.
@@ -68,7 +72,7 @@ message MsgRevokeOperator {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "holder";
-  option (amino.name) = "lbm-sdk/token/MsgRevokeOperator";
+  option (amino.name)           = "lbm-sdk/token/MsgRevokeOperator";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -90,7 +94,7 @@ message MsgAuthorizeOperator {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "holder";
-  option (amino.name) = "lbm-sdk/token/MsgAuthorizeOperator";
+  option (amino.name)           = "lbm-sdk/token/MsgAuthorizeOperator";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -110,7 +114,7 @@ message MsgIssue {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "lbm-sdk/MsgIssue";
+  option (amino.name)           = "lbm-sdk/MsgIssue";
 
   // name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
   string name = 1;
@@ -131,7 +135,8 @@ message MsgIssue {
   // the address to send the minted token to. mandatory.
   string to = 8 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // amount of tokens to mint on issuance. mandatory.
-  string amount = 9 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 9
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueResponse defines the Msg/Issue response type.
@@ -147,7 +152,7 @@ message MsgGrantPermission {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/token/MsgGrantPermission";
+  option (amino.name)           = "lbm-sdk/token/MsgGrantPermission";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -169,7 +174,7 @@ message MsgRevokePermission {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/token/MsgRevokePermission";
+  option (amino.name)           = "lbm-sdk/token/MsgRevokePermission";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -189,7 +194,7 @@ message MsgMint {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgMint";
+  option (amino.name)           = "lbm-sdk/MsgMint";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -198,7 +203,8 @@ message MsgMint {
   // recipient of the tokens.
   string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // number of tokens to mint.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgMintResponse defines the Msg/Mint response type.
@@ -211,14 +217,15 @@ message MsgBurn {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "from";
-  option (amino.name) = "lbm-sdk/MsgBurn";
+  option (amino.name)           = "lbm-sdk/MsgBurn";
 
   // contract id associated with the token class.
   string contract_id = 1;
   // address whose tokens are being burned.
   string from = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // number of tokens to burn.
-  string amount = 3 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgBurnResponse defines the Msg/Burn response type.
@@ -231,7 +238,7 @@ message MsgOperatorBurn {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name) = "lbm-sdk/MsgOperatorBurn";
+  option (amino.name)           = "lbm-sdk/MsgOperatorBurn";
 
   // contract id associated with the token class.
   string contract_id = 1;
@@ -240,7 +247,8 @@ message MsgOperatorBurn {
   // address which the tokens will be burnt from.
   string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // the amount of the burn.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
@@ -253,7 +261,7 @@ message MsgModify {
   option deprecated = true;
 
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "lbm-sdk/token/MsgModify";
+  option (amino.name)           = "lbm-sdk/token/MsgModify";
 
   // contract id associated with the contract.
   string contract_id = 1;

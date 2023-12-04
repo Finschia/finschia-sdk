@@ -16,9 +16,6 @@ require (
 	cosmossdk.io/x/tx v0.12.0
 	github.com/99designs/keyring v1.2.1
 	github.com/bgentry/speakeasy v0.1.1-0.20220910012023-760eaf8b6816
-	github.com/bits-and-blooms/bitset v1.8.0
-	github.com/chzyer/readline v1.5.1
-	github.com/cockroachdb/apd/v2 v2.0.2
 	github.com/cockroachdb/errors v1.11.1
 	github.com/cometbft/cometbft v0.38.0
 	github.com/cosmos/btcutil v1.0.5
@@ -45,7 +42,6 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.15.3
 	github.com/magiconair/properties v1.8.7
-	github.com/manifoldco/promptui v0.9.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/prometheus/client_golang v1.17.0
 	github.com/prometheus/common v0.45.0
@@ -72,11 +68,14 @@ require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/bits-and-blooms/bitset v1.8.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/bufbuild/protocompile v0.6.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/chzyer/readline v1.5.1 // indirect
+	github.com/cockroachdb/apd/v2 v2.0.2 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
 	github.com/cockroachdb/pebble v0.0.0-20231101195458-481da04154d6 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
@@ -123,6 +122,7 @@ require (
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
 	github.com/linxGnu/grocksdb v1.8.4 // indirect
+	github.com/manifoldco/promptui v0.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
