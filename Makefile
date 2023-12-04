@@ -10,7 +10,7 @@ BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
 SIMAPP = ./simapp
 MOCKS_DIR = $(CURDIR)/tests/mocks
-HTTPS_GIT := https://github.com/cosmos/cosmos-sdk.git
+HTTPS_GIT := https://github.com/Finschia/finschia-sdk.git
 DOCKER := $(shell which docker)
 PROJECT_NAME = $(shell git remote get-url origin | xargs basename -s .git)
 
@@ -54,11 +54,11 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=sim \
-		-X github.com/cosmos/cosmos-sdk/version.AppName=simd \
-		-X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
-		-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		-X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
+ldflags = -X github.com/Finschia/finschia-sdk/version.Name=sim \
+		-X github.com/Finschia/finschia-sdk/version.AppName=simd \
+		-X github.com/Finschia/finschia-sdk/version.Version=$(VERSION) \
+		-X github.com/Finschia/finschia-sdk/version.Commit=$(COMMIT) \
+		-X "github.com/Finschia/finschia-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 		-X github.com/cometbft/cometbft/version.TMCoreSemVer=$(CMTVERSION)
 
 # DB backend selection
