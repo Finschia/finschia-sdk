@@ -2,7 +2,7 @@ go 1.21
 
 toolchain go1.21.0
 
-module github.com/cosmos/cosmos-sdk
+module github.com/Finschia/finschia-sdk
 
 require (
 	cosmossdk.io/api v0.7.2
@@ -24,6 +24,7 @@ require (
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/cosmos-db v1.0.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.3
+	github.com/cosmos/cosmos-sdk v0.50.1
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogogateway v1.2.0
 	github.com/cosmos/gogoproto v1.4.11
@@ -128,7 +129,6 @@ require (
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
-	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
@@ -180,20 +180,4 @@ replace (
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
-)
-
-retract (
-	// false start by tagging the wrong branch
-	v0.50.0
-	// revert fix https://github.com/cosmos/cosmos-sdk/pull/16331
-	v0.46.12
-	// subject to a bug in the group module and gov module migration
-	[v0.46.5, v0.46.6]
-	// subject to the dragonberry vulnerability
-	// and/or the bank coin metadata migration issue
-	[v0.46.0, v0.46.4]
-	// subject to the dragonberry vulnerability
-	[v0.45.0, v0.45.8]
-	// do not use
-	v0.43.0
 )
