@@ -2,6 +2,7 @@ syntax = "proto3";
 package lbm.collection.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 import "lbm/collection/v1/collection.proto";
 
@@ -29,11 +30,11 @@ message EventSent {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the send.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // holder whose tokens were sent.
-  string from = 3;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // recipient of the tokens.
-  string to = 4;
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // amount of tokens sent.
   repeated Coin amount = 5 [(gogoproto.nullable) = false];
 }
@@ -45,9 +46,9 @@ message EventAuthorizedOperator {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of a holder which authorized the `operator` address as an operator.
-  string holder = 2;
+  string holder = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address which became an operator of `holder`.
-  string operator = 3;
+  string operator = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // EventRevokedOperator is emitted when an authorization is revoked.
@@ -57,9 +58,9 @@ message EventRevokedOperator {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of a holder which revoked the `operator` address as an operator.
-  string holder = 2;
+  string holder = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address which was revoked as an operator of `holder`.
-  string operator = 3;
+  string operator = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // EventCreatedContract is emitted when a new contract is created.
@@ -67,7 +68,7 @@ message EventRevokedOperator {
 // Since: 0.46.0 (finschia)
 message EventCreatedContract {
   // address which created the contract.
-  string creator = 1;
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // contract id associated with the contract.
   string contract_id = 2;
   // name of the contract.
@@ -85,7 +86,7 @@ message EventCreatedFTClass {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the create.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id associated with the token class.
   string token_id = 3;
   // name of the token class.
@@ -105,7 +106,7 @@ message EventCreatedNFTClass {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the create.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token type associated with the token class.
   // refer to TokenType for the definition.
   string token_type = 3;
@@ -124,9 +125,9 @@ message EventGranted {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the granter which grants the permission.
-  string granter = 2;
+  string granter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address of the grantee.
-  string grantee = 3;
+  string grantee = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // permission on the contract.
   Permission permission = 4;
 }
@@ -138,7 +139,7 @@ message EventRenounced {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which abandons its grant.
-  string grantee = 2;
+  string grantee = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // permission on the contract.
   Permission permission = 3;
 }
@@ -150,9 +151,9 @@ message EventMintedFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // recipient of the tokens.
-  string to = 3;
+  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // amount of tokens minted.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
@@ -164,9 +165,9 @@ message EventMintedNFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // recipient of the tokens.
-  string to = 3;
+  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // tokens minted.
   repeated NFT tokens = 4 [(gogoproto.nullable) = false];
 }
@@ -178,9 +179,9 @@ message EventBurned {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the burn.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // holder whose tokens were burned.
-  string from = 3;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // amount of tokens burned.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
@@ -192,7 +193,7 @@ message EventModifiedContract {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the modify.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // changes of the attributes applied.
   // possible attribute keys are same as those of MsgModify.
   // deprecated "base_img_uri" has been replaced by "uri" in the events.
@@ -206,7 +207,7 @@ message EventModifiedTokenClass {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the modify.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token type associated with the token class.
   // refer to TokenType for the definition.
   string token_type = 3;
@@ -224,7 +225,7 @@ message EventModifiedNFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the modify.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id associated with the non-fungible token.
   string token_id = 3;
   // changes of the attributes applied.
@@ -239,9 +240,9 @@ message EventAttached {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the attach.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address which holds the tokens.
-  string holder = 3;
+  string holder = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // subject of the attach.
   string subject = 4;
   // target of the attach.
@@ -255,9 +256,9 @@ message EventDetached {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the detach.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address which holds the token.
-  string holder = 3;
+  string holder = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token being detached.
   string subject = 4;
   // parent token before the detach.
@@ -273,9 +274,9 @@ message EventOwnerChanged {
   // token id associated with the token.
   string token_id = 2;
   // address of the previous owner before the change.
-  string from = 3;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address of the new owner.
-  string to = 4;
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // EventRootChanged is emitted when the root of token is changed by operation applied to its ancestor.
@@ -287,7 +288,7 @@ message EventRootChanged {
   // token id associated with the token.
   string token_id = 2;
   // token id of the previous root before the change.
-  string from = 3;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id of the new root.
-  string to = 4;
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }

@@ -3,6 +3,7 @@ package lbm.foundation.v1;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/foundation";
 
@@ -10,4 +11,5 @@ option go_package = "github.com/Finschia/finschia-sdk/x/foundation";
 // up to receive_limit from the treasury.
 message ReceiveFromTreasuryAuthorization {
   option (cosmos_proto.implements_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization";
+  option (amino.name)                        = "lbm-sdk/ReceiveFromTreasuryAuthorization";
 }

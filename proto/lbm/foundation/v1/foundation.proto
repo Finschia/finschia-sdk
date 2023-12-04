@@ -10,11 +10,11 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
 
 // Params defines the parameters for the foundation module.
 message Params {
-  string foundation_tax = 1
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
+  string foundation_tax = 1 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
   reserved 2; // previously used tag number for 'censored_msg_type_urls'.
 }
 
@@ -37,7 +37,7 @@ enum CensorshipAuthority {
 // Member represents a foundation member with an account address and metadata.
 message Member {
   // address is the member's account address.
-  string address = 1;
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // metadata is any arbitrary metadata to attached to the member.
   string metadata = 2;
@@ -51,7 +51,7 @@ message Member {
 // since this field cannot be set as part of requests.
 message MemberRequest {
   // address is the member's account address.
-  string address = 1;
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // remove is the flag which allows one to remove the member by setting the flag to true.
   bool remove = 2;
@@ -68,9 +68,10 @@ message MemberRequest {
 //    given by `windows`.
 message ThresholdDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
+  option (amino.name)                        = "lbm-sdk/ThresholdDecisionPolicy";
 
   // threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed.
-  string threshold = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string threshold = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   // windows defines the different windows for voting and execution.
   DecisionPolicyWindows windows = 2;
@@ -84,9 +85,10 @@ message ThresholdDecisionPolicy {
 //    given by `windows`.
 message PercentageDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
+  option (amino.name)                        = "lbm-sdk/PercentageDecisionPolicy";
 
   // percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed.
-  string percentage = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string percentage = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   // windows defines the different windows for voting and execution.
   DecisionPolicyWindows windows = 2;
@@ -147,7 +149,7 @@ message FoundationInfo {
   uint64 version = 1;
 
   // total_weight is the number of the foundation members.
-  string total_weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string total_weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   // decision_policy specifies the foundation's decision policy.
   google.protobuf.Any decision_policy = 3 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
@@ -167,7 +169,7 @@ message Proposal {
   string metadata = 2;
 
   // proposers are the account addresses of the proposers.
-  repeated string proposers = 3;
+  repeated string proposers = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // submit_time is a timestamp specifying when a proposal was submitted.
   google.protobuf.Timestamp submit_time = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
@@ -248,17 +250,16 @@ message TallyResult {
   option (gogoproto.goproto_getters) = false;
 
   // yes_count is the sum of yes votes.
-  string yes_count = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string yes_count = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   // abstain_count is the sum of abstainers.
-  string abstain_count = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string abstain_count = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   // no is the sum of no votes.
-  string no_count = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string no_count = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   // no_with_veto_count is the sum of veto.
-  string no_with_veto_count = 4
-      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec"];
+  string no_with_veto_count = 4 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 }
 
 // Vote represents a vote for a proposal.
@@ -267,7 +268,7 @@ message Vote {
   uint64 proposal_id = 1;
 
   // voter is the account address of the voter.
-  string voter = 2;
+  string voter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // option is the voter's choice on the proposal.
   VoteOption option = 3;
@@ -282,11 +283,13 @@ message Vote {
 // Pool is used for tracking treasury.
 message Pool {
   repeated cosmos.base.v1beta1.DecCoin treasury = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.DecCoins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
 }
 
 // FoundationExecProposal is x/gov proposal to trigger the x/foundation messages on behalf of x/gov.
 message FoundationExecProposal {
+  option (amino.name) = "lbm-sdk/FoundationExecProposal";
+
   string title       = 1;
   string description = 2;
 

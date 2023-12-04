@@ -1,7 +1,6 @@
 syntax = "proto3";
 package lbm.stakingplus.v1;
 
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/stakingplus";
@@ -11,5 +10,5 @@ message CreateValidatorAuthorization {
   option (cosmos_proto.implements_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization";
 
   // redundant, but good for the query.
-  string validator_address = 1;
+  string validator_address = 1 [(cosmos_proto.scalar) = "cosmos.ValidatorAddressString"];
 }

@@ -2,6 +2,7 @@ syntax = "proto3";
 package lbm.collection.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 import "lbm/collection/v1/collection.proto";
 
@@ -11,163 +12,110 @@ option (gogoproto.equal_all) = false;
 
 // Msg defines the collection Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
   // SendFT defines a method to send fungible tokens from one account to another account.
   // Fires:
   // - EventSent
-  // - transfer_ft (deprecated, not typed)
   rpc SendFT(MsgSendFT) returns (MsgSendFTResponse);
 
   // OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator.
   // Fires:
   // - EventSent
-  // - transfer_ft_from (deprecated, not typed)
   rpc OperatorSendFT(MsgOperatorSendFT) returns (MsgOperatorSendFTResponse);
 
   // SendNFT defines a method to send non-fungible tokens from one account to another account.
   // Fires:
   // - EventSent
-  // - transfer_nft (deprecated, not typed)
-  // - operation_transfer_nft (deprecated, not typed)
   rpc SendNFT(MsgSendNFT) returns (MsgSendNFTResponse);
 
   // OperatorSendNFT defines a method to send non-fungible tokens from one account to another account by the operator.
   // Fires:
   // - EventSent
-  // - transfer_nft_from (deprecated, not typed)
-  // - operation_transfer_nft (deprecated, not typed)
   rpc OperatorSendNFT(MsgOperatorSendNFT) returns (MsgOperatorSendNFTResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the holder.
   // Fires:
   // - EventAuthorizedOperator
-  // - approve_collection (deprecated, not typed)
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // RevokeOperator revokes the authorization of the operator to send the holder's token.
   // Fires:
   // - EventRevokedOperator
-  // - disapprove_collection (deprecated, not typed)
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
   // CreateContract defines a method to create a contract for collection.
   // it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
   // Fires:
   // - EventCreatedContract
-  // - create_collection (deprecated, not typed)
   rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
 
   // IssueFT defines a method to create a class of fungible token.
   // Fires:
   // - EventCreatedFTClass
   // - EventMintedFT
-  // - issue_ft (deprecated, not typed)
   // Note: it does not grant any permissions to its issuer.
   rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
 
   // IssueNFT defines a method to create a class of non-fungible token.
   // Fires:
   // - EventCreatedNFTClass
-  // - issue_nft (deprecated, not typed)
   // Note: it DOES grant `mint` and `burn` permissions to its issuer.
   rpc IssueNFT(MsgIssueNFT) returns (MsgIssueNFTResponse);
 
   // MintFT defines a method to mint fungible tokens.
   // Fires:
   // - EventMintedFT
-  // - mint_ft (deprecated, not typed)
   rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
 
   // MintNFT defines a method to mint non-fungible tokens.
   // Fires:
   // - EventMintedNFT
-  // - mint_nft (deprecated, not typed)
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
 
   // BurnFT defines a method to burn fungible tokens.
   // Fires:
   // - EventBurned
-  // - burn_ft (deprecated, not typed)
-  // - burn_nft (deprecated, not typed)
-  // - operation_burn_nft (deprecated, not typed)
   rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
 
   // OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator.
   // Fires:
   // - EventBurned
-  // - burn_ft_from (deprecated, not typed)
-  // - burn_nft_from (deprecated, not typed)
-  // - operation_burn_nft (deprecated, not typed)
   rpc OperatorBurnFT(MsgOperatorBurnFT) returns (MsgOperatorBurnFTResponse);
 
   // BurnNFT defines a method to burn non-fungible tokens.
   // Fires:
   // - EventBurned
-  // - burn_ft (deprecated, not typed)
-  // - burn_nft (deprecated, not typed)
-  // - operation_burn_nft (deprecated, not typed)
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
 
   // OperatorBurnNFT defines a method to burn non-fungible tokens of the holder by the operator.
   // Fires:
   // - EventBurned
-  // - burn_ft_from (deprecated, not typed)
-  // - burn_nft_from (deprecated, not typed)
-  // - operation_burn_nft (deprecated, not typed)
   rpc OperatorBurnNFT(MsgOperatorBurnNFT) returns (MsgOperatorBurnNFTResponse);
 
   // Modify defines a method to modify metadata.
   // Fires:
   // - EventModifiedContract
-  // - modify_collection (deprecated, not typed)
   // - EventModifiedTokenClass
-  // - modify_token_type (deprecated, not typed)
-  // - modify_token (deprecated, not typed)
   // - EventModifiedNFT
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 
   // GrantPermission allows one to mint or burn tokens or modify metadata.
   // Fires:
   // - EventGranted
-  // - grant_perm (deprecated, not typed)
   rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
 
   // RevokePermission abandons a permission.
   // Fires:
   // - EventRenounced
-  // - revoke_perm (deprecated, not typed)
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
-
-  // Attach defines a method to attach a token to another token.
-  // Fires:
-  // - EventAttach
-  // - attach (deprecated, not typed)
-  // - operation_root_changed (deprecated, not typed)
-  rpc Attach(MsgAttach) returns (MsgAttachResponse);
-
-  // Detach defines a method to detach a token from another token.
-  // Fires:
-  // - EventDetach
-  // - detach (deprecated, not typed)
-  // - operation_root_changed (deprecated, not typed)
-  rpc Detach(MsgDetach) returns (MsgDetachResponse);
-
-  // OperatorAttach defines a method to attach a token to another token by operator.
-  // Fires:
-  // - EventAttach
-  // - attach_from (deprecated, not typed)
-  // - operation_root_changed (deprecated, not typed)
-  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
-
-  // OperatorDetach defines a method to detach a token from another token by operator.
-  // Fires:
-  // - EventDetach
-  // - detach_from (deprecated, not typed)
-  // - operation_root_changed (deprecated, not typed)
-  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
 }
 
 // MsgSendFT is the Msg/SendFT request type.
 message MsgSendFT {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgSendFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address which the transfer is from.
@@ -184,6 +132,9 @@ message MsgSendFTResponse {}
 
 // MsgOperatorSendFT is the Msg/OperatorSendFT request type.
 message MsgOperatorSendFT {
+  option (cosmos.msg.v1.signer) = "operator";
+  option (amino.name) = "lbm-sdk/MsgOperatorSendFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the operator.
@@ -202,6 +153,9 @@ message MsgOperatorSendFTResponse {}
 
 // MsgSendNFT is the Msg/SendNFT request type.
 message MsgSendNFT {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgSendNFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address which the transfer is from.
@@ -217,6 +171,9 @@ message MsgSendNFTResponse {}
 
 // MsgOperatorSendNFT is the Msg/OperatorSendNFT request type.
 message MsgOperatorSendNFT {
+  option (cosmos.msg.v1.signer) = "operator";
+  option (amino.name) = "lbm-sdk/MsgOperatorSendNFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the operator.
@@ -234,6 +191,9 @@ message MsgOperatorSendNFTResponse {}
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
 message MsgAuthorizeOperator {
+  option (cosmos.msg.v1.signer) = "holder";
+  option (amino.name) = "lbm-sdk/collection/MsgAuthorizeOperator";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the holder who allows the manipulation of its token.
@@ -247,6 +207,9 @@ message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
 message MsgRevokeOperator {
+  option (cosmos.msg.v1.signer) = "holder";
+  option (amino.name) = "lbm-sdk/collection/MsgRevokeOperator";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the holder who allows the manipulation of its token.
@@ -259,9 +222,10 @@ message MsgRevokeOperator {
 message MsgRevokeOperatorResponse {}
 
 // MsgCreateContract is the Msg/CreateContract request type.
-//
-// Signer: `owner`
 message MsgCreateContract {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "lbm-sdk/MsgCreateContract";
+
   // address which all the permissions on the contract will be granted to (not a permanent property).
   string owner = 1;
 
@@ -280,9 +244,10 @@ message MsgCreateContractResponse {
 }
 
 // MsgIssueFT is the Msg/IssueFT request type.
-//
-// Signer: `owner`
 message MsgIssueFT {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "lbm-sdk/MsgIssueFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // name defines the human-readable name of the token type.
@@ -312,9 +277,10 @@ message MsgIssueFTResponse {
 }
 
 // MsgIssueNFT is the Msg/IssueNFT request type.
-//
-// Signer: `owner`
 message MsgIssueNFT {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "lbm-sdk/MsgIssueNFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // name defines the human-readable name of the token type.
@@ -334,9 +300,10 @@ message MsgIssueNFTResponse {
 }
 
 // MsgMintFT is the Msg/MintFT request type.
-//
-// Signer: `from`
 message MsgMintFT {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgMintFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which has the permission for the mint.
@@ -352,9 +319,10 @@ message MsgMintFT {
 message MsgMintFTResponse {}
 
 // MsgMintNFT is the Msg/MintNFT request type.
-//
-// Signer: `from`
 message MsgMintNFT {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgMintNFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which has the permission for the mint.
@@ -387,6 +355,9 @@ message MintNFTParam {
 
 // MsgBurnFT is the Msg/BurnFT request type.
 message MsgBurnFT {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgBurnFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which the tokens will be burnt from.
@@ -402,6 +373,9 @@ message MsgBurnFTResponse {}
 
 // MsgOperatorBurnFT is the Msg/OperatorBurnFT request type.
 message MsgOperatorBurnFT {
+  option (cosmos.msg.v1.signer) = "operator";
+  option (amino.name) = "lbm-sdk/MsgOperatorBurnFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
@@ -420,6 +394,9 @@ message MsgOperatorBurnFTResponse {}
 
 // MsgBurnNFT is the Msg/BurnNFT request type.
 message MsgBurnNFT {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgBurnNFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which the tokens will be burnt from.
@@ -435,6 +412,9 @@ message MsgBurnNFTResponse {}
 
 // MsgOperatorBurnNFT is the Msg/OperatorBurnNFT request type.
 message MsgOperatorBurnNFT {
+  option (cosmos.msg.v1.signer) = "operator";
+  option (amino.name) = "lbm-sdk/MsgOperatorBurnNFT";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
@@ -453,6 +433,9 @@ message MsgOperatorBurnNFTResponse {}
 
 // MsgModify is the Msg/Modify request type.
 message MsgModify {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "lbm-sdk/collection/MsgModify";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the grantee which must have modify permission.
@@ -476,6 +459,9 @@ message MsgModifyResponse {}
 
 // MsgGrantPermission is the Msg/GrantPermission request type.
 message MsgGrantPermission {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/collection/MsgGrantPermission";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the granter which must have the permission to give.
@@ -491,6 +477,9 @@ message MsgGrantPermissionResponse {}
 
 // MsgRevokePermission is the Msg/RevokePermission request type.
 message MsgRevokePermission {
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/collection/MsgRevokePermission";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which abandons the permission.
@@ -503,13 +492,16 @@ message MsgRevokePermission {
 message MsgRevokePermissionResponse {}
 
 // MsgAttach is the Msg/Attach request type.
-//
-// Signer: `from`
 message MsgAttach {
+  option deprecated = true;
+
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgAttach";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the owner of the token.
-  string from = 2;
+  string from = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id of the token to attach.
   string token_id = 3;
   // to token id which one attachs the token to.
@@ -517,31 +509,43 @@ message MsgAttach {
 }
 
 // MsgAttachResponse is the Msg/Attach response type.
-message MsgAttachResponse {}
+message MsgAttachResponse {
+  option deprecated = true;
+}
 
 // MsgDetach is the Msg/Detach request type.
-//
-// Signer: `from`
 message MsgDetach {
+  option deprecated = true;
+
+  option (cosmos.msg.v1.signer) = "from";
+  option (amino.name) = "lbm-sdk/MsgDetach";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the owner of the token.
-  string from = 2;
+  string from = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id of the token to detach.
   string token_id = 3;
 }
 
 // MsgDetachResponse is the Msg/Detach response type.
-message MsgDetachResponse {}
+message MsgDetachResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
 message MsgOperatorAttach {
+  option deprecated = true;
+
+  option (cosmos.msg.v1.signer) = "operator";
+  option (amino.name) = "lbm-sdk/MsgOperatorAttach";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address of the owner of the token.
-  string from = 3;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id of the token to attach.
   string token_id = 4;
   // to token id which one attachs the token to.
@@ -549,19 +553,28 @@ message MsgOperatorAttach {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-message MsgOperatorAttachResponse {}
+message MsgOperatorAttachResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
 message MsgOperatorDetach {
+  option deprecated = true;
+
+  option (cosmos.msg.v1.signer) = "operator";
+  option (amino.name) = "lbm-sdk/MsgOperatorDetach";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address of the owner of the token.
-  string from = 3;
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id of the token to detach.
   string token_id = 4;
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-message MsgOperatorDetachResponse {}
+message MsgOperatorDetachResponse {
+  option deprecated = true;
+}

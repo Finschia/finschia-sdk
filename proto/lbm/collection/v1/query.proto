@@ -3,6 +3,7 @@ package lbm.collection.v1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
+import "cosmos_proto/cosmos.proto";
 import "lbm/collection/v1/collection.proto";
 
 import "google/protobuf/any.proto";
@@ -112,7 +113,7 @@ message QueryBalanceRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // address is the address to query the balance for.
-  string address = 2;
+  string address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // token id associated with the token.
   string token_id = 3;
 }
@@ -128,7 +129,7 @@ message QueryAllBalancesRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // address is the address to query the balances for.
-  string address = 2;
+  string address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
@@ -357,7 +358,7 @@ message QueryGranteeGrantsRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the grantee.
-  string grantee = 2;
+  string grantee = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
@@ -376,9 +377,9 @@ message QueryIsOperatorForRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the operator.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // the address of the token holder.
-  string holder = 3;
+  string holder = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method.
@@ -391,7 +392,7 @@ message QueryHoldersByOperatorRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
@@ -399,7 +400,7 @@ message QueryHoldersByOperatorRequest {
 
 // QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method.
 message QueryHoldersByOperatorResponse {
-  repeated string holders = 1;
+  repeated string holders = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;

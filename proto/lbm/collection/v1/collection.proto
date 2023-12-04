@@ -91,7 +91,7 @@ message OwnerNFT {
   string meta = 4;
 
   // owner of the token.
-  string owner = 5;
+  string owner = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // Deprecated: use FTClass
@@ -148,7 +148,7 @@ message Coin {
 // Since: 0.46.0 (finschia)
 message Grant {
   // address of the grantee.
-  string grantee = 1;
+  string grantee = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // permission on the contract.
   Permission permission = 2;
 }
@@ -195,9 +195,9 @@ enum LegacyPermission {
 // Since: 0.46.0 (finschia)
 message Authorization {
   // address of the holder which authorizes the manipulation of its tokens.
-  string holder = 1;
+  string holder = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // address of the operator which the authorization is granted to.
-  string operator = 2;
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // Attribute defines a key and value of the attribute.
