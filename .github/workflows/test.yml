@@ -21,7 +21,7 @@ jobs:
   install-tparse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@v4.0.1
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20'
       - name: Display go version
@@ -49,7 +49,7 @@ jobs:
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4.0.1
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20'
       - uses: technote-space/get-diff-action@v6.1.2
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4.0.1
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20'
       - name: Display go version
@@ -120,7 +120,7 @@ jobs:
         part: ["00", "01", "02", "03"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4.0.1
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20'
       - uses: technote-space/get-diff-action@v6.1.2
@@ -202,7 +202,7 @@ jobs:
         part: ["00", "01", "02", "03"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4.0.1
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20'
       - uses: technote-space/get-diff-action@v6.1.2
