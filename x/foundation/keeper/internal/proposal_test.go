@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 )
@@ -88,7 +88,7 @@ func TestAbortProposal(t *testing.T) {
 	app := simapp.Setup(checkTx)
 	testdata.RegisterInterfaces(app.InterfaceRegistry())
 
-	ctx := app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(checkTx, cmtproto.Header{})
 	impl := internal.NewKeeper(
 		app.AppCodec(),
 		app.GetKey(foundation.ModuleName),

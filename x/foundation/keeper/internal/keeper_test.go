@@ -6,18 +6,18 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	keeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
 type KeeperTestSuite struct {
@@ -89,7 +89,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	testdata.RegisterInterfaces(app.InterfaceRegistry())
 	testdata.RegisterMsgServer(app.MsgServiceRouter(), testdata.MsgServerImpl{})
 
-	s.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	s.ctx = app.BaseApp.NewContext(checkTx, cmtproto.Header{})
 	s.bankKeeper = app.BankKeeper
 	s.keeper = app.FoundationKeeper
 	s.impl = internal.NewKeeper(

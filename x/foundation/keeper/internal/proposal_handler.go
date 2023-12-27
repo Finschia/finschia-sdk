@@ -1,11 +1,12 @@
 package internal
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // NewFoundationProposalsHandler creates a handler for the gov proposals.

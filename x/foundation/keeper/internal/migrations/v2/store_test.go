@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
-	"github.com/Finschia/finschia-sdk/testutil"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/cosmos/cosmos-sdk/testutil"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal/migrations/v2"
 )

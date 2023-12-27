@@ -3,9 +3,11 @@ package v2
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/codec"
-	storetypes "github.com/Finschia/finschia-sdk/store/types"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 

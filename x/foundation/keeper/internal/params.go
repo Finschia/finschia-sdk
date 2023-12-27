@@ -1,7 +1,8 @@
 package internal
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 

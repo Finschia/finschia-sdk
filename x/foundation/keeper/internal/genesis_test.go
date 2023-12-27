@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
@@ -28,7 +28,7 @@ func TestImportExportGenesis(t *testing.T) {
 	app := simapp.Setup(checkTx)
 	testdata.RegisterInterfaces(app.InterfaceRegistry())
 
-	ctx := app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(checkTx, cmtproto.Header{})
 	keeper := app.FoundationKeeper
 
 	createAddress := func() sdk.AccAddress {

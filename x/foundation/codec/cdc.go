@@ -1,9 +1,9 @@
 package codec
 
 import (
-	"github.com/Finschia/finschia-sdk/codec"
-	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/cosmos/cosmos-sdk/codec"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var (

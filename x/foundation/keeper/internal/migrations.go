@@ -1,8 +1,9 @@
 package internal
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/module"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	v2 "github.com/Finschia/finschia-sdk/x/foundation/keeper/internal/migrations/v2"
 )
