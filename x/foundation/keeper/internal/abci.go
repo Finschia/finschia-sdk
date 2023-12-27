@@ -11,15 +11,22 @@ import (
 
 // BeginBlocker withdraws rewards from fee-collector before the distribution
 // module's withdraw.
-func BeginBlocker(ctx sdk.Context, k Keeper) {
+func BeginBlocker(ctx sdk.Context, k Keeper) error {
 	defer telemetry.ModuleMeasureSince(foundation.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	if err := k.CollectFoundationTax(ctx); err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
-func EndBlocker(ctx sdk.Context, k Keeper) {
-	k.UpdateTallyOfVPEndProposals(ctx)
+func EndBlocker(ctx sdk.Context, k Keeper) error {
+	if err := k.UpdateTallyOfVPEndProposals(ctx); err != nil {
+		return err
+	}
+
 	k.PruneExpiredProposals(ctx)
+
+	return nil
 }

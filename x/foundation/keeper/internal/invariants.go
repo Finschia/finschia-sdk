@@ -3,6 +3,8 @@ package internal
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -31,7 +33,7 @@ func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 
 		treasury := k.GetTreasury(ctx)
 		msg := fmt.Sprintf("coins in the treasury; expected %s, got %s\n", treasury, balance)
-		broken := !treasury.IsEqual(sdk.NewDecCoinsFromCoins(balance...))
+		broken := !treasury.Equal(sdk.NewDecCoinsFromCoins(balance...))
 
 		return sdk.FormatInvariant(foundation.ModuleName, moduleAccountInvariant, msg), broken
 	}
@@ -40,7 +42,7 @@ func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 func TotalWeightInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		expected := k.GetFoundationInfo(ctx).TotalWeight
-		actual := sdk.NewDec(int64(len(k.GetMembers(ctx))))
+		actual := math.LegacyNewDec(int64(len(k.GetMembers(ctx))))
 
 		msg := fmt.Sprintf("total weight of foundation; expected %s, got %s\n", expected, actual)
 		broken := !actual.Equal(expected)

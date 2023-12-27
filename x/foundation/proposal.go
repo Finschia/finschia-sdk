@@ -1,10 +1,11 @@
 package foundation
 
 import (
+	errorsmod "cosmossdk.io/errors"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
 const (
@@ -29,8 +30,13 @@ func (p FoundationExecProposal) ProposalType() string  { return ProposalTypeFoun
 func (p FoundationExecProposal) ValidateBasic() error {
 	msgs := GetMessagesFromFoundationExecProposal(p)
 	for idx, msg := range msgs {
-		if err := msg.ValidateBasic(); err != nil {
-			return sdkerrors.Wrapf(err, "msg: %d", idx)
+		m, ok := msg.(sdk.HasValidateBasic)
+		if !ok {
+			continue
+		}
+
+		if err := m.ValidateBasic(); err != nil {
+			return errorsmod.Wrapf(err, "msg: %d", idx)
 		}
 	}
 

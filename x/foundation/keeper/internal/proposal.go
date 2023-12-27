@@ -3,6 +3,9 @@ package internal
 import (
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -17,8 +20,11 @@ func (k Keeper) newProposalID(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) getPreviousProposalID(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(previousProposalIDKey)
+	store := k.storeService.OpenKVStore(ctx)
+	bz, err := store.Get(previousProposalIDKey)
+	if err != nil {
+		panic(err)
+	}
 	if len(bz) == 0 {
 		panic("previous proposal ID hasn't been set")
 	}
@@ -26,7 +32,7 @@ func (k Keeper) getPreviousProposalID(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	store.Set(previousProposalIDKey, Uint64ToBytes(id))
 }
 
@@ -37,7 +43,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 
 	foundationInfo := k.GetFoundationInfo(ctx)
 	authority := sdk.MustAccAddressFromBech32(k.GetAuthority())
-	if err := ensureMsgAuthz(msgs, authority); err != nil {
+	if err := ensureMsgAuthz(msgs, authority, k.cdc); err != nil {
 		return nil, err
 	}
 
@@ -140,9 +146,10 @@ func (k Keeper) GetProposals(ctx sdk.Context) []foundation.Proposal {
 }
 
 func (k Keeper) iterateProposals(ctx sdk.Context, fn func(proposal foundation.Proposal) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	prefix := proposalKeyPrefix
-	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	adapter := runtime.KVStoreAdapter(store)
+	iterator := storetypes.KVStorePrefixIterator(adapter, prefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -155,8 +162,9 @@ func (k Keeper) iterateProposals(ctx sdk.Context, fn func(proposal foundation.Pr
 }
 
 func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn func(proposal foundation.Proposal) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := store.Iterator(proposalByVPEndKeyPrefix, sdk.PrefixEndBytes(append(proposalByVPEndKeyPrefix, sdk.FormatTimeBytes(endTime)...)))
+	store := k.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	iter := adapter.Iterator(proposalByVPEndKeyPrefix, storetypes.PrefixEndBytes(append(proposalByVPEndKeyPrefix, sdk.FormatTimeBytes(endTime)...)))
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
@@ -173,7 +181,7 @@ func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn f
 	}
 }
 
-func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
+func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) error {
 	var proposals []foundation.Proposal
 	k.iterateProposalsByVPEnd(ctx, ctx.BlockTime(), func(proposal foundation.Proposal) (stop bool) {
 		proposals = append(proposals, proposal)
@@ -189,16 +197,21 @@ func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
 		}
 
 		if err := k.doTallyAndUpdate(ctx, &proposal); err != nil {
-			panic(err)
+			return err
 		}
 		k.setProposal(ctx, proposal)
 	}
+
+	return nil
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, error) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := proposalKey(id)
-	bz := store.Get(key)
+	bz, err := store.Get(key)
+	if err != nil {
+		return nil, err
+	}
 	if len(bz) == 0 {
 		return nil, sdkerrors.ErrNotFound.Wrapf("No proposal for id: %d", id)
 	}
@@ -210,7 +223,7 @@ func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, e
 }
 
 func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := proposalKey(proposal.Id)
 
 	bz := k.cdc.MustMarshal(&proposal)
@@ -218,19 +231,19 @@ func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) {
 }
 
 func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := proposalKey(proposalID)
 	store.Delete(key)
 }
 
 func (k Keeper) addProposalToVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Set(key, []byte{})
 }
 
 func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Delete(key)
 }

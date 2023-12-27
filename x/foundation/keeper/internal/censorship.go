@@ -1,6 +1,9 @@
 package internal
 
 import (
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -8,9 +11,12 @@ import (
 )
 
 func (k Keeper) GetCensorship(ctx sdk.Context, msgTypeURL string) (*foundation.Censorship, error) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := censorshipKey(msgTypeURL)
-	bz := store.Get(key)
+	bz, err := store.Get(key)
+	if err != nil {
+		return nil, err
+	}
 	if bz == nil {
 		return nil, sdkerrors.ErrNotFound.Wrap("censorship not found")
 	}
@@ -46,7 +52,7 @@ func (k Keeper) UpdateCensorship(ctx sdk.Context, censorship foundation.Censorsh
 }
 
 func (k Keeper) SetCensorship(ctx sdk.Context, censorship foundation.Censorship) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := censorshipKey(censorship.MsgTypeUrl)
 
 	if censorship.Authority == foundation.CensorshipAuthorityUnspecified {
@@ -59,8 +65,9 @@ func (k Keeper) SetCensorship(ctx sdk.Context, censorship foundation.Censorship)
 }
 
 func (k Keeper) iterateCensorships(ctx sdk.Context, fn func(censorship foundation.Censorship) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, censorshipKeyPrefix)
+	store := k.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	iterator := storetypes.KVStorePrefixIterator(adapter, censorshipKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -135,9 +142,12 @@ func (k Keeper) pruneAuthorizations(ctx sdk.Context, msgTypeURL string) {
 }
 
 func (k Keeper) GetAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) (foundation.Authorization, error) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := grantKey(grantee, msgTypeURL)
-	bz := store.Get(key)
+	bz, err := store.Get(key)
+	if err != nil {
+		return nil, err
+	}
 	if bz == nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap("authorization not found")
 	}
@@ -151,7 +161,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTyp
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, grantee sdk.AccAddress, authorization foundation.Authorization) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := grantKey(grantee, authorization.MsgTypeURL())
 
 	bz, err := k.cdc.MarshalInterface(authorization)
@@ -162,7 +172,7 @@ func (k Keeper) setAuthorization(ctx sdk.Context, grantee sdk.AccAddress, author
 }
 
 func (k Keeper) deleteAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := grantKey(grantee, msgTypeURL)
 	store.Delete(key)
 }
@@ -203,8 +213,9 @@ func (k Keeper) iterateAuthorizations(ctx sdk.Context, fn func(grantee sdk.AccAd
 }
 
 func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	store := k.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	iterator := storetypes.KVStorePrefixIterator(adapter, prefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

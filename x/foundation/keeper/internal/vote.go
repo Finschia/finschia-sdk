@@ -1,6 +1,9 @@
 package internal
 
 import (
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -44,15 +47,19 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 }
 
 func (k Keeper) hasVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := voteKey(proposalID, voter)
-	return store.Has(key)
+	has, err := store.Has(key)
+	return (err != nil) && has
 }
 
 func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) (*foundation.Vote, error) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := voteKey(proposalID, voter)
-	bz := store.Get(key)
+	bz, err := store.Get(key)
+	if err != nil {
+		return nil, err
+	}
 	if len(bz) == 0 {
 		return nil, sdkerrors.ErrNotFound.Wrapf("No vote for proposal %d: %s", proposalID, voter)
 	}
@@ -64,7 +71,7 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 }
 
 func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	voter := sdk.MustAccAddressFromBech32(vote.Voter)
 	key := voteKey(vote.ProposalId, voter)
 	bz := k.cdc.MustMarshal(&vote)
@@ -72,9 +79,10 @@ func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) {
 }
 
 func (k Keeper) iterateVotes(ctx sdk.Context, proposalID uint64, fn func(vote foundation.Vote) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
 	prefix := append(voteKeyPrefix, Uint64ToBytes(proposalID)...)
-	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	iterator := storetypes.KVStorePrefixIterator(adapter, prefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -105,7 +113,7 @@ func (k Keeper) pruneVotes(ctx sdk.Context, proposalID uint64) {
 		return false
 	})
 
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	for _, key := range keys {
 		store.Delete(key)
 	}

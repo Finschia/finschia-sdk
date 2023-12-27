@@ -7,6 +7,10 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"cosmossdk.io/math"
+	"cosmossdk.io/core/address"
+
+	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -35,12 +39,14 @@ type IntegrationTestSuite struct {
 	stranger        sdk.AccAddress
 
 	proposalID uint64
+
+	addressCodec address.Codec
 }
 
 var commonArgs = []string{
 	fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-	fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100)))),
+	fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100)))),
 }
 
 func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
@@ -51,6 +57,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 	testdata.RegisterInterfaces(s.cfg.InterfaceRegistry)
 
+	s.addressCodec = addresscodec.NewBech32Codec("link")
+
 	genesisState := s.cfg.GenesisState
 
 	var foundationData foundation.GenesisState
@@ -58,7 +66,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// enable foundation tax
 	params := foundation.Params{
-		FoundationTax: sdk.MustNewDecFromStr("0.2"),
+		FoundationTax: math.LegacyMustNewDecFromStr("0.2"),
 	}
 	foundationData.Params = params
 
@@ -81,9 +89,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	}
 
 	info := foundation.DefaultFoundation()
-	info.TotalWeight = sdk.NewDecFromInt(sdk.NewInt(int64(len(foundationData.Members))))
+	info.TotalWeight = math.LegacyNewDecFromInt(math.NewInt(int64(len(foundationData.Members))))
 	err := info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
-		Threshold: sdk.OneDec(),
+		Threshold: math.LegacyOneDec(),
 		Windows: &foundation.DecisionPolicyWindows{
 			VotingPeriod: 7 * 24 * time.Hour,
 		},
@@ -114,7 +122,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	genesisState[foundation.ModuleName] = foundationDataBz
 	s.cfg.GenesisState = genesisState
 
-	s.network = network.New(s.T(), s.cfg)
+	s.network, err = network.New(s.T(), s.T().TempDir(), s.cfg)
+	s.Require().NoError(err)
 
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
@@ -211,11 +220,14 @@ func (s *IntegrationTestSuite) msgToString(msg sdk.Msg) string {
 
 // creates an account
 func (s *IntegrationTestSuite) createMnemonic(uid string) (string, sdk.AccAddress) {
-	cstore := keyring.NewInMemory()
+	cstore := keyring.NewInMemory(s.cfg.Codec)
 	info, mnemonic, err := cstore.NewMnemonic(uid, keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
 
-	return mnemonic, info.GetAddress()
+	addr, err := info.GetAddress()
+	s.Require().NoError(err)
+
+	return mnemonic, addr
 }
 
 // creates an account and send some coins to it for the future transactions.
@@ -224,15 +236,17 @@ func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
 	info, err := val.ClientCtx.Keyring.NewAccount(uid, mnemonic, keyring.DefaultBIP39Passphrase, sdk.FullFundraiserPath, hd.Secp256k1)
 	s.Require().NoError(err)
 
-	addr := info.GetAddress()
-	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000)))
+	addr, err := info.GetAddress()
+	s.Require().NoError(err)
+
+	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(1000)))
 	args := append([]string{
 		val.Address.String(),
 		addr.String(),
 		fee.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 	}, commonArgs...)
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(s.addressCodec), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse

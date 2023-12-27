@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
@@ -19,8 +21,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -30,14 +32,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 		"valid transaction": {
 			[]string{
 				val.Address.String(),
-				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
 				val.Address.String(),
-				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 				"extra",
 			},
 			false,
@@ -77,7 +79,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 			[]string{
 				s.authority.String(),
 				s.stranger.String(),
-				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 			},
 			true,
 		},
@@ -85,7 +87,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 			[]string{
 				s.authority.String(),
 				s.stranger.String(),
-				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 				"extra",
 			},
 			false,
@@ -175,7 +177,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 			[]string{
 				s.authority.String(),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
-					Threshold: sdk.NewDec(10),
+					Threshold: math.LegacyNewDec(10),
 					Windows: &foundation.DecisionPolicyWindows{
 						VotingPeriod: time.Hour,
 					},
@@ -187,7 +189,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 			[]string{
 				s.authority.String(),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
-					Threshold: sdk.NewDec(10),
+					Threshold: math.LegacyNewDec(10),
 					Windows: &foundation.DecisionPolicyWindows{
 						VotingPeriod: time.Hour,
 					},
@@ -221,8 +223,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
 	proposers := `["%s"]`
@@ -273,8 +275,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
 	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
@@ -323,8 +325,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
 	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
@@ -377,8 +379,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -489,8 +491,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.leavingMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {

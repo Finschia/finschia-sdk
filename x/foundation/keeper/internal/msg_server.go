@@ -3,8 +3,9 @@ package internal
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -148,13 +149,13 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 			}
 			err = s.keeper.Vote(ctx, vote)
 			if err != nil {
-				return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
+				return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, errorsmod.Wrap(err, "The proposal was created but failed on vote")
 			}
 		}
 
 		// Then try to execute the proposal
 		if err = s.keeper.Exec(ctx, *id); err != nil {
-			return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
+			return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, errorsmod.Wrap(err, "The proposal was created but failed on exec")
 		}
 	}
 

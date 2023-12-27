@@ -1,6 +1,10 @@
 package internal
 
 import (
+	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -36,8 +40,11 @@ func (k Keeper) UpdateDecisionPolicy(ctx sdk.Context, policy foundation.Decision
 }
 
 func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(foundationInfoKey)
+	store := k.storeService.OpenKVStore(ctx)
+	bz, err := store.Get(foundationInfoKey)
+	if err != nil {
+		panic(err)
+	}
 	if len(bz) == 0 {
 		panic("the foundation info must have been registered")
 	}
@@ -48,13 +55,13 @@ func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
 }
 
 func (k Keeper) SetFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	bz := k.cdc.MustMarshal(&info)
 	store.Set(foundationInfoKey, bz)
 }
 
 func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberRequest) error {
-	weightUpdate := sdk.ZeroDec()
+	weightUpdate := math.LegacyZeroDec()
 	for _, request := range members {
 		new := foundation.Member{
 			Address:  request.Address,
@@ -74,14 +81,14 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			return err
 		}
 		if err == nil { // overwrite
-			weightUpdate = weightUpdate.Sub(sdk.OneDec())
+			weightUpdate = weightUpdate.Sub(math.LegacyOneDec())
 			new.AddedAt = old.AddedAt
 		}
 
 		if request.Remove {
 			k.deleteMember(ctx, addr)
 		} else {
-			weightUpdate = weightUpdate.Add(sdk.OneDec())
+			weightUpdate = weightUpdate.Add(math.LegacyOneDec())
 			k.SetMember(ctx, new)
 		}
 	}
@@ -102,9 +109,12 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 }
 
 func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.Member, error) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := memberKey(address)
-	bz := store.Get(key)
+	bz, err := store.Get(key)
+	if err != nil {
+		return nil, err
+	}
 	if len(bz) == 0 {
 		return nil, sdkerrors.ErrNotFound.Wrapf("No such member: %s", address)
 	}
@@ -116,7 +126,7 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 }
 
 func (k Keeper) SetMember(ctx sdk.Context, member foundation.Member) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	addr := sdk.MustAccAddressFromBech32(member.Address)
 	key := memberKey(addr)
 
@@ -125,15 +135,16 @@ func (k Keeper) SetMember(ctx sdk.Context, member foundation.Member) {
 }
 
 func (k Keeper) deleteMember(ctx sdk.Context, address sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := memberKey(address)
 	store.Delete(key)
 }
 
 func (k Keeper) iterateMembers(ctx sdk.Context, fn func(member foundation.Member) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	prefix := memberKeyPrefix
-	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	adapter := runtime.KVStoreAdapter(store)
+	iterator := storetypes.KVStorePrefixIterator(adapter, prefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

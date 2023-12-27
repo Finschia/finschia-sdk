@@ -3,7 +3,7 @@ package v2
 import (
 	"fmt"
 
-	storetypes "cosmossdk.io/store/types"
+	"cosmossdk.io/core/store"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,8 +12,8 @@ import (
 )
 
 // MigrateStore performs in-place store migrations from v1 to v2.
-func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, cdc codec.BinaryCodec, subspace Subspace) error {
-	store := ctx.KVStore(storeKey)
+func MigrateStore(ctx sdk.Context, storeService store.KVStoreService, cdc codec.BinaryCodec, subspace Subspace) error {
+	store := storeService.OpenKVStore(ctx)
 
 	// migrate params
 	if err := migrateParams(ctx, store, cdc, subspace); err != nil {
@@ -23,8 +23,11 @@ func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, cdc codec.Binar
 	return nil
 }
 
-func migrateParams(ctx sdk.Context, store storetypes.KVStore, cdc codec.BinaryCodec, subspace Subspace) error {
-	bz := store.Get(ParamsKey)
+func migrateParams(ctx sdk.Context, store store.KVStore, cdc codec.BinaryCodec, subspace Subspace) error {
+	bz, err := store.Get(ParamsKey)
+	if err != nil {
+		return err
+	}
 	if bz == nil {
 		return fmt.Errorf("params not found")
 	}

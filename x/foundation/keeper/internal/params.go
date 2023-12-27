@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -18,7 +20,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params foundation.Params) {
 }
 
 // aliases
-func (k Keeper) GetFoundationTax(ctx sdk.Context) sdk.Dec {
+func (k Keeper) GetFoundationTax(ctx sdk.Context) math.LegacyDec {
 	params := k.GetParams(ctx)
 
 	return params.FoundationTax

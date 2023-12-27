@@ -3,6 +3,8 @@ package foundation
 import (
 	"github.com/gogo/protobuf/proto"
 
+	"cosmossdk.io/math"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -20,7 +22,7 @@ func DefaultGenesisState() *GenesisState {
 func DefaultFoundation() FoundationInfo {
 	return *FoundationInfo{
 		Version:     1,
-		TotalWeight: sdk.ZeroDec(),
+		TotalWeight: math.LegacyZeroDec(),
 	}.WithDecisionPolicy(DefaultDecisionPolicy())
 }
 
@@ -36,7 +38,7 @@ func DefaultAuthority() sdk.AccAddress {
 
 func DefaultParams() Params {
 	return Params{
-		FoundationTax: sdk.ZeroDec(),
+		FoundationTax: math.LegacyZeroDec(),
 	}
 }
 
@@ -104,7 +106,7 @@ func ValidateGenesis(data GenesisState) error {
 	// Is x/foundation outsourcing the proposal feature
 	isOutsourcing := info.TotalWeight.IsZero()
 
-	if realWeight := sdk.NewDec(int64(len(data.Members))); !info.TotalWeight.Equal(realWeight) {
+	if realWeight := math.LegacyNewDec(int64(len(data.Members))); !info.TotalWeight.Equal(realWeight) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
 	}
 	members := Members{Members: data.Members}

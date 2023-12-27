@@ -6,6 +6,9 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -39,8 +42,13 @@ func validateMsgs(msgs []sdk.Msg) error {
 	}
 
 	for i, msg := range msgs {
-		if err := msg.ValidateBasic(); err != nil {
-			return sdkerrors.Wrapf(err, "msg %d", i)
+		m, ok := msg.(sdk.HasValidateBasic)
+		if !ok {
+			continue
+		}
+
+		if err := m.ValidateBasic(); err != nil {
+			return errorsmod.Wrapf(err, "msg %d", i)
 		}
 	}
 
@@ -84,9 +92,9 @@ func (p Params) ValidateBasic() error {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair([]byte(ParamKeyFoundationTax), &p.FoundationTax, func(i interface{}) error {
-			v, ok := i.(sdk.Dec)
+			v, ok := i.(math.LegacyDec)
 			if !ok {
-				return sdkerrors.Wrap(sdkerrors.ErrInvalidType.Wrapf("%T", i), ParamKeyFoundationTax)
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType.Wrapf("%T", i), ParamKeyFoundationTax)
 			}
 
 			return validateRatio(v, ParamKeyFoundationTax)
@@ -129,7 +137,7 @@ type DecisionPolicy interface {
 	// Allow defines policy-specific logic to allow a proposal to pass or not,
 	// based on its tally result, the foundation's total power and the time since
 	// the proposal was submitted.
-	Allow(tallyResult TallyResult, totalPower sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error)
+	Allow(tallyResult TallyResult, totalPower math.LegacyDec, sinceSubmission time.Duration) (*DecisionPolicyResult, error)
 
 	ValidateBasic() error
 	Validate(info FoundationInfo, config Config) error
@@ -137,10 +145,10 @@ type DecisionPolicy interface {
 
 // DefaultTallyResult returns a TallyResult with all counts set to 0.
 func DefaultTallyResult() TallyResult {
-	return NewTallyResult(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+	return NewTallyResult(math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec())
 }
 
-func NewTallyResult(yes, abstain, no, veto sdk.Dec) TallyResult {
+func NewTallyResult(yes, abstain, no, veto math.LegacyDec) TallyResult {
 	return TallyResult{
 		YesCount:        yes,
 		AbstainCount:    abstain,
@@ -150,7 +158,7 @@ func NewTallyResult(yes, abstain, no, veto sdk.Dec) TallyResult {
 }
 
 func (t *TallyResult) Add(option VoteOption) error {
-	weight := sdk.OneDec()
+	weight := math.LegacyOneDec()
 
 	switch option {
 	case VOTE_OPTION_YES:
@@ -169,8 +177,8 @@ func (t *TallyResult) Add(option VoteOption) error {
 }
 
 // TotalCounts is the sum of all weights.
-func (t TallyResult) TotalCounts() sdk.Dec {
-	totalCounts := sdk.ZeroDec()
+func (t TallyResult) TotalCounts() math.LegacyDec {
+	totalCounts := math.LegacyZeroDec()
 
 	totalCounts = totalCounts.Add(t.YesCount)
 	totalCounts = totalCounts.Add(t.NoCount)
@@ -284,7 +292,7 @@ func validateDecisionPolicyWindowsBasic(windows *DecisionPolicyWindows) error {
 
 var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
 
-func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight math.LegacyDec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	if sinceSubmission < p.Windows.MinExecutionPeriod {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
 	}
@@ -294,7 +302,7 @@ func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, 
 	// and the threshold doesn't, we can end up with threshold > total_weight.
 	// In this case, as long as everyone votes yes (in which case
 	// `yesCount`==`realThreshold`), then the proposal still passes.
-	realThreshold := sdk.MinDec(p.Threshold, totalWeight)
+	realThreshold := math.LegacyMinDec(p.Threshold, totalWeight)
 	if result.YesCount.GTE(realThreshold) {
 		return &DecisionPolicyResult{Allow: true, Final: true}, nil
 	}
@@ -341,7 +349,7 @@ func (p ThresholdDecisionPolicy) Validate(info FoundationInfo, config Config) er
 
 var _ DecisionPolicy = (*PercentageDecisionPolicy)(nil)
 
-func (p PercentageDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+func (p PercentageDecisionPolicy) Allow(result TallyResult, totalWeight math.LegacyDec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	if sinceSubmission < p.Windows.MinExecutionPeriod {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
 	}
@@ -398,12 +406,12 @@ func (p PercentageDecisionPolicy) Validate(info FoundationInfo, config Config) e
 	return nil
 }
 
-func validateRatio(ratio sdk.Dec, name string) error {
+func validateRatio(ratio math.LegacyDec, name string) error {
 	if ratio.IsNil() {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s is nil", name)
 	}
 
-	if ratio.GT(sdk.OneDec()) || ratio.IsNegative() {
+	if ratio.GT(math.LegacyOneDec()) || ratio.IsNegative() {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s must be >= 0 and <= 1", name)
 	}
 	return nil
@@ -411,7 +419,7 @@ func validateRatio(ratio sdk.Dec, name string) error {
 
 var _ DecisionPolicy = (*OutsourcingDecisionPolicy)(nil)
 
-func (p OutsourcingDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+func (p OutsourcingDecisionPolicy) Allow(result TallyResult, totalWeight math.LegacyDec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	return nil, sdkerrors.ErrInvalidRequest.Wrap(p.Description)
 }
 

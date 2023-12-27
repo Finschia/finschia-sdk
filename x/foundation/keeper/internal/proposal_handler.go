@@ -1,17 +1,20 @@
 package internal
 
 import (
+	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 // NewFoundationProposalsHandler creates a handler for the gov proposals.
-func NewFoundationProposalsHandler(k Keeper) govtypes.Handler {
-	return func(ctx sdk.Context, content govtypes.Content) error {
+func NewFoundationProposalsHandler(k Keeper) govv1beta1types.Handler {
+	return func(ctx sdk.Context, content govv1beta1types.Content) error {
 		switch c := content.(type) {
 		case *foundation.FoundationExecProposal:
 			return handleFoundationExecProposal(ctx, k, *c)
@@ -26,7 +29,7 @@ func handleFoundationExecProposal(ctx sdk.Context, k Keeper, proposal foundation
 	msgs := foundation.GetMessagesFromFoundationExecProposal(proposal)
 
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	if err := ensureMsgAuthz(msgs, authority); err != nil {
+	if err := ensureMsgAuthz(msgs, authority, k.cdc); err != nil {
 		return err
 	}
 
@@ -49,7 +52,7 @@ func handleFoundationExecProposal(ctx sdk.Context, k Keeper, proposal foundation
 		}
 		_, err := handler(ctx, msg)
 		if err != nil {
-			return sdkerrors.Wrapf(err, "message %q at position %d", msg, i)
+			return errorsmod.Wrapf(err, "message %q at position %d", msg, i)
 		}
 	}
 

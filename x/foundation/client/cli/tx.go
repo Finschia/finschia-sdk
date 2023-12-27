@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -784,6 +784,9 @@ Example of the content of messages-json:
 			}
 
 			content := foundation.NewFoundationExecProposal(title, description, messages)
+			if err := content.ValidateBasic(); err != nil {
+				return err
+			}
 
 			depositStr, err := cmd.Flags().GetString(govcli.FlagDeposit)
 			if err != nil {
@@ -796,9 +799,6 @@ Example of the content of messages-json:
 
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
-				return err
-			}
-			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 

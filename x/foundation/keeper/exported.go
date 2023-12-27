@@ -1,10 +1,13 @@
 package keeper
 
 import (
+	addresscodec "cosmossdk.io/core/address"
+	"cosmossdk.io/core/store"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -25,7 +28,8 @@ type keeper struct {
 
 func NewKeeper(
 	cdc codec.Codec,
-	key sdk.StoreKey,
+	addressCodec addresscodec.Codec,
+	key store.KVStoreService,
 	router *baseapp.MsgServiceRouter,
 	authKeeper foundation.AuthKeeper,
 	bankKeeper foundation.BankKeeper,
@@ -37,6 +41,7 @@ func NewKeeper(
 	return &keeper{
 		impl: internal.NewKeeper(
 			cdc,
+			addressCodec,
 			key,
 			router,
 			authKeeper,
@@ -81,14 +86,14 @@ func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 	internal.RegisterInvariants(ir, impl)
 }
 
-func BeginBlocker(ctx sdk.Context, k Keeper) {
+func BeginBlocker(ctx sdk.Context, k Keeper) error {
 	impl := k.(*keeper).impl
-	internal.BeginBlocker(ctx, impl)
+	return internal.BeginBlocker(ctx, impl)
 }
 
-func EndBlocker(ctx sdk.Context, k Keeper) {
+func EndBlocker(ctx sdk.Context, k Keeper) error {
 	impl := k.(*keeper).impl
-	internal.EndBlocker(ctx, impl)
+	return internal.EndBlocker(ctx, impl)
 }
 
 func NewFoundationProposalsHandler(k Keeper) govtypes.Handler {

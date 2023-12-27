@@ -21,7 +21,7 @@ func NewMigrator(keeper Keeper) Migrator {
 func (m Migrator) Register(register func(moduleName string, fromVersion uint64, handler module.MigrationHandler) error) error {
 	for fromVersion, handler := range map[uint64]module.MigrationHandler{
 		1: func(ctx sdk.Context) error {
-			return v2.MigrateStore(ctx, m.keeper.storeKey, m.keeper.cdc, m.keeper.paramSpace)
+			return v2.MigrateStore(ctx, m.keeper.storeService, m.keeper.cdc, m.keeper.paramSpace)
 		},
 	} {
 		if err := register(foundation.ModuleName, fromVersion, handler); err != nil {

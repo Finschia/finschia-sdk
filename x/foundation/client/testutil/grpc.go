@@ -5,8 +5,9 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/testutil"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -28,7 +29,7 @@ func (s *IntegrationTestSuite) TestGRPCParams() {
 			&foundation.QueryParamsResponse{},
 			&foundation.QueryParamsResponse{
 				Params: foundation.Params{
-					FoundationTax: sdk.MustNewDecFromStr("0.2"),
+					FoundationTax: math.LegacyMustNewDecFromStr("0.2"),
 				},
 			},
 		},

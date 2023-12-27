@@ -1,7 +1,9 @@
 package internal
 
 import (
-	"github.com/cometbft/cometbft/libs/log"
+	addresscodec "cosmossdk.io/core/address"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -15,9 +17,9 @@ import (
 type Keeper struct {
 	// The codec for binary encoding/decoding.
 	cdc codec.Codec
+	addressCodec addresscodec.Codec
 
-	// The (unexposed) keys used to access the stores from the Context.
-	storeKey sdk.StoreKey
+	storeService store.KVStoreService
 
 	router *baseapp.MsgServiceRouter
 
@@ -43,7 +45,8 @@ type Keeper struct {
 
 func NewKeeper(
 	cdc codec.Codec,
-	key sdk.StoreKey,
+	addressCodec addresscodec.Codec,
+	storeService store.KVStoreService,
 	router *baseapp.MsgServiceRouter,
 	authKeeper foundation.AuthKeeper,
 	bankKeeper foundation.BankKeeper,
@@ -68,7 +71,8 @@ func NewKeeper(
 
 	return Keeper{
 		cdc:              cdc,
-		storeKey:         key,
+		addressCodec:     addressCodec,
+		storeService:     storeService,
 		router:           router,
 		authKeeper:       authKeeper,
 		bankKeeper:       bankKeeper,

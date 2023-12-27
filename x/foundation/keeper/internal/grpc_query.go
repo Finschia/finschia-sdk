@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/store/prefix"
 
+	"github.com/cosmos/cosmos-sdk/runtime"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -86,8 +87,9 @@ func (s queryServer) Members(c context.Context, req *foundation.QueryMembersRequ
 
 	var members []foundation.Member
 	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	memberStore := prefix.NewStore(store, memberKeyPrefix)
+	store := s.keeper.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	memberStore := prefix.NewStore(adapter, memberKeyPrefix)
 	pageRes, err := query.Paginate(memberStore, req.Pagination, func(key, value []byte) error {
 		var member foundation.Member
 		s.keeper.cdc.MustUnmarshal(value, &member)
@@ -122,8 +124,9 @@ func (s queryServer) Proposals(c context.Context, req *foundation.QueryProposals
 
 	var proposals []foundation.Proposal
 	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	proposalStore := prefix.NewStore(store, proposalKeyPrefix)
+	store := s.keeper.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	proposalStore := prefix.NewStore(adapter, proposalKeyPrefix)
 	pageRes, err := query.Paginate(proposalStore, req.Pagination, func(key, value []byte) error {
 		var proposal foundation.Proposal
 		s.keeper.cdc.MustUnmarshal(value, &proposal)
@@ -162,8 +165,9 @@ func (s queryServer) Votes(c context.Context, req *foundation.QueryVotesRequest)
 
 	var votes []foundation.Vote
 	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	voteStore := prefix.NewStore(store, append(voteKeyPrefix, Uint64ToBytes(req.ProposalId)...))
+	store := s.keeper.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	voteStore := prefix.NewStore(adapter, append(voteKeyPrefix, Uint64ToBytes(req.ProposalId)...))
 	pageRes, err := query.Paginate(voteStore, req.Pagination, func(key, value []byte) error {
 		var vote foundation.Vote
 		s.keeper.cdc.MustUnmarshal(value, &vote)
@@ -203,8 +207,9 @@ func (s queryServer) Censorships(c context.Context, req *foundation.QueryCensors
 
 	var censorships []foundation.Censorship
 	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	censorshipStore := prefix.NewStore(store, censorshipKeyPrefix)
+	store := s.keeper.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
+	censorshipStore := prefix.NewStore(adapter, censorshipKeyPrefix)
 	pageRes, err := query.Paginate(censorshipStore, req.Pagination, func(key, value []byte) error {
 		var censorship foundation.Censorship
 		s.keeper.cdc.MustUnmarshal(value, &censorship)
@@ -229,11 +234,12 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
+	store := s.keeper.storeService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(store)
 
 	if req.MsgTypeUrl != "" {
 		keyPrefix := grantKey(grantee, req.MsgTypeUrl)
-		grantStore := prefix.NewStore(store, keyPrefix)
+		grantStore := prefix.NewStore(adapter, keyPrefix)
 
 		var authorizations []*codectypes.Any
 		_, err = query.Paginate(grantStore, req.Pagination, func(key, value []byte) error {
@@ -263,7 +269,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	}
 
 	keyPrefix := grantKeyPrefixByGrantee(grantee)
-	grantStore := prefix.NewStore(store, keyPrefix)
+	grantStore := prefix.NewStore(adapter, keyPrefix)
 
 	var authorizations []*codectypes.Any
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key, value []byte) error {

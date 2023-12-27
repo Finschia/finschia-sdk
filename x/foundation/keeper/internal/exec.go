@@ -1,8 +1,12 @@
 package internal
 
 import (
+	"bytes"
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
+
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -10,14 +14,19 @@ import (
 )
 
 // ensureMsgAuthz checks that if a message requires signers that all of them are equal to the given account address of the authority.
-func ensureMsgAuthz(msgs []sdk.Msg, authority sdk.AccAddress) error {
+func ensureMsgAuthz(msgs []sdk.Msg, authority sdk.AccAddress, cdc codec.Codec) error {
 	for _, msg := range msgs {
 		// In practice, GetSigners() should return a non-empty array without
 		// duplicates, so the code below is equivalent to:
 		// `msgs[i].GetSigners()[0] == authority`
 		// but we prefer to loop through all GetSigners just to be sure.
-		for _, signer := range msg.GetSigners() {
-			if !authority.Equals(signer) {
+		signers, _, err := cdc.GetMsgV1Signers(msg)
+		if err != nil {
+			return err
+		}
+
+		for _, signer := range signers {
+			if !bytes.Equal(signer, authority) {
 				return sdkerrors.ErrUnauthorized.Wrapf("bad signer; expected %s, got %s", authority, signer)
 			}
 		}
@@ -89,7 +98,7 @@ func (k Keeper) doExecuteMsgs(ctx sdk.Context, proposal foundation.Proposal) ([]
 	results := make([]sdk.Result, len(msgs))
 
 	authority := sdk.MustAccAddressFromBech32(k.GetAuthority())
-	if err := ensureMsgAuthz(msgs, authority); err != nil {
+	if err := ensureMsgAuthz(msgs, authority, k.cdc); err != nil {
 		return nil, err
 	}
 
@@ -100,7 +109,7 @@ func (k Keeper) doExecuteMsgs(ctx sdk.Context, proposal foundation.Proposal) ([]
 		}
 		r, err := handler(ctx, msg)
 		if err != nil {
-			return nil, sdkerrors.Wrapf(err, "message %q at position %d", msg, i)
+			return nil, errorsmod.Wrapf(err, "message %q at position %d", msg, i)
 		}
 		if r != nil {
 			results[i] = *r

@@ -55,9 +55,12 @@ func (k Keeper) WithdrawFromTreasury(ctx sdk.Context, to sdk.AccAddress, amt sdk
 }
 
 func (k Keeper) GetPool(ctx sdk.Context) foundation.Pool {
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := poolKey
-	bz := store.Get(key)
+	bz, err := store.Get(key)
+	if err != nil {
+		panic(err)
+	}
 
 	var pool foundation.Pool
 	k.cdc.MustUnmarshal(bz, &pool)
@@ -68,7 +71,7 @@ func (k Keeper) GetPool(ctx sdk.Context) foundation.Pool {
 func (k Keeper) SetPool(ctx sdk.Context, pool foundation.Pool) {
 	bz := k.cdc.MustMarshal(&pool)
 
-	store := ctx.KVStore(k.storeKey)
+	store := k.storeService.OpenKVStore(ctx)
 	key := poolKey
 	store.Set(key, bz)
 }
