@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -21,7 +21,7 @@ type Keeper struct {
 
 	storeService store.KVStoreService
 
-	router *baseapp.MsgServiceRouter
+	router baseapp.MessageRouter
 
 	// keepers
 	authKeeper foundation.AuthKeeper
@@ -40,20 +40,20 @@ type Keeper struct {
 	// Typically, this should be the x/foundation module account.
 	authority string
 
-	paramSpace paramtypes.Subspace
+	subspace paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.Codec,
 	addressCodec addresscodec.Codec,
 	storeService store.KVStoreService,
-	router *baseapp.MsgServiceRouter,
+	router baseapp.MessageRouter,
 	authKeeper foundation.AuthKeeper,
 	bankKeeper foundation.BankKeeper,
 	feeCollectorName string,
 	config foundation.Config,
 	authority string,
-	paramSpace paramtypes.Subspace,
+	subspace paramstypes.Subspace,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic("authority is not a valid acc address")
@@ -64,9 +64,10 @@ func NewKeeper(
 		panic("x/foundation authority must be the module account")
 	}
 
+	// TODO(@0Tech): remove x/params dependency
 	// set KeyTable if it has not already been set
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(foundation.ParamKeyTable())
+	if !subspace.HasKeyTable() {
+		subspace = subspace.WithKeyTable(foundation.ParamKeyTable())
 	}
 
 	return Keeper{
@@ -79,7 +80,7 @@ func NewKeeper(
 		feeCollectorName: feeCollectorName,
 		config:           config,
 		authority:        authority,
-		paramSpace:       paramSpace,
+		subspace:         subspace,
 	}
 }
 

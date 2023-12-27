@@ -22,6 +22,8 @@ func BeginBlocker(ctx sdk.Context, k Keeper) error {
 }
 
 func EndBlocker(ctx sdk.Context, k Keeper) error {
+	defer telemetry.ModuleMeasureSince(foundation.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
+
 	if err := k.UpdateTallyOfVPEndProposals(ctx); err != nil {
 		return err
 	}

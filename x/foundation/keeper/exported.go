@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
@@ -29,27 +29,27 @@ type keeper struct {
 func NewKeeper(
 	cdc codec.Codec,
 	addressCodec addresscodec.Codec,
-	key store.KVStoreService,
-	router *baseapp.MsgServiceRouter,
+	storeService store.KVStoreService,
+	router baseapp.MessageRouter,
 	authKeeper foundation.AuthKeeper,
 	bankKeeper foundation.BankKeeper,
 	feeCollectorName string,
 	config foundation.Config,
 	authority string,
-	paramspace paramtypes.Subspace,
+	subspace paramstypes.Subspace,
 ) Keeper {
 	return &keeper{
 		impl: internal.NewKeeper(
 			cdc,
 			addressCodec,
-			key,
+			storeService,
 			router,
 			authKeeper,
 			bankKeeper,
 			feeCollectorName,
 			config,
 			authority,
-			paramspace,
+			subspace,
 		),
 	}
 }

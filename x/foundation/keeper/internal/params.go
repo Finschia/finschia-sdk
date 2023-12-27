@@ -10,13 +10,13 @@ import (
 
 func (k Keeper) GetParams(ctx sdk.Context) foundation.Params {
 	var params foundation.Params
-	k.paramSpace.GetParamSet(ctx, &params)
+	k.subspace.GetParamSet(ctx, &params)
 
 	return params
 }
 
 func (k Keeper) SetParams(ctx sdk.Context, params foundation.Params) {
-	k.paramSpace.SetParamSet(ctx, &params)
+	k.subspace.SetParamSet(ctx, &params)
 }
 
 // aliases

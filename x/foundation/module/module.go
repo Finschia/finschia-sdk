@@ -10,16 +10,24 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/core/address"
+	"cosmossdk.io/depinject"
+	"cosmossdk.io/core/store"
 
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
+	modulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
 )
 
 const (
@@ -183,3 +191,65 @@ func (am AppModule) IsOnePerModuleType() {}
 // IsAppModule implements the appmodule.AppModule interface.
 func (am AppModule) IsAppModule() {}
 
+func init() {
+	appmodule.Register(&modulev1.Module{},
+		appmodule.Provide(ProvideModule, ProvideKeyTable),
+	)
+}
+
+type FoundationInputs struct {
+	depinject.In
+
+	StoreService  store.KVStoreService
+	Cdc           codec.Codec
+	Config *modulev1.Module
+
+	AddressCodec address.Codec
+
+	AuthKeeper foundation.AuthKeeper
+	BankKeeper foundation.BankKeeper
+	Subspace         paramstypes.Subspace
+	MsgServiceRouter baseapp.MessageRouter
+}
+
+type FoundationOutputs struct {
+	depinject.Out
+
+	Keeper keeper.Keeper
+	Module appmodule.AppModule
+}
+
+func ProvideModule(in FoundationInputs) FoundationOutputs {
+	// default to governance authority if not provided
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
+	if in.Config.Authority != "" {
+		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
+	}
+
+	feeCollectorName := in.Config.FeeCollectorName
+	if feeCollectorName == "" {
+		feeCollectorName = authtypes.FeeCollectorName
+	}
+
+	config := foundation.Config{
+		MaxExecutionPeriod: in.Config.MaxExecutionPeriod.AsDuration(),
+		MaxMetadataLen: in.Config.MaxMetadataLen,
+	}
+
+	authorityStr, err := in.AddressCodec.BytesToString(authority)
+	if err != nil {
+		panic(err)
+	}
+
+	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, in.MsgServiceRouter, in.AuthKeeper, in.BankKeeper, feeCollectorName, config, authorityStr, in.Subspace)
+	m := NewAppModule(in.Cdc, k)
+
+	return FoundationOutputs{
+		Keeper: k,
+		Module: m,
+	}
+}
+
+func ProvideKeyTable() paramstypes.KeyTable {
+	return foundation.ParamKeyTable()
+}
