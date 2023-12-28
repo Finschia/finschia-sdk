@@ -4,15 +4,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 )
 
 func (s *KeeperTestSuite) TestSubmitProposal() {
@@ -23,18 +22,18 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 		valid     bool
 	}{
 		"valid proposal": {
-			proposers: []string{s.members[0].String()},
-			msg:       testdata.NewTestMsg(s.authority),
+			proposers: []string{s.bytesToString(s.members[0])},
+			msg:       s.newTestMsg(s.authority),
 			valid:     true,
 		},
 		"long metadata": {
-			proposers: []string{s.members[0].String()},
+			proposers: []string{s.bytesToString(s.members[0])},
 			metadata:  string(make([]rune, 256)),
-			msg:       testdata.NewTestMsg(s.authority),
+			msg:       s.newTestMsg(s.authority),
 		},
 		"unauthorized msg": {
-			proposers: []string{s.members[0].String()},
-			msg:       testdata.NewTestMsg(s.stranger),
+			proposers: []string{s.bytesToString(s.members[0])},
+			msg:       s.newTestMsg(s.stranger),
 		},
 	}
 
@@ -84,51 +83,48 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 }
 
 func TestAbortProposal(t *testing.T) {
-	checkTx := false
-	app := simapp.Setup(checkTx)
-	testdata.RegisterInterfaces(app.InterfaceRegistry())
+	impl, _, _, _, _, addressCodec, ctx := setupFoundationKeeper(t, nil, nil)
 
-	ctx := app.BaseApp.NewContext(checkTx, cmtproto.Header{})
-	impl := internal.NewKeeper(
-		app.AppCodec(),
-		app.GetKey(foundation.ModuleName),
-		app.MsgServiceRouter(),
-		app.AccountKeeper,
-		app.BankKeeper,
-		authtypes.FeeCollectorName,
-		foundation.DefaultConfig(),
-		foundation.DefaultAuthority().String(),
-		app.GetSubspace(foundation.ModuleName),
-	)
+	bytesToString := func(addr sdk.AccAddress) string {
+		str, err := addressCodec.BytesToString(addr)
+		require.NoError(t, err)
+		return str
+	}
 
 	createAddress := func() sdk.AccAddress {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	authority := sdk.MustAccAddressFromBech32(impl.GetAuthority())
+	gs := &foundation.GenesisState{
+		Params: foundation.DefaultParams(),
+	}
 
 	members := make([]sdk.AccAddress, 10)
 	for i := range members {
 		members[i] = createAddress()
 	}
-	impl.SetMember(ctx, foundation.Member{
-		Address: members[0].String(),
-	})
+	gs.Members = []foundation.Member{{
+		Address: bytesToString(members[0]),
+	}}
 
 	info := foundation.DefaultFoundation()
-	info.TotalWeight = sdk.NewDec(int64(len(members)))
+	info.TotalWeight = math.LegacyNewDec(1)
 	err := info.SetDecisionPolicy(workingPolicy())
 	require.NoError(t, err)
-	impl.SetFoundationInfo(ctx, info)
+	gs.Foundation = info
+
+	impl.InitGenesis(ctx, gs)
 
 	// create proposals of different versions and abort them
 	for _, newMember := range members[1:] {
-		_, err := impl.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(authority)})
+		_, err := impl.SubmitProposal(ctx, []string{bytesToString(members[0])}, "", []sdk.Msg{&testdata.TestMsg{
+			Signers: []string{impl.GetAuthority()},
+		}})
 		require.NoError(t, err)
 
 		err = impl.UpdateMembers(ctx, []foundation.MemberRequest{
 			{
-				Address: newMember.String(),
+				Address: bytesToString(newMember),
 			},
 		})
 		require.NoError(t, err)

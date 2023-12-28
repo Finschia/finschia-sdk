@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
@@ -16,7 +17,7 @@ import (
 
 func workingPolicy() foundation.DecisionPolicy {
 	return &foundation.ThresholdDecisionPolicy{
-		Threshold: sdk.OneDec(),
+		Threshold: math.LegacyOneDec(),
 		Windows: &foundation.DecisionPolicyWindows{
 			VotingPeriod: 7 * 24 * time.Hour, // one week
 		},
@@ -24,20 +25,20 @@ func workingPolicy() foundation.DecisionPolicy {
 }
 
 func TestImportExportGenesis(t *testing.T) {
-	checkTx := false
-	app := simapp.Setup(checkTx)
-	testdata.RegisterInterfaces(app.InterfaceRegistry())
+	_, keeper, _, _, _, addressCodec, ctx := setupFoundationKeeper(t, nil, nil)
 
-	ctx := app.BaseApp.NewContext(checkTx, cmtproto.Header{})
-	keeper := app.FoundationKeeper
+	bytesToString := func(addr sdk.AccAddress) string {
+		str, err := addressCodec.BytesToString(addr)
+		require.NoError(t, err)
+		return str
+	}
+
+	authority, err := addressCodec.StringToBytes(keeper.GetAuthority())
+	require.NoError(t, err)
 
 	createAddress := func() sdk.AccAddress {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
-
-	authority := foundation.DefaultAuthority()
-	existingAccount := createAddress()
-	app.AccountKeeper.SetAccount(ctx, app.AccountKeeper.NewAccountWithAddress(ctx, existingAccount))
 
 	member := createAddress()
 	stranger := createAddress()
@@ -63,11 +64,11 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: member.String(),
+						Address: bytesToString(member),
 					},
 				},
 			},
@@ -76,11 +77,11 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: member.String(),
+						Address: bytesToString(member),
 					},
 				},
 			},
@@ -90,25 +91,25 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: member.String(),
+						Address: bytesToString(member),
 					},
 				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
-						Proposers:         []string{member.String()},
+						Proposers:         []string{bytesToString(member)},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(authority)}),
+					}.WithMsgs([]sdk.Msg{&testdata.TestMsg{Signers: []string{bytesToString(authority)}}}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      member.String(),
+						Voter:      bytesToString(member),
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
@@ -118,31 +119,31 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: member.String(),
+						Address: bytesToString(member),
 					},
 				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
-						Proposers:         []string{member.String()},
+						Proposers:         []string{bytesToString(member)},
 						FoundationVersion: 1,
 						FinalTallyResult: foundation.TallyResult{
-							YesCount:        sdk.ZeroDec(),
-							NoCount:         sdk.ZeroDec(),
-							AbstainCount:    sdk.ZeroDec(),
-							NoWithVetoCount: sdk.ZeroDec(),
+							YesCount:        math.LegacyZeroDec(),
+							NoCount:         math.LegacyZeroDec(),
+							AbstainCount:    math.LegacyZeroDec(),
+							NoWithVetoCount: math.LegacyZeroDec(),
 						},
-					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(authority)}),
+					}.WithMsgs([]sdk.Msg{&testdata.TestMsg{Signers: []string{bytesToString(authority)}}}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      member.String(),
+						Voter:      bytesToString(member),
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
@@ -160,7 +161,7 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Grantee: stranger.String(),
+						Grantee: bytesToString(stranger),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
@@ -176,7 +177,7 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Grantee: stranger.String(),
+						Grantee: bytesToString(stranger),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
@@ -186,7 +187,7 @@ func TestImportExportGenesis(t *testing.T) {
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
 				Pool: foundation.Pool{
-					Treasury: sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+					Treasury: sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, math.OneInt())),
 				},
 			},
 			valid: true,
@@ -194,7 +195,7 @@ func TestImportExportGenesis(t *testing.T) {
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
 				Pool: foundation.Pool{
-					Treasury: sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+					Treasury: sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, math.OneInt())),
 				},
 			},
 		},
@@ -203,11 +204,11 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address:  member.String(),
+						Address:  bytesToString(member),
 						Metadata: string(make([]rune, 256)),
 					},
 				},
@@ -218,11 +219,11 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: member.String(),
+						Address: bytesToString(member),
 					},
 				},
 				PreviousProposalId: 1,
@@ -230,7 +231,7 @@ func TestImportExportGenesis(t *testing.T) {
 					*foundation.Proposal{
 						Id:                1,
 						Metadata:          string(make([]rune, 256)),
-						Proposers:         []string{member.String()},
+						Proposers:         []string{bytesToString(member)},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
@@ -241,25 +242,25 @@ func TestImportExportGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
 					Version:     1,
-					TotalWeight: sdk.OneDec(),
+					TotalWeight: math.LegacyOneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: member.String(),
+						Address: bytesToString(member),
 					},
 				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
-						Proposers:         []string{member.String()},
+						Proposers:         []string{bytesToString(member)},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      member.String(),
+						Voter:      bytesToString(member),
 						Option:     foundation.VOTE_OPTION_YES,
 						Metadata:   string(make([]rune, 256)),
 					},
@@ -271,7 +272,7 @@ func TestImportExportGenesis(t *testing.T) {
 	for name, tc := range testCases {
 		ctx, _ := ctx.CacheContext()
 
-		err := foundation.ValidateGenesis(*tc.init)
+		err := foundation.ValidateGenesis(*tc.init, addressCodec)
 		require.NoError(t, err, name)
 
 		err = keeper.InitGenesis(ctx, tc.init)

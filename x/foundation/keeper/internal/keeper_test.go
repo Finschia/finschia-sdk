@@ -1,23 +1,39 @@
 package internal_test
 
 import (
-	"fmt"
+	"context"
 	"testing"
+	"time"
 
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
+	"cosmossdk.io/core/address"
+	"cosmossdk.io/log"
+	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
+	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
+	codectestutil "github.com/cosmos/cosmos-sdk/codec/testutil"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/testutil"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	keeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
+	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
+	"github.com/Finschia/finschia-sdk/x/foundation/module"
+	foundationtestutil "github.com/Finschia/finschia-sdk/x/foundation/testutil"
 )
 
 type KeeperTestSuite struct {
@@ -27,9 +43,11 @@ type KeeperTestSuite struct {
 
 	ctx sdk.Context
 
-	bankKeeper foundation.BankKeeper
+	bankKeeper *foundationtestutil.MockBankKeeper
 	keeper     keeper.Keeper
 	impl       internal.Keeper
+
+	addressCodec address.Codec
 
 	queryServer     foundation.QueryServer
 	msgServer       foundation.MsgServer
@@ -46,7 +64,7 @@ type KeeperTestSuite struct {
 	noHandlerProposal uint64
 	nextProposal      uint64
 
-	balance sdk.Int
+	balance math.Int
 }
 
 func newMsgCreateDog(name string) sdk.Msg {
@@ -59,114 +77,246 @@ func newMsgCreateDog(name string) sdk.Msg {
 
 func (s *KeeperTestSuite) createAddresses(accNum int) []sdk.AccAddress {
 	if s.deterministic {
-		addresses := make([]sdk.AccAddress, accNum)
-		for i := range addresses {
-			addresses[i] = sdk.AccAddress(fmt.Sprintf("address%d", i))
-		}
-		return addresses
+		return simtestutil.CreateIncrementalAccounts(accNum)
 	} else {
-		seenAddresses := make(map[string]bool, accNum)
-		addresses := make([]sdk.AccAddress, accNum)
-		for i := range addresses {
-			var address sdk.AccAddress
-			for {
-				pk := secp256k1.GenPrivKey().PubKey()
-				address = sdk.AccAddress(pk.Address())
-				if !seenAddresses[address.String()] {
-					seenAddresses[address.String()] = true
-					break
-				}
-			}
-			addresses[i] = address
-		}
-		return addresses
+		return simtestutil.CreateRandomAccounts(accNum)
 	}
 }
 
-func (s *KeeperTestSuite) SetupTest() {
-	checkTx := false
-	app := simapp.Setup(checkTx)
-	testdata.RegisterInterfaces(app.InterfaceRegistry())
-	testdata.RegisterMsgServer(app.MsgServiceRouter(), testdata.MsgServerImpl{})
+func (s *KeeperTestSuite) bytesToString(addr sdk.AccAddress) string {
+	str, err := s.addressCodec.BytesToString(addr)
+	s.Require().NoError(err)
+	return str
+}
 
-	s.ctx = app.BaseApp.NewContext(checkTx, cmtproto.Header{})
-	s.bankKeeper = app.BankKeeper
-	s.keeper = app.FoundationKeeper
-	s.impl = internal.NewKeeper(
-		app.AppCodec(),
-		app.GetKey(foundation.ModuleName),
-		app.MsgServiceRouter(),
-		app.AccountKeeper,
-		app.BankKeeper,
-		authtypes.FeeCollectorName,
-		foundation.DefaultConfig(),
-		foundation.DefaultAuthority().String(),
-		app.GetSubspace(foundation.ModuleName),
+func (s *KeeperTestSuite) newTestMsg(addrs ...sdk.AccAddress) *testdata.TestMsg {
+	accAddresses := make([]string, len(addrs))
+
+	for i, addr := range addrs {
+		accAddresses[i] = s.bytesToString(addr)
+	}
+
+	return &testdata.TestMsg{
+		Signers: accAddresses,
+	}
+}
+
+func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddress) (
+	internal.Keeper,
+	keeper.Keeper,
+	*foundationtestutil.MockAuthKeeper,
+	*foundationtestutil.MockBankKeeper,
+	moduletestutil.TestEncodingConfig,
+	address.Codec,
+	sdk.Context,
+) {
+	key := storetypes.NewKVStoreKey(foundation.StoreKey)
+	tkey := storetypes.NewTransientStoreKey("transient_test")
+	testCtx := testutil.DefaultContextWithDB(t, key, tkey)
+	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
+
+	ir := codectestutil.CodecOptions{
+		AccAddressPrefix: "link",
+		ValAddressPrefix: "linkvaloper",
+	}.NewInterfaceRegistry()
+	encCfg.InterfaceRegistry = ir
+	encCfg.Codec = codec.NewProtoCodec(ir)
+
+	foundation.RegisterInterfaces(ir)
+	testdata.RegisterInterfaces(ir)
+
+	addressCodec := ir.SigningContext().AddressCodec()
+
+	bapp := baseapp.NewBaseApp(
+		"foundation",
+		log.NewNopLogger(),
+		testCtx.DB,
+		encCfg.TxConfig.TxDecoder(),
 	)
+	bapp.SetInterfaceRegistry(ir)
+
+	ctrl := gomock.NewController(t)
+	authKeeper := foundationtestutil.NewMockAuthKeeper(ctrl)
+	bankKeeper := foundationtestutil.NewMockBankKeeper(ctrl)
+	subspace := paramstypes.NewSubspace(encCfg.Codec, encCfg.Amino, key, tkey, "params")
+
+	authority, err := addressCodec.BytesToString(foundation.DefaultAuthority())
+	require.NoError(t, err)
+
+	config := foundation.DefaultConfig()
+	feeCollector := authtypes.FeeCollectorName
+	k := keeper.NewKeeper(encCfg.Codec, addressCodec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
+
+	impl := internal.NewKeeper(
+		encCfg.Codec,
+		addressCodec,
+		runtime.NewKVStoreService(key),
+		bapp.MsgServiceRouter(),
+		authKeeper,
+		bankKeeper,
+		feeCollector,
+		config,
+		authority,
+		subspace,
+	)
+
+	msgServer := keeper.NewMsgServer(k)
+	queryServer := keeper.NewQueryServer(k)
+
+	foundation.RegisterMsgServer(bapp.MsgServiceRouter(), msgServer)
+	foundation.RegisterQueryServer(bapp.GRPCQueryRouter(), queryServer)
+
+	testdata.RegisterMsgServer(bapp.MsgServiceRouter(), testdata.MsgServerImpl{})
+
+	// mock bank keeper
+	prefix := []byte{0xff}
+	getBalance := func(ctx context.Context, addr sdk.AccAddress) sdk.Coin {
+		store := runtime.NewKVStoreService(key).OpenKVStore(ctx)
+
+		bz, err := store.Get(append(prefix, addr...))
+		require.NoError(t, err)
+
+		if bz == nil {
+			return sdk.NewCoin(sdk.DefaultBondDenom, math.ZeroInt())
+		}
+
+		var amt math.Int
+		err = amt.Unmarshal(bz)
+		require.NoError(t, err)
+
+		return sdk.NewCoin(sdk.DefaultBondDenom, amt)
+	}
+	setBalance := func(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) {
+		store := runtime.NewKVStoreService(key).OpenKVStore(ctx)
+
+		bz, err := amt.Amount.Marshal()
+		require.NoError(t, err)
+
+		err = store.Set(append(prefix, addr...), bz)
+		require.NoError(t, err)
+	}
+	send := func(ctx context.Context, sender, recipient sdk.AccAddress, amt sdk.Coins) error {
+		require.LessOrEqual(t, len(amt), 1)
+
+		if len(amt) == 0 {
+			return nil
+		}
+
+		src := getBalance(ctx, sender)
+		src, err := src.SafeSub(amt[0])
+		if err != nil {
+			return err
+		}
+		setBalance(ctx, sender, src)
+
+		dst := getBalance(ctx, recipient).Add(amt[0])
+		setBalance(ctx, recipient, dst)
+
+		return nil
+	}
+
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, sender sdk.AccAddress, name string, amt sdk.Coins) error {
+		recipient := authtypes.NewModuleAddress(name)
+		return send(ctx, sender, recipient, amt)
+	}).AnyTimes()
+	bankKeeper.EXPECT().SendCoinsFromModuleToAccount(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, name string, recipient sdk.AccAddress, amt sdk.Coins) error {
+		sender := authtypes.NewModuleAddress(name)
+		return send(ctx, sender, recipient, amt)
+	}).AnyTimes()
+
+	bankKeeper.EXPECT().GetAllBalances(gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, addr sdk.AccAddress) sdk.Coins {
+		return sdk.NewCoins(getBalance(ctx, addr))
+	}).AnyTimes()
+
+	ctx := testCtx.Ctx
+
+	// set balance
+	for _, addr := range addrs{
+		setBalance(ctx, addr, sdk.NewCoin(sdk.DefaultBondDenom, *balance))
+	}
+
+	return impl, k, authKeeper, bankKeeper, encCfg, addressCodec, ctx
+}
+
+func (s *KeeperTestSuite) SetupTest() {
+	numMembers := 10
+	addresses := s.createAddresses(numMembers + 1)
+	s.members = addresses[:numMembers]
+	s.stranger = addresses[len(addresses)-1]
+
+	s.balance = math.NewInt(987654321)
+	coinHolders := []sdk.AccAddress{
+		s.stranger,
+		authtypes.NewModuleAddress(foundation.TreasuryName),
+		authtypes.NewModuleAddress(authtypes.FeeCollectorName),
+	}
+
+	var authKeeper *foundationtestutil.MockAuthKeeper
+	s.impl, s.keeper, authKeeper, s.bankKeeper, _, s.addressCodec, s.ctx = setupFoundationKeeper(s.T(), &s.balance, coinHolders)
+
+	if s.deterministic {
+		s.ctx = s.ctx.WithBlockTime(time.Date(2023, 11, 7, 19, 32, 0, 0, time.UTC))
+	}
+
+	s.authority = foundation.DefaultAuthority()
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
 	s.proposalHandler = keeper.NewFoundationProposalsHandler(s.keeper)
 
-	s.impl.SetParams(s.ctx, foundation.Params{
-		FoundationTax: sdk.OneDec(),
-	})
+	// genesis
+	gs := &foundation.GenesisState{}
 
-	s.impl.SetCensorship(s.ctx, foundation.Censorship{
-		MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		Authority:  foundation.CensorshipAuthorityFoundation,
-	})
-
-	s.authority = sdk.MustAccAddressFromBech32(s.impl.GetAuthority())
-
-	numMembers := 10
-	addresses := s.createAddresses(numMembers + 1)
-	s.members = addresses[:numMembers]
+	params := foundation.DefaultParams()
+	params.FoundationTax = math.LegacyOneDec()
+	gs.Params = params
+	
+	members := make([]foundation.Member, len(s.members))
 	for i := range s.members {
-		member := foundation.Member{
-			Address: s.members[i].String(),
+		members[i] = foundation.Member{
+			Address: s.bytesToString(s.members[i]),
 		}
-		s.impl.SetMember(s.ctx, member)
 	}
-	s.stranger = addresses[len(addresses)-1]
+	gs.Members = members
 
 	info := foundation.DefaultFoundation()
-	info.TotalWeight = sdk.NewDec(int64(len(s.members)))
+	info.TotalWeight = math.LegacyNewDec(int64(len(s.members)))
 	err := info.SetDecisionPolicy(workingPolicy())
 	s.Require().NoError(err)
-	s.impl.SetFoundationInfo(s.ctx, info)
+	gs.Foundation = info
 
-	s.balance = sdk.NewInt(987654321)
-	s.impl.SetPool(s.ctx, foundation.Pool{
+	gs.Censorships = []foundation.Censorship{{
+		MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		Authority:  foundation.CensorshipAuthorityFoundation,
+	}}
+
+	gs.Pool = foundation.Pool{
 		Treasury: sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-	})
-	holders := []sdk.AccAddress{
-		s.stranger,
-		app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
-		app.AccountKeeper.GetModuleAccount(s.ctx, authtypes.FeeCollectorName).GetAddress(),
 	}
-	for _, holder := range holders {
-		amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
 
-		// using minttypes here introduces dependency on x/mint
-		// the work around would be registering a new module account on this suite
-		// because x/bank already has dependency on x/mint, and we must have dependency
-		// on x/bank, it's OK to use x/mint here.
-		minterName := minttypes.ModuleName
-		err := app.BankKeeper.MintCoins(s.ctx, minterName, amount)
-		s.Require().NoError(err)
+	err = s.keeper.InitGenesis(s.ctx, gs)
+	s.Require().NoError(err)
 
-		minter := app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
-		err = app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
-		s.Require().NoError(err)
+	for _, name := range []string{
+		foundation.TreasuryName,
+		authtypes.FeeCollectorName,
+	} {
+		addr := authtypes.NewModuleAddress(name)
+		account := &authtypes.ModuleAccount{
+			BaseAccount: &authtypes.BaseAccount{
+				Address: s.bytesToString(addr),
+			},
+			Name: name,
+		}
+		authKeeper.EXPECT().GetModuleAccount(gomock.Any(), name).Return(account).AnyTimes()
 	}
 
 	// create an active proposal, voted yes by all members except the first member
-	activeProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	activeProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.bytesToString(s.members[0])}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
-			Authority: s.authority.String(),
-			To:        s.stranger.String(),
+			Authority: s.bytesToString(s.authority),
+			To:        s.bytesToString(s.stranger),
 			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 		},
 	})
@@ -176,28 +326,39 @@ func (s *KeeperTestSuite) SetupTest() {
 	for _, member := range s.members[1:] {
 		err := s.impl.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.activeProposal,
-			Voter:      member.String(),
+			Voter:      s.bytesToString(member),
 			Option:     foundation.VOTE_OPTION_YES,
 		})
 		s.Require().NoError(err)
 	}
 
 	// create a proposal voted no by all members
-	votedProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba1")})
+	votedProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.bytesToString(s.members[0])}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Authority: s.bytesToString(s.authority),
+			To:        s.bytesToString(s.stranger),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))},
+	})
 	s.Require().NoError(err)
 	s.votedProposal = *votedProposal
 
 	for _, member := range s.members {
 		err := s.impl.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.votedProposal,
-			Voter:      member.String(),
+			Voter:      s.bytesToString(member),
 			Option:     foundation.VOTE_OPTION_NO,
 		})
 		s.Require().NoError(err)
 	}
 
 	// create an withdrawn proposal
-	withdrawnProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba2")})
+	withdrawnProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.bytesToString(s.members[0])}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Authority: s.bytesToString(s.authority),
+			To:        s.bytesToString(s.stranger),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))},
+	})
+
 	s.Require().NoError(err)
 	s.withdrawnProposal = *withdrawnProposal
 
@@ -205,11 +366,11 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 
 	// create an invalid proposal which contains invalid message
-	invalidProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	invalidProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.bytesToString(s.members[0])}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
-			Authority: s.authority.String(),
-			To:        s.stranger.String(),
-			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
+			Authority: s.bytesToString(s.authority),
+			To:        s.bytesToString(s.stranger),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(math.OneInt()))),
 		},
 	})
 	s.Require().NoError(err)
@@ -218,21 +379,21 @@ func (s *KeeperTestSuite) SetupTest() {
 	for _, member := range s.members {
 		err := s.impl.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.invalidProposal,
-			Voter:      member.String(),
+			Voter:      s.bytesToString(member),
 			Option:     foundation.VOTE_OPTION_YES,
 		})
 		s.Require().NoError(err)
 	}
 
 	// create an invalid proposal which contains invalid message
-	noHandlerProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.authority)})
+	noHandlerProposal, err := s.impl.SubmitProposal(s.ctx, []string{s.bytesToString(s.members[0])}, "", []sdk.Msg{s.newTestMsg(s.authority)})
 	s.Require().NoError(err)
 	s.noHandlerProposal = *noHandlerProposal
 
 	for _, member := range s.members {
 		err := s.impl.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.noHandlerProposal,
-			Voter:      member.String(),
+			Voter:      s.bytesToString(member),
 			Option:     foundation.VOTE_OPTION_YES,
 		})
 		s.Require().NoError(err)
@@ -281,8 +442,42 @@ func TestNewKeeper(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			newKeeper := func() keeper.Keeper {
-				app := simapp.Setup(false)
-				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String(), app.GetSubspace(foundation.ModuleName))
+				key := storetypes.NewKVStoreKey(foundation.StoreKey)
+				tkey := storetypes.NewTransientStoreKey("transient_test")
+				testCtx := testutil.DefaultContextWithDB(t, key, tkey)
+				encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
+
+				ir := codectestutil.CodecOptions{
+					AccAddressPrefix: "link",
+					ValAddressPrefix: "linkvaloper",
+				}.NewInterfaceRegistry()
+				encCfg.InterfaceRegistry = ir
+				encCfg.Codec = codec.NewProtoCodec(ir)
+
+				foundation.RegisterInterfaces(ir)
+				testdata.RegisterInterfaces(ir)
+
+				addressCodec := ir.SigningContext().AddressCodec()
+
+				bapp := baseapp.NewBaseApp(
+					"foundation",
+					log.NewNopLogger(),
+					testCtx.DB,
+					encCfg.TxConfig.TxDecoder(),
+				)
+				bapp.SetInterfaceRegistry(ir)
+
+				ctrl := gomock.NewController(t)
+				authKeeper := foundationtestutil.NewMockAuthKeeper(ctrl)
+				bankKeeper := foundationtestutil.NewMockBankKeeper(ctrl)
+				subspace := paramstypes.NewSubspace(encCfg.Codec, encCfg.Amino, key, tkey, "params")
+
+				authority, err := addressCodec.BytesToString(tc.authority)
+				require.NoError(t, err)
+
+				config := foundation.DefaultConfig()
+				feeCollector := authtypes.FeeCollectorName
+				return keeper.NewKeeper(encCfg.Codec, addressCodec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
 			}
 
 			if tc.panics {
@@ -292,7 +487,14 @@ func TestNewKeeper(t *testing.T) {
 			require.NotPanics(t, func() { newKeeper() })
 
 			k := newKeeper()
-			require.Equal(t, authority.String(), k.GetAuthority())
+			addressCodec := addresscodec.NewBech32Codec("link")
+			bytesToString := func(addr sdk.AccAddress) string {
+				str, err := addressCodec.BytesToString(addr)
+				require.NoError(t, err)
+				return str
+			}
+
+			require.Equal(t,  bytesToString(authority), k.GetAuthority())
 		})
 	}
 }

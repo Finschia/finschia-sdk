@@ -5,11 +5,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal/migrations/v2"
+	"github.com/Finschia/finschia-sdk/x/foundation/module"
 )
 
 type mockSubspace struct {
@@ -25,33 +31,34 @@ func (ms *mockSubspace) SetParamSet(ctx sdk.Context, ps v2.ParamSet) {
 }
 
 func TestMigrateStore(t *testing.T) {
-	foundationKey := sdk.NewKVStoreKey(foundation.StoreKey)
-	newKey := sdk.NewTransientStoreKey("transient_test")
-	encCfg := simappparams.MakeTestEncodingConfig()
-	ctx := testutil.DefaultContext(foundationKey, newKey)
+	foundationKey := storetypes.NewKVStoreKey(foundation.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, foundationKey, storetypes.NewTransientStoreKey("transient_test"))
+	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
+
+	ctx := testCtx.Ctx
 
 	for name, tc := range map[string]struct {
 		malleate func(ctx sdk.Context)
 		valid    bool
-		tax      sdk.Dec
+		tax      math.LegacyDec
 	}{
 		"valid": {
 			malleate: func(ctx sdk.Context) {
 				// set old keys
-				bz := encCfg.Marshaler.MustMarshal(&foundation.Params{
-					FoundationTax: sdk.MustNewDecFromStr("0.123456789"),
+				bz := encCfg.Codec.MustMarshal(&foundation.Params{
+					FoundationTax: math.LegacyMustNewDecFromStr("0.123456789"),
 				})
 				store := ctx.KVStore(foundationKey)
 				store.Set(v2.ParamsKey, bz)
 			},
 			valid: true,
-			tax:   sdk.MustNewDecFromStr("0.123456789"),
+			tax:   math.LegacyMustNewDecFromStr("0.123456789"),
 		},
 		"no params found": {},
 		"unmarshal fails": {
 			malleate: func(ctx sdk.Context) {
 				// invalid contents
-				bz := encCfg.Marshaler.MustMarshal(&foundation.Censorship{
+				bz := encCfg.Codec.MustMarshal(&foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 					Authority:  foundation.CensorshipAuthorityFoundation,
 				})
@@ -68,7 +75,7 @@ func TestMigrateStore(t *testing.T) {
 
 			// migrate
 			subspace := &mockSubspace{}
-			err := v2.MigrateStore(ctx, foundationKey, encCfg.Marshaler, subspace)
+			err := v2.MigrateStore(ctx, runtime.NewKVStoreService(foundationKey), encCfg.Codec, subspace)
 			if !tc.valid {
 				require.Error(t, err)
 				return

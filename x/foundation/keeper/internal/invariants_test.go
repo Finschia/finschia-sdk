@@ -1,6 +1,8 @@
 package internal_test
 
 import (
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -17,7 +19,7 @@ func (s *KeeperTestSuite) TestModuleAccountInvariant() {
 		},
 		"treasury differs from the balance": {
 			malleate: func(ctx sdk.Context) {
-				balance := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt())))
+				balance := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(math.OneInt())))
 				s.impl.SetPool(ctx, foundation.Pool{
 					Treasury: sdk.NewDecCoinsFromCoins(balance...),
 				})
@@ -33,8 +35,8 @@ func (s *KeeperTestSuite) TestModuleAccountInvariant() {
 			}
 
 			invariant := internal.ModuleAccountInvariant(s.impl)
-			_, broken := invariant(ctx)
-			s.Require().Equal(!tc.valid, broken)
+			msg, broken := invariant(ctx)
+			s.Require().Equal(!tc.valid, broken, msg)
 		})
 	}
 }
@@ -51,7 +53,7 @@ func (s *KeeperTestSuite) TestTotalWeightInvariant() {
 			malleate: func(ctx sdk.Context) {
 				info := s.impl.GetFoundationInfo(ctx)
 				numMembers := len(s.impl.GetMembers(ctx))
-				info.TotalWeight = sdk.NewDec(int64(numMembers)).Add(sdk.OneDec())
+				info.TotalWeight = math.LegacyNewDec(int64(numMembers)).Add(math.LegacyOneDec())
 				s.impl.SetFoundationInfo(ctx, info)
 			},
 		},

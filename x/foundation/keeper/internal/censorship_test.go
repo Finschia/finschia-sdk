@@ -3,6 +3,8 @@ package internal_test
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"cosmossdk.io/math"
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
@@ -142,9 +144,9 @@ func (s *KeeperTestSuite) TestAccept() {
 		"valid request": {
 			grantee: s.stranger,
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Authority: s.authority.String(),
-				To:        s.stranger.String(),
-				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Authority: s.bytesToString(s.authority),
+				To:        s.bytesToString(s.stranger),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.OneInt())),
 			},
 			valid: true,
 		},
@@ -158,18 +160,18 @@ func (s *KeeperTestSuite) TestAccept() {
 			},
 			grantee: s.members[0],
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Authority: s.authority.String(),
-				To:        s.members[0].String(),
-				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Authority: s.bytesToString(s.authority),
+				To:        s.bytesToString(s.members[0]),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.OneInt())),
 			},
 			valid: true,
 		},
 		"no authorization": {
 			grantee: s.members[0],
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Authority: s.authority.String(),
-				To:        s.members[0].String(),
-				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Authority: s.bytesToString(s.authority),
+				To:        s.bytesToString(s.members[0]),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.OneInt())),
 			},
 		},
 	}

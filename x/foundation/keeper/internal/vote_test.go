@@ -9,8 +9,8 @@ import (
 )
 
 func (s *KeeperTestSuite) TestVote() {
-	// no such a vote
-	_, err := s.impl.GetVote(s.ctx, s.nextProposal, s.members[0])
+	// no such a proposal
+	_, err := s.impl.GetProposal(s.ctx, s.nextProposal)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
@@ -69,7 +69,7 @@ func (s *KeeperTestSuite) TestVote() {
 
 			vote := foundation.Vote{
 				ProposalId: tc.proposalID,
-				Voter:      tc.voter.String(),
+				Voter:      s.bytesToString(tc.voter),
 				Option:     tc.option,
 				Metadata:   tc.metadata,
 			}
@@ -80,7 +80,7 @@ func (s *KeeperTestSuite) TestVote() {
 			}
 			s.Require().NoError(err)
 
-			_, err = s.impl.GetVote(ctx, vote.ProposalId, sdk.MustAccAddressFromBech32(vote.Voter))
+			_, err = s.impl.GetVote(ctx, vote.ProposalId, tc.voter)
 			s.Require().NoError(err)
 		})
 	}

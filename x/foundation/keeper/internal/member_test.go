@@ -3,7 +3,7 @@ package internal_test
 import (
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -16,7 +16,7 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 	}{
 		"valid policy": {
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.OneDec(),
+				Threshold: math.LegacyOneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
@@ -25,7 +25,7 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 		},
 		"invalid policy (invalid min execution period)": {
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.OneDec(),
+				Threshold: math.LegacyOneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod:       time.Hour,
 					MinExecutionPeriod: time.Hour + config.MaxExecutionPeriod,
@@ -56,7 +56,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"add a new member": {
 			updates: []foundation.MemberRequest{
 				{
-					Address: s.stranger.String(),
+					Address: s.bytesToString(s.stranger),
 				},
 			},
 			valid: true,
@@ -64,7 +64,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"remove a member": {
 			updates: []foundation.MemberRequest{
 				{
-					Address: s.members[0].String(),
+					Address: s.bytesToString(s.members[0]),
 					Remove:  true,
 				},
 			},
@@ -73,7 +73,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"remove a non-member": {
 			updates: []foundation.MemberRequest{
 				{
-					Address: s.stranger.String(),
+					Address: s.bytesToString(s.stranger),
 					Remove:  true,
 				},
 			},
@@ -81,7 +81,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"long metadata": {
 			updates: []foundation.MemberRequest{
 				{
-					Address:  s.stranger.String(),
+					Address:  s.bytesToString(s.stranger),
 					Metadata: string(make([]rune, 256)),
 				},
 			},

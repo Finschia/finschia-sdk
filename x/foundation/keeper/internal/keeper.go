@@ -55,12 +55,16 @@ func NewKeeper(
 	authority string,
 	subspace paramstypes.Subspace,
 ) Keeper {
-	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic("authority is not a valid acc address")
 	}
 
 	// authority is x/foundation module account for now.
-	if authority != foundation.DefaultAuthority().String() {
+	defaultAuthority, err := addressCodec.BytesToString(foundation.DefaultAuthority())
+	if err != nil {
+		panic(err)
+	}
+	if authority != defaultAuthority {
 		panic("x/foundation authority must be the module account")
 	}
 

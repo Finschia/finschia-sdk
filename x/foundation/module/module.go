@@ -42,7 +42,9 @@ var (
 )
 
 // AppModuleBasic defines the basic application module used by the foundation module.
-type AppModuleBasic struct{}
+type AppModuleBasic struct{
+	addressCodec address.Codec
+}
 
 // Name returns the ModuleName
 func (AppModuleBasic) Name() string {
@@ -59,13 +61,13 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 }
 
 // ValidateGenesis performs genesis state validation for the foundation module.
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
+func (am AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
 	var data foundation.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", foundation.ModuleName, err)
 	}
 
-	return foundation.ValidateGenesis(data)
+	return foundation.ValidateGenesis(data, am.addressCodec)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the foundation module.
@@ -99,8 +101,11 @@ type AppModule struct {
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, addressCodec address.Codec) AppModule {
 	return AppModule{
+		AppModuleBasic: AppModuleBasic{
+			addressCodec: addressCodec,
+		},
 		keeper: keeper,
 	}
 }
@@ -242,7 +247,7 @@ func ProvideModule(in FoundationInputs) FoundationOutputs {
 	}
 
 	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, in.MsgServiceRouter, in.AuthKeeper, in.BankKeeper, feeCollectorName, config, authorityStr, in.Subspace)
-	m := NewAppModule(in.Cdc, k)
+	m := NewAppModule(in.Cdc, k, in.AddressCodec)
 
 	return FoundationOutputs{
 		Keeper: k,

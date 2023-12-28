@@ -5,6 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 
+	"github.com/cosmos/cosmos-sdk/types/address"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -28,8 +29,9 @@ func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 
 func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-		treasuryAcc := k.authKeeper.GetModuleAccount(ctx, foundation.TreasuryName)
-		balance := k.bankKeeper.GetAllBalances(ctx, treasuryAcc.GetAddress())
+		// TODO(@0Tech): use auth keeper after applying global bech32 removal
+		treasuryAcc := address.Module(foundation.TreasuryName)
+		balance := k.bankKeeper.GetAllBalances(ctx, treasuryAcc)
 
 		treasury := k.GetTreasury(ctx)
 		msg := fmt.Sprintf("coins in the treasury; expected %s, got %s\n", treasury, balance)

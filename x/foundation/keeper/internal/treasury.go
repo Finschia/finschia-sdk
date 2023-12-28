@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"github.com/cosmos/cosmos-sdk/types/address"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -8,7 +9,8 @@ import (
 )
 
 func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName).GetAddress()
+	// TODO(@0Tech): use auth keeper after applying global bech32 removal
+	feeCollector := address.Module(k.feeCollectorName)
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector)
 	if feesCollectedInt.Empty() {
 		return nil

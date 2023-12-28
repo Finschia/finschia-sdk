@@ -6,6 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"cosmossdk.io/math"
+
+	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,64 +24,64 @@ func TestTallyResult(t *testing.T) {
 
 	err = result.Add(foundation.VOTE_OPTION_YES)
 	require.NoError(t, err)
-	require.Equal(t, sdk.OneDec(), result.YesCount)
+	require.Equal(t, math.LegacyOneDec(), result.YesCount)
 
 	err = result.Add(foundation.VOTE_OPTION_ABSTAIN)
 	require.NoError(t, err)
-	require.Equal(t, sdk.OneDec(), result.AbstainCount)
+	require.Equal(t, math.LegacyOneDec(), result.AbstainCount)
 
 	err = result.Add(foundation.VOTE_OPTION_NO)
 	require.NoError(t, err)
-	require.Equal(t, sdk.OneDec(), result.NoCount)
+	require.Equal(t, math.LegacyOneDec(), result.NoCount)
 
 	err = result.Add(foundation.VOTE_OPTION_NO_WITH_VETO)
 	require.NoError(t, err)
-	require.Equal(t, sdk.OneDec(), result.NoWithVetoCount)
+	require.Equal(t, math.LegacyOneDec(), result.NoWithVetoCount)
 
-	require.Equal(t, sdk.NewDec(4), result.TotalCounts())
+	require.Equal(t, math.LegacyNewDec(4), result.TotalCounts())
 }
 
 func TestThresholdDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
 
 	testCases := map[string]struct {
-		threshold          sdk.Dec
+		threshold          math.LegacyDec
 		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
-		totalWeight        sdk.Dec
+		totalWeight        math.LegacyDec
 		validBasic         bool
 		valid              bool
 	}{
 		"valid policy": {
-			threshold:          sdk.OneDec(),
+			threshold:          math.LegacyOneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 			validBasic:         true,
 			valid:              true,
 		},
 		"invalid threshold": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 		},
 		"invalid voting period": {
-			threshold:          sdk.OneDec(),
+			threshold:          math.LegacyOneDec(),
 			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 		},
 		"invalid min execution period": {
-			threshold:          sdk.OneDec(),
+			threshold:          math.LegacyOneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 			validBasic:         true,
 		},
 		"invalid total weight": {
-			threshold:          sdk.OneDec(),
+			threshold:          math.LegacyOneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			totalWeight:        sdk.ZeroDec(),
+			totalWeight:        math.LegacyZeroDec(),
 			validBasic:         true,
 		},
 	}
@@ -117,7 +120,7 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 func TestThresholdDecisionPolicyAllow(t *testing.T) {
 	config := foundation.DefaultConfig()
 	policy := foundation.ThresholdDecisionPolicy{
-		Threshold: sdk.NewDec(10),
+		Threshold: math.LegacyNewDec(10),
 		Windows: &foundation.DecisionPolicyWindows{
 			VotingPeriod: time.Hour,
 		},
@@ -125,14 +128,14 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 	require.NoError(t, policy.ValidateBasic())
 
 	info := foundation.FoundationInfo{
-		TotalWeight: sdk.OneDec(),
+		TotalWeight: math.LegacyOneDec(),
 	}
 	require.NoError(t, policy.Validate(info, config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
 	testCases := map[string]struct {
 		sinceSubmission time.Duration
-		totalWeight     sdk.Dec
+		totalWeight     math.LegacyDec
 		tally           foundation.TallyResult
 		valid           bool
 		final           bool
@@ -141,15 +144,15 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		"allow": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
 			totalWeight:     policy.Threshold,
-			tally:           foundation.NewTallyResult(policy.Threshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(policy.Threshold, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 			allow:           true,
 		},
 		"allow (member size < threshold)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight:     sdk.OneDec(),
-			tally:           foundation.NewTallyResult(sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			totalWeight:     math.LegacyOneDec(),
+			tally:           foundation.NewTallyResult(math.LegacyOneDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 			allow:           true,
@@ -157,20 +160,20 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		"not final": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
 			totalWeight:     policy.Threshold,
-			tally:           foundation.NewTallyResult(policy.Threshold.Sub(sdk.OneDec()), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(policy.Threshold.Sub(math.LegacyOneDec()), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 			valid:           true,
 		},
 		"deny": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight:     policy.Threshold.Add(sdk.OneDec()),
-			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.OneDec(), sdk.OneDec(), sdk.ZeroDec()),
+			totalWeight:     policy.Threshold.Add(math.LegacyOneDec()),
+			tally:           foundation.NewTallyResult(math.LegacyZeroDec(), math.LegacyOneDec(), math.LegacyOneDec(), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 		},
 		"too early": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod - time.Nanosecond,
 			totalWeight:     policy.Threshold,
-			tally:           foundation.NewTallyResult(policy.Threshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(policy.Threshold, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 		},
 	}
 
@@ -195,43 +198,43 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
 
 	testCases := map[string]struct {
-		percentage         sdk.Dec
+		percentage         math.LegacyDec
 		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
-		totalWeight        sdk.Dec
+		totalWeight        math.LegacyDec
 		validBasic         bool
 		valid              bool
 	}{
 		"valid policy": {
-			percentage:         sdk.OneDec(),
+			percentage:         math.LegacyOneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 			validBasic:         true,
 			valid:              true,
 		},
 		"invalid percentage": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 		},
 		"invalid voting period": {
-			percentage:         sdk.OneDec(),
+			percentage:         math.LegacyOneDec(),
 			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 		},
 		"invalid min execution period": {
-			percentage:         sdk.OneDec(),
+			percentage:         math.LegacyOneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
-			totalWeight:        sdk.OneDec(),
+			totalWeight:        math.LegacyOneDec(),
 			validBasic:         true,
 		},
 		"invalid total weight": {
-			percentage:         sdk.OneDec(),
+			percentage:         math.LegacyOneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			totalWeight:        sdk.ZeroDec(),
+			totalWeight:        math.LegacyZeroDec(),
 			validBasic:         true,
 		},
 	}
@@ -270,7 +273,7 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 func TestPercentageDecisionPolicyAllow(t *testing.T) {
 	config := foundation.DefaultConfig()
 	policy := foundation.PercentageDecisionPolicy{
-		Percentage: sdk.MustNewDecFromStr("0.8"),
+		Percentage: math.LegacyMustNewDecFromStr("0.8"),
 		Windows: &foundation.DecisionPolicyWindows{
 			VotingPeriod: time.Hour,
 		},
@@ -278,12 +281,12 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 	require.NoError(t, policy.ValidateBasic())
 
 	info := foundation.FoundationInfo{
-		TotalWeight: sdk.OneDec(),
+		TotalWeight: math.LegacyOneDec(),
 	}
 	require.NoError(t, policy.Validate(info, config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
-	totalWeight := sdk.NewDec(10)
+	totalWeight := math.LegacyNewDec(10)
 	testCases := map[string]struct {
 		sinceSubmission time.Duration
 		tally           foundation.TallyResult
@@ -293,38 +296,38 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 	}{
 		"allow": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally:           foundation.NewTallyResult(sdk.NewDec(8), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(math.LegacyNewDec(8), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 			allow:           true,
 		},
 		"allow (abstain)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally:           foundation.NewTallyResult(sdk.NewDec(4), sdk.NewDec(5), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(math.LegacyNewDec(4), math.LegacyNewDec(5), math.LegacyZeroDec(), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 			allow:           true,
 		},
 		"not final": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(1), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(math.LegacyZeroDec(), math.LegacyNewDec(5), math.LegacyNewDec(1), math.LegacyZeroDec()),
 			valid:           true,
 		},
 		"deny": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.ZeroDec(), sdk.NewDec(3), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyNewDec(3), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 		},
 		"deny (all abstain)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(10), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(math.LegacyZeroDec(), math.LegacyNewDec(10), math.LegacyZeroDec(), math.LegacyZeroDec()),
 			valid:           true,
 			final:           true,
 		},
 		"too early": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod - time.Nanosecond,
-			tally:           foundation.NewTallyResult(sdk.NewDec(8), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(math.LegacyNewDec(8), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 		},
 	}
 
@@ -346,6 +349,13 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 }
 
 func TestMembers(t *testing.T) {
+	addressCodec := addresscodec.NewBech32Codec("link")
+	bytesToString := func(addr sdk.AccAddress) string {
+		str, err := addressCodec.BytesToString(addr)
+		require.NoError(t, err)
+		return str
+	}
+
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -358,10 +368,10 @@ func TestMembers(t *testing.T) {
 		"valid updates": {
 			members: []foundation.Member{
 				{
-					Address: addrs[0].String(),
+					Address: bytesToString(addrs[0]),
 				},
 				{
-					Address: addrs[1].String(),
+					Address: bytesToString(addrs[1]),
 				},
 			},
 			valid: true,
@@ -372,10 +382,10 @@ func TestMembers(t *testing.T) {
 		"duplicate members": {
 			members: []foundation.Member{
 				{
-					Address: addrs[0].String(),
+					Address: bytesToString(addrs[0]),
 				},
 				{
-					Address: addrs[0].String(),
+					Address: bytesToString(addrs[0]),
 				},
 			},
 		},
@@ -384,7 +394,7 @@ func TestMembers(t *testing.T) {
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			members := foundation.Members{tc.members}
-			err := members.ValidateBasic()
+			err := members.ValidateBasic(addressCodec)
 			if !tc.valid {
 				require.Error(t, err)
 				return
@@ -395,6 +405,13 @@ func TestMembers(t *testing.T) {
 }
 
 func TestMemberRequests(t *testing.T) {
+	addressCodec := addresscodec.NewBech32Codec("link")
+	bytesToString := func(addr sdk.AccAddress) string {
+		str, err := addressCodec.BytesToString(addr)
+		require.NoError(t, err)
+		return str
+	}
+
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -407,10 +424,10 @@ func TestMemberRequests(t *testing.T) {
 		"valid requests": {
 			members: []foundation.MemberRequest{
 				{
-					Address: addrs[0].String(),
+					Address: bytesToString(addrs[0]),
 				},
 				{
-					Address: addrs[1].String(),
+					Address: bytesToString(addrs[1]),
 					Remove:  true,
 				},
 			},
@@ -422,10 +439,10 @@ func TestMemberRequests(t *testing.T) {
 		"duplicate requests": {
 			members: []foundation.MemberRequest{
 				{
-					Address: addrs[0].String(),
+					Address: bytesToString(addrs[0]),
 				},
 				{
-					Address: addrs[0].String(),
+					Address: bytesToString(addrs[0]),
 					Remove:  true,
 				},
 			},
@@ -435,7 +452,7 @@ func TestMemberRequests(t *testing.T) {
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			requests := foundation.MemberRequests{tc.members}
-			err := requests.ValidateBasic()
+			err := requests.ValidateBasic(addressCodec)
 			if !tc.valid {
 				require.Error(t, err)
 				return
@@ -446,6 +463,13 @@ func TestMemberRequests(t *testing.T) {
 }
 
 func TestProposal(t *testing.T) {
+	addressCodec := addresscodec.NewBech32Codec("link")
+	bytesToString := func(addr sdk.AccAddress) string {
+		str, err := addressCodec.BytesToString(addr)
+		require.NoError(t, err)
+		return str
+	}
+
 	addrs := make([]sdk.AccAddress, 4)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -461,8 +485,8 @@ func TestProposal(t *testing.T) {
 		"valid proposal": {
 			id: 1,
 			proposers: []string{
-				addrs[0].String(),
-				addrs[1].String(),
+				bytesToString(addrs[0]),
+				bytesToString(addrs[1]),
 			},
 			version: 1,
 			msgs: []sdk.Msg{
@@ -472,8 +496,8 @@ func TestProposal(t *testing.T) {
 		},
 		"invalid id": {
 			proposers: []string{
-				addrs[0].String(),
-				addrs[1].String(),
+				bytesToString(addrs[0]),
+				bytesToString(addrs[1]),
 			},
 			version: 1,
 			msgs: []sdk.Msg{
@@ -498,8 +522,8 @@ func TestProposal(t *testing.T) {
 		"duplicate proposers": {
 			id: 1,
 			proposers: []string{
-				addrs[0].String(),
-				addrs[0].String(),
+				bytesToString(addrs[0]),
+				bytesToString(addrs[0]),
 			},
 			version: 1,
 			msgs: []sdk.Msg{
@@ -509,8 +533,8 @@ func TestProposal(t *testing.T) {
 		"invalid version": {
 			id: 1,
 			proposers: []string{
-				addrs[0].String(),
-				addrs[1].String(),
+				bytesToString(addrs[0]),
+				bytesToString(addrs[1]),
 			},
 			msgs: []sdk.Msg{
 				testdata.NewTestMsg(),
@@ -519,21 +543,10 @@ func TestProposal(t *testing.T) {
 		"empty msgs": {
 			id: 1,
 			proposers: []string{
-				addrs[0].String(),
-				addrs[1].String(),
+				bytesToString(addrs[0]),
+				bytesToString(addrs[1]),
 			},
 			version: 1,
-		},
-		"invalid msg": {
-			id: 1,
-			proposers: []string{
-				addrs[0].String(),
-				addrs[1].String(),
-			},
-			version: 1,
-			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{},
-			},
 		},
 	}
 
@@ -546,7 +559,7 @@ func TestProposal(t *testing.T) {
 			}.WithMsgs(tc.msgs)
 			require.NotNil(t, proposal)
 
-			err := proposal.ValidateBasic()
+			err := proposal.ValidateBasic(addressCodec)
 			if !tc.valid {
 				require.Error(t, err)
 				return
@@ -560,12 +573,12 @@ func TestOutsourcingDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
 
 	testCases := map[string]struct {
-		totalWeight sdk.Dec
+		totalWeight math.LegacyDec
 		validBasic  bool
 		valid       bool
 	}{
 		"invalid policy": {
-			totalWeight: sdk.OneDec(),
+			totalWeight: math.LegacyOneDec(),
 			validBasic:  true,
 		},
 	}
@@ -601,14 +614,14 @@ func TestOutsourcingDecisionPolicyAllow(t *testing.T) {
 	require.NoError(t, policy.ValidateBasic())
 
 	info := foundation.FoundationInfo{
-		TotalWeight: sdk.OneDec(),
+		TotalWeight: math.LegacyOneDec(),
 	}
 	require.Error(t, policy.Validate(info, config))
 	require.Zero(t, policy.GetVotingPeriod())
 
 	testCases := map[string]struct {
 		sinceSubmission time.Duration
-		totalWeight     sdk.Dec
+		totalWeight     math.LegacyDec
 		tally           foundation.TallyResult
 		valid           bool
 		final           bool
@@ -616,8 +629,8 @@ func TestOutsourcingDecisionPolicyAllow(t *testing.T) {
 	}{
 		"deny": {
 			sinceSubmission: 0,
-			totalWeight:     sdk.OneDec(),
-			tally:           foundation.NewTallyResult(sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			totalWeight:     math.LegacyOneDec(),
+			tally:           foundation.NewTallyResult(math.LegacyOneDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 		},
 	}
 

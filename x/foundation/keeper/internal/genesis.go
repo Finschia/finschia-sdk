@@ -43,7 +43,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 	}
 
 	for _, ga := range data.Authorizations {
-		grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
+		grantee, err := k.addressCodec.StringToBytes(ga.Grantee)
+		if err != nil {
+			panic(err)
+		}
 		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
 	}
 
@@ -87,8 +90,12 @@ func (k Keeper) GetCensorships(ctx sdk.Context) []foundation.Censorship {
 func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 	var grantAuthorizations []foundation.GrantAuthorization
 	k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+		granteeStr, err := k.addressCodec.BytesToString(grantee)
+		if err != nil {
+			panic(err)
+		}
 		grantAuthorization := foundation.GrantAuthorization{
-			Grantee: grantee.String(),
+			Grantee: granteeStr,
 		}
 		if err := grantAuthorization.SetAuthorization(authorization); err != nil {
 			panic(err)

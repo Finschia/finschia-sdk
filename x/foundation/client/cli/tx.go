@@ -201,9 +201,6 @@ func NewTxCmdFundTreasury() *cobra.Command {
 				From:   from,
 				Amount: amount,
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -238,9 +235,6 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 				Authority: args[0],
 				To:        args[1],
 				Amount:    amount,
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -293,9 +287,6 @@ Set a member's participating to false to delete it.
 				Authority:     args[0],
 				MemberUpdates: updates,
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -343,9 +334,6 @@ Example of the content of policy-json:
 				return err
 			}
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -419,9 +407,6 @@ Example of the content of messages-json:
 			if err := msg.SetMsgs(messages); err != nil {
 				return err
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -462,9 +447,6 @@ Parameters:
 			msg := foundation.MsgWithdrawProposal{
 				ProposalId: proposalID,
 				Address:    address,
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -526,9 +508,6 @@ Parameters:
 				Metadata:   args[3],
 				Exec:       exec,
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -563,9 +542,6 @@ func NewTxCmdExec() *cobra.Command {
 			msg := foundation.MsgExec{
 				ProposalId: proposalID,
 				Signer:     signer,
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -612,9 +588,6 @@ Parameters:
 					Authority:  newAuthority,
 				},
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -641,9 +614,6 @@ func NewTxCmdLeaveFoundation() *cobra.Command {
 
 			msg := foundation.MsgLeaveFoundation{
 				Address: address,
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -692,9 +662,6 @@ Example of the content of authorization-json:
 				return err
 			}
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -724,9 +691,6 @@ func NewTxCmdRevoke() *cobra.Command {
 				Authority:  args[0],
 				Grantee:    args[1],
 				MsgTypeUrl: args[2],
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},

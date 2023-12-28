@@ -68,14 +68,17 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			Metadata: request.Metadata,
 			AddedAt:  ctx.BlockTime(),
 		}
-		if err := new.ValidateBasic(); err != nil {
+		if err := new.ValidateBasic(k.addressCodec); err != nil {
 			panic(err)
 		}
 		if err := validateMetadata(new.Metadata, k.config); err != nil {
 			return err
 		}
 
-		addr := sdk.MustAccAddressFromBech32(new.Address)
+		addr, err := k.addressCodec.StringToBytes(new.Address)
+		if err != nil {
+			panic(err)
+		}
 		old, err := k.GetMember(ctx, addr)
 		if err != nil && request.Remove { // the member must exist
 			return err
@@ -127,7 +130,10 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 
 func (k Keeper) SetMember(ctx sdk.Context, member foundation.Member) {
 	store := k.storeService.OpenKVStore(ctx)
-	addr := sdk.MustAccAddressFromBech32(member.Address)
+	addr, err := k.addressCodec.StringToBytes(member.Address)
+	if err != nil {
+		panic(err)
+	}
 	key := memberKey(addr)
 
 	bz := k.cdc.MustMarshal(&member)
@@ -180,8 +186,12 @@ func (k Keeper) validateCensorshipAuthority(ctx sdk.Context, msgTypeURL, authori
 		return err
 	}
 
+	govAddr, err := k.addressCodec.BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
+	if err != nil {
+		return err
+	}
 	authorityAddrs := map[foundation.CensorshipAuthority]string{
-		foundation.CensorshipAuthorityGovernance: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		foundation.CensorshipAuthorityGovernance: govAddr,
 		foundation.CensorshipAuthorityFoundation: k.authority,
 	}
 	if expected := authorityAddrs[censorship.Authority]; authority != expected {
@@ -193,7 +203,10 @@ func (k Keeper) validateCensorshipAuthority(ctx sdk.Context, msgTypeURL, authori
 
 func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 	for _, member := range members {
-		addr := sdk.MustAccAddressFromBech32(member)
+		addr, err := k.addressCodec.StringToBytes(member)
+		if err != nil {
+			panic(err)
+		}
 		if _, err := k.GetMember(ctx, addr); err != nil {
 			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
 		}

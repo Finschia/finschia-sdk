@@ -1,7 +1,6 @@
 package internal_test
 
 import (
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -24,7 +23,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 				})
 			},
 			msg: &foundation.MsgUpdateCensorship{
-				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				Authority: s.bytesToString(authtypes.NewModuleAddress(govtypes.ModuleName)),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 					Authority:  foundation.CensorshipAuthorityUnspecified,
@@ -66,7 +65,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 					Authority:  foundation.CensorshipAuthorityGovernance,
 				})
 			},
-			msg: testdata.NewTestMsg(authtypes.NewModuleAddress(govtypes.ModuleName)),
+			msg: s.newTestMsg(authtypes.NewModuleAddress(govtypes.ModuleName)),
 		},
 		"message execution failed": {
 			malleate: func(ctx sdk.Context) {
@@ -76,7 +75,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 				})
 			},
 			msg: &foundation.MsgUpdateCensorship{
-				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				Authority: s.bytesToString(authtypes.NewModuleAddress(govtypes.ModuleName)),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 					Authority:  foundation.CensorshipAuthorityFoundation,
@@ -85,7 +84,7 @@ func (s *KeeperTestSuite) TestProposalHandler() {
 		},
 		"authority is not x/gov yet": {
 			msg: &foundation.MsgUpdateCensorship{
-				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+				Authority: s.bytesToString(authtypes.NewModuleAddress(govtypes.ModuleName)),
 				Censorship: foundation.Censorship{
 					MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 					Authority:  foundation.CensorshipAuthorityUnspecified,

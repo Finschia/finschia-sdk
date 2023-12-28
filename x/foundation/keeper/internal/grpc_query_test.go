@@ -6,11 +6,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
@@ -20,7 +21,6 @@ import (
 type FoundationTestSuite struct {
 	suite.Suite
 
-	app         *simapp.SimApp
 	ctx         sdk.Context
 	queryClient foundation.QueryClient
 
@@ -28,24 +28,13 @@ type FoundationTestSuite struct {
 }
 
 func (s *FoundationTestSuite) SetupTest() {
-	s.app = simapp.Setup(false)
-	s.ctx = s.app.BaseApp.NewContext(false, cmtproto.Header{})
+	var encCfg moduletestutil.TestEncodingConfig
+	var k keeper.Keeper
+	s.impl, k, _, _, encCfg, _, s.ctx = setupFoundationKeeper(s.T(), nil, nil)
 
-	queryHelper := baseapp.NewQueryServerTestHelper(s.ctx, s.app.InterfaceRegistry())
-	foundation.RegisterQueryServer(queryHelper, keeper.NewQueryServer(s.app.FoundationKeeper))
+	queryHelper := baseapp.NewQueryServerTestHelper(s.ctx, encCfg.InterfaceRegistry)
+	foundation.RegisterQueryServer(queryHelper, keeper.NewQueryServer(k))
 	s.queryClient = foundation.NewQueryClient(queryHelper)
-
-	s.impl = internal.NewKeeper(
-		s.app.AppCodec(),
-		s.app.GetKey(foundation.ModuleName),
-		s.app.MsgServiceRouter(),
-		s.app.AccountKeeper,
-		s.app.BankKeeper,
-		authtypes.FeeCollectorName,
-		foundation.DefaultConfig(),
-		foundation.DefaultAuthority().String(),
-		s.app.GetSubspace(foundation.ModuleName),
-	)
 }
 
 func (s *FoundationTestSuite) TestQueryParams() {
@@ -63,7 +52,7 @@ func (s *FoundationTestSuite) TestQueryParams() {
 			"with foundation tax",
 			func() {
 				params := foundation.Params{
-					FoundationTax: sdk.OneDec(),
+					FoundationTax: math.LegacyOneDec(),
 				}
 				s.impl.SetParams(s.ctx, params)
 

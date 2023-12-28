@@ -1,6 +1,8 @@
 package internal_test
 
 import (
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
@@ -19,27 +21,27 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 	s.Require().NoError(err)
 
 	for name, tc := range map[string]struct {
-		fee      sdk.Int
-		taxRatio sdk.Dec
-		tax      sdk.Int
+		fee      math.Int
+		taxRatio math.LegacyDec
+		tax      math.Int
 		valid    bool
 	}{
 		"common": {
 			fee:      fees[0].Amount,
-			taxRatio: sdk.MustNewDecFromStr("0.123456789"),
-			tax:      sdk.NewInt(121932631),
+			taxRatio: math.LegacyMustNewDecFromStr("0.123456789"),
+			tax:      math.NewInt(121932631),
 			valid:    true,
 		},
 		"zero fee": {
-			fee:      sdk.ZeroInt(),
-			taxRatio: sdk.MustNewDecFromStr("0.123456789"),
-			tax:      sdk.ZeroInt(),
+			fee:      math.ZeroInt(),
+			taxRatio: math.LegacyMustNewDecFromStr("0.123456789"),
+			tax:      math.ZeroInt(),
 			valid:    true,
 		},
 		"zero ratio": {
 			fee:      fees[0].Amount,
-			taxRatio: sdk.ZeroDec(),
-			tax:      sdk.ZeroInt(),
+			taxRatio: math.LegacyZeroDec(),
+			tax:      math.ZeroInt(),
 			valid:    true,
 		},
 	} {
@@ -57,9 +59,9 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 
 			before := s.impl.GetTreasury(ctx)
 			s.Require().Equal(1, len(before))
-			s.Require().Equal(sdk.NewDecFromInt(s.balance), before[0].Amount)
+			s.Require().Equal(math.LegacyNewDecFromInt(s.balance), before[0].Amount)
 
-			tax := sdk.NewDecFromInt(tc.fee).MulTruncate(tc.taxRatio).TruncateInt()
+			tax := math.LegacyNewDecFromInt(tc.fee).MulTruncate(tc.taxRatio).TruncateInt()
 			// ensure the behavior does not change
 			s.Require().Equal(tc.tax, tax)
 
@@ -73,14 +75,14 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 			expectedAfter := s.balance.Add(tax)
 			after := s.impl.GetTreasury(ctx)
 			s.Require().Equal(1, len(after))
-			s.Require().Equal(sdk.NewDecFromInt(expectedAfter), after[0].Amount)
+			s.Require().Equal(math.LegacyNewDecFromInt(expectedAfter), after[0].Amount)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestFundTreasury() {
 	testCases := map[string]struct {
-		amount sdk.Int
+		amount math.Int
 		valid  bool
 	}{
 		"valid amount": {
@@ -88,7 +90,7 @@ func (s *KeeperTestSuite) TestFundTreasury() {
 			valid:  true,
 		},
 		"insufficient coins": {
-			amount: s.balance.Add(sdk.OneInt()),
+			amount: s.balance.Add(math.OneInt()),
 		},
 	}
 
@@ -117,7 +119,7 @@ func (s *KeeperTestSuite) TestFundTreasury() {
 
 func (s *KeeperTestSuite) TestWithdrawFromTreasury() {
 	testCases := map[string]struct {
-		amount sdk.Int
+		amount math.Int
 		valid  bool
 	}{
 		"valid amount": {
@@ -125,7 +127,7 @@ func (s *KeeperTestSuite) TestWithdrawFromTreasury() {
 			valid:  true,
 		},
 		"insufficient coins": {
-			amount: s.balance.Add(sdk.OneInt()),
+			amount: s.balance.Add(math.OneInt()),
 		},
 	}
 

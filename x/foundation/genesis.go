@@ -4,6 +4,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"cosmossdk.io/math"
+	"cosmossdk.io/core/address"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -94,7 +95,7 @@ func (i FoundationInfo) ValidateBasic() error {
 
 // ValidateGenesis validates the provided genesis state to ensure the
 // expected invariants holds.
-func ValidateGenesis(data GenesisState) error {
+func ValidateGenesis(data GenesisState, addressCodec address.Codec) error {
 	if err := data.Params.ValidateBasic(); err != nil {
 		return err
 	}
@@ -110,7 +111,7 @@ func ValidateGenesis(data GenesisState) error {
 		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
 	}
 	members := Members{Members: data.Members}
-	if err := members.ValidateBasic(); err != nil {
+	if err := members.ValidateBasic(addressCodec); err != nil {
 		return err
 	}
 
@@ -128,7 +129,7 @@ func ValidateGenesis(data GenesisState) error {
 		}
 		proposalIDs[id] = true
 
-		if err := proposal.ValidateBasic(); err != nil {
+		if err := proposal.ValidateBasic(addressCodec); err != nil {
 			return err
 		}
 
@@ -142,11 +143,11 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrapf("vote for a proposal which does not exist: id %d", vote.ProposalId)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(vote.Voter); err != nil {
+		if _, err := addressCodec.StringToBytes(vote.Voter); err != nil {
 			return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", vote.Voter)
 		}
 
-		if err := validateVoteOption(vote.Option); err != nil {
+		if err := ValidateVoteOption(vote.Option); err != nil {
 			return err
 		}
 	}
@@ -178,7 +179,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrapf("no censorship over %s", url)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(ga.Grantee); err != nil {
+		if _, err := addressCodec.StringToBytes(ga.Grantee); err != nil {
 			return err
 		}
 	}

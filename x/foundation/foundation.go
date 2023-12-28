@@ -8,6 +8,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"cosmossdk.io/core/address"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -16,7 +17,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
-func validateProposers(proposers []string) error {
+func ValidateProposers(proposers []string, addressCodec address.Codec) error {
 	if len(proposers) == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")
 	}
@@ -28,7 +29,7 @@ func validateProposers(proposers []string) error {
 		}
 		addrs[proposer] = true
 
-		if _, err := sdk.AccAddressFromBech32(proposer); err != nil {
+		if _, err := addressCodec.StringToBytes(proposer); err != nil {
 			return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", proposer)
 		}
 	}
@@ -36,26 +37,7 @@ func validateProposers(proposers []string) error {
 	return nil
 }
 
-func validateMsgs(msgs []sdk.Msg) error {
-	if len(msgs) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("no msgs")
-	}
-
-	for i, msg := range msgs {
-		m, ok := msg.(sdk.HasValidateBasic)
-		if !ok {
-			continue
-		}
-
-		if err := m.ValidateBasic(); err != nil {
-			return errorsmod.Wrapf(err, "msg %d", i)
-		}
-	}
-
-	return nil
-}
-
-func validateVoteOption(option VoteOption) error {
+func ValidateVoteOption(option VoteOption) error {
 	if option == VOTE_OPTION_UNSPECIFIED {
 		return sdkerrors.ErrInvalidRequest.Wrap("empty vote option")
 	}
@@ -106,8 +88,8 @@ func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
-func (m Member) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
+func (m Member) ValidateBasic(addressCodec address.Codec) error {
+	if _, err := addressCodec.StringToBytes(m.Address); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
 	}
 
@@ -115,8 +97,8 @@ func (m Member) ValidateBasic() error {
 }
 
 // ValidateBasic performs stateless validation on a member.
-func (m MemberRequest) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
+func (m MemberRequest) ValidateBasic(addressCodec address.Codec) error {
+	if _, err := addressCodec.StringToBytes(m.Address); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
 	}
 
@@ -190,19 +172,21 @@ func (t TallyResult) TotalCounts() math.LegacyDec {
 
 var _ codectypes.UnpackInterfacesMessage = (*Proposal)(nil)
 
-func (p Proposal) ValidateBasic() error {
+func (p Proposal) ValidateBasic(addressCodec address.Codec) error {
 	if p.Id == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("id must be > 0")
 	}
 	if p.FoundationVersion == 0 {
 		return sdkerrors.ErrInvalidVersion.Wrap("foundation version must be > 0")
 	}
-	if err := validateProposers(p.Proposers); err != nil {
+	if err := ValidateProposers(p.Proposers, addressCodec); err != nil {
 		return err
 	}
-	if err := validateMsgs(p.GetMsgs()); err != nil {
-		return err
+
+	if len(p.GetMsgs()) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("no msgs")
 	}
+
 	return nil
 }
 
@@ -520,11 +504,11 @@ type Members struct {
 // ValidateBasic performs stateless validation on an array of members. On top
 // of validating each member individually, it also makes sure there are no
 // duplicate addresses.
-func (ms Members) ValidateBasic() error {
+func (ms Members) ValidateBasic(addressCodec address.Codec) error {
 	index := make(map[string]struct{}, len(ms.Members))
 	for i := range ms.Members {
 		member := ms.Members[i]
-		if err := member.ValidateBasic(); err != nil {
+		if err := member.ValidateBasic(addressCodec); err != nil {
 			return err
 		}
 		addr := member.Address
@@ -544,11 +528,11 @@ type MemberRequests struct {
 // ValidateBasic performs stateless validation on an array of members. On top
 // of validating each member individually, it also makes sure there are no
 // duplicate addresses.
-func (ms MemberRequests) ValidateBasic() error {
+func (ms MemberRequests) ValidateBasic(addressCodec address.Codec) error {
 	index := make(map[string]struct{}, len(ms.Members))
 	for i := range ms.Members {
 		member := ms.Members[i]
-		if err := member.ValidateBasic(); err != nil {
+		if err := member.ValidateBasic(addressCodec); err != nil {
 			return err
 		}
 		addr := member.Address

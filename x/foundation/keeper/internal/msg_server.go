@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -28,8 +29,17 @@ var _ foundation.MsgServer = msgServer{}
 
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
+	from, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+
+	if !req.Amount.IsValid() || !req.Amount.IsAllPositive() {
+		return nil, sdkerrors.ErrInvalidCoins.Wrap(req.Amount.String())
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
-	from := sdk.MustAccAddressFromBech32(req.From)
+
 	if err := s.keeper.FundTreasury(ctx, from, req.Amount); err != nil {
 		return nil, err
 	}
@@ -46,13 +56,25 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 
 // WithdrawFromTreasury defines a method to withdraw coins from the treasury.
 func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWithdrawFromTreasury) (*foundation.MsgWithdrawFromTreasuryResponse, error) {
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	to, err := s.keeper.addressCodec.StringToBytes(req.To)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
+	}
+
+	if !req.Amount.IsValid() || !req.Amount.IsAllPositive() {
+		return nil, sdkerrors.ErrInvalidCoins.Wrap(req.Amount.String())
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
-	to := sdk.MustAccAddressFromBech32(req.To)
 	if err := s.keeper.Accept(ctx, to, req); err != nil {
 		return nil, err
 	}
@@ -72,6 +94,18 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 }
 
 func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMembers) (*foundation.MsgUpdateMembersResponse, error) {
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	if len(req.MemberUpdates) == 0 {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty updates")
+	}
+	members := foundation.MemberRequests{Members: req.MemberUpdates}
+	if err := members.ValidateBasic(s.keeper.addressCodec); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateAuthority(req.Authority); err != nil {
@@ -92,13 +126,24 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 }
 
 func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUpdateDecisionPolicy) (*foundation.MsgUpdateDecisionPolicyResponse, error) {
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	policy := req.GetDecisionPolicy()
+	if policy == nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("nil decision policy")
+	}
+	if err := req.GetDecisionPolicy().ValidateBasic(); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
-	policy := req.GetDecisionPolicy()
 	if err := s.keeper.UpdateDecisionPolicy(ctx, policy); err != nil {
 		return nil, err
 	}
@@ -115,6 +160,18 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 }
 
 func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitProposal) (*foundation.MsgSubmitProposalResponse, error) {
+	if err := foundation.ValidateProposers(req.Proposers, s.keeper.addressCodec); err != nil {
+		return nil, err
+	}
+
+	if len(req.GetMsgs()) == 0 {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("no msgs")
+	}
+
+	if _, ok := foundation.Exec_name[int32(req.Exec)]; !ok {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("invalid exec option")
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateMembers(ctx, req.Proposers); err != nil {
@@ -163,8 +220,16 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 }
 
 func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdrawProposal) (*foundation.MsgWithdrawProposalResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
 	id := req.ProposalId
+	if id == 0 {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Address); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid withdrawer address: %s", req.Address)
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
 
 	proposal, err := s.keeper.GetProposal(ctx, id)
 	if err != nil {
@@ -193,6 +258,22 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 }
 
 func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation.MsgVoteResponse, error) {
+	if req.ProposalId == 0 {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Voter); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", req.Voter)
+	}
+
+	if err := foundation.ValidateVoteOption(req.Option); err != nil {
+		return nil, err
+	}
+
+	if _, ok := foundation.Exec_name[int32(req.Exec)]; !ok {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("invalid exec option")
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateMembers(ctx, []string{req.Voter}); err != nil {
@@ -220,6 +301,14 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 }
 
 func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation.MsgExecResponse, error) {
+	if req.ProposalId == 0 {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Signer); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid signer address: %s", req.Signer)
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateMembers(ctx, []string{req.Signer}); err != nil {
@@ -234,6 +323,10 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 }
 
 func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFoundation) (*foundation.MsgLeaveFoundationResponse, error) {
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Address); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", req.Address)
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateMembers(ctx, []string{req.Address}); err != nil {
@@ -258,6 +351,14 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 }
 
 func (s msgServer) UpdateCensorship(c context.Context, req *foundation.MsgUpdateCensorship) (*foundation.MsgUpdateCensorshipResponse, error) {
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	if err := req.Censorship.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	url := req.Censorship.MsgTypeUrl
@@ -279,16 +380,31 @@ func (s msgServer) UpdateCensorship(c context.Context, req *foundation.MsgUpdate
 }
 
 func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	grantee, err := s.keeper.addressCodec.StringToBytes(req.Grantee)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
+	}
 
 	authorization := req.GetAuthorization()
+	if authorization != nil {
+		if err := authorization.ValidateBasic(); err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
 
 	url := authorization.MsgTypeURL()
 	if err := s.keeper.validateCensorshipAuthority(ctx, url, req.Authority); err != nil {
 		return nil, err
 	}
 
-	grantee := sdk.MustAccAddressFromBech32(req.Grantee)
 	if err := s.keeper.Grant(ctx, grantee, authorization); err != nil {
 		return nil, err
 	}
@@ -297,14 +413,26 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 }
 
 func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	grantee, err := s.keeper.addressCodec.StringToBytes(req.Grantee)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
+	}
 
 	url := req.MsgTypeUrl
+	if len(url) == 0 {
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("empty url")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
 	if err := s.keeper.validateCensorshipAuthority(ctx, url, req.Authority); err != nil {
 		return nil, err
 	}
 
-	grantee := sdk.MustAccAddressFromBech32(req.Grantee)
 	if err := s.keeper.Revoke(ctx, grantee, req.MsgTypeUrl); err != nil {
 		return nil, err
 	}
