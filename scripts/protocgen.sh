@@ -26,8 +26,6 @@ done
 cd ..
 
 # generate tests proto code
-(cd testutil/testdata; buf generate)
-(cd baseapp/testutil; buf generate)
 (cd tests/integration/tx/internal; make codegen)
 
 # move proto files to the right places
