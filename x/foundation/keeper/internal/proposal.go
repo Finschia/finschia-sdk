@@ -42,7 +42,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
-	authority, err := k.addressCodec.StringToBytes(k.GetAuthority())
+	authority, err := k.addressCodec().StringToBytes(k.GetAuthority())
 	if err != nil {
 		panic(err)
 	}

@@ -1,7 +1,7 @@
 package internal
 
 import (
-	addresscodec "cosmossdk.io/core/address"
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 
@@ -16,8 +16,7 @@ import (
 // Keeper defines the foundation module Keeper
 type Keeper struct {
 	// The codec for binary encoding/decoding.
-	cdc          codec.Codec
-	addressCodec addresscodec.Codec
+	cdc codec.Codec
 
 	storeService store.KVStoreService
 
@@ -45,7 +44,6 @@ type Keeper struct {
 
 func NewKeeper(
 	cdc codec.Codec,
-	addressCodec addresscodec.Codec,
 	storeService store.KVStoreService,
 	router baseapp.MessageRouter,
 	authKeeper foundation.AuthKeeper,
@@ -55,6 +53,8 @@ func NewKeeper(
 	authority string,
 	subspace paramstypes.Subspace,
 ) Keeper {
+	addressCodec := cdc.InterfaceRegistry().SigningContext().AddressCodec()
+
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic("authority is not a valid acc address")
 	}
@@ -76,7 +76,6 @@ func NewKeeper(
 
 	return Keeper{
 		cdc:              cdc,
-		addressCodec:     addressCodec,
 		storeService:     storeService,
 		router:           router,
 		authKeeper:       authKeeper,
@@ -96,4 +95,8 @@ func (k Keeper) GetAuthority() string {
 // Logger returns a module-specific logger.
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+foundation.ModuleName)
+}
+
+func (k Keeper) addressCodec() address.Codec {
+	return k.cdc.InterfaceRegistry().SigningContext().AddressCodec()
 }

@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	addresscodec "cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -28,7 +27,6 @@ type keeper struct {
 
 func NewKeeper(
 	cdc codec.Codec,
-	addressCodec addresscodec.Codec,
 	storeService store.KVStoreService,
 	router baseapp.MessageRouter,
 	authKeeper foundation.AuthKeeper,
@@ -41,7 +39,6 @@ func NewKeeper(
 	return &keeper{
 		impl: internal.NewKeeper(
 			cdc,
-			addressCodec,
 			storeService,
 			router,
 			authKeeper,

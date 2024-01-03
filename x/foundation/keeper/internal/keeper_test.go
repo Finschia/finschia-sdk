@@ -145,11 +145,10 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 
 	config := foundation.DefaultConfig()
 	feeCollector := authtypes.FeeCollectorName
-	k := keeper.NewKeeper(encCfg.Codec, addressCodec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
+	k := keeper.NewKeeper(encCfg.Codec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
 
 	impl := internal.NewKeeper(
 		encCfg.Codec,
-		addressCodec,
 		runtime.NewKVStoreService(key),
 		bapp.MsgServiceRouter(),
 		authKeeper,
@@ -479,7 +478,7 @@ func TestNewKeeper(t *testing.T) {
 
 				config := foundation.DefaultConfig()
 				feeCollector := authtypes.FeeCollectorName
-				return keeper.NewKeeper(encCfg.Codec, addressCodec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
+				return keeper.NewKeeper(encCfg.Codec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
 			}
 
 			if tc.panics {

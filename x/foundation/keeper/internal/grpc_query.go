@@ -68,7 +68,7 @@ func (s queryServer) Member(c context.Context, req *foundation.QueryMemberReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	addr, err := s.keeper.addressCodec.StringToBytes(req.Address)
+	addr, err := s.keeper.addressCodec().StringToBytes(req.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (s queryServer) Vote(c context.Context, req *foundation.QueryVoteRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	voter, err := s.keeper.addressCodec.StringToBytes(req.Voter)
+	voter, err := s.keeper.addressCodec().StringToBytes(req.Voter)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid voter address")
 	}
@@ -228,7 +228,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	grantee, err := s.keeper.addressCodec.StringToBytes(req.Grantee)
+	grantee, err := s.keeper.addressCodec().StringToBytes(req.Grantee)
 	if err != nil {
 		return nil, err
 	}

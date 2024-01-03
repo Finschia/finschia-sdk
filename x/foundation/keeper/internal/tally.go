@@ -54,7 +54,7 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 	tallyResult := foundation.DefaultTallyResult()
 	var errIter error
 	k.iterateVotes(ctx, p.Id, func(vote foundation.Vote) (stop bool) {
-		voter, err := k.addressCodec.StringToBytes(vote.Voter)
+		voter, err := k.addressCodec().StringToBytes(vote.Voter)
 		if err != nil {
 			panic(err)
 		}

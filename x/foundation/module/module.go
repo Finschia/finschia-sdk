@@ -9,7 +9,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
@@ -43,7 +42,7 @@ var (
 
 // AppModuleBasic defines the basic application module used by the foundation module.
 type AppModuleBasic struct {
-	addressCodec address.Codec
+	cdc codec.Codec
 }
 
 // Name returns the ModuleName
@@ -67,7 +66,7 @@ func (am AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEn
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", foundation.ModuleName, err)
 	}
 
-	return foundation.ValidateGenesis(data, am.addressCodec)
+	return foundation.ValidateGenesis(data, am.cdc.InterfaceRegistry().SigningContext().AddressCodec())
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the foundation module.
@@ -101,10 +100,10 @@ type AppModule struct {
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, addressCodec address.Codec) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{
-			addressCodec: addressCodec,
+			cdc: cdc,
 		},
 		keeper: keeper,
 	}
@@ -209,8 +208,6 @@ type FoundationInputs struct {
 	Cdc          codec.Codec
 	Config       *modulev1.Module
 
-	AddressCodec address.Codec
-
 	AuthKeeper       foundation.AuthKeeper
 	BankKeeper       foundation.BankKeeper
 	Subspace         paramstypes.Subspace
@@ -241,13 +238,14 @@ func ProvideModule(in FoundationInputs) FoundationOutputs {
 		MaxMetadataLen:     in.Config.MaxMetadataLen,
 	}
 
-	authorityStr, err := in.AddressCodec.BytesToString(authority)
+	addressCodec := in.Cdc.InterfaceRegistry().SigningContext().AddressCodec()
+	authorityStr, err := addressCodec.BytesToString(authority)
 	if err != nil {
 		panic(err)
 	}
 
-	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, in.MsgServiceRouter, in.AuthKeeper, in.BankKeeper, feeCollectorName, config, authorityStr, in.Subspace)
-	m := NewAppModule(in.Cdc, k, in.AddressCodec)
+	k := keeper.NewKeeper(in.Cdc, in.StoreService, in.MsgServiceRouter, in.AuthKeeper, in.BankKeeper, feeCollectorName, config, authorityStr, in.Subspace)
+	m := NewAppModule(in.Cdc, k)
 
 	return FoundationOutputs{
 		Keeper: k,

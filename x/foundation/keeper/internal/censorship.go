@@ -97,7 +97,7 @@ func (k Keeper) Grant(ctx sdk.Context, grantee sdk.AccAddress, authorization fou
 		return err
 	}
 
-	granteeStr, err := k.addressCodec.BytesToString(grantee)
+	granteeStr, err := k.addressCodec().BytesToString(grantee)
 	if err != nil {
 		panic(err)
 	}
@@ -117,7 +117,7 @@ func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL strin
 	}
 	k.deleteAuthorization(ctx, grantee, msgTypeURL)
 
-	granteeStr, err := k.addressCodec.BytesToString(grantee)
+	granteeStr, err := k.addressCodec().BytesToString(grantee)
 	if err != nil {
 		panic(err)
 	}
@@ -135,7 +135,7 @@ func (k Keeper) pruneAuthorizations(ctx sdk.Context, msgTypeURL string) {
 	var pruning []foundation.GrantAuthorization
 	k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		if authorization.MsgTypeURL() == msgTypeURL {
-			granteeStr, err := k.addressCodec.BytesToString(grantee)
+			granteeStr, err := k.addressCodec().BytesToString(grantee)
 			if err != nil {
 				panic(err)
 			}
@@ -150,7 +150,7 @@ func (k Keeper) pruneAuthorizations(ctx sdk.Context, msgTypeURL string) {
 	})
 
 	for _, grant := range pruning {
-		grantee, err := k.addressCodec.StringToBytes(grant.Grantee)
+		grantee, err := k.addressCodec().StringToBytes(grant.Grantee)
 		if err != nil {
 			panic(err)
 		}

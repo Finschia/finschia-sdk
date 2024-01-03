@@ -97,7 +97,7 @@ func (k Keeper) doExecuteMsgs(ctx sdk.Context, proposal foundation.Proposal) ([]
 	msgs := proposal.GetMsgs()
 	results := make([]sdk.Result, len(msgs))
 
-	authority, err := k.addressCodec.StringToBytes(k.GetAuthority())
+	authority, err := k.addressCodec().StringToBytes(k.GetAuthority())
 	if err != nil {
 		panic(err)
 	}

@@ -29,7 +29,7 @@ var _ foundation.MsgServer = msgServer{}
 
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
-	from, err := s.keeper.addressCodec.StringToBytes(req.From)
+	from, err := s.keeper.addressCodec().StringToBytes(req.From)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
 	}
@@ -56,11 +56,11 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 
 // WithdrawFromTreasury defines a method to withdraw coins from the treasury.
 func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWithdrawFromTreasury) (*foundation.MsgWithdrawFromTreasuryResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
 	}
 
-	to, err := s.keeper.addressCodec.StringToBytes(req.To)
+	to, err := s.keeper.addressCodec().StringToBytes(req.To)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
 	}
@@ -94,7 +94,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 }
 
 func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMembers) (*foundation.MsgUpdateMembersResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
 	}
 
@@ -102,7 +102,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty updates")
 	}
 	members := foundation.MemberRequests{Members: req.MemberUpdates}
-	if err := members.ValidateBasic(s.keeper.addressCodec); err != nil {
+	if err := members.ValidateBasic(s.keeper.addressCodec()); err != nil {
 		return nil, err
 	}
 
@@ -126,7 +126,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 }
 
 func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUpdateDecisionPolicy) (*foundation.MsgUpdateDecisionPolicyResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
 	}
 
@@ -160,7 +160,7 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 }
 
 func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitProposal) (*foundation.MsgSubmitProposalResponse, error) {
-	if err := foundation.ValidateProposers(req.Proposers, s.keeper.addressCodec); err != nil {
+	if err := foundation.ValidateProposers(req.Proposers, s.keeper.addressCodec()); err != nil {
 		return nil, err
 	}
 
@@ -225,7 +225,7 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
 	}
 
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Address); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Address); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid withdrawer address: %s", req.Address)
 	}
 
@@ -262,7 +262,7 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
 	}
 
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Voter); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Voter); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", req.Voter)
 	}
 
@@ -305,7 +305,7 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
 	}
 
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Signer); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Signer); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid signer address: %s", req.Signer)
 	}
 
@@ -323,7 +323,7 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 }
 
 func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFoundation) (*foundation.MsgLeaveFoundationResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Address); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Address); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", req.Address)
 	}
 
@@ -351,7 +351,7 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 }
 
 func (s msgServer) UpdateCensorship(c context.Context, req *foundation.MsgUpdateCensorship) (*foundation.MsgUpdateCensorshipResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
 	}
 
@@ -380,11 +380,11 @@ func (s msgServer) UpdateCensorship(c context.Context, req *foundation.MsgUpdate
 }
 
 func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
 	}
 
-	grantee, err := s.keeper.addressCodec.StringToBytes(req.Grantee)
+	grantee, err := s.keeper.addressCodec().StringToBytes(req.Grantee)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
@@ -413,11 +413,11 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 }
 
 func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
-	if _, err := s.keeper.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
 	}
 
-	grantee, err := s.keeper.addressCodec.StringToBytes(req.Grantee)
+	grantee, err := s.keeper.addressCodec().StringToBytes(req.Grantee)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}

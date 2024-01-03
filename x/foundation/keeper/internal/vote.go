@@ -16,7 +16,7 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 	}
 
 	// Make sure that a voter hasn't already voted.
-	voter, err := k.addressCodec.StringToBytes(vote.Voter)
+	voter, err := k.addressCodec().StringToBytes(vote.Voter)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +76,7 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 
 func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) {
 	store := k.storeService.OpenKVStore(ctx)
-	voter, err := k.addressCodec.StringToBytes(vote.Voter)
+	voter, err := k.addressCodec().StringToBytes(vote.Voter)
 	if err != nil {
 		panic(err)
 	}
@@ -116,7 +116,7 @@ func (k Keeper) GetVotes(ctx sdk.Context, proposalID uint64) []foundation.Vote {
 func (k Keeper) pruneVotes(ctx sdk.Context, proposalID uint64) {
 	keys := [][]byte{}
 	k.iterateVotes(ctx, proposalID, func(vote foundation.Vote) (stop bool) {
-		voter, err := k.addressCodec.StringToBytes(vote.Voter)
+		voter, err := k.addressCodec().StringToBytes(vote.Voter)
 		if err != nil {
 			panic(err)
 		}
