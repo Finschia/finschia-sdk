@@ -3,8 +3,8 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
 	cmtcli "github.com/cometbft/cometbft/libs/cli"
+	"github.com/gogo/protobuf/proto"
 
 	"cosmossdk.io/math"
 

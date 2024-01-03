@@ -274,7 +274,7 @@ var (
 			{
 				Name: foundation.ModuleName,
 				Config: appconfig.WrapAny(&foundationmodulev1.Module{
-					Authority: foundation.ModuleName,
+					Authority:          foundation.ModuleName,
 					MaxExecutionPeriod: durationpb.New(time.Hour * 24 * 7 * 2),
 					MaxMetadataLen:     255,
 				}),

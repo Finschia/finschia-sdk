@@ -21,10 +21,10 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 		events sdk.Events
 	}{
 		"valid request": {
-			from: s.stranger,
+			from:   s.stranger,
 			amount: s.balance,
 			valid:  true,
-			events: sdk.Events{{Type:"lbm.foundation.v1.EventFundTreasury", Attributes:[]abci.EventAttribute{{Key:"amount", Value:"[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index:false}, {Key:"from", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index:false}}}},
+			events: sdk.Events{{Type: "lbm.foundation.v1.EventFundTreasury", Attributes: []abci.EventAttribute{{Key: "amount", Value: "[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index: false}, {Key: "from", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index: false}}}},
 		},
 		"empty from": {
 			amount: s.balance,
@@ -34,7 +34,7 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 			amount: math.ZeroInt(),
 		},
 		"insufficient funds": {
-			from: s.stranger,
+			from:   s.stranger,
 			amount: s.balance.Add(math.OneInt()),
 		},
 	}
@@ -76,7 +76,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 			to:        s.stranger,
 			amount:    s.balance,
 			valid:     true,
-			events:    sdk.Events{{Type:"lbm.foundation.v1.EventWithdrawFromTreasury", Attributes:[]abci.EventAttribute{{Key:"amount", Value:"[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index:false}, {Key:"to", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index:false}}}},
+			events:    sdk.Events{{Type: "lbm.foundation.v1.EventWithdrawFromTreasury", Attributes: []abci.EventAttribute{{Key: "amount", Value: "[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index: false}, {Key: "to", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index: false}}}},
 		},
 		"empty authority": {
 			to:     s.stranger,
@@ -144,23 +144,23 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 			authority: s.authority,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: math.LegacyOneDec(),
-				Windows:   &foundation.DecisionPolicyWindows{
+				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
 			},
 			valid:  true,
-			events: sdk.Events{{Type:"lbm.foundation.v1.EventUpdateDecisionPolicy", Attributes:[]abci.EventAttribute{{Key:"decision_policy", Value:"{\"@type\":\"/lbm.foundation.v1.ThresholdDecisionPolicy\",\"threshold\":\"1.000000000000000000\",\"windows\":{\"voting_period\":\"3600s\",\"min_execution_period\":\"0s\"}}", Index:false}}}},
+			events: sdk.Events{{Type: "lbm.foundation.v1.EventUpdateDecisionPolicy", Attributes: []abci.EventAttribute{{Key: "decision_policy", Value: "{\"@type\":\"/lbm.foundation.v1.ThresholdDecisionPolicy\",\"threshold\":\"1.000000000000000000\",\"windows\":{\"voting_period\":\"3600s\",\"min_execution_period\":\"0s\"}}", Index: false}}}},
 		},
 		"valid percentage policy": {
 			authority: s.authority,
 			policy: &foundation.PercentageDecisionPolicy{
 				Percentage: math.LegacyOneDec(),
-				Windows:   &foundation.DecisionPolicyWindows{
+				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
 			},
 			valid:  true,
-			events: sdk.Events{{Type:"lbm.foundation.v1.EventUpdateDecisionPolicy", Attributes:[]abci.EventAttribute{{Key:"decision_policy", Value:"{\"@type\":\"/lbm.foundation.v1.PercentageDecisionPolicy\",\"percentage\":\"1.000000000000000000\",\"windows\":{\"voting_period\":\"3600s\",\"min_execution_period\":\"0s\"}}", Index:false}}}},
+			events: sdk.Events{{Type: "lbm.foundation.v1.EventUpdateDecisionPolicy", Attributes: []abci.EventAttribute{{Key: "decision_policy", Value: "{\"@type\":\"/lbm.foundation.v1.PercentageDecisionPolicy\",\"percentage\":\"1.000000000000000000\",\"windows\":{\"voting_period\":\"3600s\",\"min_execution_period\":\"0s\"}}", Index: false}}}},
 		},
 		"empty authority": {
 			policy: &foundation.ThresholdDecisionPolicy{
@@ -258,7 +258,7 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 				Address: s.bytesToString(s.members[0]),
 			}},
 			valid:  true,
-			events: sdk.Events{{Type:"lbm.foundation.v1.EventUpdateMembers", Attributes:[]abci.EventAttribute{{Key:"member_updates", Value:"[{\"address\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"remove\":false,\"metadata\":\"\"}]", Index:false}}}},
+			events: sdk.Events{{Type: "lbm.foundation.v1.EventUpdateMembers", Attributes: []abci.EventAttribute{{Key: "member_updates", Value: "[{\"address\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"remove\":false,\"metadata\":\"\"}]", Index: false}}}},
 		},
 		"empty authority": {
 			members: []foundation.MemberRequest{{
@@ -330,21 +330,21 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			proposers: members,
 			msgs:      []sdk.Msg{s.newTestMsg(s.authority)},
 			valid:     true,
-			events:    sdk.Events{{Type:"lbm.foundation.v1.EventSubmitProposal", Attributes:[]abci.EventAttribute{{Key:"proposal", Value:"{\"id\":\"6\",\"metadata\":\"\",\"proposers\":[\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgp6ktsk6\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgz597xc9\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgrfn2n9h\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgyg2aryj\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg94ufkeq\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgxm0uqhl\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg8xeg42d\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgge5mf44\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgfyz0ug8\"],\"submit_time\":\"2023-11-07T19:32:00Z\",\"foundation_version\":\"1\",\"status\":\"PROPOSAL_STATUS_SUBMITTED\",\"final_tally_result\":{\"yes_count\":\"0.000000000000000000\",\"abstain_count\":\"0.000000000000000000\",\"no_count\":\"0.000000000000000000\",\"no_with_veto_count\":\"0.000000000000000000\"},\"voting_period_end\":\"2023-11-14T19:32:00Z\",\"executor_result\":\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\",\"messages\":[{\"@type\":\"/testpb.TestMsg\",\"signers\":[\"link190vt0vxc8c8vj24a7mm3fjsenfu8f5yxxj76cp\"]}]}", Index:false}}}},
+			events:    sdk.Events{{Type: "lbm.foundation.v1.EventSubmitProposal", Attributes: []abci.EventAttribute{{Key: "proposal", Value: "{\"id\":\"6\",\"metadata\":\"\",\"proposers\":[\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgp6ktsk6\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgz597xc9\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgrfn2n9h\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgyg2aryj\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg94ufkeq\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgxm0uqhl\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg8xeg42d\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgge5mf44\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgfyz0ug8\"],\"submit_time\":\"2023-11-07T19:32:00Z\",\"foundation_version\":\"1\",\"status\":\"PROPOSAL_STATUS_SUBMITTED\",\"final_tally_result\":{\"yes_count\":\"0.000000000000000000\",\"abstain_count\":\"0.000000000000000000\",\"no_count\":\"0.000000000000000000\",\"no_with_veto_count\":\"0.000000000000000000\"},\"voting_period_end\":\"2023-11-14T19:32:00Z\",\"executor_result\":\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\",\"messages\":[{\"@type\":\"/testpb.TestMsg\",\"signers\":[\"link190vt0vxc8c8vj24a7mm3fjsenfu8f5yxxj76cp\"]}]}", Index: false}}}},
 		},
 		"valid request (submit & execute)": {
 			proposers: members,
 			msgs:      []sdk.Msg{s.newTestMsg(s.authority)},
 			exec:      foundation.Exec_EXEC_TRY,
 			valid:     true,
-			events:    sdk.Events{{Type:"lbm.foundation.v1.EventSubmitProposal", Attributes:[]abci.EventAttribute{{Key:"proposal", Value:"{\"id\":\"6\",\"metadata\":\"\",\"proposers\":[\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgp6ktsk6\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgz597xc9\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgrfn2n9h\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgyg2aryj\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg94ufkeq\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgxm0uqhl\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg8xeg42d\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgge5mf44\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgfyz0ug8\"],\"submit_time\":\"2023-11-07T19:32:00Z\",\"foundation_version\":\"1\",\"status\":\"PROPOSAL_STATUS_SUBMITTED\",\"final_tally_result\":{\"yes_count\":\"0.000000000000000000\",\"abstain_count\":\"0.000000000000000000\",\"no_count\":\"0.000000000000000000\",\"no_with_veto_count\":\"0.000000000000000000\"},\"voting_period_end\":\"2023-11-14T19:32:00Z\",\"executor_result\":\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\",\"messages\":[{\"@type\":\"/testpb.TestMsg\",\"signers\":[\"link190vt0vxc8c8vj24a7mm3fjsenfu8f5yxxj76cp\"]}]}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgp6ktsk6\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgz597xc9\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgrfn2n9h\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgyg2aryj\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg94ufkeq\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgxm0uqhl\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg8xeg42d\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgge5mf44\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgfyz0ug8\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventExec", Attributes:[]abci.EventAttribute{{Key:"logs", Value:"\"proposal execution failed on proposal 6, because of error no message handler found for \\\"/testpb.TestMsg\\\": unknown request\"", Index:false}, {Key:"proposal_id", Value:"\"6\"", Index:false}, {Key:"result", Value:"\"PROPOSAL_EXECUTOR_RESULT_FAILURE\"", Index:false}}}},
+			events:    sdk.Events{{Type: "lbm.foundation.v1.EventSubmitProposal", Attributes: []abci.EventAttribute{{Key: "proposal", Value: "{\"id\":\"6\",\"metadata\":\"\",\"proposers\":[\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgp6ktsk6\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgz597xc9\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgrfn2n9h\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgyg2aryj\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg94ufkeq\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgxm0uqhl\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg8xeg42d\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgge5mf44\",\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgfyz0ug8\"],\"submit_time\":\"2023-11-07T19:32:00Z\",\"foundation_version\":\"1\",\"status\":\"PROPOSAL_STATUS_SUBMITTED\",\"final_tally_result\":{\"yes_count\":\"0.000000000000000000\",\"abstain_count\":\"0.000000000000000000\",\"no_count\":\"0.000000000000000000\",\"no_with_veto_count\":\"0.000000000000000000\"},\"voting_period_end\":\"2023-11-14T19:32:00Z\",\"executor_result\":\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\",\"messages\":[{\"@type\":\"/testpb.TestMsg\",\"signers\":[\"link190vt0vxc8c8vj24a7mm3fjsenfu8f5yxxj76cp\"]}]}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgp6ktsk6\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgz597xc9\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgrfn2n9h\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgyg2aryj\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg94ufkeq\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgxm0uqhl\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cg8xeg42d\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgge5mf44\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgfyz0ug8\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventExec", Attributes: []abci.EventAttribute{{Key: "logs", Value: "\"proposal execution failed on proposal 6, because of error no message handler found for \\\"/testpb.TestMsg\\\": unknown request\"", Index: false}, {Key: "proposal_id", Value: "\"6\"", Index: false}, {Key: "result", Value: "\"PROPOSAL_EXECUTOR_RESULT_FAILURE\"", Index: false}}}},
 		},
 		"valid request (submit & unable to reach quorum)": {
 			proposers: []string{members[0]},
 			msgs:      []sdk.Msg{s.newTestMsg(s.authority)},
 			exec:      foundation.Exec_EXEC_TRY,
 			valid:     true,
-			events:    sdk.Events{{Type:"lbm.foundation.v1.EventSubmitProposal", Attributes:[]abci.EventAttribute{{Key:"proposal", Value:"{\"id\":\"6\",\"metadata\":\"\",\"proposers\":[\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\"],\"submit_time\":\"2023-11-07T19:32:00Z\",\"foundation_version\":\"1\",\"status\":\"PROPOSAL_STATUS_SUBMITTED\",\"final_tally_result\":{\"yes_count\":\"0.000000000000000000\",\"abstain_count\":\"0.000000000000000000\",\"no_count\":\"0.000000000000000000\",\"no_with_veto_count\":\"0.000000000000000000\"},\"voting_period_end\":\"2023-11-14T19:32:00Z\",\"executor_result\":\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\",\"messages\":[{\"@type\":\"/testpb.TestMsg\",\"signers\":[\"link190vt0vxc8c8vj24a7mm3fjsenfu8f5yxxj76cp\"]}]}", Index:false}}}, {Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventExec", Attributes:[]abci.EventAttribute{{Key:"logs", Value:"\"proposal execution failed on proposal 6, because of error no message handler found for \\\"/testpb.TestMsg\\\": unknown request\"", Index:false}, {Key:"proposal_id", Value:"\"6\"", Index:false}, {Key:"result", Value:"\"PROPOSAL_EXECUTOR_RESULT_FAILURE\"", Index:false}}}},
+			events:    sdk.Events{{Type: "lbm.foundation.v1.EventSubmitProposal", Attributes: []abci.EventAttribute{{Key: "proposal", Value: "{\"id\":\"6\",\"metadata\":\"\",\"proposers\":[\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\"],\"submit_time\":\"2023-11-07T19:32:00Z\",\"foundation_version\":\"1\",\"status\":\"PROPOSAL_STATUS_SUBMITTED\",\"final_tally_result\":{\"yes_count\":\"0.000000000000000000\",\"abstain_count\":\"0.000000000000000000\",\"no_count\":\"0.000000000000000000\",\"no_with_veto_count\":\"0.000000000000000000\"},\"voting_period_end\":\"2023-11-14T19:32:00Z\",\"executor_result\":\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\",\"messages\":[{\"@type\":\"/testpb.TestMsg\",\"signers\":[\"link190vt0vxc8c8vj24a7mm3fjsenfu8f5yxxj76cp\"]}]}", Index: false}}}, {Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"6\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventExec", Attributes: []abci.EventAttribute{{Key: "logs", Value: "\"proposal execution failed on proposal 6, because of error no message handler found for \\\"/testpb.TestMsg\\\": unknown request\"", Index: false}, {Key: "proposal_id", Value: "\"6\"", Index: false}, {Key: "result", Value: "\"PROPOSAL_EXECUTOR_RESULT_FAILURE\"", Index: false}}}},
 		},
 		"empty proposers": {
 			msgs: []sdk.Msg{s.newTestMsg()},
@@ -437,13 +437,13 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 			proposalID: s.activeProposal,
 			address:    s.members[0],
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventWithdrawProposal", Attributes:[]abci.EventAttribute{{Key:"proposal_id", Value:"\"1\"", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventWithdrawProposal", Attributes: []abci.EventAttribute{{Key: "proposal_id", Value: "\"1\"", Index: false}}}},
 		},
 		"valid request (authority)": {
 			proposalID: s.activeProposal,
 			address:    s.authority,
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventWithdrawProposal", Attributes:[]abci.EventAttribute{{Key:"proposal_id", Value:"\"1\"", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventWithdrawProposal", Attributes: []abci.EventAttribute{{Key: "proposal_id", Value: "\"1\"", Index: false}}}},
 		},
 		"empty proposal id": {
 			address: s.members[0],
@@ -500,7 +500,7 @@ func (s *KeeperTestSuite) TestMsgVote() {
 			voter:      s.members[0],
 			option:     foundation.VOTE_OPTION_YES,
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"1\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"1\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}},
 		},
 		"valid request (vote & execute)": {
 			proposalID: s.activeProposal,
@@ -508,30 +508,30 @@ func (s *KeeperTestSuite) TestMsgVote() {
 			option:     foundation.VOTE_OPTION_YES,
 			exec:       foundation.Exec_EXEC_TRY,
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventVote", Attributes:[]abci.EventAttribute{{Key:"vote", Value:"{\"proposal_id\":\"1\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index:false}}}, {Type:"lbm.foundation.v1.EventWithdrawFromTreasury", Attributes:[]abci.EventAttribute{{Key:"amount", Value:"[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index:false}, {Key:"to", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index:false}}}, {Type:"lbm.foundation.v1.EventExec", Attributes:[]abci.EventAttribute{{Key:"logs", Value:"\"\"", Index:false}, {Key:"proposal_id", Value:"\"1\"", Index:false}, {Key:"result", Value:"\"PROPOSAL_EXECUTOR_RESULT_SUCCESS\"", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventVote", Attributes: []abci.EventAttribute{{Key: "vote", Value: "{\"proposal_id\":\"1\",\"voter\":\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\",\"option\":\"VOTE_OPTION_YES\",\"metadata\":\"\",\"submit_time\":\"2023-11-07T19:32:00Z\"}", Index: false}}}, {Type: "lbm.foundation.v1.EventWithdrawFromTreasury", Attributes: []abci.EventAttribute{{Key: "amount", Value: "[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index: false}, {Key: "to", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index: false}}}, {Type: "lbm.foundation.v1.EventExec", Attributes: []abci.EventAttribute{{Key: "logs", Value: "\"\"", Index: false}, {Key: "proposal_id", Value: "\"1\"", Index: false}, {Key: "result", Value: "\"PROPOSAL_EXECUTOR_RESULT_SUCCESS\"", Index: false}}}},
 		},
 		"empty proposal id": {
 			voter:  s.members[0],
 			option: foundation.VOTE_OPTION_YES,
 		},
 		"empty voter": {
-			proposalID:     1,
-			option: foundation.VOTE_OPTION_YES,
+			proposalID: 1,
+			option:     foundation.VOTE_OPTION_YES,
 		},
 		"empty option": {
-			proposalID:    1,
-			voter: s.members[0],
+			proposalID: 1,
+			voter:      s.members[0],
 		},
 		"invalid option": {
-			proposalID:     1,
-			voter:  s.members[0],
-			option: -1,
+			proposalID: 1,
+			voter:      s.members[0],
+			option:     -1,
 		},
 		"invalid exec": {
-			proposalID:     1,
-			voter:  s.members[0],
-			option: foundation.VOTE_OPTION_YES,
-			exec:   -1,
+			proposalID: 1,
+			voter:      s.members[0],
+			option:     foundation.VOTE_OPTION_YES,
+			exec:       -1,
 		},
 		"not authorized": {
 			proposalID: s.activeProposal,
@@ -617,13 +617,13 @@ func (s *KeeperTestSuite) TestMsgExec() {
 			proposalID: s.activeProposal,
 			signer:     s.members[0],
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventWithdrawFromTreasury", Attributes:[]abci.EventAttribute{{Key:"amount", Value:"[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index:false}, {Key:"to", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index:false}}}, {Type:"lbm.foundation.v1.EventExec", Attributes:[]abci.EventAttribute{{Key:"logs", Value:"\"\"", Index:false}, {Key:"proposal_id", Value:"\"1\"", Index:false}, {Key:"result", Value:"\"PROPOSAL_EXECUTOR_RESULT_SUCCESS\"", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventWithdrawFromTreasury", Attributes: []abci.EventAttribute{{Key: "amount", Value: "[{\"denom\":\"stake\",\"amount\":\"987654321\"}]", Index: false}, {Key: "to", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index: false}}}, {Type: "lbm.foundation.v1.EventExec", Attributes: []abci.EventAttribute{{Key: "logs", Value: "\"\"", Index: false}, {Key: "proposal_id", Value: "\"1\"", Index: false}, {Key: "result", Value: "\"PROPOSAL_EXECUTOR_RESULT_SUCCESS\"", Index: false}}}},
 		},
 		"valid request (not finalized)": {
 			proposalID: s.votedProposal,
 			signer:     s.members[0],
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventExec", Attributes:[]abci.EventAttribute{{Key:"logs", Value:"\"\"", Index:false}, {Key:"proposal_id", Value:"\"2\"", Index:false}, {Key:"result", Value:"\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\"", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventExec", Attributes: []abci.EventAttribute{{Key: "logs", Value: "\"\"", Index: false}, {Key: "proposal_id", Value: "\"2\"", Index: false}, {Key: "result", Value: "\"PROPOSAL_EXECUTOR_RESULT_NOT_RUN\"", Index: false}}}},
 		},
 		"empty proposal id": {
 			signer: s.members[0],
@@ -675,7 +675,7 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 		"valid request": {
 			address: s.members[0],
 			valid:   true,
-			events:  sdk.Events{{Type:"lbm.foundation.v1.EventLeaveFoundation", Attributes:[]abci.EventAttribute{{Key:"address", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\"", Index:false}}}},
+			events:  sdk.Events{{Type: "lbm.foundation.v1.EventLeaveFoundation", Attributes: []abci.EventAttribute{{Key: "address", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\"", Index: false}}}},
 		},
 		"empty address": {},
 		"not authorized": {
@@ -739,7 +739,7 @@ func (s *KeeperTestSuite) TestMsgUpdateCensorship() {
 				Authority:  foundation.CensorshipAuthorityGovernance,
 			},
 			valid:  true,
-			events: sdk.Events{{Type:"lbm.foundation.v1.EventUpdateCensorship", Attributes:[]abci.EventAttribute{{Key:"censorship", Value:"{\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\",\"authority\":\"CENSORSHIP_AUTHORITY_GOVERNANCE\"}", Index:false}}}},
+			events: sdk.Events{{Type: "lbm.foundation.v1.EventUpdateCensorship", Attributes: []abci.EventAttribute{{Key: "censorship", Value: "{\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\",\"authority\":\"CENSORSHIP_AUTHORITY_GOVERNANCE\"}", Index: false}}}},
 		},
 		"invalid authority": {
 			authority: s.stranger,
@@ -794,7 +794,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 			grantee:       s.members[0],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 			valid:         true,
-			events:        sdk.Events{{Type:"lbm.foundation.v1.EventGrant", Attributes:[]abci.EventAttribute{{Key:"authorization", Value:"{\"@type\":\"/lbm.foundation.v1.ReceiveFromTreasuryAuthorization\"}", Index:false}, {Key:"grantee", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\"", Index:false}}}},
+			events:        sdk.Events{{Type: "lbm.foundation.v1.EventGrant", Attributes: []abci.EventAttribute{{Key: "authorization", Value: "{\"@type\":\"/lbm.foundation.v1.ReceiveFromTreasuryAuthorization\"}", Index: false}, {Key: "grantee", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq8ql9tg\"", Index: false}}}},
 		},
 		"empty authority": {
 			grantee:       s.members[0],
@@ -862,7 +862,7 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 			grantee:    s.stranger,
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			valid:      true,
-			events:     sdk.Events{{Type:"lbm.foundation.v1.EventRevoke", Attributes:[]abci.EventAttribute{{Key:"grantee", Value:"\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index:false}, {Key:"msg_type_url", Value:"\"/lbm.foundation.v1.MsgWithdrawFromTreasury\"", Index:false}}}},
+			events:     sdk.Events{{Type: "lbm.foundation.v1.EventRevoke", Attributes: []abci.EventAttribute{{Key: "grantee", Value: "\"link15ky9du8a2wlstz6fpx3p4mqpjyrm5cgsjpha7m\"", Index: false}, {Key: "msg_type_url", Value: "\"/lbm.foundation.v1.MsgWithdrawFromTreasury\"", Index: false}}}},
 		},
 		"empty authority": {
 			grantee:    s.stranger,

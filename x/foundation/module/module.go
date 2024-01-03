@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
-	abci "github.com/cometbft/cometbft/abci/types"
 
-	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/address"
-	"cosmossdk.io/depinject"
+	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
+	"cosmossdk.io/depinject"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -24,10 +24,10 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
+	modulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
-	modulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
 )
 
 const (
@@ -35,14 +35,14 @@ const (
 )
 
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
-	_ appmodule.HasBeginBlocker  = AppModule{}
-	_ appmodule.HasEndBlocker    = AppModule{}
+	_ module.AppModule          = AppModule{}
+	_ module.AppModuleBasic     = AppModuleBasic{}
+	_ appmodule.HasBeginBlocker = AppModule{}
+	_ appmodule.HasEndBlocker   = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the foundation module.
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	addressCodec address.Codec
 }
 
@@ -87,7 +87,7 @@ func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.NewTxCmd()
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+func (am AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	foundation.RegisterInterfaces(registry)
 }
 
@@ -205,14 +205,14 @@ func init() {
 type FoundationInputs struct {
 	depinject.In
 
-	StoreService  store.KVStoreService
-	Cdc           codec.Codec
-	Config *modulev1.Module
+	StoreService store.KVStoreService
+	Cdc          codec.Codec
+	Config       *modulev1.Module
 
 	AddressCodec address.Codec
 
-	AuthKeeper foundation.AuthKeeper
-	BankKeeper foundation.BankKeeper
+	AuthKeeper       foundation.AuthKeeper
+	BankKeeper       foundation.BankKeeper
 	Subspace         paramstypes.Subspace
 	MsgServiceRouter baseapp.MessageRouter
 }
@@ -238,7 +238,7 @@ func ProvideModule(in FoundationInputs) FoundationOutputs {
 
 	config := foundation.Config{
 		MaxExecutionPeriod: in.Config.MaxExecutionPeriod.AsDuration(),
-		MaxMetadataLen: in.Config.MaxMetadataLen,
+		MaxMetadataLen:     in.Config.MaxMetadataLen,
 	}
 
 	authorityStr, err := in.AddressCodec.BytesToString(authority)

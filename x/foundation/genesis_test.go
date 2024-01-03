@@ -11,9 +11,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
+	codectestutil "github.com/cosmos/cosmos-sdk/codec/testutil"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	codectestutil "github.com/cosmos/cosmos-sdk/codec/testutil"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )

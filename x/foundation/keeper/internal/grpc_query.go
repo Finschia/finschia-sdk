@@ -9,8 +9,8 @@ import (
 
 	"cosmossdk.io/store/prefix"
 
-	"github.com/cosmos/cosmos-sdk/runtime"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"

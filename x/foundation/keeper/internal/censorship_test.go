@@ -1,9 +1,9 @@
 package internal_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"cosmossdk.io/math"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )

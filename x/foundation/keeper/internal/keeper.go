@@ -16,7 +16,7 @@ import (
 // Keeper defines the foundation module Keeper
 type Keeper struct {
 	// The codec for binary encoding/decoding.
-	cdc codec.Codec
+	cdc          codec.Codec
 	addressCodec addresscodec.Codec
 
 	storeService store.KVStoreService

@@ -6,11 +6,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
+	"cosmossdk.io/core/address"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"cosmossdk.io/core/address"
 
-	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -111,7 +110,7 @@ type DecisionPolicyResult struct {
 }
 
 type DecisionPolicy interface {
-	codec.ProtoMarshaler
+	proto.Message
 
 	// GetVotingPeriod returns the duration after proposal submission where
 	// votes are accepted.

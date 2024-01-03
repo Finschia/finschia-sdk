@@ -3,8 +3,8 @@ package foundation
 import (
 	"github.com/gogo/protobuf/proto"
 
-	"cosmossdk.io/math"
 	"cosmossdk.io/core/address"
+	"cosmossdk.io/math"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"

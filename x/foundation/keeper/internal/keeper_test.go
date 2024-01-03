@@ -78,9 +78,9 @@ func newMsgCreateDog(name string) sdk.Msg {
 func (s *KeeperTestSuite) createAddresses(accNum int) []sdk.AccAddress {
 	if s.deterministic {
 		return simtestutil.CreateIncrementalAccounts(accNum)
-	} else {
-		return simtestutil.CreateRandomAccounts(accNum)
 	}
+
+	return simtestutil.CreateRandomAccounts(accNum)
 }
 
 func (s *KeeperTestSuite) bytesToString(addr sdk.AccAddress) string {
@@ -231,7 +231,7 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 	ctx := testCtx.Ctx
 
 	// set balance
-	for _, addr := range addrs{
+	for _, addr := range addrs {
 		setBalance(ctx, addr, sdk.NewCoin(sdk.DefaultBondDenom, *balance))
 	}
 
@@ -271,7 +271,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	params := foundation.DefaultParams()
 	params.FoundationTax = math.LegacyOneDec()
 	gs.Params = params
-	
+
 	members := make([]foundation.Member, len(s.members))
 	for i := range s.members {
 		members[i] = foundation.Member{
@@ -337,7 +337,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		&foundation.MsgWithdrawFromTreasury{
 			Authority: s.bytesToString(s.authority),
 			To:        s.bytesToString(s.stranger),
-			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))},
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+		},
 	})
 	s.Require().NoError(err)
 	s.votedProposal = *votedProposal
@@ -356,7 +357,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		&foundation.MsgWithdrawFromTreasury{
 			Authority: s.bytesToString(s.authority),
 			To:        s.bytesToString(s.stranger),
-			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))},
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+		},
 	})
 
 	s.Require().NoError(err)
@@ -494,7 +496,7 @@ func TestNewKeeper(t *testing.T) {
 				return str
 			}
 
-			require.Equal(t,  bytesToString(authority), k.GetAuthority())
+			require.Equal(t, bytesToString(authority), k.GetAuthority())
 		})
 	}
 }

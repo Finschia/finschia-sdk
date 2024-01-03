@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/address"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"

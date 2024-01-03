@@ -75,7 +75,7 @@ func TestAminoJSON(t *testing.T) {
 	legacyAmino := codec.NewLegacyAmino()
 	foundation.RegisterLegacyAminoCodec(legacyAmino)
 	legacytx.RegressionTestingAminoCodec = legacyAmino
-	
+
 	addressCodec := addresscodec.NewBech32Codec("link")
 	bytesToString := func(addr sdk.AccAddress) string {
 		str, err := addressCodec.BytesToString(addr)
