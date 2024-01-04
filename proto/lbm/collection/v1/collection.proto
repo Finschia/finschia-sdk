@@ -30,6 +30,7 @@ message Contract {
 //
 // Since: 0.46.0 (finschia)
 message FTClass {
+  option deprecated                          = true;
   option (gogoproto.goproto_getters)         = true;
   option (cosmos_proto.implements_interface) = "TokenClass";
 
@@ -94,10 +95,9 @@ message OwnerNFT {
   string owner = 5;
 }
 
-// Deprecated: use FTClass
-//
 // FT defines the information of fungible token.
 message FT {
+  option deprecated                          = true;
   option (cosmos_proto.implements_interface) = "Token";
 
   // contract id associated with the contract.
@@ -140,7 +140,8 @@ message Coin {
   // token id associated with the token.
   string token_id = 1;
   // amount of the token.
-  string amount = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 2
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // Grant defines permission given to a grantee.

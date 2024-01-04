@@ -9063,8 +9063,6 @@ Contract defines the information of the contract for the collection.
 <a name="lbm.collection.v1.FT"></a>
 
 ### FT
-Deprecated: use FTClass
-
 FT defines the information of fungible token.
 
 
@@ -9861,7 +9859,7 @@ NextClassIDs defines the next class ids of the contract.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `fungible` | [string](#string) |  | id for the fungible tokens. |
+| `fungible` | [string](#string) |  | **Deprecated.** id for the fungible tokens. |
 | `non_fungible` | [string](#string) |  | id for the non-fungible tokens. |
 
 

@@ -82,6 +82,8 @@ message EventCreatedContract {
 //
 // Since: 0.46.0 (finschia)
 message EventCreatedFTClass {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the create.
@@ -147,6 +149,8 @@ message EventRenounced {
 //
 // Since: 0.46.0 (finschia)
 message EventMintedFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.

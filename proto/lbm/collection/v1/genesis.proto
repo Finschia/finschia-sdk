@@ -70,7 +70,8 @@ message ClassStatistics {
   // class id associated with the token class.
   string class_id = 1;
   // statistics
-  string amount = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int"];
+  string amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int"];
 }
 
 // Balance defines a balance of an address.
@@ -119,9 +120,14 @@ message NextClassIDs {
   // contract id associated with the contract.
   string contract_id = 1;
   // id for the fungible tokens.
-  string fungible = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
+  string fungible = 2 [
+    deprecated             = true,
+    (gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint",
+    (gogoproto.nullable)   = false
+  ];
   // id for the non-fungible tokens.
-  string non_fungible = 3 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
+  string non_fungible = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Uint", (gogoproto.nullable) = false];
 }
 
 // ContractNextTokenIDs defines the next token ids belong to a contract.
