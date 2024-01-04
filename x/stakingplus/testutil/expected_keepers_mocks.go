@@ -7,8 +7,8 @@ package testutil
 import (
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	types "github.com/Finschia/finschia-sdk/types"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockFoundationKeeper is a mock of FoundationKeeper interface.
