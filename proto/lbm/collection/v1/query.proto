@@ -80,21 +80,25 @@ service Query {
 
   // Root queries the root of a given nft.
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
   }
 
   // HasParent queries whether a given nft has its parent.
   rpc HasParent(QueryHasParentRequest) returns (QueryHasParentResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent";
   }
 
   // Parent queries the parent of a given nft.
   rpc Parent(QueryParentRequest) returns (QueryParentResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent";
   }
 
   // Children queries the children of a given nft.
   rpc Children(QueryChildrenRequest) returns (QueryChildrenResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children";
   }
 
@@ -312,6 +316,8 @@ message QueryTokenResponse {
 
 // QueryRootRequest is the request type for the Query/Root RPC method.
 message QueryRootRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the non-fungible token.
@@ -320,6 +326,8 @@ message QueryRootRequest {
 
 // QueryRootResponse is the response type for the Query/Root RPC method.
 message QueryRootResponse {
+  option deprecated = true;
+
   // root is the information of the root token.
   // it would return itself if it's the root token.
   NFT root = 1 [(gogoproto.nullable) = false];
@@ -327,6 +335,8 @@ message QueryRootResponse {
 
 // QueryHasParentRequest is the request type for the Query/HasParent RPC method.
 message QueryHasParentRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated wit the non-fungible token.
@@ -335,12 +345,16 @@ message QueryHasParentRequest {
 
 // QueryHasParentResponse is the response type for the Query/HasParent RPC method.
 message QueryHasParentResponse {
+  option deprecated = true;
+
   // whether the token has its parent.
   bool has_parent = 1;
 }
 
 // QueryParentRequest is the request type for the Query/Parent RPC method.
 message QueryParentRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated wit the non-fungible token.
@@ -349,12 +363,16 @@ message QueryParentRequest {
 
 // QueryParentResponse is the response type for the Query/Parent RPC method.
 message QueryParentResponse {
+  option deprecated = true;
+
   // parent is the information of the parent token.
   NFT parent = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryChildrenRequest is the request type for the Query/Children RPC method.
 message QueryChildrenRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the non-fungible token.
@@ -366,6 +384,8 @@ message QueryChildrenRequest {
 
 // QueryChildrenResponse is the response type for the Query/Children RPC method.
 message QueryChildrenResponse {
+  option deprecated = true;
+
   // children is the information of the child tokens.
   repeated NFT children = 1 [(gogoproto.nullable) = false];
 

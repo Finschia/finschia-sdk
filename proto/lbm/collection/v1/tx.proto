@@ -154,28 +154,36 @@ service Msg {
   // - EventAttach
   // - attach (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc Attach(MsgAttach) returns (MsgAttachResponse);
+  rpc Attach(MsgAttach) returns (MsgAttachResponse) {
+    option deprecated = true;
+  }
 
   // Detach defines a method to detach a token from another token.
   // Fires:
   // - EventDetach
   // - detach (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc Detach(MsgDetach) returns (MsgDetachResponse);
+  rpc Detach(MsgDetach) returns (MsgDetachResponse) {
+    option deprecated = true;
+  }
 
   // OperatorAttach defines a method to attach a token to another token by operator.
   // Fires:
   // - EventAttach
   // - attach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
+  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse) {
+    option deprecated = true;
+  }
 
   // OperatorDetach defines a method to detach a token from another token by operator.
   // Fires:
   // - EventDetach
   // - detach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
+  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse) {
+    option deprecated = true;
+  }
 }
 
 // MsgSendFT is the Msg/SendFT request type.
@@ -541,6 +549,8 @@ message MsgRevokePermissionResponse {}
 //
 // Signer: `from`
 message MsgAttach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the owner of the token.
@@ -552,12 +562,16 @@ message MsgAttach {
 }
 
 // MsgAttachResponse is the Msg/Attach response type.
-message MsgAttachResponse {}
+message MsgAttachResponse {
+  option deprecated = true;
+}
 
 // MsgDetach is the Msg/Detach request type.
 //
 // Signer: `from`
 message MsgDetach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the owner of the token.
@@ -567,10 +581,14 @@ message MsgDetach {
 }
 
 // MsgDetachResponse is the Msg/Detach response type.
-message MsgDetachResponse {}
+message MsgDetachResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
 message MsgOperatorAttach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
@@ -584,10 +602,14 @@ message MsgOperatorAttach {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-message MsgOperatorAttachResponse {}
+message MsgOperatorAttachResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
 message MsgOperatorDetach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
@@ -599,4 +621,6 @@ message MsgOperatorDetach {
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-message MsgOperatorDetachResponse {}
+message MsgOperatorDetachResponse {
+  option deprecated = true;
+}

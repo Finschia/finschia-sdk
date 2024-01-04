@@ -9186,8 +9186,8 @@ Params defines the parameters for the collection module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `depth_limit` | [uint32](#uint32) |  |  |
-| `width_limit` | [uint32](#uint32) |  |  |
+| `depth_limit` | [uint32](#uint32) |  | **Deprecated.**  |
+| `width_limit` | [uint32](#uint32) |  | **Deprecated.**  |
 
 
 
@@ -9839,7 +9839,7 @@ GenesisState defines the collection module's genesis state.
 | `next_token_ids` | [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs) | repeated | next ids for (non-fungible) tokens. |
 | `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
 | `nfts` | [ContractNFTs](#lbm.collection.v1.ContractNFTs) | repeated | nfts is an array containing the nfts. |
-| `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | parents represents the parents of (non-fungible) tokens. |
+| `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | **Deprecated.** parents represents the parents of (non-fungible) tokens. |
 | `grants` | [ContractGrants](#lbm.collection.v1.ContractGrants) | repeated | grants defines the grant information. |
 | `authorizations` | [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
 | `supplies` | [ContractStatistics](#lbm.collection.v1.ContractStatistics) | repeated | supplies represents the total supplies of tokens. |

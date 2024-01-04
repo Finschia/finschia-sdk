@@ -33,7 +33,7 @@ message GenesisState {
   repeated ContractNFTs nfts = 7 [(gogoproto.nullable) = false];
 
   // parents represents the parents of (non-fungible) tokens.
-  repeated ContractTokenRelations parents = 8 [(gogoproto.nullable) = false];
+  repeated ContractTokenRelations parents = 8 [deprecated = true, (gogoproto.nullable) = false];
 
   // grants defines the grant information.
   repeated ContractGrants grants = 9 [(gogoproto.nullable) = false];
@@ -146,6 +146,8 @@ message NextTokenID {
 
 // ContractTokenRelations defines token relations belong to a contract.
 message ContractTokenRelations {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // relations
@@ -154,6 +156,8 @@ message ContractTokenRelations {
 
 // TokenRelation defines relations between two tokens.
 message TokenRelation {
+  option deprecated = true;
+
   // self
   string self = 1;
   // other
