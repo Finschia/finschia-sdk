@@ -25,16 +25,19 @@ service Query {
 
   // FTSupply queries the number of tokens from a given contract id and token id.
   rpc FTSupply(QueryFTSupplyRequest) returns (QueryFTSupplyResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply";
   }
 
   // FTMinted queries the number of minted tokens from a given contract id and token id.
   rpc FTMinted(QueryFTMintedRequest) returns (QueryFTMintedResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted";
   }
 
   // FTBurnt queries the number of burnt tokens from a given contract id and token id.
   rpc FTBurnt(QueryFTBurntRequest) returns (QueryFTBurntResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt";
   }
 
@@ -77,21 +80,25 @@ service Query {
 
   // Root queries the root of a given nft.
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
   }
 
   // HasParent queries whether a given nft has its parent.
   rpc HasParent(QueryHasParentRequest) returns (QueryHasParentResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent";
   }
 
   // Parent queries the parent of a given nft.
   rpc Parent(QueryParentRequest) returns (QueryParentResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent";
   }
 
   // Children queries the children of a given nft.
   rpc Children(QueryChildrenRequest) returns (QueryChildrenResponse) {
+    option deprecated            = true;
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children";
   }
 
@@ -145,6 +152,8 @@ message QueryAllBalancesResponse {
 
 // QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
 message QueryFTSupplyRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the fungible token.
@@ -153,12 +162,17 @@ message QueryFTSupplyRequest {
 
 // QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 message QueryFTSupplyResponse {
+  option deprecated = true;
+
   // supply is the supply of the tokens.
-  string supply = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string supply = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
 message QueryFTMintedRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the fungible token.
@@ -167,12 +181,17 @@ message QueryFTMintedRequest {
 
 // QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 message QueryFTMintedResponse {
+  option deprecated = true;
+
   // minted is the amount of the minted tokens.
-  string minted = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
 message QueryFTBurntRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the fungible token.
@@ -181,8 +200,11 @@ message QueryFTBurntRequest {
 
 // QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 message QueryFTBurntResponse {
+  option deprecated = true;
+
   // burnt is the amount of the burnt tokens.
-  string burnt = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string burnt = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
@@ -197,7 +219,8 @@ message QueryNFTSupplyRequest {
 // QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
 message QueryNFTSupplyResponse {
   // supply is the supply of the non-fungible token.
-  string supply = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string supply = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
@@ -212,7 +235,8 @@ message QueryNFTMintedRequest {
 // QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 message QueryNFTMintedResponse {
   // minted is the amount of minted tokens.
-  string minted = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
@@ -227,7 +251,8 @@ message QueryNFTBurntRequest {
 // QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 message QueryNFTBurntResponse {
   // burnt is the amount of the burnt tokens.
-  string burnt = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string burnt = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryContractRequest is the request type for the Query/Contract RPC method.
@@ -291,6 +316,8 @@ message QueryTokenResponse {
 
 // QueryRootRequest is the request type for the Query/Root RPC method.
 message QueryRootRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the non-fungible token.
@@ -299,6 +326,8 @@ message QueryRootRequest {
 
 // QueryRootResponse is the response type for the Query/Root RPC method.
 message QueryRootResponse {
+  option deprecated = true;
+
   // root is the information of the root token.
   // it would return itself if it's the root token.
   NFT root = 1 [(gogoproto.nullable) = false];
@@ -306,6 +335,8 @@ message QueryRootResponse {
 
 // QueryHasParentRequest is the request type for the Query/HasParent RPC method.
 message QueryHasParentRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated wit the non-fungible token.
@@ -314,12 +345,16 @@ message QueryHasParentRequest {
 
 // QueryHasParentResponse is the response type for the Query/HasParent RPC method.
 message QueryHasParentResponse {
+  option deprecated = true;
+
   // whether the token has its parent.
   bool has_parent = 1;
 }
 
 // QueryParentRequest is the request type for the Query/Parent RPC method.
 message QueryParentRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated wit the non-fungible token.
@@ -328,12 +363,16 @@ message QueryParentRequest {
 
 // QueryParentResponse is the response type for the Query/Parent RPC method.
 message QueryParentResponse {
+  option deprecated = true;
+
   // parent is the information of the parent token.
   NFT parent = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryChildrenRequest is the request type for the Query/Children RPC method.
 message QueryChildrenRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the non-fungible token.
@@ -345,6 +384,8 @@ message QueryChildrenRequest {
 
 // QueryChildrenResponse is the response type for the Query/Children RPC method.
 message QueryChildrenResponse {
+  option deprecated = true;
+
   // children is the information of the child tokens.
   repeated NFT children = 1 [(gogoproto.nullable) = false];
 

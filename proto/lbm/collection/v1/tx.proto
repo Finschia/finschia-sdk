@@ -15,13 +15,17 @@ service Msg {
   // Fires:
   // - EventSent
   // - transfer_ft (deprecated, not typed)
-  rpc SendFT(MsgSendFT) returns (MsgSendFTResponse);
+  rpc SendFT(MsgSendFT) returns (MsgSendFTResponse) {
+    option deprecated = true;
+  }
 
   // OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator.
   // Fires:
   // - EventSent
   // - transfer_ft_from (deprecated, not typed)
-  rpc OperatorSendFT(MsgOperatorSendFT) returns (MsgOperatorSendFTResponse);
+  rpc OperatorSendFT(MsgOperatorSendFT) returns (MsgOperatorSendFTResponse) {
+    option deprecated = true;
+  }
 
   // SendNFT defines a method to send non-fungible tokens from one account to another account.
   // Fires:
@@ -62,7 +66,9 @@ service Msg {
   // - EventMintedFT
   // - issue_ft (deprecated, not typed)
   // Note: it does not grant any permissions to its issuer.
-  rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
+  rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse) {
+    option deprecated = true;
+  }
 
   // IssueNFT defines a method to create a class of non-fungible token.
   // Fires:
@@ -75,7 +81,9 @@ service Msg {
   // Fires:
   // - EventMintedFT
   // - mint_ft (deprecated, not typed)
-  rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
+  rpc MintFT(MsgMintFT) returns (MsgMintFTResponse) {
+    option deprecated = true;
+  }
 
   // MintNFT defines a method to mint non-fungible tokens.
   // Fires:
@@ -89,7 +97,9 @@ service Msg {
   // - burn_ft (deprecated, not typed)
   // - burn_nft (deprecated, not typed)
   // - operation_burn_nft (deprecated, not typed)
-  rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
+  rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse) {
+    option deprecated = true;
+  }
 
   // OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator.
   // Fires:
@@ -97,7 +107,9 @@ service Msg {
   // - burn_ft_from (deprecated, not typed)
   // - burn_nft_from (deprecated, not typed)
   // - operation_burn_nft (deprecated, not typed)
-  rpc OperatorBurnFT(MsgOperatorBurnFT) returns (MsgOperatorBurnFTResponse);
+  rpc OperatorBurnFT(MsgOperatorBurnFT) returns (MsgOperatorBurnFTResponse) {
+    option deprecated = true;
+  }
 
   // BurnNFT defines a method to burn non-fungible tokens.
   // Fires:
@@ -142,32 +154,42 @@ service Msg {
   // - EventAttach
   // - attach (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc Attach(MsgAttach) returns (MsgAttachResponse);
+  rpc Attach(MsgAttach) returns (MsgAttachResponse) {
+    option deprecated = true;
+  }
 
   // Detach defines a method to detach a token from another token.
   // Fires:
   // - EventDetach
   // - detach (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc Detach(MsgDetach) returns (MsgDetachResponse);
+  rpc Detach(MsgDetach) returns (MsgDetachResponse) {
+    option deprecated = true;
+  }
 
   // OperatorAttach defines a method to attach a token to another token by operator.
   // Fires:
   // - EventAttach
   // - attach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
+  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse) {
+    option deprecated = true;
+  }
 
   // OperatorDetach defines a method to detach a token from another token by operator.
   // Fires:
   // - EventDetach
   // - detach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
+  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse) {
+    option deprecated = true;
+  }
 }
 
 // MsgSendFT is the Msg/SendFT request type.
 message MsgSendFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address which the transfer is from.
@@ -180,10 +202,14 @@ message MsgSendFT {
 }
 
 // MsgSendFTResponse is the Msg/SendFT response type.
-message MsgSendFTResponse {}
+message MsgSendFTResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorSendFT is the Msg/OperatorSendFT request type.
 message MsgOperatorSendFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the operator.
@@ -198,7 +224,9 @@ message MsgOperatorSendFT {
 }
 
 // MsgOperatorSendFTResponse is the Msg/OperatorSendFT response type.
-message MsgOperatorSendFTResponse {}
+message MsgOperatorSendFTResponse {
+  option deprecated = true;
+}
 
 // MsgSendNFT is the Msg/SendNFT request type.
 message MsgSendNFT {
@@ -283,6 +311,8 @@ message MsgCreateContractResponse {
 //
 // Signer: `owner`
 message MsgIssueFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // name defines the human-readable name of the token type.
@@ -302,11 +332,14 @@ message MsgIssueFT {
   // the amount of tokens to mint on the issuance.
   // Note: if you provide negative amount, a panic may result.
   // Note: amount may be zero.
-  string amount = 8 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 8
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.
 message MsgIssueFTResponse {
+  option deprecated = true;
+
   // id of the token.
   string token_id = 1;
 }
@@ -337,6 +370,8 @@ message MsgIssueNFTResponse {
 //
 // Signer: `from`
 message MsgMintFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which has the permission for the mint.
@@ -349,7 +384,9 @@ message MsgMintFT {
 }
 
 // MsgMintFTResponse is the Msg/MintFT response type.
-message MsgMintFTResponse {}
+message MsgMintFTResponse {
+  option deprecated = true;
+}
 
 // MsgMintNFT is the Msg/MintNFT request type.
 //
@@ -387,6 +424,8 @@ message MintNFTParam {
 
 // MsgBurnFT is the Msg/BurnFT request type.
 message MsgBurnFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which the tokens will be burnt from.
@@ -398,10 +437,14 @@ message MsgBurnFT {
 }
 
 // MsgBurnFTResponse is the Msg/BurnFT response type.
-message MsgBurnFTResponse {}
+message MsgBurnFTResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorBurnFT is the Msg/OperatorBurnFT request type.
 message MsgOperatorBurnFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
@@ -416,7 +459,9 @@ message MsgOperatorBurnFT {
 }
 
 // MsgOperatorBurnFTResponse is the Msg/OperatorBurnFT response type.
-message MsgOperatorBurnFTResponse {}
+message MsgOperatorBurnFTResponse {
+  option deprecated = true;
+}
 
 // MsgBurnNFT is the Msg/BurnNFT request type.
 message MsgBurnNFT {
@@ -506,6 +551,8 @@ message MsgRevokePermissionResponse {}
 //
 // Signer: `from`
 message MsgAttach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the owner of the token.
@@ -517,12 +564,16 @@ message MsgAttach {
 }
 
 // MsgAttachResponse is the Msg/Attach response type.
-message MsgAttachResponse {}
+message MsgAttachResponse {
+  option deprecated = true;
+}
 
 // MsgDetach is the Msg/Detach request type.
 //
 // Signer: `from`
 message MsgDetach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the owner of the token.
@@ -532,10 +583,14 @@ message MsgDetach {
 }
 
 // MsgDetachResponse is the Msg/Detach response type.
-message MsgDetachResponse {}
+message MsgDetachResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
 message MsgOperatorAttach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
@@ -549,10 +604,14 @@ message MsgOperatorAttach {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-message MsgOperatorAttachResponse {}
+message MsgOperatorAttachResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
 message MsgOperatorDetach {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator.
@@ -564,4 +623,6 @@ message MsgOperatorDetach {
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-message MsgOperatorDetachResponse {}
+message MsgOperatorDetachResponse {
+  option deprecated = true;
+}

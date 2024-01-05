@@ -11,6 +11,8 @@ option go_package = "github.com/Finschia/finschia-sdk/x/token";
 
 // Query defines the gRPC querier service.
 service Query {
+  option deprecated = true;
+
   // Balance queries the number of tokens of a given contract owned by the address.
   rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/balances/{address}";
@@ -42,14 +44,16 @@ service Query {
   }
 
   // IsOperatorFor queries authorization on a given operator holder pair.
-  rpc IsOperatorFor(QueryIsOperatorForRequest) returns (QueryIsOperatorForResponse) {}
+  rpc IsOperatorFor(QueryIsOperatorForRequest) returns (QueryIsOperatorForResponse);
 
   // HoldersByOperator queries holders on a given operator.
-  rpc HoldersByOperator(QueryHoldersByOperatorRequest) returns (QueryHoldersByOperatorResponse) {}
+  rpc HoldersByOperator(QueryHoldersByOperatorRequest) returns (QueryHoldersByOperatorResponse);
 }
 
 // QueryBalanceRequest is the request type for the Query/Balance RPC method
 message QueryBalanceRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address is the address to query balance for.
@@ -58,59 +62,83 @@ message QueryBalanceRequest {
 
 // QueryBalanceResponse is the response type for the Query/Balance RPC method
 message QueryBalanceResponse {
+  option deprecated = true;
+
   // the balance of the tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method
 message QuerySupplyRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
 }
 
 // QuerySupplyResponse is the response type for the Query/Supply RPC method
 message QuerySupplyResponse {
+  option deprecated = true;
+
   // the supply of the tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryMintedRequest is the request type for the Query/Minted RPC method
 message QueryMintedRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
 }
 
 // QueryMintedResponse is the response type for the Query/Minted RPC method
 message QueryMintedResponse {
+  option deprecated = true;
+
   // the amount of the minted tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryBurntRequest is the request type for the Query/Burnt RPC method
 message QueryBurntRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
 }
 
 // QueryBurntResponse is the response type for the Query/Burnt RPC method
 message QueryBurntResponse {
+  option deprecated = true;
+
   // the amount of the burnt tokens.
-  string amount = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryContractRequest is the request type for the Query/Contract RPC method
 message QueryContractRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
 }
 
 // QueryContractResponse is the response type for the Query/Contract RPC method
 message QueryContractResponse {
+  option deprecated = true;
+
   Contract contract = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
 message QueryGranteeGrantsRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // grantee which has permissions on the contract.
@@ -122,6 +150,8 @@ message QueryGranteeGrantsRequest {
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
 message QueryGranteeGrantsResponse {
+  option deprecated = true;
+
   // all the grants on the grantee.
   repeated Grant grants = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
@@ -130,6 +160,8 @@ message QueryGranteeGrantsResponse {
 
 // QueryIsOperatorForRequest is the request type for the Query/IsOperatorFor RPC method
 message QueryIsOperatorForRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator which the authorization is granted to.
@@ -140,11 +172,15 @@ message QueryIsOperatorForRequest {
 
 // QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method
 message QueryIsOperatorForResponse {
+  option deprecated = true;
+
   bool authorized = 1;
 }
 
 // QueryHoldersByOperatorRequest is the request type for the Query/HoldersByOperator RPC method
 message QueryHoldersByOperatorRequest {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the operator which the authorization is granted to.
@@ -156,6 +192,8 @@ message QueryHoldersByOperatorRequest {
 
 // QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method
 message QueryHoldersByOperatorResponse {
+  option deprecated = true;
+
   // holder addresses
   repeated string holders = 1;
   // pagination defines the pagination in the response.

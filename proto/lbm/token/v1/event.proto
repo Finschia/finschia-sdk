@@ -9,6 +9,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/token";
 
 // AttributeKey enumerates the valid attribute keys on x/token.
 enum AttributeKey {
+  option deprecated                        = true;
   option (gogoproto.goproto_enum_stringer) = false;
   option (gogoproto.goproto_enum_prefix)   = false;
 
@@ -28,6 +29,8 @@ enum AttributeKey {
 //
 // Since: 0.46.0 (finschia)
 message EventSent {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the send.
@@ -37,13 +40,16 @@ message EventSent {
   // recipient of the tokens
   string to = 4;
   // number of tokens sent.
-  string amount = 5 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 5
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
 //
 // Since: 0.46.0 (finschia)
 message EventAuthorizedOperator {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of a holder which authorized the `operator` address as an operator.
@@ -56,6 +62,8 @@ message EventAuthorizedOperator {
 //
 // Since: 0.46.0 (finschia)
 message EventRevokedOperator {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of a holder which revoked the `operator` address as an operator.
@@ -68,6 +76,8 @@ message EventRevokedOperator {
 //
 // Since: 0.46.0 (finschia)
 message EventIssued {
+  option deprecated = true;
+
   // address which created the contract.
   string creator = 1;
   // contract id associated with the contract.
@@ -92,6 +102,8 @@ message EventIssued {
 //
 // Since: 0.46.0 (finschia)
 message EventGranted {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which granted the permission to `grantee`.
@@ -107,6 +119,8 @@ message EventGranted {
 //
 // Since: 0.46.0 (finschia)
 message EventRenounced {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which abandons its grant.
@@ -119,6 +133,8 @@ message EventRenounced {
 //
 // Since: 0.46.0 (finschia)
 message EventMinted {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.
@@ -126,13 +142,16 @@ message EventMinted {
   // recipient of the tokens.
   string to = 3;
   // number of tokens minted.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventBurned is emitted when tokens are burnt.
 //
 // Since: 0.46.0 (finschia)
 message EventBurned {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the burn.
@@ -140,13 +159,16 @@ message EventBurned {
   // holder whose tokens were burned.
   string from = 3;
   // number of tokens burned.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventModified is emitted when the information of a contract is modified.
 //
 // Since: 0.46.0 (finschia)
 message EventModified {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the modify.

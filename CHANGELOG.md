@@ -55,3 +55,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Build, CI
 
 ### Document Updates
+* (x/token,collection) [#1201](https://github.com/Finschia/finschia-sdk/pull/1201) Deprecate legacy features on x/token,collection
