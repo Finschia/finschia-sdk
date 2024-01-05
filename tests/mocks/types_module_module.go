@@ -13,12 +13,9 @@ import (
 	types "github.com/Finschia/finschia-sdk/codec/types"
 	types0 "github.com/Finschia/finschia-sdk/types"
 	module "github.com/Finschia/finschia-sdk/types/module"
-<<<<<<< HEAD
 	ocabci "github.com/Finschia/ostracon/abci/types"
-=======
 	gomock "github.com/golang/mock/gomock"
 	runtime "github.com/grpc-ecosystem/grpc-gateway/runtime"
->>>>>>> 3babbe5f9 (chore: deprecate legacy features on x/token,collection (#1201))
 	cobra "github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
