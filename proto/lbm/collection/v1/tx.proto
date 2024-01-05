@@ -443,6 +443,8 @@ message MsgBurnFTResponse {
 
 // MsgOperatorBurnFT is the Msg/OperatorBurnFT request type.
 message MsgOperatorBurnFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
