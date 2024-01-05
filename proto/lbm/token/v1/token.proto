@@ -8,10 +8,14 @@ option (gogoproto.goproto_getters_all) = false;
 import "gogoproto/gogo.proto";
 
 // Params defines the parameters for the token module.
-message Params {}
+message Params {
+  option deprecated = true;
+}
 
 // Contract defines token information.
 message Contract {
+  option deprecated = true;
+
   // id defines the unique identifier of the contract.
   string id = 1;
   // name defines the human-readable name of the contract. mandatory (not ERC20 compliant).
@@ -30,6 +34,8 @@ message Contract {
 
 // Attribute defines a key and value of the attribute.
 message Attribute {
+  option deprecated = true;
+
   string key   = 1;
   string value = 2;
 }
@@ -69,6 +75,8 @@ enum LegacyPermission {
 
 // Authorization defines an authorization given to the operator on tokens of the holder.
 message Authorization {
+  option deprecated = true;
+
   // address of the token holder which approves the authorization.
   string holder = 1;
   // address of the operator which the authorization is granted to.
@@ -77,6 +85,8 @@ message Authorization {
 
 // Grant defines permission given to a grantee.
 message Grant {
+  option deprecated = true;
+
   // address of the grantee.
   string grantee = 1;
   // permission on the contract.
