@@ -1,4 +1,4 @@
-package testutil
+package foundation
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
-func (s *IntegrationTestSuite) TestGRPCParams() {
+func (s *E2ETestSuite) TestGRPCParams() {
 	val := s.network.Validators[0]
 
 	testCases := []struct {

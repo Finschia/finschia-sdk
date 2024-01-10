@@ -1,4 +1,4 @@
-package testutil
+package foundation
 
 import (
 	"encoding/json"
@@ -16,7 +16,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankcli "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
@@ -24,7 +23,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
-type IntegrationTestSuite struct {
+type E2ETestSuite struct {
 	suite.Suite
 
 	cfg     network.Config
@@ -49,13 +48,12 @@ var commonArgs = []string{
 	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100)))),
 }
 
-func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
-	return &IntegrationTestSuite{cfg: cfg}
+func NewE2ETestSuite(cfg network.Config) *E2ETestSuite {
+	return &E2ETestSuite{cfg: cfg}
 }
 
-func (s *IntegrationTestSuite) SetupSuite() {
-	s.T().Log("setting up integration test suite")
-	testdata.RegisterInterfaces(s.cfg.InterfaceRegistry)
+func (s *E2ETestSuite) SetupSuite() {
+	s.T().Log("setting up e2e test suite")
 
 	s.addressCodec = addresscodec.NewBech32Codec("link")
 
@@ -79,11 +77,11 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	foundationData.Members = []foundation.Member{
 		{
-			Address:  s.leavingMember.String(),
+			Address:  s.bytesToString(s.leavingMember),
 			Metadata: "leaving member",
 		},
 		{
-			Address:  s.permanentMember.String(),
+			Address:  s.bytesToString(s.permanentMember),
 			Metadata: "permanent member",
 		},
 	}
@@ -111,7 +109,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	treasuryReceivers := []sdk.AccAddress{s.stranger, s.leavingMember}
 	for _, receiver := range treasuryReceivers {
 		ga := foundation.GrantAuthorization{
-			Grantee: receiver.String(),
+			Grantee: s.bytesToString(receiver),
 		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
 		s.Require().NotNil(ga)
 		foundationData.Authorizations = append(foundationData.Authorizations, *ga)
@@ -137,25 +135,43 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.createAccount("leavingmember", leavingMemberMnemonic)
 	s.createAccount("permanentmember", permanentMemberMnemonic)
 
-	s.proposalID = s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	s.submitProposal(&foundation.MsgWithdrawFromTreasury{
+		Authority: s.bytesToString(s.authority),
+		To:        s.bytesToString(s.stranger),
+		Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
+	}, false)
+	s.proposalID = 1
 	s.vote(s.proposalID, []sdk.AccAddress{s.leavingMember, s.permanentMember})
-	s.Require().NoError(s.network.WaitForNextBlock())
+
+	// submit another two proposals without votes
+	for range make([]struct{}, 2) {
+		s.submitProposal(&foundation.MsgWithdrawFromTreasury{
+			Authority: s.bytesToString(s.authority),
+			To:        s.bytesToString(s.stranger),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
+		}, false)
+	}
 
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
-	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
-func (s *IntegrationTestSuite) TearDownSuite() {
-	s.T().Log("tearing down integration test suite")
+func (s *E2ETestSuite) TearDownSuite() {
+	s.T().Log("tearing down e2e test suite")
 	s.network.Cleanup()
 }
 
+func (s *E2ETestSuite) bytesToString(addr sdk.AccAddress) string {
+	str, err := s.addressCodec.BytesToString(addr)
+	s.Require().NoError(err)
+	return str
+}
+
 // submit a proposal
-func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
+func (s *E2ETestSuite) submitProposal(msg sdk.Msg, try bool) {
 	val := s.network.Validators[0]
 
-	proposers := []string{s.permanentMember.String()}
+	proposers := []string{s.bytesToString(s.permanentMember)}
 	proposersBz, err := json.Marshal(&proposers)
 	s.Require().NoError(err)
 
@@ -174,27 +190,16 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
 
-	events := res.Logs[0].Events
-	proposalEvent, _ := sdk.TypedEventToEvent(&foundation.EventSubmitProposal{})
-	for _, e := range events {
-		if e.Type == proposalEvent.Type {
-			var proposal foundation.Proposal
-			err := val.ClientCtx.Codec.UnmarshalJSON([]byte(e.Attributes[0].Value), &proposal)
-			s.Require().NoError(err)
-
-			return proposal.Id
-		}
-	}
-	panic("You cannot reach here")
+	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
-func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {
+func (s *E2ETestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {
 	val := s.network.Validators[0]
 
 	for _, voter := range voters {
 		args := append([]string{
 			fmt.Sprint(proposalID),
-			voter.String(),
+			s.bytesToString(voter),
 			foundation.VOTE_OPTION_YES.String(),
 			"test vote",
 		}, commonArgs...)
@@ -205,9 +210,11 @@ func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) 
 		s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 		s.Require().Zero(res.Code, out.String())
 	}
+
+	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
-func (s *IntegrationTestSuite) msgToString(msg sdk.Msg) string {
+func (s *E2ETestSuite) msgToString(msg sdk.Msg) string {
 	anyJSON, err := s.cfg.Codec.MarshalInterfaceJSON(msg)
 	s.Require().NoError(err)
 
@@ -219,7 +226,7 @@ func (s *IntegrationTestSuite) msgToString(msg sdk.Msg) string {
 }
 
 // creates an account
-func (s *IntegrationTestSuite) createMnemonic(uid string) (string, sdk.AccAddress) {
+func (s *E2ETestSuite) createMnemonic(uid string) (string, sdk.AccAddress) {
 	cstore := keyring.NewInMemory(s.cfg.Codec)
 	info, mnemonic, err := cstore.NewMnemonic(uid, keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
@@ -231,7 +238,7 @@ func (s *IntegrationTestSuite) createMnemonic(uid string) (string, sdk.AccAddres
 }
 
 // creates an account and send some coins to it for the future transactions.
-func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
+func (s *E2ETestSuite) createAccount(uid, mnemonic string) {
 	val := s.network.Validators[0]
 	info, err := val.ClientCtx.Keyring.NewAccount(uid, mnemonic, keyring.DefaultBIP39Passphrase, sdk.FullFundraiserPath, hd.Secp256k1)
 	s.Require().NoError(err)
@@ -241,10 +248,10 @@ func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
 
 	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(1000)))
 	args := append([]string{
-		val.Address.String(),
-		addr.String(),
+		s.bytesToString(val.Address),
+		s.bytesToString(addr),
 		fee.String(),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(val.Address)),
 	}, commonArgs...)
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(s.addressCodec), args)
 	s.Require().NoError(err)
@@ -252,4 +259,6 @@ func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
+
+	s.Require().NoError(s.network.WaitForNextBlock())
 }

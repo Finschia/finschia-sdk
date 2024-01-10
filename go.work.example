@@ -6,5 +6,6 @@ use (
 	.
 	./api
 	./simapp
+	./tests
 	./x/foundation
 )

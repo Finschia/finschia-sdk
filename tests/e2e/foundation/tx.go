@@ -1,4 +1,4 @@
-package testutil
+package foundation
 
 import (
 	"fmt"
@@ -8,7 +8,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 
@@ -16,10 +15,10 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
+func (s *E2ETestSuite) TestNewTxCmdFundTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(val.Address)),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
@@ -31,14 +30,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	}{
 		"valid transaction": {
 			[]string{
-				val.Address.String(),
+				s.bytesToString(val.Address),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				val.Address.String(),
+				s.bytesToString(val.Address),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 				"extra",
 			},
@@ -61,11 +60,13 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+
+			s.Require().NoError(s.network.WaitForNextBlock())
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
+func (s *E2ETestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
@@ -77,16 +78,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.authority.String(),
-				s.stranger.String(),
+				s.bytesToString(s.authority),
+				s.bytesToString(s.stranger),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.authority.String(),
-				s.stranger.String(),
+				s.bytesToString(s.authority),
+				s.bytesToString(s.stranger),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.OneInt())).String(),
 				"extra",
 			},
@@ -112,7 +113,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
+func (s *E2ETestSuite) TestNewTxCmdUpdateMembers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
@@ -125,15 +126,15 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.authority.String(),
-				fmt.Sprintf(updates, s.comingMember),
+				s.bytesToString(s.authority),
+				fmt.Sprintf(updates, s.bytesToString(s.comingMember)),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.authority.String(),
-				fmt.Sprintf(updates, s.comingMember),
+				s.bytesToString(s.authority),
+				fmt.Sprintf(updates, s.bytesToString(s.comingMember)),
 				"extra",
 			},
 			false,
@@ -158,7 +159,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
+func (s *E2ETestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
@@ -175,7 +176,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.authority.String(),
+				s.bytesToString(s.authority),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
 					Threshold: math.LegacyNewDec(10),
 					Windows: &foundation.DecisionPolicyWindows{
@@ -187,7 +188,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 		},
 		"wrong number of args": {
 			[]string{
-				s.authority.String(),
+				s.bytesToString(s.authority),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
 					Threshold: math.LegacyNewDec(10),
 					Windows: &foundation.DecisionPolicyWindows{
@@ -218,10 +219,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
+func (s *E2ETestSuite) TestNewTxCmdSubmitProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(s.permanentMember)),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
@@ -235,16 +236,24 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 		"valid transaction": {
 			[]string{
 				"test proposal",
-				fmt.Sprintf(proposers, s.permanentMember),
-				s.msgToString(testdata.NewTestMsg()),
+				fmt.Sprintf(proposers, s.bytesToString(s.permanentMember)),
+				s.msgToString(&foundation.MsgWithdrawFromTreasury{
+					Authority: s.bytesToString(s.authority),
+					To:        s.bytesToString(s.stranger),
+					Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
+				}),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
 				"test proposal",
-				fmt.Sprintf(proposers, s.permanentMember),
-				s.msgToString(testdata.NewTestMsg()),
+				fmt.Sprintf(proposers, s.bytesToString(s.permanentMember)),
+				s.msgToString(&foundation.MsgWithdrawFromTreasury{
+					Authority: s.bytesToString(s.authority),
+					To:        s.bytesToString(s.stranger),
+					Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
+				}),
 				"extra",
 			},
 			false,
@@ -266,35 +275,37 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+
+			s.Require().NoError(s.network.WaitForNextBlock())
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
+func (s *E2ETestSuite) TestNewTxCmdWithdrawProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(s.permanentMember)),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	proposalID := 2
 	testCases := map[string]struct {
 		args  []string
 		valid bool
 	}{
 		"valid transaction": {
 			[]string{
-				fmt.Sprint(id),
-				s.permanentMember.String(),
+				fmt.Sprint(proposalID),
+				s.bytesToString(s.permanentMember),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				fmt.Sprint(id),
-				s.permanentMember.String(),
+				fmt.Sprint(proposalID),
+				s.bytesToString(s.permanentMember),
 				"extra",
 			},
 			false,
@@ -316,28 +327,30 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+
+			s.Require().NoError(s.network.WaitForNextBlock())
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdVote() {
+func (s *E2ETestSuite) TestNewTxCmdVote() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(s.permanentMember)),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
+	proposalID := 3
 	testCases := map[string]struct {
 		args  []string
 		valid bool
 	}{
 		"valid transaction": {
 			[]string{
-				fmt.Sprint(id),
-				s.permanentMember.String(),
+				fmt.Sprint(proposalID),
+				s.bytesToString(s.permanentMember),
 				"VOTE_OPTION_YES",
 				"test vote",
 			},
@@ -345,8 +358,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		},
 		"wrong number of args": {
 			[]string{
-				fmt.Sprint(id),
-				s.permanentMember.String(),
+				fmt.Sprint(proposalID),
+				s.bytesToString(s.permanentMember),
 				"VOTE_OPTION_YES",
 				"test vote",
 				"extra",
@@ -370,14 +383,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+
+			s.Require().NoError(s.network.WaitForNextBlock())
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdExec() {
+func (s *E2ETestSuite) TestNewTxCmdExec() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(s.permanentMember)),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
@@ -390,14 +405,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 		"valid transaction": {
 			[]string{
 				fmt.Sprintf("%d", s.proposalID),
-				s.permanentMember.String(),
+				s.bytesToString(s.permanentMember),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
 				fmt.Sprintf("%d", s.proposalID),
-				s.permanentMember.String(),
+				s.bytesToString(s.permanentMember),
 				"extra",
 			},
 			false,
@@ -419,11 +434,13 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+
+			s.Require().NoError(s.network.WaitForNextBlock())
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
+func (s *E2ETestSuite) TestNewTxCmdUpdateCensorship() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
@@ -435,7 +452,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.authority.String(),
+				s.bytesToString(s.authority),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				foundation.CensorshipAuthorityGovernance.String(),
 			},
@@ -443,7 +460,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 		},
 		"valid abbreviation": {
 			[]string{
-				s.authority.String(),
+				s.bytesToString(s.authority),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"governance",
 			},
@@ -451,7 +468,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 		},
 		"wrong number of args": {
 			[]string{
-				s.authority.String(),
+				s.bytesToString(s.authority),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				foundation.CensorshipAuthorityGovernance.String(),
 				"extra",
@@ -460,7 +477,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 		},
 		"invalid new authority": {
 			[]string{
-				s.authority.String(),
+				s.bytesToString(s.authority),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"invalid-new-authority",
 			},
@@ -486,10 +503,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
+func (s *E2ETestSuite) TestNewTxCmdLeaveFoundation() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.leavingMember),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.bytesToString(s.leavingMember)),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
@@ -501,13 +518,13 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.leavingMember.String(),
+				s.bytesToString(s.leavingMember),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.leavingMember.String(),
+				s.bytesToString(s.leavingMember),
 				"extra",
 			},
 			false,
@@ -529,11 +546,13 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
+
+			s.Require().NoError(s.network.WaitForNextBlock())
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
+func (s *E2ETestSuite) TestNewTxCmdGrant() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
@@ -550,16 +569,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.authority.String(),
-				s.comingMember.String(),
+				s.bytesToString(s.authority),
+				s.bytesToString(s.comingMember),
 				doMarshal(&foundation.ReceiveFromTreasuryAuthorization{}),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.authority.String(),
-				s.comingMember.String(),
+				s.bytesToString(s.authority),
+				s.bytesToString(s.comingMember),
 				doMarshal(&foundation.ReceiveFromTreasuryAuthorization{}),
 				"extra",
 			},
@@ -585,7 +604,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
+func (s *E2ETestSuite) TestNewTxCmdRevoke() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
@@ -597,16 +616,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.authority.String(),
-				s.leavingMember.String(),
+				s.bytesToString(s.authority),
+				s.bytesToString(s.leavingMember),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.authority.String(),
-				s.leavingMember.String(),
+				s.bytesToString(s.authority),
+				s.bytesToString(s.leavingMember),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"extra",
 			},

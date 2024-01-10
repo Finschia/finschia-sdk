@@ -1,4 +1,4 @@
-package testutil
+package foundation
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
+func (s *E2ETestSuite) TestNewQueryCmdParams() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
+func (s *E2ETestSuite) TestNewQueryCmdTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -105,7 +105,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
+func (s *E2ETestSuite) TestNewQueryCmdFoundationInfo() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -146,7 +146,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
+func (s *E2ETestSuite) TestNewQueryCmdMember() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -204,7 +204,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
+func (s *E2ETestSuite) TestNewQueryCmdMembers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -245,7 +245,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
+func (s *E2ETestSuite) TestNewQueryCmdProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -295,7 +295,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
+func (s *E2ETestSuite) TestNewQueryCmdProposals() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -336,7 +336,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
+func (s *E2ETestSuite) TestNewQueryCmdVote() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -396,7 +396,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
+func (s *E2ETestSuite) TestNewQueryCmdVotes() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -446,7 +446,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
+func (s *E2ETestSuite) TestNewQueryCmdTallyResult() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -496,7 +496,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdCensorships() {
+func (s *E2ETestSuite) TestNewQueryCmdCensorships() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -541,7 +541,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdCensorships() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
+func (s *E2ETestSuite) TestNewQueryCmdGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
