@@ -18,11 +18,13 @@ message Params {
   reserved 2; // previously used tag number for 'censored_msg_type_urls'.
 }
 
+// Censorship states which message is being censored by a certain authority.
 message Censorship {
   string              msg_type_url = 1;
   CensorshipAuthority authority    = 2;
 }
 
+// CensorshipAuthority defines the authorities which could be used in Censorship.
 enum CensorshipAuthority {
   option (gogoproto.goproto_enum_prefix) = false;
 

@@ -13,15 +13,18 @@ enum AttributeKey {
   option (gogoproto.goproto_enum_stringer) = false;
   option (gogoproto.goproto_enum_prefix)   = false;
 
+  // unspecified
   ATTRIBUTE_KEY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
-
+  // name in Msg/Modify
   ATTRIBUTE_KEY_NAME = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
   reserved 2;
+  // meta in Msg/Modify
   ATTRIBUTE_KEY_META = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
   reserved 4 to 7;
   // deprecated: use ATTRIBUTE_KEY_URI
   ATTRIBUTE_KEY_IMG_URI = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
   reserved 9 to 14;
+  // uri in Msg/Modify
   ATTRIBUTE_KEY_URI = 15 [(gogoproto.enumvalue_customname) = "AttributeKeyURI"];
 }
 

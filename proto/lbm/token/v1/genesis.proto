@@ -83,6 +83,7 @@ message ContractGrants {
   repeated Grant grants = 2 [(gogoproto.nullable) = false];
 }
 
+// ContractCoin defines coin amount belongs to a contract.
 message ContractCoin {
   // contract id associated with the token class.
   string contract_id = 1;

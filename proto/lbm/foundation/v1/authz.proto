@@ -1,7 +1,6 @@
 syntax = "proto3";
 package lbm.foundation.v1;
 
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 
