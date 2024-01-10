@@ -34,6 +34,7 @@ var _ = time.Kitchen
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// CensorshipAuthority defines the authorities which could be used in Censorship.
 type CensorshipAuthority int32
 
 const (
@@ -227,6 +228,7 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
+// Censorship states which message is being censored by a certain authority.
 type Censorship struct {
 	MsgTypeUrl string              `protobuf:"bytes,1,opt,name=msg_type_url,json=msgTypeUrl,proto3" json:"msg_type_url,omitempty"`
 	Authority  CensorshipAuthority `protobuf:"varint,2,opt,name=authority,proto3,enum=lbm.foundation.v1.CensorshipAuthority" json:"authority,omitempty"`
