@@ -26,7 +26,7 @@ done
 cd ..
 
 # generate tests proto code
-(cd tests/integration/tx/internal; make codegen)
+# (cd tests/integration/tx/internal; make codegen)
 
 # move proto files to the right places
 cp -r github.com/Finschia/finschia-sdk/* ./
