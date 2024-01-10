@@ -4,11 +4,4 @@
 
 # Primary repo maintainers
 
-*       @cosmos/sdk-core-dev
-
-# CODEOWNERS for docs configuration
-
-/docs/docusaurus.config.js @julienrbrt @tac0turtle
-/docs/sidebars.js @julienrbrt @tac0turtle
-/docs/pre.sh @julienrbrt @tac0turtle
-/docs/post.sh @julienrbrt @tac0turtle
+*       @Finschia/Finschia-Collaborator
