@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/simapp/simd/cmd"
-
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 func main() {
