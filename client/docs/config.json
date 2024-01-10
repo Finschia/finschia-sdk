@@ -21,23 +21,6 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/lbm/token/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "TokenParams",
-          "Balance": "TokenBalance",
-          "AllBalances": "TokenAllBalances",
-          "GranteeGrants": "TokenGranteeGrants",
-          "Approved": "TokenApproved",
-          "Approvers": "TokenApprovers",
-          "Supply": "TokenSupply",
-          "Minted": "TokenMinted",
-          "Burnt": "TokenBurnt",
-          "Contract": "TokenContract"
-        }
-      }
-    },
-    {
       "url": "./tmp-swagger-gen/lbm/collection/v1/query.swagger.json",
       "operationIds": {
         "rename": {
