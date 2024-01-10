@@ -167,7 +167,7 @@ var (
 			{
 				Name: authtypes.ModuleName,
 				Config: appconfig.WrapAny(&authmodulev1.Module{
-					Bech32Prefix:             "cosmos",
+					Bech32Prefix:             "link",
 					ModuleAccountPermissions: moduleAccPerms,
 					// By default modules authority is the governance module. This is configurable with the following:
 					// Authority: "group", // A custom module authority can be set using a module name
@@ -189,8 +189,8 @@ var (
 				Config: appconfig.WrapAny(&stakingmodulev1.Module{
 					// NOTE: specifying a prefix is only necessary when using bech32 addresses
 					// If not specfied, the auth Bech32Prefix appended with "valoper" and "valcons" is used by default
-					Bech32PrefixValidator: "cosmosvaloper",
-					Bech32PrefixConsensus: "cosmosvalcons",
+					Bech32PrefixValidator: "linkvaloper",
+					Bech32PrefixConsensus: "linkvalcons",
 				}),
 			},
 			{

@@ -28,6 +28,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	testdata_pulsar "github.com/cosmos/cosmos-sdk/testutil/testdata/testpb"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -95,6 +96,15 @@ func init() {
 	}
 
 	DefaultNodeHome = filepath.Join(userHomeDir, ".simapp")
+
+	// TODO(@0Tech): remove it after removal of global bech32 from upstream
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount("link", "linkpub")
+	config.SetBech32PrefixForValidator("linkvaloper", "linkvaloperpub")
+	config.SetBech32PrefixForConsensusNode("linkvalcons", "linkvalconspub")
+	config.SetPurpose(44)
+	config.SetCoinType(438)
+	config.Seal()
 }
 
 // NewSimApp returns a reference to an initialized SimApp.
