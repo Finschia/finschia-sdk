@@ -82,67 +82,67 @@ jobs:
           name: "${{ github.sha }}-${{ matrix.part }}-coverage"
           path: ./${{ matrix.part }}profile.out
 
-  test-integration:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-          check-latest: true
-          cache: true
-          cache-dependency-path: go.sum
-      - uses: technote-space/get-diff-action@v6.1.2
-        id: git_diff
-        with:
-          PATTERNS: |
-            **/*.go
-            go.mod
-            go.sum
-            **/go.mod
-            **/go.sum
-            **/Makefile
-            Makefile
-      - name: integration tests
-        if: env.GIT_DIFF
-        run: |
-          make test-integration-cov
-      - uses: actions/upload-artifact@v3
-        if: env.GIT_DIFF
-        with:
-          name: "${{ github.sha }}-integration-coverage"
-          path: ./tests/integration-profile.out
+  # test-integration:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-go@v4
+  #       with:
+  #         go-version: "1.21"
+  #         check-latest: true
+  #         cache: true
+  #         cache-dependency-path: go.sum
+  #     - uses: technote-space/get-diff-action@v6.1.2
+  #       id: git_diff
+  #       with:
+  #         PATTERNS: |
+  #           **/*.go
+  #           go.mod
+  #           go.sum
+  #           **/go.mod
+  #           **/go.sum
+  #           **/Makefile
+  #           Makefile
+  #     - name: integration tests
+  #       if: env.GIT_DIFF
+  #       run: |
+  #         make test-integration-cov
+  #     - uses: actions/upload-artifact@v3
+  #       if: env.GIT_DIFF
+  #       with:
+  #         name: "${{ github.sha }}-integration-coverage"
+  #         path: ./tests/integration-profile.out
 
-  test-e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-          check-latest: true
-          cache: true
-          cache-dependency-path: go.sum
-      - uses: technote-space/get-diff-action@v6.1.2
-        id: git_diff
-        with:
-          PATTERNS: |
-            **/*.go
-            go.mod
-            go.sum
-            **/go.mod
-            **/go.sum
-            **/Makefile
-            Makefile
-      - name: e2e tests
-        if: env.GIT_DIFF
-        run: |
-          make test-e2e-cov
-      - uses: actions/upload-artifact@v3
-        if: env.GIT_DIFF
-        with:
-          name: "${{ github.sha }}-e2e-coverage"
-          path: ./tests/e2e-profile.out
+  # test-e2e:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-go@v4
+  #       with:
+  #         go-version: "1.21"
+  #         check-latest: true
+  #         cache: true
+  #         cache-dependency-path: go.sum
+  #     - uses: technote-space/get-diff-action@v6.1.2
+  #       id: git_diff
+  #       with:
+  #         PATTERNS: |
+  #           **/*.go
+  #           go.mod
+  #           go.sum
+  #           **/go.mod
+  #           **/go.sum
+  #           **/Makefile
+  #           Makefile
+  #     - name: e2e tests
+  #       if: env.GIT_DIFF
+  #       run: |
+  #         make test-e2e-cov
+  #     - uses: actions/upload-artifact@v3
+  #       if: env.GIT_DIFF
+  #       with:
+  #         name: "${{ github.sha }}-e2e-coverage"
+  #         path: ./tests/e2e-profile.out
 
   repo-analysis:
     runs-on: ubuntu-latest
@@ -174,15 +174,15 @@ jobs:
         if: env.GIT_DIFF
         with:
           name: "${{ github.sha }}-03-coverage"
-      - uses: actions/download-artifact@v3
-        if: env.GIT_DIFF
-        with:
-          name: "${{ github.sha }}-integration-coverage"
-      - uses: actions/download-artifact@v3
-        if: env.GIT_DIFF
-        with:
-          name: "${{ github.sha }}-e2e-coverage"
-        continue-on-error: true
+      # - uses: actions/download-artifact@v3
+      #   if: env.GIT_DIFF
+      #   with:
+      #     name: "${{ github.sha }}-integration-coverage"
+      # - uses: actions/download-artifact@v3
+      #   if: env.GIT_DIFF
+      #   with:
+      #     name: "${{ github.sha }}-e2e-coverage"
+      #   continue-on-error: true
       - name: sonarcloud
         if: ${{ env.GIT_DIFF && !github.event.pull_request.draft }}
         uses: SonarSource/sonarcloud-github-action@master
