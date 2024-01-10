@@ -28,8 +28,6 @@
           "Balance": "CollectionBalance",
           "AllBalances": "CollectionAllBalances",
           "GranteeGrants": "CollectionGranteeGrants",
-          "Approved": "CollectionApproved",
-          "Approvers": "CollectionApprovers",
           "Contract": "CollectionContract"
         }
       }
