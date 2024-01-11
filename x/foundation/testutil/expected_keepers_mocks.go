@@ -9,7 +9,6 @@ import (
 	reflect "reflect"
 
 	types "github.com/cosmos/cosmos-sdk/types"
-	types0 "github.com/cosmos/cosmos-sdk/x/params/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -113,56 +112,4 @@ func (m *MockBankKeeper) SendCoinsFromModuleToAccount(ctx context.Context, sende
 func (mr *MockBankKeeperMockRecorder) SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, amt interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendCoinsFromModuleToAccount", reflect.TypeOf((*MockBankKeeper)(nil).SendCoinsFromModuleToAccount), ctx, senderModule, recipientAddr, amt)
-}
-
-// MockParamsKeeper is a mock of ParamsKeeper interface.
-type MockParamsKeeper struct {
-	ctrl     *gomock.Controller
-	recorder *MockParamsKeeperMockRecorder
-}
-
-// MockParamsKeeperMockRecorder is the mock recorder for MockParamsKeeper.
-type MockParamsKeeperMockRecorder struct {
-	mock *MockParamsKeeper
-}
-
-// NewMockParamsKeeper creates a new mock instance.
-func NewMockParamsKeeper(ctrl *gomock.Controller) *MockParamsKeeper {
-	mock := &MockParamsKeeper{ctrl: ctrl}
-	mock.recorder = &MockParamsKeeperMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockParamsKeeper) EXPECT() *MockParamsKeeperMockRecorder {
-	return m.recorder
-}
-
-// GetSubspace mocks base method.
-func (m *MockParamsKeeper) GetSubspace(s string) (types0.Subspace, bool) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSubspace", s)
-	ret0, _ := ret[0].(types0.Subspace)
-	ret1, _ := ret[1].(bool)
-	return ret0, ret1
-}
-
-// GetSubspace indicates an expected call of GetSubspace.
-func (mr *MockParamsKeeperMockRecorder) GetSubspace(s interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubspace", reflect.TypeOf((*MockParamsKeeper)(nil).GetSubspace), s)
-}
-
-// Subspace mocks base method.
-func (m *MockParamsKeeper) Subspace(s string) types0.Subspace {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Subspace", s)
-	ret0, _ := ret[0].(types0.Subspace)
-	return ret0
-}
-
-// Subspace indicates an expected call of Subspace.
-func (mr *MockParamsKeeperMockRecorder) Subspace(s interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Subspace", reflect.TypeOf((*MockParamsKeeper)(nil).Subspace), s)
 }
