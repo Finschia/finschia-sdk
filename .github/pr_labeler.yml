@@ -1,15 +1,15 @@
-"Type: Build":
+"A: build":
   - Makefile
   - Dockerfile
   - docker-compose.yml
   - scripts/*
-"Type: CI":
+"A: CI":
   - .github/**/*.yml
   - buf.yaml
   - .mergify.yml
   - .golangci.yml
-"C:CLI":
-  - client/**/*
-  - x/*/client/**/*
-"Type: ADR":
-  - docs/architecture/**/*
+# "C:CLI":
+#   - client/**/*
+#   - x/*/client/**/*
+# "Type: ADR":
+#   - docs/architecture/**/*
