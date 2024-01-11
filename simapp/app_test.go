@@ -12,7 +12,10 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
+	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
+	authmodulev1 "cosmossdk.io/api/cosmos/auth/module/v1"
 	"cosmossdk.io/core/address"
+	"cosmossdk.io/core/appconfig"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
@@ -22,8 +25,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/testutil/configurator"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -318,9 +321,30 @@ func TestAddressCodecFactory(t *testing.T) {
 	var valAddressCodec runtime.ValidatorAddressCodec
 	var consAddressCodec runtime.ConsensusAddressCodec
 
+	minimumAppConfig := func() depinject.Config {
+		return configurator.NewAppConfig(
+			func(config *configurator.Config) {
+				config.ModuleConfigs["auth"] = &appv1alpha1.ModuleConfig{
+					Name: "auth",
+					Config: appconfig.WrapAny(&authmodulev1.Module{
+						Bech32Prefix: "link",
+						ModuleAccountPermissions: []*authmodulev1.ModuleAccountPermission{
+							{Account: "fee_collector"},
+							{Account: "distribution"},
+							{Account: "mint", Permissions: []string{"minter"}},
+							{Account: "bonded_tokens_pool", Permissions: []string{"burner", "staking"}},
+							{Account: "not_bonded_tokens_pool", Permissions: []string{"burner", "staking"}},
+							{Account: "gov", Permissions: []string{"burner"}},
+							{Account: "nft"},
+						},
+					}),
+				}
+			},
+		)
+	}
 	err := depinject.Inject(
 		depinject.Configs(
-			network.MinimumAppConfig(),
+			minimumAppConfig(),
 			depinject.Supply(log.NewNopLogger()),
 		),
 		&addrCodec, &valAddressCodec, &consAddressCodec)
@@ -338,7 +362,7 @@ func TestAddressCodecFactory(t *testing.T) {
 	// Set the address codec to the custom one
 	err = depinject.Inject(
 		depinject.Configs(
-			network.MinimumAppConfig(),
+			minimumAppConfig(),
 			depinject.Supply(
 				log.NewNopLogger(),
 				func() address.Codec { return customAddressCodec{} },
