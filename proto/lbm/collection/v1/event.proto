@@ -82,6 +82,8 @@ message EventCreatedContract {
 //
 // Since: 0.46.0 (finschia)
 message EventCreatedFTClass {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the create.
@@ -147,6 +149,8 @@ message EventRenounced {
 //
 // Since: 0.46.0 (finschia)
 message EventMintedFT {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.
@@ -236,6 +240,8 @@ message EventModifiedNFT {
 //
 // Since: 0.46.0 (finschia)
 message EventAttached {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the attach.
@@ -252,6 +258,8 @@ message EventAttached {
 //
 // Since: 0.46.0 (finschia)
 message EventDetached {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the detach.
@@ -268,6 +276,8 @@ message EventDetached {
 //
 // Since: 0.46.0 (finschia)
 message EventOwnerChanged {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the token.
@@ -282,6 +292,8 @@ message EventOwnerChanged {
 //
 // Since: 0.46.0 (finschia)
 message EventRootChanged {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id associated with the token.

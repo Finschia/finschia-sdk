@@ -11,6 +11,8 @@ option (gogoproto.goproto_getters_all) = false;
 
 // Msg defines the token Msg service.
 service Msg {
+  option deprecated = true;
+
   // Send defines a method to send tokens from one account to another account.
   // Fires:
   // - EventSent
@@ -86,6 +88,8 @@ service Msg {
 //
 // Signer: `from`
 message MsgSend {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // holder whose tokens are being sent.
@@ -93,16 +97,21 @@ message MsgSend {
   // recipient of the tokens.
   string to = 3;
   // number of tokens to send.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgSendResponse defines the Msg/Send response type.
-message MsgSendResponse {}
+message MsgSendResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorSend defines the Msg/OperatorSend request type.
 //
 // Signer: `operator`
 message MsgOperatorSend {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // the address of the operator.
@@ -112,11 +121,14 @@ message MsgOperatorSend {
   // the address which the transfer is to.
   string to = 4;
   // the amount of the transfer.
-  string amount = 5 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 5
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-message MsgOperatorSendResponse {}
+message MsgOperatorSendResponse {
+  option deprecated = true;
+}
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
 //
@@ -124,6 +136,8 @@ message MsgOperatorSendResponse {}
 //
 // Since: 0.46.0 (finschia)
 message MsgRevokeOperator {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address of a holder which revokes the `operator` address as an operator.
@@ -135,12 +149,16 @@ message MsgRevokeOperator {
 // MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
 //
 // Since: 0.46.0 (finschia)
-message MsgRevokeOperatorResponse {}
+message MsgRevokeOperatorResponse {
+  option deprecated = true;
+}
 
 // MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
 //
 // Signer: `holder`
 message MsgAuthorizeOperator {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address of the token holder which approves the authorization.
@@ -150,12 +168,16 @@ message MsgAuthorizeOperator {
 }
 
 // MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
-message MsgAuthorizeOperatorResponse {}
+message MsgAuthorizeOperatorResponse {
+  option deprecated = true;
+}
 
 // MsgIssue defines the Msg/Issue request type.
 //
 // Signer: `owner`
 message MsgIssue {
+  option deprecated = true;
+
   // name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
   string name = 1;
   // symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
@@ -175,11 +197,14 @@ message MsgIssue {
   // the address to send the minted token to. mandatory.
   string to = 8;
   // amount of tokens to mint on issuance. mandatory.
-  string amount = 9 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 9
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueResponse defines the Msg/Issue response type.
 message MsgIssueResponse {
+  option deprecated = true;
+
   // id of the new contract.
   string contract_id = 1;
 }
@@ -188,6 +213,8 @@ message MsgIssueResponse {
 //
 // Signer: `granter`
 message MsgGrantPermission {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address of the granter which must have the permission to give.
@@ -199,12 +226,16 @@ message MsgGrantPermission {
 }
 
 // MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
-message MsgGrantPermissionResponse {}
+message MsgGrantPermissionResponse {
+  option deprecated = true;
+}
 
 // MsgRevokePermission defines the Msg/RevokePermission request type.
 //
 // Signer: `grantee`
 message MsgRevokePermission {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address of the grantee which abandons the permission.
@@ -214,12 +245,16 @@ message MsgRevokePermission {
 }
 
 // MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
-message MsgRevokePermissionResponse {}
+message MsgRevokePermissionResponse {
+  option deprecated = true;
+}
 
 // MsgMint defines the Msg/Mint request type.
 //
 // Signer: `from`
 message MsgMint {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address which triggers the mint.
@@ -227,31 +262,41 @@ message MsgMint {
   // recipient of the tokens.
   string to = 3;
   // number of tokens to mint.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgMintResponse defines the Msg/Mint response type.
-message MsgMintResponse {}
+message MsgMintResponse {
+  option deprecated = true;
+}
 
 // MsgBurn defines the Msg/Burn request type.
 //
 // Signer: `from`
 message MsgBurn {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address whose tokens are being burned.
   string from = 2;
   // number of tokens to burn.
-  string amount = 3 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgBurnResponse defines the Msg/Burn response type.
-message MsgBurnResponse {}
+message MsgBurnResponse {
+  option deprecated = true;
+}
 
 // MsgOperatorBurn defines the Msg/OperatorBurn request type.
 //
 // Signer: `operator`
 message MsgOperatorBurn {
+  option deprecated = true;
+
   // contract id associated with the token class.
   string contract_id = 1;
   // address which triggers the burn.
@@ -259,16 +304,21 @@ message MsgOperatorBurn {
   // address which the tokens will be burnt from.
   string from = 3;
   // the amount of the burn.
-  string amount = 4 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-message MsgOperatorBurnResponse {}
+message MsgOperatorBurnResponse {
+  option deprecated = true;
+}
 
 // MsgModify defines the Msg/Modify request type.
 //
 // Signer: `owner`
 message MsgModify {
+  option deprecated = true;
+
   // contract id associated with the contract.
   string contract_id = 1;
   // the address of the grantee which must have modify permission.
@@ -279,4 +329,6 @@ message MsgModify {
 }
 
 // MsgModifyResponse defines the Msg/Modify response type.
-message MsgModifyResponse {}
+message MsgModifyResponse {
+  option deprecated = true;
+}
