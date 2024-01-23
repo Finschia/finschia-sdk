@@ -6,15 +6,21 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	"github.com/Finschia/finschia-sdk/simapp"
-	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
-	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
-	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
+	"cosmossdk.io/depinject"
+	"cosmossdk.io/log"
+	"cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
 	"github.com/Finschia/finschia-sdk/x/stakingplus"
 	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
 	"github.com/Finschia/finschia-sdk/x/stakingplus/testutil"
@@ -24,26 +30,37 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
 
-	app       *simapp.SimApp
-	keeper    stakingkeeper.Keeper
-	msgServer stakingtypes.MsgServer
+	app           *runtime.App
+	accountKeeper authkeeper.AccountKeeper
+	bankKeeper    bankkeeper.Keeper
+	stakingKeeper *stakingkeeper.Keeper
+	msgServer     stakingtypes.MsgServer
 
 	stranger sdk.AccAddress
 	grantee  sdk.AccAddress
 
-	balance sdk.Int
+	balance math.Int
 }
 
 func (s *KeeperTestSuite) SetupTest() {
 	ctrl := gomock.NewController(s.T())
 	foundationKeeper := testutil.NewMockFoundationKeeper(ctrl)
 
-	checkTx := false
-	s.app = simapp.Setup(checkTx)
-	s.ctx = s.app.BaseApp.NewContext(checkTx, tmproto.Header{})
-	s.keeper = s.app.StakingKeeper
+	app, err := simtestutil.Setup(
+		depinject.Configs(
+			testutil.AppConfig,
+			depinject.Supply(log.NewNopLogger()),
+		),
+		&s.accountKeeper,
+		&s.bankKeeper,
+		&s.stakingKeeper,
+	)
+	s.Require().NoError(err)
 
-	s.msgServer = keeper.NewMsgServerImpl(s.keeper, foundationKeeper)
+	s.app = app
+	s.ctx = s.app.BaseApp.NewContext(false)
+
+	s.msgServer = keeper.NewMsgServerImpl(s.stakingKeeper, foundationKeeper)
 
 	createAddress := func() sdk.AccAddress {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -52,7 +69,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.stranger = createAddress()
 	s.grantee = createAddress()
 
-	s.balance = sdk.NewInt(1000000)
+	s.balance = math.NewInt(1000000)
 	holders := []sdk.AccAddress{
 		s.stranger,
 		s.grantee,
@@ -65,11 +82,11 @@ func (s *KeeperTestSuite) SetupTest() {
 		// because x/bank already has dependency on x/mint, and we must have dependency
 		// on x/bank, it's OK to use x/mint here.
 		minterName := minttypes.ModuleName
-		err := s.app.BankKeeper.MintCoins(s.ctx, minterName, amount)
+		err := s.bankKeeper.MintCoins(s.ctx, minterName, amount)
 		s.Require().NoError(err)
 
-		minter := s.app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
-		err = s.app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
+		minter := s.accountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
+		err = s.bankKeeper.SendCoins(s.ctx, minter, holder, amount)
 		s.Require().NoError(err)
 	}
 
