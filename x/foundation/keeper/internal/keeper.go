@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -38,8 +37,6 @@ type Keeper struct {
 	//
 	// Typically, this should be the x/foundation module account.
 	authority string
-
-	subspace paramstypes.Subspace
 }
 
 func NewKeeper(
@@ -51,7 +48,6 @@ func NewKeeper(
 	feeCollectorName string,
 	config foundation.Config,
 	authority string,
-	subspace paramstypes.Subspace,
 ) Keeper {
 	addressCodec := cdc.InterfaceRegistry().SigningContext().AddressCodec()
 
@@ -68,12 +64,6 @@ func NewKeeper(
 		panic("x/foundation authority must be the module account")
 	}
 
-	// TODO(@0Tech): remove x/params dependency
-	// set KeyTable if it has not already been set
-	if !subspace.HasKeyTable() {
-		subspace = subspace.WithKeyTable(foundation.ParamKeyTable())
-	}
-
 	return Keeper{
 		cdc:              cdc,
 		storeService:     storeService,
@@ -83,7 +73,6 @@ func NewKeeper(
 		feeCollectorName: feeCollectorName,
 		config:           config,
 		authority:        authority,
-		subspace:         subspace,
 	}
 }
 

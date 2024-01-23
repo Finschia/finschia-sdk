@@ -25,18 +25,17 @@ func (s *KeeperTestSuite) TestBeginBlocker() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
+			s.impl.SetParams(ctx, foundation.Params{
+				FoundationTax: tc.taxRatio,
+			})
+
 			// collect
-			testing := func() {
-				s.impl.SetParams(ctx, foundation.Params{
-					FoundationTax: tc.taxRatio,
-				})
-				internal.BeginBlocker(ctx, s.impl)
-			}
+			err := internal.BeginBlocker(ctx, s.impl)
 			if !tc.valid {
-				s.Require().Panics(testing)
+				s.Require().Error(err)
 				return
 			}
-			s.Require().NotPanics(testing)
+			s.Require().NoError(err)
 
 			if s.deterministic {
 				expectedEvents := sdk.Events{} // TODO

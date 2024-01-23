@@ -11,6 +11,11 @@ import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "lbm/foundation/v1/foundation.proto";
 
+// EventUpdateParams is emitted after updating foundation parameters.
+message EventUpdateParams {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
 // EventFundTreasury is an event emitted when one funds the treasury.
 message EventFundTreasury {
   string   from                            = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];

@@ -26,7 +26,6 @@ func NewKeeper(
 	feeCollectorName string,
 	config foundation.Config,
 	authority string,
-	subspace paramstypes.Subspace,
 ) Keeper {
 	return Keeper{
 		impl: internal.NewKeeper(
@@ -38,7 +37,6 @@ func NewKeeper(
 			feeCollectorName,
 			config,
 			authority,
-			subspace,
 		),
 	}
 }
@@ -86,6 +84,6 @@ func NewFoundationProposalsHandler(k Keeper) govtypes.Handler {
 
 type Migrator = internal.Migrator
 
-func NewMigrator(k Keeper) Migrator {
-	return internal.NewMigrator(k.impl)
+func NewMigrator(k Keeper, subspace paramstypes.Subspace) Migrator {
+	return internal.NewMigrator(k.impl, subspace)
 }

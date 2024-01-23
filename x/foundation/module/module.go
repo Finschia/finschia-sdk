@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	consensusVersion uint64 = 2
+	consensusVersion uint64 = 3
 )
 
 var (
@@ -96,16 +96,18 @@ func (am AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistr
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper   keeper.Keeper
+	subspace paramstypes.Subspace
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, subspace paramstypes.Subspace) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{
 			cdc: cdc,
 		},
-		keeper: keeper,
+		keeper:   keeper,
+		subspace: subspace,
 	}
 }
 
@@ -119,7 +121,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	foundation.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	foundation.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
-	err := keeper.NewMigrator(am.keeper).Register(cfg.RegisterMigration)
+	err := keeper.NewMigrator(am.keeper, am.subspace).Register(cfg.RegisterMigration)
 	if err != nil {
 		panic(err)
 	}
@@ -244,8 +246,8 @@ func ProvideModule(in FoundationInputs) FoundationOutputs {
 		panic(err)
 	}
 
-	k := keeper.NewKeeper(in.Cdc, in.StoreService, in.MsgServiceRouter, in.AuthKeeper, in.BankKeeper, feeCollectorName, config, authorityStr, in.Subspace)
-	m := NewAppModule(in.Cdc, k)
+	k := keeper.NewKeeper(in.Cdc, in.StoreService, in.MsgServiceRouter, in.AuthKeeper, in.BankKeeper, feeCollectorName, config, authorityStr)
+	m := NewAppModule(in.Cdc, k, in.Subspace)
 
 	return FoundationOutputs{
 		Keeper: k,

@@ -10,8 +10,7 @@ import (
 // Keys for foundation store
 // Items are stored with the following key: values
 var (
-	// reserved for the future usage (cosmos-sdk v0.47)
-	// paramsKey         = []byte{0x00}
+	paramsKey         = []byte{0x00}
 	foundationInfoKey = []byte{0x01}
 
 	memberKeyPrefix          = []byte{0x10}

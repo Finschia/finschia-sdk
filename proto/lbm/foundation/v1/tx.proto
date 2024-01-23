@@ -19,6 +19,10 @@ option (gogoproto.goproto_getters_all) = false;
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
+  // UpdateParams defines an operation for updating the x/foundation module
+  // parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
   // FundTreasury defines a method to fund the treasury.
   rpc FundTreasury(MsgFundTreasury) returns (MsgFundTreasuryResponse);
 
@@ -59,6 +63,24 @@ service Msg {
   rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
 }
 
+// MsgUpdateParams is the Msg/UpdateParams request type.
+// NOTE: This is not for tx
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name)           = "lbm-sdk/MsgUpdateParams";
+
+  // authority is the address of the privileged account.
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params defines the x/foundation parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+message MsgUpdateParamsResponse {}
+
 // MsgFundTreasury is the Msg/FundTreasury request type.
 message MsgFundTreasury {
   option (cosmos.msg.v1.signer) = "from";
@@ -86,24 +108,6 @@ message MsgWithdrawFromTreasury {
 
 // MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 message MsgWithdrawFromTreasuryResponse {}
-
-// MsgUpdateParams is the Msg/UpdateParams request type.
-// NOTE: This is not for tx
-message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name)           = "lbm-sdk/MsgUpdateParams";
-
-  // authority is the address of the privileged account.
-  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-
-  // params defines the x/foundation parameters to update.
-  //
-  // NOTE: All parameters must be supplied.
-  Params params = 2 [(gogoproto.nullable) = false];
-}
-
-// MsgUpdateParamsResponse is the Msg/UpdateParams response type.
-message MsgUpdateParamsResponse {}
 
 // MsgUpdateMembers is the Msg/UpdateMembers request type.
 // NOTE: This is not for tx
