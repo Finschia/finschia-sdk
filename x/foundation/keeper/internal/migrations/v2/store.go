@@ -31,7 +31,9 @@ func migrateParams(ctx sdk.Context, store store.KVStore, cdc codec.BinaryCodec, 
 	if bz == nil {
 		return fmt.Errorf("params not found")
 	}
-	store.Delete(ParamsKey)
+	if err := store.Delete(ParamsKey); err != nil {
+		return err
+	}
 
 	var params foundation.Params
 	if err := cdc.Unmarshal(bz, &params); err != nil {

@@ -57,7 +57,9 @@ func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
 func (k Keeper) SetFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
 	store := k.storeService.OpenKVStore(ctx)
 	bz := k.cdc.MustMarshal(&info)
-	store.Set(foundationInfoKey, bz)
+	if err := store.Set(foundationInfoKey, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberRequest) error {
@@ -137,13 +139,17 @@ func (k Keeper) SetMember(ctx sdk.Context, member foundation.Member) {
 	key := memberKey(addr)
 
 	bz := k.cdc.MustMarshal(&member)
-	store.Set(key, bz)
+	if err := store.Set(key, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteMember(ctx sdk.Context, address sdk.AccAddress) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := memberKey(address)
-	store.Delete(key)
+	if err := store.Delete(key); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) iterateMembers(ctx sdk.Context, fn func(member foundation.Member) (stop bool)) {

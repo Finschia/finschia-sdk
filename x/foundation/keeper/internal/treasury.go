@@ -75,5 +75,7 @@ func (k Keeper) SetPool(ctx sdk.Context, pool foundation.Pool) {
 
 	store := k.storeService.OpenKVStore(ctx)
 	key := poolKey
-	store.Set(key, bz)
+	if err := store.Set(key, bz); err != nil {
+		panic(err)
+	}
 }

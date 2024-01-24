@@ -56,12 +56,16 @@ func (k Keeper) SetCensorship(ctx sdk.Context, censorship foundation.Censorship)
 	key := censorshipKey(censorship.MsgTypeUrl)
 
 	if censorship.Authority == foundation.CensorshipAuthorityUnspecified {
-		store.Delete(key)
+		if err := store.Delete(key); err != nil {
+			panic(err)
+		}
 		return
 	}
 
 	bz := k.cdc.MustMarshal(&censorship)
-	store.Set(key, bz)
+	if err := store.Set(key, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) iterateCensorships(ctx sdk.Context, fn func(censorship foundation.Censorship) (stop bool)) {
@@ -186,13 +190,17 @@ func (k Keeper) setAuthorization(ctx sdk.Context, grantee sdk.AccAddress, author
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	if err := store.Set(key, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := grantKey(grantee, msgTypeURL)
-	store.Delete(key)
+	if err := store.Delete(key); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {

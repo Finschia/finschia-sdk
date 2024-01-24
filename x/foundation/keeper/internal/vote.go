@@ -83,7 +83,9 @@ func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) {
 
 	key := voteKey(vote.ProposalId, voter)
 	bz := k.cdc.MustMarshal(&vote)
-	store.Set(key, bz)
+	if err := store.Set(key, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) iterateVotes(ctx sdk.Context, proposalID uint64, fn func(vote foundation.Vote) (stop bool)) {
@@ -127,6 +129,8 @@ func (k Keeper) pruneVotes(ctx sdk.Context, proposalID uint64) {
 
 	store := k.storeService.OpenKVStore(ctx)
 	for _, key := range keys {
-		store.Delete(key)
+		if err := store.Delete(key); err != nil {
+			panic(err)
+		}
 	}
 }

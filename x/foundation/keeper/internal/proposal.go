@@ -33,7 +33,9 @@ func (k Keeper) getPreviousProposalID(ctx sdk.Context) uint64 {
 
 func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
 	store := k.storeService.OpenKVStore(ctx)
-	store.Set(previousProposalIDKey, Uint64ToBytes(id))
+	if err := store.Set(previousProposalIDKey, Uint64ToBytes(id)); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (*uint64, error) {
@@ -230,25 +232,33 @@ func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) {
 	key := proposalKey(proposal.Id)
 
 	bz := k.cdc.MustMarshal(&proposal)
-	store.Set(key, bz)
+	if err := store.Set(key, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := proposalKey(proposalID)
-	store.Delete(key)
+	if err := store.Delete(key); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) addProposalToVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
-	store.Set(key, []byte{})
+	if err := store.Set(key, []byte{}); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
-	store.Delete(key)
+	if err := store.Delete(key); err != nil {
+		panic(err)
+	}
 }
 
 func validateActorForProposal(address string, proposal foundation.Proposal) error {
