@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/viper"
 
 	"cosmossdk.io/log"
-	"cosmossdk.io/simapp"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -32,6 +31,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
+
+	"github.com/Finschia/finschia-sdk/simapp"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -51,19 +52,18 @@ func initCometBFTConfig() *cmtcfg.Config {
 func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
 
-	// WASMConfig defines configuration for the wasm module.
-	type WASMConfig struct {
-		// This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
-		QueryGasLimit uint64 `mapstructure:"query_gas_limit"`
-
-		// Address defines the gRPC-web server to listen on
-		LruSize uint64 `mapstructure:"lru_size"`
+	// CustomConfig defines an arbitrary custom config to extend app.toml.
+	// If you don't need it, you can remove it.
+	// If you wish to add fields that correspond to flags that aren't in the SDK server config,
+	// this custom config can as well help.
+	type CustomConfig struct {
+		CustomField string `mapstructure:"custom-field"`
 	}
 
 	type CustomAppConfig struct {
 		serverconfig.Config `mapstructure:",squash"`
 
-		WASM WASMConfig `mapstructure:"wasm"`
+		Custom CustomConfig `mapstructure:"custom"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -84,21 +84,22 @@ func initAppConfig() (string, interface{}) {
 	srvCfg.MinGasPrices = "0stake"
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 
+	// Now we set the custom config default values.
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		WASM: WASMConfig{
-			LruSize:       1,
-			QueryGasLimit: 300000,
+		Custom: CustomConfig{
+			CustomField: "anything",
 		},
 	}
 
+	// The default SDK app template is defined in serverconfig.DefaultConfigTemplate.
+	// We append the custom config template to the default one.
+	// And we set the default config to the custom app template.
 	customAppTemplate := serverconfig.DefaultConfigTemplate + `
-[wasm]
-# This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
-query_gas_limit = {{ .WASM.QueryGasLimit }}
-# This is the number of wasm vm instances we keep cached in memory for speed-up
-# Warning: this is currently unstable and may lead to crashes, best to keep for 0 unless testing locally
-lru_size = {{ .WASM.LruSize }}`
+[custom]
+# That field will be parsed by server.InterceptConfigsPreRunHandler and held by viper.
+# Do not forget to add quotes around the value if it is a string.
+custom-field = "{{ .Custom.CustomField }}"`
 
 	return customAppTemplate, customAppConfig
 }
@@ -202,7 +203,6 @@ func newApp(
 	appOpts servertypes.AppOptions,
 ) servertypes.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
-
 	return simapp.NewSimApp(
 		logger, db, traceStore, true,
 		appOpts,

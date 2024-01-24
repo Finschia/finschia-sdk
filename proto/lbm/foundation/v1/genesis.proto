@@ -1,0 +1,54 @@
+syntax = "proto3";
+package lbm.foundation.v1;
+
+option go_package            = "github.com/Finschia/finschia-sdk/x/foundation";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "lbm/foundation/v1/foundation.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+
+// GenesisState defines the foundation module's genesis state.
+message GenesisState {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // params defines the module parameters at genesis.
+  Params params = 1 [(gogoproto.nullable) = false];
+
+  // foundation is the foundation info.
+  FoundationInfo foundation = 2 [(gogoproto.nullable) = false];
+
+  // members is the list of the foundation members.
+  repeated Member members = 3 [(gogoproto.nullable) = false];
+
+  // it is used to get the next proposal ID.
+  uint64 previous_proposal_id = 4;
+
+  // proposals is the list of proposals.
+  repeated Proposal proposals = 5 [(gogoproto.nullable) = false];
+
+  // votes is the list of votes.
+  repeated Vote votes = 6 [(gogoproto.nullable) = false];
+
+  // grants
+  repeated GrantAuthorization authorizations = 7 [(gogoproto.nullable) = false];
+
+  // pool
+  Pool pool = 8 [(gogoproto.nullable) = false];
+
+  reserved 9; // previously used tag number for 'gov_mint_left_count'.
+
+  repeated Censorship censorships = 10 [(gogoproto.nullable) = false];
+}
+
+// GrantAuthorization defines authorization grant to grantee via route.
+message GrantAuthorization {
+  option (gogoproto.goproto_getters) = false;
+
+  string grantee = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  google.protobuf.Any authorization = 2
+      [(cosmos_proto.accepts_interface) = "github.com/Finschia/finschia-sdk/x/foundation.Authorization"];
+}

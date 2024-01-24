@@ -1,0 +1,301 @@
+syntax = "proto3";
+package lbm.foundation.v1;
+
+option go_package            = "github.com/Finschia/finschia-sdk/x/foundation";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+// Params defines the parameters for the foundation module.
+message Params {
+  string foundation_tax = 1 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  reserved 2; // previously used tag number for 'censored_msg_type_urls'.
+}
+
+// Censorship states which message is being censored by a certain authority.
+message Censorship {
+  string              msg_type_url = 1;
+  CensorshipAuthority authority    = 2;
+}
+
+// CensorshipAuthority defines the authorities which could be used in Censorship.
+enum CensorshipAuthority {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // CENSORSHIP_AUTHORITY_UNSPECIFIED defines an invalid authority.
+  CENSORSHIP_AUTHORITY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "CensorshipAuthorityUnspecified"];
+  // CENSORSHIP_AUTHORITY_GOVERNANCE defines x/gov authority.
+  CENSORSHIP_AUTHORITY_GOVERNANCE = 1 [(gogoproto.enumvalue_customname) = "CensorshipAuthorityGovernance"];
+  // CENSORSHIP_AUTHORITY_FOUNDATION defines x/foundation authority.
+  CENSORSHIP_AUTHORITY_FOUNDATION = 2 [(gogoproto.enumvalue_customname) = "CensorshipAuthorityFoundation"];
+}
+
+// Member represents a foundation member with an account address and metadata.
+message Member {
+  // address is the member's account address.
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // metadata is any arbitrary metadata to attached to the member.
+  string metadata = 2;
+
+  // added_at is a timestamp specifying when a member was added.
+  google.protobuf.Timestamp added_at = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// MemberRequest represents a foundation member to be used in Msg server requests.
+// Contrary to `Member`, it doesn't have any `added_at` field
+// since this field cannot be set as part of requests.
+message MemberRequest {
+  // address is the member's account address.
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // remove is the flag which allows one to remove the member by setting the flag to true.
+  bool remove = 2;
+
+  // metadata is any arbitrary metadata attached to the member.
+  string metadata = 3;
+}
+
+// ThresholdDecisionPolicy is a decision policy where a proposal passes when it
+// satisfies the two following conditions:
+// 1. The sum of all `YES` voters' weights is greater or equal than the defined
+//    `threshold`.
+// 2. The voting and execution periods of the proposal respect the parameters
+//    given by `windows`.
+message ThresholdDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
+  option (amino.name)                        = "lbm-sdk/ThresholdDecisionPolicy";
+
+  // threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed.
+  string threshold = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+
+  // windows defines the different windows for voting and execution.
+  DecisionPolicyWindows windows = 2;
+}
+
+// PercentageDecisionPolicy is a decision policy where a proposal passes when
+// it satisfies the two following conditions:
+// 1. The percentage of all `YES` voters' weights out of the total group weight
+//    is greater or equal than the given `percentage`.
+// 2. The voting and execution periods of the proposal respect the parameters
+//    given by `windows`.
+message PercentageDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
+  option (amino.name)                        = "lbm-sdk/PercentageDecisionPolicy";
+
+  // percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed.
+  string percentage = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+
+  // windows defines the different windows for voting and execution.
+  DecisionPolicyWindows windows = 2;
+}
+
+// DecisionPolicyWindows defines the different windows for voting and execution.
+message DecisionPolicyWindows {
+  // voting_period is the duration from submission of a proposal to the end of voting period
+  // Within this times votes can be submitted with MsgVote.
+  google.protobuf.Duration voting_period = 1 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+
+  // min_execution_period is the minimum duration after the proposal submission
+  // where members can start sending MsgExec. This means that the window for
+  // sending a MsgExec transaction is:
+  // `[ submission + min_execution_period ; submission + voting_period + max_execution_period]`
+  // where max_execution_period is a app-specific config, defined in the keeper.
+  // If not set, min_execution_period will default to 0.
+  //
+  // Please make sure to set a `min_execution_period` that is smaller than
+  // `voting_period + max_execution_period`, or else the above execution window
+  // is empty, meaning that all proposals created with this decision policy
+  // won't be able to be executed.
+  google.protobuf.Duration min_execution_period = 2 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+}
+
+// OutsourcingDecisionPolicy is a dummy decision policy which is set after
+// the proposal feature has been outsourced to x/group.
+message OutsourcingDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
+
+  string description = 1;
+}
+
+// VoteOption enumerates the valid vote options for a given proposal.
+enum VoteOption {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+  VOTE_OPTION_UNSPECIFIED = 0;
+  // VOTE_OPTION_YES defines a yes vote option.
+  VOTE_OPTION_YES = 1;
+  // VOTE_OPTION_ABSTAIN defines an abstain vote option.
+  VOTE_OPTION_ABSTAIN = 2;
+  // VOTE_OPTION_NO defines a no vote option.
+  VOTE_OPTION_NO = 3;
+  // VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+  VOTE_OPTION_NO_WITH_VETO = 4;
+}
+
+// FoundationInfo represents the high-level on-chain information for the foundation.
+message FoundationInfo {
+  option (gogoproto.goproto_getters) = false;
+
+  // version is used to track changes to the foundation's membership structure that
+  // would break existing proposals. Whenever any member is added or removed,
+  // this version is incremented and will cause proposals based on older versions
+  // of the foundation to fail
+  uint64 version = 1;
+
+  // total_weight is the number of the foundation members.
+  string total_weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+
+  // decision_policy specifies the foundation's decision policy.
+  google.protobuf.Any decision_policy = 3 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
+}
+
+// Proposal defines a foundation proposal. Any member of the foundation can submit a proposal
+// for a group policy to decide upon.
+// A proposal consists of a set of `sdk.Msg`s that will be executed if the proposal
+// passes as well as some optional metadata associated with the proposal.
+message Proposal {
+  option (gogoproto.goproto_getters) = false;
+
+  // id is the unique id of the proposal.
+  uint64 id = 1;
+
+  // metadata is any arbitrary metadata to attached to the proposal.
+  string metadata = 2;
+
+  // proposers are the account addresses of the proposers.
+  repeated string proposers = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // submit_time is a timestamp specifying when a proposal was submitted.
+  google.protobuf.Timestamp submit_time = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+
+  // foundation_version tracks the version of the foundation that this proposal corresponds to.
+  // When foundation info is changed, existing proposals from previous foundation versions will become invalid.
+  uint64 foundation_version = 5;
+
+  // status represents the high level position in the life cycle of the proposal. Initial value is Submitted.
+  ProposalStatus status = 6;
+
+  // final_tally_result contains the sums of all votes for this
+  // proposal for each vote option, after tallying. When querying a proposal
+  // via gRPC, this field is not populated until the proposal's voting period
+  // has ended.
+  TallyResult final_tally_result = 7 [(gogoproto.nullable) = false];
+
+  // voting_period_end is the timestamp before which voting must be done.
+  // Unless a successfull MsgExec is called before (to execute a proposal whose
+  // tally is successful before the voting period ends), tallying will be done
+  // at this point, and the `final_tally_result`, as well
+  // as `status` and `result` fields will be accordingly updated.
+  google.protobuf.Timestamp voting_period_end = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+
+  // executor_result is the final result based on the votes and election rule. Initial value is NotRun.
+  ProposalExecutorResult executor_result = 9;
+
+  // messages is a list of Msgs that will be executed if the proposal passes.
+  repeated google.protobuf.Any messages = 10;
+}
+
+// ProposalStatus defines proposal statuses.
+enum ProposalStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // An empty value is invalid and not allowed.
+  PROPOSAL_STATUS_UNSPECIFIED = 0;
+
+  // Initial status of a proposal when submitted.
+  PROPOSAL_STATUS_SUBMITTED = 1;
+
+  // Final status of a proposal when the final tally is done and the outcome
+  // passes the foundation's decision policy.
+  PROPOSAL_STATUS_ACCEPTED = 2;
+
+  // Final status of a proposal when the final tally is done and the outcome
+  // is rejected by the foundation's decision policy.
+  PROPOSAL_STATUS_REJECTED = 3;
+
+  // Final status of a proposal when the decision policy is modified before the
+  // final tally.
+  PROPOSAL_STATUS_ABORTED = 4;
+
+  // A proposal can be withdrawn before the voting start time by the owner.
+  // When this happens the final status is Withdrawn.
+  PROPOSAL_STATUS_WITHDRAWN = 5;
+}
+
+// ProposalExecutorResult defines types of proposal executor results.
+enum ProposalExecutorResult {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // An empty value is not allowed.
+  PROPOSAL_EXECUTOR_RESULT_UNSPECIFIED = 0;
+
+  // We have not yet run the executor.
+  PROPOSAL_EXECUTOR_RESULT_NOT_RUN = 1;
+
+  // The executor was successful and proposed action updated state.
+  PROPOSAL_EXECUTOR_RESULT_SUCCESS = 2;
+
+  // The executor returned an error and proposed action didn't update state.
+  PROPOSAL_EXECUTOR_RESULT_FAILURE = 3;
+}
+
+// TallyResult represents the sum of votes for each vote option.
+message TallyResult {
+  option (gogoproto.goproto_getters) = false;
+
+  // yes_count is the sum of yes votes.
+  string yes_count = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+
+  // abstain_count is the sum of abstainers.
+  string abstain_count = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+
+  // no is the sum of no votes.
+  string no_count = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+
+  // no_with_veto_count is the sum of veto.
+  string no_with_veto_count = 4 [(gogoproto.nullable) = false, (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
+}
+
+// Vote represents a vote for a proposal.
+message Vote {
+  // proposal is the unique ID of the proposal.
+  uint64 proposal_id = 1;
+
+  // voter is the account address of the voter.
+  string voter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // option is the voter's choice on the proposal.
+  VoteOption option = 3;
+
+  // metadata is any arbitrary metadata to attached to the vote.
+  string metadata = 4;
+
+  // submit_time is the timestamp when the vote was submitted.
+  google.protobuf.Timestamp submit_time = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// Pool is used for tracking treasury.
+message Pool {
+  repeated cosmos.base.v1beta1.DecCoin treasury = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
+}
+
+// FoundationExecProposal is x/gov proposal to trigger the x/foundation messages on behalf of x/gov.
+message FoundationExecProposal {
+  option (amino.name) = "lbm-sdk/FoundationExecProposal";
+
+  string title       = 1;
+  string description = 2;
+
+  // x/foundation messages to execute
+  // all the signers must be x/gov authority.
+  repeated google.protobuf.Any messages = 3;
+}

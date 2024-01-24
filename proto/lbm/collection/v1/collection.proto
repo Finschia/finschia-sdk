@@ -1,0 +1,210 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+option go_package                      = "github.com/Finschia/finschia-sdk/x/collection";
+option (gogoproto.equal_all)           = false;
+option (gogoproto.goproto_getters_all) = false;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Params defines the parameters for the collection module.
+message Params {
+  uint32 depth_limit = 1;
+  uint32 width_limit = 2;
+}
+
+// Contract defines the information of the contract for the collection.
+message Contract {
+  // contract_id defines the unique identifier of the contract.
+  string id = 1;
+  // name defines the human-readable name of the contract.
+  string name = 2;
+  // meta is a brief description of the contract.
+  string meta = 3;
+  // uri for the contract image stored off chain.
+  string uri = 4;
+}
+
+// FTClass defines the class of fungible token.
+//
+// Since: 0.46.0 (finschia)
+message FTClass {
+  option (gogoproto.goproto_getters)         = true;
+  option (cosmos_proto.implements_interface) = "TokenClass";
+
+  // id defines the unique identifier of the token class.
+  // Note: size of the class id is 8 in length.
+  // Note: token id of the fungible token would be `id` + `00000000`.
+  string id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // meta is a brief description of the token class.
+  string meta = 3;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 4;
+  // mintable represents whether the token class is allowed to mint or burn its tokens.
+  bool mintable = 5;
+}
+
+// NFTClass defines the class of non-fungible token.
+//
+// Since: 0.46.0 (finschia)
+message NFTClass {
+  option (gogoproto.goproto_getters)         = true;
+  option (cosmos_proto.implements_interface) = "TokenClass";
+
+  // id defines the unique identifier of the token class.
+  // Note: size of the class id is 8 in length.
+  string id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // meta is a brief description of the token class.
+  string meta = 3;
+}
+
+// NFT defines the information of non-fungible token.
+//
+// Since: 0.46.0 (finschia)
+message NFT {
+  // token id defines the unique identifier of the token.
+  string token_id = 1;
+  // name defines the human-readable name of the token.
+  string name = 2;
+  // meta is a brief description of the token.
+  string meta = 3;
+}
+
+// Deprecated: use NFT
+//
+// OwnerNFT defines the information of non-fungible token.
+message OwnerNFT {
+  option (cosmos_proto.implements_interface) = "Token";
+
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // id defines the unique identifier of the token.
+  string token_id = 2;
+  // name defines the human-readable name of the token.
+  string name = 3;
+  // meta is a brief description of the token.
+  string meta = 4;
+
+  // owner of the token.
+  string owner = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// Deprecated: use FTClass
+//
+// FT defines the information of fungible token.
+message FT {
+  option (cosmos_proto.implements_interface) = "Token";
+
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id defines the unique identifier of the fungible token.
+  string token_id = 2;
+  // name defines the human-readable name of the fungible token.
+  string name = 3;
+  // meta is a brief description of the fungible token.
+  string meta = 4;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 5;
+  // mintable represents whether the fungible token is allowed to be minted or burnt.
+  bool mintable = 6;
+}
+
+// Deprecated: use TokenClass
+//
+// TokenType defines the information of token type.
+// It represents a NFTClass whose class_id is token_type.
+//
+// Note: There is no TokenType instance for FTClass.
+message TokenType {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token type defines the unique identifier of the token type.
+  // the format of the value is identical to that of class_id.
+  string token_type = 2;
+  // name defines the human-readable name of the token type.
+  string name = 3;
+  // meta is a brief description of the token type.
+  string meta = 4;
+}
+
+// Coin defines a token with a token id and an amount.
+message Coin {
+  option (gogoproto.goproto_stringer) = false;
+  option (gogoproto.equal)            = true;
+
+  // token id associated with the token.
+  string token_id = 1;
+  // amount of the token.
+  string amount = 2
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// Grant defines permission given to a grantee.
+//
+// Since: 0.46.0 (finschia)
+message Grant {
+  // address of the grantee.
+  string grantee = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // permission on the contract.
+  Permission permission = 2;
+}
+
+// Permission enumerates the valid permissions on a contract.
+enum Permission {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // unspecified defines the default permission which is invalid.
+  PERMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "PermissionUnspecified"];
+
+  // PERMISSION_ISSUE defines a permission to create a token class.
+  PERMISSION_ISSUE = 1 [(gogoproto.enumvalue_customname) = "PermissionIssue"];
+  // PERMISSION_MODIFY defines a permission to modify a contract.
+  PERMISSION_MODIFY = 2 [(gogoproto.enumvalue_customname) = "PermissionModify"];
+  // PERMISSION_MINT defines a permission to mint tokens of a contract.
+  PERMISSION_MINT = 3 [(gogoproto.enumvalue_customname) = "PermissionMint"];
+  // PERMISSION_BURN defines a permission to burn tokens of a contract.
+  PERMISSION_BURN = 4 [(gogoproto.enumvalue_customname) = "PermissionBurn"];
+}
+
+// Deprecated: use Permission
+//
+// LegacyPermission enumerates the valid permissions on a contract.
+enum LegacyPermission {
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
+
+  // unspecified defines the default permission which is invalid.
+  LEGACY_PERMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "LegacyPermissionUnspecified"];
+
+  // issue defines a permission to create a token class.
+  LEGACY_PERMISSION_ISSUE = 1 [(gogoproto.enumvalue_customname) = "LegacyPermissionIssue"];
+  // modify defines a permission to modify a contract.
+  LEGACY_PERMISSION_MODIFY = 2 [(gogoproto.enumvalue_customname) = "LegacyPermissionModify"];
+  // mint defines a permission to mint tokens of a contract.
+  LEGACY_PERMISSION_MINT = 3 [(gogoproto.enumvalue_customname) = "LegacyPermissionMint"];
+  // burn defines a permission to burn tokens of a contract.
+  LEGACY_PERMISSION_BURN = 4 [(gogoproto.enumvalue_customname) = "LegacyPermissionBurn"];
+}
+
+// Authorization defines an authorization given to the operator on tokens of the holder.
+//
+// Since: 0.46.0 (finschia)
+message Authorization {
+  // address of the holder which authorizes the manipulation of its tokens.
+  string holder = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address of the operator which the authorization is granted to.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// Attribute defines a key and value of the attribute.
+//
+// Since: 0.46.0 (finschia)
+message Attribute {
+  string key   = 1;
+  string value = 2;
+}

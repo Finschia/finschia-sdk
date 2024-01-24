@@ -1,0 +1,298 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+import "lbm/collection/v1/collection.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/collection";
+
+// AttributeKey enumerates the valid attribute keys on x/collection.
+enum AttributeKey {
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
+
+  // unspecified
+  ATTRIBUTE_KEY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
+  // name in Msg/Modify
+  ATTRIBUTE_KEY_NAME = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
+  // meta in Msg/Modify
+  ATTRIBUTE_KEY_META = 2 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
+  reserved 3 to 7;
+  // deprecated: use ATTRIBUTE_KEY_URI
+  ATTRIBUTE_KEY_BASE_IMG_URI = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyBaseImgURI"];
+  reserved 9 to 19;
+  // uri in Msg/Modify
+  ATTRIBUTE_KEY_URI = 20 [(gogoproto.enumvalue_customname) = "AttributeKeyURI"];
+}
+
+// EventSent is emitted when tokens are transferred.
+//
+// Since: 0.46.0 (finschia)
+message EventSent {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the send.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // holder whose tokens were sent.
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // recipient of the tokens.
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // amount of tokens sent.
+  repeated Coin amount = 5 [(gogoproto.nullable) = false];
+}
+
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+//
+// Since: 0.46.0 (finschia)
+message EventAuthorizedOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of a holder which authorized the `operator` address as an operator.
+  string holder = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address which became an operator of `holder`.
+  string operator = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// EventRevokedOperator is emitted when an authorization is revoked.
+//
+// Since: 0.46.0 (finschia)
+message EventRevokedOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of a holder which revoked the `operator` address as an operator.
+  string holder = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address which was revoked as an operator of `holder`.
+  string operator = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// EventCreatedContract is emitted when a new contract is created.
+//
+// Since: 0.46.0 (finschia)
+message EventCreatedContract {
+  // address which created the contract.
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // contract id associated with the contract.
+  string contract_id = 2;
+  // name of the contract.
+  string name = 3;
+  // metadata of the contract.
+  string meta = 4;
+  // uri for the contract image stored off chain.
+  string uri = 5;
+}
+
+// EventCreatedFTClass is emitted when a new fungible token class is created.
+//
+// Since: 0.46.0 (finschia)
+message EventCreatedFTClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the create.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // token id associated with the token class.
+  string token_id = 3;
+  // name of the token class.
+  string name = 4;
+  // metadata of the token class.
+  string meta = 5;
+  // decimals of the token class.
+  int32 decimals = 6;
+  // mintable represents whether the token class is allowed to mint or burn its tokens.
+  bool mintable = 7;
+}
+
+// EventCreatedNFTClass is emitted when a new non-fungible token class is created.
+//
+// Since: 0.46.0 (finschia)
+message EventCreatedNFTClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the create.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // token type associated with the token class.
+  // refer to TokenType for the definition.
+  string token_type = 3;
+  // name of the token class.
+  string name = 4;
+  // metadata of the token class.
+  string meta = 5;
+}
+
+// EventGranted is emitted when a granter grants its permission to a grantee.
+//
+// Info: `granter` would be empty if the permission is granted by an issuance.
+//
+// Since: 0.46.0 (finschia)
+message EventGranted {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the granter which grants the permission.
+  string granter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address of the grantee.
+  string grantee = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // permission on the contract.
+  Permission permission = 4;
+}
+
+// EventRenounced is emitted when a grantee renounced its permission.
+//
+// Since: 0.46.0 (finschia)
+message EventRenounced {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which abandons its grant.
+  string grantee = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // permission on the contract.
+  Permission permission = 3;
+}
+
+// EventMintedFT is emitted when fungible tokens are minted.
+//
+// Since: 0.46.0 (finschia)
+message EventMintedFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the mint.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // recipient of the tokens.
+  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // amount of tokens minted.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// EventMintedNFT is emitted when non-fungible tokens are minted.
+//
+// Since: 0.46.0 (finschia)
+message EventMintedNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the mint.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // recipient of the tokens.
+  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // tokens minted.
+  repeated NFT tokens = 4 [(gogoproto.nullable) = false];
+}
+
+// EventBurned is emitted when tokens are burnt.
+//
+// Since: 0.46.0 (finschia)
+message EventBurned {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the burn.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // holder whose tokens were burned.
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // amount of tokens burned.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// EventModifiedContract is emitted when the information of a contract is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModifiedContract {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
+  // deprecated "base_img_uri" has been replaced by "uri" in the events.
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
+}
+
+// EventModifiedTokenClass is emitted when the information of a token class is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModifiedTokenClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // token type associated with the token class.
+  // refer to TokenType for the definition.
+  string token_type = 3;
+  // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
+  repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+  // type name of the token class.
+  string type_name = 5;
+}
+
+// EventModifiedNFT is emitted when the information of a non-fungible token is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModifiedNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // token id associated with the non-fungible token.
+  string token_id = 3;
+  // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
+  repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+}
+
+// EventAttached is emitted when a token is attached to another.
+//
+// Since: 0.46.0 (finschia)
+message EventAttached {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the attach.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address which holds the tokens.
+  string holder = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // subject of the attach.
+  string subject = 4;
+  // target of the attach.
+  string target = 5;
+}
+
+// EventDetached is emitted when a token is detached from its parent.
+//
+// Since: 0.46.0 (finschia)
+message EventDetached {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the detach.
+  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address which holds the token.
+  string holder = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // token being detached.
+  string subject = 4;
+  // parent token before the detach.
+  string previous_parent = 5;
+}
+
+// EventOwnerChanged is emitted when the owner of token is changed by operation applied to its ancestor.
+//
+// Since: 0.46.0 (finschia)
+message EventOwnerChanged {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the token.
+  string token_id = 2;
+  // address of the previous owner before the change.
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // address of the new owner.
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// EventRootChanged is emitted when the root of token is changed by operation applied to its ancestor.
+//
+// Since: 0.46.0 (finschia)
+message EventRootChanged {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the token.
+  string token_id = 2;
+  // token id of the previous root before the change.
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // token id of the new root.
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}

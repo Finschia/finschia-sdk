@@ -3,11 +3,7 @@ run:
   timeout: 15m
   sort-results: true
   allow-parallel-runners: true
-  exclude-dir: testutil/testdata
   skip-files:
-    - server/grpc/gogoreflection/fix_registration.go
-    - "fix_registration.go"
-    - "x/bank/migrations/v4/gen_state_test.go"
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
     - ".*\\.pulsar\\.go$"
@@ -70,6 +66,7 @@ linters-settings:
       - default # Default section: contains all imports that could not be matched to another section type.
       - prefix(cosmossdk.io)
       - prefix(github.com/cosmos/cosmos-sdk)
+      - prefix(github.com/Finschia/finschia-sdk)
 
   gosec:
     # To select a subset of rules to run.

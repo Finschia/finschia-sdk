@@ -1,0 +1,14 @@
+syntax = "proto3";
+package lbm.bankplus.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/bankplus/types";
+
+// InactiveAddr models the blocked address for the bankplus module
+message InactiveAddr {
+  option (gogoproto.equal) = true;
+
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
