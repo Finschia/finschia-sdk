@@ -13,3 +13,6 @@
 #   - x/*/client/**/*
 # "Type: ADR":
 #   - docs/architecture/**/*
+"C:x/collection":
+  - x/collection/**/*
+  - x/collection-token/**/*
