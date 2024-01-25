@@ -31,10 +31,12 @@ var _ stakingtypes.MsgServer = msgServer{}
 func (k msgServer) CreateValidator(goCtx context.Context, msg *stakingtypes.MsgCreateValidator) (*stakingtypes.MsgCreateValidatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	grantee, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
-		return nil, errors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", msg.DelegatorAddress)
+		return nil, errors.ErrInvalidAddress.Wrapf("invalid validator address: %s", msg.ValidatorAddress)
 	}
+
+	grantee := sdk.AccAddress(valAddr)
 
 	if err := k.fk.Accept(ctx, grantee, msg); err != nil {
 		return nil, err
