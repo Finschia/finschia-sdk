@@ -140,8 +140,11 @@ message Coin {
   // token id associated with the token.
   string token_id = 1;
   // amount of the token.
-  string amount = 2
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 // Grant defines permission given to a grantee.

@@ -111,6 +111,34 @@ service Msg {
   // Fires:
   // - EventRenounced
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
+
+  // Attach defines a method to attach a token to another token.
+  // Fires:
+  // - EventAttach
+  // - attach (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  rpc Attach(MsgAttach) returns (MsgAttachResponse);
+
+  // Detach defines a method to detach a token from another token.
+  // Fires:
+  // - EventDetach
+  // - detach (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  rpc Detach(MsgDetach) returns (MsgDetachResponse);
+
+  // OperatorAttach defines a method to attach a token to another token by operator.
+  // Fires:
+  // - EventAttach
+  // - attach_from (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
+
+  // OperatorDetach defines a method to detach a token from another token by operator.
+  // Fires:
+  // - EventDetach
+  // - detach_from (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
 }
 
 // MsgSendFT is the Msg/SendFT request type.
@@ -269,8 +297,11 @@ message MsgIssueFT {
   // the amount of tokens to mint on the issuance.
   // Note: if you provide negative amount, a panic may result.
   // Note: amount may be zero.
-  string amount = 8
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 8 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.
