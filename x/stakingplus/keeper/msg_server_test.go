@@ -31,7 +31,9 @@ func (s *KeeperTestSuite) TestMsgCreateValidator() {
 				sdk.ValAddress(tc.delegator).String(),
 				pk,
 				delegation,
-				stakingtypes.Description{},
+				stakingtypes.Description{
+					Moniker: "Test Validator",
+				},
 				stakingtypes.NewCommissionRates(math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
 				delegation.Amount,
 			)
