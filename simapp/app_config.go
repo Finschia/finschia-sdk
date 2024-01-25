@@ -72,6 +72,10 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	collectionmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
+	"github.com/Finschia/finschia-sdk/x/collection"
+	_ "github.com/Finschia/finschia-sdk/x/collection/module" // import for side-effects
 )
 
 var (
@@ -84,6 +88,7 @@ var (
 		{Account: stakingtypes.NotBondedPoolName, Permissions: []string{authtypes.Burner, stakingtypes.ModuleName}},
 		{Account: govtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		{Account: nft.ModuleName},
+		{Account: collection.ModuleName},
 	}
 
 	// blocked account addresses
@@ -94,6 +99,7 @@ var (
 		stakingtypes.BondedPoolName,
 		stakingtypes.NotBondedPoolName,
 		nft.ModuleName,
+		collection.ModuleName,
 		// We allow the following module accounts to receive funds:
 		// govtypes.ModuleName
 	}
@@ -156,6 +162,7 @@ var (
 						upgradetypes.ModuleName,
 						vestingtypes.ModuleName,
 						circuittypes.ModuleName,
+						collection.ModuleName,
 					},
 					// When ExportGenesis is not specified, the export genesis module order
 					// is equal to the init genesis order
@@ -259,6 +266,10 @@ var (
 			{
 				Name:   circuittypes.ModuleName,
 				Config: appconfig.WrapAny(&circuitmodulev1.Module{}),
+			},
+			{
+				Name:   collection.ModuleName,
+				Config: appconfig.WrapAny(&collectionmodulev1.Module{}),
 			},
 		},
 	}),

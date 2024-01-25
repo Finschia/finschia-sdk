@@ -46,6 +46,8 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+
+	collectionkeeper "github.com/Finschia/finschia-sdk/x/collection/keeper"
 )
 
 // DefaultNodeHome default home directories for the application daemon
@@ -84,6 +86,7 @@ type SimApp struct {
 	NFTKeeper             nftkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
 	CircuitBreakerKeeper  circuitkeeper.Keeper
+	CollectionKeeper      collectionkeeper.Keeper
 
 	// simulation manager
 	sm *module.SimulationManager
@@ -195,6 +198,7 @@ func NewSimApp(
 		&app.NFTKeeper,
 		&app.ConsensusParamsKeeper,
 		&app.CircuitBreakerKeeper,
+		&app.CollectionKeeper,
 	); err != nil {
 		panic(err)
 	}
