@@ -89,7 +89,7 @@ func TestAminoJSON(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		msg      legacytx.LegacyMsg
+		msg      sdk.Msg
 		expected string
 	}{
 		"MsgFundTreasury": {

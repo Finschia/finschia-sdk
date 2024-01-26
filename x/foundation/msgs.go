@@ -6,34 +6,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/Finschia/finschia-sdk/x/foundation/codec"
 )
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgUpdateParams) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgFundTreasury) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgWithdrawFromTreasury) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgUpdateMembers) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgUpdateDecisionPolicy) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
 
 func (m MsgUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {
 	if m.DecisionPolicy == nil {
@@ -88,36 +61,6 @@ func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) err
 	return UnpackInterfaces(unpacker, m.Messages)
 }
 
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgSubmitProposal) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgWithdrawProposal) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgVote) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgExec) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgLeaveFoundation) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgUpdateCensorship) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
 func (m MsgGrant) GetAuthorization() Authorization {
 	if m.Authorization == nil {
 		return nil
@@ -143,14 +86,4 @@ func (m *MsgGrant) SetAuthorization(a Authorization) error {
 func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	var authorization Authorization
 	return unpacker.UnpackAny(m.Authorization, &authorization)
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgGrant) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgRevoke) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
