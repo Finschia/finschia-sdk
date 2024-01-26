@@ -6,4 +6,6 @@ use (
 	.
 	./api
 	./simapp
+	./x/collection
+	./x/collection-token
 )
