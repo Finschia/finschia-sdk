@@ -69,6 +69,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#1078](https://github.com/Finschia/finschia-sdk/pull/1078) fix tag comments in github actions workflow docker.yml
 * (repo) [\#1157](https://github.com/Finschia/finschia-sdk/pull/1157) setup CODEOWNERS and backport action
 * (ci) [\#1160](https://github.com/Finschia/finschia-sdk/pull/1160) remove autopr ci
+* (ci) [\#1215](https://github.com/Finschia/finschia-sdk/pull/1215) bump cosmos-sdk #18710 because of broken action with v5(v4 is fine)
 
 ### Document Updates
 * (docs) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
