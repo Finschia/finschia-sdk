@@ -146,7 +146,7 @@ func init() {
 	)
 }
 
-type ModuleInputs struct {
+type StakingplusInputs struct {
 	depinject.In
 
 	Config                *modulev1.Module
@@ -162,7 +162,7 @@ type ModuleInputs struct {
 	LegacySubspace exported.Subspace `optional:"true"`
 }
 
-func ProvideModule(in ModuleInputs) staking.ModuleOutputs {
+func ProvideModule(in StakingplusInputs) staking.ModuleOutputs {
 	// default to governance authority if not provided
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 
