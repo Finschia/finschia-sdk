@@ -4,11 +4,11 @@ go 1.21
 
 require (
 	cosmossdk.io/api v0.7.2
-	cosmossdk.io/core v0.12.0
+	cosmossdk.io/core v0.11.0
 	cosmossdk.io/depinject v1.0.0-alpha.4
-	cosmossdk.io/errors v1.0.1
+	cosmossdk.io/errors v1.0.0
 	cosmossdk.io/log v1.3.0
-	cosmossdk.io/store v1.0.2
+	cosmossdk.io/store v1.0.1
 	github.com/cosmos/cosmos-sdk v0.50.2
 	github.com/gogo/protobuf v1.3.2
 )
