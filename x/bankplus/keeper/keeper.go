@@ -11,7 +11,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/bank/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var _ Keeper = (*BaseKeeper)(nil)
@@ -38,7 +37,7 @@ type BaseKeeper struct {
 }
 
 func NewBaseKeeper(
-	cdc codec.Codec, storeService store.KVStoreService, ak types.AccountKeeper, paramSpace paramtypes.Subspace,
+	cdc codec.Codec, storeService store.KVStoreService, ak types.AccountKeeper,
 	blockedAddr map[string]bool, deactMultiSend bool, authority string, logger log.Logger,
 ) BaseKeeper {
 	return BaseKeeper{
