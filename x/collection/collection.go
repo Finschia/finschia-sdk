@@ -78,6 +78,7 @@ func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpa
 // FTClass
 var _ TokenClass = (*FTClass)(nil)
 
+//lint:ignore var-naming
 func (c *FTClass) SetId(ids *NextClassIDs) {
 	id := ids.Fungible
 	ids.Fungible = id.Incr()
@@ -114,6 +115,7 @@ func (c FTClass) ValidateBasic() error {
 // NFTClass
 var _ TokenClass = (*NFTClass)(nil)
 
+//lint:ignore var-naming
 func (c *NFTClass) SetId(ids *NextClassIDs) {
 	id := ids.NonFungible
 	ids.NonFungible = id.Incr()

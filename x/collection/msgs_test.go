@@ -483,7 +483,7 @@ func TestMsgCreateContract(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	name := "tibetian fox"
+	const name = "tibetian fox"
 	uri := "file:///tibetian_fox.png"
 	meta := "Tibetian fox"
 	testCases := map[string]struct {
