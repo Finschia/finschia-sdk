@@ -28,13 +28,19 @@ func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddre
 	store := keeper.storeService.OpenKVStore(ctx)
 	blockedCAddr := types.InactiveAddr{Address: address.String()}
 	bz := keeper.cdc.MustMarshal(&blockedCAddr)
-	store.Set(inactiveAddrKey(address), bz)
+	err := store.Set(inactiveAddrKey(address), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // deleteFromInactiveAddr deletes blocked address from store
 func (keeper BaseKeeper) deleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := keeper.storeService.OpenKVStore(ctx)
-	store.Delete(inactiveAddrKey(address))
+	err := store.Delete(inactiveAddrKey(address))
+	if err != nil {
+		panic(err)
+	}
 }
 
 // loadAllInactiveAddrs loads all blocked address and set to `inactiveAddr`.
