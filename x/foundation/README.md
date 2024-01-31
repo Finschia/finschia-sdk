@@ -1,9 +1,6 @@
-<!--
-order: 0
-title: Foundation Overview
-parent:
-  title: "foundation"
--->
+---
+sidebar_position: 1
+---
 
 # `x/foundation`
 
