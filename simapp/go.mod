@@ -16,7 +16,7 @@ require (
 	cosmossdk.io/x/evidence v0.1.0
 	cosmossdk.io/x/feegrant v0.1.0
 	cosmossdk.io/x/nft v0.1.0
-	cosmossdk.io/x/tx v0.12.0
+	cosmossdk.io/x/tx v0.12.0 // indirect
 	cosmossdk.io/x/upgrade v0.1.1
 	github.com/Finschia/finschia-sdk/api v0.0.0-20231227090232-78fde403b78c
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
@@ -26,7 +26,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.50.2
 	github.com/cosmos/gogoproto v1.4.11
 	github.com/golang/mock v1.6.0
-	github.com/spf13/cast v1.5.1
+	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
