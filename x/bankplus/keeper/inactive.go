@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -17,8 +19,15 @@ func inactiveAddrKey(addr sdk.AccAddress) []byte {
 	return append(inactiveAddrsKeyPrefix, addr.Bytes()...)
 }
 
+// isStoredInactiveAddr checks if the address is stored or not as blocked address
+func (keeper BaseKeeper) isStoredInactiveAddr(ctx context.Context, address sdk.AccAddress) bool {
+	store := keeper.storeService.OpenKVStore(ctx)
+	bz, _ := store.Get(inactiveAddrKey(address))
+	return bz != nil
+}
+
 // addToInactiveAddr adds a blocked address to the store.
-func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (keeper BaseKeeper) addToInactiveAddr(ctx context.Context, address sdk.AccAddress) {
 	store := keeper.storeService.OpenKVStore(ctx)
 	blockedCAddr := types.InactiveAddr{Address: address.String()}
 	bz := keeper.cdc.MustMarshal(&blockedCAddr)
@@ -29,7 +38,7 @@ func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddre
 }
 
 // deleteFromInactiveAddr deletes blocked address from store
-func (keeper BaseKeeper) deleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (keeper BaseKeeper) deleteFromInactiveAddr(ctx context.Context, address sdk.AccAddress) {
 	store := keeper.storeService.OpenKVStore(ctx)
 	err := store.Delete(inactiveAddrKey(address))
 	if err != nil {
@@ -40,7 +49,7 @@ func (keeper BaseKeeper) deleteFromInactiveAddr(ctx sdk.Context, address sdk.Acc
 // loadAllInactiveAddrs loads all blocked address and set to `inactiveAddr`.
 // This function is executed when the app is initiated and save all inactive address in caches
 // in order to prevent to query to store in every time to send
-func (keeper BaseKeeper) loadAllInactiveAddrs(ctx sdk.Context) {
+func (keeper BaseKeeper) loadAllInactiveAddrs(ctx context.Context) {
 	store := keeper.storeService.OpenKVStore(ctx)
 	adapter := runtime.KVStoreAdapter(store)
 	iterator := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
