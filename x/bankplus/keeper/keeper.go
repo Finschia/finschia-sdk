@@ -19,11 +19,11 @@ var _ Keeper = (*BaseKeeper)(nil)
 type Keeper interface {
 	bankkeeper.Keeper
 
-	AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
-	DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
+	AddToInactiveAddr(ctx context.Context, address sdk.AccAddress)
+	DeleteFromInactiveAddr(ctx context.Context, address sdk.AccAddress)
 	IsInactiveAddr(address sdk.AccAddress) bool
 
-	InitializeBankPlus(ctx sdk.Context)
+	InitializeBankPlus(ctx context.Context)
 }
 
 type BaseKeeper struct {
@@ -51,7 +51,7 @@ func NewBaseKeeper(
 	}
 }
 
-func (keeper BaseKeeper) InitializeBankPlus(ctx sdk.Context) {
+func (keeper BaseKeeper) InitializeBankPlus(ctx context.Context) {
 	keeper.loadAllInactiveAddrs(ctx)
 }
 
@@ -120,7 +120,7 @@ func (keeper BaseKeeper) SendCoins(ctx context.Context, fromAddr, toAddr sdk.Acc
 }
 
 // AddToInactiveAddr adds the address to `inactiveAddr`.
-func (keeper BaseKeeper) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (keeper BaseKeeper) AddToInactiveAddr(ctx context.Context, address sdk.AccAddress) {
 	if !keeper.inactiveAddrs[address.String()] {
 		keeper.inactiveAddrs[address.String()] = true
 
@@ -129,7 +129,7 @@ func (keeper BaseKeeper) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddre
 }
 
 // DeleteFromInactiveAddr removes the address from `inactiveAddr`.
-func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx context.Context, address sdk.AccAddress) {
 	if keeper.inactiveAddrs[address.String()] {
 		delete(keeper.inactiveAddrs, address.String())
 

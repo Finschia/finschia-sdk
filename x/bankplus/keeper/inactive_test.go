@@ -43,20 +43,25 @@ func (s *BankPlusTestSuite) SetupTest() {
 	ctrl := gomock.NewController(s.T())
 	mockAccKeeper := banktestutil.NewMockAccountKeeper(ctrl)
 	mockAccKeeper.EXPECT().AddressCodec().Return(codec.NewBech32Codec("link")).AnyTimes()
+
 	codec := codectestutil.CodecOptions{
 		AccAddressPrefix: "link",
 		ValAddressPrefix: "linkvaloper",
 	}.NewCodec()
 	s.mockCtrl = ctrl
+	authority, err := codec.InterfaceRegistry().
+		SigningContext().
+		AddressCodec().
+		BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
+	s.Require().NoError(err)
 
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 	s.keeper = NewBaseKeeper(
 		codec,
 		kvStoreService,
 		mockAccKeeper,
 		map[string]bool{},
 		true,
-		authority.String(),
+		authority,
 		log.NewNopLogger())
 }
 
