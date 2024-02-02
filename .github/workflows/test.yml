@@ -187,7 +187,7 @@ jobs:
             sed -i.bak "/$(echo $filename | sed 's/\//\\\//g')/d" coverage.txt
           done
         if: env.GIT_DIFF
-      - uses: codecov/codecov-action@v3.1.5
+      - uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.txt
