@@ -13,3 +13,5 @@
 #   - x/*/client/**/*
 # "Type: ADR":
 #   - docs/architecture/**/*
+"C:x/foundation":
+  - x/foundation/**/*

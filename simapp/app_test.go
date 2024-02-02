@@ -45,6 +45,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+
+	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
 )
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
@@ -214,6 +216,7 @@ func TestRunMigrations(t *testing.T) {
 					"evidence":     evidence.AppModule{}.ConsensusVersion(),
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
+					"foundation":   foundationmodule.AppModule{}.ConsensusVersion(),
 				},
 			)
 			if tc.expRunErr {

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package lbm.foundation.module.v1;
+
+import "cosmos/app/v1alpha1/module.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+
+// Module is the config object of the foundation module.
+message Module {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import: "github.com/Finschia/finschia-sdk/x/foundation"
+  };
+
+  // authority defines the custom module authority. If not set, defaults to the governance module.
+  string authority = 1;
+
+  string fee_collector_name = 2;
+
+  // MaxExecutionPeriod defines the max duration after a proposal's voting period ends that members can send a MsgExec
+  // to execute the proposal.
+  google.protobuf.Duration max_execution_period = 3 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+
+  // MaxMetadataLen defines the max length of the metadata bytes field for various entities within the foundation
+  // module. Defaults to 255 if not explicitly set.
+  uint64 max_metadata_len = 4;
+}
