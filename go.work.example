@@ -6,5 +6,7 @@ use (
 	.
 	./api
 	./simapp
+	./tests
+	./x/foundation
 	./x/bankplus
 )

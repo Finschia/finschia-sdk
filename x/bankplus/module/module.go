@@ -9,6 +9,7 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -115,7 +116,7 @@ type ModuleInputs struct {
 	Logger       log.Logger
 
 	AccountKeeper banktypes.AccountKeeper
-	//DeactMultiSend bool // FIXME: inject properly
+	// DeactMultiSend bool // FIXME: inject properly
 
 	// LegacySubspace is used solely for migration of x/params managed parameters
 	LegacySubspace exported.Subspace `optional:"true"`
@@ -148,7 +149,7 @@ func ProvideModule(in ModuleInputs) bank.ModuleOutputs {
 		in.StoreService,
 		in.AccountKeeper,
 		blockedAddresses,
-		true, //in.DeactMultiSend, // FIXME: inject properly
+		true, // in.DeactMultiSend, // FIXME: inject properly
 		authority.String(),
 		in.Logger,
 	)
