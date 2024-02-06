@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
@@ -29,10 +30,11 @@ type Keeper interface {
 type BaseKeeper struct {
 	bankkeeper.BaseKeeper
 
-	ak           types.AccountKeeper
-	cdc          codec.Codec
-	storeService store.KVStoreService
+	ak      types.AccountKeeper
+	cdc     codec.Codec
+	addrCdc address.Codec
 
+	storeService   store.KVStoreService
 	inactiveAddrs  map[string]bool
 	deactMultiSend bool
 }
@@ -48,6 +50,7 @@ func NewBaseKeeper(
 		storeService:   storeService,
 		inactiveAddrs:  map[string]bool{},
 		deactMultiSend: deactMultiSend,
+		addrCdc:        cdc.InterfaceRegistry().SigningContext().AddressCodec(),
 	}
 }
 
@@ -104,7 +107,11 @@ func (keeper BaseKeeper) SendCoinsFromAccountToModule(
 }
 
 func (keeper BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
-	return keeper.inactiveAddrs[addr.String()]
+	addrString, err := keeper.addrCdc.BytesToString(addr)
+	if err != nil {
+		panic(err)
+	}
+	return keeper.inactiveAddrs[addrString]
 }
 
 // SendCoins transfers amt coins from a sending account to a receiving account.
@@ -120,26 +127,38 @@ func (keeper BaseKeeper) SendCoins(ctx context.Context, fromAddr, toAddr sdk.Acc
 }
 
 // AddToInactiveAddr adds the address to `inactiveAddr`.
-func (keeper BaseKeeper) AddToInactiveAddr(ctx context.Context, address sdk.AccAddress) {
-	if !keeper.inactiveAddrs[address.String()] {
-		keeper.inactiveAddrs[address.String()] = true
+func (keeper BaseKeeper) AddToInactiveAddr(ctx context.Context, addr sdk.AccAddress) {
+	addrString, err := keeper.addrCdc.BytesToString(addr)
+	if err != nil {
+		panic(err)
+	}
+	if !keeper.inactiveAddrs[addrString] {
+		keeper.inactiveAddrs[addrString] = true
 
-		keeper.addToInactiveAddr(ctx, address)
+		keeper.addToInactiveAddr(ctx, addr)
 	}
 }
 
 // DeleteFromInactiveAddr removes the address from `inactiveAddr`.
-func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx context.Context, address sdk.AccAddress) {
-	if keeper.inactiveAddrs[address.String()] {
-		delete(keeper.inactiveAddrs, address.String())
+func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx context.Context, addr sdk.AccAddress) {
+	addrString, err := keeper.addrCdc.BytesToString(addr)
+	if err != nil {
+		panic(err)
+	}
+	if keeper.inactiveAddrs[addrString] {
+		delete(keeper.inactiveAddrs, addrString)
 
-		keeper.deleteFromInactiveAddr(ctx, address)
+		keeper.deleteFromInactiveAddr(ctx, addr)
 	}
 }
 
 // IsInactiveAddr returns if the address is added in inactiveAddr.
-func (keeper BaseKeeper) IsInactiveAddr(address sdk.AccAddress) bool {
-	return keeper.inactiveAddrs[address.String()]
+func (keeper BaseKeeper) IsInactiveAddr(addr sdk.AccAddress) bool {
+	addrString, err := keeper.addrCdc.BytesToString(addr)
+	if err != nil {
+		panic(err)
+	}
+	return keeper.inactiveAddrs[addrString]
 }
 
 func (keeper BaseKeeper) InputOutputCoins(ctx context.Context, input types.Input, outputs []types.Output) error {

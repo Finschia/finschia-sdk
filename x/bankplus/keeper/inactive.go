@@ -29,10 +29,14 @@ func (keeper BaseKeeper) isStoredInactiveAddr(ctx context.Context, address sdk.A
 // addToInactiveAddr adds a blocked address to the store.
 func (keeper BaseKeeper) addToInactiveAddr(ctx context.Context, address sdk.AccAddress) {
 	store := keeper.storeService.OpenKVStore(ctx)
-	blockedCAddr := types.InactiveAddr{Address: address.String()}
-	bz := keeper.cdc.MustMarshal(&blockedCAddr)
-	err := store.Set(inactiveAddrKey(address), bz)
+	addrString, err := keeper.addrCdc.BytesToString(address)
 	if err != nil {
+		panic(err)
+	}
+
+	blockedCAddr := types.InactiveAddr{Address: addrString}
+	bz := keeper.cdc.MustMarshal(&blockedCAddr)
+	if err := store.Set(inactiveAddrKey(address), bz); err != nil {
 		panic(err)
 	}
 }

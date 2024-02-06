@@ -122,19 +122,35 @@ type ModuleInputs struct {
 	LegacySubspace exported.Subspace `optional:"true"`
 }
 
-func ProvideModule(in ModuleInputs) bank.ModuleOutputs {
+type ModuleOutputs struct {
+	depinject.Out
+
+	BankKeeper keeper.BaseKeeper
+	Module     appmodule.AppModule
+}
+
+func ProvideModule(in ModuleInputs) ModuleOutputs {
 	// Configure blocked module accounts.
 	//
 	// Default behavior for blockedAddresses is to regard any module mentioned in
 	// AccountKeeper's module account permissions as blocked.
 	blockedAddresses := make(map[string]bool)
+	addrCodec := in.Cdc.InterfaceRegistry().SigningContext().AddressCodec()
 	if len(in.Config.BlockedModuleAccountsOverride) > 0 {
 		for _, moduleName := range in.Config.BlockedModuleAccountsOverride {
-			blockedAddresses[authtypes.NewModuleAddress(moduleName).String()] = true
+			moduleAddrString, err := addrCodec.BytesToString(authtypes.NewModuleAddress(moduleName))
+			if err != nil {
+				panic(err)
+			}
+			blockedAddresses[moduleAddrString] = true
 		}
 	} else {
 		for _, permission := range in.AccountKeeper.GetModulePermissions() {
-			blockedAddresses[permission.GetAddress().String()] = true
+			permAddr, err := addrCodec.BytesToString(permission.GetAddress())
+			if err != nil {
+				panic(err)
+			}
+			blockedAddresses[permAddr] = true
 		}
 	}
 
@@ -143,6 +159,10 @@ func ProvideModule(in ModuleInputs) bank.ModuleOutputs {
 	if in.Config.Authority != "" {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
+	authorityString, err := addrCodec.BytesToString(authority)
+	if err != nil {
+		panic(err)
+	}
 
 	bankKeeper := keeper.NewBaseKeeper(
 		in.Cdc,
@@ -150,12 +170,13 @@ func ProvideModule(in ModuleInputs) bank.ModuleOutputs {
 		in.AccountKeeper,
 		blockedAddresses,
 		true, // in.DeactMultiSend, // FIXME: inject properly
-		authority.String(),
+		authorityString,
 		in.Logger,
 	)
+
 	m := NewAppModule(in.Cdc, bankKeeper, in.AccountKeeper, in.LegacySubspace)
-	return bank.ModuleOutputs{
-		BankKeeper: bankKeeper.BaseKeeper,
+	return ModuleOutputs{
+		BankKeeper: bankKeeper,
 		Module:     m,
 	}
 }
