@@ -92,7 +92,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 
 // RegisterServices registers module services.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper, am.fk))
+	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(stakingkeeper.NewMsgServerImpl(am.keeper), am.fk, am.keeper.ValidatorAddressCodec()))
 	querier := stakingkeeper.Querier{Keeper: am.keeper}
 	stakingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
 

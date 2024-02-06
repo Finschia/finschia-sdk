@@ -7,25 +7,24 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/Finschia/finschia-sdk/x/stakingplus"
 )
 
 type msgServer struct {
-	stakingtypes.MsgServer
+	stakingplus.StakingMsgServer
 	fk       stakingplus.FoundationKeeper
 	valCodec addresscodec.Codec
 }
 
 // NewMsgServerImpl returns an implementation of the staking MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper *stakingkeeper.Keeper, fk stakingplus.FoundationKeeper) stakingtypes.MsgServer {
+func NewMsgServerImpl(ms stakingplus.StakingMsgServer, fk stakingplus.FoundationKeeper, vc addresscodec.Codec) stakingtypes.MsgServer {
 	return &msgServer{
-		MsgServer: stakingkeeper.NewMsgServerImpl(keeper),
-		valCodec:  keeper.ValidatorAddressCodec(),
-		fk:        fk,
+		StakingMsgServer: ms,
+		fk:               fk,
+		valCodec:         vc,
 	}
 }
 
@@ -45,5 +44,5 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *stakingtypes.MsgC
 		return nil, err
 	}
 
-	return k.MsgServer.CreateValidator(goCtx, msg)
+	return k.StakingMsgServer.CreateValidator(goCtx, msg)
 }

@@ -2,22 +2,25 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
+	"cosmossdk.io/store"
+	"cosmossdk.io/store/metrics"
+	storetypes "cosmossdk.io/store/types"
 
-	"github.com/cosmos/cosmos-sdk/runtime"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/stakingplus/keeper"
+	"github.com/Finschia/finschia-sdk/x/stakingplus/module"
 	"github.com/Finschia/finschia-sdk/x/stakingplus/testutil"
 )
 
@@ -25,33 +28,28 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
 
-	app              *runtime.App
-	accountKeeper    authkeeper.AccountKeeper
-	bankKeeper       bankkeeper.Keeper
 	foundationKeeper *testutil.MockFoundationKeeper
-	stakingKeeper    *stakingkeeper.Keeper
+	stakingMsgServer *testutil.MockStakingMsgServer
 	msgServer        stakingtypes.MsgServer
 }
 
 func (s *KeeperTestSuite) SetupTest() {
 	ctrl := gomock.NewController(s.T())
+	s.stakingMsgServer = testutil.NewMockStakingMsgServer(ctrl)
 	s.foundationKeeper = testutil.NewMockFoundationKeeper(ctrl)
 
-	app, err := simtestutil.Setup(
-		depinject.Configs(
-			testutil.AppConfig,
-			depinject.Supply(log.NewNopLogger()),
-		),
-		&s.accountKeeper,
-		&s.bankKeeper,
-		&s.stakingKeeper,
-	)
+	key := storetypes.NewKVStoreKey(foundation.StoreKey)
+	tkey := storetypes.NewTransientStoreKey("transient_test")
+	db := dbm.NewMemDB()
+	cms := store.NewCommitMultiStore(db, log.NewNopLogger(), metrics.NewNoOpMetrics())
+	cms.MountStoreWithDB(key, storetypes.StoreTypeIAVL, db)
+	cms.MountStoreWithDB(tkey, storetypes.StoreTypeTransient, db)
+	err := cms.LoadLatestVersion()
 	s.Require().NoError(err)
+	s.ctx = sdk.NewContext(cms, cmtproto.Header{Time: time.Now()}, false, log.NewNopLogger())
 
-	s.app = app
-	s.ctx = s.app.BaseApp.NewContext(false)
-
-	s.msgServer = keeper.NewMsgServerImpl(s.stakingKeeper, s.foundationKeeper)
+	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
+	s.msgServer = keeper.NewMsgServerImpl(s.stakingMsgServer, s.foundationKeeper, encCfg.InterfaceRegistry.SigningContext().ValidatorAddressCodec())
 }
 
 func TestKeeperTestSuite(t *testing.T) {
