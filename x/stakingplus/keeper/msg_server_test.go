@@ -3,17 +3,18 @@ package keeper_test
 import (
 	"fmt"
 
+	"github.com/cometbft/cometbft/crypto/secp256k1"
+	"github.com/golang/mock/gomock"
+
 	"cosmossdk.io/math"
 
-	"github.com/Finschia/finschia-sdk/x/stakingplus"
-	"github.com/cometbft/cometbft/crypto/secp256k1"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/golang/mock/gomock"
+	"github.com/Finschia/finschia-sdk/x/stakingplus"
 )
 
 func (s *KeeperTestSuite) TestMsgCreateValidator() {
