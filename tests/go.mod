@@ -6,7 +6,7 @@ require (
 	cosmossdk.io/api v0.7.2 // indirect
 	cosmossdk.io/core v0.11.0
 	cosmossdk.io/depinject v1.0.0-alpha.4 // indirect
-	cosmossdk.io/errors v1.0.0 // indirect
+	cosmossdk.io/errors v1.0.0
 	cosmossdk.io/log v1.2.1 // indirect
 	cosmossdk.io/math v1.2.0
 	cosmossdk.io/store v1.0.1 // indirect
@@ -33,6 +33,8 @@ require (
 require (
 	github.com/Finschia/finschia-sdk/simapp v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
+	github.com/Finschia/finschia-sdk/x/stakingplus v0.0.0-00010101000000-000000000000
+	github.com/cosmos/go-bip39 v1.0.0
 	github.com/gogo/protobuf v1.3.2
 )
 
@@ -42,7 +44,6 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/iam v1.1.3 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
-	cosmossdk.io/client/v2 v2.0.0-beta.1 // indirect
 	cosmossdk.io/collections v0.4.0 // indirect
 	cosmossdk.io/x/circuit v0.1.0 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
@@ -69,7 +70,6 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cometbft/cometbft-db v0.9.1 // indirect
 	github.com/cosmos/btcutil v1.0.5 // indirect
-	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.0.0 // indirect
 	github.com/cosmos/ics23/go v0.10.0 // indirect
@@ -213,9 +213,8 @@ replace (
 )
 
 replace (
+	github.com/Finschia/finschia-sdk/x/foundation => ./../x/foundation
+	github.com/Finschia/finschia-sdk/x/stakingplus => ./../x/stakingplus
 	github.com/cometbft/cometbft => github.com/Finschia/cometbft v0.0.0-20231127181424-2aacfbe9832d
 	github.com/cosmos/cosmos-sdk => github.com/Finschia/cosmos-sdk v0.0.0-20231211060251-d8fb76d4c267
 )
-
-// transient in this PR
-replace github.com/Finschia/finschia-sdk/x/foundation => ./../x/foundation
