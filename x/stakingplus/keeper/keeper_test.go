@@ -49,7 +49,8 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.ctx = sdk.NewContext(cms, cmtproto.Header{Time: time.Now()}, false, log.NewNopLogger())
 
 	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
-	s.msgServer = keeper.NewMsgServerImpl(s.stakingMsgServer, s.foundationKeeper, encCfg.InterfaceRegistry.SigningContext().ValidatorAddressCodec())
+	valCodec := encCfg.InterfaceRegistry.SigningContext().ValidatorAddressCodec()
+	s.msgServer = keeper.NewMsgServerImpl(s.stakingMsgServer, s.foundationKeeper, valCodec)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
