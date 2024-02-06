@@ -33,15 +33,15 @@ func (s *KeeperTestSuite) TestMsgCreateValidator() {
 		Return(&stakingtypes.MsgCreateValidatorResponse{}, nil)
 
 	testCases := map[string]struct {
-		delegator sdk.AccAddress
+		validator sdk.AccAddress
 		valid     bool
 	}{
 		"valid request": {
-			delegator: grantee,
+			validator: grantee,
 			valid:     true,
 		},
 		"no grant found": {
-			delegator: stranger,
+			validator: stranger,
 		},
 	}
 
@@ -52,7 +52,7 @@ func (s *KeeperTestSuite) TestMsgCreateValidator() {
 			pk := simtestutil.CreateTestPubKeys(1)[0]
 			delegation := sdk.NewCoin(sdk.DefaultBondDenom, math.OneInt())
 			req, err := stakingtypes.NewMsgCreateValidator(
-				sdk.ValAddress(tc.delegator).String(),
+				sdk.ValAddress(tc.validator).String(),
 				pk,
 				delegation,
 				stakingtypes.Description{
