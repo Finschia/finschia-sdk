@@ -22,7 +22,6 @@ type msgServer struct {
 // NewMsgServerImpl returns an implementation of the staking MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper *stakingkeeper.Keeper, fk stakingplus.FoundationKeeper) stakingtypes.MsgServer {
-	keeper.ValidatorAddressCodec()
 	return &msgServer{
 		MsgServer: stakingkeeper.NewMsgServerImpl(keeper),
 		valCodec:  keeper.ValidatorAddressCodec(),
