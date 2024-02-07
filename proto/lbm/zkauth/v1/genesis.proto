@@ -1,0 +1,12 @@
+syntax = "proto3";
+package lbm.zkauth.v1;
+
+import "gogoproto/gogo.proto";
+
+import "lbm/zkauth/v1/params.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
+
+message GenesisState {
+    Params params = 1 [(gogoproto.nullable) = false];
+}

@@ -1,0 +1,30 @@
+syntax = "proto3";
+package lbm.zkauth.v1;
+
+import "cosmos_proto/cosmos.proto";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+
+import "lbm/zkauth/v1/zkauth.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
+
+service Msg {
+    // Execution any msg from zkauth account
+    rpc Execution(MsgExecution) returns (MsgExecutionResponse);
+}
+
+message MsgExecution {
+    // msgs is the msg of the bank or collection that the account wants to execute.
+    repeated google.protobuf.Any msgs = 1 [(cosmos_proto.accepts_interface) = "sdk.Msg, zkauth.Execution"];
+    // ZkAuthSignature is the signature required for zkp verification.
+    ZKAuthSignature zk_auth_signature = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgExecutionResponse {}
+
+message ZKAuthSignature {
+    ZKAuthInputs zk_auth_inputs = 1;
+    uint64 max_block_height = 2;
+}
