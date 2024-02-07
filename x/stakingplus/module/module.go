@@ -171,12 +171,17 @@ func ProvideModule(in StakingplusInputs) staking.ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 
+	authorityStr, err := in.Cdc.InterfaceRegistry().SigningContext().AddressCodec().BytesToString(authority)
+	if err != nil {
+		panic(err)
+	}
+
 	k := stakingkeeper.NewKeeper(
 		in.Cdc,
 		in.StoreService,
 		in.AccountKeeper,
 		in.BankKeeper,
-		authority.String(),
+		authorityStr,
 		in.ValidatorAddressCodec,
 		in.ConsensusAddressCodec,
 	)

@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
@@ -31,6 +32,9 @@ type KeeperTestSuite struct {
 	foundationKeeper *testutil.MockFoundationKeeper
 	stakingMsgServer *testutil.MockStakingMsgServer
 	msgServer        stakingtypes.MsgServer
+
+	accCodec address.Codec
+	valCodec address.Codec
 }
 
 func (s *KeeperTestSuite) SetupTest() {
@@ -49,8 +53,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.ctx = sdk.NewContext(cms, cmtproto.Header{Time: time.Now()}, false, log.NewNopLogger())
 
 	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
-	valCodec := encCfg.InterfaceRegistry.SigningContext().ValidatorAddressCodec()
-	s.msgServer = keeper.NewMsgServerImpl(s.stakingMsgServer, s.foundationKeeper, valCodec)
+	s.accCodec = encCfg.InterfaceRegistry.SigningContext().AddressCodec()
+	s.valCodec = encCfg.InterfaceRegistry.SigningContext().ValidatorAddressCodec()
+	s.msgServer = keeper.NewMsgServerImpl(s.stakingMsgServer, s.foundationKeeper, s.valCodec)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

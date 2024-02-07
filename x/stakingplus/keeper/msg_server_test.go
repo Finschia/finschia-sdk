@@ -51,8 +51,10 @@ func (s *KeeperTestSuite) TestMsgCreateValidator() {
 
 			pk := simtestutil.CreateTestPubKeys(1)[0]
 			delegation := sdk.NewCoin(sdk.DefaultBondDenom, math.OneInt())
+			val, err := s.valCodec.BytesToString(tc.validator)
+			s.Require().NoError(err)
 			req, err := stakingtypes.NewMsgCreateValidator(
-				sdk.ValAddress(tc.validator).String(),
+				val,
 				pk,
 				delegation,
 				stakingtypes.Description{
