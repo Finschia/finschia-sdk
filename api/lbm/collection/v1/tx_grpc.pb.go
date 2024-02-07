@@ -37,6 +37,10 @@ const (
 	Msg_Modify_FullMethodName            = "/lbm.collection.v1.Msg/Modify"
 	Msg_GrantPermission_FullMethodName   = "/lbm.collection.v1.Msg/GrantPermission"
 	Msg_RevokePermission_FullMethodName  = "/lbm.collection.v1.Msg/RevokePermission"
+	Msg_Attach_FullMethodName            = "/lbm.collection.v1.Msg/Attach"
+	Msg_Detach_FullMethodName            = "/lbm.collection.v1.Msg/Detach"
+	Msg_OperatorAttach_FullMethodName    = "/lbm.collection.v1.Msg/OperatorAttach"
+	Msg_OperatorDetach_FullMethodName    = "/lbm.collection.v1.Msg/OperatorDetach"
 )
 
 // MsgClient is the client API for Msg service.
@@ -121,6 +125,30 @@ type MsgClient interface {
 	// Fires:
 	// - EventRenounced
 	RevokePermission(ctx context.Context, in *MsgRevokePermission, opts ...grpc.CallOption) (*MsgRevokePermissionResponse, error)
+	// Attach defines a method to attach a token to another token.
+	// Fires:
+	// - EventAttach
+	// - attach (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	Attach(ctx context.Context, in *MsgAttach, opts ...grpc.CallOption) (*MsgAttachResponse, error)
+	// Detach defines a method to detach a token from another token.
+	// Fires:
+	// - EventDetach
+	// - detach (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	Detach(ctx context.Context, in *MsgDetach, opts ...grpc.CallOption) (*MsgDetachResponse, error)
+	// OperatorAttach defines a method to attach a token to another token by operator.
+	// Fires:
+	// - EventAttach
+	// - attach_from (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	OperatorAttach(ctx context.Context, in *MsgOperatorAttach, opts ...grpc.CallOption) (*MsgOperatorAttachResponse, error)
+	// OperatorDetach defines a method to detach a token from another token by operator.
+	// Fires:
+	// - EventDetach
+	// - detach_from (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	OperatorDetach(ctx context.Context, in *MsgOperatorDetach, opts ...grpc.CallOption) (*MsgOperatorDetachResponse, error)
 }
 
 type msgClient struct {
@@ -293,6 +321,42 @@ func (c *msgClient) RevokePermission(ctx context.Context, in *MsgRevokePermissio
 	return out, nil
 }
 
+func (c *msgClient) Attach(ctx context.Context, in *MsgAttach, opts ...grpc.CallOption) (*MsgAttachResponse, error) {
+	out := new(MsgAttachResponse)
+	err := c.cc.Invoke(ctx, Msg_Attach_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) Detach(ctx context.Context, in *MsgDetach, opts ...grpc.CallOption) (*MsgDetachResponse, error) {
+	out := new(MsgDetachResponse)
+	err := c.cc.Invoke(ctx, Msg_Detach_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) OperatorAttach(ctx context.Context, in *MsgOperatorAttach, opts ...grpc.CallOption) (*MsgOperatorAttachResponse, error) {
+	out := new(MsgOperatorAttachResponse)
+	err := c.cc.Invoke(ctx, Msg_OperatorAttach_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) OperatorDetach(ctx context.Context, in *MsgOperatorDetach, opts ...grpc.CallOption) (*MsgOperatorDetachResponse, error) {
+	out := new(MsgOperatorDetachResponse)
+	err := c.cc.Invoke(ctx, Msg_OperatorDetach_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -375,6 +439,30 @@ type MsgServer interface {
 	// Fires:
 	// - EventRenounced
 	RevokePermission(context.Context, *MsgRevokePermission) (*MsgRevokePermissionResponse, error)
+	// Attach defines a method to attach a token to another token.
+	// Fires:
+	// - EventAttach
+	// - attach (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	Attach(context.Context, *MsgAttach) (*MsgAttachResponse, error)
+	// Detach defines a method to detach a token from another token.
+	// Fires:
+	// - EventDetach
+	// - detach (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	Detach(context.Context, *MsgDetach) (*MsgDetachResponse, error)
+	// OperatorAttach defines a method to attach a token to another token by operator.
+	// Fires:
+	// - EventAttach
+	// - attach_from (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	OperatorAttach(context.Context, *MsgOperatorAttach) (*MsgOperatorAttachResponse, error)
+	// OperatorDetach defines a method to detach a token from another token by operator.
+	// Fires:
+	// - EventDetach
+	// - detach_from (deprecated, not typed)
+	// - operation_root_changed (deprecated, not typed)
+	OperatorDetach(context.Context, *MsgOperatorDetach) (*MsgOperatorDetachResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -435,6 +523,18 @@ func (UnimplementedMsgServer) GrantPermission(context.Context, *MsgGrantPermissi
 }
 func (UnimplementedMsgServer) RevokePermission(context.Context, *MsgRevokePermission) (*MsgRevokePermissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokePermission not implemented")
+}
+func (UnimplementedMsgServer) Attach(context.Context, *MsgAttach) (*MsgAttachResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Attach not implemented")
+}
+func (UnimplementedMsgServer) Detach(context.Context, *MsgDetach) (*MsgDetachResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Detach not implemented")
+}
+func (UnimplementedMsgServer) OperatorAttach(context.Context, *MsgOperatorAttach) (*MsgOperatorAttachResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperatorAttach not implemented")
+}
+func (UnimplementedMsgServer) OperatorDetach(context.Context, *MsgOperatorDetach) (*MsgOperatorDetachResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperatorDetach not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -773,6 +873,78 @@ func _Msg_RevokePermission_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_Attach_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAttach)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Attach(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Attach_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Attach(ctx, req.(*MsgAttach))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_Detach_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDetach)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Detach(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Detach_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Detach(ctx, req.(*MsgDetach))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_OperatorAttach_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgOperatorAttach)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).OperatorAttach(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_OperatorAttach_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).OperatorAttach(ctx, req.(*MsgOperatorAttach))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_OperatorDetach_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgOperatorDetach)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).OperatorDetach(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_OperatorDetach_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).OperatorDetach(ctx, req.(*MsgOperatorDetach))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -851,6 +1023,22 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokePermission",
 			Handler:    _Msg_RevokePermission_Handler,
+		},
+		{
+			MethodName: "Attach",
+			Handler:    _Msg_Attach_Handler,
+		},
+		{
+			MethodName: "Detach",
+			Handler:    _Msg_Detach_Handler,
+		},
+		{
+			MethodName: "OperatorAttach",
+			Handler:    _Msg_OperatorAttach_Handler,
+		},
+		{
+			MethodName: "OperatorDetach",
+			Handler:    _Msg_OperatorDetach_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11827,12 +11827,16 @@ const (
 type AttributeKey int32
 
 const (
+	// unspecified
 	AttributeKey_ATTRIBUTE_KEY_UNSPECIFIED AttributeKey = 0
-	AttributeKey_ATTRIBUTE_KEY_NAME        AttributeKey = 1
-	AttributeKey_ATTRIBUTE_KEY_META        AttributeKey = 2
+	// name in Msg/Modify
+	AttributeKey_ATTRIBUTE_KEY_NAME AttributeKey = 1
+	// meta in Msg/Modify
+	AttributeKey_ATTRIBUTE_KEY_META AttributeKey = 2
 	// deprecated: use ATTRIBUTE_KEY_URI
 	AttributeKey_ATTRIBUTE_KEY_BASE_IMG_URI AttributeKey = 8
-	AttributeKey_ATTRIBUTE_KEY_URI          AttributeKey = 20
+	// uri in Msg/Modify
+	AttributeKey_ATTRIBUTE_KEY_URI AttributeKey = 20
 )
 
 // Enum value maps for AttributeKey.

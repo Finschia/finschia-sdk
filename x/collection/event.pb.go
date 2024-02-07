@@ -28,12 +28,16 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type AttributeKey int32
 
 const (
+	// unspecified
 	AttributeKeyUnspecified AttributeKey = 0
-	AttributeKeyName        AttributeKey = 1
-	AttributeKeyMeta        AttributeKey = 2
+	// name in Msg/Modify
+	AttributeKeyName AttributeKey = 1
+	// meta in Msg/Modify
+	AttributeKeyMeta AttributeKey = 2
 	// deprecated: use ATTRIBUTE_KEY_URI
 	AttributeKeyBaseImgURI AttributeKey = 8
-	AttributeKeyURI        AttributeKey = 20
+	// uri in Msg/Modify
+	AttributeKeyURI AttributeKey = 20
 )
 
 var AttributeKey_name = map[int32]string{
