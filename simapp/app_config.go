@@ -74,8 +74,11 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	collectionmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
+	foundationmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
 	"github.com/Finschia/finschia-sdk/x/collection"
 	_ "github.com/Finschia/finschia-sdk/x/collection/module" // import for side-effects
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	_ "github.com/Finschia/finschia-sdk/x/foundation/module" // import for side-effects
 )
 
 var (
@@ -89,6 +92,8 @@ var (
 		{Account: govtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		{Account: nft.ModuleName},
 		{Account: collection.ModuleName},
+		{Account: foundation.ModuleName},
+		{Account: foundation.TreasuryName},
 	}
 
 	// blocked account addresses
@@ -100,6 +105,8 @@ var (
 		stakingtypes.NotBondedPoolName,
 		nft.ModuleName,
 		collection.ModuleName,
+		foundation.ModuleName,
+		foundation.TreasuryName,
 		// We allow the following module accounts to receive funds:
 		// govtypes.ModuleName
 	}
@@ -121,6 +128,7 @@ var (
 					// NOTE: staking module is required if HistoricalEntries param > 0
 					BeginBlockers: []string{
 						minttypes.ModuleName,
+						foundation.ModuleName,
 						distrtypes.ModuleName,
 						slashingtypes.ModuleName,
 						evidencetypes.ModuleName,
@@ -133,6 +141,7 @@ var (
 						stakingtypes.ModuleName,
 						feegrant.ModuleName,
 						group.ModuleName,
+						foundation.ModuleName,
 					},
 					OverrideStoreKeys: []*runtimev1alpha1.StoreKeyConfig{
 						{
@@ -151,6 +160,7 @@ var (
 						slashingtypes.ModuleName,
 						govtypes.ModuleName,
 						minttypes.ModuleName,
+						foundation.ModuleName,
 						crisistypes.ModuleName,
 						genutiltypes.ModuleName,
 						evidencetypes.ModuleName,
@@ -270,6 +280,14 @@ var (
 			{
 				Name:   collection.ModuleName,
 				Config: appconfig.WrapAny(&collectionmodulev1.Module{}),
+			},
+			{
+				Name: foundation.ModuleName,
+				Config: appconfig.WrapAny(&foundationmodulev1.Module{
+					Authority:          foundation.ModuleName,
+					MaxExecutionPeriod: durationpb.New(time.Hour * 24 * 7 * 2),
+					MaxMetadataLen:     255,
+				}),
 			},
 		},
 	}),

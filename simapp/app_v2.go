@@ -48,6 +48,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	collectionkeeper "github.com/Finschia/finschia-sdk/x/collection/keeper"
+	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 )
 
 // DefaultNodeHome default home directories for the application daemon
@@ -87,6 +88,7 @@ type SimApp struct {
 	ConsensusParamsKeeper consensuskeeper.Keeper
 	CircuitBreakerKeeper  circuitkeeper.Keeper
 	CollectionKeeper      collectionkeeper.Keeper
+	FoundationKeeper      foundationkeeper.Keeper
 
 	// simulation manager
 	sm *module.SimulationManager
@@ -199,6 +201,7 @@ func NewSimApp(
 		&app.ConsensusParamsKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.CollectionKeeper,
+		&app.FoundationKeeper,
 	); err != nil {
 		panic(err)
 	}
