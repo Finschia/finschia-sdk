@@ -1,11 +1,13 @@
 package foundation
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/math"
@@ -135,22 +137,12 @@ func (s *E2ETestSuite) SetupSuite() {
 	s.createAccount("leavingmember", leavingMemberMnemonic)
 	s.createAccount("permanentmember", permanentMemberMnemonic)
 
-	s.submitProposal(&foundation.MsgWithdrawFromTreasury{
+	s.proposalID = s.submitProposal(&foundation.MsgWithdrawFromTreasury{
 		Authority: s.bytesToString(s.authority),
 		To:        s.bytesToString(s.stranger),
 		Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
 	}, false)
-	s.proposalID = 1
 	s.vote(s.proposalID, []sdk.AccAddress{s.leavingMember, s.permanentMember})
-
-	// submit another two proposals without votes
-	for range make([]struct{}, 2) {
-		s.submitProposal(&foundation.MsgWithdrawFromTreasury{
-			Authority: s.bytesToString(s.authority),
-			To:        s.bytesToString(s.stranger),
-			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
-		}, false)
-	}
 
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
@@ -168,7 +160,7 @@ func (s *E2ETestSuite) bytesToString(addr sdk.AccAddress) string {
 }
 
 // submit a proposal
-func (s *E2ETestSuite) submitProposal(msg sdk.Msg, try bool) {
+func (s *E2ETestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 	val := s.network.Validators[0]
 
 	proposers := []string{s.bytesToString(s.permanentMember)}
@@ -190,7 +182,18 @@ func (s *E2ETestSuite) submitProposal(msg sdk.Msg, try bool) {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
 
-	s.Require().NoError(s.network.WaitForNextBlock())
+	res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+	s.Require().NoError(err)
+	s.Require().Zero(res.Code, res.RawLog)
+
+	dataBytes, err := hex.DecodeString(res.Data)
+	s.Require().NoError(err)
+	var data sdk.TxMsgData
+	s.Require().NoError(proto.Unmarshal(dataBytes, &data))
+	var msgResp foundation.MsgSubmitProposalResponse
+	s.Require().NoError(proto.Unmarshal(data.MsgResponses[0].Value, &msgResp), data.MsgResponses[0])
+
+	return msgResp.ProposalId
 }
 
 func (s *E2ETestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {
@@ -209,9 +212,11 @@ func (s *E2ETestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {
 		var res sdk.TxResponse
 		s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 		s.Require().Zero(res.Code, out.String())
-	}
 
-	s.Require().NoError(s.network.WaitForNextBlock())
+		res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+		s.Require().NoError(err)
+		s.Require().Zero(res.Code, res.RawLog)
+	}
 }
 
 func (s *E2ETestSuite) msgToString(msg sdk.Msg) string {
@@ -260,5 +265,7 @@ func (s *E2ETestSuite) createAccount(uid, mnemonic string) {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
 
-	s.Require().NoError(s.network.WaitForNextBlock())
+	res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+	s.Require().NoError(err)
+	s.Require().Zero(res.Code, res.RawLog)
 }
