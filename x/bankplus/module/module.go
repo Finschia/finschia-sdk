@@ -13,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/bank/exported"
@@ -84,20 +83,8 @@ func (a AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.R
 	a.bankAppModule.InitGenesis(ctx, cdc, data)
 }
 
-func (a AppModule) ExportGenesis(ctx sdk.Context, codec codec.JSONCodec) json.RawMessage {
-	return a.bankAppModule.ExportGenesis(ctx, codec)
-}
-
-func (a AppModule) GenerateGenesisState(simState *module.SimulationState) {
-	a.bankAppModule.GenerateGenesisState(simState)
-}
-
-func (a AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
-	sdr[banktypes.StoreKey] = simtypes.NewStoreDecoderFuncFromCollectionsSchema(a.bankKeeper.(keeper.BaseKeeper).Schema)
-}
-
-func (a AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
-	return a.bankAppModule.WeightedOperations(simState)
+func (a AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
+	return a.bankAppModule.ExportGenesis(ctx, cdc)
 }
 
 func init() {
@@ -107,6 +94,8 @@ func init() {
 	)
 }
 
+type DeactMultiSend bool
+
 type ModuleInputs struct {
 	depinject.In
 
@@ -115,8 +104,8 @@ type ModuleInputs struct {
 	StoreService store.KVStoreService
 	Logger       log.Logger
 
-	AccountKeeper banktypes.AccountKeeper
-	// DeactMultiSend bool // FIXME: inject properly
+	AccountKeeper  banktypes.AccountKeeper
+	DeactMultiSend DeactMultiSend
 
 	// LegacySubspace is used solely for migration of x/params managed parameters
 	LegacySubspace exported.Subspace `optional:"true"`
@@ -169,7 +158,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.StoreService,
 		in.AccountKeeper,
 		blockedAddresses,
-		true, // in.DeactMultiSend, // FIXME: inject properly
+		bool(in.DeactMultiSend),
 		authorityString,
 		in.Logger,
 	)

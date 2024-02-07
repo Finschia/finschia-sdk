@@ -73,7 +73,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	foundationmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
-	_ "github.com/Finschia/finschia-sdk/x/bankplus/module" // import for side-effects
+	bankplus "github.com/Finschia/finschia-sdk/x/bankplus/module"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	_ "github.com/Finschia/finschia-sdk/x/foundation/module" // import for side-effects
 )
@@ -291,5 +291,14 @@ var (
 					},
 				),
 			},
-		))
+		),
+		depinject.Provide(
+			ProvideBankPlusDeactMultiSend,
+		),
+	)
 )
+
+func ProvideBankPlusDeactMultiSend() bankplus.DeactMultiSend {
+	// FIXME: move to Env or Configuration
+	return true
+}
