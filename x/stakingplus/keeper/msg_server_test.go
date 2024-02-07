@@ -13,48 +13,44 @@ import (
 )
 
 func (s *KeeperTestSuite) TestMsgCreateValidator() {
-	stranger := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	grantee := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-
-	// approve Msg/CreateValidator to grantee
-	s.foundationKeeper.
-		EXPECT().
-		Accept(gomock.Any(), grantee, gomock.Any()).
-		Return(nil)
-	s.foundationKeeper.
-		EXPECT().
-		Accept(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(sdkerrors.ErrUnauthorized)
-
 	// approve any msg
 	s.stakingMsgServer.
 		EXPECT().
 		CreateValidator(gomock.Any(), gomock.Any()).
-		Return(&stakingtypes.MsgCreateValidatorResponse{}, nil)
+		Return(&stakingtypes.MsgCreateValidatorResponse{}, nil).
+		AnyTimes()
 
 	testCases := map[string]struct {
-		validator sdk.AccAddress
 		valid     bool
+		acceptRet error
 	}{
 		"valid request": {
-			validator: grantee,
 			valid:     true,
+			acceptRet: nil,
 		},
 		"no grant found": {
-			validator: stranger,
+			valid:     false,
+			acceptRet: sdkerrors.ErrUnauthorized,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			s.foundationKeeper.
+				EXPECT().
+				Accept(gomock.Any(), gomock.Any(), gomock.Any()).
+				Return(tc.acceptRet).
+				Times(1)
+
 			ctx, _ := s.ctx.CacheContext()
 
 			pk := simtestutil.CreateTestPubKeys(1)[0]
 			delegation := sdk.NewCoin(sdk.DefaultBondDenom, math.OneInt())
-			val, err := s.valCodec.BytesToString(tc.validator)
+			val := sdk.ValAddress(secp256k1.GenPrivKey().PubKey().Address())
+			valStr, err := s.valCodec.BytesToString(val)
 			s.Require().NoError(err)
 			req, err := stakingtypes.NewMsgCreateValidator(
-				val,
+				valStr,
 				pk,
 				delegation,
 				stakingtypes.Description{
