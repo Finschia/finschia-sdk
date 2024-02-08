@@ -12,7 +12,7 @@ require (
 	github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/cosmos/iavl v0.19.4
+	github.com/cosmos/iavl v0.19.0
 	github.com/cosmos/ledger-cosmos-go v0.13.3
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0
 	github.com/go-kit/kit v0.13.0
@@ -45,7 +45,7 @@ require (
 	github.com/tendermint/go-amino v0.16.0
 	github.com/tendermint/tendermint v0.34.24
 	github.com/tendermint/tm-db v0.6.7
-	golang.org/x/crypto v0.15.0
+	golang.org/x/crypto v0.19.0
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	google.golang.org/genproto/googleapis/api v0.0.0-20230920204549-e6e6cdab5c13
 	google.golang.org/grpc v1.59.0
@@ -118,8 +118,8 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
-	golang.org/x/term v0.14.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/term v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20231002182017-d307bd883b97 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231009173412-8bfb1ae86b6c // indirect
