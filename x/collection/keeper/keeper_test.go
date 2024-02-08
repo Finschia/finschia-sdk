@@ -3,13 +3,11 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectestutil "github.com/cosmos/cosmos-sdk/codec/testutil"
@@ -23,17 +21,15 @@ import (
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/collection/keeper"
 	"github.com/Finschia/finschia-sdk/x/collection/module"
-	ctutil "github.com/Finschia/finschia-sdk/x/collection/testutil"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx             sdk.Context
-	keeper          keeper.Keeper
-	queryServer     collection.QueryServer
-	msgServer       collection.MsgServer
-	mockClassKeeper *ctutil.MockClassKeeper
+	ctx         sdk.Context
+	keeper      keeper.Keeper
+	queryServer collection.QueryServer
+	msgServer   collection.MsgServer
 
 	vendor   sdk.AccAddress
 	operator sdk.AccAddress
@@ -50,7 +46,6 @@ type KeeperTestSuite struct {
 
 	numNFTs  int
 	numRoots int
-	mockCtrl *gomock.Controller
 }
 
 func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
@@ -72,61 +67,9 @@ func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	// Create Store for test
-	key := storetypes.NewKVStoreKey(collection.StoreKey)
-	tkey := storetypes.NewTransientStoreKey("transient_test")
-	testCtx := testutil.DefaultContextWithDB(s.T(), key, tkey)
-	kvStoreService := runtime.NewKVStoreService(key)
-	s.ctx = testCtx.Ctx
-
-	// Create EncodingConfig
-	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
-	encCfg.InterfaceRegistry = codectestutil.CodecOptions{
-		AccAddressPrefix: "link",
-		ValAddressPrefix: "linkvaloper",
-	}.NewInterfaceRegistry()
-	encCfg.Codec = codec.NewProtoCodec(encCfg.InterfaceRegistry)
-
-	collection.RegisterInterfaces(encCfg.InterfaceRegistry)
-	testdata.RegisterInterfaces(encCfg.InterfaceRegistry)
-
-	// Create BaseApp
-	bapp := baseapp.NewBaseApp(
-		"collection",
-		log.NewNopLogger(),
-		testCtx.DB,
-		encCfg.TxConfig.TxDecoder(),
-	)
-	bapp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
-
-	ctrl := gomock.NewController(s.T())
-	s.mockCtrl = ctrl
-	s.mockClassKeeper = ctutil.NewMockClassKeeper(ctrl)
-	s.keeper = keeper.NewKeeper(encCfg.Codec, kvStoreService, s.mockClassKeeper)
-
-	s.queryServer = keeper.NewQueryServer(s.keeper)
-	s.msgServer = keeper.NewMsgServer(s.keeper)
-
-	s.depthLimit = 4
-	s.keeper.SetParams(s.ctx, collection.Params{
-		DepthLimit: uint32(s.depthLimit),
-		WidthLimit: 4,
-	})
-
-	addresses := []*sdk.AccAddress{
-		&s.vendor,
-		&s.operator,
-		&s.customer,
-		&s.stranger,
-	}
-	for i, address := range s.createRandomAccounts(len(addresses)) {
-		*addresses[i] = address
-	}
+	s.prepareInitialSetup()
 
 	s.balance = math.NewInt(1000000)
-
-	s.mockClassKeeper.EXPECT().NewID(gomock.Any()).Return("9be17165")
-	s.mockClassKeeper.EXPECT().HasID(gomock.Any(), "9be17165").Return(true).AnyTimes()
 	s.contractID = s.keeper.CreateContract(s.ctx, s.vendor, collection.Contract{
 		Name: "fox",
 	})
@@ -211,16 +154,59 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 
 	// not token contract
-	s.mockClassKeeper.EXPECT().NewID(gomock.Any()).Return("678c146a")
-	s.mockClassKeeper.EXPECT().HasID(gomock.Any(), "678c146a").Return(true).AnyTimes()
-	notTokenContractID := s.mockClassKeeper.NewID(s.ctx)
+	notTokenContractID := s.keeper.NewID(s.ctx)
 	err = keeper.ValidateLegacyContract(s.keeper, s.ctx, notTokenContractID)
 	s.Require().ErrorIs(err, collection.ErrCollectionNotExist)
-	s.mockClassKeeper.EXPECT().HasID(gomock.Any(), "deadbeef").Return(false).AnyTimes()
 }
 
-func (s *KeeperTestSuite) TearDownTest() {
-	s.mockCtrl.Finish()
+func (s *KeeperTestSuite) prepareInitialSetup() {
+	// Create Store for test
+	key := storetypes.NewKVStoreKey(collection.StoreKey)
+	tkey := storetypes.NewTransientStoreKey("transient_test")
+	testCtx := testutil.DefaultContextWithDB(s.T(), key, tkey)
+	kvStoreService := runtime.NewKVStoreService(key)
+	s.ctx = testCtx.Ctx
+
+	// Create EncodingConfig
+	encCfg := moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})
+	encCfg.InterfaceRegistry = codectestutil.CodecOptions{
+		AccAddressPrefix: "link",
+		ValAddressPrefix: "linkvaloper",
+	}.NewInterfaceRegistry()
+	encCfg.Codec = codec.NewProtoCodec(encCfg.InterfaceRegistry)
+
+	collection.RegisterInterfaces(encCfg.InterfaceRegistry)
+	testdata.RegisterInterfaces(encCfg.InterfaceRegistry)
+
+	// Create BaseApp
+	bapp := baseapp.NewBaseApp(
+		"collection",
+		log.NewNopLogger(),
+		testCtx.DB,
+		encCfg.TxConfig.TxDecoder(),
+	)
+	bapp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
+
+	s.keeper = keeper.NewKeeper(encCfg.Codec, kvStoreService)
+	s.keeper.InitGenesis(s.ctx, collection.DefaultGenesisState())
+	s.depthLimit = 4
+	s.keeper.SetParams(s.ctx, collection.Params{
+		DepthLimit: uint32(s.depthLimit),
+		WidthLimit: 4,
+	})
+
+	s.queryServer = keeper.NewQueryServer(s.keeper)
+	s.msgServer = keeper.NewMsgServer(s.keeper)
+
+	addresses := []*sdk.AccAddress{
+		&s.vendor,
+		&s.operator,
+		&s.customer,
+		&s.stranger,
+	}
+	for i, address := range s.createRandomAccounts(len(addresses)) {
+		*addresses[i] = address
+	}
 }
 
 func TestKeeperTestSuite(t *testing.T) {

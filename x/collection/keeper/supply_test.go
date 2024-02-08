@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/golang/mock/gomock"
-
 	"cosmossdk.io/math"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
@@ -13,7 +11,6 @@ import (
 
 func (s *KeeperTestSuite) TestCreateContract() {
 	ctx, _ := s.ctx.CacheContext()
-	s.mockClassKeeper.EXPECT().NewID(gomock.Any()).Return("3336b76f")
 
 	input := collection.Contract{
 		Name: "tibetian fox",

@@ -4,11 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/golang/mock/gomock"
-
 	"cosmossdk.io/math"
-
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
@@ -581,7 +578,6 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 
 func (s *KeeperTestSuite) TestMsgCreateContract() {
 	expectedNewContractID := "3336b76f"
-	s.mockClassKeeper.EXPECT().NewID(gomock.Any()).Return(expectedNewContractID).Times(1)
 	testCases := map[string]struct {
 		owner  sdk.AccAddress
 		err    error
