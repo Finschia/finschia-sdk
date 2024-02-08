@@ -9,7 +9,6 @@ import (
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 
-	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
@@ -47,10 +46,8 @@ func TestMigrateStore(t *testing.T) {
 		store.Set(v2.BalanceKey(contractID, addr, tokenID), oneIntBz)
 	}
 	store.Set(v2.StatisticKey(v2.SupplyKeyPrefix, contractID, classID), oneIntBz)
-	store.Set(v2.StatisticKey(v2.MintedKeyPrefix, contractID, classID), oneIntBz)
 	store.Set(v2.StatisticKey(v2.BurntKeyPrefix, contractID, classID), oneIntBz)
-
-	storeService := runtime.NewKVStoreService(collectionKey)
+	store.Set(v2.StatisticKey(v2.MintedKeyPrefix, contractID, classID), oneIntBz) // supplied + burnt
 
 	for name, tc := range map[string]struct {
 		malleate func(ctx sdk.Context)
@@ -126,16 +123,15 @@ func TestMigrateStore(t *testing.T) {
 			if tc.malleate != nil {
 				tc.malleate(ctx)
 			}
+			store := ctx.KVStore(collectionKey)
 
 			// migrate
-			err := v2.MigrateStore(ctx, storeService, encCfg)
+			err := v2.MigrateStore(store, encCfg)
 			if !tc.valid {
 				require.Error(t, err)
 				return
 			}
 			require.NoError(t, err)
-
-			store := ctx.KVStore(collectionKey)
 
 			// supply
 			supplyKey := v2.StatisticKey(v2.SupplyKeyPrefix, contractID, classID)
