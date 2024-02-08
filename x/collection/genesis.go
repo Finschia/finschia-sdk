@@ -4,6 +4,7 @@ import (
 	"math"
 
 	cmath "cosmossdk.io/math"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -51,8 +52,8 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("classes cannot be empty")
 		}
 		for i := range contractClasses.Classes {
-			any := &contractClasses.Classes[i]
-			class := TokenClassFromAny(any)
+			anyv := &contractClasses.Classes[i]
+			class := TokenClassFromAny(anyv)
 			if err := class.ValidateBasic(); err != nil {
 				return err
 			}
@@ -228,8 +229,8 @@ func DefaultGenesisState() *GenesisState {
 func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	for _, contractClasses := range data.Classes {
 		for i := range contractClasses.Classes {
-			any := &contractClasses.Classes[i]
-			if err := TokenClassUnpackInterfaces(any, unpacker); err != nil {
+			anyv := &contractClasses.Classes[i]
+			if err := TokenClassUnpackInterfaces(anyv, unpacker); err != nil {
 				return err
 			}
 		}

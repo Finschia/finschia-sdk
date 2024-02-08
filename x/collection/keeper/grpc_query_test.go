@@ -1,10 +1,12 @@
 package keeper_test
 
 import (
+	"github.com/cosmos/gogoproto/proto"
+
 	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )

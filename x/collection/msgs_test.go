@@ -1735,7 +1735,6 @@ func TestMsgOperatorDetach(t *testing.T) {
 				From:       tc.from.String(),
 				TokenId:    tc.tokenID,
 			}
-			fmt.Println(tc.err.Error())
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
 			if tc.err != nil {
 				return

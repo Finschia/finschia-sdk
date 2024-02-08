@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectestutil "github.com/cosmos/cosmos-sdk/codec/testutil"

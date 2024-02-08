@@ -81,8 +81,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 		contractID := contractClasses.ContractId
 
 		for i := range contractClasses.Classes {
-			any := &contractClasses.Classes[i]
-			class := collection.TokenClassFromAny(any)
+			anyv := &contractClasses.Classes[i]
+			class := collection.TokenClassFromAny(anyv)
 			k.setTokenClass(ctx, contractID, class)
 
 			// legacy
@@ -254,8 +254,8 @@ func (k Keeper) getClasses(ctx sdk.Context, contracts []collection.Contract) []c
 		}
 
 		k.iterateContractClasses(ctx, contractID, func(class collection.TokenClass) (stop bool) {
-			any := collection.TokenClassToAny(class)
-			contractClasses.Classes = append(contractClasses.Classes, *any)
+			anyv := collection.TokenClassToAny(class)
+			contractClasses.Classes = append(contractClasses.Classes, *anyv)
 			return false
 		})
 		if len(contractClasses.Classes) != 0 {

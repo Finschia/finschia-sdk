@@ -19,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	modulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
-
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/collection/client/cli"
 	"github.com/Finschia/finschia-sdk/x/collection/keeper"
@@ -37,7 +36,9 @@ var (
 )
 
 // AppModuleBasic defines the basic application module used by the collection module.
-type AppModuleBasic struct{}
+type AppModuleBasic struct {
+	cdc codec.Codec
+}
 
 // Name returns the ModuleName
 func (AppModuleBasic) Name() string {
@@ -45,7 +46,7 @@ func (AppModuleBasic) Name() string {
 }
 
 // RegisterLegacyAminoCodec registers the collection types on the LegacyAmino codec
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {}
 
 // RegisterInterfaces registers the collection module's interface types
 func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
@@ -59,7 +60,7 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 }
 
 // ValidateGenesis performs genesis state validation for the collection module.
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
+func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var data collection.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", collection.ModuleName, err)
@@ -97,7 +98,8 @@ type AppModule struct {
 // NewAppModule creates a new AppModule object
 func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
-		keeper: keeper,
+		AppModuleBasic: AppModuleBasic{cdc},
+		keeper:         keeper,
 	}
 }
 

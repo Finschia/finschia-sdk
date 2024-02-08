@@ -84,13 +84,19 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 	key := balanceKey(contractID, address, tokenID)
 
 	if balance.IsZero() {
-		store.Delete(key)
+		err := store.Delete(key)
+		if err != nil {
+			panic(err)
+		}
 	} else {
 		bz, err := balance.Marshal()
 		if err != nil {
 			panic(err)
 		}
-		store.Set(key, bz)
+		err = store.Set(key, bz)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -131,11 +137,17 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := authorizationKey(contractID, operator, holder)
-	store.Set(key, []byte{})
+	err := store.Set(key, []byte{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := authorizationKey(contractID, operator, holder)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }

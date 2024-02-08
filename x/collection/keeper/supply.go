@@ -68,7 +68,10 @@ func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	err = store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class collection.TokenClass) (*string, error) {
@@ -77,7 +80,7 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 	}
 
 	nextClassIDs := k.getNextClassIDs(ctx, contractID)
-	class.SetId(&nextClassIDs)
+	class.SetID(&nextClassIDs)
 	k.setNextClassIDs(ctx, nextClassIDs)
 
 	if err := class.ValidateBasic(); err != nil {
@@ -124,7 +127,10 @@ func (k Keeper) setTokenClass(ctx sdk.Context, contractID string, class collecti
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	err = store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) getNextClassIDs(ctx sdk.Context, contractID string) collection.NextClassIDs {
@@ -150,7 +156,10 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	err = store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
@@ -299,10 +308,13 @@ func (k Keeper) setNextTokenID(ctx sdk.Context, contractID, classID string, toke
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	err = store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, changes []collection.Attribute) {
 	contract, err := k.GetContract(ctx, contractID)
 	if err != nil {
 		panic(err)
@@ -325,11 +337,9 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 	}
 
 	k.setContract(ctx, *contract)
-
-	return nil
 }
 
-func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID, classID string, changes []collection.Attribute) error {
 	class, err := k.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
 		// legacy error split
@@ -362,7 +372,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID, classID string, op
 	return nil
 }
 
-func (k Keeper) ModifyNFT(ctx sdk.Context, contractID, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+func (k Keeper) ModifyNFT(ctx sdk.Context, contractID, tokenID string, changes []collection.Attribute) error {
 	token, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
 		return err
@@ -431,13 +441,19 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := grantKey(contractID, grantee, permission)
-	store.Set(key, []byte{})
+	err := store.Set(key, []byte{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := grantKey(contractID, grantee, permission)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) getStatistic(ctx sdk.Context, keyPrefix []byte, contractID, classID string) math.Int {
@@ -457,13 +473,19 @@ func (k Keeper) setStatistic(ctx sdk.Context, keyPrefix []byte, contractID, clas
 	store := k.storeService.OpenKVStore(ctx)
 	key := statisticKey(keyPrefix, contractID, classID)
 	if amount.IsZero() {
-		store.Delete(key)
+		err := store.Delete(key)
+		if err != nil {
+			panic(err)
+		}
 	} else {
 		bz, err := amount.Marshal()
 		if err != nil {
 			panic(err)
 		}
-		store.Set(key, bz)
+		err = store.Set(key, bz)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 

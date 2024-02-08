@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 
-	"cosmossdk.io/math"
 	"github.com/cosmos/gogoproto/proto"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -628,7 +629,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 						panic(err)
 					}
 
-					return s.keeper.ModifyNFT(ctx, req.ContractId, tokenID, operator, changes)
+					return s.keeper.ModifyNFT(ctx, req.ContractId, tokenID, changes)
 				}
 
 				event := collection.EventModifiedTokenClass{
@@ -642,7 +643,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 					panic(err)
 				}
 
-				return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, operator, changes)
+				return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, changes)
 			}
 
 			event := collection.EventModifiedTokenClass{
@@ -656,7 +657,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				panic(err)
 			}
 
-			return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, operator, changes)
+			return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, changes)
 		}
 		if req.TokenIndex == "" {
 			event := collection.EventModifiedContract{
@@ -668,7 +669,8 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				panic(err)
 			}
 
-			return s.keeper.ModifyContract(ctx, req.ContractId, operator, changes)
+			s.keeper.ModifyContract(ctx, req.ContractId, changes)
+			return nil
 		}
 
 		panic(sdkerrors.ErrInvalidRequest.Wrap("token index without type"))

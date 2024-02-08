@@ -46,7 +46,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	collectionmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
+	collectionmodule "github.com/Finschia/finschia-sdk/x/collection/module"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
 )
 

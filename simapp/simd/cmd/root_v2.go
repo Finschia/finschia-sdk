@@ -123,7 +123,7 @@ func ProvideClientContext(
 	return clientCtx
 }
 
-func ProvideKeyring(clientCtx client.Context, addressCodec address.Codec) (clientv2keyring.Keyring, error) {
+func ProvideKeyring(clientCtx client.Context, _ address.Codec) (clientv2keyring.Keyring, error) {
 	kb, err := client.NewKeyringFromBackend(clientCtx, clientCtx.Keyring.Backend())
 	if err != nil {
 		return nil, err

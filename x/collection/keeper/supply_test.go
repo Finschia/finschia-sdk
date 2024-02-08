@@ -267,7 +267,7 @@ func (s *KeeperTestSuite) TestModifyContract() {
 			ctx, _ := s.ctx.CacheContext()
 
 			call := func() {
-				s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
+				s.keeper.ModifyContract(ctx, contractID, changes)
 			}
 
 			if contractID != s.contractID {
@@ -301,7 +301,7 @@ func (s *KeeperTestSuite) TestModifyTokenClass() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.ModifyTokenClass(ctx, s.contractID, classID, s.vendor, changes)
+			err := s.keeper.ModifyTokenClass(ctx, s.contractID, classID, changes)
 			if classID != s.nftClassID {
 				s.Require().ErrorIs(err, collection.ErrTokenTypeNotExist)
 				return
@@ -336,7 +336,7 @@ func (s *KeeperTestSuite) TestModifyNFT() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.ModifyNFT(ctx, s.contractID, tokenID, s.vendor, changes)
+			err := s.keeper.ModifyNFT(ctx, s.contractID, tokenID, changes)
 			if tokenID != validTokenID {
 				s.Require().ErrorIs(err, collection.ErrTokenNotExist)
 				return

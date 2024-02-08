@@ -5,8 +5,9 @@ import (
 	"regexp"
 	"strings"
 
-	"cosmossdk.io/math"
 	"github.com/cosmos/gogoproto/proto"
+
+	"cosmossdk.io/math"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 )
@@ -34,7 +35,7 @@ func DefaultNextClassIDs(contractID string) NextClassIDs {
 	}
 }
 
-func validateParams(params Params) error {
+func validateParams(_ Params) error {
 	// limits are uint32, so no need to validate them.
 	return nil
 }
@@ -43,7 +44,7 @@ type TokenClass interface {
 	proto.Message
 
 	GetId() string
-	SetId(ids *NextClassIDs)
+	SetID(ids *NextClassIDs)
 
 	SetName(name string)
 
@@ -55,12 +56,12 @@ type TokenClass interface {
 func TokenClassToAny(class TokenClass) *codectypes.Any {
 	msg := class.(proto.Message)
 
-	any, err := codectypes.NewAnyWithValue(msg)
+	anyv, err := codectypes.NewAnyWithValue(msg)
 	if err != nil {
 		panic(err)
 	}
 
-	return any
+	return anyv
 }
 
 func TokenClassFromAny(any *codectypes.Any) TokenClass {
@@ -77,8 +78,7 @@ func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpa
 // FTClass
 var _ TokenClass = (*FTClass)(nil)
 
-//lint:ignore var-naming
-func (c *FTClass) SetId(ids *NextClassIDs) {
+func (c *FTClass) SetID(ids *NextClassIDs) {
 	id := ids.Fungible
 	ids.Fungible = id.Incr()
 	c.Id = fmt.Sprintf("%08x", id.Uint64())
@@ -114,8 +114,7 @@ func (c FTClass) ValidateBasic() error {
 // NFTClass
 var _ TokenClass = (*NFTClass)(nil)
 
-//lint:ignore var-naming
-func (c *NFTClass) SetId(ids *NextClassIDs) {
+func (c *NFTClass) SetID(ids *NextClassIDs) {
 	id := ids.NonFungible
 	ids.NonFungible = id.Incr()
 	c.Id = fmt.Sprintf("%08x", id.Uint64())

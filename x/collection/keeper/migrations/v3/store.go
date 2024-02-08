@@ -3,18 +3,22 @@ package v3
 import (
 	cmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
-// TODO: need to implement lggics for migrating ClassState and generate new genesis state for Collection
+// TODO: need to implement logics for migrating ClassState and generate new genesis state for Collection
 func MigrateStore(store, classStore storetypes.KVStore, cdc codec.BinaryCodec) error {
 	_, err := getClassState(classStore)
 	if err != nil {
 		return err
 	}
+
+	_ = store
+	_ = cdc
 
 	return nil
 }

@@ -3,18 +3,19 @@ package keeper
 import (
 	"context"
 
+	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
@@ -426,12 +427,12 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
-	any, err := codectypes.NewAnyWithValue(legacyToken)
+	anyv, err := codectypes.NewAnyWithValue(legacyToken)
 	if err != nil {
 		panic(err)
 	}
 
-	return &collection.QueryTokenResponse{Token: *any}, nil
+	return &collection.QueryTokenResponse{Token: *anyv}, nil
 }
 
 func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (*collection.QueryRootResponse, error) {

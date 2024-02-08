@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	gogotypes "github.com/cosmos/gogoproto/types"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -59,17 +60,23 @@ func (k Keeper) setNFT(ctx sdk.Context, contractID string, token collection.NFT)
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	err = store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteNFT(ctx sdk.Context, contractID, tokenID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := nftKey(contractID, tokenID)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) pruneNFT(ctx sdk.Context, contractID, tokenID string) []string {
-	burnt := []string{}
+	var burnt []string
 	for _, child := range k.GetChildren(ctx, contractID, tokenID) {
 		k.deleteChild(ctx, contractID, tokenID, child)
 		k.deleteParent(ctx, contractID, child)
@@ -216,13 +223,19 @@ func (k Keeper) setOwner(ctx sdk.Context, contractID, tokenID string, owner sdk.
 	if err != nil {
 		panic(err)
 	}
-	store.Set(key, bz)
+	err = store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteOwner(ctx sdk.Context, contractID, tokenID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := ownerKey(contractID, tokenID)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetParent(ctx sdk.Context, contractID, tokenID string) (*string, error) {
@@ -244,13 +257,19 @@ func (k Keeper) setParent(ctx sdk.Context, contractID, tokenID, parentID string)
 
 	val := &gogotypes.StringValue{Value: parentID}
 	bz := k.cdc.MustMarshal(val)
-	store.Set(key, bz)
+	err := store.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteParent(ctx sdk.Context, contractID, tokenID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := parentKey(contractID, tokenID)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetChildren(ctx sdk.Context, contractID, tokenID string) []string {
@@ -286,21 +305,30 @@ func (k Keeper) iterateDescendantsImpl(ctx sdk.Context, contractID, tokenID stri
 func (k Keeper) setChild(ctx sdk.Context, contractID, tokenID, childID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := childKey(contractID, tokenID, childID)
-	store.Set(key, []byte{})
+	err := store.Set(key, []byte{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) deleteChild(ctx sdk.Context, contractID, tokenID, childID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := childKey(contractID, tokenID, childID)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetRoot(ctx sdk.Context, contractID, tokenID string) string {
 	id := tokenID
-	k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
+	err := k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
 		id = tokenID
 		return nil
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	return id
 }
@@ -309,21 +337,30 @@ func (k Keeper) GetRoot(ctx sdk.Context, contractID, tokenID string) string {
 func (k Keeper) setLegacyToken(ctx sdk.Context, contractID, tokenID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := legacyTokenKey(contractID, tokenID)
-	store.Set(key, []byte{})
+	err := store.Set(key, []byte{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Deprecated
 func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID, tokenID string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := legacyTokenKey(contractID, tokenID)
-	store.Delete(key)
+	err := store.Delete(key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Deprecated
 func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID, tokenType string) {
 	store := k.storeService.OpenKVStore(ctx)
 	key := legacyTokenTypeKey(contractID, tokenType)
-	store.Set(key, []byte{})
+	err := store.Set(key, []byte{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Deprecated
