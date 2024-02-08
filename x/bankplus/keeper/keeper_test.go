@@ -61,6 +61,16 @@ type IntegrationTestSuite struct {
 	addrCdc      coreaddress.Codec
 }
 
+func (s *IntegrationTestSuite) SetupSuite() {
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount("link", "linkpub")
+	config.SetBech32PrefixForValidator("linkvaloper", "linkvaloperpub")
+	config.SetBech32PrefixForConsensusNode("linkvalcons", "linkvalconspub")
+	config.SetPurpose(44)
+	config.SetCoinType(438)
+	config.Seal()
+}
+
 func (s *IntegrationTestSuite) SetupTest() {
 	key := storetypes.NewKVStoreKey(types.StoreKey)
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
@@ -83,7 +93,7 @@ func (s *IntegrationTestSuite) SetupTest() {
 	newAcc := sdk.AccAddress("valid")
 	s.baseAcc = authtypes.NewBaseAccountWithAddress(newAcc)
 	s.authKeeper.EXPECT().GetAccount(gomock.Any(), newAcc).Return(nil).AnyTimes()
-	s.authKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec("cosmos")).AnyTimes()
+	s.authKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec("link")).AnyTimes()
 	s.authKeeper.EXPECT().NewAccountWithAddress(gomock.Any(), newAcc).Return(s.baseAcc).AnyTimes()
 	s.authKeeper.EXPECT().GetModuleAddress("").Return(nil).AnyTimes()
 	s.authKeeper.EXPECT().GetModuleAccount(gomock.Any(), "").Return(nil).AnyTimes()
