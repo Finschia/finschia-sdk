@@ -4,25 +4,26 @@ import (
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
+// TODO: Add more test cases
 func (s *KeeperTestSuite) TestImportExportGenesis() {
 	// export
 	genesis := s.keeper.ExportGenesis(s.ctx)
 
-	// forge
+	// forge & import
+	ctx, _ := s.ctx.CacheContext()
 	amount := collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance))
-	err := s.keeper.SendCoins(s.ctx, s.contractID, s.vendor, s.customer, amount)
+	err := s.keeper.SendCoins(ctx, s.contractID, s.vendor, s.customer, amount)
 	s.Require().NoError(err)
 
-	err = s.keeper.SendCoins(s.ctx, s.contractID, s.customer, s.operator, amount)
+	err = s.keeper.SendCoins(ctx, s.contractID, s.customer, s.operator, amount)
 	s.Require().NoError(err)
 
-	_, err = s.keeper.BurnCoins(s.ctx, s.contractID, s.operator, amount)
+	_, err = s.keeper.BurnCoins(ctx, s.contractID, s.operator, amount)
 	s.Require().NoError(err)
 
-	s.keeper.Abandon(s.ctx, s.contractID, s.vendor, collection.PermissionMint)
+	s.keeper.Abandon(ctx, s.contractID, s.vendor, collection.PermissionMint)
 
-	// restore
-	s.keeper.InitGenesis(s.ctx, genesis)
+	s.keeper.InitGenesis(ctx, genesis)
 
 	// export again and compare
 	newGenesis := s.keeper.ExportGenesis(s.ctx)

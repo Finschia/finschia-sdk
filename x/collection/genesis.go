@@ -219,6 +219,9 @@ func DefaultGenesisState() *GenesisState {
 			DepthLimit: DefaultDepthLimit,
 			WidthLimit: DefaultWidthLimit,
 		},
+		ClassState: &ClassState{
+			Nonce: cmath.ZeroUint(),
+		},
 	}
 }
 
