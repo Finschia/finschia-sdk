@@ -29,6 +29,8 @@ var (
 
 	legacyTokenKeyPrefix     = []byte{0xf0}
 	legacyTokenTypeKeyPrefix = []byte{0xf1}
+
+	classStorePrefix = []byte{0x50}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {

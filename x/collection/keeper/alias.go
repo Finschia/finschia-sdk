@@ -1,10 +1,9 @@
 package keeper
 
 import (
-	gogotypes "github.com/gogo/protobuf/types"
-
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+	gogotypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -260,6 +259,21 @@ func (k Keeper) iterateNextTokenIDsImpl(ctx sdk.Context, prefix []byte, fn func(
 		}
 
 		stop := fn(contractID, nextID)
+		if stop {
+			break
+		}
+	}
+}
+
+// iterate through the classes and perform the provided function
+func (k Keeper) iterateClassStoreIDs(ctx sdk.Context, fn func(id string) (stop bool)) {
+	iterator := k.iterWithPrefix(ctx, classStorePrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		id := splitIDKey(iterator.Key())
+
+		stop := fn(id)
 		if stop {
 			break
 		}

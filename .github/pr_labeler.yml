@@ -13,6 +13,5 @@
 #   - x/*/client/**/*
 "C:x/collection":
   - x/collection/**/*
-  - x/collection-token/**/*
 "C:x/foundation":
   - x/foundation/**/*

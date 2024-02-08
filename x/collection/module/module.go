@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -20,14 +20,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	modulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
+
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/collection/client/cli"
 	"github.com/Finschia/finschia-sdk/x/collection/keeper"
 )
 
 var (
-	_ module.AppModule      = AppModule{}
-	_ module.AppModuleBasic = AppModuleBasic{}
+	_ module.AppModuleBasic = AppModule{}
+	_ module.HasGenesis     = AppModule{}
+
+	_ appmodule.AppModule = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the collection module.
@@ -108,18 +111,22 @@ func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	collection.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	collection.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
-	if err := keeper.NewMigrator(am.keeper).Register(cfg.RegisterMigration); err != nil {
-		panic(err)
+
+	m := keeper.NewMigrator(am.keeper)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", types.ModuleName, err))
+	}
+	if err := cfg.RegisterMigration(types.ModuleName, 2, m.Migrate2to3); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/%s from version 2 to 3: %v", types.ModuleName, err))
 	}
 }
 
 // InitGenesis performs genesis initialization for the collection module. It returns
 // no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
 	var genesisState collection.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	am.keeper.InitGenesis(ctx, &genesisState)
-	return []abci.ValidatorUpdate{}
 }
 
 // ExportGenesis returns the exported genesis state as raw bytes for the collection
@@ -143,8 +150,6 @@ type CollectionInputs struct {
 
 	Cdc          codec.Codec
 	StoreService store.KVStoreService
-
-	ClassKeeper collection.ClassKeeper
 }
 
 type CollectionOutputs struct {
@@ -155,7 +160,7 @@ type CollectionOutputs struct {
 }
 
 func ProvideModule(in CollectionInputs) CollectionOutputs {
-	k := keeper.NewKeeper(in.Cdc, in.StoreService, in.ClassKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.StoreService)
 	m := NewAppModule(in.Cdc, k)
 
 	return CollectionOutputs{

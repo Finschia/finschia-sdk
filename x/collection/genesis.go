@@ -1,6 +1,9 @@
 package collection
 
 import (
+	"math"
+
+	cmath "cosmossdk.io/math"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -197,6 +200,12 @@ func ValidateGenesis(data GenesisState) error {
 			if !burnt.Amount.IsPositive() {
 				return sdkerrors.ErrInvalidRequest.Wrap("burnt must be positive")
 			}
+		}
+	}
+
+	if data.ClassState != nil {
+		if data.ClassState.Nonce.GT(cmath.NewUint(math.MaxUint64)) {
+			return sdkerrors.ErrInvalidRequest.Wrapf("Invalid nonce: %s", data.ClassState.Nonce)
 		}
 	}
 

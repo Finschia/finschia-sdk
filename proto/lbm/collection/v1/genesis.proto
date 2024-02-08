@@ -46,6 +46,9 @@ message GenesisState {
 
   // burnts represents the total amount of burnt tokens.
   repeated ContractStatistics burnts = 12 [(gogoproto.nullable) = false];
+
+  // class_state defines the classes state. It was class keeper's genesis state in legacy x/token.
+  ClassState class_state = 13;
 }
 
 // ContractBalances defines balances belong to a contract.
@@ -168,4 +171,17 @@ message TokenRelation {
   string self = 1;
   // other
   string other = 2;
+}
+
+// ClassState defines the classes state.
+message ClassState {
+  // nonce is the next class nonce to issue.
+  string nonce = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Uint",
+    (gogoproto.customtype) = "cosmossdk.io/math.Uint",
+    (gogoproto.nullable)   = false
+  ];
+
+  // ids represents the issued ids.
+  repeated string ids = 2;
 }

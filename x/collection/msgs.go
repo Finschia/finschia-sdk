@@ -9,9 +9,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/Finschia/finschia-sdk/x/collection-token/class"
-	linkerrors "github.com/Finschia/finschia-sdk/x/collection-token/errors"
 )
 
 const (
@@ -40,6 +37,10 @@ var (
 	reTokenID     = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternAll))
 	reFTID        = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternZero))
 	reLegacyNFTID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyNFTClassID, patternAll))
+
+	// regexps for contract ids
+	reContractIDString = `[0-9a-f]{8,8}`
+	reContractID       = regexp.MustCompile(fmt.Sprintf(`^%s$`, reContractIDString))
 )
 
 func validateAmount(amount math.Int) error {
@@ -85,7 +86,10 @@ func SplitTokenID(tokenID string) (classID string) {
 }
 
 func ValidateContractID(id string) error {
-	return class.ValidateID(id)
+	if !reContractID.MatchString(id) {
+		return ErrInvalidContractID.Wrapf("invalid contract id: %s", id)
+	}
+	return nil
 }
 
 func ValidateClassID(id string) error {
@@ -193,7 +197,7 @@ func validateLegacyPermission(permission string) error {
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return linkerrors.ErrInvalidPermission.Wrap(permission.String())
+		return ErrInvalidPermission.Wrap(permission.String())
 	}
 	return nil
 }

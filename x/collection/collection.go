@@ -5,9 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gogo/protobuf/proto"
-
 	"cosmossdk.io/math"
+	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 )

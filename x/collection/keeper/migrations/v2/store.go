@@ -3,21 +3,16 @@ package v2
 import (
 	"fmt"
 
-	"cosmossdk.io/core/store"
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/runtime"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 // MigrateStore performs in-place store migrations from v1 to v2.
-func MigrateStore(ctx sdk.Context, storeService store.KVStoreService, cdc codec.BinaryCodec) error {
-	store := storeService.OpenKVStore(ctx)
-
+func MigrateStore(store storetypes.KVStore, cdc codec.BinaryCodec) error {
 	// fix ft statistics
 	if err := fixFTStatistics(store, cdc); err != nil {
 		return err
@@ -26,9 +21,8 @@ func MigrateStore(ctx sdk.Context, storeService store.KVStoreService, cdc codec.
 	return nil
 }
 
-func fixFTStatistics(store store.KVStore, cdc codec.BinaryCodec) error {
-	adapter := runtime.KVStoreAdapter(store)
-	iterator := storetypes.KVStorePrefixIterator(adapter, contractKeyPrefix)
+func fixFTStatistics(store storetypes.KVStore, cdc codec.BinaryCodec) error {
+	iterator := storetypes.KVStorePrefixIterator(store, contractKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -45,7 +39,7 @@ func fixFTStatistics(store store.KVStore, cdc codec.BinaryCodec) error {
 	return nil
 }
 
-func fixContractFTStatistics(store store.KVStore, contractID string) error {
+func fixContractFTStatistics(store storetypes.KVStore, contractID string) error {
 	supplies, err := evalContractFTSupplies(store, contractID)
 	if err != nil {
 		return err
@@ -58,10 +52,9 @@ func fixContractFTStatistics(store store.KVStore, contractID string) error {
 	return nil
 }
 
-func evalContractFTSupplies(store store.KVStore, contractID string) (map[string]math.Int, error) {
+func evalContractFTSupplies(store storetypes.KVStore, contractID string) (map[string]math.Int, error) {
 	prefix := balanceKeyPrefixByContractID(contractID)
-	adapter := runtime.KVStoreAdapter(store)
-	iterator := storetypes.KVStorePrefixIterator(adapter, prefix)
+	iterator := storetypes.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
 	supplies := map[string]math.Int{}
@@ -87,11 +80,8 @@ func evalContractFTSupplies(store store.KVStore, contractID string) (map[string]
 	return supplies, nil
 }
 
-func updateContractFTStatistics(store store.KVStore, contractID string, supplies map[string]math.Int) error {
-	bz, err := store.Get(NextClassIDKey(contractID))
-	if err != nil {
-		return err
-	}
+func updateContractFTStatistics(store storetypes.KVStore, contractID string, supplies map[string]math.Int) error {
+	bz := store.Get(NextClassIDKey(contractID))
 	if bz == nil {
 		return fmt.Errorf("no next class ids of contract %s", contractID)
 	}
@@ -114,23 +104,16 @@ func updateContractFTStatistics(store store.KVStore, contractID string, supplies
 			if err != nil {
 				return err
 			}
-			if err = store.Set(supplyKey, bz); err != nil {
-				return err
-			}
+			store.Set(supplyKey, bz)
 		} else {
 			supply = math.ZeroInt()
-			if err := store.Delete(supplyKey); err != nil {
-				return err
-			}
+			store.Delete(supplyKey)
 		}
 
 		// get burnt
 		burntKey := StatisticKey(BurntKeyPrefix, contractID, classID)
 		burnt := math.ZeroInt()
-		bz, err := store.Get(burntKey)
-		if err != nil {
-			return err
-		}
+		bz := store.Get(burntKey)
 		if bz != nil {
 			if err := burnt.Unmarshal(bz); err != nil {
 				return err
@@ -145,13 +128,9 @@ func updateContractFTStatistics(store store.KVStore, contractID string, supplies
 			if err != nil {
 				return err
 			}
-			if err = store.Set(mintedKey, bz); err != nil {
-				return err
-			}
+			store.Set(mintedKey, bz)
 		} else {
-			if err := store.Delete(mintedKey); err != nil {
-				return err
-			}
+			store.Delete(mintedKey)
 		}
 	}
 

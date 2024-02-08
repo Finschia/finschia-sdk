@@ -9,7 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
-	"github.com/Finschia/finschia-sdk/x/collection-token/class"
 )
 
 // Keeper defines the collection module Keeper
@@ -17,18 +16,15 @@ type Keeper struct {
 	cdc          codec.Codec
 	addressCodec addresscodec.Codec
 	storeService store.KVStoreService
-	classKeeper  collection.ClassKeeper
 }
 
 // NewKeeper returns a collection keeper
 func NewKeeper(
 	cdc codec.Codec,
 	kvStoreService store.KVStoreService,
-	ck collection.ClassKeeper,
 ) Keeper {
 	k := Keeper{
 		cdc:          cdc,
-		classKeeper:  ck,
 		storeService: kvStoreService,
 	}
 	k.addressCodec = cdc.InterfaceRegistry().SigningContext().AddressCodec()
@@ -41,8 +37,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 func ValidateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {
-	if !k.classKeeper.HasID(ctx, contractID) {
-		return class.ErrContractNotExist.Wrap(contractID)
+	if !k.HasID(ctx, contractID) {
+		return collection.ErrContractNotExist.Wrap(contractID)
 	}
 
 	if _, err := k.GetContract(ctx, contractID); err != nil {

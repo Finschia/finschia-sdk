@@ -16,8 +16,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
-	"github.com/Finschia/finschia-sdk/x/collection-token/class"
-	linkerrors "github.com/Finschia/finschia-sdk/x/collection-token/errors"
 )
 
 func TestMsgSendFT(t *testing.T) {
@@ -54,7 +52,7 @@ func TestMsgSendFT(t *testing.T) {
 			from:   addrs[0],
 			to:     addrs[1],
 			amount: amount,
-			err:    class.ErrInvalidContractID,
+			err:    collection.ErrInvalidContractID,
 		},
 		"invalid to": {
 			contractID: contractID,
@@ -153,7 +151,7 @@ func TestMsgOperatorSendFT(t *testing.T) {
 			from:     addrs[1],
 			to:       addrs[2],
 			amount:   amount,
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: contractID,
@@ -243,7 +241,7 @@ func TestMsgSendNFT(t *testing.T) {
 			from: addrs[0],
 			to:   addrs[1],
 			ids:  ids,
-			err:  class.ErrInvalidContractID,
+			err:  collection.ErrInvalidContractID,
 		},
 		"invalid to": {
 			contractID: contractID,
@@ -320,7 +318,7 @@ func TestMsgOperatorSendNFT(t *testing.T) {
 			from:     addrs[1],
 			to:       addrs[2],
 			ids:      ids,
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: contractID,
@@ -393,7 +391,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		"invalid contract id": {
 			holder:   addrs[0],
 			operator: addrs[1],
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid holder": {
 			contractID: contractID,
@@ -445,7 +443,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 		"invalid contract id": {
 			holder:   addrs[0],
 			operator: addrs[1],
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid holder": {
 			contractID: contractID,
@@ -584,7 +582,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:     meta,
 			decimals: decimals,
 			amount:   math.OneInt(),
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid owner": {
 			contractID: contractID,
@@ -712,7 +710,7 @@ func TestMsgIssueNFT(t *testing.T) {
 			operator: addrs[0],
 			name:     name,
 			meta:     meta,
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid operator": {
 			contractID: contractID,
@@ -789,7 +787,7 @@ func TestMsgMintFT(t *testing.T) {
 			operator: addrs[0],
 			to:       addrs[1],
 			amount:   amount,
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid operator": {
 			contractID: contractID,
@@ -871,7 +869,7 @@ func TestMsgMintNFT(t *testing.T) {
 			operator: addrs[0],
 			to:       addrs[1],
 			params:   params,
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid operator": {
 			contractID: contractID,
@@ -980,7 +978,7 @@ func TestMsgBurnFT(t *testing.T) {
 		"invalid contract id": {
 			from:   addrs[0],
 			amount: amount,
-			err:    class.ErrInvalidContractID,
+			err:    collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: contractID,
@@ -1051,7 +1049,7 @@ func TestMsgOperatorBurnFT(t *testing.T) {
 			grantee: addrs[0],
 			from:    addrs[1],
 			amount:  amount,
-			err:     class.ErrInvalidContractID,
+			err:     collection.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: contractID,
@@ -1127,7 +1125,7 @@ func TestMsgBurnNFT(t *testing.T) {
 		"invalid contract id": {
 			from: addrs[0],
 			ids:  ids,
-			err:  class.ErrInvalidContractID,
+			err:  collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: contractID,
@@ -1190,7 +1188,7 @@ func TestMsgOperatorBurnNFT(t *testing.T) {
 			grantee: addrs[0],
 			from:    addrs[1],
 			ids:     ids,
-			err:     class.ErrInvalidContractID,
+			err:     collection.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: contractID,
@@ -1282,7 +1280,7 @@ func TestMsgModify(t *testing.T) {
 		"invalid contract id": {
 			owner:   addrs[0],
 			changes: changes,
-			err:     class.ErrInvalidContractID,
+			err:     collection.ErrInvalidContractID,
 		},
 		"invalid owner": {
 			contractID: contractID,
@@ -1366,7 +1364,7 @@ func TestMsgGrantPermission(t *testing.T) {
 			from:       addrs[0],
 			to:         addrs[1],
 			permission: collection.LegacyPermissionMint.String(),
-			err:        class.ErrInvalidContractID,
+			err:        collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: contractID,
@@ -1384,7 +1382,7 @@ func TestMsgGrantPermission(t *testing.T) {
 			contractID: contractID,
 			from:       addrs[0],
 			to:         addrs[1],
-			err:        linkerrors.ErrInvalidPermission,
+			err:        collection.ErrInvalidPermission,
 		},
 	}
 
@@ -1427,7 +1425,7 @@ func TestMsgRevokePermission(t *testing.T) {
 		"invalid contract id": {
 			from:       addrs[0],
 			permission: collection.LegacyPermissionMint.String(),
-			err:        class.ErrInvalidContractID,
+			err:        collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: contractID,
@@ -1437,7 +1435,7 @@ func TestMsgRevokePermission(t *testing.T) {
 		"invalid permission": {
 			contractID: contractID,
 			from:       addrs[0],
-			err:        linkerrors.ErrInvalidPermission,
+			err:        collection.ErrInvalidPermission,
 		},
 	}
 
@@ -1494,7 +1492,7 @@ func TestMsgAttach(t *testing.T) {
 			from:      addrs[0],
 			tokenID:   tokenIDs[0],
 			toTokenID: tokenIDs[1],
-			err:       class.ErrInvalidContractID,
+			err:       collection.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -1564,7 +1562,7 @@ func TestMsgDetach(t *testing.T) {
 		"invalid contract id": {
 			from:    addrs[0],
 			tokenID: tokenID,
-			err:     class.ErrInvalidContractID,
+			err:     collection.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -1636,7 +1634,7 @@ func TestMsgOperatorAttach(t *testing.T) {
 			from:      addrs[1],
 			tokenID:   tokenIDs[0],
 			toTokenID: tokenIDs[1],
-			err:       class.ErrInvalidContractID,
+			err:       collection.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -1719,7 +1717,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 			operator: addrs[0],
 			from:     addrs[1],
 			tokenID:  tokenID,
-			err:      class.ErrInvalidContractID,
+			err:      collection.ErrInvalidContractID,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -1737,7 +1735,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 				From:       tc.from.String(),
 				TokenId:    tc.tokenID,
 			}
-
+			fmt.Println(tc.err.Error())
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
 			if tc.err != nil {
 				return

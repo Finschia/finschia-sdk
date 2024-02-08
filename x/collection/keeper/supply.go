@@ -34,7 +34,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 }
 
 func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) string {
-	contractID := k.classKeeper.NewID(ctx)
+	contractID := k.NewID(ctx)
 	contract.Id = contractID
 	k.setContract(ctx, contract)
 

@@ -7,9 +7,26 @@ import (
 	"math"
 
 	cmath "cosmossdk.io/math"
-
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+var (
+	nonceKey    = []byte{0x01}
+	idKeyPrefix = []byte{0x02}
+)
+
+func idKey(id string) []byte {
+	key := make([]byte, len(idKeyPrefix)+len(id))
+	copy(key, idKeyPrefix)
+	copy(key[len(idKeyPrefix):], id)
+	return key
+}
+
+func splitIDKey(key []byte) (id string) {
+	return string(key[len(idKeyPrefix):])
+}
 
 // NewID returns a brand-new ID.
 func (k Keeper) NewID(ctx sdk.Context) string {
@@ -40,8 +57,8 @@ func nonceToID(nonce uint64) string {
 }
 
 func (k Keeper) getNonce(ctx sdk.Context) cmath.Uint {
-	store := k.storeService.OpenKVStore(ctx)
-	bz, _ := store.Get(nonceKey)
+	classStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), classStorePrefix)
+	bz := classStore.Get(nonceKey)
 	if bz == nil {
 		panic("next id must exist")
 	}
@@ -53,26 +70,25 @@ func (k Keeper) getNonce(ctx sdk.Context) cmath.Uint {
 }
 
 func (k Keeper) setNonce(ctx sdk.Context, nonce cmath.Uint) {
-	store := k.storeService.OpenKVStore(ctx)
+	classStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), classStorePrefix)
 	bz, err := nonce.Marshal()
 	if err != nil {
 		panic(err)
 	}
-	store.Set(nonceKey, bz)
+	classStore.Set(nonceKey, bz)
 }
 
 func (k Keeper) addID(ctx sdk.Context, id string) {
-	store := k.storeService.OpenKVStore(ctx)
-	store.Set(idKey(id), []byte{})
+	classStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), classStorePrefix)
+	classStore.Set(idKey(id), []byte{})
 }
 
 func (k Keeper) HasID(ctx sdk.Context, id string) bool {
-	store := k.storeService.OpenKVStore(ctx)
-	has, _ := store.Has(idKey(id))
-	return has
+	classStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), classStorePrefix)
+	return classStore.Has(idKey(id))
 }
 
 func (k Keeper) DeleteID(ctx sdk.Context, id string) {
-	store := k.storeService.OpenKVStore(ctx)
-	store.Delete(idKey(id))
+	classStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), classStorePrefix)
+	classStore.Delete(idKey(id))
 }

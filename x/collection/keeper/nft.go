@@ -1,9 +1,8 @@
 package keeper
 
 import (
-	gogotypes "github.com/gogo/protobuf/types"
-
 	"cosmossdk.io/math"
+	gogotypes "github.com/cosmos/gogoproto/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 

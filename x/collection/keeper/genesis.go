@@ -206,6 +206,13 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 		reporter.Tick()
 	}
+
+	reporter = newProgressReporter(k.Logger(ctx), "import class states", len(data.ClassState.Ids))
+	k.setNonce(ctx, data.ClassState.Nonce)
+	for _, id := range data.ClassState.Ids {
+		k.addID(ctx, id)
+		reporter.Tick()
+	}
 }
 
 // ExportGenesis returns a GenesisState for a given context.
@@ -224,6 +231,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 		Authorizations: k.getAuthorizations(ctx, contracts),
 		Supplies:       k.getSupplies(ctx, contracts),
 		Burnts:         k.getBurnts(ctx, contracts),
+		ClassState:     k.getClassStates(ctx),
 	}
 }
 
@@ -442,4 +450,17 @@ func (k Keeper) getStatistics(ctx sdk.Context, contracts []collection.Contract, 
 	}
 
 	return statistics
+}
+
+func (k Keeper) getClassStates(ctx sdk.Context) *collection.ClassState {
+	ids := make([]string, 0)
+	k.iterateClassStoreIDs(ctx, func(id string) (stop bool) {
+		ids = append(ids, id)
+		return false
+	})
+
+	return &collection.ClassState{
+		Ids:   ids,
+		Nonce: k.getNonce(ctx),
+	}
 }
