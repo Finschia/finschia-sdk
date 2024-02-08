@@ -36,11 +36,6 @@ const (
 )
 
 var (
-	holderAcc  = authtypes.NewEmptyModuleAccount(holder)
-	blockedAcc = authtypes.NewEmptyModuleAccount(blocker)
-	mintAcc    = authtypes.NewEmptyModuleAccount(minttypes.ModuleName, authtypes.Minter)
-	burnerAcc  = authtypes.NewEmptyModuleAccount(authtypes.Burner, authtypes.Burner)
-
 	initTokens = sdk.TokensFromConsensusPower(initialPower, sdk.DefaultPowerReduction)
 	initCoins  = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initTokens))
 )
@@ -59,6 +54,10 @@ type IntegrationTestSuite struct {
 	cdc          codec.Codec
 	storeService store.KVStoreService
 	addrCdc      coreaddress.Codec
+	holderAcc    *authtypes.ModuleAccount
+	blockedAcc   *authtypes.ModuleAccount
+	mintAcc      *authtypes.ModuleAccount
+	burnerAcc    *authtypes.ModuleAccount
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
@@ -69,6 +68,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	config.SetPurpose(44)
 	config.SetCoinType(438)
 	config.Seal()
+	s.holderAcc = authtypes.NewEmptyModuleAccount(holder)
+	s.blockedAcc = authtypes.NewEmptyModuleAccount(blocker)
+	s.mintAcc = authtypes.NewEmptyModuleAccount(minttypes.ModuleName, authtypes.Minter)
+	s.burnerAcc = authtypes.NewEmptyModuleAccount(authtypes.Burner, authtypes.Burner)
 }
 
 func (s *IntegrationTestSuite) SetupTest() {
@@ -98,10 +101,10 @@ func (s *IntegrationTestSuite) SetupTest() {
 	s.authKeeper.EXPECT().GetModuleAddress("").Return(nil).AnyTimes()
 	s.authKeeper.EXPECT().GetModuleAccount(gomock.Any(), "").Return(nil).AnyTimes()
 	s.authKeeper.EXPECT().HasAccount(s.ctx, s.baseAcc.GetAddress()).Return(true).AnyTimes()
-	s.mockAuthKeeperFor(holderAcc)
-	s.mockAuthKeeperFor(blockedAcc)
-	s.mockAuthKeeperFor(mintAcc)
-	s.mockAuthKeeperFor(burnerAcc)
+	s.mockAuthKeeperFor(s.holderAcc)
+	s.mockAuthKeeperFor(s.blockedAcc)
+	s.mockAuthKeeperFor(s.mintAcc)
+	s.mockAuthKeeperFor(s.burnerAcc)
 	addrCdc := encCfg.Codec.InterfaceRegistry().SigningContext().AddressCodec()
 	authorityString, err := addrCdc.BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
 	s.Require().NoError(err)
@@ -150,14 +153,14 @@ func (s *IntegrationTestSuite) TestSupply_SendCoins() {
 
 func (s *IntegrationTestSuite) mintInitialBalances() {
 	s.Require().NoError(s.cut.MintCoins(s.ctx, minttypes.ModuleName, initCoins))
-	s.Require().NoError(s.cut.SendCoinsFromModuleToAccount(s.ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
+	s.Require().NoError(s.cut.SendCoinsFromModuleToAccount(s.ctx, minttypes.ModuleName, s.holderAcc.GetAddress(), initCoins))
 	s.Require().NoError(s.cut.MintCoins(s.ctx, minttypes.ModuleName, initCoins))
-	s.Require().Equal(initCoins, s.cut.GetAllBalances(s.ctx, holderAcc.GetAddress()))
+	s.Require().Equal(initCoins, s.cut.GetAllBalances(s.ctx, s.holderAcc.GetAddress()))
 }
 
 func (s *IntegrationTestSuite) verifySendCoinsWithInvalidAddr() {
 	s.Require().Panics(func() {
-		s.cut.SendCoinsFromModuleToModule(s.ctx, "", holderAcc.GetName(), initCoins) // nolint:errcheck // No need
+		s.cut.SendCoinsFromModuleToModule(s.ctx, "", s.holderAcc.GetName(), initCoins) // nolint:errcheck // No need
 	})
 	s.Require().Panics(func() {
 		s.cut.SendCoinsFromModuleToModule(s.ctx, authtypes.Burner, "", initCoins) // nolint:errcheck // No need
@@ -168,12 +171,12 @@ func (s *IntegrationTestSuite) verifySendCoinsWithInvalidAddr() {
 }
 
 func (s *IntegrationTestSuite) errorForInsufficientBalance() {
-	s.Require().Error(s.cut.SendCoinsFromModuleToAccount(s.ctx, holderAcc.GetName(), s.baseAcc.GetAddress(), initCoins.Add(initCoins...)))
+	s.Require().Error(s.cut.SendCoinsFromModuleToAccount(s.ctx, s.holderAcc.GetName(), s.baseAcc.GetAddress(), initCoins.Add(initCoins...)))
 }
 
 func (s *IntegrationTestSuite) verifySendModuleToModule() {
-	s.Require().NoError(s.cut.SendCoinsFromModuleToModule(s.ctx, holderAcc.GetName(), authtypes.Burner, initCoins))
-	s.Require().Equal(sdk.NewCoins().String(), getCoinsByName(s.ctx, s.cut, s.authKeeper, holderAcc.GetName()).String())
+	s.Require().NoError(s.cut.SendCoinsFromModuleToModule(s.ctx, s.holderAcc.GetName(), authtypes.Burner, initCoins))
+	s.Require().Equal(sdk.NewCoins().String(), getCoinsByName(s.ctx, s.cut, s.authKeeper, s.holderAcc.GetName()).String())
 	s.Require().Equal(initCoins, getCoinsByName(s.ctx, s.cut, s.authKeeper, authtypes.Burner))
 }
 
@@ -196,20 +199,20 @@ func (s *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 }
 
 func (s *IntegrationTestSuite) verifySendToBlockedAddr() {
-	s.Require().False(s.cut.IsInactiveAddr(blockedAcc.GetAddress()))
-	s.cut.AddToInactiveAddr(s.ctx, blockedAcc.GetAddress())
-	s.Require().True(s.cut.IsInactiveAddr(blockedAcc.GetAddress()))
+	s.Require().False(s.cut.IsInactiveAddr(s.blockedAcc.GetAddress()))
+	s.cut.AddToInactiveAddr(s.ctx, s.blockedAcc.GetAddress())
+	s.Require().True(s.cut.IsInactiveAddr(s.blockedAcc.GetAddress()))
 
-	err := s.cut.SendCoins(s.ctx, holderAcc.GetAddress(), blockedAcc.GetAddress(), initCoins)
+	err := s.cut.SendCoins(s.ctx, s.holderAcc.GetAddress(), s.blockedAcc.GetAddress(), initCoins)
 	s.Require().Contains(err.Error(), "is not allowed to receive funds")
-	s.Require().Equal(initCoins, s.cut.GetAllBalances(s.ctx, holderAcc.GetAddress()))
+	s.Require().Equal(initCoins, s.cut.GetAllBalances(s.ctx, s.holderAcc.GetAddress()))
 }
 
 func (s *IntegrationTestSuite) verifySendToBlockedAddrAfterRemoveIt() {
-	s.cut.DeleteFromInactiveAddr(s.ctx, blockedAcc.GetAddress())
-	s.Require().False(s.cut.IsInactiveAddr(blockedAcc.GetAddress()))
-	s.Require().NoError(s.cut.SendCoins(s.ctx, holderAcc.GetAddress(), blockedAcc.GetAddress(), initCoins))
-	s.Require().Equal(sdk.NewCoins().String(), s.cut.GetAllBalances(s.ctx, holderAcc.GetAddress()).String())
+	s.cut.DeleteFromInactiveAddr(s.ctx, s.blockedAcc.GetAddress())
+	s.Require().False(s.cut.IsInactiveAddr(s.blockedAcc.GetAddress()))
+	s.Require().NoError(s.cut.SendCoins(s.ctx, s.holderAcc.GetAddress(), s.blockedAcc.GetAddress(), initCoins))
+	s.Require().Equal(sdk.NewCoins().String(), s.cut.GetAllBalances(s.ctx, s.holderAcc.GetAddress()).String())
 }
 
 func (s *IntegrationTestSuite) TestInitializeBankPlus() {
@@ -225,8 +228,8 @@ func (s *IntegrationTestSuite) TestInitializeBankPlus() {
 		log.NewNopLogger(),
 	)
 
-	newKeeper.AddToInactiveAddr(s.ctx, blockedAcc.GetAddress())
-	s.Require().True(newKeeper.IsInactiveAddr(blockedAcc.GetAddress()))
+	newKeeper.AddToInactiveAddr(s.ctx, s.blockedAcc.GetAddress())
+	s.Require().True(newKeeper.IsInactiveAddr(s.blockedAcc.GetAddress()))
 
 	anotherNewKeeper := NewBaseKeeper(
 		s.cdc,
@@ -239,7 +242,7 @@ func (s *IntegrationTestSuite) TestInitializeBankPlus() {
 	)
 
 	anotherNewKeeper.InitializeBankPlus(s.ctx)
-	s.Require().True(anotherNewKeeper.IsInactiveAddr(blockedAcc.GetAddress()))
+	s.Require().True(anotherNewKeeper.IsInactiveAddr(s.blockedAcc.GetAddress()))
 }
 
 func (s *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() {
@@ -268,7 +271,7 @@ func (s *IntegrationTestSuite) TestInputOutputCoins() {
 	s.Require().NoError(s.cut.SendCoinsFromModuleToAccount(s.ctx, minttypes.ModuleName, s.baseAcc.GetAddress(), initCoins))
 
 	input := types.NewInput(s.baseAcc.GetAddress(), initCoins)
-	outputs := []types.Output{types.NewOutput(burnerAcc.GetAddress(), initCoins)}
+	outputs := []types.Output{types.NewOutput(s.burnerAcc.GetAddress(), initCoins)}
 
 	authorityString, err := s.addrCdc.BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
 	s.Require().NoError(err)
