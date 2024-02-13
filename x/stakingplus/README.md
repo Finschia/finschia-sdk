@@ -27,6 +27,6 @@ A validator is created using the `Msg/CreateValidator` service message.
 This service message is expected to fail if:
 
 - one of the conditions described in the staking module of the Cosmos-SDK is met.
-- the operator address is not registered on x/foundation through [MsgGrant](https://github.com/Finschia/finschia-sdk/tree/main/x/foundation#msggrant) with `CreateValidatorAuthorization`. 
+- the operator address is not registered on x/foundation through [MsgGrant](https://github.com/Finschia/finschia-sdk/tree/main/x/foundation/README.md#msggrant) with `CreateValidatorAuthorization`. 
 
 The other [statements](https://github.com/cosmos/cosmos-sdk/blob/v0.50.2/x/staking/README.md#msgcreatevalidator) on this message in the exising document are still valid.
