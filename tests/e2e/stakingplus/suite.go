@@ -177,5 +177,5 @@ func (s *E2ETestSuite) createAccount(uid, mnemonic string) {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
 
-	s.Require().NoError(s.network.WaitForNextBlock())
+	s.Require().NoError(clitestutil.CheckTxCode(s.network, val.ClientCtx, res.TxHash, 0))
 }
