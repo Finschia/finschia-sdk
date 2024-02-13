@@ -1,9 +1,9 @@
 syntax = "proto3";
-package lbm.zkauth.v1;
+package finschia.zkauth.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-import "lbm/zkauth/v1/params.proto";
+import "finschia/zkauth/v1beta1/params.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
 

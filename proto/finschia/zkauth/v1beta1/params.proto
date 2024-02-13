@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lbm.zkauth.v1;
+package finschia.zkauth.v1beta1;
 
 import "gogoproto/gogo.proto";
 
@@ -7,15 +7,18 @@ option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
 
 message Params {
     option (gogoproto.goproto_stringer) = false;
-    
-    // FetchIntervals is the interval at which the node fetches the oauth_pub_key.
-    uint64 fetch_intervals = 1;
 }
 
+// Struct that contains info for a JWK.
+// The JWK is used to verify the JWT token.
 message JWK {
+    // Key type parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.1
     string kty = 1;
+    // RSA public exponent, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3
     string e = 2;
+    // RSA modulus, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3
     string n = 3;
+    // Algorithm parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.4
     string alg = 4;
 }
 
@@ -23,6 +26,9 @@ message ProviderConfig {
     // For example, if Google, iss is https://accounts.google.com and jwk_endpoint is https://www.googleapis.com/oauth2/v3/certs
     string iss = 1;
     string jwk_endpoint = 2;
+
+    // FetchIntervals is the interval at which the node fetches the oauth_pub_key.
+    uint64 fetch_intervals = 3;
 }
 
 // List of providers available with ZKAuth.

@@ -1,12 +1,12 @@
 syntax = "proto3";
-package lbm.zkauth.v1;
+package finschia.zkauth.v1beta1;
 
 import "cosmos_proto/cosmos.proto";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 
-import "lbm/zkauth/v1/zkauth.proto";
+import "finschia/zkauth/v1beta1/zkauth.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
 

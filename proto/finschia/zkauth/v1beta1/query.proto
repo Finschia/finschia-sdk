@@ -1,11 +1,11 @@
 syntax = "proto3";
-package lbm.zkauth.v1;
+package finschia.zkauth.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 
-import "lbm/zkauth/v1/params.proto";
+import "finschia/zkauth/v1beta1/params.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
 
@@ -13,7 +13,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
 service Query {
     // Parameters queries the parameters of the module.
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/lbm/zkauth/v1/params";
+        option (google.api.http).get = "/finschia/zkauth/v1beta1/params";
   }
 
 }

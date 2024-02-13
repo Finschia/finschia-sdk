@@ -605,6 +605,36 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
+- [finschia/zkauth/v1beta1/params.proto](#finschia/zkauth/v1beta1/params.proto)
+    - [JWK](#finschia.zkauth.v1beta1.JWK)
+    - [JwkIdList](#finschia.zkauth.v1beta1.JwkIdList)
+    - [Params](#finschia.zkauth.v1beta1.Params)
+    - [ProviderConfig](#finschia.zkauth.v1beta1.ProviderConfig)
+    - [VerifyParams](#finschia.zkauth.v1beta1.VerifyParams)
+    - [VerifyParams.OidcProviderJwksEntry](#finschia.zkauth.v1beta1.VerifyParams.OidcProviderJwksEntry)
+  
+    - [OidcProvider](#finschia.zkauth.v1beta1.OidcProvider)
+  
+- [finschia/zkauth/v1beta1/genesis.proto](#finschia/zkauth/v1beta1/genesis.proto)
+    - [GenesisState](#finschia.zkauth.v1beta1.GenesisState)
+  
+- [finschia/zkauth/v1beta1/query.proto](#finschia/zkauth/v1beta1/query.proto)
+    - [QueryParamsRequest](#finschia.zkauth.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#finschia.zkauth.v1beta1.QueryParamsResponse)
+  
+    - [Query](#finschia.zkauth.v1beta1.Query)
+  
+- [finschia/zkauth/v1beta1/zkauth.proto](#finschia/zkauth/v1beta1/zkauth.proto)
+    - [ZKAuthAccount](#finschia.zkauth.v1beta1.ZKAuthAccount)
+    - [ZKAuthInputs](#finschia.zkauth.v1beta1.ZKAuthInputs)
+  
+- [finschia/zkauth/v1beta1/tx.proto](#finschia/zkauth/v1beta1/tx.proto)
+    - [MsgExecution](#finschia.zkauth.v1beta1.MsgExecution)
+    - [MsgExecutionResponse](#finschia.zkauth.v1beta1.MsgExecutionResponse)
+    - [ZKAuthSignature](#finschia.zkauth.v1beta1.ZKAuthSignature)
+  
+    - [Msg](#finschia.zkauth.v1beta1.Msg)
+  
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
   
@@ -965,38 +995,6 @@
     - [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse)
   
     - [Service](#lbm.tx.v1beta1.Service)
-  
-- [lbm/zkauth/v1/params.proto](#lbm/zkauth/v1/params.proto)
-    - [JWK](#lbm.zkauth.v1.JWK)
-    - [JwkIdList](#lbm.zkauth.v1.JwkIdList)
-    - [Params](#lbm.zkauth.v1.Params)
-    - [ProviderConfig](#lbm.zkauth.v1.ProviderConfig)
-    - [VerifyParams](#lbm.zkauth.v1.VerifyParams)
-    - [VerifyParams.OidcProviderJwksEntry](#lbm.zkauth.v1.VerifyParams.OidcProviderJwksEntry)
-  
-    - [OidcProvider](#lbm.zkauth.v1.OidcProvider)
-  
-- [lbm/zkauth/v1/genesis.proto](#lbm/zkauth/v1/genesis.proto)
-    - [GenesisState](#lbm.zkauth.v1.GenesisState)
-  
-- [lbm/zkauth/v1/query.proto](#lbm/zkauth/v1/query.proto)
-    - [QueryParamsRequest](#lbm.zkauth.v1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.zkauth.v1.QueryParamsResponse)
-  
-    - [Query](#lbm.zkauth.v1.Query)
-  
-- [lbm/zkauth/v1/zkauth.proto](#lbm/zkauth/v1/zkauth.proto)
-    - [Claim](#lbm.zkauth.v1.Claim)
-    - [JWTDetails](#lbm.zkauth.v1.JWTDetails)
-    - [ZKAuthAccount](#lbm.zkauth.v1.ZKAuthAccount)
-    - [ZKAuthInputs](#lbm.zkauth.v1.ZKAuthInputs)
-  
-- [lbm/zkauth/v1/tx.proto](#lbm/zkauth/v1/tx.proto)
-    - [MsgExecution](#lbm.zkauth.v1.MsgExecution)
-    - [MsgExecutionResponse](#lbm.zkauth.v1.MsgExecutionResponse)
-    - [ZKAuthSignature](#lbm.zkauth.v1.ZKAuthSignature)
-  
-    - [Msg](#lbm.zkauth.v1.Msg)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -9018,6 +9016,332 @@ Since: cosmos-sdk 0.43
 
 
 
+<a name="finschia/zkauth/v1beta1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/zkauth/v1beta1/params.proto
+
+
+
+<a name="finschia.zkauth.v1beta1.JWK"></a>
+
+### JWK
+Struct that contains info for a JWK.
+The JWK is used to verify the JWT token.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `kty` | [string](#string) |  | Key type parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.1 |
+| `e` | [string](#string) |  | RSA public exponent, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3 |
+| `n` | [string](#string) |  | RSA modulus, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3 |
+| `alg` | [string](#string) |  | Algorithm parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.4 |
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.JwkIdList"></a>
+
+### JwkIdList
+In protobuf, it is not possible to define a message for the key in the map, so get the JWK as follows.
+Save the list of kids for iss.
+Save the JWK as a map for the saved kid.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `iss` | [string](#string) |  |  |
+| `kid` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.Params"></a>
+
+### Params
+
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.ProviderConfig"></a>
+
+### ProviderConfig
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `iss` | [string](#string) |  | For example, if Google, iss is https://accounts.google.com and jwk_endpoint is https://www.googleapis.com/oauth2/v3/certs |
+| `jwk_endpoint` | [string](#string) |  |  |
+| `fetch_intervals` | [uint64](#uint64) |  | FetchIntervals is the interval at which the node fetches the oauth_pub_key. |
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.VerifyParams"></a>
+
+### VerifyParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `oidc_provider_jwks` | [VerifyParams.OidcProviderJwksEntry](#finschia.zkauth.v1beta1.VerifyParams.OidcProviderJwksEntry) | repeated | key is kid |
+| `supported_providers` | [OidcProvider](#finschia.zkauth.v1beta1.OidcProvider) | repeated |  |
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.VerifyParams.OidcProviderJwksEntry"></a>
+
+### VerifyParams.OidcProviderJwksEntry
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [JWK](#finschia.zkauth.v1beta1.JWK) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="finschia.zkauth.v1beta1.OidcProvider"></a>
+
+### OidcProvider
+List of providers available with ZKAuth.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| OIDC_PROVIDER_GOOGLE | 0 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/zkauth/v1beta1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/zkauth/v1beta1/genesis.proto
+
+
+
+<a name="finschia.zkauth.v1beta1.GenesisState"></a>
+
+### GenesisState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.zkauth.v1beta1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/zkauth/v1beta1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/zkauth/v1beta1/query.proto
+
+
+
+<a name="finschia.zkauth.v1beta1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#finschia.zkauth.v1beta1.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.zkauth.v1beta1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#finschia.zkauth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#finschia.zkauth.v1beta1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/finschia/zkauth/v1beta1/params|
+
+ <!-- end services -->
+
+
+
+<a name="finschia/zkauth/v1beta1/zkauth.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/zkauth/v1beta1/zkauth.proto
+
+
+
+<a name="finschia.zkauth.v1beta1.ZKAuthAccount"></a>
+
+### ZKAuthAccount
+ZKAuthAccount is an Account generated by ZKAuth. 
+It conforms to the BaseAccount interface, but pubkey is not present and returns nil.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
+| `sequence` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.ZKAuthInputs"></a>
+
+### ZKAuthInputs
+ZKAuthInputs is a parameter required for zkp verify. 
+Contains the values needed to calculate "all inputs hash".
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proof_points` | [bytes](#bytes) |  |  |
+| `iss_f` | [string](#string) |  |  |
+| `header_base64` | [string](#string) |  |  |
+| `address_seed` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="finschia/zkauth/v1beta1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## finschia/zkauth/v1beta1/tx.proto
+
+
+
+<a name="finschia.zkauth.v1beta1.MsgExecution"></a>
+
+### MsgExecution
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msgs` | [google.protobuf.Any](#google.protobuf.Any) | repeated | msgs is the msg of the bank or collection that the account wants to execute. |
+| `zk_auth_signature` | [ZKAuthSignature](#finschia.zkauth.v1beta1.ZKAuthSignature) |  | ZkAuthSignature is the signature required for zkp verification. |
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.MsgExecutionResponse"></a>
+
+### MsgExecutionResponse
+
+
+
+
+
+
+
+<a name="finschia.zkauth.v1beta1.ZKAuthSignature"></a>
+
+### ZKAuthSignature
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `zk_auth_inputs` | [ZKAuthInputs](#finschia.zkauth.v1beta1.ZKAuthInputs) |  |  |
+| `max_block_height` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="finschia.zkauth.v1beta1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Execution` | [MsgExecution](#finschia.zkauth.v1beta1.MsgExecution) | [MsgExecutionResponse](#finschia.zkauth.v1beta1.MsgExecutionResponse) | Execution any msg from zkauth account | |
+
+ <!-- end services -->
+
+
+
 <a name="lbm/bankplus/v1/bankplus.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -14302,368 +14626,6 @@ Service defines a gRPC service for interacting with transactions.
 | `GetBlockWithTxs` | [GetBlockWithTxsRequest](#lbm.tx.v1beta1.GetBlockWithTxsRequest) | [GetBlockWithTxsResponse](#lbm.tx.v1beta1.GetBlockWithTxsResponse) | GetBlockWithTxs fetches a block with decoded txs.
 
 Since: finschia-sdk 0.47.0 | GET|/lbm/tx/v1beta1/txs/block/{height}|
-
- <!-- end services -->
-
-
-
-<a name="lbm/zkauth/v1/params.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/zkauth/v1/params.proto
-
-
-
-<a name="lbm.zkauth.v1.JWK"></a>
-
-### JWK
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `kty` | [string](#string) |  |  |
-| `e` | [string](#string) |  |  |
-| `n` | [string](#string) |  |  |
-| `alg` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.JwkIdList"></a>
-
-### JwkIdList
-In protobuf, it is not possible to define a message for the key in the map, so get the JWK as follows.
-Save the list of kids for iss.
-Save the JWK as a map for the saved kid.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `iss` | [string](#string) |  |  |
-| `kid` | [string](#string) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.Params"></a>
-
-### Params
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `fetch_intervals` | [uint64](#uint64) |  | FetchIntervals is the interval at which the node fetches the oauth_pub_key. |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.ProviderConfig"></a>
-
-### ProviderConfig
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `iss` | [string](#string) |  | For example, if Google, iss is https://accounts.google.com and jwk_endpoint is https://www.googleapis.com/oauth2/v3/certs |
-| `jwk_endpoint` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.VerifyParams"></a>
-
-### VerifyParams
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `oidc_provider_jwks` | [VerifyParams.OidcProviderJwksEntry](#lbm.zkauth.v1.VerifyParams.OidcProviderJwksEntry) | repeated | key is kid |
-| `supported_providers` | [OidcProvider](#lbm.zkauth.v1.OidcProvider) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.VerifyParams.OidcProviderJwksEntry"></a>
-
-### VerifyParams.OidcProviderJwksEntry
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [string](#string) |  |  |
-| `value` | [JWK](#lbm.zkauth.v1.JWK) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="lbm.zkauth.v1.OidcProvider"></a>
-
-### OidcProvider
-List of providers available with ZKAuth.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| OIDC_PROVIDER_GOOGLE | 0 |  |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/zkauth/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/zkauth/v1/genesis.proto
-
-
-
-<a name="lbm.zkauth.v1.GenesisState"></a>
-
-### GenesisState
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.zkauth.v1.Params) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/zkauth/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/zkauth/v1/query.proto
-
-
-
-<a name="lbm.zkauth.v1.QueryParamsRequest"></a>
-
-### QueryParamsRequest
-QueryParamsRequest is request type for the Query/Params RPC method.
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.QueryParamsResponse"></a>
-
-### QueryParamsResponse
-QueryParamsResponse is response type for the Query/Params RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.zkauth.v1.Params) |  | params holds all the parameters of this module. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="lbm.zkauth.v1.Query"></a>
-
-### Query
-Query defines the gRPC querier service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.zkauth.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.zkauth.v1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/lbm/zkauth/v1/params|
-
- <!-- end services -->
-
-
-
-<a name="lbm/zkauth/v1/zkauth.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/zkauth/v1/zkauth.proto
-
-
-
-<a name="lbm.zkauth.v1.Claim"></a>
-
-### Claim
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `value` | [string](#string) |  |  |
-| `index_mod_4` | [uint32](#uint32) |  |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.JWTDetails"></a>
-
-### JWTDetails
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `kid` | [string](#string) |  |  |
-| `header` | [string](#string) |  |  |
-| `iss` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.ZKAuthAccount"></a>
-
-### ZKAuthAccount
-ZKAuthAccount is an Account generated by ZKAuth. 
-It conforms to the BaseAccount interface, but pubkey is not present and returns nil.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
-| `account_number` | [uint64](#uint64) |  |  |
-| `sequence` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.ZKAuthInputs"></a>
-
-### ZKAuthInputs
-ZKAuthInputs is a parameter required for zkp verify. 
-Contains the values needed to calculate "all inputs hash".
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `proof_points` | [bytes](#bytes) |  |  |
-| `iss_base64_details` | [Claim](#lbm.zkauth.v1.Claim) |  |  |
-| `header_base64` | [string](#string) |  |  |
-| `address_seed` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/zkauth/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/zkauth/v1/tx.proto
-
-
-
-<a name="lbm.zkauth.v1.MsgExecution"></a>
-
-### MsgExecution
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `msgs` | [google.protobuf.Any](#google.protobuf.Any) | repeated | msgs is the msg of the bank or collection that the account wants to execute. |
-| `zk_auth_signature` | [ZKAuthSignature](#lbm.zkauth.v1.ZKAuthSignature) |  | ZkAuthSignature is the signature required for zkp verification. |
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.MsgExecutionResponse"></a>
-
-### MsgExecutionResponse
-
-
-
-
-
-
-
-<a name="lbm.zkauth.v1.ZKAuthSignature"></a>
-
-### ZKAuthSignature
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `zk_auth_inputs` | [ZKAuthInputs](#lbm.zkauth.v1.ZKAuthInputs) |  |  |
-| `max_block_height` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="lbm.zkauth.v1.Msg"></a>
-
-### Msg
-
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Execution` | [MsgExecution](#lbm.zkauth.v1.MsgExecution) | [MsgExecutionResponse](#lbm.zkauth.v1.MsgExecutionResponse) | Execution any msg from zkauth account | |
 
  <!-- end services -->
 

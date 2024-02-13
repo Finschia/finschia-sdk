@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lbm.zkauth.v1;
+package finschia.zkauth.v1beta1;
 
 import "cosmos_proto/cosmos.proto";
 import "cosmos/crypto/secp256k1/keys.proto";
@@ -25,18 +25,7 @@ message ZKAuthAccount {
 // Contains the values needed to calculate "all inputs hash".
 message ZKAuthInputs {
     bytes proof_points = 1;
-    Claim iss_base64_details = 2;
+    string iss_f = 2;
     string header_base64 = 3;
     string address_seed = 4;
-}
-
-message Claim {
-    string value = 1;
-    uint32 index_mod_4 = 2;
-}
-
-message JWTDetails {
-    string kid = 1;
-    string header = 2;
-    string iss = 3;
 }

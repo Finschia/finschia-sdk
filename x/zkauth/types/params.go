@@ -4,22 +4,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const (
-	DefaultFetchIntervals uint64 = 3600
-)
-
-// NewParams creates a new Params instance
-func NewParams(
-	FetchIntervals uint64,
-) Params {
-	return Params{
-		FetchIntervals: FetchIntervals,
-	}
-}
-
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(DefaultFetchIntervals)
+	return Params{}
 }
 
 // Validate validates the set of params
