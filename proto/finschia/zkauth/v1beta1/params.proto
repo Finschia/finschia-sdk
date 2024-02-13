@@ -5,10 +5,6 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
 
-message Params {
-    option (gogoproto.goproto_stringer) = false;
-}
-
 // Struct that contains info for a JWK.
 // The JWK is used to verify the JWT token.
 message JWK {

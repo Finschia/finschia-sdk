@@ -608,21 +608,11 @@
 - [finschia/zkauth/v1beta1/params.proto](#finschia/zkauth/v1beta1/params.proto)
     - [JWK](#finschia.zkauth.v1beta1.JWK)
     - [JwkIdList](#finschia.zkauth.v1beta1.JwkIdList)
-    - [Params](#finschia.zkauth.v1beta1.Params)
     - [ProviderConfig](#finschia.zkauth.v1beta1.ProviderConfig)
     - [VerifyParams](#finschia.zkauth.v1beta1.VerifyParams)
     - [VerifyParams.OidcProviderJwksEntry](#finschia.zkauth.v1beta1.VerifyParams.OidcProviderJwksEntry)
   
     - [OidcProvider](#finschia.zkauth.v1beta1.OidcProvider)
-  
-- [finschia/zkauth/v1beta1/genesis.proto](#finschia/zkauth/v1beta1/genesis.proto)
-    - [GenesisState](#finschia.zkauth.v1beta1.GenesisState)
-  
-- [finschia/zkauth/v1beta1/query.proto](#finschia/zkauth/v1beta1/query.proto)
-    - [QueryParamsRequest](#finschia.zkauth.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#finschia.zkauth.v1beta1.QueryParamsResponse)
-  
-    - [Query](#finschia.zkauth.v1beta1.Query)
   
 - [finschia/zkauth/v1beta1/zkauth.proto](#finschia/zkauth/v1beta1/zkauth.proto)
     - [ZKAuthAccount](#finschia.zkauth.v1beta1.ZKAuthAccount)
@@ -9060,16 +9050,6 @@ Save the JWK as a map for the saved kid.
 
 
 
-<a name="finschia.zkauth.v1beta1.Params"></a>
-
-### Params
-
-
-
-
-
-
-
 <a name="finschia.zkauth.v1beta1.ProviderConfig"></a>
 
 ### ProviderConfig
@@ -9134,88 +9114,6 @@ List of providers available with ZKAuth.
  <!-- end enums -->
 
  <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="finschia/zkauth/v1beta1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## finschia/zkauth/v1beta1/genesis.proto
-
-
-
-<a name="finschia.zkauth.v1beta1.GenesisState"></a>
-
-### GenesisState
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#finschia.zkauth.v1beta1.Params) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="finschia/zkauth/v1beta1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## finschia/zkauth/v1beta1/query.proto
-
-
-
-<a name="finschia.zkauth.v1beta1.QueryParamsRequest"></a>
-
-### QueryParamsRequest
-QueryParamsRequest is request type for the Query/Params RPC method.
-
-
-
-
-
-
-<a name="finschia.zkauth.v1beta1.QueryParamsResponse"></a>
-
-### QueryParamsResponse
-QueryParamsResponse is response type for the Query/Params RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#finschia.zkauth.v1beta1.Params) |  | params holds all the parameters of this module. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="finschia.zkauth.v1beta1.Query"></a>
-
-### Query
-Query defines the gRPC querier service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#finschia.zkauth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#finschia.zkauth.v1beta1.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/finschia/zkauth/v1beta1/params|
 
  <!-- end services -->
 
