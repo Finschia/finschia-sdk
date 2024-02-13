@@ -1,0 +1,49 @@
+syntax = "proto3";
+package finschia.zkauth.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Finschia/finschia-sdk/x/zkauth/types";
+
+// Struct that contains info for a JWK.
+// The JWK is used to verify the JWT token.
+message JWK {
+    // Key type parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.1
+    string kty = 1;
+    // RSA public exponent, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3
+    string e = 2;
+    // RSA modulus, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3
+    string n = 3;
+    // Algorithm parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.4
+    string alg = 4;
+}
+
+message ProviderConfig {
+    // For example, if Google, iss is https://accounts.google.com and jwk_endpoint is https://www.googleapis.com/oauth2/v3/certs
+    string iss = 1;
+    string jwk_endpoint = 2;
+
+    // FetchIntervals is the interval at which the node fetches the oauth_pub_key.
+    uint64 fetch_intervals = 3;
+}
+
+// List of providers available with ZKAuth.
+enum OidcProvider {
+    option (gogoproto.goproto_enum_prefix) = false;
+    OIDC_PROVIDER_GOOGLE = 0 [(gogoproto.enumvalue_customname) = "Google"];
+}
+
+
+// In protobuf, it is not possible to define a message for the key in the map, so get the JWK as follows.
+// Save the list of kids for iss.
+// Save the JWK as a map for the saved kid.
+message JwkIdList {
+    string iss = 1;
+    repeated string kid = 2;
+}
+
+message VerifyParams {
+    // key is kid
+    map<string, JWK> oidc_provider_jwks = 1;
+    repeated OidcProvider supported_providers = 2;
+}
