@@ -39,9 +39,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.48.1...HEAD)
 
 ### Features
-* (x/zkauth) [\#1239](https://github.com/Finschia/finschia-sdk/pull/1239) add CalculateAllInputsHash in ZKAuthInputs  
 
 ### Improvements
+* (x/zkauth) [\#1239](https://github.com/Finschia/finschia-sdk/pull/1239) add CalculateAllInputsHash in ZKAuthInputs
 
 ### Bug Fixes
 
