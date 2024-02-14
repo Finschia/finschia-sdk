@@ -89,17 +89,14 @@ func hashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 
 	// Padding with zeroes
 	strPadded := make([]byte, maxSize)
-	for i, c := range bytes {
-		strPadded[i] = c
-	}
+	copy(strPadded, bytes)
 
 	const chunkSize = PackWidth / 8
-	var packed []*big.Int
-	for _, chunk := range chunkArray(strPadded, chunkSize) {
+	chunks := chunkArray(strPadded, chunkSize)
+	packed := make([]*big.Int, 0, len(chunks))
+	for _, chunk := range chunks {
 		byteChunk := make([]byte, len(chunk))
-		for i, c := range chunk {
-			byteChunk[i] = c
-		}
+		copy(byteChunk, chunk)
 		packed = append(packed, bytesBEToBigInt(byteChunk))
 	}
 
