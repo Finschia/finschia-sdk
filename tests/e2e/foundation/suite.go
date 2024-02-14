@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/stretchr/testify/suite"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/stretchr/testify/suite"
 
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/math"
