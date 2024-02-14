@@ -43,8 +43,9 @@ func NewBaseKeeper(
 	cdc codec.Codec, storeService store.KVStoreService, ak types.AccountKeeper,
 	blockedAddr map[string]bool, deactMultiSend bool, authority string, logger log.Logger,
 ) BaseKeeper {
-	return BaseKeeper{
-		BaseKeeper:     bankkeeper.NewBaseKeeper(cdc, storeService, ak, blockedAddr, authority, logger),
+	keeper := bankkeeper.NewBaseKeeper(cdc, storeService, ak, blockedAddr, authority, logger)
+	baseKeeper := BaseKeeper{
+		BaseKeeper:     keeper,
 		ak:             ak,
 		cdc:            cdc,
 		storeService:   storeService,
@@ -52,58 +53,18 @@ func NewBaseKeeper(
 		deactMultiSend: deactMultiSend,
 		addrCdc:        cdc.InterfaceRegistry().SigningContext().AddressCodec(),
 	}
+
+	keeper.BaseSendKeeper.AppendSendRestriction(func(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
+		if baseKeeper.isInactiveAddr(toAddr) {
+			return nil, errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", toAddr)
+		}
+		return toAddr, nil
+	})
+	return baseKeeper
 }
 
 func (k BaseKeeper) InitializeBankPlus(ctx context.Context) {
 	k.loadAllInactiveAddrs(ctx)
-}
-
-// SendCoinsFromModuleToAccount transfers coins from a ModuleAccount to an AccAddress.
-// It will panic if the module account does not exist.
-func (k BaseKeeper) SendCoinsFromModuleToAccount(
-	ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins,
-) error {
-	senderAddr := k.ak.GetModuleAddress(senderModule)
-	if senderAddr.Empty() {
-		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
-	}
-
-	if k.BlockedAddr(recipientAddr) {
-		return errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", recipientAddr)
-	}
-
-	return k.SendCoins(ctx, senderAddr, recipientAddr, amt)
-}
-
-// SendCoinsFromModuleToModule transfers coins from a ModuleAccount to another.
-// It will panic if either module account does not exist.
-func (k BaseKeeper) SendCoinsFromModuleToModule(
-	ctx context.Context, senderModule, recipientModule string, amt sdk.Coins,
-) error {
-	senderAddr := k.ak.GetModuleAddress(senderModule)
-	if senderAddr.Empty() {
-		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
-	}
-
-	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
-	if recipientAcc == nil {
-		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
-	}
-
-	return k.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
-}
-
-// SendCoinsFromAccountToModule transfers coins from an AccAddress to a ModuleAccount.
-// It will panic if the module account does not exist.
-func (k BaseKeeper) SendCoinsFromAccountToModule(
-	ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins,
-) error {
-	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
-	if recipientAcc == nil {
-		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
-	}
-
-	return k.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
 }
 
 func (k BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
