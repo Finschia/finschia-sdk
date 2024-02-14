@@ -12,9 +12,8 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
-const MaxHeaderLen = 248
-const MaxExtIssLen = 165
-const MaxIssLenB86 = 4 * (1 + MaxExtIssLen/3)
+const MaxHeaderLen = 992
+const MaxExtIssLen = 32
 const PackWidth = 248
 
 // circom constants from main.circom / https://zkrepl.dev/?gist=30d21c7a7285b1b14f608325f172417b
@@ -100,7 +99,7 @@ func hashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 		packed = append(packed, bytesBEToBigInt(byteChunk))
 	}
 
-	hash, err := poseidon.Hash(packed)
+	hash, err := poseidonHash(packed)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +170,7 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 	if err != nil {
 		return nil, err
 	}
-	issBase64Fr, err := hashASCIIStrToField(string(issBytes), MaxIssLenB86)
+	issBase64Fr, err := hashASCIIStrToField(string(issBytes), MaxExtIssLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid Iss base64")
 	}

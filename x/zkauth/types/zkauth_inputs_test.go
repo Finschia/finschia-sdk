@@ -109,6 +109,6 @@ func TestCalculateAllInputsHash(t *testing.T) {
 
 	allInputHash, err := zkAuthInputs.CalculateAllInputsHash(ephPKBigInt.Bytes(), modulusPkBigInt.Bytes(), maxBlockHeight)
 	require.NoError(t, err)
-	expectedHash := "5761318511541142206926900520100194451345859649436219306575220333231089953084"
+	expectedHash := "3827905543320507931033325704037061563726220334526478657780188755467281995056"
 	require.Equal(t, expectedHash, allInputHash.String())
 }
