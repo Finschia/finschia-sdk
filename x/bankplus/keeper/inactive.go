@@ -20,30 +20,30 @@ func inactiveAddrKey(addr sdk.AccAddress) []byte {
 }
 
 // isStoredInactiveAddr checks if the address is stored or not as blocked address
-func (keeper BaseKeeper) isStoredInactiveAddr(ctx context.Context, address sdk.AccAddress) bool {
-	store := keeper.storeService.OpenKVStore(ctx)
+func (k BaseKeeper) isStoredInactiveAddr(ctx context.Context, address sdk.AccAddress) bool {
+	store := k.storeService.OpenKVStore(ctx)
 	bz, _ := store.Get(inactiveAddrKey(address))
 	return bz != nil
 }
 
 // addToInactiveAddr adds a blocked address to the store.
-func (keeper BaseKeeper) addToInactiveAddr(ctx context.Context, address sdk.AccAddress) {
-	store := keeper.storeService.OpenKVStore(ctx)
-	addrString, err := keeper.addrCdc.BytesToString(address)
+func (k BaseKeeper) addToInactiveAddr(ctx context.Context, address sdk.AccAddress) {
+	store := k.storeService.OpenKVStore(ctx)
+	addrString, err := k.addrCdc.BytesToString(address)
 	if err != nil {
 		panic(err)
 	}
 
 	blockedCAddr := types.InactiveAddr{Address: addrString}
-	bz := keeper.cdc.MustMarshal(&blockedCAddr)
+	bz := k.cdc.MustMarshal(&blockedCAddr)
 	if err := store.Set(inactiveAddrKey(address), bz); err != nil {
 		panic(err)
 	}
 }
 
 // deleteFromInactiveAddr deletes blocked address from store
-func (keeper BaseKeeper) deleteFromInactiveAddr(ctx context.Context, address sdk.AccAddress) {
-	store := keeper.storeService.OpenKVStore(ctx)
+func (k BaseKeeper) deleteFromInactiveAddr(ctx context.Context, address sdk.AccAddress) {
+	store := k.storeService.OpenKVStore(ctx)
 	err := store.Delete(inactiveAddrKey(address))
 	if err != nil {
 		panic(err)
@@ -53,16 +53,16 @@ func (keeper BaseKeeper) deleteFromInactiveAddr(ctx context.Context, address sdk
 // loadAllInactiveAddrs loads all blocked address and set to `inactiveAddr`.
 // This function is executed when the app is initiated and save all inactive address in caches
 // in order to prevent to query to store in every time to send
-func (keeper BaseKeeper) loadAllInactiveAddrs(ctx context.Context) {
-	store := keeper.storeService.OpenKVStore(ctx)
+func (k BaseKeeper) loadAllInactiveAddrs(ctx context.Context) {
+	store := k.storeService.OpenKVStore(ctx)
 	adapter := runtime.KVStoreAdapter(store)
 	iterator := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var bAddr types.InactiveAddr
-		keeper.cdc.MustUnmarshal(iterator.Value(), &bAddr)
+		k.cdc.MustUnmarshal(iterator.Value(), &bAddr)
 
-		keeper.inactiveAddrs[bAddr.Address] = true
+		k.inactiveAddrs[bAddr.Address] = true
 	}
 }

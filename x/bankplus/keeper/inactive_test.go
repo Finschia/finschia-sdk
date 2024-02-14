@@ -30,7 +30,7 @@ func TestBankPlus(t *testing.T) {
 type BankPlusTestSuite struct {
 	suite.Suite
 	mockCtrl *gomock.Controller
-	keeper   BaseKeeper
+	cut      BaseKeeper
 	ctx      context.Context
 }
 
@@ -55,7 +55,7 @@ func (s *BankPlusTestSuite) SetupTest() {
 		BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
 	s.Require().NoError(err)
 
-	s.keeper = NewBaseKeeper(
+	s.cut = NewBaseKeeper(
 		codec,
 		kvStoreService,
 		mockAccKeeper,
@@ -70,7 +70,7 @@ func (s *BankPlusTestSuite) TearDownTest() {
 }
 
 func (s *BankPlusTestSuite) TestInactiveAddress() {
-	require.Equal(s.T(), 0, len(s.keeper.inactiveAddrs))
+	require.Equal(s.T(), 0, len(s.cut.inactiveAddrs))
 	addr := genAddr()
 	anotherAddr := genAddr()
 	s.addAddrOk(addr)
@@ -82,36 +82,36 @@ func (s *BankPlusTestSuite) TestInactiveAddress() {
 }
 
 func (s *BankPlusTestSuite) addAddrOk(addr sdk.AccAddress) {
-	s.keeper.addToInactiveAddr(s.ctx, addr)
-	require.True(s.T(), s.keeper.isStoredInactiveAddr(s.ctx, addr))
+	s.cut.addToInactiveAddr(s.ctx, addr)
+	require.True(s.T(), s.cut.isStoredInactiveAddr(s.ctx, addr))
 }
 
 func (s *BankPlusTestSuite) duplicateAddOk(addr sdk.AccAddress) {
-	s.keeper.addToInactiveAddr(s.ctx, addr)
-	require.True(s.T(), s.keeper.isStoredInactiveAddr(s.ctx, addr))
+	s.cut.addToInactiveAddr(s.ctx, addr)
+	require.True(s.T(), s.cut.isStoredInactiveAddr(s.ctx, addr))
 }
 
 func (s *BankPlusTestSuite) deleteAddrOk(addr sdk.AccAddress) {
-	s.keeper.deleteFromInactiveAddr(s.ctx, addr)
-	require.False(s.T(), s.keeper.isStoredInactiveAddr(s.ctx, addr))
+	s.cut.deleteFromInactiveAddr(s.ctx, addr)
+	require.False(s.T(), s.cut.isStoredInactiveAddr(s.ctx, addr))
 }
 
 func (s *BankPlusTestSuite) falseForUnknownAddr(anotherAddr sdk.AccAddress) {
-	require.False(s.T(), s.keeper.isStoredInactiveAddr(s.ctx, anotherAddr))
+	require.False(s.T(), s.cut.isStoredInactiveAddr(s.ctx, anotherAddr))
 }
 
 func (s *BankPlusTestSuite) noErrorWhenDeletionOfUnknownAddr(anotherAddr sdk.AccAddress) {
 	require.NotPanicsf(s.T(), func() {
-		s.keeper.deleteFromInactiveAddr(s.ctx, anotherAddr)
+		s.cut.deleteFromInactiveAddr(s.ctx, anotherAddr)
 	}, "no panic expected")
 }
 
 func (s *BankPlusTestSuite) testLoadAllInactiveAddrs(addr, anotherAddr sdk.AccAddress) {
-	s.keeper.addToInactiveAddr(s.ctx, addr)
-	s.keeper.addToInactiveAddr(s.ctx, anotherAddr)
-	require.Equal(s.T(), 0, len(s.keeper.inactiveAddrs))
-	s.keeper.loadAllInactiveAddrs(s.ctx)
-	require.Equal(s.T(), 2, len(s.keeper.inactiveAddrs))
+	s.cut.addToInactiveAddr(s.ctx, addr)
+	s.cut.addToInactiveAddr(s.ctx, anotherAddr)
+	require.Equal(s.T(), 0, len(s.cut.inactiveAddrs))
+	s.cut.loadAllInactiveAddrs(s.ctx)
+	require.Equal(s.T(), 2, len(s.cut.inactiveAddrs))
 }
 
 func genAddr() sdk.AccAddress {

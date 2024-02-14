@@ -54,123 +54,123 @@ func NewBaseKeeper(
 	}
 }
 
-func (keeper BaseKeeper) InitializeBankPlus(ctx context.Context) {
-	keeper.loadAllInactiveAddrs(ctx)
+func (k BaseKeeper) InitializeBankPlus(ctx context.Context) {
+	k.loadAllInactiveAddrs(ctx)
 }
 
 // SendCoinsFromModuleToAccount transfers coins from a ModuleAccount to an AccAddress.
 // It will panic if the module account does not exist.
-func (keeper BaseKeeper) SendCoinsFromModuleToAccount(
+func (k BaseKeeper) SendCoinsFromModuleToAccount(
 	ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins,
 ) error {
-	senderAddr := keeper.ak.GetModuleAddress(senderModule)
+	senderAddr := k.ak.GetModuleAddress(senderModule)
 	if senderAddr.Empty() {
 		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
 	}
 
-	if keeper.BlockedAddr(recipientAddr) {
+	if k.BlockedAddr(recipientAddr) {
 		return errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", recipientAddr)
 	}
 
-	return keeper.SendCoins(ctx, senderAddr, recipientAddr, amt)
+	return k.SendCoins(ctx, senderAddr, recipientAddr, amt)
 }
 
 // SendCoinsFromModuleToModule transfers coins from a ModuleAccount to another.
 // It will panic if either module account does not exist.
-func (keeper BaseKeeper) SendCoinsFromModuleToModule(
+func (k BaseKeeper) SendCoinsFromModuleToModule(
 	ctx context.Context, senderModule, recipientModule string, amt sdk.Coins,
 ) error {
-	senderAddr := keeper.ak.GetModuleAddress(senderModule)
+	senderAddr := k.ak.GetModuleAddress(senderModule)
 	if senderAddr.Empty() {
 		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
 	}
 
-	recipientAcc := keeper.ak.GetModuleAccount(ctx, recipientModule)
+	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
 		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
 	}
 
-	return keeper.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
+	return k.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
 }
 
 // SendCoinsFromAccountToModule transfers coins from an AccAddress to a ModuleAccount.
 // It will panic if the module account does not exist.
-func (keeper BaseKeeper) SendCoinsFromAccountToModule(
+func (k BaseKeeper) SendCoinsFromAccountToModule(
 	ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins,
 ) error {
-	recipientAcc := keeper.ak.GetModuleAccount(ctx, recipientModule)
+	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
 		panic(errorsmod.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
 	}
 
-	return keeper.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
+	return k.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
 }
 
-func (keeper BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
-	addrString, err := keeper.addrCdc.BytesToString(addr)
+func (k BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
+	addrString, err := k.addrCdc.BytesToString(addr)
 	if err != nil {
 		panic(err)
 	}
-	return keeper.inactiveAddrs[addrString]
+	return k.inactiveAddrs[addrString]
 }
 
 // SendCoins transfers amt coins from a sending account to a receiving account.
 // This is wrapped bank the `SendKeeper` interface of `bank` module,
 // and checks if `toAddr` is a inactiveAddr managed by the module.
-func (keeper BaseKeeper) SendCoins(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error {
+func (k BaseKeeper) SendCoins(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	// if toAddr is smart contract, check the status of contract.
-	if keeper.isInactiveAddr(toAddr) {
+	if k.isInactiveAddr(toAddr) {
 		return errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", toAddr)
 	}
 
-	return keeper.BaseSendKeeper.SendCoins(ctx, fromAddr, toAddr, amt)
+	return k.BaseSendKeeper.SendCoins(ctx, fromAddr, toAddr, amt)
 }
 
 // AddToInactiveAddr adds the address to `inactiveAddr`.
-func (keeper BaseKeeper) AddToInactiveAddr(ctx context.Context, addr sdk.AccAddress) {
-	addrString, err := keeper.addrCdc.BytesToString(addr)
+func (k BaseKeeper) AddToInactiveAddr(ctx context.Context, addr sdk.AccAddress) {
+	addrString, err := k.addrCdc.BytesToString(addr)
 	if err != nil {
 		panic(err)
 	}
-	if !keeper.inactiveAddrs[addrString] {
-		keeper.inactiveAddrs[addrString] = true
+	if !k.inactiveAddrs[addrString] {
+		k.inactiveAddrs[addrString] = true
 
-		keeper.addToInactiveAddr(ctx, addr)
+		k.addToInactiveAddr(ctx, addr)
 	}
 }
 
 // DeleteFromInactiveAddr removes the address from `inactiveAddr`.
-func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx context.Context, addr sdk.AccAddress) {
-	addrString, err := keeper.addrCdc.BytesToString(addr)
+func (k BaseKeeper) DeleteFromInactiveAddr(ctx context.Context, addr sdk.AccAddress) {
+	addrString, err := k.addrCdc.BytesToString(addr)
 	if err != nil {
 		panic(err)
 	}
-	if keeper.inactiveAddrs[addrString] {
-		delete(keeper.inactiveAddrs, addrString)
+	if k.inactiveAddrs[addrString] {
+		delete(k.inactiveAddrs, addrString)
 
-		keeper.deleteFromInactiveAddr(ctx, addr)
+		k.deleteFromInactiveAddr(ctx, addr)
 	}
 }
 
 // IsInactiveAddr returns if the address is added in inactiveAddr.
-func (keeper BaseKeeper) IsInactiveAddr(addr sdk.AccAddress) bool {
-	addrString, err := keeper.addrCdc.BytesToString(addr)
+func (k BaseKeeper) IsInactiveAddr(addr sdk.AccAddress) bool {
+	addrString, err := k.addrCdc.BytesToString(addr)
 	if err != nil {
 		panic(err)
 	}
-	return keeper.inactiveAddrs[addrString]
+	return k.inactiveAddrs[addrString]
 }
 
-func (keeper BaseKeeper) InputOutputCoins(ctx context.Context, input types.Input, outputs []types.Output) error {
-	if keeper.deactMultiSend {
+func (k BaseKeeper) InputOutputCoins(ctx context.Context, input types.Input, outputs []types.Output) error {
+	if k.deactMultiSend {
 		return sdkerrors.ErrNotSupported.Wrap("MultiSend was deactivated")
 	}
 
 	for _, out := range outputs {
-		if keeper.inactiveAddrs[out.Address] {
+		if k.inactiveAddrs[out.Address] {
 			return errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", out.Address)
 		}
 	}
 
-	return keeper.BaseSendKeeper.InputOutputCoins(ctx, input, outputs)
+	return k.BaseSendKeeper.InputOutputCoins(ctx, input, outputs)
 }
