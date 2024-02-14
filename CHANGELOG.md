@@ -46,7 +46,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (all) [\#1205](https://github.com/Finschia/finschia-sdk/pull/1205) delegate native logics to Finschia/cosmos-sdk
 * (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
 * (x/bankplus) [\#1223](https://github.com/Finschia/finschia-sdk/pull/1223) update x/bankplus to use Finschia/cosmos-sdk
-*
 
 ### Improvements
 * (docs) [\#1120](https://github.com/Finschia/finschia-sdk/pull/1120) Update links in x/foundation README.md
