@@ -268,12 +268,11 @@ func (k Keeper) iterateNextTokenIDsImpl(ctx sdk.Context, prefix []byte, fn func(
 
 // iterate through the classes and perform the provided function
 func (k Keeper) iterateClassStoreIDs(ctx sdk.Context, fn func(id string) (stop bool)) {
-	iterator := k.iterWithPrefix(ctx, classStorePrefix)
+	iterator := k.iterWithPrefix(ctx, append(classStorePrefix, idKeyPrefix...))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		id := splitIDKey(iterator.Key())
-
+		id := splitIDKey(iterator.Key()[len(classStorePrefix):])
 		stop := fn(id)
 		if stop {
 			break
