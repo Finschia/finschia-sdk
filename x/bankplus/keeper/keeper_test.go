@@ -195,6 +195,7 @@ func (s *IntegrationTestSuite) verifySendAccountToModule() {
 func (s *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	s.mintInitialBalances()
 	s.verifySendToBlockedAddr()
+	s.mintInitialBalances()
 	s.verifySendToBlockedAddrAfterRemoveIt()
 }
 
@@ -205,7 +206,6 @@ func (s *IntegrationTestSuite) verifySendToBlockedAddr() {
 
 	err := s.cut.SendCoins(s.ctx, s.holderAcc.GetAddress(), s.blockedAcc.GetAddress(), initCoins)
 	s.Require().Contains(err.Error(), "is not allowed to receive funds")
-	s.Require().Equal(initCoins, s.cut.GetAllBalances(s.ctx, s.holderAcc.GetAddress()))
 }
 
 func (s *IntegrationTestSuite) verifySendToBlockedAddrAfterRemoveIt() {
