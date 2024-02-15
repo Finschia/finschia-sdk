@@ -48,25 +48,17 @@ func ChunkArray(array []byte, chunkSize int) [][]byte {
 	chunkCount := int(math.Ceil(float64(len(array)) / float64(chunkSize)))
 	chunks := make([][]byte, chunkCount)
 
-	revArray := make([]byte, len(array))
-	copy(revArray, array)
-	reverse(revArray)
-
-	// split the revert array into chunks, and revert each chunk again.
-	for i := 0; i < chunkCount; i++ {
-		start := i * chunkSize
-		end := start + chunkSize
-		if end > len(revArray) {
-			end = len(revArray)
-		}
-		chunk := make([]byte, end-start)
-		copy(chunk, revArray[start:end])
-		reverse(chunk)
-		chunks[i] = chunk
+	shouldFirstPack := chunkSize
+	if len(array)%chunkSize != 0 {
+		shouldFirstPack = len(array) % chunkSize
 	}
-
-	// return the final chunk array reverted.
-	reverse(chunks)
+	for i := 0; i < chunkCount; i++ {
+		if i == 0 {
+			chunks[i] = array[0:shouldFirstPack]
+		} else {
+			chunks[i] = array[shouldFirstPack+((i-1)*chunkSize) : shouldFirstPack+(i*chunkSize)]
+		}
+	}
 	return chunks
 }
 
