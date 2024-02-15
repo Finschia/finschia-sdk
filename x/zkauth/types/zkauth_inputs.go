@@ -24,7 +24,7 @@ const PackWidth = 248
 const CircomBigintN = 121
 const CircomBigintK = 17
 
-func splitToTwoFrs(ephPkBytes []byte) []*big.Int {
+func SplitToTwoFrs(ephPkBytes []byte) []*big.Int {
 	mid := len(ephPkBytes) - 16
 	first := new(big.Int).SetBytes(ephPkBytes[0:mid])
 	second := new(big.Int).SetBytes(ephPkBytes[mid:])
@@ -32,7 +32,7 @@ func splitToTwoFrs(ephPkBytes []byte) []*big.Int {
 	return []*big.Int{first, second}
 }
 
-func toField(val string) (*big.Int, bool) {
+func ToField(val string) (*big.Int, bool) {
 	return new(big.Int).SetString(val, 10)
 }
 
@@ -42,8 +42,8 @@ func reverse[T any](s []T) {
 	}
 }
 
-// chunkArray splits an array into chunks of a specified size.
-func chunkArray(array []byte, chunkSize int) [][]byte {
+// ChunkArray splits an array into chunks of a specified size.
+func ChunkArray(array []byte, chunkSize int) [][]byte {
 	// The length of the array divided by the chunk size is rounded up and used as the number of chunks.
 	chunkCount := int(math.Ceil(float64(len(array)) / float64(chunkSize)))
 	chunks := make([][]byte, chunkCount)
@@ -70,8 +70,8 @@ func chunkArray(array []byte, chunkSize int) [][]byte {
 	return chunks
 }
 
-// bytesBEToBigInt converts a slice of bytes to a big.Int.
-func bytesBEToBigInt(bytes []byte) *big.Int {
+// BytesBEToBigInt converts a slice of bytes to a big.Int.
+func BytesBEToBigInt(bytes []byte) *big.Int {
 	if len(bytes) == 0 {
 		return big.NewInt(0)
 	}
@@ -79,8 +79,8 @@ func bytesBEToBigInt(bytes []byte) *big.Int {
 	return new(big.Int).SetBytes(bytes)
 }
 
-// hashASCIIStrToField hashes an ASCII string to a field element.
-func hashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
+// HashASCIIStrToField hashes an ASCII string to a field element.
+func HashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 	bytes := []byte(val)
 	if len(bytes) > maxSize {
 		return nil, errors.New("String is longer than allowed size")
@@ -91,15 +91,15 @@ func hashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 	copy(strPadded, bytes)
 
 	const chunkSize = PackWidth / 8
-	chunks := chunkArray(strPadded, chunkSize)
+	chunks := ChunkArray(strPadded, chunkSize)
 	packed := make([]*big.Int, 0, len(chunks))
 	for _, chunk := range chunks {
 		byteChunk := make([]byte, len(chunk))
 		copy(byteChunk, chunk)
-		packed = append(packed, bytesBEToBigInt(byteChunk))
+		packed = append(packed, BytesBEToBigInt(byteChunk))
 	}
 
-	hash, err := poseidonHash(packed)
+	hash, err := PoseidonHash(packed)
 	if err != nil {
 		return nil, err
 	}
@@ -107,8 +107,8 @@ func hashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 	return hash, nil
 }
 
-// circomBigIntToChunkedBytes converts a big integer to a slice of chunked *big.Int.
-func circomBigIntToChunkedBytes(num *big.Int) []*big.Int {
+// CircomBigIntToChunkedBytes converts a big integer to a slice of chunked *big.Int.
+func CircomBigIntToChunkedBytes(num *big.Int) []*big.Int {
 	bytesPerChunk, numChunks := CircomBigintN, CircomBigintK
 
 	res := make([]*big.Int, 0, numChunks)
@@ -122,19 +122,19 @@ func circomBigIntToChunkedBytes(num *big.Int) []*big.Int {
 	return res
 }
 
-// circomBigIntToField hashes a circom style big integer to a field element.
-func circomBigIntToField(num *big.Int) (*big.Int, error) {
-	packed := circomBigIntToChunkedBytes(num)
-	hash, err := poseidonHash(packed)
+// CircomBigIntToField hashes a circom style big integer to a field element.
+func CircomBigIntToField(num *big.Int) (*big.Int, error) {
+	packed := CircomBigIntToChunkedBytes(num)
+	hash, err := PoseidonHash(packed)
 	if err != nil {
 		return nil, err
 	}
 	return hash, nil
 }
 
-// poseidonHash hashes field elements of 32 or less.
+// PoseidonHash hashes field elements of 32 or less.
 // poseidon.Hash only supports less than 16.
-func poseidonHash(inpBI []*big.Int) (*big.Int, error) {
+func PoseidonHash(inpBI []*big.Int) (*big.Int, error) {
 	arrayCnt := len(inpBI)
 	switch true {
 	case arrayCnt <= 16:
@@ -159,18 +159,18 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "zkAuth header should be less then MAX_HEADER_LEN")
 	}
 
-	addressSeedFr, ok := toField(zk.AddressSeed)
+	addressSeedFr, ok := ToField(zk.AddressSeed)
 	if !ok {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid address_seed")
 	}
-	ephPkFrs := splitToTwoFrs(ephPkBytes)
+	ephPkFrs := SplitToTwoFrs(ephPkBytes)
 	maxBlockHeightFr := new(big.Int).SetInt64(maxBlockHeight)
 
 	issBytes, err := base64.StdEncoding.DecodeString(zk.IssF)
 	if err != nil {
 		return nil, err
 	}
-	issBase64Fr, err := hashASCIIStrToField(string(issBytes), MaxExtIssLen)
+	issBase64Fr, err := HashASCIIStrToField(string(issBytes), MaxExtIssLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid Iss base64")
 	}
@@ -178,11 +178,11 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 	if err != nil {
 		return nil, err
 	}
-	headerFr, err := hashASCIIStrToField(string(headerBytes), MaxHeaderLen)
+	headerFr, err := HashASCIIStrToField(string(headerBytes), MaxHeaderLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid jwt header")
 	}
-	modulusFr, err := circomBigIntToField(new(big.Int).SetBytes(modulus))
+	modulusFr, err := CircomBigIntToField(new(big.Int).SetBytes(modulus))
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid modulus")
 	}

@@ -48,7 +48,7 @@ func TestHashAsciiStrToField(t *testing.T) {
 
 	for name, tc := range testCase {
 		t.Run(name, func(t *testing.T) {
-			hashed, err := hashASCIIStrToField(tc.input, tc.maxSize)
+			hashed, err := HashASCIIStrToField(tc.input, tc.maxSize)
 			require.NoError(t, err)
 			require.Equal(t, tc.expected, hashed.String())
 		})
@@ -77,14 +77,14 @@ func TestCircomBigIntToField(t *testing.T) {
 		"3469159711626055096161756178162451",
 	}
 
-	packed := circomBigIntToChunkedBytes(pubKey)
+	packed := CircomBigIntToChunkedBytes(pubKey)
 	var packedStr []string
 	for _, p := range packed {
 		packedStr = append(packedStr, p.String())
 	}
 	require.Equal(t, expectedBytes, packedStr)
 
-	hash, err := circomBigIntToField(pubKey)
+	hash, err := CircomBigIntToField(pubKey)
 	require.NoError(t, err)
 	expectedHash := "20195927626436052929580783204678502571079473024425922703752353412303337954581"
 	require.Equal(t, expectedHash, hash.String())
