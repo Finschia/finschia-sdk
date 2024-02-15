@@ -3,14 +3,13 @@ package keeper
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	sdktypes "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 	"github.com/Finschia/ostracon/libs/log"
 )
@@ -31,7 +30,7 @@ func NewKeeper(
 	}
 }
 
-func (k Keeper) Logger(ctx sdktypes.Context) log.Logger {
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
@@ -83,7 +82,7 @@ func (k Keeper) SetKidList(ctx sdk.Context, kidList types.JwkIdList) error {
 
 func (k Keeper) FetchJWK(ctx sdk.Context) {
 	logger := k.Logger(ctx)
-	var defaultZKAuthOAuthProviders [1]types.OidcProvider = [1]types.OidcProvider{types.Google}
+	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 	var fetchIntervals uint64
 	go func() {
 		for {
@@ -100,8 +99,9 @@ func (k Keeper) FetchJWK(ctx sdk.Context) {
 					logger.Error(fmt.Sprintf("%s", err))
 				}
 
-				defer resp.Body.Close()
-				byteArray, _ := ioutil.ReadAll(resp.Body)
+				resp.Body.Close()
+
+				byteArray, _ := io.ReadAll(resp.Body)
 
 				var data map[string]interface{}
 				json.Unmarshal(byteArray, &data)
