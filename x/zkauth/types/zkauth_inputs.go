@@ -24,7 +24,7 @@ const PackWidth = 248
 const CircomBigintN = 121
 const CircomBigintK = 17
 
-func SplitToTwoFrs(ephPkBytes []byte) []*big.Int {
+func SplitToTwoFields(ephPkBytes []byte) []*big.Int {
 	mid := len(ephPkBytes) - 16
 	first := new(big.Int).SetBytes(ephPkBytes[0:mid])
 	second := new(big.Int).SetBytes(ephPkBytes[mid:])
@@ -34,12 +34,6 @@ func SplitToTwoFrs(ephPkBytes []byte) []*big.Int {
 
 func ToField(val string) (*big.Int, bool) {
 	return new(big.Int).SetString(val, 10)
-}
-
-func reverse[T any](s []T) {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
-	}
 }
 
 // ChunkArray splits an array into chunks of a specified size.
@@ -86,9 +80,7 @@ func HashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 	chunks := ChunkArray(strPadded, chunkSize)
 	packed := make([]*big.Int, 0, len(chunks))
 	for _, chunk := range chunks {
-		byteChunk := make([]byte, len(chunk))
-		copy(byteChunk, chunk)
-		packed = append(packed, BytesBEToBigInt(byteChunk))
+		packed = append(packed, BytesBEToBigInt(chunk))
 	}
 
 	hash, err := PoseidonHash(packed)
@@ -151,18 +143,18 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "zkAuth header should be less then MAX_HEADER_LEN")
 	}
 
-	addressSeedFr, ok := ToField(zk.AddressSeed)
+	addressSeedF, ok := ToField(zk.AddressSeed)
 	if !ok {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid address_seed")
 	}
-	ephPkFrs := SplitToTwoFrs(ephPkBytes)
-	maxBlockHeightFr := new(big.Int).SetInt64(maxBlockHeight)
+	ephPkFs := SplitToTwoFields(ephPkBytes)
+	maxBlockHeightF := new(big.Int).SetInt64(maxBlockHeight)
 
 	issBytes, err := base64.StdEncoding.DecodeString(zk.IssF)
 	if err != nil {
 		return nil, err
 	}
-	issBase64Fr, err := HashASCIIStrToField(string(issBytes), MaxExtIssLen)
+	issF, err := HashASCIIStrToField(string(issBytes), MaxExtIssLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid Iss base64")
 	}
@@ -170,22 +162,22 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 	if err != nil {
 		return nil, err
 	}
-	headerFr, err := HashASCIIStrToField(string(headerBytes), MaxHeaderLen)
+	headerF, err := HashASCIIStrToField(string(headerBytes), MaxHeaderLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid jwt header")
 	}
-	modulusFr, err := CircomBigIntToField(new(big.Int).SetBytes(modulus))
+	modulusF, err := CircomBigIntToField(new(big.Int).SetBytes(modulus))
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid modulus")
 	}
 
 	return poseidon.Hash([]*big.Int{
-		ephPkFrs[0],
-		ephPkFrs[1],
-		addressSeedFr,
-		maxBlockHeightFr,
-		issBase64Fr,
-		headerFr,
-		modulusFr,
+		ephPkFs[0],
+		ephPkFs[1],
+		addressSeedF,
+		maxBlockHeightF,
+		issF,
+		headerF,
+		modulusF,
 	})
 }
