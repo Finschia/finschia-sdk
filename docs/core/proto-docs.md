@@ -605,9 +605,8 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
-- [finschia/zkauth/v1beta1/params.proto](#finschia/zkauth/v1beta1/params.proto)
+- [finschia/zkauth/v1beta1/config.proto](#finschia/zkauth/v1beta1/config.proto)
     - [JWK](#finschia.zkauth.v1beta1.JWK)
-    - [JwkIdList](#finschia.zkauth.v1beta1.JwkIdList)
     - [ProviderConfig](#finschia.zkauth.v1beta1.ProviderConfig)
     - [VerifyParams](#finschia.zkauth.v1beta1.VerifyParams)
     - [VerifyParams.OidcProviderJwksEntry](#finschia.zkauth.v1beta1.VerifyParams.OidcProviderJwksEntry)
@@ -9006,10 +9005,10 @@ Since: cosmos-sdk 0.43
 
 
 
-<a name="finschia/zkauth/v1beta1/params.proto"></a>
+<a name="finschia/zkauth/v1beta1/config.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## finschia/zkauth/v1beta1/params.proto
+## finschia/zkauth/v1beta1/config.proto
 
 
 
@@ -9026,24 +9025,7 @@ The JWK is used to verify the JWT token.
 | `e` | [string](#string) |  | RSA public exponent, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3 |
 | `n` | [string](#string) |  | RSA modulus, https://datatracker.ietf.org/doc/html/rfc7517#section-9.3 |
 | `alg` | [string](#string) |  | Algorithm parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.4 |
-
-
-
-
-
-
-<a name="finschia.zkauth.v1beta1.JwkIdList"></a>
-
-### JwkIdList
-In protobuf, it is not possible to define a message for the key in the map, so get the JWK as follows.
-Save the list of kids for iss.
-Save the JWK as a map for the saved kid.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `iss` | [string](#string) |  |  |
-| `kid` | [string](#string) | repeated |  |
+| `kid` | [string](#string) |  | Key ID https://datatracker.ietf.org/doc/html/rfc7517#section-4.5 |
 
 
 
