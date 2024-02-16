@@ -93,13 +93,13 @@ func HashASCIIStrToField(val string, maxSize int) (*big.Int, error) {
 
 // CircomBigIntToChunkedBytes converts a big integer to a slice of chunked *big.Int.
 func CircomBigIntToChunkedBytes(num *big.Int) []*big.Int {
-	bytesPerChunk, numChunks := CircomBigintN, CircomBigintK
+	bitsPerChunk, numChunks := CircomBigintN, CircomBigintK
 
 	res := make([]*big.Int, 0, numChunks)
-	msk := new(big.Int).Sub(new(big.Int).Lsh(big.NewInt(1), uint(bytesPerChunk)), big.NewInt(1))
+	msk := new(big.Int).Sub(new(big.Int).Lsh(big.NewInt(1), uint(bitsPerChunk)), big.NewInt(1))
 
 	for i := 0; i < numChunks; i++ {
-		chunk := new(big.Int).And(new(big.Int).Rsh(num, uint(i*bytesPerChunk)), msk)
+		chunk := new(big.Int).And(new(big.Int).Rsh(num, uint(i*bitsPerChunk)), msk)
 		res = append(res, chunk)
 	}
 
