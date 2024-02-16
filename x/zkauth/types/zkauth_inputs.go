@@ -140,7 +140,7 @@ func PoseidonHash(inpBI []*big.Int) (*big.Int, error) {
 
 func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBlockHeight int64) (*big.Int, error) {
 	if utf8.RuneCountInString(zk.HeaderBase64) > MaxHeaderLen {
-		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "zkAuth header should be less then MAX_HEADER_LEN")
+		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "zkAuth header should be less than MAX_HEADER_LEN")
 	}
 
 	addressSeedF, ok := ToField(zk.AddressSeed)
