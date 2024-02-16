@@ -103,14 +103,10 @@ func TestFetchJwk(t *testing.T) {
 	content, err := ioutil.ReadFile(filepath.Join(tempDir, keeper.JwkFileName))
 
 	require.NoError(t, err)
-	var expectedObj interface{}
+	var expectedObj []types.JWK
 	json.Unmarshal([]byte(testData), &expectedObj)
-	expectedBytes, _ := json.Marshal(expectedObj)
-	expectedString := string(expectedBytes)
 
-	var actualObj interface{}
+	var actualObj []types.JWK
 	json.Unmarshal(content, &actualObj)
-	actualBytes, _ := json.Marshal(actualObj)
-	actualString := string(actualBytes)
-	require.Equal(t, expectedString, actualString)
+	require.Equal(t, expectedObj, actualObj)
 }
