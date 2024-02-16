@@ -61,7 +61,9 @@ func (s *E2ETestSuite) TestNewTxCmdFundTreasury() {
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
 
-			s.Require().NoError(s.network.WaitForNextBlock())
+			res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+			s.Require().NoError(err)
+			s.Require().Zero(res.Code, res.RawLog)
 		})
 	}
 }
@@ -276,7 +278,9 @@ func (s *E2ETestSuite) TestNewTxCmdSubmitProposal() {
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
 
-			s.Require().NoError(s.network.WaitForNextBlock())
+			res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+			s.Require().NoError(err)
+			s.Require().Zero(res.Code, res.RawLog)
 		})
 	}
 }
@@ -290,7 +294,12 @@ func (s *E2ETestSuite) TestNewTxCmdWithdrawProposal() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
-	proposalID := 2
+	proposalID := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
+		Authority: s.bytesToString(s.authority),
+		To:        s.bytesToString(s.stranger),
+		Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
+	}, false)
+
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -328,7 +337,9 @@ func (s *E2ETestSuite) TestNewTxCmdWithdrawProposal() {
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
 
-			s.Require().NoError(s.network.WaitForNextBlock())
+			res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+			s.Require().NoError(err)
+			s.Require().Zero(res.Code, res.RawLog)
 		})
 	}
 }
@@ -342,7 +353,12 @@ func (s *E2ETestSuite) TestNewTxCmdVote() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, math.NewInt(10)))),
 	}
 
-	proposalID := 3
+	proposalID := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
+		Authority: s.bytesToString(s.authority),
+		To:        s.bytesToString(s.stranger),
+		Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
+	}, false)
+
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -384,7 +400,9 @@ func (s *E2ETestSuite) TestNewTxCmdVote() {
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
 
-			s.Require().NoError(s.network.WaitForNextBlock())
+			res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+			s.Require().NoError(err)
+			s.Require().Zero(res.Code, res.RawLog)
 		})
 	}
 }
@@ -435,7 +453,9 @@ func (s *E2ETestSuite) TestNewTxCmdExec() {
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
 
-			s.Require().NoError(s.network.WaitForNextBlock())
+			res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+			s.Require().NoError(err)
+			s.Require().Zero(res.Code, res.RawLog)
 		})
 	}
 }
@@ -547,7 +567,9 @@ func (s *E2ETestSuite) TestNewTxCmdLeaveFoundation() {
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().Zero(res.Code, out)
 
-			s.Require().NoError(s.network.WaitForNextBlock())
+			res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
+			s.Require().NoError(err)
+			s.Require().Zero(res.Code, res.RawLog)
 		})
 	}
 }

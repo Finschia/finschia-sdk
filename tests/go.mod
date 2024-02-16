@@ -20,7 +20,7 @@ require (
 	github.com/cosmos/cosmos-proto v1.0.0-beta.3 // indirect
 	// this version is not used as it is always replaced by the latest Cosmos SDK version
 	github.com/cosmos/cosmos-sdk v0.51.0
-	github.com/cosmos/gogoproto v1.4.11 // indirect
+	github.com/cosmos/gogoproto v1.4.11
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/stretchr/testify v1.8.4
@@ -33,7 +33,6 @@ require (
 require (
 	github.com/Finschia/finschia-sdk/simapp v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
-	github.com/gogo/protobuf v1.3.2
 )
 
 require (
@@ -42,7 +41,6 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/iam v1.1.3 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
-	cosmossdk.io/client/v2 v2.0.0-beta.1 // indirect
 	cosmossdk.io/collections v0.4.0 // indirect
 	cosmossdk.io/x/circuit v0.1.0 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
@@ -93,6 +91,7 @@ require (
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
