@@ -55,7 +55,7 @@ func NewBaseKeeper(
 	}
 
 	keeper.BaseSendKeeper.AppendSendRestriction(func(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
-		if baseKeeper.isInactiveAddr(toAddr) {
+		if baseKeeper.IsInactiveAddr(toAddr) {
 			return nil, errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", toAddr)
 		}
 		return toAddr, nil
@@ -65,14 +65,6 @@ func NewBaseKeeper(
 
 func (k BaseKeeper) InitializeBankPlus(ctx context.Context) {
 	k.loadAllInactiveAddrs(ctx)
-}
-
-func (k BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
-	addrString, err := k.addrCdc.BytesToString(addr)
-	if err != nil {
-		panic(err)
-	}
-	return k.inactiveAddrs[addrString]
 }
 
 // AddToInactiveAddr adds the address to `inactiveAddr`.
