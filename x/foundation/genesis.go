@@ -1,7 +1,7 @@
 package foundation
 
 import (
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/math"
