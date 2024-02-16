@@ -15,3 +15,5 @@
 #   - docs/architecture/**/*
 "C:x/foundation":
   - x/foundation/**/*
+"C:x/stakingplus":
+  - x/stakingplus/**/*
