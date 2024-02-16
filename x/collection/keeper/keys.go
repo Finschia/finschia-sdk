@@ -17,8 +17,6 @@ var (
 	balanceKeyPrefix = []byte{0x20}
 	ownerKeyPrefix   = []byte{0x21}
 	nftKeyPrefix     = []byte{0x22}
-	parentKeyPrefix  = []byte{0x23}
-	childKeyPrefix   = []byte{0x24}
 
 	authorizationKeyPrefix = []byte{0x30}
 	grantKeyPrefix         = []byte{0x31}
@@ -150,102 +148,6 @@ func splitNFTKey(key []byte) (contractID, tokenID string) {
 
 	begin = end
 	tokenID = string(key[begin:])
-
-	return
-}
-
-// ----------------------------------------------------------------------------
-// parent
-func parentKey(contractID, tokenID string) []byte {
-	prefix := parentKeyPrefixByContractID(contractID)
-	key := make([]byte, len(prefix)+len(tokenID))
-
-	copy(key, prefix)
-	copy(key[len(prefix):], tokenID)
-
-	return key
-}
-
-func parentKeyPrefixByContractID(contractID string) []byte {
-	key := make([]byte, len(parentKeyPrefix)+1+len(contractID))
-
-	begin := 0
-	copy(key, parentKeyPrefix)
-
-	begin += len(parentKeyPrefix)
-	key[begin] = byte(len(contractID))
-
-	begin++
-	copy(key[begin:], contractID)
-
-	return key
-}
-
-func splitParentKey(key []byte) (contractID, tokenID string) {
-	begin := len(parentKeyPrefix) + 1
-	end := begin + int(key[begin-1])
-	contractID = string(key[begin:end])
-
-	begin = end
-	tokenID = string(key[begin:])
-
-	return
-}
-
-// ----------------------------------------------------------------------------
-// child
-func childKey(contractID, tokenID, childID string) []byte {
-	prefix := childKeyPrefixByTokenID(contractID, tokenID)
-	key := make([]byte, len(prefix)+len(childID))
-
-	copy(key, prefix)
-	copy(key[len(prefix):], childID)
-
-	return key
-}
-
-func childKeyPrefixByTokenID(contractID, tokenID string) []byte {
-	prefix := childKeyPrefixByContractID(contractID)
-	key := make([]byte, len(prefix)+1+len(tokenID))
-
-	begin := 0
-	copy(key, prefix)
-
-	begin += len(prefix)
-	key[begin] = byte(len(tokenID))
-
-	begin++
-	copy(key[begin:], tokenID)
-
-	return key
-}
-
-func childKeyPrefixByContractID(contractID string) []byte {
-	key := make([]byte, len(childKeyPrefix)+1+len(contractID))
-
-	begin := 0
-	copy(key, childKeyPrefix)
-
-	begin += len(childKeyPrefix)
-	key[begin] = byte(len(contractID))
-
-	begin++
-	copy(key[begin:], contractID)
-
-	return key
-}
-
-func splitChildKey(key []byte) (contractID, tokenID, childID string) {
-	begin := len(childKeyPrefix) + 1
-	end := begin + int(key[begin-1])
-	contractID = string(key[begin:end])
-
-	begin = end + 1
-	end = begin + int(key[begin-1])
-	tokenID = string(key[begin:end])
-
-	begin = end
-	childID = string(key[begin:])
 
 	return
 }

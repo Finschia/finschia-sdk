@@ -241,47 +241,6 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
-		"contract parents of invalid contract id": {
-			&collection.GenesisState{
-				Parents: []collection.ContractTokenRelations{{
-					Relations: []collection.TokenRelation{{
-						Self:  collection.NewNFTID("deadbeef", 1),
-						Other: collection.NewNFTID("fee1dead", 1),
-					}},
-				}},
-			},
-			false,
-		},
-		"contract parents of empty relations": {
-			&collection.GenesisState{
-				Parents: []collection.ContractTokenRelations{{
-					ContractId: "deadbeef",
-				}},
-			},
-			false,
-		},
-		"contract parents of invalid token": {
-			&collection.GenesisState{
-				Parents: []collection.ContractTokenRelations{{
-					ContractId: "deadbeef",
-					Relations: []collection.TokenRelation{{
-						Other: collection.NewNFTID("fee1dead", 1),
-					}},
-				}},
-			},
-			false,
-		},
-		"contract parents of invalid parent": {
-			&collection.GenesisState{
-				Parents: []collection.ContractTokenRelations{{
-					ContractId: "deadbeef",
-					Relations: []collection.TokenRelation{{
-						Self: collection.NewNFTID("deadbeef", 1),
-					}},
-				}},
-			},
-			false,
-		},
 		"contract authorizations of invalid contract id": {
 			&collection.GenesisState{
 				Authorizations: []collection.ContractAuthorizations{{

@@ -36,7 +36,6 @@ func DefaultNextClassIDs(contractID string) NextClassIDs {
 }
 
 func validateParams(_ Params) error {
-	// limits are uint32, so no need to validate them.
 	return nil
 }
 

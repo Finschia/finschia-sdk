@@ -29,10 +29,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/collection/MsgModify")                     // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgGrantPermission{}, "lbm-sdk/collection/MsgGrantPermission")   // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgRevokePermission{}, "lbm-sdk/collection/MsgRevokePermission") // Changed msgName due to conflict with `x/token`
-	legacy.RegisterAminoMsg(cdc, &MsgAttach{}, "lbm-sdk/MsgAttach")
-	legacy.RegisterAminoMsg(cdc, &MsgDetach{}, "lbm-sdk/MsgDetach")
-	legacy.RegisterAminoMsg(cdc, &MsgOperatorAttach{}, "lbm-sdk/MsgOperatorAttach")
-	legacy.RegisterAminoMsg(cdc, &MsgOperatorDetach{}, "lbm-sdk/MsgOperatorDetach")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -42,8 +38,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgIssueNFT{},
 		&MsgMintFT{},
 		&MsgMintNFT{},
-		&MsgAttach{},
-		&MsgDetach{},
 		&MsgSendFT{},
 		&MsgOperatorSendFT{},
 		&MsgSendNFT{},
@@ -57,8 +51,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgModify{},
 		&MsgGrantPermission{},
 		&MsgRevokePermission{},
-		&MsgOperatorAttach{},
-		&MsgOperatorDetach{},
 	)
 
 	registry.RegisterInterface(

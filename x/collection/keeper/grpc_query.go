@@ -375,7 +375,7 @@ func (s queryServer) getToken(ctx sdk.Context, contractID, tokenID string) (coll
 			return nil, err
 		}
 
-		owner := s.keeper.GetRootOwner(ctx, contractID, token.TokenId)
+		owner := s.keeper.getOwner(ctx, contractID, token.TokenId)
 		return &collection.OwnerNFT{
 			ContractId: contractID,
 			TokenId:    token.TokenId,
@@ -433,114 +433,6 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 	}
 
 	return &collection.QueryTokenResponse{Token: *anyv}, nil
-}
-
-func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (*collection.QueryRootResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateNFTID(req.TokenId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
-	}
-
-	root := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
-	token, err := s.keeper.GetNFT(ctx, req.ContractId, root)
-	if err != nil {
-		panic(err)
-	}
-
-	return &collection.QueryRootResponse{Root: *token}, nil
-}
-
-func (s queryServer) HasParent(c context.Context, req *collection.QueryHasParentRequest) (*collection.QueryHasParentResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.GetContractId()); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateNFTID(req.GetTokenId()); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	_, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
-	return &collection.QueryHasParentResponse{HasParent: (err == nil)}, nil
-}
-
-func (s queryServer) Parent(c context.Context, req *collection.QueryParentRequest) (*collection.QueryParentResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.GetContractId()); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateNFTID(req.GetTokenId()); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
-	if err != nil {
-		return nil, status.Error(codes.NotFound, err.Error())
-	}
-
-	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
-	if err != nil {
-		panic(err)
-	}
-
-	return &collection.QueryParentResponse{Parent: *token}, nil
-}
-
-func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRequest) (*collection.QueryChildrenResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateNFTID(req.TokenId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-
-	store := s.keeper.storeService.OpenKVStore(ctx)
-	adapter := runtime.KVStoreAdapter(store)
-	childStore := prefix.NewStore(adapter, childKeyPrefixByTokenID(req.ContractId, req.TokenId))
-	var children []collection.NFT
-	pageRes, err := query.Paginate(childStore, req.Pagination, func(key, _ []byte) error {
-		childID := string(key)
-		child, err := s.keeper.GetNFT(ctx, req.ContractId, childID)
-		if err != nil {
-			panic(err)
-		}
-
-		children = append(children, *child)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &collection.QueryChildrenResponse{Children: children, Pagination: pageRes}, nil
 }
 
 func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGranteeGrantsRequest) (*collection.QueryGranteeGrantsResponse, error) {

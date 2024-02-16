@@ -1,7 +1,10 @@
 package v3
 
 import (
+	gogotypes "github.com/cosmos/gogoproto/types"
+
 	cmath "cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -10,52 +13,73 @@ import (
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
-// TODO: need to implement logics for migrating ClassState and generate new genesis state for Collection
-func MigrateStore(store, classStore storetypes.KVStore, cdc codec.BinaryCodec) error {
-	_, err := getClassState(classStore)
+func MigrateStore(collectionStore, oldClassStore storetypes.KVStore, cdc codec.BinaryCodec) error {
+	err := migrateClassStateAndRemoveLegacyState(collectionStore, oldClassStore, cdc)
 	if err != nil {
 		return err
 	}
 
-	_ = store
-	_ = cdc
+	err = initParams(collectionStore)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func getClassState(store storetypes.KVStore) (collection.ClassState, error) {
-	cs := collection.ClassState{}
-
-	ids := make([]string, 0)
-	iterateIDs(store, func(id string) (stop bool) {
-		ids = append(ids, id)
-		return false
-	})
-	cs.Ids = ids
-
-	bz := store.Get(nonceKey)
-	if bz == nil {
-		return cs, sdkerrors.ErrNotFound.Wrap("next id must exist")
-	}
-	var nonce cmath.Uint
-	if err := nonce.Unmarshal(bz); err != nil {
-		return cs, err
-	}
-	cs.Nonce = nonce
-
-	return cs, nil
-}
-
-func iterateIDs(store storetypes.KVStore, fn func(id string) (stop bool)) {
-	iterator := storetypes.KVStorePrefixIterator(store, idKeyPrefix)
+func migrateClassStateAndRemoveLegacyState(collectionStore, oldStore storetypes.KVStore, cdc codec.BinaryCodec) error {
+	newClassStore := prefix.NewStore(collectionStore, classStorePrefix)
+	iterator := storetypes.KVStorePrefixIterator(oldStore, idKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		id := splitIDKey(iterator.Key())
+		newClassStore.Set(idKey(id), []byte{})
+		oldStore.Delete(idKey(id))
 
-		stop := fn(id)
-		if stop {
-			break
-		}
+		detachNFT(collectionStore, cdc, id)
 	}
+
+	bz := oldStore.Get(nonceKey)
+	if bz == nil {
+		return sdkerrors.ErrNotFound.Wrap("next id must exist")
+	}
+	var nonce cmath.Uint
+	if err := nonce.Unmarshal(bz); err != nil {
+		return err
+	}
+	newClassStore.Set(nonceKey, bz)
+	oldStore.Set(nonceKey, bz)
+
+	return nil
+}
+
+func detachNFT(store storetypes.KVStore, cdc codec.BinaryCodec, id string) {
+	iterator := storetypes.KVStorePrefixIterator(store, parentKeyPrefixByContractID(id))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		contractID, tokenID := splitParentKey(iterator.Key())
+		if contractID != id {
+			panic("invalid NFT attachment information")
+		}
+
+		var parentID gogotypes.StringValue
+		cdc.MustUnmarshal(iterator.Value(), &parentID)
+		addCoin(store, id, getRootOwner(store, cdc, contractID, tokenID), collection.NewCoin(tokenID, cmath.OneInt()))
+
+		store.Delete(parentKey(contractID, tokenID))
+		store.Delete(childKey(contractID, parentID.Value, tokenID))
+		store.Delete(key)
+	}
+}
+
+func initParams(store storetypes.KVStore) error {
+	p := collection.Params{}
+	bz, err := p.Marshal()
+	if err != nil {
+		return err
+	}
+	store.Set(paramsKey, bz)
+	return nil
 }

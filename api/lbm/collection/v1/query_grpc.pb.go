@@ -31,10 +31,6 @@ const (
 	Query_TokenClassTypeName_FullMethodName = "/lbm.collection.v1.Query/TokenClassTypeName"
 	Query_TokenType_FullMethodName          = "/lbm.collection.v1.Query/TokenType"
 	Query_Token_FullMethodName              = "/lbm.collection.v1.Query/Token"
-	Query_Root_FullMethodName               = "/lbm.collection.v1.Query/Root"
-	Query_HasParent_FullMethodName          = "/lbm.collection.v1.Query/HasParent"
-	Query_Parent_FullMethodName             = "/lbm.collection.v1.Query/Parent"
-	Query_Children_FullMethodName           = "/lbm.collection.v1.Query/Children"
 	Query_GranteeGrants_FullMethodName      = "/lbm.collection.v1.Query/GranteeGrants"
 	Query_IsOperatorFor_FullMethodName      = "/lbm.collection.v1.Query/IsOperatorFor"
 	Query_HoldersByOperator_FullMethodName  = "/lbm.collection.v1.Query/HoldersByOperator"
@@ -70,14 +66,6 @@ type QueryClient interface {
 	TokenType(ctx context.Context, in *QueryTokenTypeRequest, opts ...grpc.CallOption) (*QueryTokenTypeResponse, error)
 	// Token queries a metadata of a token from its token id.
 	Token(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
-	// Root queries the root of a given nft.
-	Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error)
-	// HasParent queries whether a given nft has its parent.
-	HasParent(ctx context.Context, in *QueryHasParentRequest, opts ...grpc.CallOption) (*QueryHasParentResponse, error)
-	// Parent queries the parent of a given nft.
-	Parent(ctx context.Context, in *QueryParentRequest, opts ...grpc.CallOption) (*QueryParentResponse, error)
-	// Children queries the children of a given nft.
-	Children(ctx context.Context, in *QueryChildrenRequest, opts ...grpc.CallOption) (*QueryChildrenResponse, error)
 	// GranteeGrants queries all permissions on a given grantee.
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
 	// IsOperatorFor queries whether the operator is authorized by the holder.
@@ -202,42 +190,6 @@ func (c *queryClient) Token(ctx context.Context, in *QueryTokenRequest, opts ...
 	return out, nil
 }
 
-func (c *queryClient) Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error) {
-	out := new(QueryRootResponse)
-	err := c.cc.Invoke(ctx, Query_Root_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) HasParent(ctx context.Context, in *QueryHasParentRequest, opts ...grpc.CallOption) (*QueryHasParentResponse, error) {
-	out := new(QueryHasParentResponse)
-	err := c.cc.Invoke(ctx, Query_HasParent_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Parent(ctx context.Context, in *QueryParentRequest, opts ...grpc.CallOption) (*QueryParentResponse, error) {
-	out := new(QueryParentResponse)
-	err := c.cc.Invoke(ctx, Query_Parent_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Children(ctx context.Context, in *QueryChildrenRequest, opts ...grpc.CallOption) (*QueryChildrenResponse, error) {
-	out := new(QueryChildrenResponse)
-	err := c.cc.Invoke(ctx, Query_Children_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error) {
 	out := new(QueryGranteeGrantsResponse)
 	err := c.cc.Invoke(ctx, Query_GranteeGrants_FullMethodName, in, out, opts...)
@@ -295,14 +247,6 @@ type QueryServer interface {
 	TokenType(context.Context, *QueryTokenTypeRequest) (*QueryTokenTypeResponse, error)
 	// Token queries a metadata of a token from its token id.
 	Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error)
-	// Root queries the root of a given nft.
-	Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error)
-	// HasParent queries whether a given nft has its parent.
-	HasParent(context.Context, *QueryHasParentRequest) (*QueryHasParentResponse, error)
-	// Parent queries the parent of a given nft.
-	Parent(context.Context, *QueryParentRequest) (*QueryParentResponse, error)
-	// Children queries the children of a given nft.
-	Children(context.Context, *QueryChildrenRequest) (*QueryChildrenResponse, error)
 	// GranteeGrants queries all permissions on a given grantee.
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
 	// IsOperatorFor queries whether the operator is authorized by the holder.
@@ -351,18 +295,6 @@ func (UnimplementedQueryServer) TokenType(context.Context, *QueryTokenTypeReques
 }
 func (UnimplementedQueryServer) Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
-}
-func (UnimplementedQueryServer) Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Root not implemented")
-}
-func (UnimplementedQueryServer) HasParent(context.Context, *QueryHasParentRequest) (*QueryHasParentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HasParent not implemented")
-}
-func (UnimplementedQueryServer) Parent(context.Context, *QueryParentRequest) (*QueryParentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Parent not implemented")
-}
-func (UnimplementedQueryServer) Children(context.Context, *QueryChildrenRequest) (*QueryChildrenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Children not implemented")
 }
 func (UnimplementedQueryServer) GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GranteeGrants not implemented")
@@ -602,78 +534,6 @@ func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Root_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRootRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Root(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Root_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Root(ctx, req.(*QueryRootRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_HasParent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryHasParentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).HasParent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_HasParent_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).HasParent(ctx, req.(*QueryHasParentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Parent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryParentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Parent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Parent_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Parent(ctx, req.(*QueryParentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Children_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryChildrenRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Children(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Children_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Children(ctx, req.(*QueryChildrenRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_GranteeGrants_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGranteeGrantsRequest)
 	if err := dec(in); err != nil {
@@ -782,22 +642,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Token",
 			Handler:    _Query_Token_Handler,
-		},
-		{
-			MethodName: "Root",
-			Handler:    _Query_Root_Handler,
-		},
-		{
-			MethodName: "HasParent",
-			Handler:    _Query_HasParent_Handler,
-		},
-		{
-			MethodName: "Parent",
-			Handler:    _Query_Parent_Handler,
-		},
-		{
-			MethodName: "Children",
-			Handler:    _Query_Children_Handler,
 		},
 		{
 			MethodName: "GranteeGrants",

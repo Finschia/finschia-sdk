@@ -138,20 +138,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 		reporter.Tick()
 	}
 
-	reporter = newProgressReporter(k.Logger(ctx), "import parents", len(data.Parents))
-	for _, contractParents := range data.Parents {
-		contractID := contractParents.ContractId
-
-		for _, relation := range contractParents.Relations {
-			tokenID := relation.Self
-			parentID := relation.Other
-			k.setParent(ctx, contractID, tokenID, parentID)
-			k.setChild(ctx, contractID, parentID, tokenID)
-		}
-
-		reporter.Tick()
-	}
-
 	reporter = newProgressReporter(k.Logger(ctx), "import authorizations", len(data.Authorizations))
 	for _, contractAuthorizations := range data.Authorizations {
 		for _, authorization := range contractAuthorizations.Authorizations {
@@ -220,13 +206,13 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 	contracts := k.getContracts(ctx)
 
 	return &collection.GenesisState{
+		Params:         k.GetParams(ctx),
 		Contracts:      contracts,
 		NextClassIds:   k.getAllNextClassIDs(ctx),
 		Classes:        k.getClasses(ctx, contracts),
 		NextTokenIds:   k.getNextTokenIDs(ctx, contracts),
 		Balances:       k.getBalances(ctx, contracts),
 		Nfts:           k.getNFTs(ctx, contracts),
-		Parents:        k.getParents(ctx, contracts),
 		Grants:         k.getGrants(ctx, contracts),
 		Authorizations: k.getAuthorizations(ctx, contracts),
 		Supplies:       k.getSupplies(ctx, contracts),
@@ -349,30 +335,6 @@ func (k Keeper) getNFTs(ctx sdk.Context, contracts []collection.Contract) []coll
 			return false
 		})
 		if len(contractParents.Nfts) != 0 {
-			parents = append(parents, contractParents)
-		}
-	}
-
-	return parents
-}
-
-func (k Keeper) getParents(ctx sdk.Context, contracts []collection.Contract) []collection.ContractTokenRelations {
-	var parents []collection.ContractTokenRelations
-	for _, contract := range contracts {
-		contractID := contract.Id
-		contractParents := collection.ContractTokenRelations{
-			ContractId: contractID,
-		}
-
-		k.iterateContractParents(ctx, contractID, func(tokenID, parentID string) (stop bool) {
-			relation := collection.TokenRelation{
-				Self:  tokenID,
-				Other: parentID,
-			}
-			contractParents.Relations = append(contractParents.Relations, relation)
-			return false
-		})
-		if len(contractParents.Relations) != 0 {
 			parents = append(parents, contractParents)
 		}
 	}

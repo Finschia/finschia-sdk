@@ -106,9 +106,6 @@ func (s msgServer) SendNFT(c context.Context, req *collection.MsgSendNFT) (*coll
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
 		}
-		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
-			return nil, collection.ErrTokenCannotTransferChildToken.Wrap(id)
-		}
 		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
 		}
@@ -155,9 +152,6 @@ func (s msgServer) OperatorSendNFT(c context.Context, req *collection.MsgOperato
 		// legacy
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
-		}
-		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
-			return nil, collection.ErrTokenCannotTransferChildToken.Wrap(id)
 		}
 		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
@@ -509,9 +503,6 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
 		}
-		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
-			return nil, collection.ErrBurnNonRootNFT.Wrap(id)
-		}
 		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
 		}
@@ -561,9 +552,6 @@ func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperato
 		// legacy
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
-		}
-		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
-			return nil, collection.ErrBurnNonRootNFT.Wrap(id)
 		}
 		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
@@ -722,142 +710,4 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
 	return &collection.MsgRevokePermissionResponse{}, nil
-}
-
-func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collection.MsgAttachResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
-	event := collection.EventAttached{
-		ContractId: req.ContractId,
-		Operator:   req.From,
-		Holder:     req.From,
-		Subject:    req.TokenId,
-		Target:     req.ToTokenId,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
-
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
-
-	if err := s.keeper.Attach(ctx, req.ContractId, fromAddr, req.TokenId, req.ToTokenId); err != nil {
-		return nil, err
-	}
-
-	return &collection.MsgAttachResponse{}, nil
-}
-
-func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collection.MsgDetachResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
-	// legacy
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
-	}
-
-	// for the additional field of the event
-	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
-	if err != nil {
-		return nil, collection.ErrTokenNotAChild.Wrap(err.Error())
-	}
-	event := collection.EventDetached{
-		ContractId:     req.ContractId,
-		Operator:       req.From,
-		Holder:         req.From,
-		Subject:        req.TokenId,
-		PreviousParent: *parent,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
-
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
-
-	if err := s.keeper.Detach(ctx, req.ContractId, fromAddr, req.TokenId); err != nil {
-		return nil, err
-	}
-
-	return &collection.MsgDetachResponse{}, nil
-}
-
-func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperatorAttach) (*collection.MsgOperatorAttachResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
-	operatorAddr := sdk.MustAccAddressFromBech32(req.Operator)
-
-	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, operatorAddr); err != nil {
-		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
-	}
-
-	event := collection.EventAttached{
-		ContractId: req.ContractId,
-		Operator:   req.Operator,
-		Holder:     req.From,
-		Subject:    req.TokenId,
-		Target:     req.ToTokenId,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
-
-	if err := s.keeper.Attach(ctx, req.ContractId, fromAddr, req.TokenId, req.ToTokenId); err != nil {
-		return nil, err
-	}
-
-	return &collection.MsgOperatorAttachResponse{}, nil
-}
-
-func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperatorDetach) (*collection.MsgOperatorDetachResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
-		return nil, err
-	}
-
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
-	operatorAddr := sdk.MustAccAddressFromBech32(req.Operator)
-
-	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, operatorAddr); err != nil {
-		return nil, err
-	}
-
-	// legacy
-	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
-	}
-
-	// for the additional field of the event
-	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
-	if err != nil {
-		return nil, collection.ErrTokenNotAChild.Wrap(err.Error())
-	}
-	event := collection.EventDetached{
-		ContractId:     req.ContractId,
-		Operator:       req.Operator,
-		Holder:         req.From,
-		Subject:        req.TokenId,
-		PreviousParent: *parent,
-	}
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
-
-	if err := s.keeper.Detach(ctx, req.ContractId, fromAddr, req.TokenId); err != nil {
-		return nil, err
-	}
-
-	return &collection.MsgOperatorDetachResponse{}, nil
 }

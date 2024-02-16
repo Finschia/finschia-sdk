@@ -10,11 +10,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	DefaultDepthLimit = 1
-	DefaultWidthLimit = 4
-)
-
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
 	if err := validateParams(data.Params); err != nil {
@@ -114,24 +109,6 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
-	for _, contractParents := range data.Parents {
-		if err := ValidateContractID(contractParents.ContractId); err != nil {
-			return err
-		}
-
-		if len(contractParents.Relations) == 0 {
-			return sdkerrors.ErrInvalidRequest.Wrap("parents cannot be empty")
-		}
-		for _, relation := range contractParents.Relations {
-			if err := ValidateTokenID(relation.Self); err != nil {
-				return err
-			}
-			if err := ValidateTokenID(relation.Other); err != nil {
-				return err
-			}
-		}
-	}
-
 	for _, contractAuthorizations := range data.Authorizations {
 		if err := ValidateContractID(contractAuthorizations.ContractId); err != nil {
 			return err
@@ -216,10 +193,7 @@ func ValidateGenesis(data GenesisState) error {
 // DefaultGenesisState - Return a default genesis state
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: Params{
-			DepthLimit: DefaultDepthLimit,
-			WidthLimit: DefaultWidthLimit,
-		},
+		Params: Params{},
 		ClassState: &ClassState{
 			Nonce: cmath.ZeroUint(),
 		},

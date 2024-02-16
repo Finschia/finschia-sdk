@@ -76,26 +76,6 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}";
   }
 
-  // Root queries the root of a given nft.
-  rpc Root(QueryRootRequest) returns (QueryRootResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
-  }
-
-  // HasParent queries whether a given nft has its parent.
-  rpc HasParent(QueryHasParentRequest) returns (QueryHasParentResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent";
-  }
-
-  // Parent queries the parent of a given nft.
-  rpc Parent(QueryParentRequest) returns (QueryParentResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent";
-  }
-
-  // Children queries the children of a given nft.
-  rpc Children(QueryChildrenRequest) returns (QueryChildrenResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children";
-  }
-
   // GranteeGrants queries all permissions on a given grantee.
   rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}";
@@ -312,69 +292,6 @@ message QueryTokenRequest {
 message QueryTokenResponse {
   // information of the token.
   google.protobuf.Any token = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryRootRequest is the request type for the Query/Root RPC method.
-message QueryRootRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the non-fungible token.
-  string token_id = 2;
-}
-
-// QueryRootResponse is the response type for the Query/Root RPC method.
-message QueryRootResponse {
-  // root is the information of the root token.
-  // it would return itself if it's the root token.
-  NFT root = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryHasParentRequest is the request type for the Query/HasParent RPC method.
-message QueryHasParentRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated wit the non-fungible token.
-  string token_id = 2;
-}
-
-// QueryHasParentResponse is the response type for the Query/HasParent RPC method.
-message QueryHasParentResponse {
-  // whether the token has its parent.
-  bool has_parent = 1;
-}
-
-// QueryParentRequest is the request type for the Query/Parent RPC method.
-message QueryParentRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated wit the non-fungible token.
-  string token_id = 2;
-}
-
-// QueryParentResponse is the response type for the Query/Parent RPC method.
-message QueryParentResponse {
-  // parent is the information of the parent token.
-  NFT parent = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryChildrenRequest is the request type for the Query/Children RPC method.
-message QueryChildrenRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the non-fungible token.
-  string token_id = 2;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
-}
-
-// QueryChildrenResponse is the response type for the Query/Children RPC method.
-message QueryChildrenResponse {
-  // children is the information of the child tokens.
-  repeated NFT children = 1 [(gogoproto.nullable) = false];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.

@@ -7998,6 +7998,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// CensorshipAuthority defines the authorities which could be used in Censorship.
 type CensorshipAuthority int32
 
 const (
@@ -8273,6 +8274,7 @@ func (x *Params) GetFoundationTax() string {
 	return ""
 }
 
+// Censorship states which message is being censored by a certain authority.
 type Censorship struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

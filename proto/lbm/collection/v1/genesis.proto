@@ -32,8 +32,7 @@ message GenesisState {
   // nfts is an array containing the nfts.
   repeated ContractNFTs nfts = 7 [(gogoproto.nullable) = false];
 
-  // parents represents the parents of (non-fungible) tokens.
-  repeated ContractTokenRelations parents = 8 [(gogoproto.nullable) = false];
+  reserved 8;
 
   // grants defines the grant information.
   repeated ContractGrants grants = 9 [(gogoproto.nullable) = false];
@@ -155,22 +154,6 @@ message NextTokenID {
     (gogoproto.customtype) = "cosmossdk.io/math.Uint",
     (gogoproto.nullable)   = false
   ];
-}
-
-// ContractTokenRelations defines token relations belong to a contract.
-message ContractTokenRelations {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // relations
-  repeated TokenRelation relations = 2 [(gogoproto.nullable) = false];
-}
-
-// TokenRelation defines relations between two tokens.
-message TokenRelation {
-  // self
-  string self = 1;
-  // other
-  string other = 2;
 }
 
 // ClassState defines the classes state.

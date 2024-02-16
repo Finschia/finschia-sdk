@@ -43,10 +43,7 @@ type KeeperTestSuite struct {
 
 	balance math.Int
 
-	depthLimit int
-
-	numNFTs  int
-	numRoots int
+	numNFTs int
 }
 
 func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
@@ -121,31 +118,10 @@ func (s *KeeperTestSuite) SetupTest() {
 		}
 		return res
 	}
-	// 1 for the successful attach, 2 for the failure
-	remainders := 1 + 2
-	s.numNFTs = s.depthLimit + remainders
-	// 3 chains, and each chain has depth_limit, 1 and 2 of its length.
-	s.numRoots = 3
+	s.numNFTs = 4
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
-		tokens, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, s.depthLimit))
+		_, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, s.numNFTs))
 		s.Require().NoError(err)
-
-		// create a chain of its length depth_limit
-		for i := range tokens[1:] {
-			r := len(tokens) - 1 - i
-			subject := tokens[r].TokenId
-			target := tokens[r-1].TokenId
-			err := s.keeper.Attach(s.ctx, s.contractID, to, subject, target)
-			s.Require().NoError(err)
-		}
-
-		tokens, err = s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, remainders))
-		s.Require().NoError(err)
-
-		// a chain of length 2
-		err = s.keeper.Attach(s.ctx, s.contractID, to, tokens[remainders-1].TokenId, tokens[remainders-2].TokenId)
-		s.Require().NoError(err)
-
 	}
 
 	// authorize
@@ -190,11 +166,7 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 
 	s.keeper = keeper.NewKeeper(encCfg.Codec, kvStoreService)
 	s.keeper.InitGenesis(s.ctx, collection.DefaultGenesisState())
-	s.depthLimit = 4
-	s.keeper.SetParams(s.ctx, collection.Params{
-		DepthLimit: uint32(s.depthLimit),
-		WidthLimit: 4,
-	})
+	s.keeper.SetParams(s.ctx, collection.Params{})
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)

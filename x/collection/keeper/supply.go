@@ -261,11 +261,6 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 		burntAmount = append(burntAmount, coin)
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
 			k.deleteNFT(ctx, contractID, coin.TokenId)
-			pruned := k.pruneNFT(ctx, contractID, coin.TokenId)
-
-			for _, id := range pruned {
-				burntAmount = append(burntAmount, collection.NewCoin(id, math.OneInt()))
-			}
 
 			// legacy
 			k.deleteLegacyToken(ctx, contractID, coin.TokenId)

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	gogotypes "github.com/cosmos/gogoproto/types"
-
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 
@@ -148,40 +146,6 @@ func (k Keeper) iterateNFTsImpl(ctx sdk.Context, prefix []byte, fn func(contract
 		k.cdc.MustUnmarshal(iterator.Value(), &nft)
 
 		if fn(contractID, nft) {
-			break
-		}
-	}
-}
-
-func (k Keeper) iterateContractParents(ctx sdk.Context, contractID string, fn func(tokenID, parentID string) (stop bool)) {
-	k.iterateParentsImpl(ctx, parentKeyPrefixByContractID(contractID), func(_, tokenID, parentID string) (stop bool) {
-		return fn(tokenID, parentID)
-	})
-}
-
-func (k Keeper) iterateParentsImpl(ctx sdk.Context, prefix []byte, fn func(contractID, tokenID, parentID string) (stop bool)) {
-	iterator := k.iterWithPrefix(ctx, prefix)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		contractID, tokenID := splitParentKey(iterator.Key())
-
-		var parentID gogotypes.StringValue
-		k.cdc.MustUnmarshal(iterator.Value(), &parentID)
-
-		if fn(contractID, tokenID, parentID.Value) {
-			break
-		}
-	}
-}
-
-func (k Keeper) iterateChildrenImpl(ctx sdk.Context, prefix []byte, fn func(contractID, tokenID, childID string) (stop bool)) {
-	iterator := k.iterWithPrefix(ctx, prefix)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		contractID, tokenID, childID := splitChildKey(iterator.Key())
-		if fn(contractID, tokenID, childID) {
 			break
 		}
 	}

@@ -9,7 +9,6 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
@@ -222,7 +221,6 @@ func (s *KeeperTestSuite) TestMsgOperatorSendFT() {
 
 func (s *KeeperTestSuite) TestMsgSendNFT() {
 	rootNFTID := collection.NewNFTID(s.nftClassID, 1)
-	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
 
 	testCases := map[string]struct {
 		contractID string
@@ -235,36 +233,9 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 			tokenID:    rootNFTID,
 			events: sdk.Events{
 				sdk.Event{
-					Type: "lbm.collection.v1.EventOwnerChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(issuedTokenIDs[1]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventOwnerChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(issuedTokenIDs[2]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventOwnerChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(issuedTokenIDs[3]), Index: false},
-					},
-				},
-				sdk.Event{
 					Type: "lbm.collection.v1.EventSent",
 					Attributes: []abci.EventAttribute{
-						{Key: "amount", Value: mustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: issuedTokenIDs[0], Amount: math.OneInt()})), Index: false},
+						{Key: "amount", Value: mustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: rootNFTID, Amount: math.OneInt()})), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
 						{Key: "from", Value: w(s.customer.String()), Index: false},
 						{Key: "operator", Value: w(s.customer.String()), Index: false},
@@ -282,11 +253,6 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
 			err:        collection.ErrTokenNotExist,
-		},
-		"child": {
-			contractID: s.contractID,
-			tokenID:    collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrTokenCannotTransferChildToken,
 		},
 		"not owned by": {
 			contractID: s.contractID,
@@ -319,7 +285,6 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 
 func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 	rootNFTID := collection.NewNFTID(s.nftClassID, 1)
-	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
 
 	testCases := map[string]struct {
 		contractID string
@@ -336,36 +301,9 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 			tokenID:    rootNFTID,
 			events: sdk.Events{
 				sdk.Event{
-					Type: "lbm.collection.v1.EventOwnerChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(issuedTokenIDs[1]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventOwnerChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(issuedTokenIDs[2]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventOwnerChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(issuedTokenIDs[3]), Index: false},
-					},
-				},
-				sdk.Event{
 					Type: "lbm.collection.v1.EventSent",
 					Attributes: []abci.EventAttribute{
-						{Key: "amount", Value: mustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: issuedTokenIDs[0], Amount: math.OneInt()})), Index: false},
+						{Key: "amount", Value: mustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: rootNFTID, Amount: math.OneInt()})), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
 						{Key: "from", Value: w(s.customer.String()), Index: false},
 						{Key: "operator", Value: w(s.operator.String()), Index: false},
@@ -394,13 +332,6 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 			from:       s.customer,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
 			err:        collection.ErrTokenNotExist,
-		},
-		"child": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			from:       s.customer,
-			tokenID:    collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrTokenCannotTransferChildToken,
 		},
 		"not owned by": {
 			contractID: s.contractID,
@@ -1048,7 +979,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 	}}
 	expectedTokens := []collection.NFT{
 		{
-			TokenId: "1000000100000016",
+			TokenId: "100000010000000d",
 			Name:    params[0].Name,
 			Meta:    params[0].Meta,
 		},
@@ -1396,11 +1327,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnFT() {
 
 func (s *KeeperTestSuite) TestMsgBurnNFT() {
 	rootNFTID := collection.NewNFTID(s.nftClassID, s.numNFTs*2+1)
-	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
-	coins := make([]collection.Coin, 0)
-	for _, id := range issuedTokenIDs {
-		coins = append(coins, collection.NewCoin(id, math.NewInt(1)))
-	}
+	coins := []collection.Coin{collection.NewCoin(rootNFTID, math.NewInt(1))}
 
 	testCases := map[string]struct {
 		contractID string
@@ -1445,14 +1372,6 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 			},
 			err: collection.ErrTokenNotExist,
 		},
-		"child": {
-			contractID: s.contractID,
-			from:       s.vendor,
-			tokenIDs: []string{
-				collection.NewNFTID(s.nftClassID, 2),
-			},
-			err: collection.ErrBurnNonRootNFT,
-		},
 		"not owned by": {
 			contractID: s.contractID,
 			from:       s.vendor,
@@ -1486,11 +1405,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 
 func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 	rootNFTID := collection.NewNFTID(s.nftClassID, 1)
-	issuedTokenIDs := s.extractChainedNFTIDs(rootNFTID)
-	coins := make([]collection.Coin, 0)
-	for _, id := range issuedTokenIDs {
-		coins = append(coins, collection.NewCoin(id, math.NewInt(1)))
-	}
+	coins := []collection.Coin{collection.NewCoin(rootNFTID, math.NewInt(1))}
 
 	testCases := map[string]struct {
 		contractID string
@@ -1546,15 +1461,6 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 				collection.NewNFTID("deadbeef", 1),
 			},
 			err: collection.ErrTokenNotExist,
-		},
-		"child": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			from:       s.customer,
-			tokenIDs: []string{
-				collection.NewNFTID(s.nftClassID, 2),
-			},
-			err: collection.ErrBurnNonRootNFT,
 		},
 		"not owned by": {
 			contractID: s.contractID,
@@ -1794,333 +1700,4 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
 		})
 	}
-}
-
-func (s *KeeperTestSuite) TestMsgAttach() {
-	testCases := map[string]struct {
-		contractID string
-		subjectID  string
-		targetID   string
-		err        error
-		events     sdk.Events
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.depthLimit+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			events: sdk.Events{
-				sdk.Event{
-					Type: "lbm.collection.v1.EventAttached",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "holder", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.customer.String()), Index: false},
-						{Key: "subject", Value: w(collection.NewNFTID(s.nftClassID, s.depthLimit+1)), Index: false},
-						{Key: "target", Value: w(collection.NewNFTID(s.nftClassID, 1)), Index: false},
-					},
-				},
-			},
-		},
-		"contract not found": {
-			contractID: "deadbeef",
-			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrContractNotExist,
-		},
-		"not owner of the token": {
-			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrTokenNotOwnedBy,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			req := &collection.MsgAttach{
-				ContractId: tc.contractID,
-				From:       s.customer.String(),
-				TokenId:    tc.subjectID,
-				ToTokenId:  tc.targetID,
-			}
-			res, err := s.msgServer.Attach(ctx, req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgDetach() {
-	issuedNfts := make([]string, s.depthLimit)
-	for i := 1; i <= s.depthLimit; i++ {
-		issuedNfts[i-1] = collection.NewNFTID(s.nftClassID, i)
-	}
-
-	testCases := map[string]struct {
-		contractID string
-		subjectID  string
-		err        error
-		events     sdk.Events
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			subjectID:  issuedNfts[1],
-			events: sdk.Events{
-				sdk.Event{
-					Type: "lbm.collection.v1.EventDetached",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "holder", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.customer.String()), Index: false},
-						{Key: "previous_parent", Value: w(issuedNfts[0]), Index: false},
-						{Key: "subject", Value: w(issuedNfts[1]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventRootChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(issuedNfts[0]), Index: false},
-						{Key: "to", Value: w(issuedNfts[1]), Index: false},
-						{Key: "token_id", Value: w(issuedNfts[2]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventRootChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(issuedNfts[0]), Index: false},
-						{Key: "to", Value: w(issuedNfts[1]), Index: false},
-						{Key: "token_id", Value: w(issuedNfts[3]), Index: false},
-					},
-				},
-			},
-		},
-		"contract not found": {
-			contractID: "deadbeef",
-			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrContractNotExist,
-		},
-		"not owner of the token": {
-			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+2),
-			err:        collection.ErrTokenNotOwnedBy,
-		},
-		"not a child": {
-			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrTokenNotAChild,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			req := &collection.MsgDetach{
-				ContractId: tc.contractID,
-				From:       s.customer.String(),
-				TokenId:    tc.subjectID,
-			}
-			res, err := s.msgServer.Detach(ctx, req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgOperatorAttach() {
-	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		subjectID  string
-		targetID   string
-		err        error
-		events     sdk.Events
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.depthLimit+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			events: sdk.Events{
-				sdk.Event{
-					Type: "lbm.collection.v1.EventAttached",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "holder", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.operator.String()), Index: false},
-						{Key: "subject", Value: w(collection.NewNFTID(s.nftClassID, s.depthLimit+1)), Index: false},
-						{Key: "target", Value: w(collection.NewNFTID(s.nftClassID, 1)), Index: false},
-					},
-				},
-			},
-		},
-		"contract not found": {
-			contractID: "deadbeef",
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrContractNotExist,
-		},
-		"not authorized": {
-			contractID: s.contractID,
-			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.depthLimit+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrCollectionNotApproved,
-		},
-		"not owner of the token": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrTokenNotOwnedBy,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			req := &collection.MsgOperatorAttach{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				From:       s.customer.String(),
-				TokenId:    tc.subjectID,
-				ToTokenId:  tc.targetID,
-			}
-			res, err := s.msgServer.OperatorAttach(ctx, req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgOperatorDetach() {
-	nfts := make([]string, s.depthLimit)
-	for i := 1; i <= s.depthLimit; i++ {
-		nfts[i-1] = collection.NewNFTID(s.nftClassID, i)
-	}
-
-	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		subjectID  string
-		err        error
-		events     sdk.Events
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			events: sdk.Events{
-				sdk.Event{
-					Type: "lbm.collection.v1.EventDetached",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "holder", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.operator.String()), Index: false},
-						{Key: "previous_parent", Value: w(nfts[0]), Index: false},
-						{Key: "subject", Value: w(nfts[1]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventRootChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(nfts[0]), Index: false},
-						{Key: "to", Value: w(nfts[1]), Index: false},
-						{Key: "token_id", Value: w(nfts[2]), Index: false},
-					},
-				},
-				sdk.Event{
-					Type: "lbm.collection.v1.EventRootChanged",
-					Attributes: []abci.EventAttribute{
-						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(nfts[0]), Index: false},
-						{Key: "to", Value: w(nfts[1]), Index: false},
-						{Key: "token_id", Value: w(nfts[3]), Index: false},
-					},
-				},
-			},
-		},
-		"contract not found": {
-			contractID: "deadbeef",
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrContractNotExist,
-		},
-		"not authorized": {
-			contractID: s.contractID,
-			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrCollectionNotApproved,
-		},
-		"not owner of the token": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+2),
-			err:        collection.ErrTokenNotOwnedBy,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			req := &collection.MsgOperatorDetach{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				From:       s.customer.String(),
-				TokenId:    tc.subjectID,
-			}
-			res, err := s.msgServer.OperatorDetach(ctx, req)
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			s.Require().NotNil(res)
-			s.Require().Equal(tc.events, ctx.EventManager().Events())
-		})
-	}
-}
-
-func (s *KeeperTestSuite) extractChainedNFTIDs(root string) []string {
-	allTokenIDs := make([]string, 0)
-	allTokenIDs = append(allTokenIDs, root)
-	cursor := allTokenIDs[0]
-	for {
-		ctx, _ := s.ctx.CacheContext()
-		res, err := s.queryServer.Children(ctx, &collection.QueryChildrenRequest{
-			ContractId: s.contractID,
-			TokenId:    cursor,
-			Pagination: &query.PageRequest{},
-		})
-		s.Require().NoError(err)
-		if res.Children == nil {
-			break
-		}
-		allTokenIDs = append(allTokenIDs, res.Children[0].TokenId)
-		cursor = allTokenIDs[len(allTokenIDs)-1]
-	}
-	return allTokenIDs
 }
