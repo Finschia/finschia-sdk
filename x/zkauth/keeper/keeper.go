@@ -16,8 +16,6 @@ import (
 	"github.com/Finschia/ostracon/libs/log"
 )
 
-const JwkFileName = "jwk.json"
-
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
