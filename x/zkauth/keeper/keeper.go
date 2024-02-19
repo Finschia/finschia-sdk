@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -123,6 +122,5 @@ func (k Keeper) GetJWK(endpoint string) (*http.Response, error) {
 }
 
 func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {
-	fileNamePattern := strings.Replace(JwkFileName, ".", "-%s.", 1)
-	return fmt.Sprintf(fileNamePattern, name)
+	return fmt.Sprintf("jwk-%s.json", name)
 }
