@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -59,11 +60,10 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 						continue
 					}
 
-					file, err := os.Create(filepath.Join(nodeHome, JwkFileName))
+					file, err := os.Create(filepath.Join(nodeHome, k.CreateJWKFileName(name)))
 					if err != nil {
 						time.Sleep(time.Duration(fetchIntervals) * time.Second)
 						logger.Error(fmt.Sprintf("%s", err))
-						fmt.Println(err)
 						continue
 					}
 
@@ -85,7 +85,10 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 
 func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
 	var data map[string]interface{}
-	json.Unmarshal(byteArray, &data)
+	err = json.Unmarshal(byteArray, &data)
+	if err != nil {
+		return jwks, err
+	}
 
 	for _, v := range data["keys"].([]interface{}) {
 		var jwk types.JWK
@@ -117,4 +120,9 @@ func (k Keeper) GetJWK(endpoint string) (*http.Response, error) {
 	}
 
 	return resp, nil
+}
+
+func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {
+	fileNamePattern := strings.Replace(JwkFileName, ".", "-%s.", 1)
+	return fmt.Sprintf(fileNamePattern, name)
 }

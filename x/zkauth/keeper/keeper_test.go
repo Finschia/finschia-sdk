@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -11,7 +11,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/x/zkauth/keeper"
 	"github.com/Finschia/finschia-sdk/x/zkauth/testutil"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 	"github.com/stretchr/testify/require"
@@ -63,7 +62,7 @@ func TestGetJWK(t *testing.T) {
 	require.NoError(t, err)
 
 	expected := testData
-	bodyBytes, err := ioutil.ReadAll(res.Body)
+	bodyBytes, err := io.ReadAll(res.Body)
 	bodyString := string(bodyBytes)
 	require.Equal(t, expected, bodyString)
 }
@@ -77,7 +76,7 @@ func TestParseJWKs(t *testing.T) {
 	defer res.Body.Close()
 	require.NoError(t, err)
 
-	bodyBytes, err := ioutil.ReadAll(res.Body)
+	bodyBytes, err := io.ReadAll(res.Body)
 
 	jwks, err := k.ParseJWKs(bodyBytes)
 	require.NoError(t, err)
@@ -92,14 +91,14 @@ func TestFetchJwk(t *testing.T) {
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	tempDir, err := ioutil.TempDir("", types.StoreKey)
+	tempDir, err := os.MkdirTemp("", types.StoreKey)
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
 	k.FetchJWK(ctx.WithContext(timeoutCtx), tempDir)
 	<-timeoutCtx.Done()
 
-	content, err := ioutil.ReadFile(filepath.Join(tempDir, keeper.JwkFileName))
+	content, err := os.ReadFile(filepath.Join(tempDir, k.CreateJWKFileName(types.Google)))
 
 	require.NoError(t, err)
 	var expectedObj []types.JWK
