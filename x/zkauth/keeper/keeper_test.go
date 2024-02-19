@@ -87,7 +87,6 @@ func TestParseJWKs(t *testing.T) {
 func TestFetchJwk(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
-
 	k, ctx := testutil.ZkAuthKeeper(t)
 
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
