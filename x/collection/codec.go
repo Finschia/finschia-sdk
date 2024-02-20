@@ -4,7 +4,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	"github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
@@ -55,20 +54,4 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
-}
-
-var (
-	amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewAminoCodec(amino)
-)
-
-func init() {
-	cryptocodec.RegisterCrypto(amino)
-	// TODO: check, Can i remove commented out code?
-
-	//// Register all Amino interfaces and concrete types on the authz and gov Amino codec so that this can later be
-	//// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
-	// RegisterLegacyAminoCodec(authzcodec.Amino)
-	// RegisterLegacyAminoCodec(govcodec.Amino)
-	// RegisterLegacyAminoCodec(fdncodec.Amino)
 }

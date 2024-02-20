@@ -83,8 +83,6 @@ func TestMsgSendNFT(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 		})
 	}
 }
@@ -171,8 +169,6 @@ func TestMsgOperatorSendNFT(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
@@ -223,8 +219,6 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
 		})
 	}
 }
@@ -275,8 +269,6 @@ func TestMsgRevokeOperator(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
 		})
 	}
 }
@@ -345,8 +337,6 @@ func TestMsgCreateContract(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 		})
 	}
 }
@@ -414,8 +404,6 @@ func TestMsgIssueNFT(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
@@ -522,8 +510,6 @@ func TestMsgMintNFT(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 		})
 	}
 }
@@ -582,8 +568,6 @@ func TestMsgBurnNFT(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 		})
 	}
 }
@@ -655,8 +639,6 @@ func TestMsgOperatorBurnNFT(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 		})
 	}
 }
@@ -760,8 +742,6 @@ func TestMsgModify(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 		})
 	}
 }
@@ -824,8 +804,6 @@ func TestMsgGrantPermission(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 		})
 	}
 }
@@ -876,8 +854,6 @@ func TestMsgRevokePermission(t *testing.T) {
 			if tc.err != nil {
 				return
 			}
-
-			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 		})
 	}
 }
@@ -902,7 +878,7 @@ func TestAminoJSON(t *testing.T) {
 	}}
 
 	testCase := map[string]struct {
-		msg          legacytx.LegacyMsg
+		msg          sdk.Msg
 		expectedType string
 		expected     string
 	}{
