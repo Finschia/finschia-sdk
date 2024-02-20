@@ -11,14 +11,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 
 	// forge & import
 	ctx, _ := s.ctx.CacheContext()
-	amount := collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance))
-	err := s.keeper.SendCoins(ctx, s.contractID, s.vendor, s.customer, amount)
-	s.Require().NoError(err)
-
-	err = s.keeper.SendCoins(ctx, s.contractID, s.customer, s.operator, amount)
-	s.Require().NoError(err)
-
-	_, err = s.keeper.BurnCoins(ctx, s.contractID, s.operator, amount)
+	_, err := s.keeper.MintNFT(ctx, s.contractID, s.customer, []collection.MintNFTParam{{TokenType: s.nftClassID}})
 	s.Require().NoError(err)
 
 	s.keeper.Abandon(ctx, s.contractID, s.vendor, collection.PermissionMint)

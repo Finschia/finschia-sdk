@@ -11,9 +11,6 @@ func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID, tokenID strin
 		return collection.ErrTokenNotExist.Wrap(tokenID)
 	}
 
-	if err2 := collection.ValidateFTID(tokenID); err2 != nil {
-		return collection.ErrTokenNotExist.Wrap(tokenID)
-	}
 	classID := collection.SplitTokenID(tokenID)
 	if _, err2 := k.GetTokenClass(ctx, contractID, classID); err2 != nil {
 		return collection.ErrTokenNotExist.Wrap(tokenID)

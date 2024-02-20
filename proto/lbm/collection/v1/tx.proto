@@ -3,7 +3,6 @@ package lbm.collection.v1;
 
 import "gogoproto/gogo.proto";
 import "cosmos/msg/v1/msg.proto";
-import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 
 import "lbm/collection/v1/collection.proto";
@@ -15,16 +14,6 @@ option (gogoproto.equal_all) = false;
 // Msg defines the collection Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
-
-  // SendFT defines a method to send fungible tokens from one account to another account.
-  // Fires:
-  // - EventSent
-  rpc SendFT(MsgSendFT) returns (MsgSendFTResponse);
-
-  // OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator.
-  // Fires:
-  // - EventSent
-  rpc OperatorSendFT(MsgOperatorSendFT) returns (MsgOperatorSendFTResponse);
 
   // SendNFT defines a method to send non-fungible tokens from one account to another account.
   // Fires:
@@ -52,38 +41,16 @@ service Msg {
   // - EventCreatedContract
   rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
 
-  // IssueFT defines a method to create a class of fungible token.
-  // Fires:
-  // - EventCreatedFTClass
-  // - EventMintedFT
-  // Note: it does not grant any permissions to its issuer.
-  rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
-
   // IssueNFT defines a method to create a class of non-fungible token.
   // Fires:
   // - EventCreatedNFTClass
   // Note: it DOES grant `mint` and `burn` permissions to its issuer.
   rpc IssueNFT(MsgIssueNFT) returns (MsgIssueNFTResponse);
 
-  // MintFT defines a method to mint fungible tokens.
-  // Fires:
-  // - EventMintedFT
-  rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
-
   // MintNFT defines a method to mint non-fungible tokens.
   // Fires:
   // - EventMintedNFT
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
-
-  // BurnFT defines a method to burn fungible tokens.
-  // Fires:
-  // - EventBurned
-  rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
-
-  // OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator.
-  // Fires:
-  // - EventBurned
-  rpc OperatorBurnFT(MsgOperatorBurnFT) returns (MsgOperatorBurnFTResponse);
 
   // BurnNFT defines a method to burn non-fungible tokens.
   // Fires:
@@ -112,46 +79,6 @@ service Msg {
   // - EventRenounced
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 }
-
-// MsgSendFT is the Msg/SendFT request type.
-message MsgSendFT {
-  option (cosmos.msg.v1.signer) = "from";
-  option (amino.name)           = "lbm-sdk/MsgSendFT";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // the address which the transfer is from.
-  string from = 2;
-  // the address which the transfer is to.
-  string to = 3;
-  // the amount of the transfer.
-  // Note: amount may be empty.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
-}
-
-// MsgSendFTResponse is the Msg/SendFT response type.
-message MsgSendFTResponse {}
-
-// MsgOperatorSendFT is the Msg/OperatorSendFT request type.
-message MsgOperatorSendFT {
-  option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name)           = "lbm-sdk/MsgOperatorSendFT";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // the address of the operator.
-  string operator = 2;
-  // the address which the transfer is from.
-  string from = 3;
-  // the address which the transfer is to.
-  string to = 4;
-  // the amount of the transfer.
-  // Note: amount may be empty.
-  repeated Coin amount = 5 [(gogoproto.nullable) = false];
-}
-
-// MsgOperatorSendFTResponse is the Msg/OperatorSendFT response type.
-message MsgOperatorSendFTResponse {}
 
 // MsgSendNFT is the Msg/SendNFT request type.
 message MsgSendNFT {
@@ -245,43 +172,6 @@ message MsgCreateContractResponse {
   string contract_id = 1;
 }
 
-// MsgIssueFT is the Msg/IssueFT request type.
-message MsgIssueFT {
-  option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name)           = "lbm-sdk/MsgIssueFT";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // name defines the human-readable name of the token type.
-  string name = 2;
-  // meta is a brief description of the token type.
-  string meta = 3;
-  // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  int32 decimals = 4;
-  // mintable represents whether the token is allowed to be minted or burnt.
-  bool mintable = 5;
-
-  // the address of the grantee which must have the permission to issue a token.
-  string owner = 6;
-
-  // the address to send the minted tokens to. mandatory.
-  string to = 7;
-  // the amount of tokens to mint on the issuance.
-  // Note: if you provide negative amount, a panic may result.
-  // Note: amount may be zero.
-  string amount = 8 [
-    (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable)   = false
-  ];
-}
-
-// MsgIssueFTResponse is the Msg/IssueFT response type.
-message MsgIssueFTResponse {
-  // id of the token.
-  string token_id = 1;
-}
-
 // MsgIssueNFT is the Msg/IssueNFT request type.
 message MsgIssueNFT {
   option (cosmos.msg.v1.signer) = "owner";
@@ -304,25 +194,6 @@ message MsgIssueNFTResponse {
   // refer to TokenType for the definition.
   string token_type = 1;
 }
-
-// MsgMintFT is the Msg/MintFT request type.
-message MsgMintFT {
-  option (cosmos.msg.v1.signer) = "from";
-  option (amino.name)           = "lbm-sdk/MsgMintFT";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // address of the grantee which has the permission for the mint.
-  string from = 2;
-  // address which the minted tokens will be sent to.
-  string to = 3;
-  // the amount of the mint.
-  // Note: amount may be empty.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
-}
-
-// MsgMintFTResponse is the Msg/MintFT response type.
-message MsgMintFTResponse {}
 
 // MsgMintNFT is the Msg/MintNFT request type.
 message MsgMintNFT {
@@ -358,45 +229,6 @@ message MintNFTParam {
   // Note: it has an app-specific limit in length.
   string meta = 3;
 }
-
-// MsgBurnFT is the Msg/BurnFT request type.
-message MsgBurnFT {
-  option (cosmos.msg.v1.signer) = "from";
-  option (amino.name)           = "lbm-sdk/MsgBurnFT";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // address which the tokens will be burnt from.
-  // Note: it must have the permission for the burn.
-  string from = 2;
-  // the amount of the burn.
-  // Note: amount may be empty.
-  repeated Coin amount = 3 [(gogoproto.nullable) = false];
-}
-
-// MsgBurnFTResponse is the Msg/BurnFT response type.
-message MsgBurnFTResponse {}
-
-// MsgOperatorBurnFT is the Msg/OperatorBurnFT request type.
-message MsgOperatorBurnFT {
-  option (cosmos.msg.v1.signer) = "operator";
-  option (amino.name)           = "lbm-sdk/MsgOperatorBurnFT";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // address which triggers the burn.
-  // Note: it must have the permission for the burn.
-  // Note: it must have been authorized by from.
-  string operator = 2;
-  // address which the tokens will be burnt from.
-  string from = 3;
-  // the amount of the burn.
-  // Note: amount may be empty.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
-}
-
-// MsgOperatorBurnFTResponse is the Msg/OperatorBurnFT response type.
-message MsgOperatorBurnFTResponse {}
 
 // MsgBurnNFT is the Msg/BurnNFT request type.
 message MsgBurnNFT {

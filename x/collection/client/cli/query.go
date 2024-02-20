@@ -30,9 +30,6 @@ func NewQueryCmd() *cobra.Command {
 
 	queryCmd.AddCommand(
 		NewQueryCmdBalances(),
-		NewQueryCmdFTSupply(),
-		NewQueryCmdFTMinted(),
-		NewQueryCmdFTBurnt(),
 		NewQueryCmdNFTSupply(),
 		NewQueryCmdNFTMinted(),
 		NewQueryCmdNFTBurnt(),
@@ -114,123 +111,6 @@ func NewQueryCmdBalances() *cobra.Command {
 	cmd.Flags().String(FlagTokenID, "", "Token ID to query for")
 	flags.AddPaginationFlagsToCmd(cmd, "all balances")
 
-	return cmd
-}
-
-func NewQueryCmdFTSupply() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "ft-supply [contract-id] [token-id]",
-		Args:    cobra.ExactArgs(2),
-		Short:   "query the supply of tokens",
-		Example: fmt.Sprintf(`$ %s ft-query %s supply [contract-id] [token-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			tokenID := args[1]
-			if err := collection.ValidateTokenID(tokenID); err != nil {
-				return err
-			}
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryFTSupplyRequest{
-				ContractId: contractID,
-				TokenId:    tokenID,
-			}
-			res, err := queryClient.FTSupply(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func NewQueryCmdFTMinted() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "ft-minted [contract-id] [token-id]",
-		Args:    cobra.ExactArgs(2),
-		Short:   "query the minted tokens",
-		Example: fmt.Sprintf(`$ %s query %s ft-minted [contract-id] [token-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			tokenID := args[1]
-			if err := collection.ValidateTokenID(tokenID); err != nil {
-				return err
-			}
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryFTMintedRequest{
-				ContractId: contractID,
-				TokenId:    tokenID,
-			}
-			res, err := queryClient.FTMinted(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func NewQueryCmdFTBurnt() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "ft-burnt [contract-id] [token-id]",
-		Args:    cobra.ExactArgs(2),
-		Short:   "query the burnt tokens",
-		Example: fmt.Sprintf(`$ %s query %s ft-burnt [contract-id] [token-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			tokenID := args[1]
-			if err := collection.ValidateTokenID(tokenID); err != nil {
-				return err
-			}
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryFTBurntRequest{
-				ContractId: contractID,
-				TokenId:    tokenID,
-			}
-			res, err := queryClient.FTBurnt(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 

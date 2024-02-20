@@ -93,11 +93,8 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 
 		// legacy
 		k.setLegacyTokenType(ctx, contractID, nftClass.Id)
-	}
-
-	if ftClass, ok := class.(*collection.FTClass); ok {
-		// legacy
-		k.setLegacyToken(ctx, contractID, collection.NewFTID(ftClass.Id))
+	} else {
+		panic("TokenClass only supports NFTClass")
 	}
 
 	id := class.GetId()
@@ -160,50 +157,6 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
-	for _, coin := range amount {
-		if err := collection.ValidateFTID(coin.TokenId); err != nil {
-			// legacy
-			if err := k.hasNFT(ctx, contractID, coin.TokenId); err != nil {
-				return err
-			}
-
-			return collection.ErrTokenNotMintable.Wrap(err.Error())
-		}
-
-		classID := collection.SplitTokenID(coin.TokenId)
-		class, err := k.GetTokenClass(ctx, contractID, classID)
-		if err != nil {
-			return collection.ErrTokenNotExist.Wrap(err.Error())
-		}
-
-		ftClass, ok := class.(*collection.FTClass)
-		if !ok {
-			return collection.ErrTokenNotMintable.Wrapf("not a class of fungible token: %s", classID)
-		}
-
-		if !ftClass.Mintable {
-			return collection.ErrTokenNotMintable.Wrapf("class is not mintable")
-		}
-
-		k.mintFT(ctx, contractID, to, classID, coin.Amount)
-	}
-
-	return nil
-}
-
-func (k Keeper) mintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, classID string, amount math.Int) {
-	coins := collection.NewCoins(collection.NewFTCoin(classID, amount))
-	k.addCoins(ctx, contractID, to, coins)
-
-	// update statistics
-	supply := k.GetSupply(ctx, contractID, classID)
-	k.setSupply(ctx, contractID, classID, supply.Add(amount))
-
-	minted := k.GetMinted(ctx, contractID, classID)
-	k.setMinted(ctx, contractID, classID, minted.Add(amount))
 }
 
 func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, params []collection.MintNFTParam) ([]collection.NFT, error) {
@@ -337,11 +290,6 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, changes []col
 func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID, classID string, changes []collection.Attribute) error {
 	class, err := k.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
-		// legacy error split
-		if err := collection.ValidateLegacyFTClassID(classID); err == nil {
-			return collection.ErrTokenNotExist.Wrap(collection.NewFTID(classID))
-		}
-
 		if err := collection.ValidateLegacyNFTClassID(classID); err == nil {
 			return collection.ErrTokenTypeNotExist.Wrap(classID)
 		}

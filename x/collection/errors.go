@@ -8,11 +8,9 @@ const collectionCodespace = ModuleName
 
 var (
 	ErrTokenNotExist             = errorsmod.Register(collectionCodespace, 2, "token symbol, token-id does not exist")
-	ErrTokenNotMintable          = errorsmod.Register(collectionCodespace, 3, "token symbol, token-id is not mintable")
 	ErrInvalidTokenName          = errorsmod.Register(collectionCodespace, 4, "token name should not be empty")
 	ErrInvalidTokenID            = errorsmod.Register(collectionCodespace, 5, "invalid token id")
 	ErrInvalidTokenDecimals      = errorsmod.Register(collectionCodespace, 6, "token decimals should be within the range in 0 ~ 18")
-	ErrInvalidIssueFT            = errorsmod.Register(collectionCodespace, 7, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
 	ErrInvalidAmount             = errorsmod.Register(collectionCodespace, 8, "invalid token amount")
 	ErrInvalidBaseImgURILength   = errorsmod.Register(collectionCodespace, 9, "invalid base_img_uri length")
 	ErrInvalidNameLength         = errorsmod.Register(collectionCodespace, 10, "invalid name length")
@@ -30,7 +28,6 @@ var (
 	ErrEmptyChanges              = errorsmod.Register(collectionCodespace, 36, "changes is empty")
 	ErrInvalidChangesField       = errorsmod.Register(collectionCodespace, 37, "invalid field of changes")
 	ErrTokenIndexWithoutType     = errorsmod.Register(collectionCodespace, 38, "There is a token index but no token type")
-	ErrTokenTypeFTWithoutIndex   = errorsmod.Register(collectionCodespace, 39, "There is a token type of ft but no token index")
 	ErrInsufficientToken         = errorsmod.Register(collectionCodespace, 40, "insufficient token")
 	ErrDuplicateChangesField     = errorsmod.Register(collectionCodespace, 41, "duplicate field of changes")
 	ErrInvalidMetaLength         = errorsmod.Register(collectionCodespace, 42, "invalid meta length")
@@ -46,6 +43,8 @@ var (
 
 // Deprecated: do not use from v0.50.x
 var (
+	ErrTokenNotMintable              = errorsmod.Register(collectionCodespace, 3, "token symbol, token-id is not mintable")
+	ErrInvalidIssueFT                = errorsmod.Register(collectionCodespace, 7, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
 	ErrCollectionExist               = errorsmod.Register(collectionCodespace, 13, "collection already exists")
 	ErrTokenTypeExist                = errorsmod.Register(collectionCodespace, 15, "token type for contract_id, token-type already exists")
 	ErrTokenTypeFull                 = errorsmod.Register(collectionCodespace, 17, "all token type for contract_id are occupied")
@@ -60,6 +59,7 @@ var (
 	ErrAccountNotExist               = errorsmod.Register(collectionCodespace, 32, "account does not exists")
 	ErrInsufficientSupply            = errorsmod.Register(collectionCodespace, 33, "insufficient supply")
 	ErrInvalidCoin                   = errorsmod.Register(collectionCodespace, 34, "invalid coin")
+	ErrTokenTypeFTWithoutIndex       = errorsmod.Register(collectionCodespace, 39, "There is a token type of ft but no token index")
 	ErrSupplyOverflow                = errorsmod.Register(collectionCodespace, 43, "supply for collection reached maximum")
 	ErrCompositionTooDeep            = errorsmod.Register(collectionCodespace, 45, "cannot attach token (composition too deep)")
 	ErrCompositionTooWide            = errorsmod.Register(collectionCodespace, 46, "cannot attach token (composition too wide)")

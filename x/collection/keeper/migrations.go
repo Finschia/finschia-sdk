@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/Finschia/finschia-sdk/x/collection/keeper/migrations/v2"
 	"github.com/Finschia/finschia-sdk/x/collection/keeper/migrations/v3"
 )
 
@@ -21,8 +20,7 @@ func NewMigrator(keeper Keeper) Migrator {
 }
 
 func (m Migrator) Migrate1to2(ctx sdk.Context) error {
-	store := runtime.KVStoreAdapter(m.keeper.storeService.OpenKVStore(ctx))
-	return v2.MigrateStore(store, m.keeper.cdc)
+	return nil
 }
 
 func (m Migrator) Migrate2to3(ctx sdk.Context) error {

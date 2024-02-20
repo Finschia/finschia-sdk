@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
@@ -15,14 +13,11 @@ func (s *KeeperTestSuite) TestSendCoins() {
 		amount collection.Coin
 		err    error
 	}{
-		"valid send (fungible token)": {
-			amount: collection.NewFTCoin(s.ftClassID, s.balance),
-		},
 		"valid send (non-fungible token)": {
 			amount: collection.NewNFTCoin(s.nftClassID, 1),
 		},
 		"insufficient tokens": {
-			amount: collection.NewFTCoin(s.ftClassID, s.balance.Add(math.OneInt())),
+			amount: collection.NewNFTCoin(s.nftClassID, s.numNFTs*3+1),
 			err:    collection.ErrInsufficientToken,
 		},
 	}

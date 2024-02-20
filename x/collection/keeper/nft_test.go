@@ -16,17 +16,9 @@ func (s *KeeperTestSuite) TestGetNFT() {
 			tokenID: collection.NewNFTID("deadbeef", 1),
 			err:     collection.ErrTokenNotExist,
 		},
-		"not found (not existing ft id)": {
-			tokenID: collection.NewFTID("00bab10c"),
-			err:     collection.ErrTokenNotExist,
-		},
 		"not found (existing nft class id)": {
 			tokenID: collection.NewNFTID(s.nftClassID, 0),
 			err:     collection.ErrTokenNotExist,
-		},
-		"not found (existing ft class id)": {
-			tokenID: collection.NewNFTID(s.ftClassID, 0),
-			err:     collection.ErrTokenNotNFT,
 		},
 	}
 

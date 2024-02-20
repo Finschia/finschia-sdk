@@ -2537,784 +2537,6 @@ func (x *fastReflection_EventCreatedContract) ProtoMethods() *protoiface.Methods
 }
 
 var (
-	md_EventCreatedFTClass             protoreflect.MessageDescriptor
-	fd_EventCreatedFTClass_contract_id protoreflect.FieldDescriptor
-	fd_EventCreatedFTClass_operator    protoreflect.FieldDescriptor
-	fd_EventCreatedFTClass_token_id    protoreflect.FieldDescriptor
-	fd_EventCreatedFTClass_name        protoreflect.FieldDescriptor
-	fd_EventCreatedFTClass_meta        protoreflect.FieldDescriptor
-	fd_EventCreatedFTClass_decimals    protoreflect.FieldDescriptor
-	fd_EventCreatedFTClass_mintable    protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_lbm_collection_v1_event_proto_init()
-	md_EventCreatedFTClass = File_lbm_collection_v1_event_proto.Messages().ByName("EventCreatedFTClass")
-	fd_EventCreatedFTClass_contract_id = md_EventCreatedFTClass.Fields().ByName("contract_id")
-	fd_EventCreatedFTClass_operator = md_EventCreatedFTClass.Fields().ByName("operator")
-	fd_EventCreatedFTClass_token_id = md_EventCreatedFTClass.Fields().ByName("token_id")
-	fd_EventCreatedFTClass_name = md_EventCreatedFTClass.Fields().ByName("name")
-	fd_EventCreatedFTClass_meta = md_EventCreatedFTClass.Fields().ByName("meta")
-	fd_EventCreatedFTClass_decimals = md_EventCreatedFTClass.Fields().ByName("decimals")
-	fd_EventCreatedFTClass_mintable = md_EventCreatedFTClass.Fields().ByName("mintable")
-}
-
-var _ protoreflect.Message = (*fastReflection_EventCreatedFTClass)(nil)
-
-type fastReflection_EventCreatedFTClass EventCreatedFTClass
-
-func (x *EventCreatedFTClass) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_EventCreatedFTClass)(x)
-}
-
-func (x *EventCreatedFTClass) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_EventCreatedFTClass_messageType fastReflection_EventCreatedFTClass_messageType
-var _ protoreflect.MessageType = fastReflection_EventCreatedFTClass_messageType{}
-
-type fastReflection_EventCreatedFTClass_messageType struct{}
-
-func (x fastReflection_EventCreatedFTClass_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_EventCreatedFTClass)(nil)
-}
-func (x fastReflection_EventCreatedFTClass_messageType) New() protoreflect.Message {
-	return new(fastReflection_EventCreatedFTClass)
-}
-func (x fastReflection_EventCreatedFTClass_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_EventCreatedFTClass
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_EventCreatedFTClass) Descriptor() protoreflect.MessageDescriptor {
-	return md_EventCreatedFTClass
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_EventCreatedFTClass) Type() protoreflect.MessageType {
-	return _fastReflection_EventCreatedFTClass_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_EventCreatedFTClass) New() protoreflect.Message {
-	return new(fastReflection_EventCreatedFTClass)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_EventCreatedFTClass) Interface() protoreflect.ProtoMessage {
-	return (*EventCreatedFTClass)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_EventCreatedFTClass) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.ContractId != "" {
-		value := protoreflect.ValueOfString(x.ContractId)
-		if !f(fd_EventCreatedFTClass_contract_id, value) {
-			return
-		}
-	}
-	if x.Operator != "" {
-		value := protoreflect.ValueOfString(x.Operator)
-		if !f(fd_EventCreatedFTClass_operator, value) {
-			return
-		}
-	}
-	if x.TokenId != "" {
-		value := protoreflect.ValueOfString(x.TokenId)
-		if !f(fd_EventCreatedFTClass_token_id, value) {
-			return
-		}
-	}
-	if x.Name != "" {
-		value := protoreflect.ValueOfString(x.Name)
-		if !f(fd_EventCreatedFTClass_name, value) {
-			return
-		}
-	}
-	if x.Meta != "" {
-		value := protoreflect.ValueOfString(x.Meta)
-		if !f(fd_EventCreatedFTClass_meta, value) {
-			return
-		}
-	}
-	if x.Decimals != int32(0) {
-		value := protoreflect.ValueOfInt32(x.Decimals)
-		if !f(fd_EventCreatedFTClass_decimals, value) {
-			return
-		}
-	}
-	if x.Mintable != false {
-		value := protoreflect.ValueOfBool(x.Mintable)
-		if !f(fd_EventCreatedFTClass_mintable, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_EventCreatedFTClass) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventCreatedFTClass.contract_id":
-		return x.ContractId != ""
-	case "lbm.collection.v1.EventCreatedFTClass.operator":
-		return x.Operator != ""
-	case "lbm.collection.v1.EventCreatedFTClass.token_id":
-		return x.TokenId != ""
-	case "lbm.collection.v1.EventCreatedFTClass.name":
-		return x.Name != ""
-	case "lbm.collection.v1.EventCreatedFTClass.meta":
-		return x.Meta != ""
-	case "lbm.collection.v1.EventCreatedFTClass.decimals":
-		return x.Decimals != int32(0)
-	case "lbm.collection.v1.EventCreatedFTClass.mintable":
-		return x.Mintable != false
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventCreatedFTClass"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventCreatedFTClass does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventCreatedFTClass) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventCreatedFTClass.contract_id":
-		x.ContractId = ""
-	case "lbm.collection.v1.EventCreatedFTClass.operator":
-		x.Operator = ""
-	case "lbm.collection.v1.EventCreatedFTClass.token_id":
-		x.TokenId = ""
-	case "lbm.collection.v1.EventCreatedFTClass.name":
-		x.Name = ""
-	case "lbm.collection.v1.EventCreatedFTClass.meta":
-		x.Meta = ""
-	case "lbm.collection.v1.EventCreatedFTClass.decimals":
-		x.Decimals = int32(0)
-	case "lbm.collection.v1.EventCreatedFTClass.mintable":
-		x.Mintable = false
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventCreatedFTClass"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventCreatedFTClass does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_EventCreatedFTClass) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "lbm.collection.v1.EventCreatedFTClass.contract_id":
-		value := x.ContractId
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventCreatedFTClass.operator":
-		value := x.Operator
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventCreatedFTClass.token_id":
-		value := x.TokenId
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventCreatedFTClass.name":
-		value := x.Name
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventCreatedFTClass.meta":
-		value := x.Meta
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventCreatedFTClass.decimals":
-		value := x.Decimals
-		return protoreflect.ValueOfInt32(value)
-	case "lbm.collection.v1.EventCreatedFTClass.mintable":
-		value := x.Mintable
-		return protoreflect.ValueOfBool(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventCreatedFTClass"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventCreatedFTClass does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventCreatedFTClass) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventCreatedFTClass.contract_id":
-		x.ContractId = value.Interface().(string)
-	case "lbm.collection.v1.EventCreatedFTClass.operator":
-		x.Operator = value.Interface().(string)
-	case "lbm.collection.v1.EventCreatedFTClass.token_id":
-		x.TokenId = value.Interface().(string)
-	case "lbm.collection.v1.EventCreatedFTClass.name":
-		x.Name = value.Interface().(string)
-	case "lbm.collection.v1.EventCreatedFTClass.meta":
-		x.Meta = value.Interface().(string)
-	case "lbm.collection.v1.EventCreatedFTClass.decimals":
-		x.Decimals = int32(value.Int())
-	case "lbm.collection.v1.EventCreatedFTClass.mintable":
-		x.Mintable = value.Bool()
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventCreatedFTClass"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventCreatedFTClass does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventCreatedFTClass) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventCreatedFTClass.contract_id":
-		panic(fmt.Errorf("field contract_id of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	case "lbm.collection.v1.EventCreatedFTClass.operator":
-		panic(fmt.Errorf("field operator of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	case "lbm.collection.v1.EventCreatedFTClass.token_id":
-		panic(fmt.Errorf("field token_id of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	case "lbm.collection.v1.EventCreatedFTClass.name":
-		panic(fmt.Errorf("field name of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	case "lbm.collection.v1.EventCreatedFTClass.meta":
-		panic(fmt.Errorf("field meta of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	case "lbm.collection.v1.EventCreatedFTClass.decimals":
-		panic(fmt.Errorf("field decimals of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	case "lbm.collection.v1.EventCreatedFTClass.mintable":
-		panic(fmt.Errorf("field mintable of message lbm.collection.v1.EventCreatedFTClass is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventCreatedFTClass"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventCreatedFTClass does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_EventCreatedFTClass) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventCreatedFTClass.contract_id":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventCreatedFTClass.operator":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventCreatedFTClass.token_id":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventCreatedFTClass.name":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventCreatedFTClass.meta":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventCreatedFTClass.decimals":
-		return protoreflect.ValueOfInt32(int32(0))
-	case "lbm.collection.v1.EventCreatedFTClass.mintable":
-		return protoreflect.ValueOfBool(false)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventCreatedFTClass"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventCreatedFTClass does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_EventCreatedFTClass) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in lbm.collection.v1.EventCreatedFTClass", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_EventCreatedFTClass) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventCreatedFTClass) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_EventCreatedFTClass) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_EventCreatedFTClass) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*EventCreatedFTClass)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		l = len(x.ContractId)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Operator)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.TokenId)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Name)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Meta)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.Decimals != 0 {
-			n += 1 + runtime.Sov(uint64(x.Decimals))
-		}
-		if x.Mintable {
-			n += 2
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*EventCreatedFTClass)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if x.Mintable {
-			i--
-			if x.Mintable {
-				dAtA[i] = 1
-			} else {
-				dAtA[i] = 0
-			}
-			i--
-			dAtA[i] = 0x38
-		}
-		if x.Decimals != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Decimals))
-			i--
-			dAtA[i] = 0x30
-		}
-		if len(x.Meta) > 0 {
-			i -= len(x.Meta)
-			copy(dAtA[i:], x.Meta)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Meta)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if len(x.Name) > 0 {
-			i -= len(x.Name)
-			copy(dAtA[i:], x.Name)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Name)))
-			i--
-			dAtA[i] = 0x22
-		}
-		if len(x.TokenId) > 0 {
-			i -= len(x.TokenId)
-			copy(dAtA[i:], x.TokenId)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TokenId)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.Operator) > 0 {
-			i -= len(x.Operator)
-			copy(dAtA[i:], x.Operator)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Operator)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if len(x.ContractId) > 0 {
-			i -= len(x.ContractId)
-			copy(dAtA[i:], x.ContractId)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ContractId)))
-			i--
-			dAtA[i] = 0xa
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*EventCreatedFTClass)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventCreatedFTClass: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventCreatedFTClass: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ContractId = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Operator", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Operator = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.TokenId = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Name = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Meta = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 6:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Decimals", wireType)
-				}
-				x.Decimals = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Decimals |= int32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 7:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Mintable", wireType)
-				}
-				var v int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					v |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				x.Mintable = bool(v != 0)
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
 	md_EventCreatedNFTClass             protoreflect.MessageDescriptor
 	fd_EventCreatedNFTClass_contract_id protoreflect.FieldDescriptor
 	fd_EventCreatedNFTClass_operator    protoreflect.FieldDescriptor
@@ -3342,7 +2564,7 @@ func (x *EventCreatedNFTClass) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventCreatedNFTClass) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[5]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4016,7 +3238,7 @@ func (x *EventGranted) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventGranted) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[6]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4610,7 +3832,7 @@ func (x *EventRenounced) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventRenounced) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[7]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5118,692 +4340,6 @@ func (x *fastReflection_EventRenounced) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_EventMintedFT_4_list)(nil)
-
-type _EventMintedFT_4_list struct {
-	list *[]*Coin
-}
-
-func (x *_EventMintedFT_4_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_EventMintedFT_4_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_EventMintedFT_4_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Coin)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_EventMintedFT_4_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Coin)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_EventMintedFT_4_list) AppendMutable() protoreflect.Value {
-	v := new(Coin)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_EventMintedFT_4_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_EventMintedFT_4_list) NewElement() protoreflect.Value {
-	v := new(Coin)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_EventMintedFT_4_list) IsValid() bool {
-	return x.list != nil
-}
-
-var (
-	md_EventMintedFT             protoreflect.MessageDescriptor
-	fd_EventMintedFT_contract_id protoreflect.FieldDescriptor
-	fd_EventMintedFT_operator    protoreflect.FieldDescriptor
-	fd_EventMintedFT_to          protoreflect.FieldDescriptor
-	fd_EventMintedFT_amount      protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_lbm_collection_v1_event_proto_init()
-	md_EventMintedFT = File_lbm_collection_v1_event_proto.Messages().ByName("EventMintedFT")
-	fd_EventMintedFT_contract_id = md_EventMintedFT.Fields().ByName("contract_id")
-	fd_EventMintedFT_operator = md_EventMintedFT.Fields().ByName("operator")
-	fd_EventMintedFT_to = md_EventMintedFT.Fields().ByName("to")
-	fd_EventMintedFT_amount = md_EventMintedFT.Fields().ByName("amount")
-}
-
-var _ protoreflect.Message = (*fastReflection_EventMintedFT)(nil)
-
-type fastReflection_EventMintedFT EventMintedFT
-
-func (x *EventMintedFT) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_EventMintedFT)(x)
-}
-
-func (x *EventMintedFT) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_EventMintedFT_messageType fastReflection_EventMintedFT_messageType
-var _ protoreflect.MessageType = fastReflection_EventMintedFT_messageType{}
-
-type fastReflection_EventMintedFT_messageType struct{}
-
-func (x fastReflection_EventMintedFT_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_EventMintedFT)(nil)
-}
-func (x fastReflection_EventMintedFT_messageType) New() protoreflect.Message {
-	return new(fastReflection_EventMintedFT)
-}
-func (x fastReflection_EventMintedFT_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_EventMintedFT
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_EventMintedFT) Descriptor() protoreflect.MessageDescriptor {
-	return md_EventMintedFT
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_EventMintedFT) Type() protoreflect.MessageType {
-	return _fastReflection_EventMintedFT_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_EventMintedFT) New() protoreflect.Message {
-	return new(fastReflection_EventMintedFT)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_EventMintedFT) Interface() protoreflect.ProtoMessage {
-	return (*EventMintedFT)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_EventMintedFT) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.ContractId != "" {
-		value := protoreflect.ValueOfString(x.ContractId)
-		if !f(fd_EventMintedFT_contract_id, value) {
-			return
-		}
-	}
-	if x.Operator != "" {
-		value := protoreflect.ValueOfString(x.Operator)
-		if !f(fd_EventMintedFT_operator, value) {
-			return
-		}
-	}
-	if x.To != "" {
-		value := protoreflect.ValueOfString(x.To)
-		if !f(fd_EventMintedFT_to, value) {
-			return
-		}
-	}
-	if len(x.Amount) != 0 {
-		value := protoreflect.ValueOfList(&_EventMintedFT_4_list{list: &x.Amount})
-		if !f(fd_EventMintedFT_amount, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_EventMintedFT) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventMintedFT.contract_id":
-		return x.ContractId != ""
-	case "lbm.collection.v1.EventMintedFT.operator":
-		return x.Operator != ""
-	case "lbm.collection.v1.EventMintedFT.to":
-		return x.To != ""
-	case "lbm.collection.v1.EventMintedFT.amount":
-		return len(x.Amount) != 0
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventMintedFT"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventMintedFT does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventMintedFT) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventMintedFT.contract_id":
-		x.ContractId = ""
-	case "lbm.collection.v1.EventMintedFT.operator":
-		x.Operator = ""
-	case "lbm.collection.v1.EventMintedFT.to":
-		x.To = ""
-	case "lbm.collection.v1.EventMintedFT.amount":
-		x.Amount = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventMintedFT"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventMintedFT does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_EventMintedFT) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "lbm.collection.v1.EventMintedFT.contract_id":
-		value := x.ContractId
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventMintedFT.operator":
-		value := x.Operator
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventMintedFT.to":
-		value := x.To
-		return protoreflect.ValueOfString(value)
-	case "lbm.collection.v1.EventMintedFT.amount":
-		if len(x.Amount) == 0 {
-			return protoreflect.ValueOfList(&_EventMintedFT_4_list{})
-		}
-		listValue := &_EventMintedFT_4_list{list: &x.Amount}
-		return protoreflect.ValueOfList(listValue)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventMintedFT"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventMintedFT does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventMintedFT) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventMintedFT.contract_id":
-		x.ContractId = value.Interface().(string)
-	case "lbm.collection.v1.EventMintedFT.operator":
-		x.Operator = value.Interface().(string)
-	case "lbm.collection.v1.EventMintedFT.to":
-		x.To = value.Interface().(string)
-	case "lbm.collection.v1.EventMintedFT.amount":
-		lv := value.List()
-		clv := lv.(*_EventMintedFT_4_list)
-		x.Amount = *clv.list
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventMintedFT"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventMintedFT does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventMintedFT) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventMintedFT.amount":
-		if x.Amount == nil {
-			x.Amount = []*Coin{}
-		}
-		value := &_EventMintedFT_4_list{list: &x.Amount}
-		return protoreflect.ValueOfList(value)
-	case "lbm.collection.v1.EventMintedFT.contract_id":
-		panic(fmt.Errorf("field contract_id of message lbm.collection.v1.EventMintedFT is not mutable"))
-	case "lbm.collection.v1.EventMintedFT.operator":
-		panic(fmt.Errorf("field operator of message lbm.collection.v1.EventMintedFT is not mutable"))
-	case "lbm.collection.v1.EventMintedFT.to":
-		panic(fmt.Errorf("field to of message lbm.collection.v1.EventMintedFT is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventMintedFT"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventMintedFT does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_EventMintedFT) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "lbm.collection.v1.EventMintedFT.contract_id":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventMintedFT.operator":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventMintedFT.to":
-		return protoreflect.ValueOfString("")
-	case "lbm.collection.v1.EventMintedFT.amount":
-		list := []*Coin{}
-		return protoreflect.ValueOfList(&_EventMintedFT_4_list{list: &list})
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: lbm.collection.v1.EventMintedFT"))
-		}
-		panic(fmt.Errorf("message lbm.collection.v1.EventMintedFT does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_EventMintedFT) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in lbm.collection.v1.EventMintedFT", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_EventMintedFT) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_EventMintedFT) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_EventMintedFT) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_EventMintedFT) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*EventMintedFT)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		l = len(x.ContractId)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Operator)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.To)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if len(x.Amount) > 0 {
-			for _, e := range x.Amount {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*EventMintedFT)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.Amount) > 0 {
-			for iNdEx := len(x.Amount) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Amount[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0x22
-			}
-		}
-		if len(x.To) > 0 {
-			i -= len(x.To)
-			copy(dAtA[i:], x.To)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.To)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.Operator) > 0 {
-			i -= len(x.Operator)
-			copy(dAtA[i:], x.Operator)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Operator)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if len(x.ContractId) > 0 {
-			i -= len(x.ContractId)
-			copy(dAtA[i:], x.ContractId)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ContractId)))
-			i--
-			dAtA[i] = 0xa
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*EventMintedFT)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventMintedFT: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: EventMintedFT: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ContractId = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Operator", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Operator = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.To = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Amount = append(x.Amount, &Coin{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Amount[len(x.Amount)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
 var _ protoreflect.List = (*_EventMintedNFT_4_list)(nil)
 
 type _EventMintedNFT_4_list struct {
@@ -5881,7 +4417,7 @@ func (x *EventMintedNFT) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventMintedNFT) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[9]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6567,7 +5103,7 @@ func (x *EventBurned) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventBurned) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[10]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7251,7 +5787,7 @@ func (x *EventModifiedContract) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventModifiedContract) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[11]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7877,7 +6413,7 @@ func (x *EventModifiedTokenClass) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventModifiedTokenClass) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[12]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8625,7 +7161,7 @@ func (x *EventModifiedNFT) ProtoReflect() protoreflect.Message {
 }
 
 func (x *EventModifiedNFT) slowProtoReflect() protoreflect.Message {
-	mi := &file_lbm_collection_v1_event_proto_msgTypes[13]
+	mi := &file_lbm_collection_v1_event_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9572,99 +8108,6 @@ func (x *EventCreatedContract) GetUri() string {
 	return ""
 }
 
-// EventCreatedFTClass is emitted when a new fungible token class is created.
-//
-// Since: 0.46.0 (finschia)
-type EventCreatedFTClass struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// contract id associated with the contract.
-	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address which triggered the create.
-	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// token id associated with the token class.
-	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	// name of the token class.
-	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	// metadata of the token class.
-	Meta string `protobuf:"bytes,5,opt,name=meta,proto3" json:"meta,omitempty"`
-	// decimals of the token class.
-	Decimals int32 `protobuf:"varint,6,opt,name=decimals,proto3" json:"decimals,omitempty"`
-	// mintable represents whether the token class is allowed to mint or burn its tokens.
-	Mintable bool `protobuf:"varint,7,opt,name=mintable,proto3" json:"mintable,omitempty"`
-}
-
-func (x *EventCreatedFTClass) Reset() {
-	*x = EventCreatedFTClass{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *EventCreatedFTClass) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*EventCreatedFTClass) ProtoMessage() {}
-
-// Deprecated: Use EventCreatedFTClass.ProtoReflect.Descriptor instead.
-func (*EventCreatedFTClass) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *EventCreatedFTClass) GetContractId() string {
-	if x != nil {
-		return x.ContractId
-	}
-	return ""
-}
-
-func (x *EventCreatedFTClass) GetOperator() string {
-	if x != nil {
-		return x.Operator
-	}
-	return ""
-}
-
-func (x *EventCreatedFTClass) GetTokenId() string {
-	if x != nil {
-		return x.TokenId
-	}
-	return ""
-}
-
-func (x *EventCreatedFTClass) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *EventCreatedFTClass) GetMeta() string {
-	if x != nil {
-		return x.Meta
-	}
-	return ""
-}
-
-func (x *EventCreatedFTClass) GetDecimals() int32 {
-	if x != nil {
-		return x.Decimals
-	}
-	return 0
-}
-
-func (x *EventCreatedFTClass) GetMintable() bool {
-	if x != nil {
-		return x.Mintable
-	}
-	return false
-}
-
 // EventCreatedNFTClass is emitted when a new non-fungible token class is created.
 //
 // Since: 0.46.0 (finschia)
@@ -9689,7 +8132,7 @@ type EventCreatedNFTClass struct {
 func (x *EventCreatedNFTClass) Reset() {
 	*x = EventCreatedNFTClass{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[5]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -9703,7 +8146,7 @@ func (*EventCreatedNFTClass) ProtoMessage() {}
 
 // Deprecated: Use EventCreatedNFTClass.ProtoReflect.Descriptor instead.
 func (*EventCreatedNFTClass) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{5}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *EventCreatedNFTClass) GetContractId() string {
@@ -9764,7 +8207,7 @@ type EventGranted struct {
 func (x *EventGranted) Reset() {
 	*x = EventGranted{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[6]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -9778,7 +8221,7 @@ func (*EventGranted) ProtoMessage() {}
 
 // Deprecated: Use EventGranted.ProtoReflect.Descriptor instead.
 func (*EventGranted) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{6}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *EventGranted) GetContractId() string {
@@ -9828,7 +8271,7 @@ type EventRenounced struct {
 func (x *EventRenounced) Reset() {
 	*x = EventRenounced{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[7]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -9842,7 +8285,7 @@ func (*EventRenounced) ProtoMessage() {}
 
 // Deprecated: Use EventRenounced.ProtoReflect.Descriptor instead.
 func (*EventRenounced) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{7}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *EventRenounced) GetContractId() string {
@@ -9866,72 +8309,6 @@ func (x *EventRenounced) GetPermission() Permission {
 	return Permission_PERMISSION_UNSPECIFIED
 }
 
-// EventMintedFT is emitted when fungible tokens are minted.
-//
-// Since: 0.46.0 (finschia)
-type EventMintedFT struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// contract id associated with the contract.
-	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address which triggered the mint.
-	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// recipient of the tokens.
-	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	// amount of tokens minted.
-	Amount []*Coin `protobuf:"bytes,4,rep,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (x *EventMintedFT) Reset() {
-	*x = EventMintedFT{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *EventMintedFT) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*EventMintedFT) ProtoMessage() {}
-
-// Deprecated: Use EventMintedFT.ProtoReflect.Descriptor instead.
-func (*EventMintedFT) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *EventMintedFT) GetContractId() string {
-	if x != nil {
-		return x.ContractId
-	}
-	return ""
-}
-
-func (x *EventMintedFT) GetOperator() string {
-	if x != nil {
-		return x.Operator
-	}
-	return ""
-}
-
-func (x *EventMintedFT) GetTo() string {
-	if x != nil {
-		return x.To
-	}
-	return ""
-}
-
-func (x *EventMintedFT) GetAmount() []*Coin {
-	if x != nil {
-		return x.Amount
-	}
-	return nil
-}
-
 // EventMintedNFT is emitted when non-fungible tokens are minted.
 //
 // Since: 0.46.0 (finschia)
@@ -9953,7 +8330,7 @@ type EventMintedNFT struct {
 func (x *EventMintedNFT) Reset() {
 	*x = EventMintedNFT{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[9]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -9967,7 +8344,7 @@ func (*EventMintedNFT) ProtoMessage() {}
 
 // Deprecated: Use EventMintedNFT.ProtoReflect.Descriptor instead.
 func (*EventMintedNFT) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{9}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *EventMintedNFT) GetContractId() string {
@@ -10019,7 +8396,7 @@ type EventBurned struct {
 func (x *EventBurned) Reset() {
 	*x = EventBurned{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[10]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10033,7 +8410,7 @@ func (*EventBurned) ProtoMessage() {}
 
 // Deprecated: Use EventBurned.ProtoReflect.Descriptor instead.
 func (*EventBurned) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{10}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *EventBurned) GetContractId() string {
@@ -10085,7 +8462,7 @@ type EventModifiedContract struct {
 func (x *EventModifiedContract) Reset() {
 	*x = EventModifiedContract{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[11]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10099,7 +8476,7 @@ func (*EventModifiedContract) ProtoMessage() {}
 
 // Deprecated: Use EventModifiedContract.ProtoReflect.Descriptor instead.
 func (*EventModifiedContract) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{11}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *EventModifiedContract) GetContractId() string {
@@ -10148,7 +8525,7 @@ type EventModifiedTokenClass struct {
 func (x *EventModifiedTokenClass) Reset() {
 	*x = EventModifiedTokenClass{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[12]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10162,7 +8539,7 @@ func (*EventModifiedTokenClass) ProtoMessage() {}
 
 // Deprecated: Use EventModifiedTokenClass.ProtoReflect.Descriptor instead.
 func (*EventModifiedTokenClass) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{12}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *EventModifiedTokenClass) GetContractId() string {
@@ -10222,7 +8599,7 @@ type EventModifiedNFT struct {
 func (x *EventModifiedNFT) Reset() {
 	*x = EventModifiedNFT{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_lbm_collection_v1_event_proto_msgTypes[13]
+		mi := &file_lbm_collection_v1_event_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -10236,7 +8613,7 @@ func (*EventModifiedNFT) ProtoMessage() {}
 
 // Deprecated: Use EventModifiedNFT.ProtoReflect.Descriptor instead.
 func (*EventModifiedNFT) Descriptor() ([]byte, []int) {
-	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{13}
+	return file_lbm_collection_v1_event_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *EventModifiedNFT) GetContractId() string {
@@ -10324,163 +8701,136 @@ var file_lbm_collection_v1_event_proto_rawDesc = []byte{
 	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
 	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x18, 0x04, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x69, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x69, 0x22, 0xe7, 0x01, 0x0a, 0x13, 0x45,
-	0x76, 0x65, 0x6e, 0x74, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x46, 0x54, 0x43, 0x6c, 0x61,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x69, 0x22, 0xb4, 0x01, 0x0a, 0x14, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x4e, 0x46, 0x54, 0x43, 0x6c,
+	0x61, 0x73, 0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61,
+	0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a,
+	0x04, 0x6d, 0x65, 0x74, 0x61, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x65, 0x74,
+	0x61, 0x22, 0xd6, 0x01, 0x0a, 0x0c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x47, 0x72, 0x61, 0x6e, 0x74,
+	0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63,
+	0x74, 0x49, 0x64, 0x12, 0x32, 0x0a, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
+	0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x32, 0x0a, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74,
+	0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
+	0x6e, 0x67, 0x52, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65, 0x12, 0x3d, 0x0a, 0x0a, 0x70,
+	0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x1d, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x0a,
+	0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x22, 0xa4, 0x01, 0x0a, 0x0e, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x6e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x64, 0x12, 0x1f, 0x0a,
+	0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x32,
+	0x0a, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74,
+	0x65, 0x65, 0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1d, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c,
+	0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x72, 0x6d, 0x69,
+	0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f,
+	0x6e, 0x22, 0xc7, 0x01, 0x0a, 0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4d, 0x69, 0x6e, 0x74, 0x65,
+	0x64, 0x4e, 0x46, 0x54, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72,
+	0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f,
+	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x28, 0x0a, 0x02, 0x74,
+	0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x34, 0x0a, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x18,
+	0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4e, 0x46, 0x54, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x22, 0xc9, 0x01, 0x0a, 0x0b,
+	0x45, 0x76, 0x65, 0x6e, 0x74, 0x42, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x63,
+	0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08,
+	0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
+	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74,
+	0x6f, 0x72, 0x12, 0x2c, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d,
+	0x12, 0x35, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x17, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xac, 0x01, 0x0a, 0x15, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63,
+	0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74,
+	0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08,
+	0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x3c, 0x0a, 0x07, 0x63, 0x68, 0x61, 0x6e,
+	0x67, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x6c, 0x62, 0x6d, 0x2e,
+	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x74,
+	0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x63,
+	0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x22, 0xea, 0x01, 0x0a, 0x17, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x43, 0x6c, 0x61,
 	0x73, 0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69,
 	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63,
 	0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52,
-	0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6d, 0x65, 0x74, 0x61,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x12, 0x1a, 0x0a, 0x08,
-	0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08,
-	0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x74,
-	0x61, 0x62, 0x6c, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x6d, 0x69, 0x6e, 0x74,
-	0x61, 0x62, 0x6c, 0x65, 0x22, 0xb4, 0x01, 0x0a, 0x14, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x43, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x64, 0x4e, 0x46, 0x54, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x12, 0x1f, 0x0a,
-	0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34,
-	0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72,
-	0x61, 0x74, 0x6f, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x74, 0x79,
-	0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x54,
-	0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x22, 0xd6, 0x01, 0x0a, 0x0c,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x47, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b,
-	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x32, 0x0a,
-	0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
-	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
-	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65,
-	0x72, 0x12, 0x32, 0x0a, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x67, 0x72,
-	0x61, 0x6e, 0x74, 0x65, 0x65, 0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73,
-	0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1d, 0x2e, 0x6c, 0x62, 0x6d, 0x2e,
-	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65,
-	0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x70, 0x65, 0x72, 0x6d, 0x69, 0x73,
-	0x73, 0x69, 0x6f, 0x6e, 0x22, 0xa4, 0x01, 0x0a, 0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65,
-	0x6e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72,
-	0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f,
-	0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x32, 0x0a, 0x07, 0x67, 0x72, 0x61, 0x6e,
-	0x74, 0x65, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x07, 0x67, 0x72, 0x61, 0x6e, 0x74, 0x65, 0x65, 0x12, 0x3d, 0x0a, 0x0a,
-	0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e,
-	0x32, 0x1d, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52,
-	0x0a, 0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x22, 0xc7, 0x01, 0x0a, 0x0d,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x4d, 0x69, 0x6e, 0x74, 0x65, 0x64, 0x46, 0x54, 0x12, 0x1f, 0x0a,
-	0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34,
-	0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72,
-	0x61, 0x74, 0x6f, 0x72, 0x12, 0x28, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x35,
-	0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17,
-	0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e,
-	0x76, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xc7, 0x01, 0x0a, 0x0e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4d,
-	0x69, 0x6e, 0x74, 0x65, 0x64, 0x4e, 0x46, 0x54, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74,
+	0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x3c, 0x0a, 0x07, 0x63, 0x68, 0x61, 0x6e,
+	0x67, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x6c, 0x62, 0x6d, 0x2e,
+	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x74,
+	0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x63,
+	0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x12, 0x1b, 0x0a, 0x09, 0x74, 0x79, 0x70, 0x65, 0x5f, 0x6e,
+	0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x79, 0x70, 0x65, 0x4e,
+	0x61, 0x6d, 0x65, 0x22, 0xc2, 0x01, 0x0a, 0x10, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4d, 0x6f, 0x64,
+	0x69, 0x66, 0x69, 0x65, 0x64, 0x4e, 0x46, 0x54, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74,
 	0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63,
 	0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65,
 	0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
 	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
 	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12,
-	0x28, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
-	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
-	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x34, 0x0a, 0x06, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x62, 0x6d, 0x2e,
-	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4e, 0x46,
-	0x54, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x22,
-	0xc9, 0x01, 0x0a, 0x0b, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x42, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x12,
-	0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64,
-	0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70,
-	0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x2c, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x04,
-	0x66, 0x72, 0x6f, 0x6d, 0x12, 0x35, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xac, 0x01, 0x0a, 0x15,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x43, 0x6f, 0x6e,
-	0x74, 0x72, 0x61, 0x63, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63,
-	0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74,
-	0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
-	0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x3c, 0x0a, 0x07,
-	0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e,
-	0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76,
-	0x31, 0x2e, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x22, 0xea, 0x01, 0x0a, 0x17, 0x45,
-	0x76, 0x65, 0x6e, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x54, 0x6f, 0x6b, 0x65,
-	0x6e, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61,
-	0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e,
-	0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61,
-	0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x1d, 0x0a,
-	0x0a, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x09, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x3c, 0x0a, 0x07,
-	0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e,
-	0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76,
-	0x31, 0x2e, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x12, 0x1b, 0x0a, 0x09, 0x74, 0x79,
-	0x70, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74,
-	0x79, 0x70, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0xc2, 0x01, 0x0a, 0x10, 0x45, 0x76, 0x65, 0x6e,
-	0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x4e, 0x46, 0x54, 0x12, 0x1f, 0x0a, 0x0b,
-	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x49, 0x64, 0x12, 0x34, 0x0a,
-	0x08, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x6f, 0x70, 0x65, 0x72, 0x61,
-	0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x3c,
-	0x0a, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x1c, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x76, 0x31, 0x2e, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x2a, 0xa4, 0x02, 0x0a,
-	0x0c, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x12, 0x3a, 0x0a,
-	0x19, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x55,
-	0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x1a, 0x1b, 0x8a, 0x9d,
-	0x20, 0x17, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x55, 0x6e,
-	0x73, 0x70, 0x65, 0x63, 0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x2c, 0x0a, 0x12, 0x41, 0x54, 0x54,
-	0x52, 0x49, 0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x4e, 0x41, 0x4d, 0x45, 0x10,
-	0x01, 0x1a, 0x14, 0x8a, 0x9d, 0x20, 0x10, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65,
-	0x4b, 0x65, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x2c, 0x0a, 0x12, 0x41, 0x54, 0x54, 0x52, 0x49,
-	0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x4d, 0x45, 0x54, 0x41, 0x10, 0x02, 0x1a,
-	0x14, 0x8a, 0x9d, 0x20, 0x10, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65,
-	0x79, 0x4d, 0x65, 0x74, 0x61, 0x12, 0x3a, 0x0a, 0x1a, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55,
-	0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x42, 0x41, 0x53, 0x45, 0x5f, 0x49, 0x4d, 0x47, 0x5f,
-	0x55, 0x52, 0x49, 0x10, 0x08, 0x1a, 0x1a, 0x8a, 0x9d, 0x20, 0x16, 0x41, 0x74, 0x74, 0x72, 0x69,
-	0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x42, 0x61, 0x73, 0x65, 0x49, 0x6d, 0x67, 0x55, 0x52,
-	0x49, 0x12, 0x2a, 0x0a, 0x11, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b,
-	0x45, 0x59, 0x5f, 0x55, 0x52, 0x49, 0x10, 0x14, 0x1a, 0x13, 0x8a, 0x9d, 0x20, 0x0f, 0x41, 0x74,
-	0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x55, 0x52, 0x49, 0x1a, 0x08, 0x88,
-	0xa3, 0x1e, 0x00, 0xa8, 0xa4, 0x1e, 0x00, 0x22, 0x04, 0x08, 0x03, 0x10, 0x07, 0x22, 0x04, 0x08,
-	0x09, 0x10, 0x13, 0x42, 0xad, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x6c, 0x62, 0x6d, 0x2e,
-	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x45,
-	0x76, 0x65, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x22, 0x61, 0x70, 0x69,
-	0x2f, 0x6c, 0x62, 0x6d, 0x2f, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2f,
-	0x76, 0x31, 0x3b, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x76, 0x31, 0xa2,
-	0x02, 0x03, 0x4c, 0x43, 0x58, 0xaa, 0x02, 0x11, 0x4c, 0x62, 0x6d, 0x2e, 0x43, 0x6f, 0x6c, 0x6c,
-	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x11, 0x4c, 0x62, 0x6d, 0x5c,
-	0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1d,
-	0x4c, 0x62, 0x6d, 0x5c, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c, 0x56,
-	0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x13,
-	0x4c, 0x62, 0x6d, 0x3a, 0x3a, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x3a,
-	0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x3c, 0x0a, 0x07, 0x63, 0x68,
+	0x61, 0x6e, 0x67, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x6c, 0x62,
+	0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e,
+	0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x07, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x2a, 0xa4, 0x02, 0x0a, 0x0c, 0x41, 0x74, 0x74,
+	0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x12, 0x3a, 0x0a, 0x19, 0x41, 0x54, 0x54,
+	0x52, 0x49, 0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45,
+	0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x1a, 0x1b, 0x8a, 0x9d, 0x20, 0x17, 0x41, 0x74,
+	0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x55, 0x6e, 0x73, 0x70, 0x65, 0x63,
+	0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x2c, 0x0a, 0x12, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55,
+	0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x4e, 0x41, 0x4d, 0x45, 0x10, 0x01, 0x1a, 0x14, 0x8a,
+	0x9d, 0x20, 0x10, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x4e,
+	0x61, 0x6d, 0x65, 0x12, 0x2c, 0x0a, 0x12, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55, 0x54, 0x45,
+	0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x4d, 0x45, 0x54, 0x41, 0x10, 0x02, 0x1a, 0x14, 0x8a, 0x9d, 0x20,
+	0x10, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x4d, 0x65, 0x74,
+	0x61, 0x12, 0x3a, 0x0a, 0x1a, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b,
+	0x45, 0x59, 0x5f, 0x42, 0x41, 0x53, 0x45, 0x5f, 0x49, 0x4d, 0x47, 0x5f, 0x55, 0x52, 0x49, 0x10,
+	0x08, 0x1a, 0x1a, 0x8a, 0x9d, 0x20, 0x16, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65,
+	0x4b, 0x65, 0x79, 0x42, 0x61, 0x73, 0x65, 0x49, 0x6d, 0x67, 0x55, 0x52, 0x49, 0x12, 0x2a, 0x0a,
+	0x11, 0x41, 0x54, 0x54, 0x52, 0x49, 0x42, 0x55, 0x54, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x5f, 0x55,
+	0x52, 0x49, 0x10, 0x14, 0x1a, 0x13, 0x8a, 0x9d, 0x20, 0x0f, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62,
+	0x75, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x55, 0x52, 0x49, 0x1a, 0x08, 0x88, 0xa3, 0x1e, 0x00, 0xa8,
+	0xa4, 0x1e, 0x00, 0x22, 0x04, 0x08, 0x03, 0x10, 0x07, 0x22, 0x04, 0x08, 0x09, 0x10, 0x13, 0x42,
+	0xad, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x6c, 0x62, 0x6d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x22, 0x61, 0x70, 0x69, 0x2f, 0x6c, 0x62, 0x6d,
+	0x2f, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x3b, 0x63,
+	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4c, 0x43,
+	0x58, 0xaa, 0x02, 0x11, 0x4c, 0x62, 0x6d, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x11, 0x4c, 0x62, 0x6d, 0x5c, 0x43, 0x6f, 0x6c, 0x6c,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1d, 0x4c, 0x62, 0x6d, 0x5c,
+	0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50,
+	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x13, 0x4c, 0x62, 0x6d, 0x3a,
+	0x3a, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -10496,43 +8846,40 @@ func file_lbm_collection_v1_event_proto_rawDescGZIP() []byte {
 }
 
 var file_lbm_collection_v1_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_lbm_collection_v1_event_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_lbm_collection_v1_event_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_lbm_collection_v1_event_proto_goTypes = []interface{}{
 	(AttributeKey)(0),               // 0: lbm.collection.v1.AttributeKey
 	(*EventSent)(nil),               // 1: lbm.collection.v1.EventSent
 	(*EventAuthorizedOperator)(nil), // 2: lbm.collection.v1.EventAuthorizedOperator
 	(*EventRevokedOperator)(nil),    // 3: lbm.collection.v1.EventRevokedOperator
 	(*EventCreatedContract)(nil),    // 4: lbm.collection.v1.EventCreatedContract
-	(*EventCreatedFTClass)(nil),     // 5: lbm.collection.v1.EventCreatedFTClass
-	(*EventCreatedNFTClass)(nil),    // 6: lbm.collection.v1.EventCreatedNFTClass
-	(*EventGranted)(nil),            // 7: lbm.collection.v1.EventGranted
-	(*EventRenounced)(nil),          // 8: lbm.collection.v1.EventRenounced
-	(*EventMintedFT)(nil),           // 9: lbm.collection.v1.EventMintedFT
-	(*EventMintedNFT)(nil),          // 10: lbm.collection.v1.EventMintedNFT
-	(*EventBurned)(nil),             // 11: lbm.collection.v1.EventBurned
-	(*EventModifiedContract)(nil),   // 12: lbm.collection.v1.EventModifiedContract
-	(*EventModifiedTokenClass)(nil), // 13: lbm.collection.v1.EventModifiedTokenClass
-	(*EventModifiedNFT)(nil),        // 14: lbm.collection.v1.EventModifiedNFT
-	(*Coin)(nil),                    // 15: lbm.collection.v1.Coin
-	(Permission)(0),                 // 16: lbm.collection.v1.Permission
-	(*NFT)(nil),                     // 17: lbm.collection.v1.NFT
-	(*Attribute)(nil),               // 18: lbm.collection.v1.Attribute
+	(*EventCreatedNFTClass)(nil),    // 5: lbm.collection.v1.EventCreatedNFTClass
+	(*EventGranted)(nil),            // 6: lbm.collection.v1.EventGranted
+	(*EventRenounced)(nil),          // 7: lbm.collection.v1.EventRenounced
+	(*EventMintedNFT)(nil),          // 8: lbm.collection.v1.EventMintedNFT
+	(*EventBurned)(nil),             // 9: lbm.collection.v1.EventBurned
+	(*EventModifiedContract)(nil),   // 10: lbm.collection.v1.EventModifiedContract
+	(*EventModifiedTokenClass)(nil), // 11: lbm.collection.v1.EventModifiedTokenClass
+	(*EventModifiedNFT)(nil),        // 12: lbm.collection.v1.EventModifiedNFT
+	(*Coin)(nil),                    // 13: lbm.collection.v1.Coin
+	(Permission)(0),                 // 14: lbm.collection.v1.Permission
+	(*NFT)(nil),                     // 15: lbm.collection.v1.NFT
+	(*Attribute)(nil),               // 16: lbm.collection.v1.Attribute
 }
 var file_lbm_collection_v1_event_proto_depIdxs = []int32{
-	15, // 0: lbm.collection.v1.EventSent.amount:type_name -> lbm.collection.v1.Coin
-	16, // 1: lbm.collection.v1.EventGranted.permission:type_name -> lbm.collection.v1.Permission
-	16, // 2: lbm.collection.v1.EventRenounced.permission:type_name -> lbm.collection.v1.Permission
-	15, // 3: lbm.collection.v1.EventMintedFT.amount:type_name -> lbm.collection.v1.Coin
-	17, // 4: lbm.collection.v1.EventMintedNFT.tokens:type_name -> lbm.collection.v1.NFT
-	15, // 5: lbm.collection.v1.EventBurned.amount:type_name -> lbm.collection.v1.Coin
-	18, // 6: lbm.collection.v1.EventModifiedContract.changes:type_name -> lbm.collection.v1.Attribute
-	18, // 7: lbm.collection.v1.EventModifiedTokenClass.changes:type_name -> lbm.collection.v1.Attribute
-	18, // 8: lbm.collection.v1.EventModifiedNFT.changes:type_name -> lbm.collection.v1.Attribute
-	9,  // [9:9] is the sub-list for method output_type
-	9,  // [9:9] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	13, // 0: lbm.collection.v1.EventSent.amount:type_name -> lbm.collection.v1.Coin
+	14, // 1: lbm.collection.v1.EventGranted.permission:type_name -> lbm.collection.v1.Permission
+	14, // 2: lbm.collection.v1.EventRenounced.permission:type_name -> lbm.collection.v1.Permission
+	15, // 3: lbm.collection.v1.EventMintedNFT.tokens:type_name -> lbm.collection.v1.NFT
+	13, // 4: lbm.collection.v1.EventBurned.amount:type_name -> lbm.collection.v1.Coin
+	16, // 5: lbm.collection.v1.EventModifiedContract.changes:type_name -> lbm.collection.v1.Attribute
+	16, // 6: lbm.collection.v1.EventModifiedTokenClass.changes:type_name -> lbm.collection.v1.Attribute
+	16, // 7: lbm.collection.v1.EventModifiedNFT.changes:type_name -> lbm.collection.v1.Attribute
+	8,  // [8:8] is the sub-list for method output_type
+	8,  // [8:8] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_lbm_collection_v1_event_proto_init() }
@@ -10591,18 +8938,6 @@ func file_lbm_collection_v1_event_proto_init() {
 			}
 		}
 		file_lbm_collection_v1_event_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventCreatedFTClass); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_lbm_collection_v1_event_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventCreatedNFTClass); i {
 			case 0:
 				return &v.state
@@ -10614,7 +8949,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventGranted); i {
 			case 0:
 				return &v.state
@@ -10626,7 +8961,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventRenounced); i {
 			case 0:
 				return &v.state
@@ -10638,19 +8973,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EventMintedFT); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_lbm_collection_v1_event_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventMintedNFT); i {
 			case 0:
 				return &v.state
@@ -10662,7 +8985,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventBurned); i {
 			case 0:
 				return &v.state
@@ -10674,7 +8997,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventModifiedContract); i {
 			case 0:
 				return &v.state
@@ -10686,7 +9009,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventModifiedTokenClass); i {
 			case 0:
 				return &v.state
@@ -10698,7 +9021,7 @@ func file_lbm_collection_v1_event_proto_init() {
 				return nil
 			}
 		}
-		file_lbm_collection_v1_event_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_lbm_collection_v1_event_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EventModifiedNFT); i {
 			case 0:
 				return &v.state
@@ -10717,7 +9040,7 @@ func file_lbm_collection_v1_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_lbm_collection_v1_event_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

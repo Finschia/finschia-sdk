@@ -1,6 +1,8 @@
 package v3
 
 import (
+	"fmt"
+
 	gogotypes "github.com/cosmos/gogoproto/types"
 
 	cmath "cosmossdk.io/math"
@@ -33,11 +35,12 @@ func migrateClassStateAndRemoveLegacyState(collectionStore, oldStore storetypes.
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		id := splitIDKey(iterator.Key())
+		id := splitIDKey(iterator.Key()) // contract ID
 		newClassStore.Set(idKey(id), []byte{})
 		oldStore.Delete(idKey(id))
 
 		detachNFT(collectionStore, cdc, id)
+		removeFTs(collectionStore, cdc, id)
 	}
 
 	bz := oldStore.Get(nonceKey)
@@ -70,7 +73,6 @@ func detachNFT(store storetypes.KVStore, cdc codec.BinaryCodec, id string) {
 
 		store.Delete(parentKey(contractID, tokenID))
 		store.Delete(childKey(contractID, parentID.Value, tokenID))
-		store.Delete(key)
 	}
 }
 
@@ -82,4 +84,57 @@ func initParams(store storetypes.KVStore) error {
 	}
 	store.Set(paramsKey, bz)
 	return nil
+}
+
+func removeFTs(store storetypes.KVStore, cdc codec.BinaryCodec, contractID string) {
+	iterator := storetypes.KVStorePrefixIterator(store, classKeyPrefixByContractID(contractID))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		bz := store.Get(iterator.Key())
+		var class collection.TokenClass
+		err := cdc.UnmarshalInterface(bz, &class)
+		if err != nil {
+			panic(err)
+		}
+
+		if ftClass, ok := class.(*collection.FTClass); ok {
+			ftID := newFTID(ftClass.Id)
+			if !validateFTID(ftID) {
+				panic(fmt.Sprintf("v3 migration: invalid FT ID from TokenClass <%s>", ftID))
+			}
+
+			removeFTBalances(store, contractID, ftID)
+
+			store.Delete(legacyTokenKey(contractID, ftID)) // remove LegacyToken
+			store.Delete(iterator.Key())                   // remove TokenClass
+		}
+	}
+}
+
+func removeFTBalances(store storetypes.KVStore, contractID, ftID string) {
+	iterator := storetypes.KVStorePrefixIterator(store, balanceKeyPrefixByContractID(contractID))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		id, address, tokenID := splitBalanceKey(iterator.Key())
+		if id != contractID {
+			panic(fmt.Sprintf("v3 migration: inconsistent ContractID, got: %s, expeted: %s", id, contractID))
+		}
+
+		if tokenID == ftID {
+			classID := ftID[:lengthClassID]
+			var amount cmath.Int
+			if err := amount.Unmarshal(iterator.Value()); err != nil {
+				panic(err)
+			}
+
+			// remove FT statistics
+			store.Delete(statisticKey(supplyKeyPrefix, contractID, classID))
+			store.Delete(statisticKey(mintedKeyPrefix, contractID, classID))
+			store.Delete(statisticKey(burntKeyPrefix, contractID, classID))
+
+			removeCoin(store, contractID, address, ftID)
+		}
+	}
 }

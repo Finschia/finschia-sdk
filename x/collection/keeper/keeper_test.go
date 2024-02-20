@@ -38,12 +38,12 @@ type KeeperTestSuite struct {
 	stranger sdk.AccAddress
 
 	contractID string
-	ftClassID  string
 	nftClassID string
 
 	balance math.Int
 
-	numNFTs int
+	numNFTs    int
+	issuedNFTs map[string][]collection.NFT
 }
 
 func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
@@ -79,34 +79,12 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 	}
 
-	// create a fungible token class
-	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
-		Name:     "tibetian fox",
-		Mintable: true,
-	})
-	s.Require().NoError(err)
-	s.ftClassID = *ftClassID
-
 	// create a non-fungible token class
 	nftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.NFTClass{
 		Name: "fennec fox",
 	})
 	s.Require().NoError(err)
 	s.nftClassID = *nftClassID
-
-	// mint & burn fts
-	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
-		tokenID := collection.NewFTID(s.ftClassID)
-		amount := collection.NewCoins(collection.NewCoin(tokenID, s.balance))
-
-		err := s.keeper.MintFT(s.ctx, s.contractID, to, amount)
-		s.Require().NoError(err)
-
-		_, err = s.keeper.BurnCoins(s.ctx, s.contractID, to, amount)
-		s.Require().NoError(err)
-		err = s.keeper.MintFT(s.ctx, s.contractID, to, amount)
-		s.Require().NoError(err)
-	}
 
 	// mint nfts
 	newParams := func(classID string, size int) []collection.MintNFTParam {
@@ -119,8 +97,10 @@ func (s *KeeperTestSuite) SetupTest() {
 		return res
 	}
 	s.numNFTs = 4
+	s.issuedNFTs = make(map[string][]collection.NFT)
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
-		_, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, s.numNFTs))
+		nfts, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, s.numNFTs))
+		s.issuedNFTs[to.String()] = nfts
 		s.Require().NoError(err)
 	}
 

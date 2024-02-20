@@ -2,6 +2,8 @@ package v3
 
 import (
 	"errors"
+	"fmt"
+	"regexp"
 
 	gogotypes "github.com/cosmos/gogoproto/types"
 
@@ -12,6 +14,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
+)
+
+var (
+	patternClassID = fmt.Sprintf(`[0-9a-f]{%d}`, lengthClassID)
+	patternZero    = fmt.Sprintf(`0{%d}`, lengthClassID)
+	reFTID         = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternZero))
 )
 
 func getRootOwner(store storetypes.KVStore, cdc codec.BinaryCodec, contractID, tokenID string) sdk.AccAddress {
@@ -81,4 +89,21 @@ func addCoin(store storetypes.KVStore, contractID string, address sdk.AccAddress
 		panic(err)
 	}
 	store.Set(key, bz)
+}
+
+func removeCoin(store storetypes.KVStore, contractID string, address sdk.AccAddress, ftID string) {
+	key := balanceKey(contractID, address, ftID)
+	store.Delete(key)
+}
+
+//------------------------------
+// FT
+
+func newFTID(classID string) string {
+	numberFormat := "%0" + fmt.Sprintf("%d", lengthClassID) + "x"
+	return classID + fmt.Sprintf(numberFormat, math.ZeroUint().Uint64())
+}
+
+func validateFTID(id string) bool {
+	return reFTID.MatchString(id)
 }

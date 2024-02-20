@@ -124,12 +124,9 @@ message ContractGrants {
 message NextClassIDs {
   // contract id associated with the contract.
   string contract_id = 1;
-  // id for the fungible tokens.
-  string fungible = 2 [
-    (cosmos_proto.scalar)  = "cosmos.Uint",
-    (gogoproto.customtype) = "cosmossdk.io/math.Uint",
-    (gogoproto.nullable)   = false
-  ];
+
+  reserved 2;
+
   // id for the non-fungible tokens.
   string non_fungible = 3 [
     (cosmos_proto.scalar)  = "cosmos.Uint",

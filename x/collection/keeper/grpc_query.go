@@ -41,19 +41,6 @@ func (s queryServer) addressFromBech32GRPC(bech32, context string) (sdk.AccAddre
 	return addr, nil
 }
 
-func (s queryServer) assertTokenIsFungible(ctx sdk.Context, contractID, classID string) error {
-	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
-	if err != nil {
-		return err
-	}
-
-	if _, ok := class.(*collection.FTClass); !ok {
-		return collection.ErrTokenNotExist.Wrap(collection.NewFTID(classID))
-	}
-
-	return nil
-}
-
 func (s queryServer) assertTokenTypeIsNonFungible(ctx sdk.Context, contractID, classID string) error {
 	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
@@ -135,84 +122,6 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 	}
 
 	return &collection.QueryAllBalancesResponse{Balances: balances, Pagination: pageRes}, nil
-}
-
-func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRequest) (*collection.QueryFTSupplyResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	classID := collection.SplitTokenID(req.TokenId)
-
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.assertTokenIsFungible(ctx, req.ContractId, classID); err != nil {
-		return &collection.QueryFTSupplyResponse{Supply: math.ZeroInt()}, nil
-	}
-
-	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
-
-	return &collection.QueryFTSupplyResponse{Supply: supply}, nil
-}
-
-func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRequest) (*collection.QueryFTMintedResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	classID := collection.SplitTokenID(req.TokenId)
-
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.assertTokenIsFungible(ctx, req.ContractId, classID); err != nil {
-		return &collection.QueryFTMintedResponse{Minted: math.ZeroInt()}, nil
-	}
-
-	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
-
-	return &collection.QueryFTMintedResponse{Minted: minted}, nil
-}
-
-func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequest) (*collection.QueryFTBurntResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := collection.ValidateTokenID(req.TokenId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	classID := collection.SplitTokenID(req.TokenId)
-
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := s.assertTokenIsFungible(ctx, req.ContractId, classID); err != nil {
-		return &collection.QueryFTBurntResponse{Burnt: math.ZeroInt()}, nil
-	}
-
-	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
-
-	return &collection.QueryFTBurntResponse{Burnt: burnt}, nil
 }
 
 func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupplyRequest) (*collection.QueryNFTSupplyResponse, error) {
@@ -383,28 +292,8 @@ func (s queryServer) getToken(ctx sdk.Context, contractID, tokenID string) (coll
 			Meta:       token.Meta,
 			Owner:      owner.String(),
 		}, nil
-	case collection.ValidateFTID(tokenID) == nil:
-		classID := collection.SplitTokenID(tokenID)
-		class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
-		if err != nil {
-			return nil, err
-		}
-
-		ftClass, ok := class.(*collection.FTClass)
-		if !ok {
-			panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
-		}
-
-		return &collection.FT{
-			ContractId: contractID,
-			TokenId:    collection.NewFTID(ftClass.Id),
-			Name:       ftClass.Name,
-			Meta:       ftClass.Meta,
-			Decimals:   ftClass.Decimals,
-			Mintable:   ftClass.Mintable,
-		}, nil
 	default:
-		panic("cannot reach here: token must be ft or nft")
+		panic("cannot reach here: token must be nft")
 	}
 }
 

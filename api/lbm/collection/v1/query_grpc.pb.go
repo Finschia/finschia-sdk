@@ -21,9 +21,6 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Query_Balance_FullMethodName            = "/lbm.collection.v1.Query/Balance"
 	Query_AllBalances_FullMethodName        = "/lbm.collection.v1.Query/AllBalances"
-	Query_FTSupply_FullMethodName           = "/lbm.collection.v1.Query/FTSupply"
-	Query_FTMinted_FullMethodName           = "/lbm.collection.v1.Query/FTMinted"
-	Query_FTBurnt_FullMethodName            = "/lbm.collection.v1.Query/FTBurnt"
 	Query_NFTSupply_FullMethodName          = "/lbm.collection.v1.Query/NFTSupply"
 	Query_NFTMinted_FullMethodName          = "/lbm.collection.v1.Query/NFTMinted"
 	Query_NFTBurnt_FullMethodName           = "/lbm.collection.v1.Query/NFTBurnt"
@@ -44,12 +41,6 @@ type QueryClient interface {
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
 	// AllBalances queries the balance of all token classes for a single account.
 	AllBalances(ctx context.Context, in *QueryAllBalancesRequest, opts ...grpc.CallOption) (*QueryAllBalancesResponse, error)
-	// FTSupply queries the number of tokens from a given contract id and token id.
-	FTSupply(ctx context.Context, in *QueryFTSupplyRequest, opts ...grpc.CallOption) (*QueryFTSupplyResponse, error)
-	// FTMinted queries the number of minted tokens from a given contract id and token id.
-	FTMinted(ctx context.Context, in *QueryFTMintedRequest, opts ...grpc.CallOption) (*QueryFTMintedResponse, error)
-	// FTBurnt queries the number of burnt tokens from a given contract id and token id.
-	FTBurnt(ctx context.Context, in *QueryFTBurntRequest, opts ...grpc.CallOption) (*QueryFTBurntResponse, error)
 	// NFTSupply queries the number of tokens from a given contract id and token type.
 	NFTSupply(ctx context.Context, in *QueryNFTSupplyRequest, opts ...grpc.CallOption) (*QueryNFTSupplyResponse, error)
 	// NFTMinted queries the number of minted tokens from a given contract id and token type.
@@ -94,33 +85,6 @@ func (c *queryClient) Balance(ctx context.Context, in *QueryBalanceRequest, opts
 func (c *queryClient) AllBalances(ctx context.Context, in *QueryAllBalancesRequest, opts ...grpc.CallOption) (*QueryAllBalancesResponse, error) {
 	out := new(QueryAllBalancesResponse)
 	err := c.cc.Invoke(ctx, Query_AllBalances_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) FTSupply(ctx context.Context, in *QueryFTSupplyRequest, opts ...grpc.CallOption) (*QueryFTSupplyResponse, error) {
-	out := new(QueryFTSupplyResponse)
-	err := c.cc.Invoke(ctx, Query_FTSupply_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) FTMinted(ctx context.Context, in *QueryFTMintedRequest, opts ...grpc.CallOption) (*QueryFTMintedResponse, error) {
-	out := new(QueryFTMintedResponse)
-	err := c.cc.Invoke(ctx, Query_FTMinted_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) FTBurnt(ctx context.Context, in *QueryFTBurntRequest, opts ...grpc.CallOption) (*QueryFTBurntResponse, error) {
-	out := new(QueryFTBurntResponse)
-	err := c.cc.Invoke(ctx, Query_FTBurnt_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -225,12 +189,6 @@ type QueryServer interface {
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
 	// AllBalances queries the balance of all token classes for a single account.
 	AllBalances(context.Context, *QueryAllBalancesRequest) (*QueryAllBalancesResponse, error)
-	// FTSupply queries the number of tokens from a given contract id and token id.
-	FTSupply(context.Context, *QueryFTSupplyRequest) (*QueryFTSupplyResponse, error)
-	// FTMinted queries the number of minted tokens from a given contract id and token id.
-	FTMinted(context.Context, *QueryFTMintedRequest) (*QueryFTMintedResponse, error)
-	// FTBurnt queries the number of burnt tokens from a given contract id and token id.
-	FTBurnt(context.Context, *QueryFTBurntRequest) (*QueryFTBurntResponse, error)
 	// NFTSupply queries the number of tokens from a given contract id and token type.
 	NFTSupply(context.Context, *QueryNFTSupplyRequest) (*QueryNFTSupplyResponse, error)
 	// NFTMinted queries the number of minted tokens from a given contract id and token type.
@@ -265,15 +223,6 @@ func (UnimplementedQueryServer) Balance(context.Context, *QueryBalanceRequest) (
 }
 func (UnimplementedQueryServer) AllBalances(context.Context, *QueryAllBalancesRequest) (*QueryAllBalancesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllBalances not implemented")
-}
-func (UnimplementedQueryServer) FTSupply(context.Context, *QueryFTSupplyRequest) (*QueryFTSupplyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FTSupply not implemented")
-}
-func (UnimplementedQueryServer) FTMinted(context.Context, *QueryFTMintedRequest) (*QueryFTMintedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FTMinted not implemented")
-}
-func (UnimplementedQueryServer) FTBurnt(context.Context, *QueryFTBurntRequest) (*QueryFTBurntResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FTBurnt not implemented")
 }
 func (UnimplementedQueryServer) NFTSupply(context.Context, *QueryNFTSupplyRequest) (*QueryNFTSupplyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NFTSupply not implemented")
@@ -350,60 +299,6 @@ func _Query_AllBalances_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).AllBalances(ctx, req.(*QueryAllBalancesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_FTSupply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFTSupplyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).FTSupply(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_FTSupply_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).FTSupply(ctx, req.(*QueryFTSupplyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_FTMinted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFTMintedRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).FTMinted(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_FTMinted_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).FTMinted(ctx, req.(*QueryFTMintedRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_FTBurnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFTBurntRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).FTBurnt(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_FTBurnt_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).FTBurnt(ctx, req.(*QueryFTBurntRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -602,18 +497,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AllBalances",
 			Handler:    _Query_AllBalances_Handler,
-		},
-		{
-			MethodName: "FTSupply",
-			Handler:    _Query_FTSupply_Handler,
-		},
-		{
-			MethodName: "FTMinted",
-			Handler:    _Query_FTMinted_Handler,
-		},
-		{
-			MethodName: "FTBurnt",
-			Handler:    _Query_FTBurnt_Handler,
 		},
 		{
 			MethodName: "NFTSupply",

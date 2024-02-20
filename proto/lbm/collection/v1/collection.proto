@@ -29,6 +29,7 @@ message Contract {
 //
 // Since: 0.46.0 (finschia)
 message FTClass {
+  option deprecated                          = true;
   option (gogoproto.goproto_getters)         = true;
   option (cosmos_proto.implements_interface) = "TokenClass";
 
@@ -91,26 +92,6 @@ message OwnerNFT {
 
   // owner of the token.
   string owner = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-}
-
-// Deprecated: use FTClass
-//
-// FT defines the information of fungible token.
-message FT {
-  option (cosmos_proto.implements_interface) = "Token";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id defines the unique identifier of the fungible token.
-  string token_id = 2;
-  // name defines the human-readable name of the fungible token.
-  string name = 3;
-  // meta is a brief description of the fungible token.
-  string meta = 4;
-  // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  int32 decimals = 5;
-  // mintable represents whether the fungible token is allowed to be minted or burnt.
-  bool mintable = 6;
 }
 
 // Deprecated: use TokenClass

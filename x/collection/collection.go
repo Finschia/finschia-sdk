@@ -30,7 +30,6 @@ func (x LegacyPermission) String() string {
 func DefaultNextClassIDs(contractID string) NextClassIDs {
 	return NextClassIDs{
 		ContractId:  contractID,
-		Fungible:    math.NewUint(1),
 		NonFungible: math.NewUint(1 << 28).Incr(), // "10000000 + 1"
 	}
 }
@@ -77,37 +76,13 @@ func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpa
 // FTClass
 var _ TokenClass = (*FTClass)(nil)
 
-func (c *FTClass) SetID(ids *NextClassIDs) {
-	id := ids.Fungible
-	ids.Fungible = id.Incr()
-	c.Id = fmt.Sprintf("%08x", id.Uint64())
-}
+func (c *FTClass) SetID(_ *NextClassIDs) {}
 
-func (c *FTClass) SetName(name string) {
-	c.Name = name
-}
+func (c *FTClass) SetName(_ string) {}
 
-func (c *FTClass) SetMeta(meta string) {
-	c.Meta = meta
-}
+func (c *FTClass) SetMeta(_ string) {}
 
-func (c FTClass) ValidateBasic() error {
-	if err := ValidateClassID(c.Id); err != nil {
-		return err
-	}
-
-	if err := validateName(c.Name); err != nil {
-		return err
-	}
-	if err := validateMeta(c.Meta); err != nil {
-		return err
-	}
-	if err := validateDecimals(c.Decimals); err != nil {
-		return err
-	}
-
-	return nil
-}
+func (c FTClass) ValidateBasic() error { return nil }
 
 // ----------------------------------------------------------------------------
 // NFTClass
@@ -144,9 +119,6 @@ func (c NFTClass) ValidateBasic() error {
 
 // ----------------------------------------------------------------------------
 // Coin
-func NewFTCoin(classID string, amount math.Int) Coin {
-	return NewCoin(NewFTID(classID), amount)
-}
 
 func NewNFTCoin(classID string, number int) Coin {
 	return NewCoin(NewNFTID(classID, number), math.OneInt())

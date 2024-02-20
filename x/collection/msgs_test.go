@@ -7,8 +7,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"cosmossdk.io/math"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,198 +15,6 @@ import (
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
-
-func TestMsgSendFT(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	amount := collection.NewCoins(
-		collection.NewFTCoin("00bab10c", math.OneInt()),
-	)
-
-	testCases := map[string]struct {
-		contractID string
-		from       sdk.AccAddress
-		to         sdk.AccAddress
-		amount     []collection.Coin
-		err        error
-		panic      bool
-	}{
-		"valid msg": {
-			contractID: contractID,
-			from:       addrs[0],
-			to:         addrs[1],
-			amount:     amount,
-		},
-		"invalid from": {
-			contractID: contractID,
-			to:         addrs[1],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid contract id": {
-			from:   addrs[0],
-			to:     addrs[1],
-			amount: amount,
-			err:    collection.ErrInvalidContractID,
-		},
-		"invalid to": {
-			contractID: contractID,
-			from:       addrs[0],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"nil amount": {
-			contractID: contractID,
-			from:       addrs[0],
-			to:         addrs[1],
-			amount: []collection.Coin{{
-				TokenId: collection.NewFTID("00bab10c"),
-			}},
-			panic: true,
-		},
-		"zero amount": {
-			contractID: contractID,
-			from:       addrs[0],
-			to:         addrs[1],
-			amount: []collection.Coin{{
-				TokenId: collection.NewFTID("00bab10c"),
-				Amount:  math.ZeroInt(),
-			}},
-			err: collection.ErrInvalidAmount,
-		},
-		"invalid token id": {
-			contractID: contractID,
-			from:       addrs[0],
-			to:         addrs[1],
-			amount: []collection.Coin{{
-				Amount: math.OneInt(),
-			}},
-			err: collection.ErrInvalidTokenID,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgSendFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				To:         tc.to.String(),
-				Amount:     tc.amount,
-			}
-
-			if tc.panic {
-				require.Panics(t, func() { msg.ValidateBasic() })
-				return
-			}
-
-			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-		})
-	}
-}
-
-func TestMsgOperatorSendFT(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 3)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	amount := collection.NewCoins(
-		collection.NewFTCoin("00bab10c", math.OneInt()),
-	)
-
-	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		from       sdk.AccAddress
-		to         sdk.AccAddress
-		amount     []collection.Coin
-		err        error
-	}{
-		"valid msg": {
-			contractID: contractID,
-			operator:   addrs[0],
-			from:       addrs[1],
-			to:         addrs[2],
-			amount:     amount,
-		},
-		"invalid operator": {
-			contractID: contractID,
-			from:       addrs[1],
-			to:         addrs[2],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid contract id": {
-			operator: addrs[0],
-			from:     addrs[1],
-			to:       addrs[2],
-			amount:   amount,
-			err:      collection.ErrInvalidContractID,
-		},
-		"invalid from": {
-			contractID: contractID,
-			operator:   addrs[0],
-			to:         addrs[1],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid to": {
-			contractID: contractID,
-			operator:   addrs[0],
-			from:       addrs[1],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid amount": {
-			contractID: contractID,
-			operator:   addrs[0],
-			from:       addrs[1],
-			to:         addrs[2],
-			amount: []collection.Coin{{
-				TokenId: collection.NewFTID("00bab10c"),
-				Amount:  math.ZeroInt(),
-			}},
-			err: collection.ErrInvalidAmount,
-		},
-		"invalid denom": {
-			contractID: contractID,
-			operator:   addrs[0],
-			from:       addrs[1],
-			to:         addrs[2],
-			amount: []collection.Coin{{
-				Amount: math.OneInt(),
-			}},
-			err: collection.ErrInvalidTokenID,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgOperatorSendFT{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				From:       tc.from.String(),
-				To:         tc.to.String(),
-				Amount:     tc.amount,
-			}
-
-			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-		})
-	}
-}
 
 func TestMsgSendNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
@@ -545,145 +351,6 @@ func TestMsgCreateContract(t *testing.T) {
 	}
 }
 
-func TestMsgIssueFT(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	contractID := contractID
-	name := "tibetian fox"
-	meta := "Tibetian Fox"
-	decimals := int32(8)
-	testCases := map[string]struct {
-		contractID string
-		owner      sdk.AccAddress
-		to         sdk.AccAddress
-		name       string
-		meta       string
-		decimals   int32
-		mintable   bool
-		amount     math.Int
-		err        error
-	}{
-		"valid msg": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       name,
-			meta:       meta,
-			decimals:   decimals,
-			amount:     math.OneInt(),
-		},
-		"invalid contract id": {
-			owner:    addrs[0],
-			to:       addrs[1],
-			name:     name,
-			meta:     meta,
-			decimals: decimals,
-			amount:   math.OneInt(),
-			err:      collection.ErrInvalidContractID,
-		},
-		"invalid owner": {
-			contractID: contractID,
-			to:         addrs[1],
-			name:       name,
-			meta:       meta,
-			decimals:   decimals,
-			amount:     math.OneInt(),
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid to": {
-			contractID: contractID,
-			owner:      addrs[0],
-			name:       name,
-			meta:       meta,
-			decimals:   decimals,
-			amount:     math.OneInt(),
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"empty name": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			meta:       meta,
-			decimals:   decimals,
-			amount:     math.OneInt(),
-			err:        collection.ErrInvalidTokenName,
-		},
-		"long name": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       string(make([]rune, 21)),
-			meta:       meta,
-			decimals:   decimals,
-			amount:     math.OneInt(),
-			err:        collection.ErrInvalidNameLength,
-		},
-		"invalid meta": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       name,
-			meta:       string(make([]rune, 1001)),
-			decimals:   decimals,
-			amount:     math.OneInt(),
-			err:        collection.ErrInvalidMetaLength,
-		},
-		"invalid decimals": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       name,
-			meta:       meta,
-			decimals:   19,
-			amount:     math.OneInt(),
-			err:        collection.ErrInvalidTokenDecimals,
-		},
-		"invalid decimals - negative": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       name,
-			meta:       meta,
-			decimals:   -1,
-			amount:     math.OneInt(),
-			err:        collection.ErrInvalidTokenDecimals,
-		},
-		"daphne compat": {
-			contractID: contractID,
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       name,
-			meta:       meta,
-			amount:     math.OneInt(),
-			err:        collection.ErrInvalidIssueFT,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgIssueFT{
-				ContractId: tc.contractID,
-				Owner:      tc.owner.String(),
-				To:         tc.to.String(),
-				Name:       tc.name,
-				Meta:       tc.meta,
-				Decimals:   tc.decimals,
-				Amount:     tc.amount,
-			}
-
-			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
-		})
-	}
-}
-
 func TestMsgIssueNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
@@ -741,94 +408,6 @@ func TestMsgIssueNFT(t *testing.T) {
 				Owner:      tc.operator.String(),
 				Name:       tc.name,
 				Meta:       tc.meta,
-			}
-
-			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-		})
-	}
-}
-
-func TestMsgMintFT(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	amount := collection.NewCoins(
-		collection.NewFTCoin("00bab10c", math.OneInt()),
-	)
-
-	contractID := contractID
-	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		to         sdk.AccAddress
-		amount     []collection.Coin
-		err        error
-	}{
-		"valid msg": {
-			contractID: contractID,
-			operator:   addrs[0],
-			to:         addrs[1],
-			amount:     amount,
-		},
-		// for daphne compatible
-		"valid msg - zero amount": {
-			contractID: contractID,
-			operator:   addrs[0],
-			to:         addrs[1],
-		},
-		"invalid contract id": {
-			operator: addrs[0],
-			to:       addrs[1],
-			amount:   amount,
-			err:      collection.ErrInvalidContractID,
-		},
-		"invalid operator": {
-			contractID: contractID,
-			to:         addrs[1],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid to": {
-			contractID: contractID,
-			operator:   addrs[0],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid amount": {
-			contractID: contractID,
-			operator:   addrs[0],
-			to:         addrs[1],
-			amount: []collection.Coin{{
-				TokenId: collection.NewFTID("00bab10c"),
-				Amount:  math.ZeroInt(),
-			}},
-			err: collection.ErrInvalidAmount,
-		},
-		"invalid token id": {
-			contractID: contractID,
-			operator:   addrs[0],
-			to:         addrs[1],
-			amount: []collection.Coin{{
-				Amount: math.OneInt(),
-			}},
-			err: collection.ErrInvalidTokenID,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgMintFT{
-				ContractId: tc.contractID,
-				From:       tc.operator.String(),
-				To:         tc.to.String(),
-				Amount:     tc.amount,
 			}
 
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
@@ -945,160 +524,6 @@ func TestMsgMintNFT(t *testing.T) {
 			}
 
 			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-		})
-	}
-}
-
-func TestMsgBurnFT(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	amount := collection.NewCoins(
-		collection.NewFTCoin("00bab10c", math.OneInt()),
-	)
-
-	testCases := map[string]struct {
-		contractID string
-		from       sdk.AccAddress
-		amount     []collection.Coin
-		err        error
-	}{
-		"valid msg": {
-			contractID: contractID,
-			from:       addrs[0],
-			amount:     amount,
-		},
-		// for daphne compatible
-		"valid msg - zero amount": {
-			contractID: contractID,
-			from:       addrs[0],
-		},
-		"invalid contract id": {
-			from:   addrs[0],
-			amount: amount,
-			err:    collection.ErrInvalidContractID,
-		},
-		"invalid from": {
-			contractID: contractID,
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid token id": {
-			contractID: contractID,
-			from:       addrs[0],
-			amount: []collection.Coin{{
-				Amount: math.OneInt(),
-			}},
-			err: collection.ErrInvalidTokenID,
-		},
-		"invalid amount": {
-			contractID: contractID,
-			from:       addrs[0],
-			amount: []collection.Coin{{
-				TokenId: collection.NewFTID("00bab10c"),
-				Amount:  math.ZeroInt(),
-			}},
-			err: collection.ErrInvalidAmount,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgBurnFT{
-				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				Amount:     tc.amount,
-			}
-
-			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-		})
-	}
-}
-
-func TestMsgOperatorBurnFT(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	amount := collection.NewCoins(
-		collection.NewFTCoin("00bab10c", math.OneInt()),
-	)
-
-	testCases := map[string]struct {
-		contractID string
-		grantee    sdk.AccAddress
-		from       sdk.AccAddress
-		amount     []collection.Coin
-		err        error
-	}{
-		"valid msg": {
-			contractID: contractID,
-			grantee:    addrs[0],
-			from:       addrs[1],
-			amount:     amount,
-		},
-		"invalid contract id": {
-			grantee: addrs[0],
-			from:    addrs[1],
-			amount:  amount,
-			err:     collection.ErrInvalidContractID,
-		},
-		"invalid grantee": {
-			contractID: contractID,
-			from:       addrs[1],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid from": {
-			contractID: contractID,
-			grantee:    addrs[0],
-			amount:     amount,
-			err:        sdkerrors.ErrInvalidAddress,
-		},
-		"invalid token id": {
-			contractID: contractID,
-			grantee:    addrs[0],
-			from:       addrs[1],
-			amount: []collection.Coin{{
-				Amount: math.OneInt(),
-			}},
-			err: collection.ErrInvalidTokenID,
-		},
-		"invalid amount": {
-			contractID: contractID,
-			grantee:    addrs[0],
-			from:       addrs[1],
-			amount: []collection.Coin{{
-				TokenId: collection.NewFTID("00bab10c"),
-				Amount:  math.ZeroInt(),
-			}},
-			err: collection.ErrInvalidAmount,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := collection.MsgOperatorBurnFT{
-				ContractId: tc.contractID,
-				Operator:   tc.grantee.String(),
-				From:       tc.from.String(),
-				Amount:     tc.amount,
-			}
-
-			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 		})
 	}
 }
@@ -1459,7 +884,6 @@ func TestMsgRevokePermission(t *testing.T) {
 
 func TestAminoJSON(t *testing.T) {
 	tx := legacytx.StdTx{}
-	ftClassID := "00bab10c"
 	legacyAmino := codec.NewLegacyAmino()
 	collection.RegisterLegacyAminoCodec(legacyAmino)
 	legacytx.RegressionTestingAminoCodec = legacyAmino
@@ -1469,7 +893,6 @@ func TestAminoJSON(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	ftAmount := collection.NewCoins(collection.NewFTCoin(ftClassID, math.NewInt(1000000)))
 	tokenIds := []string{collection.NewNFTID(contractID, 1)}
 	const name = "tibetian fox"
 	nftParams := []collection.MintNFTParam{{
@@ -1483,27 +906,6 @@ func TestAminoJSON(t *testing.T) {
 		expectedType string
 		expected     string
 	}{
-		"MsgSendFT": {
-			&collection.MsgSendFT{
-				ContractId: contractID,
-				From:       addrs[0].String(),
-				To:         addrs[1].String(),
-				Amount:     ftAmount,
-			},
-			"/lbm.collection.v1.MsgSendFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSendFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
-		},
-		"MsgOperatorSendFT": {
-			&collection.MsgOperatorSendFT{
-				ContractId: contractID,
-				Operator:   addrs[0].String(),
-				From:       addrs[1].String(),
-				To:         addrs[2].String(),
-				Amount:     ftAmount,
-			},
-			"/lbm.collection.v1.MsgOperatorSendFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorSendFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
-		},
 		"MsgSendNFT": {
 			&collection.MsgSendNFT{
 				ContractId: contractID,
@@ -1553,20 +955,6 @@ func TestAminoJSON(t *testing.T) {
 			"/lbm.collection.v1.MsgCreateContract",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\",\"uri\":\"http://image.url\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
-		"MsgIssueFT": {
-			&collection.MsgIssueFT{
-				ContractId: contractID,
-				Name:       "Test FT",
-				Meta:       "This is FT Meta",
-				Decimals:   6,
-				Mintable:   false,
-				Owner:      addrs[0].String(),
-				To:         addrs[1].String(),
-				Amount:     math.NewInt(1000000),
-			},
-			"/lbm.collection.v1.MsgIssueFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssueFT\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"decimals\":6,\"meta\":\"This is FT Meta\",\"name\":\"Test FT\",\"owner\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
-		},
 		"MsgIssueNFT": {
 			&collection.MsgIssueNFT{
 				ContractId: contractID,
@@ -1577,16 +965,6 @@ func TestAminoJSON(t *testing.T) {
 			"/lbm.collection.v1.MsgIssueNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssueNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"meta\":\"This is NFT Meta\",\"name\":\"Test NFT\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
-		"MsgMintFT": {
-			&collection.MsgMintFT{
-				ContractId: contractID,
-				From:       addrs[0].String(),
-				To:         addrs[1].String(),
-				Amount:     ftAmount,
-			},
-			"/lbm.collection.v1.MsgMintFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMintFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
-		},
 		"MsgMintNFT": {
 			&collection.MsgMintNFT{
 				ContractId: contractID,
@@ -1596,25 +974,6 @@ func TestAminoJSON(t *testing.T) {
 			},
 			"/lbm.collection.v1.MsgMintNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMintNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"params\":[{\"meta\":\"Tibetian Fox\",\"name\":\"tibetian fox\",\"token_type\":\"deadbeef\"}],\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
-		},
-		"MsgBurnFT": {
-			&collection.MsgBurnFT{
-				ContractId: contractID,
-				From:       addrs[0].String(),
-				Amount:     ftAmount,
-			},
-			"/lbm.collection.v1.MsgBurnFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
-		},
-		"MsgOperatorBurnFT": {
-			&collection.MsgOperatorBurnFT{
-				ContractId: contractID,
-				Operator:   addrs[0].String(),
-				From:       addrs[1].String(),
-				Amount:     ftAmount,
-			},
-			"/lbm.collection.v1.MsgOperatorBurnFT",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgOperatorBurnFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"operator\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgBurnNFT": {
 			&collection.MsgBurnNFT{

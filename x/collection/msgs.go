@@ -25,52 +25,21 @@ var (
 	patternZero = fmt.Sprintf(`0{%d}`, lengthClassID)
 
 	patternClassID          = patternAll
-	patternLegacyFTClassID  = fmt.Sprintf(`0[0-9a-f]{%d}`, lengthClassID-1)
 	patternLegacyNFTClassID = fmt.Sprintf(`[1-9a-f][0-9a-f]{%d}`, lengthClassID-1)
 
 	// regexps for class ids
 	reClassID          = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternClassID))
-	reLegacyFTClassID  = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternLegacyFTClassID))
 	reLegacyNFTClassID = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternLegacyNFTClassID))
 
 	// regexps for token ids
-	reTokenID     = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternAll))
-	reFTID        = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternZero))
-	reLegacyNFTID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyNFTClassID, patternAll))
+	reTokenID        = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternAll))
+	reLegacyNFTID    = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyNFTClassID, patternAll))
+	reLegacyIdxNFTID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyNFTClassID, patternZero))
 
 	// regexps for contract ids
 	reContractIDString = `[0-9a-f]{8,8}`
 	reContractID       = regexp.MustCompile(fmt.Sprintf(`^%s$`, reContractIDString))
 )
-
-func validateAmount(amount math.Int) error {
-	if !amount.IsPositive() {
-		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
-	}
-	return nil
-}
-
-// deprecated
-func validateCoins(amount []Coin) error {
-	return validateCoinsWithIDValidator(amount, ValidateTokenID)
-}
-
-// deprecated
-func validateCoinsWithIDValidator(amount []Coin, validator func(string) error) error {
-	for _, amt := range amount {
-		if err := validator(amt.TokenId); err != nil {
-			return err
-		}
-		if err := validateAmount(amt.Amount); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func NewFTID(classID string) string {
-	return newTokenID(classID, math.ZeroUint())
-}
 
 func NewNFTID(classID string, number int) string {
 	return newTokenID(classID, math.NewUint(uint64(number)))
@@ -97,11 +66,6 @@ func ValidateClassID(id string) error {
 }
 
 // Deprecated: do not use (no successor).
-func ValidateLegacyFTClassID(id string) error {
-	return validateID(id, reLegacyFTClassID)
-}
-
-// Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
 	// daphne emits ErrInvalidTokenID here, but it's against to the spec.
 	if err := validateID(id, reLegacyNFTClassID); err != nil {
@@ -119,20 +83,9 @@ func ValidateTokenID(id string) error {
 	return nil
 }
 
-func ValidateFTID(id string) error {
-	if err := validateID(id, reFTID); err != nil {
-		return ErrInvalidTokenID.Wrapf("%s not ft", id)
-	}
-
-	return nil
-}
-
 func ValidateNFTID(id string) error {
 	if err := ValidateTokenID(id); err != nil {
 		return err
-	}
-	if err := ValidateFTID(id); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid id: %s", id)
 	}
 	return nil
 }
@@ -140,6 +93,14 @@ func ValidateNFTID(id string) error {
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
 	if err := validateID(id, reLegacyNFTID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
+}
+
+func ValidateLegacyIdxNFT(id string) error {
+	if err := validateID(id, reLegacyIdxNFTID); err != nil {
 		return ErrInvalidTokenID.Wrap(err.Error())
 	}
 
@@ -180,13 +141,6 @@ func validateMeta(meta string) error {
 func validateStringSize(str string, limit int, name string) error {
 	if length := utf8.RuneCountInString(str); length > limit {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s cannot exceed %d in length: current %d", name, limit, length)
-	}
-	return nil
-}
-
-func validateDecimals(decimals int32) error {
-	if decimals < 0 || decimals > 18 {
-		return ErrInvalidTokenDecimals.Wrapf("got; %d", decimals)
 	}
 	return nil
 }
@@ -238,95 +192,6 @@ func canonicalKey(key string) string {
 		return converted
 	}
 	return key
-}
-
-var _ sdk.Msg = (*MsgSendFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgSendFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	if err := validateCoins(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgSendFT) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-// Type implements the LegacyMsg.Type method.
-func (m MsgSendFT) Type() string {
-	return sdk.MsgTypeURL(&m)
-}
-
-// Route implements the LegacyMsg.Route method.
-func (m MsgSendFT) Route() string {
-	return RouterKey
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgSendFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
-var _ sdk.Msg = (*MsgOperatorSendFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorSendFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	if err := validateCoins(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorSendFT) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
-// Type implements the LegacyMsg.Type method.
-func (m MsgOperatorSendFT) Type() string {
-	return sdk.MsgTypeURL(&m)
-}
-
-// Route implements the LegacyMsg.Route method.
-func (m MsgOperatorSendFT) Route() string {
-	return RouterKey
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgOperatorSendFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgSendNFT)(nil)
@@ -558,66 +423,6 @@ func (m MsgCreateContract) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgIssueFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgIssueFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
-	}
-
-	if len(m.Name) == 0 {
-		return ErrInvalidTokenName.Wrapf("empty name")
-	}
-	if err := validateName(m.Name); err != nil {
-		return err
-	}
-
-	if err := validateMeta(m.Meta); err != nil {
-		return err
-	}
-
-	if err := validateDecimals(m.Decimals); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	// daphne compat.
-	if m.Amount.Equal(math.OneInt()) && m.Decimals == 0 && !m.Mintable {
-		return ErrInvalidIssueFT.Wrap("invalid issue of ft")
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgIssueFT) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Owner)
-	return []sdk.AccAddress{signer}
-}
-
-// Type implements the LegacyMsg.Type method.
-func (m MsgIssueFT) Type() string {
-	return sdk.MsgTypeURL(&m)
-}
-
-// Route implements the LegacyMsg.Route method.
-func (m MsgIssueFT) Route() string {
-	return RouterKey
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgIssueFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
 var _ sdk.Msg = (*MsgIssueNFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -659,49 +464,6 @@ func (m MsgIssueNFT) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgIssueNFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
-var _ sdk.Msg = (*MsgMintFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgMintFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	if err := validateCoins(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgMintFT) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-// Type implements the LegacyMsg.Type method.
-func (m MsgMintFT) Type() string {
-	return sdk.MsgTypeURL(&m)
-}
-
-// Route implements the LegacyMsg.Route method.
-func (m MsgMintFT) Route() string {
-	return RouterKey
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgMintFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -762,89 +524,6 @@ func (m MsgMintNFT) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgMintNFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
-var _ sdk.Msg = (*MsgBurnFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgBurnFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-
-	if err := validateCoins(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgBurnFT) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-// Type implements the LegacyMsg.Type method.
-func (m MsgBurnFT) Type() string {
-	return sdk.MsgTypeURL(&m)
-}
-
-// Route implements the LegacyMsg.Route method.
-func (m MsgBurnFT) Route() string {
-	return RouterKey
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgBurnFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
-var _ sdk.Msg = (*MsgOperatorBurnFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorBurnFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-
-	if err := validateCoins(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorBurnFT) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
-// Type implements the LegacyMsg.Type method.
-func (m MsgOperatorBurnFT) Type() string {
-	return sdk.MsgTypeURL(&m)
-}
-
-// Route implements the LegacyMsg.Route method.
-func (m MsgOperatorBurnFT) Route() string {
-	return RouterKey
-}
-
-// GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgOperatorBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -960,9 +639,6 @@ func (m MsgModify) ValidateBasic() error {
 		if err := ValidateClassID(classID); err != nil {
 			return ErrInvalidTokenType.Wrap(err.Error())
 		}
-		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			return ErrTokenTypeFTWithoutIndex.Wrap("fungible token type without index")
-		}
 	}
 
 	if len(m.TokenIndex) != 0 {
@@ -971,7 +647,7 @@ func (m MsgModify) ValidateBasic() error {
 			return ErrInvalidTokenIndex.Wrap(err.Error())
 		}
 		// reject modifying nft class with token index filled (daphne compat.)
-		if ValidateLegacyNFTID(tokenID) == nil && ValidateFTID(tokenID) == nil {
+		if ValidateLegacyIdxNFT(tokenID) == nil {
 			return ErrInvalidTokenIndex.Wrap("cannot modify nft class with index filled")
 		}
 	}

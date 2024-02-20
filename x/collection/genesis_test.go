@@ -70,7 +70,6 @@ func TestValidateGenesis(t *testing.T) {
 		"next class ids of invalid contract id": {
 			&collection.GenesisState{
 				NextClassIds: []collection.NextClassIDs{{
-					Fungible:    math.ZeroUint(),
 					NonFungible: math.OneUint(),
 				}},
 			},
@@ -147,7 +146,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					Balances: []collection.Balance{{
 						Address: addr.String(),
-						Amount:  collection.NewCoins(collection.NewFTCoin("00bab10c", math.OneInt())),
+						Amount:  collection.NewCoins(collection.NewNFTCoin("00bab10c", 1)),
 					}},
 				}},
 			},
@@ -166,7 +165,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					ContractId: "deadbeef",
 					Balances: []collection.Balance{{
-						Amount: collection.NewCoins(collection.NewFTCoin("00bab10c", math.OneInt())),
+						Amount: collection.NewCoins(collection.NewNFTCoin("00bab10c", 111)),
 					}},
 				}},
 			},

@@ -24,21 +24,6 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/balances/{address}";
   }
 
-  // FTSupply queries the number of tokens from a given contract id and token id.
-  rpc FTSupply(QueryFTSupplyRequest) returns (QueryFTSupplyResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply";
-  }
-
-  // FTMinted queries the number of minted tokens from a given contract id and token id.
-  rpc FTMinted(QueryFTMintedRequest) returns (QueryFTMintedResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted";
-  }
-
-  // FTBurnt queries the number of burnt tokens from a given contract id and token id.
-  rpc FTBurnt(QueryFTBurntRequest) returns (QueryFTBurntResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt";
-  }
-
   // NFTSupply queries the number of tokens from a given contract id and token type.
   rpc NFTSupply(QueryNFTSupplyRequest) returns (QueryNFTSupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply";
@@ -122,60 +107,6 @@ message QueryAllBalancesResponse {
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
-message QueryFTSupplyRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the fungible token.
-  string token_id = 2;
-}
-
-// QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
-message QueryFTSupplyResponse {
-  // supply is the supply of the tokens.
-  string supply = 1 [
-    (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable)   = false
-  ];
-}
-
-// QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
-message QueryFTMintedRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the fungible token.
-  string token_id = 2;
-}
-
-// QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
-message QueryFTMintedResponse {
-  // minted is the amount of the minted tokens.
-  string minted = 1 [
-    (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable)   = false
-  ];
-}
-
-// QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
-message QueryFTBurntRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the fungible token.
-  string token_id = 2;
-}
-
-// QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
-message QueryFTBurntResponse {
-  // burnt is the amount of the burnt tokens.
-  string burnt = 1 [
-    (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable)   = false
-  ];
 }
 
 // QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.

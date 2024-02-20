@@ -13,55 +13,6 @@ import (
 
 const contractID = "deadbeef"
 
-func TestFTClass(t *testing.T) {
-	nextIDs := collection.DefaultNextClassIDs(contractID)
-	testCases := map[string]struct {
-		id       string
-		name     string
-		meta     string
-		decimals int32
-		valid    bool
-	}{
-		"valid class": {
-			valid: true,
-		},
-		"invalid id": {
-			id: "invalid",
-		},
-		"invalid name": {
-			name: string(make([]rune, 21)),
-		},
-		"invalid meta": {
-			meta: string(make([]rune, 1001)),
-		},
-		"invalid decimals": {
-			decimals: 19,
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			var class collection.TokenClass = &collection.FTClass{
-				Id:       tc.id,
-				Decimals: tc.decimals,
-			}
-
-			if len(tc.id) == 0 {
-				class.SetID(&nextIDs)
-			}
-			class.SetName(tc.name)
-			class.SetMeta(tc.meta)
-
-			err := class.ValidateBasic()
-			if !tc.valid {
-				require.Error(t, err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
 func TestNFTClass(t *testing.T) {
 	nextIDs := collection.DefaultNextClassIDs(contractID)
 	testCases := map[string]struct {
@@ -104,9 +55,9 @@ func TestParseCoin(t *testing.T) {
 		expected collection.Coin
 	}{
 		"valid coin": {
-			input:    "00bab10c00000000:10",
+			input:    "00bab10c00000001:1",
 			valid:    true,
-			expected: collection.NewFTCoin("00bab10c", math.NewInt(10)),
+			expected: collection.NewNFTCoin("00bab10c", 1),
 		},
 		"invalid expression": {
 			input: "oobabloc00000000:10",
@@ -138,18 +89,18 @@ func TestParseCoins(t *testing.T) {
 		expected collection.Coins
 	}{
 		"valid single coins": {
-			input: "00bab10c00000000:10",
+			input: "00bab10c00000001:1",
 			valid: true,
 			expected: collection.NewCoins(
-				collection.NewFTCoin("00bab10c", math.NewInt(10)),
+				collection.NewNFTCoin("00bab10c", 1),
 			),
 		},
 		"valid multiple coins": {
-			input: "deadbeef00000001:1,00bab10c00000000:10",
+			input: "deadbeef00000001:1,deadbeef0000000a:1",
 			valid: true,
 			expected: collection.NewCoins(
 				collection.NewNFTCoin(contractID, 1),
-				collection.NewFTCoin("00bab10c", math.NewInt(10)),
+				collection.NewNFTCoin(contractID, 10),
 			),
 		},
 		"empty string": {},
@@ -176,7 +127,6 @@ func TestParseCoins(t *testing.T) {
 func TestDefaultNextClassIDs(t *testing.T) {
 	require.Equal(t, collection.NextClassIDs{
 		ContractId:  contractID,
-		Fungible:    math.NewUint(1),
 		NonFungible: math.NewUint(1 << 28).Incr(), // "10000000 + 1"
 	},
 		collection.DefaultNextClassIDs(contractID),

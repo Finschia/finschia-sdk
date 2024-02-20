@@ -83,26 +83,6 @@ message EventCreatedContract {
   string uri = 5;
 }
 
-// EventCreatedFTClass is emitted when a new fungible token class is created.
-//
-// Since: 0.46.0 (finschia)
-message EventCreatedFTClass {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // address which triggered the create.
-  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  // token id associated with the token class.
-  string token_id = 3;
-  // name of the token class.
-  string name = 4;
-  // metadata of the token class.
-  string meta = 5;
-  // decimals of the token class.
-  int32 decimals = 6;
-  // mintable represents whether the token class is allowed to mint or burn its tokens.
-  bool mintable = 7;
-}
-
 // EventCreatedNFTClass is emitted when a new non-fungible token class is created.
 //
 // Since: 0.46.0 (finschia)
@@ -146,20 +126,6 @@ message EventRenounced {
   string grantee = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // permission on the contract.
   Permission permission = 3;
-}
-
-// EventMintedFT is emitted when fungible tokens are minted.
-//
-// Since: 0.46.0 (finschia)
-message EventMintedFT {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // address which triggered the mint.
-  string operator = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  // recipient of the tokens.
-  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  // amount of tokens minted.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
 // EventMintedNFT is emitted when non-fungible tokens are minted.

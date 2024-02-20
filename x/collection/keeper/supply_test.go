@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"fmt"
-	"math/rand"
 
 	"cosmossdk.io/math"
 
@@ -36,10 +35,6 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 		class      collection.TokenClass
 		err        error
 	}{
-		"valid fungible token class": {
-			contractID: s.contractID,
-			class:      &collection.FTClass{},
-		},
 		"valid non-fungible token class": {
 			contractID: s.contractID,
 			class:      &collection.NFTClass{},
@@ -65,91 +60,6 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMintFT() {
-	testCases := map[string]struct {
-		contractID string
-		amount     collection.Coin
-		err        error
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			amount:     collection.NewFTCoin(s.ftClassID, math.OneInt()),
-		},
-		"invalid token id": {
-			contractID: s.contractID,
-			amount:     collection.NewNFTCoin(s.ftClassID, 1),
-			err:        collection.ErrTokenNotExist,
-		},
-		"class not found": {
-			contractID: s.contractID,
-			amount:     collection.NewFTCoin("00bab10c", math.OneInt()),
-			err:        collection.ErrTokenNotExist,
-		},
-		"not a class id of ft": {
-			contractID: s.contractID,
-			amount:     collection.NewFTCoin(s.nftClassID, math.OneInt()),
-			err:        collection.ErrTokenNotMintable,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			// gather state
-			classID := collection.SplitTokenID(tc.amount.TokenId)
-			balanceBefore := s.keeper.GetBalance(ctx, tc.contractID, s.stranger, collection.NewFTID(classID))
-			supplyBefore := s.keeper.GetSupply(ctx, tc.contractID, classID)
-			mintedBefore := s.keeper.GetMinted(ctx, tc.contractID, classID)
-			burntBefore := s.keeper.GetBurnt(ctx, tc.contractID, classID)
-
-			err := s.keeper.MintFT(ctx, tc.contractID, s.stranger, collection.NewCoins(tc.amount))
-			s.Require().ErrorIs(err, tc.err)
-			if tc.err != nil {
-				return
-			}
-
-			amount := tc.amount.Amount
-			balanceAfter := s.keeper.GetBalance(ctx, tc.contractID, s.stranger, collection.NewFTID(classID))
-			s.Require().Equal(balanceBefore.Add(amount), balanceAfter)
-			supplyAfter := s.keeper.GetSupply(ctx, tc.contractID, classID)
-			s.Require().Equal(supplyBefore.Add(amount), supplyAfter)
-			mintedAfter := s.keeper.GetMinted(ctx, tc.contractID, classID)
-			s.Require().Equal(mintedBefore.Add(amount), mintedAfter)
-			burntAfter := s.keeper.GetBurnt(ctx, tc.contractID, classID)
-			s.Require().Equal(burntBefore, burntAfter)
-		})
-	}
-
-	// accumulation test
-	s.Run("accumulation test", func() {
-		ctx, _ := s.ctx.CacheContext()
-		numMints := int64(100)
-		contractID := s.contractID
-		classID := s.ftClassID
-		for i := int64(1); i <= numMints; i++ {
-			amount := math.NewInt(rand.Int63())
-
-			// gather state
-			balanceBefore := s.keeper.GetBalance(ctx, s.contractID, s.stranger, collection.NewFTID(s.ftClassID))
-			supplyBefore := s.keeper.GetSupply(ctx, contractID, classID)
-			mintedBefore := s.keeper.GetMinted(ctx, contractID, classID)
-			burntBefore := s.keeper.GetBurnt(ctx, contractID, classID)
-
-			s.keeper.MintFT(ctx, s.contractID, s.stranger, collection.NewCoins(collection.NewFTCoin(s.ftClassID, amount)))
-
-			balanceAfter := s.keeper.GetBalance(ctx, s.contractID, s.stranger, collection.NewFTID(s.ftClassID))
-			s.Require().Equal(balanceBefore.Add(amount), balanceAfter)
-			supplyAfter := s.keeper.GetSupply(ctx, contractID, classID)
-			s.Require().Equal(supplyBefore.Add(amount), supplyAfter)
-			mintedAfter := s.keeper.GetMinted(ctx, contractID, classID)
-			s.Require().Equal(mintedBefore.Add(amount), mintedAfter)
-			burntAfter := s.keeper.GetBurnt(ctx, contractID, classID)
-			s.Require().Equal(burntBefore, burntAfter)
-		}
-	})
-}
-
 func (s *KeeperTestSuite) TestMintNFT() {
 	testCases := map[string]struct {
 		contractID string
@@ -163,11 +73,6 @@ func (s *KeeperTestSuite) TestMintNFT() {
 		"class not found": {
 			contractID: s.contractID,
 			param:      collection.MintNFTParam{TokenType: "deadbeef"},
-			err:        collection.ErrTokenTypeNotExist,
-		},
-		"not a class id of nft": {
-			contractID: s.contractID,
-			param:      collection.MintNFTParam{TokenType: s.ftClassID},
 			err:        collection.ErrTokenTypeNotExist,
 		},
 	}
@@ -204,6 +109,7 @@ func (s *KeeperTestSuite) TestMintNFT() {
 }
 
 func (s *KeeperTestSuite) TestBurnCoins() {
+	targetTokenID := s.issuedNFTs[s.customer.String()][0].TokenId
 	testCases := map[string]struct {
 		contractID string
 		amount     collection.Coin
@@ -211,11 +117,11 @@ func (s *KeeperTestSuite) TestBurnCoins() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			amount:     collection.NewFTCoin(s.ftClassID, math.OneInt()),
+			amount:     collection.NewCoin(targetTokenID, math.OneInt()),
 		},
 		"insufficient tokens": {
 			contractID: s.contractID,
-			amount:     collection.NewFTCoin("00bab10c", math.OneInt()),
+			amount:     collection.NewCoin("00ffb10c00000001", math.OneInt()),
 			err:        collection.ErrInsufficientToken,
 		},
 	}
@@ -226,20 +132,20 @@ func (s *KeeperTestSuite) TestBurnCoins() {
 
 			// gather state
 			classID := collection.SplitTokenID(tc.amount.TokenId)
-			balanceBefore := s.keeper.GetBalance(ctx, tc.contractID, s.vendor, collection.NewFTID(classID))
+			balanceBefore := s.keeper.GetBalance(ctx, tc.contractID, s.customer, targetTokenID)
 			supplyBefore := s.keeper.GetSupply(ctx, tc.contractID, classID)
 			mintedBefore := s.keeper.GetMinted(ctx, tc.contractID, classID)
 			burntBefore := s.keeper.GetBurnt(ctx, tc.contractID, classID)
 
-			_, err := s.keeper.BurnCoins(ctx, tc.contractID, s.vendor, collection.NewCoins(tc.amount))
+			_, err := s.keeper.BurnCoins(ctx, tc.contractID, s.customer, collection.NewCoins(tc.amount))
 			s.Require().ErrorIs(err, tc.err)
 			if tc.err != nil {
 				return
 			}
 
 			amount := tc.amount.Amount
-			balanceAfter := s.keeper.GetBalance(ctx, tc.contractID, s.vendor, collection.NewFTID(classID))
-			s.Require().Equal(balanceBefore.Sub(amount), balanceAfter)
+			balanceAfter := s.keeper.GetBalance(ctx, tc.contractID, s.customer, targetTokenID)
+			s.Require().True(balanceBefore.Sub(amount).Equal(balanceAfter))
 			supplyAfter := s.keeper.GetSupply(ctx, tc.contractID, classID)
 			s.Require().Equal(supplyBefore.Sub(amount), supplyAfter)
 			mintedAfter := s.keeper.GetMinted(ctx, tc.contractID, classID)

@@ -11,19 +11,13 @@ import (
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgSendFT{}, "lbm-sdk/MsgSendFT")
-	legacy.RegisterAminoMsg(cdc, &MsgOperatorSendFT{}, "lbm-sdk/MsgOperatorSendFT")
 	legacy.RegisterAminoMsg(cdc, &MsgSendNFT{}, "lbm-sdk/MsgSendNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgOperatorSendNFT{}, "lbm-sdk/MsgOperatorSendNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgAuthorizeOperator{}, "lbm-sdk/collection/MsgAuthorizeOperator") // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/collection/MsgRevokeOperator")       // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgCreateContract{}, "lbm-sdk/MsgCreateContract")
-	legacy.RegisterAminoMsg(cdc, &MsgIssueFT{}, "lbm-sdk/MsgIssueFT")
 	legacy.RegisterAminoMsg(cdc, &MsgIssueNFT{}, "lbm-sdk/MsgIssueNFT")
-	legacy.RegisterAminoMsg(cdc, &MsgMintFT{}, "lbm-sdk/MsgMintFT")
 	legacy.RegisterAminoMsg(cdc, &MsgMintNFT{}, "lbm-sdk/MsgMintNFT")
-	legacy.RegisterAminoMsg(cdc, &MsgBurnFT{}, "lbm-sdk/MsgBurnFT")
-	legacy.RegisterAminoMsg(cdc, &MsgOperatorBurnFT{}, "lbm-sdk/MsgOperatorBurnFT")
 	legacy.RegisterAminoMsg(cdc, &MsgBurnNFT{}, "lbm-sdk/MsgBurnNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgOperatorBurnNFT{}, "lbm-sdk/MsgOperatorBurnNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/collection/MsgModify")                     // Changed msgName due to conflict with `x/token`
@@ -34,18 +28,12 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateContract{},
-		&MsgIssueFT{},
 		&MsgIssueNFT{},
-		&MsgMintFT{},
 		&MsgMintNFT{},
-		&MsgSendFT{},
-		&MsgOperatorSendFT{},
 		&MsgSendNFT{},
 		&MsgOperatorSendNFT{},
 		&MsgAuthorizeOperator{},
 		&MsgRevokeOperator{},
-		&MsgBurnFT{},
-		&MsgOperatorBurnFT{},
 		&MsgBurnNFT{},
 		&MsgOperatorBurnNFT{},
 		&MsgModify{},
@@ -63,7 +51,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"lbm.collection.v1.Token",
 		(*Token)(nil),
-		&FT{},
 		&OwnerNFT{},
 	)
 

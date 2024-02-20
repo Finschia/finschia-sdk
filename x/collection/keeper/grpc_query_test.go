@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/math"
@@ -16,7 +18,7 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 	_, err := s.queryServer.Balance(s.ctx, nil)
 	s.Require().Error(err)
 
-	tokenID := collection.NewFTID(s.ftClassID)
+	tokenID := s.issuedNFTs[s.customer.String()][0].TokenId
 	testCases := map[string]struct {
 		contractID string
 		address    sdk.AccAddress
@@ -26,14 +28,15 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			address:    s.vendor,
+			address:    s.customer,
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryBalanceResponse) {
 				expected := collection.Coin{
 					TokenId: tokenID,
-					Amount:  s.balance,
+					Amount:  math.OneInt(),
 				}
+				fmt.Println(res.Balance.Amount)
 				s.Require().Equal(expected, res.Balance)
 			},
 		},
@@ -58,7 +61,7 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 			contractID: s.contractID,
 			tokenID:    tokenID,
 		},
-		"valid token id": {
+		"invalid token id": {
 			contractID: s.contractID,
 			address:    s.vendor,
 		},
@@ -100,7 +103,7 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 			address:    s.customer,
 			valid:      true,
 			postTest: func(res *collection.QueryAllBalancesResponse) {
-				s.Require().Equal(s.numNFTs+1, len(res.Balances))
+				s.Require().Equal(s.numNFTs, len(res.Balances))
 			},
 		},
 		"valid request with limit": {
@@ -143,216 +146,6 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryFTSupply() {
-	// empty request
-	_, err := s.queryServer.FTSupply(s.ctx, nil)
-	s.Require().Error(err)
-
-	tokenID := collection.NewFTID(s.ftClassID)
-	testCases := map[string]struct {
-		contractID string
-		tokenID    string
-		valid      bool
-		postTest   func(res *collection.QueryFTSupplyResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTSupplyResponse) {
-				s.Require().Equal(s.balance.Mul(math.NewInt(3)), res.Supply)
-			},
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTSupplyResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Supply)
-			},
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
-			valid:      true,
-			postTest: func(res *collection.QueryFTSupplyResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Supply)
-			},
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID(s.nftClassID),
-			valid:      true,
-			postTest: func(res *collection.QueryFTSupplyResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Supply)
-			},
-		},
-		"invalid contract id": {
-			tokenID: tokenID,
-		},
-		"invalid token id": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryFTSupplyRequest{
-				ContractId: tc.contractID,
-				TokenId:    tc.tokenID,
-			}
-			res, err := s.queryServer.FTSupply(s.ctx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryFTMinted() {
-	// empty request
-	_, err := s.queryServer.FTMinted(s.ctx, nil)
-	s.Require().Error(err)
-
-	tokenID := collection.NewFTID(s.ftClassID)
-	testCases := map[string]struct {
-		contractID string
-		tokenID    string
-		valid      bool
-		postTest   func(res *collection.QueryFTMintedResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTMintedResponse) {
-				s.Require().Equal(s.balance.Mul(math.NewInt(6)), res.Minted)
-			},
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTMintedResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Minted)
-			},
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
-			valid:      true,
-			postTest: func(res *collection.QueryFTMintedResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Minted)
-			},
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID(s.nftClassID),
-			valid:      true,
-			postTest: func(res *collection.QueryFTMintedResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Minted)
-			},
-		},
-		"invalid contract id": {
-			tokenID: tokenID,
-		},
-		"invalid token id": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryFTMintedRequest{
-				ContractId: tc.contractID,
-				TokenId:    tc.tokenID,
-			}
-			res, err := s.queryServer.FTMinted(s.ctx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryFTBurnt() {
-	// empty request
-	_, err := s.queryServer.FTBurnt(s.ctx, nil)
-	s.Require().Error(err)
-
-	tokenID := collection.NewFTID(s.ftClassID)
-	testCases := map[string]struct {
-		contractID string
-		tokenID    string
-		valid      bool
-		postTest   func(res *collection.QueryFTBurntResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTBurntResponse) {
-				s.Require().Equal(s.balance.Mul(math.NewInt(3)), res.Burnt)
-			},
-		},
-		"collection not found": {
-			contractID: "deadbeef",
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTBurntResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Burnt)
-			},
-		},
-		"token not found": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
-			valid:      true,
-			postTest: func(res *collection.QueryFTBurntResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Burnt)
-			},
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID(s.nftClassID),
-			valid:      true,
-			postTest: func(res *collection.QueryFTBurntResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Burnt)
-			},
-		},
-		"invalid contract id": {
-			tokenID: tokenID,
-		},
-		"invalid token id": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryFTBurntRequest{
-				ContractId: tc.contractID,
-				TokenId:    tc.tokenID,
-			}
-			res, err := s.queryServer.FTBurnt(s.ctx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestQueryNFTSupply() {
 	// empty request
 	_, err := s.queryServer.NFTSupply(s.ctx, nil)
@@ -383,14 +176,6 @@ func (s *KeeperTestSuite) TestQueryNFTSupply() {
 		"token type not found": {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
-			valid:      true,
-			postTest: func(res *collection.QueryNFTSupplyResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Supply)
-			},
-		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryNFTSupplyResponse) {
 				s.Require().Equal(math.ZeroInt(), res.Supply)
@@ -457,14 +242,6 @@ func (s *KeeperTestSuite) TestQueryNFTMinted() {
 				s.Require().Equal(math.ZeroInt(), res.Minted)
 			},
 		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
-			valid:      true,
-			postTest: func(res *collection.QueryNFTMintedResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Minted)
-			},
-		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
 		},
@@ -521,14 +298,6 @@ func (s *KeeperTestSuite) TestQueryNFTBurnt() {
 		"token type not found": {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
-			valid:      true,
-			postTest: func(res *collection.QueryNFTBurntResponse) {
-				s.Require().Equal(math.ZeroInt(), res.Burnt)
-			},
-		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryNFTBurntResponse) {
 				s.Require().Equal(math.ZeroInt(), res.Burnt)
@@ -613,21 +382,21 @@ func (s *KeeperTestSuite) TestQueryTokenClassTypeName() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			classID:    s.ftClassID,
+			classID:    s.nftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryTokenClassTypeNameResponse) {
-				s.Require().Equal(proto.MessageName(&collection.FTClass{}), res.Name)
+				s.Require().Equal(proto.MessageName(&collection.NFTClass{}), res.Name)
 			},
 		},
 		"invalid contract id": {
-			classID: s.ftClassID,
+			classID: s.nftClassID,
 		},
 		"invalid class id": {
 			contractID: s.contractID,
 		},
 		"collection not found": {
 			contractID: "deadbeef",
-			classID:    s.ftClassID,
+			classID:    s.nftClassID,
 		},
 		"class not found": {
 			contractID: s.contractID,
@@ -687,10 +456,6 @@ func (s *KeeperTestSuite) TestQueryTokenType() {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
 		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			tokenType:  s.ftClassID,
-		},
 	}
 
 	for name, tc := range testCases {
@@ -716,7 +481,6 @@ func (s *KeeperTestSuite) TestQueryToken() {
 	_, err := s.queryServer.Token(s.ctx, nil)
 	s.Require().Error(err)
 
-	ftTokenID := collection.NewFTID(s.ftClassID)
 	nftTokenID := collection.NewNFTID(s.nftClassID, 1)
 	testCases := map[string]struct {
 		contractID string
@@ -724,19 +488,6 @@ func (s *KeeperTestSuite) TestQueryToken() {
 		valid      bool
 		postTest   func(res *collection.QueryTokenResponse)
 	}{
-		"valid ft request": {
-			contractID: s.contractID,
-			tokenID:    ftTokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryTokenResponse) {
-				s.Require().Equal("/lbm.collection.v1.FT", res.Token.TypeUrl)
-				token := collection.TokenFromAny(&res.Token)
-				ft, ok := token.(*collection.FT)
-				s.Require().True(ok)
-				s.Require().Equal(s.contractID, ft.ContractId)
-				s.Require().Equal(ftTokenID, ft.TokenId)
-			},
-		},
 		"valid nft request": {
 			contractID: s.contractID,
 			tokenID:    nftTokenID,
@@ -751,18 +502,14 @@ func (s *KeeperTestSuite) TestQueryToken() {
 			},
 		},
 		"invalid contract id": {
-			tokenID: ftTokenID,
+			tokenID: nftTokenID,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
 		},
 		"collection not found": {
 			contractID: "deadbeef",
-			tokenID:    ftTokenID,
-		},
-		"no such a fungible token": {
-			contractID: s.contractID,
-			tokenID:    collection.NewFTID("00bab10c"),
+			tokenID:    nftTokenID,
 		},
 		"no such a non-fungible token": {
 			contractID: s.contractID,
