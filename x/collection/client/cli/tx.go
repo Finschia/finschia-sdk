@@ -21,15 +21,6 @@ const (
 
 	// flag for contracts
 	FlagBaseImgURI = "base-img-uri"
-
-	// flag for fungible token classes
-	FlagDecimals = "decimals"
-	FlagMintable = "mintable"
-	FlagTo       = "to"
-	FlagSupply   = "supply"
-
-	DefaultDecimals = 8
-	DefaultSupply   = "0"
 )
 
 // NewTxCmd returns the transaction commands for this module
