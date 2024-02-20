@@ -16,6 +16,8 @@ message JWK {
     string n = 3;
     // Algorithm parameter, https://datatracker.ietf.org/doc/html/rfc7517#section-4.4
     string alg = 4;
+    // Key ID https://datatracker.ietf.org/doc/html/rfc7517#section-4.5
+    string kid = 5;
 }
 
 message ProviderConfig {
@@ -31,15 +33,6 @@ message ProviderConfig {
 enum OidcProvider {
     option (gogoproto.goproto_enum_prefix) = false;
     OIDC_PROVIDER_GOOGLE = 0 [(gogoproto.enumvalue_customname) = "Google"];
-}
-
-
-// In protobuf, it is not possible to define a message for the key in the map, so get the JWK as follows.
-// Save the list of kids for iss.
-// Save the JWK as a map for the saved kid.
-message JwkIdList {
-    string iss = 1;
-    repeated string kid = 2;
 }
 
 message VerifyParams {
