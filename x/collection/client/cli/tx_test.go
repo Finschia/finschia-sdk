@@ -5,14 +5,14 @@ import (
 	"io"
 	"testing"
 
-	sdkmath "cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/stretchr/testify/suite"
-
 	abci "github.com/cometbft/cometbft/abci/types"
 	rpcclientmock "github.com/cometbft/cometbft/rpc/client/mock"
+	"github.com/stretchr/testify/suite"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
@@ -87,7 +87,6 @@ func (s *CLITestSuite) SetupSuite() {
 }
 
 func (s *CLITestSuite) TestNewTxCmdSendNFT() {
-
 	tokenID := collection.NewNFTID(s.classID, 1)
 	testCases := map[string]struct {
 		args  []string
@@ -159,7 +158,6 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 }
 
 func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
-
 	tokenID := collection.NewNFTID(s.classID, 1)
 	testCases := map[string]struct {
 		args  []string

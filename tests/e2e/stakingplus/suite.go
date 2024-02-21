@@ -1,12 +1,9 @@
-package foundation
+package stakingplus
 
 import (
-	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"time"
 
-	"github.com/cosmos/gogoproto/proto"
 	"github.com/stretchr/testify/suite"
 
 	"cosmossdk.io/core/address"
@@ -20,9 +17,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankcli "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/foundation/client/cli"
+	"github.com/Finschia/finschia-sdk/x/stakingplus"
 )
 
 type E2ETestSuite struct {
@@ -31,23 +29,12 @@ type E2ETestSuite struct {
 	cfg     network.Config
 	network *network.Network
 
-	setupHeight int64
-
-	authority       sdk.AccAddress
-	comingMember    sdk.AccAddress
-	leavingMember   sdk.AccAddress
+	grantee         sdk.AccAddress
 	permanentMember sdk.AccAddress
 	stranger        sdk.AccAddress
 
-	proposalID uint64
-
-	addressCodec address.Codec
-}
-
-var commonArgs = []string{
-	fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-	fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100)))),
+	addressCodec    address.Codec
+	valAddressCodec address.Codec
 }
 
 func NewE2ETestSuite(cfg network.Config) *E2ETestSuite {
@@ -58,6 +45,7 @@ func (s *E2ETestSuite) SetupSuite() {
 	s.T().Log("setting up e2e test suite")
 
 	s.addressCodec = addresscodec.NewBech32Codec("link")
+	s.valAddressCodec = addresscodec.NewBech32Codec("linkvaloper")
 
 	genesisState := s.cfg.GenesisState
 
@@ -71,17 +59,13 @@ func (s *E2ETestSuite) SetupSuite() {
 	foundationData.Params = params
 
 	var strangerMnemonic string
-	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
-	var leavingMemberMnemonic string
-	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
+	var granteeMnemonic string
 	var permanentMemberMnemonic string
+	granteeMnemonic, s.grantee = s.createMnemonic("grantee")
+	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
 	permanentMemberMnemonic, s.permanentMember = s.createMnemonic("permanentmember")
 
 	foundationData.Members = []foundation.Member{
-		{
-			Address:  s.bytesToString(s.leavingMember),
-			Metadata: "leaving member",
-		},
 		{
 			Address:  s.bytesToString(s.permanentMember),
 			Metadata: "permanent member",
@@ -102,17 +86,19 @@ func (s *E2ETestSuite) SetupSuite() {
 	// enable censorship
 	censorships := []foundation.Censorship{
 		{
-			MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+			MsgTypeUrl: sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
 			Authority:  foundation.CensorshipAuthorityFoundation,
 		},
 	}
 	foundationData.Censorships = censorships
 
-	treasuryReceivers := []sdk.AccAddress{s.stranger, s.leavingMember}
-	for _, receiver := range treasuryReceivers {
+	val1 := getValidator(s.T(), s.T().TempDir(), s.cfg, 0)
+	for _, grantee := range []sdk.AccAddress{s.grantee, val1} {
 		ga := foundation.GrantAuthorization{
-			Grantee: s.bytesToString(receiver),
-		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
+			Grantee: s.bytesToString(grantee),
+		}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
+			ValidatorAddress: s.bytesToValString(grantee),
+		})
 		s.Require().NotNil(ga)
 		foundationData.Authorizations = append(foundationData.Authorizations, *ga)
 	}
@@ -128,24 +114,9 @@ func (s *E2ETestSuite) SetupSuite() {
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
-	var comingMemberMnemonic string
-	comingMemberMnemonic, s.comingMember = s.createMnemonic("comingmember")
-
-	s.authority = foundation.DefaultAuthority()
+	s.createAccount("grantee", granteeMnemonic)
 	s.createAccount("stranger", strangerMnemonic)
-	s.createAccount("comingmember", comingMemberMnemonic)
-	s.createAccount("leavingmember", leavingMemberMnemonic)
 	s.createAccount("permanentmember", permanentMemberMnemonic)
-
-	s.proposalID = s.submitProposal(&foundation.MsgWithdrawFromTreasury{
-		Authority: s.bytesToString(s.authority),
-		To:        s.bytesToString(s.stranger),
-		Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(123))),
-	}, false)
-	s.vote(s.proposalID, []sdk.AccAddress{s.leavingMember, s.permanentMember})
-
-	s.setupHeight, err = s.network.LatestHeight()
-	s.Require().NoError(err)
 }
 
 func (s *E2ETestSuite) TearDownSuite() {
@@ -159,75 +130,10 @@ func (s *E2ETestSuite) bytesToString(addr sdk.AccAddress) string {
 	return str
 }
 
-// submit a proposal
-func (s *E2ETestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
-	val := s.network.Validators[0]
-
-	proposers := []string{s.bytesToString(s.permanentMember)}
-	proposersBz, err := json.Marshal(&proposers)
+func (s *E2ETestSuite) bytesToValString(addr sdk.AccAddress) string {
+	str, err := s.valAddressCodec.BytesToString(addr)
 	s.Require().NoError(err)
-
-	args := append([]string{
-		"test proposal",
-		string(proposersBz),
-		s.msgToString(msg),
-	}, commonArgs...)
-	if try {
-		args = append(args, fmt.Sprintf("--%s=%s", cli.FlagExec, cli.ExecTry))
-	}
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdSubmitProposal(), args)
-	s.Require().NoError(err)
-
-	var res sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().Zero(res.Code, out.String())
-
-	res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
-	s.Require().NoError(err)
-	s.Require().Zero(res.Code, res.RawLog)
-
-	dataBytes, err := hex.DecodeString(res.Data)
-	s.Require().NoError(err)
-	var data sdk.TxMsgData
-	s.Require().NoError(proto.Unmarshal(dataBytes, &data))
-	var msgResp foundation.MsgSubmitProposalResponse
-	s.Require().NoError(proto.Unmarshal(data.MsgResponses[0].Value, &msgResp), data.MsgResponses[0])
-
-	return msgResp.ProposalId
-}
-
-func (s *E2ETestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {
-	val := s.network.Validators[0]
-
-	for _, voter := range voters {
-		args := append([]string{
-			fmt.Sprint(proposalID),
-			s.bytesToString(voter),
-			foundation.VOTE_OPTION_YES.String(),
-			"test vote",
-		}, commonArgs...)
-		out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdVote(), args)
-		s.Require().NoError(err)
-
-		var res sdk.TxResponse
-		s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-		s.Require().Zero(res.Code, out.String())
-
-		res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
-		s.Require().NoError(err)
-		s.Require().Zero(res.Code, res.RawLog)
-	}
-}
-
-func (s *E2ETestSuite) msgToString(msg sdk.Msg) string {
-	anyJSON, err := s.cfg.Codec.MarshalInterfaceJSON(msg)
-	s.Require().NoError(err)
-
-	cliMsgs := []json.RawMessage{anyJSON}
-	msgsBz, err := json.Marshal(cliMsgs)
-	s.Require().NoError(err)
-
-	return string(msgsBz)
+	return str
 }
 
 // creates an account
@@ -244,6 +150,12 @@ func (s *E2ETestSuite) createMnemonic(uid string) (string, sdk.AccAddress) {
 
 // creates an account and send some coins to it for the future transactions.
 func (s *E2ETestSuite) createAccount(uid, mnemonic string) {
+	commonArgs := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100)))),
+	}
+
 	val := s.network.Validators[0]
 	info, err := val.ClientCtx.Keyring.NewAccount(uid, mnemonic, keyring.DefaultBIP39Passphrase, sdk.FullFundraiserPath, hd.Secp256k1)
 	s.Require().NoError(err)
@@ -265,7 +177,5 @@ func (s *E2ETestSuite) createAccount(uid, mnemonic string) {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
 
-	res, err = clitestutil.GetTxResponse(s.network, val.ClientCtx, res.TxHash)
-	s.Require().NoError(err)
-	s.Require().Zero(res.Code, res.RawLog)
+	s.Require().NoError(clitestutil.CheckTxCode(s.network, val.ClientCtx, res.TxHash, 0))
 }

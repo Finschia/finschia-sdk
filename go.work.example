@@ -9,4 +9,5 @@ use (
 	./tests
 	./x/collection
 	./x/foundation
+	./x/stakingplus
 )
