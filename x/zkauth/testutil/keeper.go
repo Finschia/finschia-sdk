@@ -3,10 +3,10 @@ package testutil
 import (
 	"testing"
 
+	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/x/zkauth/keeper"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 
-	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
@@ -18,7 +18,15 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
-func ZkAuthKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+type TestApp struct {
+	Simapp *simapp.SimApp
+	Keeper *keeper.Keeper
+	Ctx    sdk.Context
+}
+
+func ZkAuthKeeper(t testing.TB) TestApp {
+	checkTx := false
+	app := simapp.Setup(checkTx)
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -34,9 +42,16 @@ func ZkAuthKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
+		app.MsgServiceRouter(),
 	)
 
-	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
-	return k, ctx
+	testApp := TestApp{
+		Simapp: app,
+		Keeper: k,
+		Ctx:    ctx,
+	}
+
+	return testApp
 }

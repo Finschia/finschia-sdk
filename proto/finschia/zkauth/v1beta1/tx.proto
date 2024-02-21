@@ -22,7 +22,9 @@ message MsgExecution {
     ZKAuthSignature zk_auth_signature = 2 [(gogoproto.nullable) = false];
 }
 
-message MsgExecutionResponse {}
+message MsgExecutionResponse {
+    repeated bytes results = 1;
+}
 
 message ZKAuthSignature {
     ZKAuthInputs zk_auth_inputs = 1;
