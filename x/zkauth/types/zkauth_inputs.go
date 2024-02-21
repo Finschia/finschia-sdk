@@ -181,3 +181,46 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 		modulusF,
 	})
 }
+
+func ValidIss(iss string) bool {
+	// todo: check if supported OAuth provider
+	return true
+}
+
+func ValidJWTHeader(header string) bool {
+	// todo: check if validate jwt header
+	return true
+}
+
+func (zk *ZKAuthInputs) Validate() error {
+	// check proof points
+	if zk.ProofPoints == nil {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid proof points")
+	}
+
+	// check iss
+	issBytes, err := base64.StdEncoding.DecodeString(zk.IssF)
+	if err != nil {
+		return sdkerrors.Wrapf(ErrInvalidZkAuthInputs, "invalid iss, %s", err)
+	}
+	if !ValidIss(string(issBytes)) {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid iss")
+	}
+
+	// check header
+	headerBytes, err := base64.StdEncoding.DecodeString(zk.HeaderBase64)
+	if err != nil {
+		return sdkerrors.Wrapf(ErrInvalidZkAuthInputs, "invalid header, %s", err)
+	}
+
+	if !ValidJWTHeader(string(headerBytes)) {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid header")
+	}
+
+	// check address_seed
+	if len(zk.AddressSeed) == 0 {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid address_seed")
+	}
+
+	return nil
+}

@@ -7,6 +7,8 @@ import (
 const zkAuthCodespace = ModuleName
 
 var (
-	ErrInvalidZkAuthInputs = sdkerrors.Register(zkAuthCodespace, 2, "invalid zkauth inputs")
-	ErrSample              = sdkerrors.Register(zkAuthCodespace, 1100, "sample error")
+	ErrInvalidZKAuthSignature = sdkerrors.Register(zkAuthCodespace, 2, "invalid ZKAuthSignature")
+	ErrInvalidMessage         = sdkerrors.Register(zkAuthCodespace, 3, "invalid message")
+	ErrInvalidZkAuthInputs    = sdkerrors.Register(zkAuthCodespace, 4, "invalid zkauth inputs")
+	ErrSample                 = sdkerrors.Register(zkAuthCodespace, 1100, "sample error")
 )
