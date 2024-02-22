@@ -19,6 +19,7 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
+	jwks     []types.JWK
 }
 
 func NewKeeper(
@@ -29,6 +30,7 @@ func NewKeeper(
 	return &Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
+		jwks:     nil,
 	}
 }
 
@@ -36,7 +38,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
+func (k Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
 	logger := k.Logger(ctx)
 	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 	var fetchIntervals uint64
@@ -50,29 +52,12 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 					provider := types.GetConfig(name)
 					fetchIntervals = provider.FetchIntervals
 
-					resp, err := k.GetJWK(provider.JwkEndpoint)
+					err := k.FetchJWK(provider.JwkEndpoint, nodeHome, name)
 					if err != nil {
 						time.Sleep(time.Duration(fetchIntervals) * time.Second)
 						logger.Error(fmt.Sprintf("%s", err))
 						continue
 					}
-
-					file, err := os.Create(filepath.Join(nodeHome, k.CreateJWKFileName(name)))
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
-					}
-
-					_, err = io.Copy(file, resp.Body)
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
-					}
-
-					resp.Body.Close()
-					file.Close()
 				}
 				time.Sleep(time.Duration(fetchIntervals) * time.Second)
 			}
@@ -80,9 +65,10 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 	}()
 }
 
-func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
+func (k Keeper) ParseJWKs(byteArray []byte) ([]types.JWK, error) {
 	var data map[string]interface{}
-	err = json.Unmarshal(byteArray, &data)
+	var jwks []types.JWK
+	err := json.Unmarshal(byteArray, &data)
 	if err != nil {
 		return jwks, err
 	}
@@ -105,18 +91,47 @@ func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
 	return jwks, nil
 }
 
-func (k Keeper) GetJWK(endpoint string) (*http.Response, error) {
+func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) error {
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	client := new(http.Client)
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return resp, nil
+	file, err := os.Create(filepath.Join(nodeHome, k.CreateJWKFileName(name)))
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(file, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	jwks, err := k.ParseJWKs(bodyBytes)
+	if err != nil {
+		return err
+	}
+
+	k.SetJWKs(jwks)
+
+	resp.Body.Close()
+	file.Close()
+
+	return nil
+}
+
+func (k Keeper) GetJWKs() []types.JWK {
+	return k.jwks
+}
+
+func (k Keeper) SetJWKs(jwks []types.JWK) {
+	k.jwks = jwks
 }
 
 func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {

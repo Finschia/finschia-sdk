@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -52,19 +51,22 @@ func mockHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(jsonData))
 }
 
-func TestGetJWK(t *testing.T) {
+func TestFetchJWK(t *testing.T) {
 	k, _ := testutil.ZkAuthKeeper(t)
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 
-	res, err := k.GetJWK(server.URL)
-	defer res.Body.Close()
+	tempDir, err := os.MkdirTemp("", types.StoreKey)
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	err = k.FetchJWK(server.URL, tempDir, [1]types.OidcProvider{types.Google}[0])
 	require.NoError(t, err)
 
-	expected := testData
-	bodyBytes, err := io.ReadAll(res.Body)
-	bodyString := string(bodyBytes)
-	require.Equal(t, expected, bodyString)
+	var expectedObj []types.JWK
+	json.Unmarshal([]byte(testData), &expectedObj)
+
+	require.Equal(t, expectedObj, k.GetJWKs())
 }
 
 func TestParseJWKs(t *testing.T) {
@@ -72,18 +74,12 @@ func TestParseJWKs(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 
-	res, err := k.GetJWK(server.URL)
-	defer res.Body.Close()
-	require.NoError(t, err)
-
-	bodyBytes, err := io.ReadAll(res.Body)
-
-	jwks, err := k.ParseJWKs(bodyBytes)
+	jwks, err := k.ParseJWKs([]byte(testData))
 	require.NoError(t, err)
 	require.Equal(t, 3, len(jwks))
 }
 
-func TestFetchJwk(t *testing.T) {
+func TestLoopJWK(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 	k, ctx := testutil.ZkAuthKeeper(t)
@@ -95,7 +91,7 @@ func TestFetchJwk(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
-	k.FetchJWK(ctx.WithContext(timeoutCtx), tempDir)
+	k.LoopJWK(ctx.WithContext(timeoutCtx), tempDir)
 	<-timeoutCtx.Done()
 
 	content, err := os.ReadFile(filepath.Join(tempDir, k.CreateJWKFileName(types.Google)))
