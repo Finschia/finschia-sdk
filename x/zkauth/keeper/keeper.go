@@ -101,7 +101,8 @@ func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) err
 		return err
 	}
 
-	file, err := os.Create(filepath.Join(nodeHome, k.CreateJWKFileName(name)))
+	targetFile := filepath.Join(nodeHome, k.CreateJWKFileName(name))
+	file, err := os.Create(targetFile)
 	if err != nil {
 		return err
 	}
@@ -111,12 +112,12 @@ func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) err
 		return err
 	}
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	dataBytes, err := os.ReadFile(targetFile)
 	if err != nil {
 		return err
 	}
 
-	jwks, err := k.ParseJWKs(bodyBytes)
+	jwks, err := k.ParseJWKs(dataBytes)
 	if err != nil {
 		return err
 	}
