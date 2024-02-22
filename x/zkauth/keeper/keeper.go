@@ -65,10 +65,9 @@ func (k Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
 	}()
 }
 
-func (k Keeper) ParseJWKs(byteArray []byte) ([]types.JWK, error) {
+func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
 	var data map[string]interface{}
-	var jwks []types.JWK
-	err := json.Unmarshal(byteArray, &data)
+	err = json.Unmarshal(byteArray, &data)
 	if err != nil {
 		return jwks, err
 	}
@@ -113,6 +112,10 @@ func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) err
 	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
 	jwks, err := k.ParseJWKs(bodyBytes)
 	if err != nil {
 		return err
@@ -130,7 +133,7 @@ func (k Keeper) GetJWKs() []types.JWK {
 	return k.jwks
 }
 
-func (k Keeper) SetJWKs(jwks []types.JWK) {
+func (k *Keeper) SetJWKs(jwks []types.JWK) {
 	k.jwks = jwks
 }
 
