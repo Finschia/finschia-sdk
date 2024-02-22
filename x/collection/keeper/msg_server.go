@@ -360,7 +360,6 @@ func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperato
 
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-
 	collection.UpdateMsgModify(req)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {

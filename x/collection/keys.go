@@ -7,3 +7,13 @@ const (
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
 )
+
+func CollectionAttrCanonicalKey(key string) string {
+	convert := map[string]string{
+		AttributeKeyBaseImgURI.String(): AttributeKeyURI.String(),
+	}
+	if converted, ok := convert[key]; ok {
+		return converted
+	}
+	return key
+}

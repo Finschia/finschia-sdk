@@ -184,16 +184,6 @@ func validateChange(change Attribute, validators map[string]func(string) error) 
 	return validator(change.Value)
 }
 
-func canonicalKey(key string) string {
-	convert := map[string]string{
-		AttributeKeyBaseImgURI.String(): AttributeKeyURI.String(),
-	}
-	if converted, ok := convert[key]; ok {
-		return converted
-	}
-	return key
-}
-
 // ValidateBasic implements Msg.
 func (m MsgSendNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
@@ -413,6 +403,16 @@ func (m MsgOperatorBurnNFT) ValidateBasic() error {
 	return nil
 }
 
+func UpdateMsgModify(msg *MsgModify) {
+	for i, change := range msg.Changes {
+		key := change.Key
+		converted := CollectionAttrCanonicalKey(key)
+		if converted != key {
+			msg.Changes[i].Key = converted
+		}
+	}
+}
+
 // ValidateBasic implements Msg.
 func (m MsgModify) ValidateBasic() error {
 	UpdateMsgModify(&m)
@@ -475,16 +475,6 @@ func (m MsgModify) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-func UpdateMsgModify(msg *MsgModify) {
-	for i, change := range msg.Changes {
-		key := change.Key
-		converted := canonicalKey(key)
-		if converted != key {
-			msg.Changes[i].Key = converted
-		}
-	}
 }
 
 // ValidateBasic implements Msg.
