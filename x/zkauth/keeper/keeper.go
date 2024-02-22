@@ -138,6 +138,15 @@ func (k *Keeper) SetJWKs(jwks []types.JWK) {
 	k.jwks = jwks
 }
 
+func (k Keeper) GetJWK(kid string) *types.JWK {
+	for _, v := range k.GetJWKs() {
+		if v.Kid == kid {
+			return &v
+		}
+	}
+	return nil
+}
+
 func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {
 	return fmt.Sprintf("jwk-%s.json", name)
 }
