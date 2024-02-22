@@ -10,8 +10,6 @@ var (
 	ErrTokenNotExist             = errorsmod.Register(collectionCodespace, 2, "token symbol, token-id does not exist")
 	ErrInvalidTokenName          = errorsmod.Register(collectionCodespace, 4, "token name should not be empty")
 	ErrInvalidTokenID            = errorsmod.Register(collectionCodespace, 5, "invalid token id")
-	ErrInvalidTokenDecimals      = errorsmod.Register(collectionCodespace, 6, "token decimals should be within the range in 0 ~ 18")
-	ErrInvalidAmount             = errorsmod.Register(collectionCodespace, 8, "invalid token amount")
 	ErrInvalidBaseImgURILength   = errorsmod.Register(collectionCodespace, 9, "invalid base_img_uri length")
 	ErrInvalidNameLength         = errorsmod.Register(collectionCodespace, 10, "invalid name length")
 	ErrInvalidTokenType          = errorsmod.Register(collectionCodespace, 11, "invalid token type pattern found")
@@ -44,7 +42,9 @@ var (
 // Deprecated: do not use from v0.50.x
 var (
 	ErrTokenNotMintable              = errorsmod.Register(collectionCodespace, 3, "token symbol, token-id is not mintable")
+	ErrInvalidTokenDecimals          = errorsmod.Register(collectionCodespace, 6, "token decimals should be within the range in 0 ~ 18")
 	ErrInvalidIssueFT                = errorsmod.Register(collectionCodespace, 7, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
+	ErrInvalidAmount                 = errorsmod.Register(collectionCodespace, 8, "invalid token amount")
 	ErrCollectionExist               = errorsmod.Register(collectionCodespace, 13, "collection already exists")
 	ErrTokenTypeExist                = errorsmod.Register(collectionCodespace, 15, "token type for contract_id, token-type already exists")
 	ErrTokenTypeFull                 = errorsmod.Register(collectionCodespace, 17, "all token type for contract_id are occupied")
