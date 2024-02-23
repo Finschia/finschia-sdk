@@ -406,7 +406,7 @@ func (m MsgOperatorBurnNFT) ValidateBasic() error {
 func UpdateMsgModify(msg *MsgModify) {
 	for i, change := range msg.Changes {
 		key := change.Key
-		converted := CollectionAttrCanonicalKey(key)
+		converted := AttrCanonicalKey(key)
 		if converted != key {
 			msg.Changes[i].Key = converted
 		}

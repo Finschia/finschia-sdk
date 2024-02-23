@@ -8,7 +8,7 @@ const (
 	StoreKey = ModuleName
 )
 
-func CollectionAttrCanonicalKey(key string) string {
+func AttrCanonicalKey(key string) string {
 	convert := map[string]string{
 		AttributeKeyBaseImgURI.String(): AttributeKeyURI.String(),
 	}

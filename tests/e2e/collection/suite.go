@@ -4,18 +4,19 @@ import (
 	"fmt"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/gogoproto/proto"
+	"github.com/stretchr/testify/suite"
+
+	cmath "cosmossdk.io/math"
+
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/gogoproto/proto"
-
-	cmath "cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/collection/client/cli"
@@ -90,10 +91,9 @@ func (s *E2ETestSuite) SetupSuite() {
 	// for the revocation.
 	s.authorizeOperator(s.contractID, s.operator, s.vendor)
 
-	s.Require().NoError(err)
 	s.Require().NoError(s.network.WaitForNextBlock())
 	s.setupHeight, err = s.network.LatestHeight()
-
+	s.Require().NoError(err)
 }
 
 func (s *E2ETestSuite) TearDownSuite() {
@@ -154,6 +154,26 @@ func (s *E2ETestSuite) mintNFT(contractID string, operator, to sdk.AccAddress, c
 
 	s.Require().Equal(1, len(event.Tokens))
 	return event.Tokens[0].TokenId
+}
+
+func (s *E2ETestSuite) burnNFT(contractID string, operator sdk.AccAddress, tokenID string) collection.Coins {
+	val := s.network.Validators[0]
+	args := append([]string{
+		contractID,
+		operator.String(),
+		tokenID,
+	}, s.commonArgs...)
+
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdBurnNFT(), args)
+	s.Require().NoError(err)
+	txResp := s.getTxResp(out, 0)
+	var event collection.EventBurned
+	s.pickEvent(txResp.Events, &event, func(e proto.Message) {
+		event = *e.(*collection.EventBurned)
+	})
+
+	s.Require().GreaterOrEqual(len(event.Amount), 1)
+	return event.Amount
 }
 
 func (s *E2ETestSuite) grant(contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) {
