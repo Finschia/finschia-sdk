@@ -1,12 +1,13 @@
 package types
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"github.com/pkg/errors"
 
-	"github.com/iden3/go-rapidsnark/types"
+	snarktypes "github.com/iden3/go-rapidsnark/types"
 	"github.com/iden3/go-rapidsnark/verifier"
 
-	types2 "github.com/Finschia/finschia-sdk/crypto/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
@@ -21,32 +22,48 @@ func NewZKAuthVerifier(vk []byte) ZKAuthVerifier {
 	}
 }
 
-func (v *ZKAuthVerifier) Verify(proof types.ZKProof) error {
+func (v *ZKAuthVerifier) Verify(proof snarktypes.ZKProof) error {
 	return verifier.VerifyGroth16(proof, v.VerifyKey)
 }
 
-func VerifyZKAuthSignature(ctx sdk.Context, zkv ZKAuthVerifier, ephPubKey types2.PubKey, msg *MsgExecution) error {
+func VerifyZKAuthSignature(ctx sdk.Context, zkv ZKAuthVerifier, jks *JWKs, ephPubKey []byte, msg *MsgExecution) error {
 	// check max block height
 	if msg.ZkAuthSignature.MaxBlockHeight < ctx.BlockHeader().Height {
 		return sdkerrors.Wrap(ErrInvalidZKAuthSignature, "The permitted block height was exceeded.")
 	}
 
-	var proofData types.ProofData
+	var proofData snarktypes.ProofData
 	err := json.Unmarshal(msg.ZkAuthSignature.ZkAuthInputs.ProofPoints, &proofData)
 	if err != nil {
-		return nil
+		return err
 	}
 
-	// get OAuth pubKey
+	// get OAuth publicKey
+	jwtHeaderBytes, err := base64.RawURLEncoding.DecodeString(msg.ZkAuthSignature.ZkAuthInputs.HeaderBase64)
+	if err != nil {
+		return err
+	}
+	var jwtHeader JWTHeader
+	if err = json.Unmarshal(jwtHeaderBytes, &jwtHeader); err != nil {
+		return err
+	}
+	jwk := jks.GetJWK(jwtHeader.Kid)
+	if jwk == nil {
+		return errors.Errorf("no jwk of kid:%s", jwtHeader.Kid)
+	}
+	modulus, err := jwk.NBytes()
+	if err != nil {
+		return err
+	}
 
 	// calculate all input hash
-	allInputHash, err := msg.ZkAuthSignature.ZkAuthInputs.CalculateAllInputsHash(ephPubKey.Bytes(), []byte{}, msg.ZkAuthSignature.MaxBlockHeight)
+	allInputHash, err := msg.ZkAuthSignature.ZkAuthInputs.CalculateAllInputsHash(ephPubKey, modulus, msg.ZkAuthSignature.MaxBlockHeight)
 	if err != nil {
 		return err
 	}
 
 	// verify
-	proof := types.ZKProof{
+	proof := snarktypes.ZKProof{
 		Proof:      &proofData,
 		PubSignals: []string{allInputHash.String()},
 	}

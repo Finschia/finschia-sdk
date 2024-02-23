@@ -9,10 +9,13 @@ import (
 
 type ZKAuthMsgDecorator struct {
 	verifier zkauthtypes.ZKAuthVerifier
+	jwks     *zkauthtypes.JWKs
 }
 
-func NewZKAuthMsgDecorator() ZKAuthMsgDecorator {
-	return ZKAuthMsgDecorator{}
+func NewZKAuthMsgDecorator(vk []byte) ZKAuthMsgDecorator {
+	return ZKAuthMsgDecorator{
+		verifier: zkauthtypes.NewZKAuthVerifier(vk),
+	}
 }
 
 func (zka ZKAuthMsgDecorator) AnteHandler(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
@@ -47,7 +50,7 @@ func (zka ZKAuthMsgDecorator) AnteHandler(ctx sdk.Context, tx sdk.Tx, simulate b
 	for i, msg := range msgs {
 		if zkMsg, ok := msg.(*zkauthtypes.MsgExecution); ok {
 			// verify ZKAuth signature
-			if err := zkauthtypes.VerifyZKAuthSignature(ctx, zka.verifier, pubKeys[i], zkMsg); err != nil {
+			if err := zkauthtypes.VerifyZKAuthSignature(ctx, zka.verifier, zka.jwks, pubKeys[i].Bytes(), zkMsg); err != nil {
 				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "invalid zkauth signature")
 			}
 		}

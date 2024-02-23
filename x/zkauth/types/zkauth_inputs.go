@@ -158,11 +158,7 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid Iss base64")
 	}
-	headerBytes, err := base64.StdEncoding.DecodeString(zk.HeaderBase64)
-	if err != nil {
-		return nil, err
-	}
-	headerF, err := HashASCIIStrToField(string(headerBytes), MaxHeaderLen)
+	headerF, err := HashASCIIStrToField(zk.HeaderBase64, MaxHeaderLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid jwt header")
 	}
@@ -208,12 +204,7 @@ func (zk *ZKAuthInputs) Validate() error {
 	}
 
 	// check header
-	headerBytes, err := base64.StdEncoding.DecodeString(zk.HeaderBase64)
-	if err != nil {
-		return sdkerrors.Wrapf(ErrInvalidZkAuthInputs, "invalid header, %s", err)
-	}
-
-	if !ValidJWTHeader(string(headerBytes)) {
+	if !ValidJWTHeader(zk.HeaderBase64) {
 		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid header")
 	}
 
