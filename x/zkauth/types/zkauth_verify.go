@@ -3,10 +3,10 @@ package types
 import (
 	"encoding/base64"
 	"encoding/json"
-	"github.com/pkg/errors"
 
 	snarktypes "github.com/iden3/go-rapidsnark/types"
 	"github.com/iden3/go-rapidsnark/verifier"
+	"github.com/pkg/errors"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
