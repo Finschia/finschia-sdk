@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -20,6 +21,7 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
 	jwks     []types.JWK
+	lock     sync.RWMutex
 }
 
 func NewKeeper(
@@ -34,11 +36,11 @@ func NewKeeper(
 	}
 }
 
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
+func (k *Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
 	logger := k.Logger(ctx)
 	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 	var fetchIntervals uint64
@@ -65,7 +67,7 @@ func (k Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
 	}()
 }
 
-func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
+func (k *Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
 	var data map[string]interface{}
 	err = json.Unmarshal(byteArray, &data)
 	if err != nil {
@@ -90,7 +92,7 @@ func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
 	return jwks, nil
 }
 
-func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) error {
+func (k *Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) error {
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return err
@@ -107,7 +109,7 @@ func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) err
 	}
 
 	targetFile := filepath.Join(nodeHome, k.CreateJWKFileName(name))
-	err = os.WriteFile(targetFile, dataBytes, 0644)
+	err = os.WriteFile(targetFile, dataBytes, 0o600)
 	if err != nil {
 		return err
 	}
@@ -118,21 +120,26 @@ func (k Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) err
 	}
 
 	k.SetJWKs(jwks)
-
 	resp.Body.Close()
 
 	return nil
 }
 
-func (k Keeper) GetJWKs() []types.JWK {
+func (k *Keeper) GetJWKs() []types.JWK {
+	k.lock.RLock()
+	defer k.lock.RUnlock()
+
 	return k.jwks
 }
 
 func (k *Keeper) SetJWKs(jwks []types.JWK) {
+	k.lock.Lock()
+	defer k.lock.Unlock()
+
 	k.jwks = jwks
 }
 
-func (k Keeper) GetJWK(kid string) *types.JWK {
+func (k *Keeper) GetJWK(kid string) *types.JWK {
 	for _, v := range k.GetJWKs() {
 		if v.Kid == kid {
 			return &v
@@ -141,6 +148,6 @@ func (k Keeper) GetJWK(kid string) *types.JWK {
 	return nil
 }
 
-func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {
+func (k *Keeper) CreateJWKFileName(name types.OidcProvider) string {
 	return fmt.Sprintf("jwk-%s.json", name)
 }
