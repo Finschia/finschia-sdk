@@ -48,6 +48,7 @@ func (k Keeper) FetchJWK(ctx sdk.Context) {
 	go func() {
 		for {
 			select {
+			// goroutine ends when a timeout occurs
 			case <-ctx.Context().Done():
 				return
 			default:

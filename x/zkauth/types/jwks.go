@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"math/big"
 	"net/http"
+	"sync"
 )
 
 //type JWK struct {
@@ -83,6 +84,7 @@ func (jwk *JWK) PubKey() (*rsa.PublicKey, error) {
 }
 
 type JWKsMap struct {
+	sync.RWMutex
 	JWKs map[string]*JWK
 }
 
@@ -94,6 +96,10 @@ func NewJWKs() *JWKsMap {
 }
 
 func (js *JWKsMap) AddJWK(jwk *JWK) bool {
+	// lock before writing
+	js.Lock()
+	defer js.Unlock()
+
 	if _, ok := js.JWKs[jwk.Kid]; ok {
 		return false
 	}
@@ -103,6 +109,9 @@ func (js *JWKsMap) AddJWK(jwk *JWK) bool {
 }
 
 func (js *JWKsMap) GetJWK(kid string) *JWK {
+	js.RLock()
+	defer js.RUnlock()
+
 	if jwk, ok := js.JWKs[kid]; ok {
 		return jwk
 	}
