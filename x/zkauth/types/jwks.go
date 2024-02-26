@@ -85,12 +85,12 @@ func (jwk *JWK) PubKey() (*rsa.PublicKey, error) {
 
 type JWKsMap struct {
 	sync.RWMutex
-	JWKs map[string]*JWK
+	jwks map[string]*JWK
 }
 
 func NewJWKs() *JWKsMap {
 	js := JWKsMap{}
-	js.JWKs = make(map[string]*JWK)
+	js.jwks = make(map[string]*JWK)
 
 	return &js
 }
@@ -100,11 +100,11 @@ func (js *JWKsMap) AddJWK(jwk *JWK) bool {
 	js.Lock()
 	defer js.Unlock()
 
-	if _, ok := js.JWKs[jwk.Kid]; ok {
+	if _, ok := js.jwks[jwk.Kid]; ok {
 		return false
 	}
 
-	js.JWKs[jwk.Kid] = jwk
+	js.jwks[jwk.Kid] = jwk
 	return true
 }
 
@@ -112,9 +112,16 @@ func (js *JWKsMap) GetJWK(kid string) *JWK {
 	js.RLock()
 	defer js.RUnlock()
 
-	if jwk, ok := js.JWKs[kid]; ok {
+	if jwk, ok := js.jwks[kid]; ok {
 		return jwk
 	}
 
 	return nil
+}
+
+func (js *JWKsMap) Size() int {
+	js.RLock()
+	defer js.RUnlock()
+
+	return len(js.jwks)
 }

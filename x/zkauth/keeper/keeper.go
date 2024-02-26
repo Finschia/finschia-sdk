@@ -76,7 +76,7 @@ func (k Keeper) FetchJWK(ctx sdk.Context) {
 }
 
 func (k Keeper) GetJWKSize() int {
-	return len(k.jwksMap.JWKs)
+	return k.jwksMap.Size()
 }
 
 func (k Keeper) GetJWK(kid string) *types.JWK {
