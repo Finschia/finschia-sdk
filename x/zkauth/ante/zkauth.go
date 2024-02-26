@@ -8,17 +8,14 @@ import (
 )
 
 type ZKAuthMsgDecorator struct {
-	verifier zkauthtypes.ZKAuthVerifier
-	jwks     *zkauthtypes.JWKs
+	zk zkauthtypes.ZKAuthKeeper
 }
 
-func NewZKAuthMsgDecorator(vk []byte) ZKAuthMsgDecorator {
-	return ZKAuthMsgDecorator{
-		verifier: zkauthtypes.NewZKAuthVerifier(vk),
-	}
+func NewZKAuthMsgDecorator(zk zkauthtypes.ZKAuthKeeper) ZKAuthMsgDecorator {
+	return ZKAuthMsgDecorator{zk: zk}
 }
 
-func (zka ZKAuthMsgDecorator) AnteHandler(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (zka ZKAuthMsgDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	/*
 		todo:
 		If there are multiple msg, the order of the pubKey of the signer and signature must be the same.
@@ -50,7 +47,7 @@ func (zka ZKAuthMsgDecorator) AnteHandler(ctx sdk.Context, tx sdk.Tx, simulate b
 	for i, msg := range msgs {
 		if zkMsg, ok := msg.(*zkauthtypes.MsgExecution); ok {
 			// verify ZKAuth signature
-			if err := zkauthtypes.VerifyZKAuthSignature(ctx, zka.verifier, zka.jwks, pubKeys[i].Bytes(), zkMsg); err != nil {
+			if err := zkauthtypes.VerifyZKAuthSignature(ctx, zka.zk, pubKeys[i].Bytes(), zkMsg); err != nil {
 				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "invalid zkauth signature")
 			}
 		}

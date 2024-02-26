@@ -34,6 +34,21 @@ func TestZKAuthVerifierVerify(t *testing.T) {
 	require.NoError(t, err)
 }
 
+type zkKeeperMock struct {
+	jwks     *JWKsMap
+	verifier *ZKAuthVerifier
+}
+
+var _ ZKAuthKeeper = &zkKeeperMock{}
+
+func (z *zkKeeperMock) GetJWK(kid string) *JWK {
+	return z.jwks.GetJWK(kid)
+}
+
+func (z *zkKeeperMock) GetVerifier() *ZKAuthVerifier {
+	return z.verifier
+}
+
 func TestVerifyZKAuthSignature(t *testing.T) {
 	verificationKey, err := os.ReadFile("../testutil/testdata/verification_key.json")
 	require.NoError(t, err)
@@ -68,7 +83,12 @@ func TestVerifyZKAuthSignature(t *testing.T) {
 
 	require.NoError(t, err)
 
+	var zkKeeper = zkKeeperMock{
+		jwks:     jks,
+		verifier: &zkAuthVerifier,
+	}
+
 	ctx := sdk.Context{}
-	err = VerifyZKAuthSignature(ctx, zkAuthVerifier, jks, ephPubKey.Bytes(), &zkAuthMsg)
+	err = VerifyZKAuthSignature(ctx, &zkKeeper, ephPubKey.Bytes(), &zkAuthMsg)
 	require.NoError(t, err)
 }

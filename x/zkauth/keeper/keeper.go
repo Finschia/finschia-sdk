@@ -1,12 +1,7 @@
 package keeper
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -17,18 +12,28 @@ import (
 )
 
 type Keeper struct {
-	cdc      codec.BinaryCodec
-	storeKey storetypes.StoreKey
+	cdc        codec.BinaryCodec
+	storeKey   storetypes.StoreKey
+	jwksMap    types.JWKsMap        // JWK manager
+	zkVerifier types.ZKAuthVerifier // zkp verification key byte
+	homePath   string               // root directory of app config
 }
+
+var _ types.ZKAuthKeeper = &Keeper{}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
+	jwksMap types.JWKsMap,
+	zkVerifier types.ZKAuthVerifier,
+	homePath string,
 ) *Keeper {
-
 	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		jwksMap:    jwksMap,
+		zkVerifier: zkVerifier,
+		homePath:   homePath,
 	}
 }
 
@@ -36,7 +41,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
+func (k Keeper) FetchJWK(ctx sdk.Context) {
 	logger := k.Logger(ctx)
 	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 	var fetchIntervals uint64
@@ -50,29 +55,18 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 					provider := types.GetConfig(name)
 					fetchIntervals = provider.FetchIntervals
 
-					resp, err := k.GetJWK(provider.JwkEndpoint)
+					jwks, err := types.FetchJWK(provider.JwkEndpoint)
 					if err != nil {
 						time.Sleep(time.Duration(fetchIntervals) * time.Second)
 						logger.Error(fmt.Sprintf("%s", err))
 						continue
 					}
 
-					file, err := os.Create(filepath.Join(nodeHome, k.CreateJWKFileName(name)))
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
+					// add jwk
+					for _, jwk := range jwks.Keys {
+						jwkCopy := jwk
+						k.jwksMap.AddJWK(&jwkCopy)
 					}
-
-					_, err = io.Copy(file, resp.Body)
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
-					}
-
-					resp.Body.Close()
-					file.Close()
 				}
 				time.Sleep(time.Duration(fetchIntervals) * time.Second)
 			}
@@ -80,45 +74,14 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 	}()
 }
 
-func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
-	var data map[string]interface{}
-	err = json.Unmarshal(byteArray, &data)
-	if err != nil {
-		return jwks, err
-	}
-
-	for _, v := range data["keys"].([]interface{}) {
-		var jwk types.JWK
-
-		b, err := json.Marshal(v)
-		if err != nil {
-			return jwks, err
-		}
-
-		if err := json.Unmarshal(b, &jwk); err != nil {
-			return jwks, err
-		}
-
-		jwks = append(jwks, jwk)
-	}
-
-	return jwks, nil
+func (k Keeper) GetJWKSize() int {
+	return len(k.jwksMap.JWKs)
 }
 
-func (k Keeper) GetJWK(endpoint string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", endpoint, nil)
-	if err != nil {
-		return nil, err
-	}
-	client := new(http.Client)
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+func (k Keeper) GetJWK(kid string) *types.JWK {
+	return k.jwksMap.GetJWK(kid)
 }
 
-func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {
-	return fmt.Sprintf("jwk-%s.json", name)
+func (k Keeper) GetVerifier() *types.ZKAuthVerifier {
+	return &k.zkVerifier
 }

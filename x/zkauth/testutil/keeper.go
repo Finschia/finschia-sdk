@@ -1,6 +1,8 @@
 package testutil
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/Finschia/finschia-sdk/x/zkauth/keeper"
@@ -31,9 +33,20 @@ func ZkAuthKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 
+	verificationKey, err := os.ReadFile("../testutil/testdata/verification_key.json")
+	require.NoError(t, err)
+
+	zwksMap := types.NewJWKs()
+
+	homeDir := filepath.Join(t.TempDir(), "x_zkauth_keeper_test")
+	t.Log("home dir: ", homeDir)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
+		*zwksMap,
+		types.NewZKAuthVerifier(verificationKey),
+		homeDir,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

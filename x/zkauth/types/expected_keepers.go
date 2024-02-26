@@ -1,10 +1,14 @@
 package types
 
 import (
-	"github.com/Finschia/finschia-sdk/x/auth/types"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
+
+type ZKAuthKeeper interface {
+	GetJWK(kid string) *JWK
+	GetVerifier() *ZKAuthVerifier
+}
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {

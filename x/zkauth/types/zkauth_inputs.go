@@ -2,6 +2,8 @@ package types
 
 import (
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"math"
 	"math/big"
 	"unicode/utf8"
@@ -179,13 +181,32 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 }
 
 func ValidIss(iss string) bool {
-	// todo: check if supported OAuth provider
-	return true
+	if _, ok := SupportedOidcProviders[iss]; ok {
+		return true
+	}
+
+	return false
 }
 
-func ValidJWTHeader(header string) bool {
-	// todo: check if validate jwt header
-	return true
+func ValidJWTHeader(encodedHeader string) error {
+	decodedBytes, err := base64.RawURLEncoding.DecodeString(encodedHeader)
+	if err != nil {
+		return fmt.Errorf("invalid base64 in header: %w", err)
+	}
+
+	var header JWTHeader
+	if err = json.Unmarshal(decodedBytes, &header); err != nil {
+		return fmt.Errorf("invalid JSON in header: %w", err)
+	}
+
+	if header.Alg == "" {
+		return fmt.Errorf("missing 'alg' field in header")
+	}
+	if header.Typ == "" {
+		return fmt.Errorf("missing 'typ' field in header")
+	}
+
+	return nil
 }
 
 func (zk *ZKAuthInputs) Validate() error {
@@ -204,8 +225,8 @@ func (zk *ZKAuthInputs) Validate() error {
 	}
 
 	// check header
-	if !ValidJWTHeader(zk.HeaderBase64) {
-		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid header")
+	if err = ValidJWTHeader(zk.HeaderBase64); err != nil {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, err.Error())
 	}
 
 	// check address_seed

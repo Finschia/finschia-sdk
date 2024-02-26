@@ -26,7 +26,7 @@ func (v *ZKAuthVerifier) Verify(proof snarktypes.ZKProof) error {
 	return verifier.VerifyGroth16(proof, v.VerifyKey)
 }
 
-func VerifyZKAuthSignature(ctx sdk.Context, zkv ZKAuthVerifier, jks *JWKs, ephPubKey []byte, msg *MsgExecution) error {
+func VerifyZKAuthSignature(ctx sdk.Context, zkKeeper ZKAuthKeeper, ephPubKey []byte, msg *MsgExecution) error {
 	// check max block height
 	if msg.ZkAuthSignature.MaxBlockHeight < ctx.BlockHeader().Height {
 		return sdkerrors.Wrap(ErrInvalidZKAuthSignature, "The permitted block height was exceeded.")
@@ -47,7 +47,7 @@ func VerifyZKAuthSignature(ctx sdk.Context, zkv ZKAuthVerifier, jks *JWKs, ephPu
 	if err = json.Unmarshal(jwtHeaderBytes, &jwtHeader); err != nil {
 		return err
 	}
-	jwk := jks.GetJWK(jwtHeader.Kid)
+	jwk := zkKeeper.GetJWK(jwtHeader.Kid)
 	if jwk == nil {
 		return errors.Errorf("no jwk of kid:%s", jwtHeader.Kid)
 	}
@@ -68,5 +68,5 @@ func VerifyZKAuthSignature(ctx sdk.Context, zkv ZKAuthVerifier, jks *JWKs, ephPu
 		PubSignals: []string{allInputHash.String()},
 	}
 
-	return zkv.Verify(proof)
+	return zkKeeper.GetVerifier().Verify(proof)
 }

@@ -16,3 +16,7 @@ func GetConfig(provider OidcProvider) ProviderConfig {
 		panic("unexpected provider")
 	}
 }
+
+var SupportedOidcProviders = map[string]OidcProvider{
+	"https://accounts.google.com": Google,
+}
