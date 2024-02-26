@@ -14,7 +14,7 @@ import (
 type Keeper struct {
 	cdc        codec.BinaryCodec
 	storeKey   storetypes.StoreKey
-	jwksMap    types.JWKsMap        // JWK manager
+	jwksMap    *types.JWKsMap       // JWK manager
 	zkVerifier types.ZKAuthVerifier // zkp verification key byte
 	homePath   string               // root directory of app config
 }
@@ -24,7 +24,7 @@ var _ types.ZKAuthKeeper = &Keeper{}
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
-	jwksMap types.JWKsMap,
+	jwksMap *types.JWKsMap,
 	zkVerifier types.ZKAuthVerifier,
 	homePath string,
 ) *Keeper {

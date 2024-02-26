@@ -44,7 +44,7 @@ func ZkAuthKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
-		*zwksMap,
+		zwksMap,
 		types.NewZKAuthVerifier(verificationKey),
 		homeDir,
 	)
