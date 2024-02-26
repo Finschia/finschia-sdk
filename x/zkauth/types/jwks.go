@@ -22,7 +22,13 @@ type JWKs struct {
 
 // FetchJWK retrieve Certificates
 func FetchJWK(endpoint string) (*JWKs, error) {
-	resp, err := http.NewRequest("GET", endpoint, nil)
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
