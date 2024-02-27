@@ -28,6 +28,7 @@ import (
 	"github.com/Finschia/finschia-sdk/server/api"
 	"github.com/Finschia/finschia-sdk/server/config"
 	servertypes "github.com/Finschia/finschia-sdk/server/types"
+	appante "github.com/Finschia/finschia-sdk/simapp/ante"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	"github.com/Finschia/finschia-sdk/store/streaming"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -103,6 +104,7 @@ import (
 	upgradeclient "github.com/Finschia/finschia-sdk/x/upgrade/client"
 	upgradekeeper "github.com/Finschia/finschia-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/Finschia/finschia-sdk/x/upgrade/types"
+	"github.com/Finschia/finschia-sdk/x/zkauth"
 	zkauthkeeper "github.com/Finschia/finschia-sdk/x/zkauth/keeper"
 	zkauthtypes "github.com/Finschia/finschia-sdk/x/zkauth/types"
 
@@ -145,6 +147,7 @@ var (
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
+		zkauth.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -407,6 +410,7 @@ func NewSimApp(
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		zkauth.NewAppModule(appCodec, app.ZKAuthKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -434,6 +438,7 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		zkauthtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -455,6 +460,7 @@ func NewSimApp(
 		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		zkauthtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -482,6 +488,7 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		zkauthtypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
@@ -515,13 +522,16 @@ func NewSimApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+	anteHandler, err := appante.NewAnteHandler(
+		appante.HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				BankKeeper:      app.BankKeeper,
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+			ZKAuthKeeper: app.ZKAuthKeeper,
 		},
 	)
 	if err != nil {
