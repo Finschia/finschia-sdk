@@ -8,6 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Finschia/finschia-sdk/simapp"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/testutil"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 	"github.com/stretchr/testify/require"
@@ -49,8 +52,9 @@ func mockHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(jsonData))
 }
 
-func TestFetchJWK(t *testing.T) {
-	k, _ := testutil.ZkAuthKeeper(t)
+func TestGetJWK(t *testing.T) {
+	testApp := testutil.ZkAuthKeeper(t)
+	k := testApp.Keeper
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 
@@ -65,7 +69,8 @@ func TestFetchJWK(t *testing.T) {
 }
 
 func TestParseJWKs(t *testing.T) {
-	k, _ := testutil.ZkAuthKeeper(t)
+	testApp := testutil.ZkAuthKeeper(t)
+	k := testApp.Keeper
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 
@@ -74,9 +79,10 @@ func TestParseJWKs(t *testing.T) {
 	require.Equal(t, 3, len(jwks))
 }
 
-func TestLoopJWK(t *testing.T) {
-	k, ctx := testutil.ZkAuthKeeper(t)
-
+func TestFetchJwk(t *testing.T) {
+	testApp := testutil.ZkAuthKeeper(t)
+	k := testApp.Keeper
+	ctx := testApp.Ctx
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -88,4 +94,37 @@ func TestLoopJWK(t *testing.T) {
 
 	actualObj := k.GetJWKs()
 	require.NotEmpty(t, actualObj)
+}
+
+func TestDispatchMsgs(t *testing.T) {
+	testApp := testutil.ZkAuthKeeper(t)
+	app, k, ctx := testApp.Simapp, testApp.Keeper, testApp.Ctx
+
+	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(100))
+	fromAddr := addrs[0]
+	toAddr := addrs[1]
+
+	newCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 5))
+
+	bankMsg := banktypes.MsgSend{
+		Amount:      newCoins,
+		FromAddress: fromAddr.String(),
+		ToAddress:   toAddr.String(),
+	}
+
+	zkAuthSig := types.ZKAuthSignature{}
+
+	msgs := types.NewMsgExecution([]sdk.Msg{&bankMsg}, zkAuthSig)
+
+	execMsgs, err := msgs.GetMessages()
+	require.NoError(t, err)
+	result, err := k.DispatchMsgs(ctx, execMsgs)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	fromBalance := app.BankKeeper.GetBalance(ctx, fromAddr, "stake")
+	require.True(t, fromBalance.Equal(sdk.NewInt64Coin("stake", 95)))
+	toBalance := app.BankKeeper.GetBalance(ctx, toAddr, "stake")
+	require.True(t, toBalance.Equal(sdk.NewInt64Coin("stake", 105)))
 }

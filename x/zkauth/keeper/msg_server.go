@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 )
 
@@ -19,5 +20,17 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (k msgServer) Execution(goCtx context.Context, msg *types.MsgExecution) (*types.MsgExecutionResponse, error) {
-	return &types.MsgExecutionResponse{}, nil
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	msgs, err := msg.GetMessages()
+	if err != nil {
+		return nil, err
+	}
+
+	results, err := k.DispatchMsgs(ctx, msgs)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgExecutionResponse{Results: results}, nil
 }

@@ -5,5 +5,5 @@ import (
 )
 
 func TestKeeper(t *testing.T) {
-	_, _ = ZkAuthKeeper(t)
+	_ = ZkAuthKeeper(t)
 }
