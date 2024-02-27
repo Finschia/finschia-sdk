@@ -98,6 +98,9 @@ func removeFTs(store storetypes.KVStore, cdc codec.BinaryCodec, contractID strin
 			panic(err)
 		}
 
+		key := legacyTokenTypeKey(contractID, class.GetId())
+		store.Delete(key)
+
 		if ftClass, ok := class.(*collection.FTClass); ok {
 			ftID := newFTID(ftClass.Id)
 			if !validateFTID(ftID) {

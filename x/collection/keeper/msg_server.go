@@ -673,7 +673,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 		classID := tokenType
 		tokenID := classID + tokenIndex
 		if tokenType != "" {
-			if tokenIndex != "" && collection.ValidateNFTID(tokenID) == nil {
+			if tokenIndex != "" {
 				event := collection.EventModifiedNFT{
 					ContractId: req.ContractId,
 					Operator:   req.Owner,

@@ -25,9 +25,6 @@ var (
 	mintedKeyPrefix = []byte{0x41}
 	burntKeyPrefix  = []byte{0x42}
 
-	legacyTokenKeyPrefix     = []byte{0xf0}
-	legacyTokenTypeKeyPrefix = []byte{0xf1}
-
 	classStorePrefix = []byte{0x50}
 )
 
@@ -382,56 +379,4 @@ func splitStatisticKey(keyPrefix, key []byte) (contractID, classID string) {
 	classID = string(key[begin:])
 
 	return
-}
-
-// ----------------------------------------------------------------------------
-// legacy keys
-func legacyTokenKey(contractID, tokenID string) []byte {
-	prefix := legacyTokenKeyPrefixByContractID(contractID)
-	key := make([]byte, len(prefix)+len(tokenID))
-
-	copy(key, prefix)
-	copy(key[len(prefix):], tokenID)
-
-	return key
-}
-
-func legacyTokenKeyPrefixByContractID(contractID string) []byte {
-	key := make([]byte, len(legacyTokenKeyPrefix)+1+len(contractID))
-
-	begin := 0
-	copy(key, legacyTokenKeyPrefix)
-
-	begin += len(legacyTokenKeyPrefix)
-	key[begin] = byte(len(contractID))
-
-	begin++
-	copy(key[begin:], contractID)
-
-	return key
-}
-
-func legacyTokenTypeKey(contractID, tokenType string) []byte {
-	prefix := legacyTokenTypeKeyPrefixByContractID(contractID)
-	key := make([]byte, len(prefix)+len(tokenType))
-
-	copy(key, prefix)
-	copy(key[len(prefix):], tokenType)
-
-	return key
-}
-
-func legacyTokenTypeKeyPrefixByContractID(contractID string) []byte {
-	key := make([]byte, len(legacyTokenTypeKeyPrefix)+1+len(contractID))
-
-	begin := 0
-	copy(key, legacyTokenTypeKeyPrefix)
-
-	begin += len(legacyTokenTypeKeyPrefix)
-	key[begin] = byte(len(contractID))
-
-	begin++
-	copy(key[begin:], contractID)
-
-	return key
 }

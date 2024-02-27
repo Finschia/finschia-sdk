@@ -73,7 +73,7 @@ func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpa
 }
 
 // ----------------------------------------------------------------------------
-// FTClass
+// Deprecated: FTClass
 var _ TokenClass = (*FTClass)(nil)
 
 func (c *FTClass) SetID(_ *NextClassIDs) {}
@@ -264,9 +264,4 @@ type Token interface {
 func TokenFromAny(any *codectypes.Any) Token {
 	class := any.GetCachedValue().(Token)
 	return class
-}
-
-func TokenUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpacker) error {
-	var token Token
-	return unpacker.UnpackAny(any, &token)
 }

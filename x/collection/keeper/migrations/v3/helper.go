@@ -89,6 +89,14 @@ func addCoin(store storetypes.KVStore, contractID string, address sdk.AccAddress
 		panic(err)
 	}
 	store.Set(key, bz)
+
+	// set owner
+	key = ownerKey(contractID, amount.TokenId)
+	bz, err = address.Marshal()
+	if err != nil {
+		panic(err)
+	}
+	store.Set(key, bz)
 }
 
 func removeCoin(store storetypes.KVStore, contractID string, address sdk.AccAddress, ftID string) {

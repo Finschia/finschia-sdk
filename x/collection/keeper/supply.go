@@ -90,9 +90,6 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 
 	if nftClass, ok := class.(*collection.NFTClass); ok {
 		k.setNextTokenID(ctx, contractID, nftClass.Id, math.OneUint())
-
-		// legacy
-		k.setLegacyTokenType(ctx, contractID, nftClass.Id)
 	} else {
 		panic("TokenClass only supports NFTClass")
 	}
@@ -196,9 +193,6 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		k.setMinted(ctx, contractID, classID, minted.Add(amount))
 
 		tokens = append(tokens, token)
-
-		// legacy
-		k.setLegacyToken(ctx, contractID, tokenID)
 	}
 
 	return tokens, nil
@@ -212,12 +206,7 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 	burntAmount := []collection.Coin{}
 	for _, coin := range amount {
 		burntAmount = append(burntAmount, coin)
-		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			k.deleteNFT(ctx, contractID, coin.TokenId)
-
-			// legacy
-			k.deleteLegacyToken(ctx, contractID, coin.TokenId)
-		}
+		k.deleteNFT(ctx, contractID, coin.TokenId)
 	}
 
 	// update statistics

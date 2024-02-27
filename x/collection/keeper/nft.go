@@ -105,33 +105,3 @@ func (k Keeper) deleteOwner(ctx sdk.Context, contractID, tokenID string) {
 		panic(err)
 	}
 }
-
-// Deprecated
-func (k Keeper) setLegacyToken(ctx sdk.Context, contractID, tokenID string) {
-	store := k.storeService.OpenKVStore(ctx)
-	key := legacyTokenKey(contractID, tokenID)
-	err := store.Set(key, []byte{})
-	if err != nil {
-		panic(err)
-	}
-}
-
-// Deprecated
-func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID, tokenID string) {
-	store := k.storeService.OpenKVStore(ctx)
-	key := legacyTokenKey(contractID, tokenID)
-	err := store.Delete(key)
-	if err != nil {
-		panic(err)
-	}
-}
-
-// Deprecated
-func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID, tokenType string) {
-	store := k.storeService.OpenKVStore(ctx)
-	key := legacyTokenTypeKey(contractID, tokenType)
-	err := store.Set(key, []byte{})
-	if err != nil {
-		panic(err)
-	}
-}
