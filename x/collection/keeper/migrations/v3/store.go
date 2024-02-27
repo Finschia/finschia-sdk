@@ -90,6 +90,7 @@ func removeFTs(store storetypes.KVStore, cdc codec.BinaryCodec, contractID strin
 	iterator := storetypes.KVStorePrefixIterator(store, classKeyPrefixByContractID(contractID))
 	defer iterator.Close()
 
+	ftMap := make(map[string]bool)
 	for ; iterator.Valid(); iterator.Next() {
 		bz := store.Get(iterator.Key())
 		var class collection.TokenClass
@@ -107,15 +108,16 @@ func removeFTs(store storetypes.KVStore, cdc codec.BinaryCodec, contractID strin
 				panic(fmt.Sprintf("v3 migration: invalid FT ID from TokenClass <%s>", ftID))
 			}
 
-			removeFTBalances(store, contractID, ftID)
-
+			ftMap[ftID] = true
 			store.Delete(legacyTokenKey(contractID, ftID)) // remove LegacyToken
 			store.Delete(iterator.Key())                   // remove TokenClass
 		}
 	}
+
+	removeFTBalances(store, contractID, ftMap)
 }
 
-func removeFTBalances(store storetypes.KVStore, contractID, ftID string) {
+func removeFTBalances(store storetypes.KVStore, contractID string, ftMap map[string]bool) {
 	iterator := storetypes.KVStorePrefixIterator(store, balanceKeyPrefixByContractID(contractID))
 	defer iterator.Close()
 
@@ -125,8 +127,8 @@ func removeFTBalances(store storetypes.KVStore, contractID, ftID string) {
 			panic(fmt.Sprintf("v3 migration: inconsistent ContractID, got: %s, expected: %s", id, contractID))
 		}
 
-		if tokenID == ftID {
-			classID := ftID[:lengthClassID]
+		if ftMap[tokenID] {
+			classID := tokenID[:lengthClassID]
 			var amount cmath.Int
 			if err := amount.Unmarshal(iterator.Value()); err != nil {
 				panic(err)
@@ -137,7 +139,7 @@ func removeFTBalances(store storetypes.KVStore, contractID, ftID string) {
 			store.Delete(statisticKey(mintedKeyPrefix, contractID, classID))
 			store.Delete(statisticKey(burntKeyPrefix, contractID, classID))
 
-			removeCoin(store, contractID, address, ftID)
+			removeCoin(store, contractID, address, tokenID)
 		}
 	}
 }
