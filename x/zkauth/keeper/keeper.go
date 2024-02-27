@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"sync"
 	"time"
 
@@ -40,7 +38,7 @@ func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k *Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
+func (k *Keeper) LoopJWK(ctx sdk.Context) {
 	logger := k.Logger(ctx)
 	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 	var fetchIntervals uint64
@@ -54,7 +52,7 @@ func (k *Keeper) LoopJWK(ctx sdk.Context, nodeHome string) {
 					provider := types.GetConfig(name)
 					fetchIntervals = provider.FetchIntervals
 
-					err := k.FetchJWK(provider.JwkEndpoint, nodeHome, name)
+					err := k.FetchJWK(provider.JwkEndpoint, name)
 					if err != nil {
 						time.Sleep(time.Duration(fetchIntervals) * time.Second)
 						logger.Error(fmt.Sprintf("%s", err))
@@ -92,7 +90,7 @@ func (k *Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
 	return jwks, nil
 }
 
-func (k *Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) error {
+func (k *Keeper) FetchJWK(endpoint string, name types.OidcProvider) error {
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return err
@@ -104,12 +102,6 @@ func (k *Keeper) FetchJWK(endpoint, nodeHome string, name types.OidcProvider) er
 	}
 
 	dataBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	targetFile := filepath.Join(nodeHome, k.CreateJWKFileName(name))
-	err = os.WriteFile(targetFile, dataBytes, 0o600)
 	if err != nil {
 		return err
 	}

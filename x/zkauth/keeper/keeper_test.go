@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 	"time"
 
@@ -55,11 +54,7 @@ func TestFetchJWK(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 
-	tempDir, err := os.MkdirTemp("", types.StoreKey)
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-
-	err = k.FetchJWK(server.URL, tempDir, [1]types.OidcProvider{types.Google}[0])
+	err := k.FetchJWK(server.URL, [1]types.OidcProvider{types.Google}[0])
 	require.NoError(t, err)
 
 	var expectedObj map[string][]types.JWK
@@ -85,11 +80,7 @@ func TestLoopJWK(t *testing.T) {
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	tempDir, err := os.MkdirTemp("", types.StoreKey)
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-
-	k.LoopJWK(ctx.WithContext(timeoutCtx), tempDir)
+	k.LoopJWK(ctx.WithContext(timeoutCtx))
 	<-timeoutCtx.Done()
 
 	var expectedObj map[string][]types.JWK
