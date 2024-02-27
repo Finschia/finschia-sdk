@@ -1,7 +1,7 @@
 package types
 
 import (
-	types "github.com/Finschia/finschia-sdk/codec/types"
+	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
@@ -10,9 +10,19 @@ var (
 	_ sdk.Msg = (*MsgExecution)(nil)
 )
 
-func NewMsgExecution(msgs []*types.Any, zkauthSignature ZKAuthSignature) *MsgExecution {
+func NewMsgExecution(msgs []sdk.Msg, zkauthSignature ZKAuthSignature) *MsgExecution {
+	msgsAny := make([]*cdctypes.Any, len(msgs))
+	for i, msg := range msgs {
+		any, err := cdctypes.NewAnyWithValue(msg)
+		if err != nil {
+			panic(err)
+		}
+
+		msgsAny[i] = any
+	}
+
 	return &MsgExecution{
-		Msgs:            msgs,
+		Msgs:            msgsAny,
 		ZkAuthSignature: zkauthSignature,
 	}
 }
@@ -34,10 +44,10 @@ func ValidateZkAuthSignature(signature ZKAuthSignature) error {
 }
 
 func (e *MsgExecution) SetMsgs(msgs []sdk.Msg) error {
-	anys := make([]*types.Any, len(msgs))
+	anys := make([]*cdctypes.Any, len(msgs))
 	for i, msg := range msgs {
 		var err error
-		anys[i], err = types.NewAnyWithValue(msg)
+		anys[i], err = cdctypes.NewAnyWithValue(msg)
 		if err != nil {
 			return err
 		}
@@ -68,6 +78,19 @@ func (e *MsgExecution) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func (e *MsgExecution) GetMessages() ([]sdk.Msg, error) {
+	msgs := make([]sdk.Msg, len(e.Msgs))
+	for i, msgAny := range e.Msgs {
+		msg, ok := msgAny.GetCachedValue().(sdk.Msg)
+		if !ok {
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "messages contains %T which is not a sdk.MsgRequest", msgAny)
+		}
+		msgs[i] = msg
+	}
+
+	return msgs, nil
 }
 
 func (e *MsgExecution) GetSigners() []sdk.AccAddress {

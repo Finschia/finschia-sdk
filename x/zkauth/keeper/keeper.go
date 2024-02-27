@@ -2,13 +2,18 @@ package keeper
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
+	"github.com/Finschia/ostracon/libs/log"
+	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/codec"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
-	"github.com/Finschia/ostracon/libs/log"
 )
 
 type Keeper struct {
@@ -17,6 +22,7 @@ type Keeper struct {
 	jwksMap    *types.JWKsMap       // JWK manager
 	zkVerifier types.ZKAuthVerifier // zkp verification key byte
 	homePath   string               // root directory of app config
+	router     *baseapp.MsgServiceRouter
 }
 
 var _ types.ZKAuthKeeper = &Keeper{}
@@ -27,6 +33,7 @@ func NewKeeper(
 	jwksMap *types.JWKsMap,
 	zkVerifier types.ZKAuthVerifier,
 	homePath string,
+	router *baseapp.MsgServiceRouter,
 ) *Keeper {
 	return &Keeper{
 		cdc:        cdc,
@@ -34,11 +41,51 @@ func NewKeeper(
 		jwksMap:    jwksMap,
 		zkVerifier: zkVerifier,
 		homePath:   homePath,
+		router:     router,
 	}
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) {
+	results := make([][]byte, len(msgs))
+
+	for i, msg := range msgs {
+		signers := msg.GetSigners()
+		if len(signers) != 1 {
+			return nil, sdkerrors.ErrInvalidRequest.Wrap("authorization can be given to msg with only one signer")
+		}
+		if err := msg.ValidateBasic(); err != nil {
+			return nil, err
+		}
+
+		handler := k.router.Handler(msg)
+		if handler == nil {
+			return nil, sdkerrors.ErrUnknownRequest.Wrapf("unrecognized message route: %s", sdk.MsgTypeURL(msg))
+		}
+
+		msgResp, err := handler(ctx, msg)
+		if err != nil {
+			return nil, sdkerrors.Wrapf(err, "failed to execute message; message %v", msg)
+		}
+
+		results[i] = msgResp.Data
+
+		events := msgResp.Events
+		sdkEvents := make([]sdk.Event, 0, len(events))
+		for _, event := range events {
+			e := event
+			e.Attributes = append(e.Attributes, abci.EventAttribute{Key: []byte("zkauth_msg_index"), Value: []byte(strconv.Itoa(i))})
+
+			sdkEvents = append(sdkEvents, sdk.Event(e))
+		}
+
+		ctx.EventManager().EmitEvents(sdkEvents)
+	}
+
+	return results, nil
 }
 
 func (k Keeper) FetchJWK(ctx sdk.Context) {
