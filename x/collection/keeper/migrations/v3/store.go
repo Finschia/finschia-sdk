@@ -39,7 +39,7 @@ func migrateClassStateAndRemoveLegacyState(collectionStore, oldStore storetypes.
 		newClassStore.Set(idKey(id), []byte{})
 		oldStore.Delete(idKey(id))
 
-		detachNFT(collectionStore, cdc, id)
+		detachNFTs(collectionStore, cdc, id)
 		removeFTs(collectionStore, cdc, id)
 	}
 
@@ -57,7 +57,7 @@ func migrateClassStateAndRemoveLegacyState(collectionStore, oldStore storetypes.
 	return nil
 }
 
-func detachNFT(store storetypes.KVStore, cdc codec.BinaryCodec, id string) {
+func detachNFTs(store storetypes.KVStore, cdc codec.BinaryCodec, id string) {
 	iterator := storetypes.KVStorePrefixIterator(store, parentKeyPrefixByContractID(id))
 	defer iterator.Close()
 
@@ -69,7 +69,7 @@ func detachNFT(store storetypes.KVStore, cdc codec.BinaryCodec, id string) {
 
 		var parentID gogotypes.StringValue
 		cdc.MustUnmarshal(iterator.Value(), &parentID)
-		addCoin(store, id, getRootOwner(store, cdc, contractID, tokenID), collection.NewCoin(tokenID, cmath.OneInt()))
+		addCoin(store, id, getRootOwner(store, cdc, contractID, parentID.Value), collection.NewCoin(tokenID, cmath.OneInt()))
 
 		store.Delete(parentKey(contractID, tokenID))
 		store.Delete(childKey(contractID, parentID.Value, tokenID))
@@ -119,7 +119,7 @@ func removeFTBalances(store storetypes.KVStore, contractID, ftID string) {
 	for ; iterator.Valid(); iterator.Next() {
 		id, address, tokenID := splitBalanceKey(iterator.Key())
 		if id != contractID {
-			panic(fmt.Sprintf("v3 migration: inconsistent ContractID, got: %s, expeted: %s", id, contractID))
+			panic(fmt.Sprintf("v3 migration: inconsistent ContractID, got: %s, expected: %s", id, contractID))
 		}
 
 		if tokenID == ftID {

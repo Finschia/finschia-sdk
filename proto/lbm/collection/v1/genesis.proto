@@ -32,7 +32,7 @@ message GenesisState {
   // nfts is an array containing the nfts.
   repeated ContractNFTs nfts = 7 [(gogoproto.nullable) = false];
 
-  reserved 8;
+  reserved 8; // parents
 
   // grants defines the grant information.
   repeated ContractGrants grants = 9 [(gogoproto.nullable) = false];
@@ -125,7 +125,7 @@ message NextClassIDs {
   // contract id associated with the contract.
   string contract_id = 1;
 
-  reserved 2;
+  reserved 2; // fungible
 
   // id for the non-fungible tokens.
   string non_fungible = 3 [

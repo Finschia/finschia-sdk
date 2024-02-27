@@ -10,7 +10,7 @@ import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the collection module.
 message Params {
-  reserved 1 to 2;
+  reserved 1 to 2; // depth_limit, width_limit
 }
 
 // Contract defines the information of the contract for the collection.
