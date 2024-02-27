@@ -9,15 +9,15 @@ import (
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func TestValidateGenesis(t *testing.T) {
-	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	ac := authcodec.NewBech32Codec("cosmos")
+	ac := authcodec.NewBech32Codec("link")
+	addr, err := ac.BytesToString(secp256k1.GenPrivKey().PubKey().Address())
+	require.NoError(t, err)
 	testCases := map[string]struct {
 		gs    *collection.GenesisState
 		valid bool
@@ -147,7 +147,7 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Balances: []collection.ContractBalances{{
 					Balances: []collection.Balance{{
-						Address: addr.String(),
+						Address: addr,
 						Amount:  collection.NewCoins(collection.NewNFTCoin("00bab10c", 1)),
 					}},
 				}},
@@ -178,7 +178,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					ContractId: "deadbeef",
 					Balances: []collection.Balance{{
-						Address: addr.String(),
+						Address: addr,
 					}},
 				}},
 			},
@@ -246,8 +246,8 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Authorizations: []collection.ContractAuthorizations{{
 					Authorizations: []collection.Authorization{{
-						Holder:   addr.String(),
-						Operator: addr.String(),
+						Holder:   addr,
+						Operator: addr,
 					}},
 				}},
 			},
@@ -266,7 +266,7 @@ func TestValidateGenesis(t *testing.T) {
 				Authorizations: []collection.ContractAuthorizations{{
 					ContractId: "deadbeef",
 					Authorizations: []collection.Authorization{{
-						Operator: addr.String(),
+						Operator: addr,
 					}},
 				}},
 			},
@@ -277,7 +277,7 @@ func TestValidateGenesis(t *testing.T) {
 				Authorizations: []collection.ContractAuthorizations{{
 					ContractId: "deadbeef",
 					Authorizations: []collection.Authorization{{
-						Holder: addr.String(),
+						Holder: addr,
 					}},
 				}},
 			},
@@ -287,7 +287,7 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Grants: []collection.ContractGrants{{
 					Grants: []collection.Grant{{
-						Grantee:    addr.String(),
+						Grantee:    addr,
 						Permission: collection.PermissionMint,
 					}},
 				}},
@@ -318,7 +318,7 @@ func TestValidateGenesis(t *testing.T) {
 				Grants: []collection.ContractGrants{{
 					ContractId: "deadbeef",
 					Grants: []collection.Grant{{
-						Grantee: addr.String(),
+						Grantee: addr,
 					}},
 				}},
 			},

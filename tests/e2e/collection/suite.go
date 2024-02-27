@@ -32,10 +32,10 @@ type E2ETestSuite struct {
 
 	commonArgs []string
 
-	vendor     sdk.AccAddress
-	operator   sdk.AccAddress
-	customer   sdk.AccAddress
-	stranger   sdk.AccAddress
+	vendor     string
+	operator   string
+	customer   string
+	stranger   string
 	contractID string
 	nftClassID string
 	tokenIDs   map[string]string
@@ -63,7 +63,8 @@ func (s *E2ETestSuite) SetupSuite() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, cmath.NewInt(100))).String()),
 	}
 
-	s.vendor = s.network.Validators[0].Address
+	s.vendor, err = s.ac.BytesToString(s.network.Validators[0].Address)
+	s.Require().NoError(err)
 	s.operator = s.createAccount("operator")
 	s.customer = s.createAccount("customer")
 	s.stranger = s.createAccount("stranger")
@@ -74,8 +75,8 @@ func (s *E2ETestSuite) SetupSuite() {
 
 	// mint nfts
 	s.tokenIDs = make(map[string]string, 4)
-	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger} {
-		s.tokenIDs[to.String()] = s.mintNFT(s.contractID, s.vendor, to, s.nftClassID)
+	for _, to := range []string{s.customer, s.operator, s.vendor, s.stranger} {
+		s.tokenIDs[to] = s.mintNFT(s.contractID, s.vendor, to, s.nftClassID)
 	}
 
 	// grant all the permissions to operator
@@ -103,10 +104,10 @@ func (s *E2ETestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *E2ETestSuite) createContract(creator sdk.AccAddress) string {
+func (s *E2ETestSuite) createContract(creator string) string {
 	val := s.network.Validators[0]
 	args := append([]string{
-		creator.String(),
+		creator,
 	}, s.commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdCreateContract(), args)
@@ -119,11 +120,11 @@ func (s *E2ETestSuite) createContract(creator sdk.AccAddress) string {
 	return event.ContractId
 }
 
-func (s *E2ETestSuite) createNFTClass(contractID string, operator sdk.AccAddress) string {
+func (s *E2ETestSuite) createNFTClass(contractID, operator string) string {
 	val := s.network.Validators[0]
 	args := append([]string{
 		contractID,
-		operator.String(),
+		operator,
 	}, s.commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssueNFT(), args)
@@ -136,12 +137,12 @@ func (s *E2ETestSuite) createNFTClass(contractID string, operator sdk.AccAddress
 	return event.TokenType
 }
 
-func (s *E2ETestSuite) mintNFT(contractID string, operator, to sdk.AccAddress, classID string) string {
+func (s *E2ETestSuite) mintNFT(contractID, operator, to, classID string) string {
 	val := s.network.Validators[0]
 	args := append([]string{
 		contractID,
-		operator.String(),
-		to.String(),
+		operator,
+		to,
 		classID,
 		fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 	}, s.commonArgs...)
@@ -158,11 +159,11 @@ func (s *E2ETestSuite) mintNFT(contractID string, operator, to sdk.AccAddress, c
 	return event.Tokens[0].TokenId
 }
 
-func (s *E2ETestSuite) burnNFT(contractID string, operator sdk.AccAddress, tokenID string) collection.Coins {
+func (s *E2ETestSuite) burnNFT(contractID, operator, tokenID string) collection.Coins {
 	val := s.network.Validators[0]
 	args := append([]string{
 		contractID,
-		operator.String(),
+		operator,
 		tokenID,
 	}, s.commonArgs...)
 
@@ -178,12 +179,12 @@ func (s *E2ETestSuite) burnNFT(contractID string, operator sdk.AccAddress, token
 	return event.Amount
 }
 
-func (s *E2ETestSuite) grant(contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) {
+func (s *E2ETestSuite) grant(contractID, granter, grantee string, permission collection.Permission) {
 	val := s.network.Validators[0]
 	args := append([]string{
 		contractID,
-		granter.String(),
-		grantee.String(),
+		granter,
+		grantee,
 		collection.LegacyPermission(permission).String(),
 	}, s.commonArgs...)
 
@@ -192,12 +193,12 @@ func (s *E2ETestSuite) grant(contractID string, granter, grantee sdk.AccAddress,
 	_ = s.getTxResp(out, 0)
 }
 
-func (s *E2ETestSuite) authorizeOperator(contractID string, holder, operator sdk.AccAddress) {
+func (s *E2ETestSuite) authorizeOperator(contractID, holder, operator string) {
 	val := s.network.Validators[0]
 	args := append([]string{
 		contractID,
-		holder.String(),
-		operator.String(),
+		holder,
+		operator,
 	}, s.commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(s.ac), args)
@@ -220,7 +221,7 @@ func (s *E2ETestSuite) pickEvent(events []abci.Event, event proto.Message, fn fu
 }
 
 // creates an account and send some coins to it for the future transactions.
-func (s *E2ETestSuite) createAccount(uid string) sdk.AccAddress {
+func (s *E2ETestSuite) createAccount(uid string) string {
 	val := s.network.Validators[0]
 	keyInfo, _, err := val.ClientCtx.Keyring.NewMnemonic(uid, keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
@@ -230,7 +231,9 @@ func (s *E2ETestSuite) createAccount(uid string) sdk.AccAddress {
 	out, err := clitestutil.MsgSendExec(val.ClientCtx, val.Address, addr, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, cmath.NewInt(1000000))), s.ac, s.commonArgs...)
 	s.Require().NoError(err)
 	s.getTxResp(out, 0)
-	return addr
+	a, err := s.ac.BytesToString(addr)
+	s.Require().NoError(err)
+	return a
 }
 
 func (s *E2ETestSuite) getTxResp(out testutil.BufferWriter, expectedCode uint32) sdk.TxResponse {

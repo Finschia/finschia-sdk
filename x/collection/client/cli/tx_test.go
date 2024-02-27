@@ -35,10 +35,10 @@ type CLITestSuite struct {
 	clientCtx   client.Context
 	commonFlags []string
 
-	vendor   testutil.TestAccount
-	operator testutil.TestAccount
-	customer testutil.TestAccount
-	stranger testutil.TestAccount
+	vendor   string
+	operator string
+	customer string
+	stranger string
 
 	contractID string
 	classID    string
@@ -79,10 +79,10 @@ func (s *CLITestSuite) SetupSuite() {
 	}
 
 	val := testutil.CreateKeyringAccounts(s.T(), s.kr, 4)
-	s.vendor = val[0]
-	s.operator = val[1]
-	s.customer = val[2]
-	s.stranger = val[3]
+	s.vendor, _ = s.ac.BytesToString(val[0].Address)
+	s.operator, _ = s.ac.BytesToString(val[1].Address)
+	s.customer, _ = s.ac.BytesToString(val[2].Address)
+	s.stranger, _ = s.ac.BytesToString(val[3].Address)
 
 	s.contractID = "678c146a"
 	s.classID = "10000001"
@@ -98,8 +98,8 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.vendor,
+				s.customer,
 				tokenID,
 			},
 			true,
@@ -107,8 +107,8 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.stranger.Address.String(),
-				s.customer.Address.String(),
+				s.stranger,
+				s.customer,
 				tokenID,
 				"extra",
 			},
@@ -117,16 +117,16 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.stranger.Address.String(),
-				s.customer.Address.String(),
+				s.stranger,
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.stranger.Address.String(),
-				s.customer.Address.String(),
+				s.stranger,
+				s.customer,
 				tokenID,
 			},
 			false,
@@ -160,9 +160,9 @@ func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.vendor,
+				s.customer,
 				tokenID,
 			},
 			true,
@@ -170,9 +170,9 @@ func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.vendor,
+				s.customer,
 				tokenID,
 				"extra",
 			},
@@ -181,18 +181,18 @@ func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.vendor,
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.vendor,
+				s.customer,
 				tokenID,
 			},
 			false,
@@ -224,7 +224,7 @@ func (s *CLITestSuite) TestNewTxCmdCreateContract() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.vendor.Address.String(),
+				s.vendor,
 				fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 				fmt.Sprintf("--%s=%s", cli.FlagMeta, "nft metadata"),
 				fmt.Sprintf("--%s=%s", cli.FlagBaseImgURI, "contract base img uri"),
@@ -233,7 +233,7 @@ func (s *CLITestSuite) TestNewTxCmdCreateContract() {
 		},
 		"extra args": {
 			[]string{
-				s.vendor.Address.String(),
+				s.vendor,
 				"extra",
 			},
 			false,
@@ -276,14 +276,14 @@ func (s *CLITestSuite) TestNewTxCmdIssueNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
+				s.vendor,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
+				s.vendor,
 				"extra",
 			},
 			false,
@@ -297,7 +297,7 @@ func (s *CLITestSuite) TestNewTxCmdIssueNFT() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.vendor.Address.String(),
+				s.vendor,
 			},
 			false,
 		},
@@ -329,8 +329,8 @@ func (s *CLITestSuite) TestNewTxCmdMintNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.vendor,
+				s.customer,
 				s.classID,
 				fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 				fmt.Sprintf("--%s=%s", cli.FlagMeta, "nft metadata"),
@@ -340,8 +340,8 @@ func (s *CLITestSuite) TestNewTxCmdMintNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.vendor,
+				s.customer,
 				s.classID,
 				"extra",
 			},
@@ -350,16 +350,16 @@ func (s *CLITestSuite) TestNewTxCmdMintNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.vendor,
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
+				s.vendor,
+				s.customer,
 				s.classID,
 			},
 			false,
@@ -393,7 +393,7 @@ func (s *CLITestSuite) TestNewTxCmdBurnNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
+				s.customer,
 				tokenID,
 			},
 			true,
@@ -401,7 +401,7 @@ func (s *CLITestSuite) TestNewTxCmdBurnNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
+				s.customer,
 				tokenID,
 				"extra",
 			},
@@ -410,14 +410,14 @@ func (s *CLITestSuite) TestNewTxCmdBurnNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.customer.Address.String(),
+				s.customer,
 				tokenID,
 			},
 			false,
@@ -451,8 +451,8 @@ func (s *CLITestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.customer,
 				tokenID,
 			},
 			true,
@@ -460,8 +460,8 @@ func (s *CLITestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.customer,
 				tokenID,
 				"extra",
 			},
@@ -470,16 +470,16 @@ func (s *CLITestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.Address.String(),
-				s.customer.Address.String(),
+				s.operator,
+				s.customer,
 				tokenID,
 			},
 			false,
@@ -512,7 +512,7 @@ func (s *CLITestSuite) TestNewTxCmdModify() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
+				s.operator,
 				s.classID,
 				s.tokenIdx,
 				collection.AttributeKeyName.String(),
@@ -523,7 +523,7 @@ func (s *CLITestSuite) TestNewTxCmdModify() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
+				s.operator,
 				s.classID,
 				s.tokenIdx,
 				collection.AttributeKeyName.String(),
@@ -535,7 +535,7 @@ func (s *CLITestSuite) TestNewTxCmdModify() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
+				s.operator,
 				s.classID,
 				s.tokenIdx,
 				collection.AttributeKeyName.String(),
@@ -545,7 +545,7 @@ func (s *CLITestSuite) TestNewTxCmdModify() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.Address.String(),
+				s.operator,
 				s.classID,
 				s.tokenIdx,
 				collection.AttributeKeyName.String(),
@@ -581,8 +581,8 @@ func (s *CLITestSuite) TestNewTxCmdGrantPermission() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
+				s.operator,
+				s.vendor,
 				collection.LegacyPermissionMint.String(),
 			},
 			true,
@@ -590,8 +590,8 @@ func (s *CLITestSuite) TestNewTxCmdGrantPermission() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
+				s.operator,
+				s.vendor,
 				collection.LegacyPermissionMint.String(),
 				"extra",
 			},
@@ -600,8 +600,8 @@ func (s *CLITestSuite) TestNewTxCmdGrantPermission() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
+				s.operator,
+				s.vendor,
 			},
 			false,
 		},
@@ -633,7 +633,7 @@ func (s *CLITestSuite) TestNewTxCmdRevokePermission() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
+				s.vendor,
 				collection.LegacyPermissionModify.String(),
 			},
 			true,
@@ -641,7 +641,7 @@ func (s *CLITestSuite) TestNewTxCmdRevokePermission() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
+				s.vendor,
 				collection.LegacyPermissionModify.String(),
 				"extra",
 			},
@@ -650,7 +650,7 @@ func (s *CLITestSuite) TestNewTxCmdRevokePermission() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.vendor.Address.String(),
+				s.vendor,
 			},
 			false,
 		},
@@ -682,16 +682,16 @@ func (s *CLITestSuite) TestNewTxCmdAuthorizeOperator() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
-				s.operator.Address.String(),
+				s.customer,
+				s.operator,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
-				s.operator.Address.String(),
+				s.customer,
+				s.operator,
 				"extra",
 			},
 			false,
@@ -699,7 +699,7 @@ func (s *CLITestSuite) TestNewTxCmdAuthorizeOperator() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
+				s.customer,
 			},
 			false,
 		},
@@ -731,16 +731,16 @@ func (s *CLITestSuite) TestNewTxCmdRevokeOperator() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
-				s.operator.Address.String(),
+				s.customer,
+				s.operator,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
-				s.operator.Address.String(),
+				s.customer,
+				s.operator,
 				"extra",
 			},
 			false,
@@ -748,7 +748,7 @@ func (s *CLITestSuite) TestNewTxCmdRevokeOperator() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.customer.Address.String(),
+				s.customer,
 			},
 			false,
 		},

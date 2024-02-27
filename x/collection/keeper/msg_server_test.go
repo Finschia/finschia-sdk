@@ -41,25 +41,25 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		from       string
-		to         string
+		from       sdk.AccAddress
+		to         sdk.AccAddress
 		err        error
 		events     sdk.Events
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    rootNFTID,
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventSent",
 					Attributes: []abci.EventAttribute{
 						{Key: "amount", Value: mustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: rootNFTID, Amount: math.OneInt()})), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.customer.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
+						{Key: "from", Value: w(s.bytesToString(s.customer)), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.customer)), Index: false},
+						{Key: "to", Value: w(s.bytesToString(s.vendor)), Index: false},
 					},
 				},
 			},
@@ -67,53 +67,53 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			tokenID:    collection.NewNFTID(s.nftClassID, 1),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			err:        collection.ErrContractNotExist,
 		},
 		"NFT not found": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			err:        collection.ErrTokenNotExist,
 		},
 		"not owned by": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID(s.nftClassID, s.numNFTs+1),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			err:        collection.ErrTokenNotOwnedBy,
 		},
 		"invalid from": {
 			contractID: s.contractID,
 			tokenID:    rootNFTID,
-			to:         s.vendor.String(),
+			to:         s.vendor,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
 			tokenID: rootNFTID,
-			from:    s.customer.String(),
-			to:      s.vendor.String(),
+			from:    s.customer,
+			to:      s.vendor,
 			err:     collection.ErrInvalidContractID,
 		},
 		"invalid to": {
 			contractID: s.contractID,
 			tokenID:    rootNFTID,
-			from:       s.customer.String(),
+			from:       s.customer,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty token ids": {
 			contractID: s.contractID,
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			err:        collection.ErrEmptyField,
 		},
 		"invalid token ids": {
 			contractID: s.contractID,
 			tokenID:    "null",
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			err:        collection.ErrInvalidTokenID,
 		},
 	}
@@ -126,14 +126,14 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 			if tc.tokenID == "" {
 				req = &collection.MsgSendNFT{
 					ContractId: tc.contractID,
-					From:       tc.from,
-					To:         tc.to,
+					From:       s.bytesToString(tc.from),
+					To:         s.bytesToString(tc.to),
 				}
 			} else {
 				req = &collection.MsgSendNFT{
 					ContractId: tc.contractID,
-					From:       tc.from,
-					To:         tc.to,
+					From:       s.bytesToString(tc.from),
+					To:         s.bytesToString(tc.to),
 					TokenIds:   []string{tc.tokenID},
 				}
 			}
@@ -154,18 +154,18 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 
 	testCases := map[string]struct {
 		contractID string
-		operator   string
-		from       string
-		to         string
+		operator   sdk.AccAddress
+		from       sdk.AccAddress
+		to         sdk.AccAddress
 		tokenID    string
 		err        error
 		events     sdk.Events
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    rootNFTID,
 			events: sdk.Events{
 				sdk.Event{
@@ -173,85 +173,85 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 					Attributes: []abci.EventAttribute{
 						{Key: "amount", Value: mustJSONMarshal(collection.NewCoins(collection.Coin{TokenId: rootNFTID, Amount: math.OneInt()})), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.operator.String()), Index: false},
-						{Key: "to", Value: w(s.vendor.String()), Index: false},
+						{Key: "from", Value: w(s.bytesToString(s.customer)), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.operator)), Index: false},
+						{Key: "to", Value: w(s.bytesToString(s.vendor)), Index: false},
 					},
 				},
 			},
 		},
 		"contract not found": {
 			contractID: "deadbeef",
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    rootNFTID,
 			err:        collection.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
-			operator:   s.vendor.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.vendor,
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    rootNFTID,
 			err:        collection.ErrCollectionNotApproved,
 		},
 		"NFT not found": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
 			err:        collection.ErrTokenNotExist,
 		},
 		"not owned by": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			err:        collection.ErrTokenNotOwnedBy,
 		},
 		"invalid operator": {
 			contractID: s.contractID,
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    rootNFTID,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid contract id": {
-			operator: s.operator.String(),
-			from:     s.customer.String(),
-			to:       s.vendor.String(),
+			operator: s.operator,
+			from:     s.customer,
+			to:       s.vendor,
 			tokenID:  rootNFTID,
 			err:      collection.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			to:         s.vendor,
 			tokenID:    rootNFTID,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"invalid to": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
+			operator:   s.operator,
+			from:       s.customer,
 			tokenID:    rootNFTID,
 			err:        sdkerrors.ErrInvalidAddress,
 		},
 		"empty ids": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			from:       s.customer,
+			to:         s.vendor,
 			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: s.contractID,
-			operator:   s.operator.String(),
-			from:       s.customer.String(),
-			to:         s.vendor.String(),
+			operator:   s.operator,
+			from:       s.customer,
+			to:         s.vendor,
 			tokenID:    "null",
 			err:        collection.ErrInvalidTokenID,
 		},
@@ -265,16 +265,16 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 			if tc.tokenID == "" {
 				req = &collection.MsgOperatorSendNFT{
 					ContractId: tc.contractID,
-					Operator:   tc.operator,
-					From:       tc.from,
-					To:         tc.to,
+					Operator:   s.bytesToString(tc.operator),
+					From:       s.bytesToString(tc.from),
+					To:         s.bytesToString(tc.to),
 				}
 			} else {
 				req = &collection.MsgOperatorSendNFT{
 					ContractId: tc.contractID,
-					Operator:   tc.operator,
-					From:       tc.from,
-					To:         tc.to,
+					Operator:   s.bytesToString(tc.operator),
+					From:       s.bytesToString(tc.from),
+					To:         s.bytesToString(tc.to),
 					TokenIds:   []string{tc.tokenID},
 				}
 			}
@@ -306,8 +306,8 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 				Type: "lbm.collection.v1.EventAuthorizedOperator",
 				Attributes: []abci.EventAttribute{
 					{Key: "contract_id", Value: w(s.contractID), Index: false},
-					{Key: "holder", Value: w(s.customer.String()), Index: false},
-					{Key: "operator", Value: w(s.vendor.String()), Index: false},
+					{Key: "holder", Value: w(s.bytesToString(s.customer)), Index: false},
+					{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
 				},
 			}},
 		},
@@ -349,8 +349,8 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			// Act
 			req := &collection.MsgAuthorizeOperator{
 				ContractId: tc.contractID,
-				Holder:     tc.holder.String(),
-				Operator:   tc.operator.String(),
+				Holder:     s.bytesToString(tc.holder),
+				Operator:   s.bytesToString(tc.operator),
 			}
 			res, err := s.msgServer.AuthorizeOperator(ctx, req)
 			if tc.err != nil {
@@ -389,8 +389,8 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 				Type: "lbm.collection.v1.EventRevokedOperator",
 				Attributes: []abci.EventAttribute{
 					{Key: "contract_id", Value: w(s.contractID), Index: false},
-					{Key: "holder", Value: w(s.customer.String()), Index: false},
-					{Key: "operator", Value: w(s.operator.String()), Index: false},
+					{Key: "holder", Value: w(s.bytesToString(s.customer)), Index: false},
+					{Key: "operator", Value: w(s.bytesToString(s.operator)), Index: false},
 				},
 			}},
 		},
@@ -432,8 +432,8 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			// Act
 			req := &collection.MsgRevokeOperator{
 				ContractId: tc.contractID,
-				Holder:     tc.holder.String(),
-				Operator:   tc.operator.String(),
+				Holder:     s.bytesToString(tc.holder),
+				Operator:   s.bytesToString(tc.operator),
 			}
 			res, err := s.msgServer.RevokeOperator(ctx, req)
 			if tc.err != nil {
@@ -445,12 +445,8 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
 			s.Require().NotNil(prevAuth)
-			h, err := s.addressCodec.BytesToString(tc.holder.Bytes())
-			s.Require().NoError(err)
-			s.Require().Equal(h, prevAuth.Holder)
-			o, err := s.addressCodec.BytesToString(tc.operator.Bytes())
-			s.Require().NoError(err)
-			s.Require().Equal(o, prevAuth.Operator)
+			s.Require().Equal(s.bytesToString(tc.holder), prevAuth.Holder)
+			s.Require().Equal(s.bytesToString(tc.operator), prevAuth.Operator)
 			curAuth, err := s.keeper.GetAuthorization(ctx, tc.contractID, tc.holder, tc.operator)
 			s.Require().ErrorIs(err, collection.ErrCollectionNotApproved)
 			s.Require().Nil(curAuth)
@@ -475,7 +471,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 					Type: "lbm.collection.v1.EventCreatedContract",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(expectedNewContractID), Index: false},
-						{Key: "creator", Value: w(s.vendor.String()), Index: false},
+						{Key: "creator", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "meta", Value: w(""), Index: false},
 						{Key: "name", Value: w(""), Index: false},
 						{Key: "uri", Value: w(""), Index: false},
@@ -485,7 +481,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(expectedNewContractID), Index: false},
-						{Key: "grantee", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "granter", Value: w(""), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionIssue).String()), Index: false},
 					},
@@ -494,7 +490,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(expectedNewContractID), Index: false},
-						{Key: "grantee", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "granter", Value: w(""), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionModify).String()), Index: false},
 					},
@@ -503,7 +499,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(expectedNewContractID), Index: false},
-						{Key: "grantee", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "granter", Value: w(""), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
 					},
@@ -512,7 +508,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(expectedNewContractID), Index: false},
-						{Key: "grantee", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "granter", Value: w(""), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionBurn).String()), Index: false},
 					},
@@ -553,7 +549,7 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgCreateContract{
-				Owner: tc.owner.String(),
+				Owner: s.bytesToString(tc.owner),
 				Name:  tc.name,
 				Uri:   tc.uri,
 				Meta:  tc.meta,
@@ -592,7 +588,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
 						{Key: "meta", Value: w(""), Index: false},
 						{Key: "name", Value: w(""), Index: false},
-						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "token_type", Value: w(expectedTokenType), Index: false},
 					},
 				},
@@ -600,7 +596,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "grantee", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "granter", Value: w(""), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
 					},
@@ -609,7 +605,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "grantee", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "granter", Value: w(""), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionBurn).String()), Index: false},
 					},
@@ -660,7 +656,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 
 			req := &collection.MsgIssueNFT{
 				ContractId: tc.contractID,
-				Owner:      tc.owner.String(),
+				Owner:      s.bytesToString(tc.owner),
 				Name:       tc.name,
 				Meta:       tc.meta,
 			}
@@ -708,8 +704,8 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 					Type: "lbm.collection.v1.EventMintedNFT",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "operator", Value: w(s.vendor.String()), Index: false},
-						{Key: "to", Value: w(s.customer.String()), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
+						{Key: "to", Value: w(s.bytesToString(s.customer)), Index: false},
 						{Key: "tokens", Value: mustJSONMarshal(expectedTokens), Index: false},
 					},
 				},
@@ -810,8 +806,8 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 
 			req := &collection.MsgMintNFT{
 				ContractId: tc.contractID,
-				From:       tc.from.String(),
-				To:         tc.to.String(),
+				From:       s.bytesToString(tc.from),
+				To:         s.bytesToString(tc.to),
 				Params:     tc.params,
 			}
 			res, err := s.msgServer.MintNFT(ctx, req)
@@ -847,8 +843,8 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 					Attributes: []abci.EventAttribute{
 						{Key: "amount", Value: mustJSONMarshal(coins), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.vendor.String()), Index: false},
-						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+						{Key: "from", Value: w(s.bytesToString(s.vendor)), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
 					},
 				},
 			},
@@ -910,7 +906,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 
 			req := &collection.MsgBurnNFT{
 				ContractId: tc.contractID,
-				From:       tc.from.String(),
+				From:       s.bytesToString(tc.from),
 				TokenIds:   tc.tokenIDs,
 			}
 			res, err := s.msgServer.BurnNFT(ctx, req)
@@ -948,8 +944,8 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 					Attributes: []abci.EventAttribute{
 						{Key: "amount", Value: mustJSONMarshal(coins), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "from", Value: w(s.customer.String()), Index: false},
-						{Key: "operator", Value: w(s.operator.String()), Index: false},
+						{Key: "from", Value: w(s.bytesToString(s.customer)), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.operator)), Index: false},
 					},
 				},
 			},
@@ -1032,8 +1028,8 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 
 			req := &collection.MsgOperatorBurnNFT{
 				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				From:       tc.from.String(),
+				Operator:   s.bytesToString(tc.operator),
+				From:       s.bytesToString(tc.from),
 				TokenIds:   tc.tokenIDs,
 			}
 			res, err := s.msgServer.OperatorBurnNFT(ctx, req)
@@ -1074,7 +1070,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 					Attributes: []abci.EventAttribute{
 						{Key: "changes", Value: mustJSONMarshal(validChanges), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
 					},
 				},
 			},
@@ -1090,7 +1086,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 					Attributes: []abci.EventAttribute{
 						{Key: "changes", Value: mustJSONMarshal(validChanges), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "token_type", Value: w(s.nftClassID), Index: false},
 						{Key: "type_name", Value: w(proto.MessageName(&collection.NFTClass{})), Index: false},
 					},
@@ -1101,7 +1097,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			tokenType:  s.nftClassID,
-			tokenIndex: s.issuedNFTs[s.vendor.String()][0].TokenId[8:],
+			tokenIndex: s.issuedNFTs[s.bytesToString(s.vendor)][0].TokenId[8:],
 			changes:    validChanges,
 			events: sdk.Events{
 				sdk.Event{
@@ -1109,8 +1105,8 @@ func (s *KeeperTestSuite) TestMsgModify() {
 					Attributes: []abci.EventAttribute{
 						{Key: "changes", Value: mustJSONMarshal(validChanges), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "operator", Value: w(s.vendor.String()), Index: false},
-						{Key: "token_id", Value: w(s.issuedNFTs[s.vendor.String()][0].TokenId), Index: false},
+						{Key: "operator", Value: w(s.bytesToString(s.vendor)), Index: false},
+						{Key: "token_id", Value: w(s.issuedNFTs[s.bytesToString(s.vendor)][0].TokenId), Index: false},
 					},
 				},
 			},
@@ -1193,7 +1189,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			ctx, _ := s.ctx.CacheContext()
 			req := &collection.MsgModify{
 				ContractId: tc.contractID,
-				Owner:      tc.operator.String(),
+				Owner:      s.bytesToString(tc.operator),
 				TokenType:  tc.tokenType,
 				TokenIndex: tc.tokenIndex,
 				Changes:    tc.changes,
@@ -1229,8 +1225,8 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 					Type: "lbm.collection.v1.EventGranted",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "grantee", Value: w(s.operator.String()), Index: false},
-						{Key: "granter", Value: w(s.vendor.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.operator)), Index: false},
+						{Key: "granter", Value: w(s.bytesToString(s.vendor)), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionModify).String()), Index: false},
 					},
 				},
@@ -1282,8 +1278,8 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 
 			req := &collection.MsgGrantPermission{
 				ContractId: tc.contractID,
-				From:       tc.granter.String(),
-				To:         tc.grantee.String(),
+				From:       s.bytesToString(tc.granter),
+				To:         s.bytesToString(tc.grantee),
 				Permission: tc.permission,
 			}
 			res, err := s.msgServer.GrantPermission(ctx, req)
@@ -1315,7 +1311,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 					Type: "lbm.collection.v1.EventRenounced",
 					Attributes: []abci.EventAttribute{
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
-						{Key: "grantee", Value: w(s.operator.String()), Index: false},
+						{Key: "grantee", Value: w(s.bytesToString(s.operator)), Index: false},
 						{Key: "permission", Value: w(collection.Permission(collection.LegacyPermissionMint).String()), Index: false},
 					},
 				},
@@ -1356,7 +1352,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 
 			req := &collection.MsgRevokePermission{
 				ContractId: tc.contractID,
-				From:       tc.from.String(),
+				From:       s.bytesToString(tc.from),
 				Permission: tc.permission,
 			}
 			res, err := s.msgServer.RevokePermission(ctx, req)

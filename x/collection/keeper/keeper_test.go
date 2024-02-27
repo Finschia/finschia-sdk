@@ -56,8 +56,8 @@ func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
 		for {
 			pk := secp256k1.GenPrivKey().PubKey()
 			addr = sdk.AccAddress(pk.Address())
-			if !seenAddresses[addr.String()] {
-				seenAddresses[addr.String()] = true
+			if !seenAddresses[s.bytesToString(addr)] {
+				seenAddresses[s.bytesToString(addr)] = true
 				break
 			}
 		}
@@ -102,7 +102,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.issuedNFTs = make(map[string][]collection.NFT)
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
 		nfts, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, s.numNFTs))
-		s.issuedNFTs[to.String()] = nfts
+		s.issuedNFTs[s.bytesToString(to)] = nfts
 		s.Require().NoError(err)
 	}
 
@@ -166,6 +166,12 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 	for i, addr := range s.createRandomAccounts(len(addresses)) {
 		*addresses[i] = addr
 	}
+}
+
+func (s *KeeperTestSuite) bytesToString(address []byte) string {
+	addr, err := s.addressCodec.BytesToString(address)
+	s.Require().NoError(err)
+	return addr
 }
 
 func TestKeeperTestSuite(t *testing.T) {

@@ -18,7 +18,7 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 	_, err := s.queryServer.Balance(s.ctx, nil)
 	s.Require().Error(err)
 
-	tokenID := s.issuedNFTs[s.customer.String()][0].TokenId
+	tokenID := s.issuedNFTs[s.bytesToString(s.customer)][0].TokenId
 	testCases := map[string]struct {
 		contractID string
 		address    sdk.AccAddress
@@ -71,7 +71,7 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 		s.Run(name, func() {
 			req := &collection.QueryBalanceRequest{
 				ContractId: tc.contractID,
-				Address:    tc.address.String(),
+				Address:    s.bytesToString(tc.address),
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.Balance(s.ctx, req)
@@ -131,7 +131,7 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 			}
 			req := &collection.QueryAllBalancesRequest{
 				ContractId: tc.contractID,
-				Address:    tc.address.String(),
+				Address:    s.bytesToString(tc.address),
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.AllBalances(s.ctx, req)
@@ -574,7 +574,7 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 		s.Run(name, func() {
 			req := &collection.QueryGranteeGrantsRequest{
 				ContractId: tc.contractID,
-				Grantee:    tc.grantee.String(),
+				Grantee:    s.bytesToString(tc.grantee),
 			}
 			res, err := s.queryServer.GranteeGrants(s.ctx, req)
 			if !tc.valid {
@@ -636,8 +636,8 @@ func (s *KeeperTestSuite) TestQueryIsOperatorFor() {
 		s.Run(name, func() {
 			req := &collection.QueryIsOperatorForRequest{
 				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				Holder:     tc.holder.String(),
+				Operator:   s.bytesToString(tc.operator),
+				Holder:     s.bytesToString(tc.holder),
 			}
 			res, err := s.queryServer.IsOperatorFor(s.ctx, req)
 			if !tc.valid {
@@ -704,7 +704,7 @@ func (s *KeeperTestSuite) TestQueryHoldersByOperator() {
 			}
 			req := &collection.QueryHoldersByOperatorRequest{
 				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
+				Operator:   s.bytesToString(tc.operator),
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.HoldersByOperator(s.ctx, req)

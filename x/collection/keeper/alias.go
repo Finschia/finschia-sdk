@@ -94,7 +94,7 @@ func (k Keeper) iterateGrantsImpl(ctx sdk.Context, prefix []byte, fn func(contra
 	for ; iterator.Valid(); iterator.Next() {
 		contractID, grantee, permission := splitGrantKey(iterator.Key())
 		grant := collection.Grant{
-			Grantee:    grantee.String(),
+			Grantee:    k.bytesToString(grantee),
 			Permission: permission,
 		}
 
@@ -118,8 +118,8 @@ func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn fun
 	for ; iterator.Valid(); iterator.Next() {
 		contractID, operator, holder := splitAuthorizationKey(iterator.Key())
 		authorization := collection.Authorization{
-			Holder:   holder.String(),
-			Operator: operator.String(),
+			Holder:   k.bytesToString(holder),
+			Operator: k.bytesToString(operator),
 		}
 
 		stop := fn(contractID, authorization)
@@ -242,4 +242,12 @@ func (k Keeper) iterateClassStoreIDs(ctx sdk.Context, fn func(id string) (stop b
 			break
 		}
 	}
+}
+
+func (k Keeper) bytesToString(addressBytes []byte) string {
+	addr, err := k.addressCodec.BytesToString(addressBytes)
+	if err != nil {
+		panic(err)
+	}
+	return addr
 }

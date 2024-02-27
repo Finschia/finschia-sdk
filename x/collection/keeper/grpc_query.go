@@ -290,7 +290,7 @@ func (s queryServer) getToken(ctx sdk.Context, contractID, tokenID string) (coll
 			TokenId:    token.TokenId,
 			Name:       token.Name,
 			Meta:       token.Meta,
-			Owner:      owner.String(),
+			Owner:      s.keeper.bytesToString(owner),
 		}, nil
 	default:
 		panic("cannot reach here: token must be nft")
@@ -404,7 +404,7 @@ func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryH
 	var holders []string
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key, value []byte) error {
 		holder := sdk.AccAddress(key)
-		holders = append(holders, holder.String())
+		holders = append(holders, s.keeper.bytesToString(holder))
 		return nil
 	})
 	if err != nil {

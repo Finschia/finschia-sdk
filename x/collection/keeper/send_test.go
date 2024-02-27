@@ -44,9 +44,9 @@ func (s *KeeperTestSuite) TestSendCoins() {
 
 func (s *KeeperTestSuite) TestAuthorizeOperator() {
 	userDescriptions := map[string]string{
-		s.vendor.String():   "vendor",
-		s.operator.String(): "operator",
-		s.customer.String(): "customer",
+		s.bytesToString(s.vendor):   "vendor",
+		s.bytesToString(s.operator): "operator",
+		s.bytesToString(s.customer): "customer",
 	}
 	for operator, operatorDesc := range userDescriptions {
 		for from, fromDesc := range userDescriptions {
@@ -76,9 +76,9 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 
 func (s *KeeperTestSuite) TestRevokeOperator() {
 	userDescriptions := map[string]string{
-		s.vendor.String():   "vendor",
-		s.operator.String(): "operator",
-		s.customer.String(): "customer",
+		s.bytesToString(s.vendor):   "vendor",
+		s.bytesToString(s.operator): "operator",
+		s.bytesToString(s.customer): "customer",
 	}
 	for operator, operatorDesc := range userDescriptions {
 		for from, fromDesc := range userDescriptions {

@@ -11,7 +11,7 @@ import (
 
 func (s *E2ETestSuite) TestNewTxCmdSendNFT() {
 	val := s.network.Validators[0]
-	tokenID := s.tokenIDs[s.stranger.String()]
+	tokenID := s.tokenIDs[s.stranger]
 
 	testCases := map[string]struct {
 		args  []string
@@ -20,8 +20,8 @@ func (s *E2ETestSuite) TestNewTxCmdSendNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.stranger.String(),
-				s.customer.String(),
+				s.stranger,
+				s.customer,
 				tokenID,
 			},
 			true,
@@ -29,8 +29,8 @@ func (s *E2ETestSuite) TestNewTxCmdSendNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.stranger.String(),
-				s.customer.String(),
+				s.stranger,
+				s.customer,
 				tokenID,
 				"extra",
 			},
@@ -39,16 +39,16 @@ func (s *E2ETestSuite) TestNewTxCmdSendNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.stranger.String(),
-				s.customer.String(),
+				s.stranger,
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.stranger.String(),
-				s.customer.String(),
+				s.stranger,
+				s.customer,
 				tokenID,
 			},
 			false,
@@ -73,7 +73,7 @@ func (s *E2ETestSuite) TestNewTxCmdSendNFT() {
 
 func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 	val := s.network.Validators[0]
-	tokenID := s.tokenIDs[s.customer.String()]
+	tokenID := s.tokenIDs[s.customer]
 
 	testCases := map[string]struct {
 		args    []string
@@ -83,9 +83,9 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
-				s.vendor.String(),
+				s.operator,
+				s.customer,
+				s.vendor,
 				tokenID,
 			},
 			true,
@@ -94,9 +94,9 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
-				s.vendor.String(),
+				s.operator,
+				s.customer,
+				s.vendor,
 				tokenID,
 				"extra",
 			},
@@ -106,9 +106,9 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
-				s.vendor.String(),
+				s.operator,
+				s.customer,
+				s.vendor,
 			},
 			false,
 			false,
@@ -116,9 +116,9 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.String(),
-				s.customer.String(),
-				s.vendor.String(),
+				s.operator,
+				s.customer,
+				s.vendor,
 				tokenID,
 			},
 			false,
@@ -127,9 +127,9 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 		"invalid operator": {
 			[]string{
 				s.contractID,
-				s.stranger.String(),
-				s.customer.String(),
-				s.vendor.String(),
+				s.stranger,
+				s.customer,
+				s.vendor,
 				tokenID,
 			},
 			true,
@@ -166,13 +166,13 @@ func (s *E2ETestSuite) TestNewTxCmdCreateContract() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.vendor.String(),
+				s.vendor,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.vendor.String(),
+				s.vendor,
 				"extra",
 			},
 			false,
@@ -215,14 +215,14 @@ func (s *E2ETestSuite) TestNewTxCmdIssueNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 				"extra",
 			},
 			false,
@@ -236,7 +236,7 @@ func (s *E2ETestSuite) TestNewTxCmdIssueNFT() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.String(),
+				s.operator,
 			},
 			false,
 		},
@@ -268,8 +268,8 @@ func (s *E2ETestSuite) TestNewTxCmdMintNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 				s.nftClassID,
 				fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 			},
@@ -278,8 +278,8 @@ func (s *E2ETestSuite) TestNewTxCmdMintNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 				s.nftClassID,
 				"extra",
 			},
@@ -288,16 +288,16 @@ func (s *E2ETestSuite) TestNewTxCmdMintNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 				s.nftClassID,
 			},
 			false,
@@ -322,7 +322,7 @@ func (s *E2ETestSuite) TestNewTxCmdMintNFT() {
 
 func (s *E2ETestSuite) TestNewTxCmdBurnNFT() {
 	val := s.network.Validators[0]
-	tokenID := s.tokenIDs[s.operator.String()]
+	tokenID := s.tokenIDs[s.operator]
 
 	testCases := map[string]struct {
 		args  []string
@@ -331,7 +331,7 @@ func (s *E2ETestSuite) TestNewTxCmdBurnNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 				tokenID,
 			},
 			true,
@@ -339,7 +339,7 @@ func (s *E2ETestSuite) TestNewTxCmdBurnNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 				tokenID,
 				"extra",
 			},
@@ -348,14 +348,14 @@ func (s *E2ETestSuite) TestNewTxCmdBurnNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.String(),
+				s.operator,
 				tokenID,
 			},
 			false,
@@ -380,7 +380,7 @@ func (s *E2ETestSuite) TestNewTxCmdBurnNFT() {
 
 func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 	val := s.network.Validators[0]
-	tokenID := s.tokenIDs[s.vendor.String()]
+	tokenID := s.tokenIDs[s.vendor]
 
 	testCases := map[string]struct {
 		args    []string
@@ -390,8 +390,8 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.vendor.String(),
+				s.operator,
+				s.vendor,
 				tokenID,
 			},
 			true,
@@ -400,8 +400,8 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.vendor.String(),
+				s.operator,
+				s.vendor,
 				tokenID,
 				"extra",
 			},
@@ -411,8 +411,8 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.vendor.String(),
+				s.operator,
+				s.vendor,
 			},
 			false,
 			false,
@@ -420,8 +420,8 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.String(),
-				s.vendor.String(),
+				s.operator,
+				s.vendor,
 				tokenID,
 			},
 			false,
@@ -430,8 +430,8 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		"invalid operator": {
 			[]string{
 				s.contractID,
-				s.stranger.String(),
-				s.vendor.String(),
+				s.stranger,
+				s.vendor,
 				tokenID,
 			},
 			true,
@@ -469,7 +469,7 @@ func (s *E2ETestSuite) TestNewTxCmdModify() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 				s.nftClassID,
 				"",
 				collection.AttributeKeyName.String(),
@@ -480,7 +480,7 @@ func (s *E2ETestSuite) TestNewTxCmdModify() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 				s.nftClassID,
 				"",
 				collection.AttributeKeyName.String(),
@@ -492,7 +492,7 @@ func (s *E2ETestSuite) TestNewTxCmdModify() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 				s.nftClassID,
 				"",
 				collection.AttributeKeyName.String(),
@@ -502,7 +502,7 @@ func (s *E2ETestSuite) TestNewTxCmdModify() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.operator.String(),
+				s.operator,
 				s.nftClassID,
 				"",
 				collection.AttributeKeyName.String(),
@@ -538,8 +538,8 @@ func (s *E2ETestSuite) TestNewTxCmdGrantPermission() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 				collection.LegacyPermissionMint.String(),
 			},
 			true,
@@ -547,8 +547,8 @@ func (s *E2ETestSuite) TestNewTxCmdGrantPermission() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 				collection.LegacyPermissionMint.String(),
 				"extra",
 			},
@@ -557,8 +557,8 @@ func (s *E2ETestSuite) TestNewTxCmdGrantPermission() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.customer.String(),
+				s.operator,
+				s.customer,
 			},
 			false,
 		},
@@ -590,7 +590,7 @@ func (s *E2ETestSuite) TestNewTxCmdRevokePermission() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.vendor,
 				collection.LegacyPermissionModify.String(),
 			},
 			true,
@@ -598,7 +598,7 @@ func (s *E2ETestSuite) TestNewTxCmdRevokePermission() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.vendor,
 				collection.LegacyPermissionModify.String(),
 				"extra",
 			},
@@ -607,7 +607,7 @@ func (s *E2ETestSuite) TestNewTxCmdRevokePermission() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.vendor,
 			},
 			false,
 		},
@@ -639,16 +639,16 @@ func (s *E2ETestSuite) TestNewTxCmdAuthorizeOperator() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
-				s.customer.String(),
+				s.vendor,
+				s.customer,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
-				s.customer.String(),
+				s.vendor,
+				s.customer,
 				"extra",
 			},
 			false,
@@ -656,7 +656,7 @@ func (s *E2ETestSuite) TestNewTxCmdAuthorizeOperator() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.vendor,
 			},
 			false,
 		},
@@ -688,16 +688,16 @@ func (s *E2ETestSuite) TestNewTxCmdRevokeOperator() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.vendor.String(),
+				s.operator,
+				s.vendor,
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
-				s.vendor.String(),
+				s.operator,
+				s.vendor,
 				"extra",
 			},
 			false,
@@ -705,7 +705,7 @@ func (s *E2ETestSuite) TestNewTxCmdRevokeOperator() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.operator,
 			},
 			false,
 		},

@@ -28,7 +28,7 @@ func (s *E2ETestSuite) TestBalanceGRPC() {
 	}{
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, s.contractID, s.customer.String(), tokenID),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, s.contractID, s.customer, tokenID),
 			false,
 			&collection.QueryBalanceResponse{},
 			&collection.QueryBalanceResponse{
@@ -37,7 +37,7 @@ func (s *E2ETestSuite) TestBalanceGRPC() {
 		},
 		{
 			"not own NFT",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, s.contractID, s.stranger.String(), tokenID),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, s.contractID, s.stranger, tokenID),
 			false,
 			&collection.QueryBalanceResponse{},
 			&collection.QueryBalanceResponse{
@@ -46,14 +46,14 @@ func (s *E2ETestSuite) TestBalanceGRPC() {
 		},
 		{
 			"invalid contract ID",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, "wrong id", s.customer.String(), tokenID),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, "wrong id", s.customer, tokenID),
 			true,
 			&collection.QueryBalanceResponse{},
 			&collection.QueryBalanceResponse{},
 		},
 		{
 			"invalid token ID",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, s.contractID, s.customer.String(), "wrong id"),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, s.contractID, s.customer, "wrong id"),
 			true,
 			&collection.QueryBalanceResponse{},
 			&collection.QueryBalanceResponse{},
@@ -97,13 +97,13 @@ func (s *E2ETestSuite) TestBalancesGRPC() {
 	}{
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s", val.APIAddress, s.contractID, s.vendor.String()),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s", val.APIAddress, s.contractID, s.vendor),
 			false,
 			&collection.QueryAllBalancesResponse{},
 		},
 		{
 			"invalid contract ID",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, "wrong id", s.vendor.String(), tokenID),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/balances/%s/%s", val.APIAddress, "wrong id", s.vendor, tokenID),
 			true,
 			&collection.QueryAllBalancesResponse{},
 		},
@@ -430,7 +430,7 @@ func (s *E2ETestSuite) TestTokenGRPC() {
 			&collection.OwnerNFT{
 				ContractId: s.contractID,
 				TokenId:    tokenID,
-				Owner:      s.vendor.String(),
+				Owner:      s.vendor,
 				Name:       "arctic fox",
 				Meta:       "",
 			},
@@ -505,7 +505,7 @@ func (s *E2ETestSuite) TestGranteeGrantsGRPC() {
 			&collection.QueryGranteeGrantsResponse{
 				Grants: []collection.Grant{
 					{
-						Grantee:    s.stranger.String(),
+						Grantee:    s.stranger,
 						Permission: collection.PermissionIssue,
 					},
 				},

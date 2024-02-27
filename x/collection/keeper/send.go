@@ -102,8 +102,8 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 	store := k.storeService.OpenKVStore(ctx)
 	if ok, _ := store.Has(authorizationKey(contractID, operator, holder)); ok {
 		return &collection.Authorization{
-			Holder:   holder.String(),
-			Operator: operator.String(),
+			Holder:   k.bytesToString(holder),
+			Operator: k.bytesToString(operator),
 		}, nil
 	}
 	return nil, collection.ErrCollectionNotApproved.Wrapf("no authorization by %s to %s", holder, operator)

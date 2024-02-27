@@ -300,18 +300,18 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 	addressToBalanceIndex := make(map[string]int)
 
 	k.iterateContractBalances(ctx, contractID, func(address sdk.AccAddress, balance collection.Coin) (stop bool) {
-		index, ok := addressToBalanceIndex[address.String()]
+		index, ok := addressToBalanceIndex[k.bytesToString(address)]
 		if ok {
 			balances[index].Amount = append(balances[index].Amount, balance)
 			return false
 		}
 
 		accountBalance := collection.Balance{
-			Address: address.String(),
+			Address: k.bytesToString(address),
 			Amount:  collection.Coins{balance},
 		}
 		balances = append(balances, accountBalance)
-		addressToBalanceIndex[address.String()] = len(balances) - 1
+		addressToBalanceIndex[k.bytesToString(address)] = len(balances) - 1
 		return false
 	})
 

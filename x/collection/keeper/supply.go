@@ -13,7 +13,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 	contractID := k.createContract(ctx, contract)
 
 	event := collection.EventCreatedContract{
-		Creator:    creator.String(),
+		Creator:    k.bytesToString(creator),
 		ContractId: contractID,
 		Name:       contract.Name,
 		Meta:       contract.Meta,
@@ -333,8 +333,8 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 
 	event := collection.EventGranted{
 		ContractId: contractID,
-		Granter:    granter.String(),
-		Grantee:    grantee.String(),
+		Granter:    k.bytesToString(granter),
+		Grantee:    k.bytesToString(grantee),
 		Permission: permission,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -351,7 +351,7 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 
 	event := collection.EventRenounced{
 		ContractId: contractID,
-		Grantee:    grantee.String(),
+		Grantee:    k.bytesToString(grantee),
 		Permission: permission,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -363,7 +363,7 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 	store := k.storeService.OpenKVStore(ctx)
 	if ok, _ := store.Has(grantKey(contractID, grantee, permission)); ok {
 		return &collection.Grant{
-			Grantee:    grantee.String(),
+			Grantee:    k.bytesToString(grantee),
 			Permission: permission,
 		}, nil
 	}

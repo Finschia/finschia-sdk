@@ -109,7 +109,7 @@ func (s *KeeperTestSuite) TestMintNFT() {
 }
 
 func (s *KeeperTestSuite) TestBurnCoins() {
-	targetTokenID := s.issuedNFTs[s.customer.String()][0].TokenId
+	targetTokenID := s.issuedNFTs[s.bytesToString(s.customer)][0].TokenId
 	testCases := map[string]struct {
 		contractID string
 		amount     collection.Coin
