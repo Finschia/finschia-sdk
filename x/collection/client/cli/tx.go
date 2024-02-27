@@ -6,6 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"cosmossdk.io/core/address"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -24,7 +26,7 @@ const (
 )
 
 // NewTxCmd returns the transaction commands for this module
-func NewTxCmd() *cobra.Command {
+func NewTxCmd(ac address.Codec) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        collection.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", collection.ModuleName),
@@ -34,22 +36,22 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewTxCmdSendNFT(),
-		NewTxCmdOperatorSendNFT(),
+		NewTxCmdSendNFT(ac),
+		NewTxCmdOperatorSendNFT(ac),
 		NewTxCmdCreateContract(),
 		NewTxCmdIssueNFT(),
-		NewTxCmdMintNFT(),
-		NewTxCmdGrantPermission(),
+		NewTxCmdMintNFT(ac),
+		NewTxCmdGrantPermission(ac),
 		NewTxCmdRevokePermission(),
-		NewTxCmdAuthorizeOperator(),
-		NewTxCmdRevokeOperator(),
+		NewTxCmdAuthorizeOperator(ac),
+		NewTxCmdRevokeOperator(ac),
 		NewTxCmdModify(),
 	)
 
 	return txCmd
 }
 
-func NewTxCmdSendNFT() *cobra.Command {
+func NewTxCmdSendNFT(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send-nft [contract-id] [from] [to] [token-id]",
 		Args:  cobra.ExactArgs(4),
@@ -62,8 +64,14 @@ func NewTxCmdSendNFT() *cobra.Command {
 			if err := cmd.Flags().Set(flags.FlagFrom, from); err != nil {
 				return err
 			}
-
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[1])
 			if err != nil {
 				return err
 			}
@@ -74,9 +82,6 @@ func NewTxCmdSendNFT() *cobra.Command {
 				To:         args[2],
 				TokenIds:   []string{args[3]},
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -85,13 +90,13 @@ func NewTxCmdSendNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdOperatorSendNFT() *cobra.Command {
+func NewTxCmdOperatorSendNFT(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "operator-send-nft [contract-id] [operator] [from] [to] [amount]",
+		Use:   "operator-send-nft [contract-id] [operator] [from] [to] [token-id]",
 		Args:  cobra.ExactArgs(5),
 		Short: "send tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s operator-send-nft [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
+			$ %s tx %s operator-send-nft [contract-id] [operator] [from] [to] [token-id]`, version.AppName, collection.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
@@ -103,6 +108,17 @@ func NewTxCmdOperatorSendNFT() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[2])
+			if err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[3])
+			if err != nil {
+				return err
+			}
 
 			msg := collection.MsgOperatorSendNFT{
 				ContractId: args[0],
@@ -110,9 +126,6 @@ func NewTxCmdOperatorSendNFT() *cobra.Command {
 				From:       args[2],
 				To:         args[3],
 				TokenIds:   []string{args[4]},
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -162,9 +175,6 @@ func NewTxCmdCreateContract() *cobra.Command {
 				Uri:   baseImgURI,
 				Meta:  meta,
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -196,6 +206,10 @@ func NewTxCmdIssueNFT() *cobra.Command {
 				return err
 			}
 
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+
 			name, err := cmd.Flags().GetString(FlagName)
 			if err != nil {
 				return err
@@ -212,9 +226,6 @@ func NewTxCmdIssueNFT() *cobra.Command {
 				Name:       name,
 				Meta:       meta,
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -226,7 +237,7 @@ func NewTxCmdIssueNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdMintNFT() *cobra.Command {
+func NewTxCmdMintNFT(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mint-nft [contract-id] [operator] [to] [class-id]",
 		Args:  cobra.ExactArgs(4),
@@ -245,12 +256,21 @@ func NewTxCmdMintNFT() *cobra.Command {
 				return err
 			}
 
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+
 			name, err := cmd.Flags().GetString(FlagName)
 			if err != nil {
 				return err
 			}
 
 			meta, err := cmd.Flags().GetString(FlagMeta)
+			if err != nil {
+				return err
+			}
+
+			_, err = ac.StringToBytes(args[2])
 			if err != nil {
 				return err
 			}
@@ -266,9 +286,6 @@ func NewTxCmdMintNFT() *cobra.Command {
 				From:       args[1],
 				To:         args[2],
 				Params:     params,
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -300,14 +317,14 @@ func NewTxCmdBurnNFT() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
 
 			msg := collection.MsgBurnNFT{
 				ContractId: args[0],
 				From:       from,
 				TokenIds:   []string{args[2]},
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -317,7 +334,7 @@ func NewTxCmdBurnNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdOperatorBurnNFT() *cobra.Command {
+func NewTxCmdOperatorBurnNFT(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "operator-burn-nft [contract-id] [operator] [from] [token-id]",
 		Args:  cobra.ExactArgs(4),
@@ -335,15 +352,19 @@ func NewTxCmdOperatorBurnNFT() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[2])
+			if err != nil {
+				return err
+			}
 
 			msg := collection.MsgOperatorBurnNFT{
 				ContractId: args[0],
 				Operator:   operator,
 				From:       args[2],
 				TokenIds:   []string{args[3]},
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -371,6 +392,9 @@ func NewTxCmdModify() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
 
 			changes := []collection.Attribute{{
 				Key:   args[4],
@@ -383,9 +407,6 @@ func NewTxCmdModify() *cobra.Command {
 				TokenIndex: args[3],
 				Changes:    changes,
 			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -394,7 +415,7 @@ func NewTxCmdModify() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdGrantPermission() *cobra.Command {
+func NewTxCmdGrantPermission(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "grant-permission [contract-id] [granter] [grantee] [permission]",
 		Args:  cobra.ExactArgs(4),
@@ -412,15 +433,19 @@ func NewTxCmdGrantPermission() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[2])
+			if err != nil {
+				return err
+			}
 
 			msg := collection.MsgGrantPermission{
 				ContractId: args[0],
 				From:       granter,
 				To:         args[2],
 				Permission: args[3],
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -448,14 +473,14 @@ func NewTxCmdRevokePermission() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
 
 			msg := collection.MsgRevokePermission{
 				ContractId: args[0],
 				From:       grantee,
 				Permission: args[2],
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -465,7 +490,7 @@ func NewTxCmdRevokePermission() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdAuthorizeOperator() *cobra.Command {
+func NewTxCmdAuthorizeOperator(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "authorize-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
@@ -483,14 +508,18 @@ func NewTxCmdAuthorizeOperator() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[2])
+			if err != nil {
+				return err
+			}
 
 			msg := collection.MsgAuthorizeOperator{
 				ContractId: args[0],
 				Holder:     holder,
 				Operator:   args[2],
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -500,7 +529,7 @@ func NewTxCmdAuthorizeOperator() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdRevokeOperator() *cobra.Command {
+func NewTxCmdRevokeOperator(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "revoke-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
@@ -518,14 +547,18 @@ func NewTxCmdRevokeOperator() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err = collection.ValidateContractID(args[0]); err != nil {
+				return err
+			}
+			_, err = ac.StringToBytes(args[2])
+			if err != nil {
+				return err
+			}
 
 			msg := collection.MsgRevokeOperator{
 				ContractId: args[0],
 				Holder:     holder,
 				Operator:   args[2],
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},

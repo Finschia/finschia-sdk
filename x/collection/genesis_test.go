@@ -10,12 +10,14 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
 func TestValidateGenesis(t *testing.T) {
 	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	ac := authcodec.NewBech32Codec("cosmos")
 	testCases := map[string]struct {
 		gs    *collection.GenesisState
 		valid bool
@@ -410,7 +412,7 @@ func TestValidateGenesis(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			err := collection.ValidateGenesis(*tc.gs)
+			err := collection.ValidateGenesis(*tc.gs, ac)
 			if !tc.valid {
 				require.Error(t, err)
 				return

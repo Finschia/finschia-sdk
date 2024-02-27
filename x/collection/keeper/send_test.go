@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
@@ -56,9 +54,9 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				fromAddr, err := sdk.AccAddressFromBech32(from)
+				fromAddr, err := s.addressCodec.StringToBytes(from)
 				s.Require().NoError(err)
-				operatorAddr, err := sdk.AccAddressFromBech32(operator)
+				operatorAddr, err := s.addressCodec.StringToBytes(operator)
 				s.Require().NoError(err)
 
 				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, fromAddr, operatorAddr)
@@ -88,9 +86,9 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				fromAddr, err := sdk.AccAddressFromBech32(from)
+				fromAddr, err := s.addressCodec.StringToBytes(from)
 				s.Require().NoError(err)
-				operatorAddr, err := sdk.AccAddressFromBech32(operator)
+				operatorAddr, err := s.addressCodec.StringToBytes(operator)
 				s.Require().NoError(err)
 
 				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, fromAddr, operatorAddr)

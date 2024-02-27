@@ -107,10 +107,10 @@ func (c NFTClass) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateName(c.Name); err != nil {
+	if err := ValidateName(c.Name); err != nil {
 		return err
 	}
-	if err := validateMeta(c.Meta); err != nil {
+	if err := ValidateMeta(c.Meta); err != nil {
 		return err
 	}
 

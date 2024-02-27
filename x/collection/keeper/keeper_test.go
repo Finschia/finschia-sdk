@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
@@ -27,10 +28,11 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx         sdk.Context
-	keeper      keeper.Keeper
-	queryServer collection.QueryServer
-	msgServer   collection.MsgServer
+	ctx          sdk.Context
+	keeper       keeper.Keeper
+	queryServer  collection.QueryServer
+	msgServer    collection.MsgServer
+	addressCodec address.Codec
 
 	vendor   sdk.AccAddress
 	operator sdk.AccAddress
@@ -50,16 +52,16 @@ func (s *KeeperTestSuite) createRandomAccounts(accNum int) []sdk.AccAddress {
 	seenAddresses := make(map[string]bool, accNum)
 	addresses := make([]sdk.AccAddress, accNum)
 	for i := range addresses {
-		var address sdk.AccAddress
+		var addr sdk.AccAddress
 		for {
 			pk := secp256k1.GenPrivKey().PubKey()
-			address = sdk.AccAddress(pk.Address())
-			if !seenAddresses[address.String()] {
-				seenAddresses[address.String()] = true
+			addr = sdk.AccAddress(pk.Address())
+			if !seenAddresses[addr.String()] {
+				seenAddresses[addr.String()] = true
 				break
 			}
 		}
-		addresses[i] = address
+		addresses[i] = addr
 	}
 	return addresses
 }
@@ -131,6 +133,9 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 		ValAddressPrefix: "linkvaloper",
 	}.NewInterfaceRegistry()
 	encCfg.Codec = codec.NewProtoCodec(encCfg.InterfaceRegistry)
+	sdk.GetConfig().SetBech32PrefixForAccount("link", "linkpub")
+	sdk.GetConfig().SetBech32PrefixForValidator("linkvaloper", "linkvaloperpub")
+	sdk.GetConfig().SetBech32PrefixForConsensusNode("linkvalcons", "linkvalconspub")
 
 	collection.RegisterInterfaces(encCfg.InterfaceRegistry)
 	testdata.RegisterInterfaces(encCfg.InterfaceRegistry)
@@ -145,7 +150,8 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 	bapp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
 
 	s.keeper = keeper.NewKeeper(encCfg.Codec, kvStoreService)
-	s.keeper.InitGenesis(s.ctx, collection.DefaultGenesisState())
+	s.addressCodec = encCfg.Codec.InterfaceRegistry().SigningContext().AddressCodec()
+	s.keeper.InitGenesis(s.ctx, collection.DefaultGenesisState(), s.addressCodec)
 	s.keeper.SetParams(s.ctx, collection.Params{})
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
@@ -157,8 +163,8 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 		&s.customer,
 		&s.stranger,
 	}
-	for i, address := range s.createRandomAccounts(len(addresses)) {
-		*addresses[i] = address
+	for i, addr := range s.createRandomAccounts(len(addresses)) {
+		*addresses[i] = addr
 	}
 }
 

@@ -3,12 +3,15 @@ package keeper_test
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
@@ -38,12 +41,16 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
+		from       string
+		to         string
 		err        error
 		events     sdk.Events
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    rootNFTID,
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventSent",
@@ -60,17 +67,54 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			tokenID:    collection.NewNFTID(s.nftClassID, 1),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			err:        collection.ErrContractNotExist,
 		},
-		"not found": {
+		"NFT not found": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			err:        collection.ErrTokenNotExist,
 		},
 		"not owned by": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID(s.nftClassID, s.numNFTs+1),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			err:        collection.ErrTokenNotOwnedBy,
+		},
+		"invalid from": {
+			contractID: s.contractID,
+			tokenID:    rootNFTID,
+			to:         s.vendor.String(),
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid contract id": {
+			tokenID: rootNFTID,
+			from:    s.customer.String(),
+			to:      s.vendor.String(),
+			err:     collection.ErrInvalidContractID,
+		},
+		"invalid to": {
+			contractID: s.contractID,
+			tokenID:    rootNFTID,
+			from:       s.customer.String(),
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty token ids": {
+			contractID: s.contractID,
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
+			err:        collection.ErrEmptyField,
+		},
+		"invalid token ids": {
+			contractID: s.contractID,
+			tokenID:    "null",
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -78,11 +122,20 @@ func (s *KeeperTestSuite) TestMsgSendNFT() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &collection.MsgSendNFT{
-				ContractId: tc.contractID,
-				From:       s.customer.String(),
-				To:         s.vendor.String(),
-				TokenIds:   []string{tc.tokenID},
+			var req *collection.MsgSendNFT
+			if tc.tokenID == "" {
+				req = &collection.MsgSendNFT{
+					ContractId: tc.contractID,
+					From:       tc.from,
+					To:         tc.to,
+				}
+			} else {
+				req = &collection.MsgSendNFT{
+					ContractId: tc.contractID,
+					From:       tc.from,
+					To:         tc.to,
+					TokenIds:   []string{tc.tokenID},
+				}
 			}
 			res, err := s.msgServer.SendNFT(ctx, req)
 			s.Require().ErrorIs(err, tc.err)
@@ -101,16 +154,18 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 
 	testCases := map[string]struct {
 		contractID string
-		operator   sdk.AccAddress
-		from       sdk.AccAddress
+		operator   string
+		from       string
+		to         string
 		tokenID    string
 		err        error
 		events     sdk.Events
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			operator:   s.operator,
-			from:       s.customer,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			tokenID:    rootNFTID,
 			events: sdk.Events{
 				sdk.Event{
@@ -127,31 +182,78 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 		},
 		"contract not found": {
 			contractID: "deadbeef",
-			operator:   s.operator,
-			from:       s.customer,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			tokenID:    rootNFTID,
 			err:        collection.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
-			operator:   s.vendor,
-			from:       s.customer,
+			operator:   s.vendor.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			tokenID:    rootNFTID,
 			err:        collection.ErrCollectionNotApproved,
 		},
-		"not found": {
+		"NFT not found": {
 			contractID: s.contractID,
-			operator:   s.operator,
-			from:       s.customer,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			tokenID:    collection.NewNFTID("deadbeef", 1),
 			err:        collection.ErrTokenNotExist,
 		},
 		"not owned by": {
 			contractID: s.contractID,
-			operator:   s.operator,
-			from:       s.customer,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
 			tokenID:    collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			err:        collection.ErrTokenNotOwnedBy,
+		},
+		"invalid operator": {
+			contractID: s.contractID,
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
+			tokenID:    rootNFTID,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid contract id": {
+			operator: s.operator.String(),
+			from:     s.customer.String(),
+			to:       s.vendor.String(),
+			tokenID:  rootNFTID,
+			err:      collection.ErrInvalidContractID,
+		},
+		"invalid from": {
+			contractID: s.contractID,
+			operator:   s.operator.String(),
+			to:         s.vendor.String(),
+			tokenID:    rootNFTID,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid to": {
+			contractID: s.contractID,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			tokenID:    rootNFTID,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty ids": {
+			contractID: s.contractID,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
+			err:        collection.ErrEmptyField,
+		},
+		"invalid id": {
+			contractID: s.contractID,
+			operator:   s.operator.String(),
+			from:       s.customer.String(),
+			to:         s.vendor.String(),
+			tokenID:    "null",
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -159,12 +261,22 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &collection.MsgOperatorSendNFT{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				From:       tc.from.String(),
-				To:         s.vendor.String(),
-				TokenIds:   []string{tc.tokenID},
+			var req *collection.MsgOperatorSendNFT
+			if tc.tokenID == "" {
+				req = &collection.MsgOperatorSendNFT{
+					ContractId: tc.contractID,
+					Operator:   tc.operator,
+					From:       tc.from,
+					To:         tc.to,
+				}
+			} else {
+				req = &collection.MsgOperatorSendNFT{
+					ContractId: tc.contractID,
+					Operator:   tc.operator,
+					From:       tc.from,
+					To:         tc.to,
+					TokenIds:   []string{tc.tokenID},
+				}
 			}
 			res, err := s.msgServer.OperatorSendNFT(ctx, req)
 			s.Require().ErrorIs(err, tc.err)
@@ -180,17 +292,16 @@ func (s *KeeperTestSuite) TestMsgOperatorSendNFT() {
 
 func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 	testCases := map[string]struct {
-		isNegativeCase bool
-		req            *collection.MsgAuthorizeOperator
-		events         sdk.Events
-		expectedError  error
+		contractID string
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
+		events     sdk.Events
+		err        error
 	}{
 		"valid request": {
-			req: &collection.MsgAuthorizeOperator{
-				ContractId: s.contractID,
-				Holder:     s.customer.String(),
-				Operator:   s.vendor.String(),
-			},
+			contractID: s.contractID,
+			holder:     s.customer,
+			operator:   s.vendor,
 			events: sdk.Events{sdk.Event{
 				Type: "lbm.collection.v1.EventAuthorizedOperator",
 				Attributes: []abci.EventAttribute{
@@ -201,67 +312,79 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			}},
 		},
 		"contract not found": {
-			isNegativeCase: true,
-			req: &collection.MsgAuthorizeOperator{
-				ContractId: "deadbeef",
-				Holder:     s.customer.String(),
-				Operator:   s.vendor.String(),
-			},
-			expectedError: collection.ErrContractNotExist,
+			contractID: "deadbeef",
+			holder:     s.customer,
+			operator:   s.vendor,
+			err:        collection.ErrContractNotExist,
 		},
 		"already approved": {
-			isNegativeCase: true,
-			req: &collection.MsgAuthorizeOperator{
-				ContractId: s.contractID,
-				Holder:     s.customer.String(),
-				Operator:   s.operator.String(),
-			},
-			expectedError: collection.ErrCollectionAlreadyApproved,
+			contractID: s.contractID,
+			holder:     s.customer,
+			operator:   s.operator,
+			err:        collection.ErrCollectionAlreadyApproved,
+		},
+		"invalid contract id": {
+			holder:   s.customer,
+			operator: s.operator,
+			err:      collection.ErrInvalidContractID,
+		},
+		"invalid holder": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty operator": {
+			contractID: s.contractID,
+			holder:     s.customer,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
-			s.Require().NoError(tc.req.ValidateBasic())
-			holder, err := sdk.AccAddressFromBech32(tc.req.Holder)
-			s.Require().NoError(err)
-			operator, err := sdk.AccAddressFromBech32(tc.req.Operator)
-			s.Require().NoError(err)
 			ctx, _ := s.ctx.CacheContext()
-			prevAuth, _ := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
+			prevAuth, _ := s.keeper.GetAuthorization(ctx, tc.contractID, tc.holder, tc.operator)
 
 			// Act
-			res, err := s.msgServer.AuthorizeOperator(ctx, tc.req)
-			if tc.isNegativeCase {
-				s.Require().ErrorIs(err, tc.expectedError)
+			req := &collection.MsgAuthorizeOperator{
+				ContractId: tc.contractID,
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
+			}
+			res, err := s.msgServer.AuthorizeOperator(ctx, req)
+			if tc.err != nil {
+				s.Require().ErrorIs(err, tc.err)
 				return
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
-			curAuth, err := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
+			curAuth, err := s.keeper.GetAuthorization(ctx, tc.contractID, tc.holder, tc.operator)
 			s.Require().NoError(err)
 			s.Require().Nil(prevAuth)
-			s.Require().Equal(tc.req.Holder, curAuth.Holder)
-			s.Require().Equal(tc.req.Operator, curAuth.Operator)
+			h, err := s.addressCodec.BytesToString(tc.holder.Bytes())
+			s.Require().NoError(err)
+			s.Require().Equal(h, curAuth.Holder)
+			o, err := s.addressCodec.BytesToString(tc.operator.Bytes())
+			s.Require().NoError(err)
+			s.Require().Equal(o, curAuth.Operator)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 	testCases := map[string]struct {
-		isNegativeCase bool
-		req            *collection.MsgRevokeOperator
-		events         sdk.Events
-		expectedError  error
+		contractID string
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
+		events     sdk.Events
+		err        error
 	}{
 		"valid request": {
-			req: &collection.MsgRevokeOperator{
-				ContractId: s.contractID,
-				Holder:     s.customer.String(),
-				Operator:   s.operator.String(),
-			},
+			contractID: s.contractID,
+			holder:     s.customer,
+			operator:   s.operator,
 			events: sdk.Events{sdk.Event{
 				Type: "lbm.collection.v1.EventRevokedOperator",
 				Attributes: []abci.EventAttribute{
@@ -272,40 +395,49 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			}},
 		},
 		"contract not found": {
-			isNegativeCase: true,
-			req: &collection.MsgRevokeOperator{
-				ContractId: "deadbeef",
-				Holder:     s.customer.String(),
-				Operator:   s.operator.String(),
-			},
-			expectedError: collection.ErrContractNotExist,
+			contractID: "deadbeef",
+			holder:     s.customer,
+			operator:   s.vendor,
+			err:        collection.ErrContractNotExist,
 		},
 		"no authorization": {
-			isNegativeCase: true,
-			req: &collection.MsgRevokeOperator{
-				ContractId: s.contractID,
-				Holder:     s.customer.String(),
-				Operator:   s.vendor.String(),
-			},
-			expectedError: collection.ErrCollectionNotApproved,
+			contractID: s.contractID,
+			holder:     s.customer,
+			operator:   s.vendor,
+			err:        collection.ErrCollectionNotApproved,
+		},
+		"invalid contract id": {
+			holder:   s.customer,
+			operator: s.operator,
+			err:      collection.ErrInvalidContractID,
+		},
+		"invalid holder": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty operator": {
+			contractID: s.contractID,
+			holder:     s.customer,
+			err:        sdkerrors.ErrInvalidAddress,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// Arrange
-			s.Require().NoError(tc.req.ValidateBasic())
-			holder, err := sdk.AccAddressFromBech32(tc.req.Holder)
-			s.Require().NoError(err)
-			operator, err := sdk.AccAddressFromBech32(tc.req.Operator)
-			s.Require().NoError(err)
 			ctx, _ := s.ctx.CacheContext()
-			prevAuth, _ := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
+			prevAuth, _ := s.keeper.GetAuthorization(ctx, tc.contractID, tc.holder, tc.operator)
 
 			// Act
-			res, err := s.msgServer.RevokeOperator(ctx, tc.req)
-			if tc.isNegativeCase {
-				s.Require().ErrorIs(err, tc.expectedError)
+			req := &collection.MsgRevokeOperator{
+				ContractId: tc.contractID,
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
+			}
+			res, err := s.msgServer.RevokeOperator(ctx, req)
+			if tc.err != nil {
+				s.Require().ErrorIs(err, tc.err)
 				return
 			}
 			s.Require().NoError(err)
@@ -313,9 +445,13 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
 			s.Require().NotNil(prevAuth)
-			s.Require().Equal(tc.req.Holder, prevAuth.Holder)
-			s.Require().Equal(tc.req.Operator, prevAuth.Operator)
-			curAuth, err := s.keeper.GetAuthorization(ctx, tc.req.ContractId, holder, operator)
+			h, err := s.addressCodec.BytesToString(tc.holder.Bytes())
+			s.Require().NoError(err)
+			s.Require().Equal(h, prevAuth.Holder)
+			o, err := s.addressCodec.BytesToString(tc.operator.Bytes())
+			s.Require().NoError(err)
+			s.Require().Equal(o, prevAuth.Operator)
+			curAuth, err := s.keeper.GetAuthorization(ctx, tc.contractID, tc.holder, tc.operator)
 			s.Require().ErrorIs(err, collection.ErrCollectionNotApproved)
 			s.Require().Nil(curAuth)
 		})
@@ -326,6 +462,9 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 	expectedNewContractID := "3336b76f"
 	testCases := map[string]struct {
 		owner  sdk.AccAddress
+		name   string
+		uri    string
+		meta   string
 		err    error
 		events sdk.Events
 	}{
@@ -380,6 +519,33 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 				},
 			},
 		},
+		"invalid owner": {
+			name: "tibetian fox",
+			uri:  "file:///tibetian_fox.png",
+			meta: "Tibetian fox",
+			err:  sdkerrors.ErrInvalidAddress,
+		},
+		"long name": {
+			owner: s.vendor,
+			name:  string(make([]rune, 21)),
+			uri:   "file:///tibetian_fox.png",
+			meta:  "Tibetian fox",
+			err:   collection.ErrInvalidNameLength,
+		},
+		"invalid base image uri": {
+			owner: s.vendor,
+			name:  "tibetian fox",
+			uri:   string(make([]rune, 1001)),
+			meta:  "Tibetian fox",
+			err:   collection.ErrInvalidBaseImgURILength,
+		},
+		"invalid meta": {
+			owner: s.vendor,
+			name:  "tibetian fox",
+			uri:   "file:///tibetian_fox.png",
+			meta:  string(make([]rune, 1001)),
+			err:   collection.ErrInvalidMetaLength,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -388,13 +554,16 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 
 			req := &collection.MsgCreateContract{
 				Owner: tc.owner.String(),
+				Name:  tc.name,
+				Uri:   tc.uri,
+				Meta:  tc.meta,
 			}
 			res, err := s.msgServer.CreateContract(ctx, req)
-			s.Require().Equal(expectedNewContractID, res.ContractId)
-			s.Require().ErrorIs(err, tc.err)
 			if tc.err != nil {
+				s.Require().ErrorIs(err, tc.err)
 				return
 			}
+			s.Require().Equal(expectedNewContractID, res.ContractId)
 
 			s.Require().NotNil(res)
 			s.Require().Equal(tc.events, ctx.EventManager().Events())
@@ -408,6 +577,8 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 	testCases := map[string]struct {
 		contractID string
 		owner      sdk.AccAddress
+		name       string
+		meta       string
 		err        error
 		events     sdk.Events
 	}{
@@ -455,6 +626,32 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 			owner:      s.customer,
 			err:        collection.ErrTokenNoPermission,
 		},
+		"invalid contract id": {
+			owner: s.vendor,
+			name:  "tibetian fox",
+			meta:  "Tibetian Fox",
+			err:   collection.ErrInvalidContractID,
+		},
+		"invalid operator": {
+			contractID: s.contractID,
+			name:       "tibetian fox",
+			meta:       "Tibetian Fox",
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"long name": {
+			contractID: s.contractID,
+			owner:      s.vendor,
+			meta:       "Tibetian Fox",
+			name:       string(make([]rune, 21)),
+			err:        collection.ErrInvalidNameLength,
+		},
+		"invalid meta": {
+			contractID: s.contractID,
+			owner:      s.vendor,
+			name:       "tibetian fox",
+			meta:       string(make([]rune, 1001)),
+			err:        collection.ErrInvalidMetaLength,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -464,6 +661,8 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 			req := &collection.MsgIssueNFT{
 				ContractId: tc.contractID,
 				Owner:      tc.owner.String(),
+				Name:       tc.name,
+				Meta:       tc.meta,
 			}
 			res, err := s.msgServer.IssueNFT(ctx, req)
 			s.Require().ErrorIs(err, tc.err)
@@ -494,6 +693,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
+		to         sdk.AccAddress
 		params     []collection.MintNFTParam
 		err        error
 		events     sdk.Events
@@ -501,6 +701,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
+			to:         s.customer,
 			params:     params,
 			events: sdk.Events{
 				sdk.Event{
@@ -517,22 +718,89 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			from:       s.vendor,
+			to:         s.customer,
 			params:     params,
 			err:        collection.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
+			to:         s.customer,
 			params:     params,
 			err:        collection.ErrTokenNoPermission,
 		},
 		"no class of the token": {
 			contractID: s.contractID,
 			from:       s.vendor,
+			to:         s.customer,
 			params: []collection.MintNFTParam{{
+				Name:      "tibetian fox",
 				TokenType: "deadbeef",
 			}},
 			err: collection.ErrTokenTypeNotExist,
+		},
+		"invalid contract id": {
+			from:   s.vendor,
+			to:     s.customer,
+			params: params,
+			err:    collection.ErrInvalidContractID,
+		},
+		"invalid operator": {
+			contractID: s.contractID,
+			to:         s.customer,
+			params:     params,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid to": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			params:     params,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty params": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			to:         s.customer,
+			err:        collection.ErrEmptyField,
+		},
+		"param of invalid token type": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			to:         s.customer,
+			params: []collection.MintNFTParam{{
+				Name: "tibetian fox",
+			}},
+			err: collection.ErrInvalidTokenType,
+		},
+		"param of empty name": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			to:         s.customer,
+			params: []collection.MintNFTParam{{
+				TokenType: s.nftClassID,
+			}},
+			err: collection.ErrInvalidTokenName,
+		},
+		"param of too long name": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			to:         s.customer,
+			params: []collection.MintNFTParam{{
+				TokenType: s.nftClassID,
+				Name:      string(make([]rune, 21)),
+			}},
+			err: collection.ErrInvalidNameLength,
+		},
+		"param of invalid meta": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			to:         s.customer,
+			params: []collection.MintNFTParam{{
+				TokenType: s.nftClassID,
+				Name:      "tibetian fox",
+				Meta:      string(make([]rune, 1001)),
+			}},
+			err: collection.ErrInvalidMetaLength,
 		},
 	}
 
@@ -543,7 +811,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 			req := &collection.MsgMintNFT{
 				ContractId: tc.contractID,
 				From:       tc.from.String(),
-				To:         s.customer.String(),
+				To:         tc.to.String(),
 				Params:     tc.params,
 			}
 			res, err := s.msgServer.MintNFT(ctx, req)
@@ -597,7 +865,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 			tokenIDs:   []string{rootNFTID},
 			err:        collection.ErrTokenNoPermission,
 		},
-		"not found": {
+		"NFT not found": {
 			contractID: s.contractID,
 			from:       s.vendor,
 			tokenIDs: []string{
@@ -612,6 +880,27 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 				collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			},
 			err: collection.ErrTokenNotOwnedBy,
+		},
+		"invalid contract id": {
+			from:     s.vendor,
+			tokenIDs: []string{rootNFTID},
+			err:      collection.ErrInvalidContractID,
+		},
+		"invalid from": {
+			contractID: s.contractID,
+			tokenIDs:   []string{rootNFTID},
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty ids": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			err:        collection.ErrEmptyField,
+		},
+		"invalid id": {
+			contractID: s.contractID,
+			from:       s.vendor,
+			tokenIDs:   []string{""},
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -686,7 +975,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 			tokenIDs:   []string{rootNFTID},
 			err:        collection.ErrTokenNoPermission,
 		},
-		"not found": {
+		"NFT not found": {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
@@ -703,6 +992,37 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 				collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			},
 			err: collection.ErrTokenNotOwnedBy,
+		},
+		"invalid contract id": {
+			operator: s.operator,
+			from:     s.customer,
+			tokenIDs: []string{rootNFTID},
+			err:      collection.ErrInvalidContractID,
+		},
+		"invalid grantee": {
+			contractID: s.contractID,
+			from:       s.customer,
+			tokenIDs:   []string{rootNFTID},
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid from": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			tokenIDs:   []string{rootNFTID},
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"empty ids": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			from:       s.customer,
+			err:        collection.ErrEmptyField,
+		},
+		"invalid id": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			from:       s.customer,
+			tokenIDs:   []string{""},
+			err:        collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -730,29 +1050,67 @@ func (s *KeeperTestSuite) TestMsgOperatorBurnNFT() {
 
 func (s *KeeperTestSuite) TestMsgModify() {
 	expectedTokenIndex := collection.NewNFTID(s.nftClassID, 1)[8:]
-	changes := []collection.Attribute{{
+	validChanges := []collection.Attribute{{
 		Key:   collection.AttributeKeyName.String(),
 		Value: "test",
 	}}
 
 	testCases := map[string]struct {
-		contractID string
 		operator   sdk.AccAddress
+		contractID string
 		tokenType  string
 		tokenIndex string
+		changes    []collection.Attribute
 		err        error
 		events     sdk.Events
 	}{
-		"valid request": {
+		"valid request - Contract": {
 			contractID: s.contractID,
 			operator:   s.vendor,
+			changes:    validChanges,
 			events: sdk.Events{
 				sdk.Event{
 					Type: "lbm.collection.v1.EventModifiedContract",
 					Attributes: []abci.EventAttribute{
-						{Key: "changes", Value: mustJSONMarshal(changes), Index: false},
+						{Key: "changes", Value: mustJSONMarshal(validChanges), Index: false},
 						{Key: "contract_id", Value: w(s.contractID), Index: false},
 						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+					},
+				},
+			},
+		},
+		"valid request - TokenClass": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenType:  s.nftClassID,
+			changes:    validChanges,
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventModifiedTokenClass",
+					Attributes: []abci.EventAttribute{
+						{Key: "changes", Value: mustJSONMarshal(validChanges), Index: false},
+						{Key: "contract_id", Value: w(s.contractID), Index: false},
+						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+						{Key: "token_type", Value: w(s.nftClassID), Index: false},
+						{Key: "type_name", Value: w(proto.MessageName(&collection.NFTClass{})), Index: false},
+					},
+				},
+			},
+		},
+		"valid request - NFT": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenType:  s.nftClassID,
+			tokenIndex: s.issuedNFTs[s.vendor.String()][0].TokenId[8:],
+			changes:    validChanges,
+			events: sdk.Events{
+				sdk.Event{
+					Type: "lbm.collection.v1.EventModifiedNFT",
+					Attributes: []abci.EventAttribute{
+						{Key: "changes", Value: mustJSONMarshal(validChanges), Index: false},
+						{Key: "contract_id", Value: w(s.contractID), Index: false},
+						{Key: "operator", Value: w(s.vendor.String()), Index: false},
+						{Key: "token_id", Value: w(s.issuedNFTs[s.vendor.String()][0].TokenId), Index: false},
 					},
 				},
 			},
@@ -760,6 +1118,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		"contract not found": {
 			contractID: "deadbeef",
 			operator:   s.vendor,
+			changes:    validChanges,
 			err:        collection.ErrContractNotExist,
 		},
 		"no permission": {
@@ -767,6 +1126,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			operator:   s.customer,
 			tokenType:  s.nftClassID,
 			tokenIndex: expectedTokenIndex,
+			changes:    validChanges,
 			err:        collection.ErrTokenNoPermission,
 		},
 		"nft not found": {
@@ -774,13 +1134,57 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			operator:   s.vendor,
 			tokenType:  s.nftClassID,
 			tokenIndex: collection.NewNFTID(s.nftClassID, s.numNFTs*3+1)[8:],
+			changes:    validChanges,
 			err:        collection.ErrTokenNotExist,
 		},
 		"nft class not found": {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			tokenType:  "deadbeef",
+			changes:    validChanges,
 			err:        collection.ErrTokenTypeNotExist,
+		},
+		"invalid contract id": {
+			operator: s.vendor,
+			changes:  validChanges,
+			err:      collection.ErrInvalidContractID,
+		},
+		"invalid owner": {
+			contractID: s.contractID,
+			changes:    validChanges,
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid key of change": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			changes:    []collection.Attribute{{Key: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
+			err:        collection.ErrInvalidChangesField,
+		},
+		"invalid value of change": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			changes:    []collection.Attribute{{Key: collection.AttributeKeyName.String(), Value: string(make([]rune, 21))}},
+			err:        collection.ErrInvalidNameLength,
+		},
+		"empty changes": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			err:        collection.ErrEmptyChanges,
+		},
+		"too many changes": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			changes:    make([]collection.Attribute, 101),
+			err:        collection.ErrInvalidChangesFieldCount,
+		},
+		"duplicated changes": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			changes: []collection.Attribute{
+				{Key: collection.AttributeKeyBaseImgURI.String(), Value: "hello"},
+				{Key: collection.AttributeKeyURI.String(), Value: "world"},
+			},
+			err: collection.ErrDuplicateChangesField,
 		},
 	}
 
@@ -792,7 +1196,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 				Owner:      tc.operator.String(),
 				TokenType:  tc.tokenType,
 				TokenIndex: tc.tokenIndex,
-				Changes:    changes,
+				Changes:    tc.changes,
 			}
 			res, err := s.msgServer.Modify(ctx, req)
 			s.Require().ErrorIs(err, tc.err)
@@ -845,6 +1249,30 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			grantee:    s.operator,
 			permission: collection.LegacyPermissionModify.String(),
 			err:        collection.ErrTokenNoPermission,
+		},
+		"invalid contract id": {
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: collection.LegacyPermissionMint.String(),
+			err:        collection.ErrInvalidContractID,
+		},
+		"invalid from": {
+			contractID: s.contractID,
+			grantee:    s.operator,
+			permission: collection.LegacyPermissionMint.String(),
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid to": {
+			contractID: s.contractID,
+			granter:    s.vendor,
+			permission: collection.LegacyPermissionMint.String(),
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid permission": {
+			contractID: s.contractID,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			err:        collection.ErrInvalidPermission,
 		},
 	}
 
@@ -904,6 +1332,21 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			from:       s.operator,
 			permission: collection.LegacyPermissionModify.String(),
 			err:        collection.ErrTokenNoPermission,
+		},
+		"invalid contract id": {
+			from:       s.operator,
+			permission: collection.LegacyPermissionMint.String(),
+			err:        collection.ErrInvalidContractID,
+		},
+		"invalid from": {
+			contractID: s.contractID,
+			permission: collection.LegacyPermissionMint.String(),
+			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"invalid permission": {
+			contractID: s.contractID,
+			from:       s.operator,
+			err:        collection.ErrInvalidPermission,
 		},
 	}
 

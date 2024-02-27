@@ -9,6 +9,7 @@ import (
 	rpcclientmock "github.com/cometbft/cometbft/rpc/client/mock"
 	"github.com/stretchr/testify/suite"
 
+	"cosmossdk.io/core/address"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -29,6 +30,7 @@ type CLITestSuite struct {
 
 	kr          keyring.Keyring
 	encCfg      testutilmod.TestEncodingConfig
+	ac          address.Codec
 	baseCtx     client.Context
 	clientCtx   client.Context
 	commonFlags []string
@@ -49,6 +51,7 @@ func TestCLITestSuite(t *testing.T) {
 
 func (s *CLITestSuite) SetupSuite() {
 	s.encCfg = testutilmod.MakeTestEncodingConfig(gov.AppModuleBasic{})
+	s.ac = s.encCfg.InterfaceRegistry.SigningContext().AddressCodec()
 	s.kr = keyring.NewInMemory(s.encCfg.Codec)
 	s.baseCtx = client.Context{}.
 		WithKeyring(s.kr).
@@ -119,15 +122,6 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 			},
 			false,
 		},
-		"amount out of range": {
-			[]string{
-				s.contractID,
-				s.stranger.Address.String(),
-				s.customer.Address.String(),
-				fmt.Sprintf("%s:1%0127d", s.classID, 0),
-			},
-			false,
-		},
 		"invalid contract id": {
 			[]string{
 				"",
@@ -143,7 +137,7 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdSendNFT()
+			cmd := cli.NewTxCmdSendNFT(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -193,16 +187,6 @@ func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
 			},
 			false,
 		},
-		"amount out of range": {
-			[]string{
-				s.contractID,
-				s.operator.Address.String(),
-				s.vendor.Address.String(),
-				s.customer.Address.String(),
-				fmt.Sprintf("%s:1%0127d", s.classID, 0),
-			},
-			false,
-		},
 		"invalid contract id": {
 			[]string{
 				"",
@@ -219,7 +203,7 @@ func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorSendNFT()
+			cmd := cli.NewTxCmdOperatorSendNFT(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -386,7 +370,7 @@ func (s *CLITestSuite) TestNewTxCmdMintNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdMintNFT()
+			cmd := cli.NewTxCmdMintNFT(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -506,7 +490,7 @@ func (s *CLITestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorBurnNFT()
+			cmd := cli.NewTxCmdOperatorBurnNFT(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -627,7 +611,7 @@ func (s *CLITestSuite) TestNewTxCmdGrantPermission() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdGrantPermission()
+			cmd := cli.NewTxCmdGrantPermission(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -725,7 +709,7 @@ func (s *CLITestSuite) TestNewTxCmdAuthorizeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAuthorizeOperator()
+			cmd := cli.NewTxCmdAuthorizeOperator(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -774,7 +758,7 @@ func (s *CLITestSuite) TestNewTxCmdRevokeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdRevokeOperator()
+			cmd := cli.NewTxCmdRevokeOperator(s.ac)
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)

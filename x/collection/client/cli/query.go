@@ -5,9 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"cosmossdk.io/core/address"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
@@ -18,7 +19,7 @@ const (
 )
 
 // NewQueryCmd returns the cli query commands for this module
-func NewQueryCmd() *cobra.Command {
+func NewQueryCmd(ac address.Codec) *cobra.Command {
 	queryCmd := &cobra.Command{
 		Use:                        collection.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", collection.ModuleName),
@@ -29,22 +30,22 @@ func NewQueryCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
-		NewQueryCmdBalances(),
+		NewQueryCmdBalances(ac),
 		NewQueryCmdNFTSupply(),
 		NewQueryCmdNFTMinted(),
 		NewQueryCmdNFTBurnt(),
 		NewQueryCmdContract(),
 		NewQueryCmdToken(),
 		NewQueryCmdTokenType(),
-		NewQueryCmdGranteeGrants(),
-		NewQueryCmdIsOperatorFor(),
-		NewQueryCmdHoldersByOperator(),
+		NewQueryCmdGranteeGrants(ac),
+		NewQueryCmdIsOperatorFor(ac),
+		NewQueryCmdHoldersByOperator(ac),
 	)
 
 	return queryCmd
 }
 
-func NewQueryCmdBalances() *cobra.Command {
+func NewQueryCmdBalances(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "balances [contract-id] [address]",
 		Args:    cobra.ExactArgs(2),
@@ -61,8 +62,8 @@ func NewQueryCmdBalances() *cobra.Command {
 				return err
 			}
 
-			address := args[1]
-			if _, err := sdk.AccAddressFromBech32(address); err != nil {
+			addr := args[1]
+			if _, err := ac.StringToBytes(addr); err != nil {
 				return err
 			}
 
@@ -80,7 +81,7 @@ func NewQueryCmdBalances() *cobra.Command {
 
 				req := &collection.QueryAllBalancesRequest{
 					ContractId: contractID,
-					Address:    address,
+					Address:    addr,
 					Pagination: pageReq,
 				}
 				res, err := queryClient.AllBalances(cmd.Context(), req)
@@ -96,7 +97,7 @@ func NewQueryCmdBalances() *cobra.Command {
 
 			req := &collection.QueryBalanceRequest{
 				ContractId: contractID,
-				Address:    address,
+				Address:    addr,
 				TokenId:    tokenID,
 			}
 			res, err := queryClient.Balance(cmd.Context(), req)
@@ -342,7 +343,7 @@ func NewQueryCmdToken() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdGranteeGrants() *cobra.Command {
+func NewQueryCmdGranteeGrants(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "grantee-grants [contract-id] [grantee]",
 		Args:    cobra.ExactArgs(2),
@@ -360,7 +361,7 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 			}
 
 			grantee := args[1]
-			if _, err := sdk.AccAddressFromBech32(grantee); err != nil {
+			if _, err := ac.StringToBytes(grantee); err != nil {
 				return err
 			}
 
@@ -381,7 +382,7 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdIsOperatorFor() *cobra.Command {
+func NewQueryCmdIsOperatorFor(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "approved [contract-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
@@ -399,12 +400,12 @@ func NewQueryCmdIsOperatorFor() *cobra.Command {
 			}
 
 			operator := args[1]
-			if _, err := sdk.AccAddressFromBech32(operator); err != nil {
+			if _, err := ac.StringToBytes(operator); err != nil {
 				return err
 			}
 
 			holder := args[2]
-			if _, err := sdk.AccAddressFromBech32(holder); err != nil {
+			if _, err := ac.StringToBytes(holder); err != nil {
 				return err
 			}
 
@@ -426,7 +427,7 @@ func NewQueryCmdIsOperatorFor() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdHoldersByOperator() *cobra.Command {
+func NewQueryCmdHoldersByOperator(ac address.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "approvers [contract-id] [operator]",
 		Args:    cobra.ExactArgs(2),
@@ -444,7 +445,7 @@ func NewQueryCmdHoldersByOperator() *cobra.Command {
 			}
 
 			operator := args[1]
-			if _, err := sdk.AccAddressFromBech32(operator); err != nil {
+			if _, err := ac.StringToBytes(operator); err != nil {
 				return err
 			}
 

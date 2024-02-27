@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 
@@ -61,7 +62,7 @@ func (p *ProgressReporter) Tick() {
 }
 
 // InitGenesis new collection genesis
-func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
+func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState, addressCodec address.Codec) {
 	k.SetParams(ctx, data.Params)
 
 	reporter := newProgressReporter(k.Logger(ctx), "import contract", len(data.Contracts))
@@ -111,7 +112,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 		for _, balance := range contractBalances.Balances {
 			for _, coin := range balance.Amount {
-				addr, err := sdk.AccAddressFromBech32(balance.Address)
+				addr, err := addressCodec.StringToBytes(balance.Address)
 				if err != nil {
 					panic(err)
 				}
@@ -141,11 +142,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 	reporter = newProgressReporter(k.Logger(ctx), "import authorizations", len(data.Authorizations))
 	for _, contractAuthorizations := range data.Authorizations {
 		for _, authorization := range contractAuthorizations.Authorizations {
-			holderAddr, err := sdk.AccAddressFromBech32(authorization.Holder)
+			holderAddr, err := addressCodec.StringToBytes(authorization.Holder)
 			if err != nil {
 				panic(err)
 			}
-			operatorAddr, err := sdk.AccAddressFromBech32(authorization.Operator)
+			operatorAddr, err := addressCodec.StringToBytes(authorization.Operator)
 			if err != nil {
 				panic(err)
 			}
@@ -158,7 +159,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 	reporter = newProgressReporter(k.Logger(ctx), "import grants", len(data.Grants))
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			granteeAddr, err := sdk.AccAddressFromBech32(grant.Grantee)
+			granteeAddr, err := addressCodec.StringToBytes(grant.Grantee)
 			if err != nil {
 				panic(err)
 			}

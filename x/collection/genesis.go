@@ -3,6 +3,7 @@ package collection
 import (
 	"math"
 
+	"cosmossdk.io/core/address"
 	cmath "cosmossdk.io/math"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -11,7 +12,7 @@ import (
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues
-func ValidateGenesis(data GenesisState) error {
+func ValidateGenesis(data GenesisState, addressCodec address.Codec) error {
 	if err := validateParams(data.Params); err != nil {
 		return err
 	}
@@ -21,13 +22,13 @@ func ValidateGenesis(data GenesisState) error {
 			return err
 		}
 
-		if err := validateName(contract.Name); err != nil {
+		if err := ValidateName(contract.Name); err != nil {
 			return err
 		}
-		if err := validateURI(contract.Uri); err != nil {
+		if err := ValidateURI(contract.Uri); err != nil {
 			return err
 		}
-		if err := validateMeta(contract.Meta); err != nil {
+		if err := ValidateMeta(contract.Meta); err != nil {
 			return err
 		}
 	}
@@ -100,10 +101,10 @@ func ValidateGenesis(data GenesisState) error {
 			if err := ValidateTokenID(token.TokenId); err != nil {
 				return err
 			}
-			if err := validateName(token.Name); err != nil {
+			if err := ValidateName(token.Name); err != nil {
 				return err
 			}
-			if err := validateMeta(token.Meta); err != nil {
+			if err := ValidateMeta(token.Meta); err != nil {
 				return err
 			}
 		}
@@ -118,10 +119,10 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("authorizations cannot be empty")
 		}
 		for _, authorization := range contractAuthorizations.Authorizations {
-			if _, err := sdk.AccAddressFromBech32(authorization.Holder); err != nil {
+			if _, err := addressCodec.StringToBytes(authorization.Holder); err != nil {
 				return err
 			}
-			if _, err := sdk.AccAddressFromBech32(authorization.Operator); err != nil {
+			if _, err := addressCodec.StringToBytes(authorization.Operator); err != nil {
 				return err
 			}
 		}
@@ -136,7 +137,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("grants cannot be empty")
 		}
 		for _, grant := range contractGrants.Grants {
-			if _, err := sdk.AccAddressFromBech32(grant.Grantee); err != nil {
+			if _, err := addressCodec.StringToBytes(grant.Grantee); err != nil {
 				return err
 			}
 			if err := ValidatePermission(grant.Permission); err != nil {

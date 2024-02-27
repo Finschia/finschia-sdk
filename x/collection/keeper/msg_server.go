@@ -28,13 +28,36 @@ func NewMsgServer(keeper Keeper) collection.MsgServer {
 var _ collection.MsgServer = (*msgServer)(nil)
 
 func (s msgServer) SendNFT(c context.Context, req *collection.MsgSendNFT) (*collection.MsgSendNFTResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.To); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
+	}
+
+	if len(req.TokenIds) == 0 {
+		return nil, collection.ErrEmptyField.Wrap("token ids cannot be empty")
+	}
+	for _, id := range req.TokenIds {
+		if err := collection.ValidateTokenID(id); err != nil {
+			return nil, err
+		}
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	fromAddr, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrap(err.Error())
+	}
 
 	amount := make([]collection.Coin, len(req.TokenIds))
 	for i, id := range req.TokenIds {
@@ -44,12 +67,15 @@ func (s msgServer) SendNFT(c context.Context, req *collection.MsgSendNFT) (*coll
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
 		}
-		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(sdk.AccAddress(fromAddr)) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
 		}
 	}
 
-	toAddr := sdk.MustAccAddressFromBech32(req.To)
+	toAddr, err := s.keeper.addressCodec.StringToBytes(req.To)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
 		panic(err)
@@ -70,14 +96,43 @@ func (s msgServer) SendNFT(c context.Context, req *collection.MsgSendNFT) (*coll
 }
 
 func (s msgServer) OperatorSendNFT(c context.Context, req *collection.MsgOperatorSendNFT) (*collection.MsgOperatorSendNFTResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Operator); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.To); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
+	}
+
+	if len(req.TokenIds) == 0 {
+		return nil, collection.ErrEmptyField.Wrap("token ids cannot be empty")
+	}
+	for _, id := range req.TokenIds {
+		if err := collection.ValidateTokenID(id); err != nil {
+			return nil, err
+		}
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	operatorAddr := sdk.MustAccAddressFromBech32(req.Operator)
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	operatorAddr, err := s.keeper.addressCodec.StringToBytes(req.Operator)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", err)
+	}
+	fromAddr, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, operatorAddr); err != nil {
 		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
@@ -91,12 +146,15 @@ func (s msgServer) OperatorSendNFT(c context.Context, req *collection.MsgOperato
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
 		}
-		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(sdk.AccAddress(fromAddr)) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
 		}
 	}
 
-	toAddr := sdk.MustAccAddressFromBech32(req.To)
+	toAddr, err := s.keeper.addressCodec.StringToBytes(req.To)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
 		panic(err)
@@ -117,14 +175,35 @@ func (s msgServer) OperatorSendNFT(c context.Context, req *collection.MsgOperato
 }
 
 func (s msgServer) AuthorizeOperator(c context.Context, req *collection.MsgAuthorizeOperator) (*collection.MsgAuthorizeOperatorResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Holder); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Operator); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
+	}
+
+	if req.Operator == req.Holder {
+		return nil, collection.ErrApproverProxySame
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	holderAddr := sdk.MustAccAddressFromBech32(req.Holder)
-	operatorAddr := sdk.MustAccAddressFromBech32(req.Operator)
+	holderAddr, err := s.keeper.addressCodec.StringToBytes(req.Holder)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", err)
+	}
+	operatorAddr, err := s.keeper.addressCodec.StringToBytes(req.Operator)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", err)
+	}
 
 	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, holderAddr, operatorAddr); err != nil {
 		return nil, err
@@ -143,14 +222,35 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *collection.MsgAutho
 }
 
 func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOperator) (*collection.MsgRevokeOperatorResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Holder); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Operator); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
+	}
+
+	if req.Operator == req.Holder {
+		return nil, collection.ErrApproverProxySame
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	holderAddr := sdk.MustAccAddressFromBech32(req.Holder)
-	operatorAddr := sdk.MustAccAddressFromBech32(req.Operator)
+	holderAddr, err := s.keeper.addressCodec.StringToBytes(req.Holder)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", err)
+	}
+	operatorAddr, err := s.keeper.addressCodec.StringToBytes(req.Operator)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", err)
+	}
 
 	if err := s.keeper.RevokeOperator(ctx, req.ContractId, holderAddr, operatorAddr); err != nil {
 		return nil, err
@@ -169,6 +269,22 @@ func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOp
 }
 
 func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateContract) (*collection.MsgCreateContractResponse, error) {
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Owner); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", req.Owner)
+	}
+
+	if err := collection.ValidateName(req.Name); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateURI(req.Uri); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateMeta(req.Meta); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	contract := collection.Contract{
@@ -176,7 +292,10 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 		Uri:  req.Uri,
 		Meta: req.Meta,
 	}
-	ownerAddr := sdk.MustAccAddressFromBech32(req.Owner)
+	ownerAddr, err := s.keeper.addressCodec.StringToBytes(req.Owner)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", err)
+	}
 
 	id := s.keeper.CreateContract(ctx, ownerAddr, contract)
 
@@ -184,13 +303,32 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 }
 
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateName(req.Name); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateMeta(req.Meta); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Owner); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", req.Owner)
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	ownerAddr := sdk.MustAccAddressFromBech32(req.Owner)
+	ownerAddr, err := s.keeper.addressCodec.StringToBytes(req.Owner)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", err)
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
 		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
@@ -227,19 +365,57 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 }
 
 func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*collection.MsgMintNFTResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.To); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
+	}
+
+	if len(req.Params) == 0 {
+		return nil, collection.ErrEmptyField.Wrap("mint params cannot be empty")
+	}
+	for _, param := range req.Params {
+		classID := param.TokenType
+		if err := collection.ValidateLegacyNFTClassID(classID); err != nil {
+			return nil, err
+		}
+
+		if len(param.Name) == 0 {
+			return nil, collection.ErrInvalidTokenName
+		}
+		if err := collection.ValidateName(param.Name); err != nil {
+			return nil, err
+		}
+
+		if err := collection.ValidateMeta(param.Meta); err != nil {
+			return nil, err
+		}
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	fromAddr, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
 		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
-	toAddr := sdk.MustAccAddressFromBech32(req.To)
+	toAddr, err := s.keeper.addressCodec.StringToBytes(req.To)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
+	}
 
 	tokens, err := s.keeper.MintNFT(ctx, req.ContractId, toAddr, req.Params)
 	if err != nil {
@@ -264,13 +440,33 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 }
 
 func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*collection.MsgBurnNFTResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+
+	if len(req.TokenIds) == 0 {
+		return nil, collection.ErrEmptyField.Wrap("token ids cannot be empty")
+	}
+	for _, id := range req.TokenIds {
+		if err := collection.ValidateLegacyNFTID(id); err != nil {
+			return nil, err
+		}
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	fromAddr, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
 		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
@@ -284,7 +480,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
 		}
-		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(sdk.AccAddress(fromAddr)) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
 		}
 	}
@@ -309,14 +505,40 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 }
 
 func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperatorBurnNFT) (*collection.MsgOperatorBurnNFTResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Operator); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+
+	if len(req.TokenIds) == 0 {
+		return nil, collection.ErrEmptyField.Wrap("token ids cannot be empty")
+	}
+	for _, id := range req.TokenIds {
+		if err := collection.ValidateLegacyNFTID(id); err != nil {
+			return nil, err
+		}
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
-	operatorAddr := sdk.MustAccAddressFromBech32(req.Operator)
+	fromAddr, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
+	operatorAddr, err := s.keeper.addressCodec.StringToBytes(req.Operator)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", err)
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, operatorAddr); err != nil {
 		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
@@ -334,7 +556,7 @@ func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperato
 		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
 			return nil, err
 		}
-		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(sdk.AccAddress(fromAddr)) {
 			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
 		}
 	}
@@ -359,14 +581,80 @@ func (s msgServer) OperatorBurnNFT(c context.Context, req *collection.MsgOperato
 }
 
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
+	for i, change := range req.Changes {
+		key := change.Key
+		converted := collection.AttrCanonicalKey(key)
+		if converted != key {
+			req.Changes[i].Key = converted
+		}
+	}
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.Owner); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", req.Owner)
+	}
+
+	if len(req.TokenType) != 0 {
+		classID := req.TokenType
+		if err := collection.ValidateClassID(classID); err != nil {
+			return nil, collection.ErrInvalidTokenType.Wrap(err.Error())
+		}
+	}
+
+	if len(req.TokenIndex) != 0 {
+		tokenID := req.TokenType + req.TokenIndex
+		if err := collection.ValidateTokenID(tokenID); err != nil {
+			return nil, collection.ErrInvalidTokenIndex.Wrap(err.Error())
+		}
+		// reject modifying nft class with token index filled (daphne compat.)
+		if collection.ValidateLegacyIdxNFT(tokenID) == nil {
+			return nil, collection.ErrInvalidTokenIndex.Wrap("cannot modify nft class with index filled")
+		}
+	}
+
+	validator := collection.ValidateTokenClassChange
+	if len(req.TokenType) == 0 {
+		if len(req.TokenIndex) == 0 {
+			validator = collection.ValidateContractChange
+		} else {
+			return nil, collection.ErrTokenIndexWithoutType.Wrap("token index without type")
+		}
+	}
+	if len(req.Changes) == 0 {
+		return nil, collection.ErrEmptyChanges.Wrap("empty changes")
+	}
+	if len(req.Changes) > collection.ChangesLimit {
+		return nil, collection.ErrInvalidChangesFieldCount.Wrapf("the number of changes exceeds the limit: %d > %d", len(req.Changes), collection.ChangesLimit)
+	}
+	seenKeys := map[string]bool{}
+	for _, change := range req.Changes {
+		key := change.Key
+		if seenKeys[key] {
+			return nil, collection.ErrDuplicateChangesField.Wrapf("duplicate keys: %s", change.Key)
+		}
+		seenKeys[key] = true
+
+		attribute := collection.Attribute{
+			Key:   change.Key,
+			Value: change.Value,
+		}
+		if err := validator(attribute); err != nil {
+			return nil, err
+		}
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
-	collection.UpdateMsgModify(req)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	operator := sdk.MustAccAddressFromBech32(req.Owner)
+	operator, err := s.keeper.addressCodec.StringToBytes(req.Owner)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", err)
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
 		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
@@ -388,7 +676,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 			if tokenIndex != "" && collection.ValidateNFTID(tokenID) == nil {
 				event := collection.EventModifiedNFT{
 					ContractId: req.ContractId,
-					Operator:   operator.String(),
+					Operator:   req.Owner,
 					TokenId:    tokenID,
 					Changes:    changes,
 				}
@@ -401,7 +689,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 
 			event := collection.EventModifiedTokenClass{
 				ContractId: req.ContractId,
-				Operator:   operator.String(),
+				Operator:   req.Owner,
 				TokenType:  classID,
 				Changes:    changes,
 				TypeName:   proto.MessageName(&collection.NFTClass{}),
@@ -415,7 +703,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 		if req.TokenIndex == "" {
 			event := collection.EventModifiedContract{
 				ContractId: req.ContractId,
-				Operator:   operator.String(),
+				Operator:   req.Owner,
 				Changes:    changes,
 			}
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -437,14 +725,35 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 }
 
 func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPermission) (*collection.MsgGrantPermissionResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+	if _, err := s.keeper.addressCodec.StringToBytes(req.To); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
+	}
+
+	if err := collection.ValidateLegacyPermission(req.Permission); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	granter := sdk.MustAccAddressFromBech32(req.From)
-	grantee := sdk.MustAccAddressFromBech32(req.To)
+	granter, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
+	grantee, err := s.keeper.addressCodec.StringToBytes(req.To)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
+	}
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
@@ -458,13 +767,28 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 }
 
 func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevokePermission) (*collection.MsgRevokePermissionResponse, error) {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.keeper.addressCodec.StringToBytes(req.From); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	}
+
+	if err := collection.ValidateLegacyPermission(req.Permission); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
-	grantee := sdk.MustAccAddressFromBech32(req.From)
+	grantee, err := s.keeper.addressCodec.StringToBytes(req.From)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	}
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {

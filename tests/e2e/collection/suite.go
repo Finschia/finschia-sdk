@@ -7,10 +7,10 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/stretchr/testify/suite"
 
+	"cosmossdk.io/core/address"
 	cmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/testutil"
@@ -26,6 +26,7 @@ type E2ETestSuite struct {
 	suite.Suite
 
 	cfg         network.Config
+	ac          address.Codec
 	network     *network.Network
 	setupHeight int64
 
@@ -54,6 +55,7 @@ func (s *E2ETestSuite) SetupSuite() {
 	var err error
 	s.network, err = network.New(s.T(), s.T().TempDir(), s.cfg)
 	s.Require().NoError(err)
+	s.ac = s.network.Config.InterfaceRegistry.SigningContext().AddressCodec()
 
 	s.commonArgs = []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -144,7 +146,7 @@ func (s *E2ETestSuite) mintNFT(contractID string, operator, to sdk.AccAddress, c
 		fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 	}, s.commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintNFT(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintNFT(s.ac), args)
 	s.Require().NoError(err)
 	txResp := s.getTxResp(out, 0)
 	var event collection.EventMintedNFT
@@ -185,7 +187,7 @@ func (s *E2ETestSuite) grant(contractID string, granter, grantee sdk.AccAddress,
 		collection.LegacyPermission(permission).String(),
 	}, s.commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdGrantPermission(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdGrantPermission(s.ac), args)
 	s.Require().NoError(err)
 	_ = s.getTxResp(out, 0)
 }
@@ -198,7 +200,7 @@ func (s *E2ETestSuite) authorizeOperator(contractID string, holder, operator sdk
 		operator.String(),
 	}, s.commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(s.ac), args)
 	s.Require().NoError(err)
 	_ = s.getTxResp(out, 0)
 }
@@ -225,7 +227,7 @@ func (s *E2ETestSuite) createAccount(uid string) sdk.AccAddress {
 	addr, err := keyInfo.GetAddress()
 	s.Require().NoError(err)
 
-	out, err := clitestutil.MsgSendExec(val.ClientCtx, val.Address, addr, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, cmath.NewInt(1000000))), address.NewBech32Codec("link"), s.commonArgs...)
+	out, err := clitestutil.MsgSendExec(val.ClientCtx, val.Address, addr, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, cmath.NewInt(1000000))), s.ac, s.commonArgs...)
 	s.Require().NoError(err)
 	s.getTxResp(out, 0)
 	return addr

@@ -33,7 +33,7 @@ func NewQueryServer(keeper Keeper) collection.QueryServer {
 }
 
 func (s queryServer) addressFromBech32GRPC(bech32, context string) (sdk.AccAddress, error) {
-	addr, err := sdk.AccAddressFromBech32(bech32)
+	addr, err := s.keeper.addressCodec.StringToBytes(bech32)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, errorsmod.Wrap(sdkerrors.ErrInvalidAddress.Wrap(bech32), context).Error())
 	}

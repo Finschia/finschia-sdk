@@ -188,13 +188,13 @@ func (s *E2ETestSuite) TestStatisticsGRPC() {
 		},
 		{
 			"invalid request (wrong contract ID) - Minted",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/token_types/%s/supply", val.APIAddress, "wrong ID", s.nftClassID),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/token_types/%s/minted", val.APIAddress, "wrong ID", s.nftClassID),
 			true,
 			&collection.QueryNFTMintedResponse{},
 		},
 		{
 			"invalid request (wrong contract ID) - Burnt",
-			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/token_types/%s/supply", val.APIAddress, "wrong ID", s.nftClassID),
+			fmt.Sprintf("%s/lbm/collection/v1/contracts/%s/token_types/%s/burnt", val.APIAddress, "wrong ID", s.nftClassID),
 			true,
 			&collection.QueryNFTBurntResponse{},
 		},
@@ -487,6 +487,8 @@ func (s *E2ETestSuite) TestGranteeGrantsGRPC() {
 	val := s.network.Validators[0]
 	s.grant(s.contractID, s.vendor, s.stranger, collection.PermissionIssue)
 	dummyAddr := "link1hcpqj6w2eq30jcdggs7892lmask0cacvynqg7d"
+	_, err := s.ac.StringToBytes(dummyAddr)
+	s.Require().NoError(err)
 
 	testCases := []struct {
 		name       string
