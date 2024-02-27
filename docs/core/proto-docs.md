@@ -9183,6 +9183,11 @@ Contains the values needed to calculate "all inputs hash".
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `results` | [bytes](#bytes) | repeated |  |
+
+
 
 
 
