@@ -38,12 +38,6 @@ func (zka ZKAuthMsgDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		return ctx, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "invalid public key, %s", err)
 	}
 
-	// todo: How to verify the relationship between pubKey num and msg num?
-	// The number of msg and pubKey should be the same in zkauth message case.
-	if len(msgs) != len(pubKeys) {
-		return ctx, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "The signatures for each Msg do not match.")
-	}
-
 	for i, msg := range msgs {
 		if zkMsg, ok := msg.(*zkauthtypes.MsgExecution); ok {
 			// verify ZKAuth signature
