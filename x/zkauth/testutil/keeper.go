@@ -125,7 +125,7 @@ func (t *TestApp) addAccount(accAddr sdk.AccAddress, accNum int) (authtypes.Acco
 }
 
 func (t *TestApp) AddTestAccounts(addrs []string) ([]authtypes.AccountI, error) {
-	var accounts []authtypes.AccountI
+	accounts := make([]authtypes.AccountI, 0)
 
 	for i, addrStr := range addrs {
 		addr, err := sdk.AccAddressFromBech32(addrStr)
@@ -145,7 +145,7 @@ func (t *TestApp) AddTestAccounts(addrs []string) ([]authtypes.AccountI, error) 
 }
 
 func (t *TestApp) CreateTestTx(pubs []types2.PubKey, accSeqs []uint64) (xauthsigning.Tx, error) {
-	var sigsV2 []signing.SignatureV2
+	sigsV2 := make([]signing.SignatureV2, 0)
 	for i, pub := range pubs {
 		sigV2 := signing.SignatureV2{
 			PubKey: pub,

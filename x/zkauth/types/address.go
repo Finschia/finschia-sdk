@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/binary"
 	"errors"
+	"math/big"
 	"strings"
 
 	"github.com/Finschia/finschia-sdk/types"
@@ -16,13 +17,19 @@ func AccAddressFromAddressSeed(addrSeed, iss string) (types.AccAddress, error) {
 		return types.AccAddress{}, errors.New("empty address seed string is not allowed")
 	}
 
-	addrSeedBytes := []byte(addrSeed)
+	// convert addrSeed string to big endian bytes
+	addrSeedBigInt, ok := new(big.Int).SetString(addrSeed, 10)
+	if !ok {
+		return types.AccAddress{}, errors.New("invalid address seed")
+	}
+	addrSeedBytes := addrSeedBigInt.Bytes()
 
 	if iss == "accounts.google.com" {
 		iss = "https://accounts.google.com"
 	}
 	issBytes := []byte(iss)
 
+	// convert the issBytes length to big endian 2 bytes
 	issL := make([]byte, 2)
 	binary.BigEndian.PutUint16(issL, uint16(len(issBytes)))
 

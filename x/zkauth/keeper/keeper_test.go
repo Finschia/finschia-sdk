@@ -9,12 +9,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/testutil"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
-	"github.com/stretchr/testify/require"
 )
 
 const testData = `{
@@ -57,7 +58,7 @@ func TestFetchJwk(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 	testApp := testutil.ZkAuthKeeper(t)
-	k := testApp.Keeper
+	k := testApp.ZKAuthKeeper
 	ctx := testApp.Ctx
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -78,7 +79,7 @@ func TestFetchJwk(t *testing.T) {
 
 func TestDispatchMsgs(t *testing.T) {
 	testApp := testutil.ZkAuthKeeper(t)
-	app, k, ctx := testApp.Simapp, testApp.Keeper, testApp.Ctx
+	app, k, ctx := testApp.Simapp, testApp.ZKAuthKeeper, testApp.Ctx
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(100))
 	fromAddr := addrs[0]
