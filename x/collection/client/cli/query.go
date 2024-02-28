@@ -5,8 +5,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"cosmossdk.io/core/address"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -19,7 +17,7 @@ const (
 )
 
 // NewQueryCmd returns the cli query commands for this module
-func NewQueryCmd(ac address.Codec) *cobra.Command {
+func NewQueryCmd() *cobra.Command {
 	queryCmd := &cobra.Command{
 		Use:                        collection.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", collection.ModuleName),
@@ -30,22 +28,22 @@ func NewQueryCmd(ac address.Codec) *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
-		NewQueryCmdBalances(ac),
+		NewQueryCmdBalances(),
 		NewQueryCmdNFTSupply(),
 		NewQueryCmdNFTMinted(),
 		NewQueryCmdNFTBurnt(),
 		NewQueryCmdContract(),
 		NewQueryCmdToken(),
 		NewQueryCmdTokenType(),
-		NewQueryCmdGranteeGrants(ac),
-		NewQueryCmdIsOperatorFor(ac),
-		NewQueryCmdHoldersByOperator(ac),
+		NewQueryCmdGranteeGrants(),
+		NewQueryCmdIsOperatorFor(),
+		NewQueryCmdHoldersByOperator(),
 	)
 
 	return queryCmd
 }
 
-func NewQueryCmdBalances(ac address.Codec) *cobra.Command {
+func NewQueryCmdBalances() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "balances [contract-id] [address]",
 		Args:    cobra.ExactArgs(2),
@@ -56,6 +54,7 @@ func NewQueryCmdBalances(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 
 			contractID := args[0]
 			if err := collection.ValidateContractID(contractID); err != nil {
@@ -343,7 +342,7 @@ func NewQueryCmdToken() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdGranteeGrants(ac address.Codec) *cobra.Command {
+func NewQueryCmdGranteeGrants() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "grantee-grants [contract-id] [grantee]",
 		Args:    cobra.ExactArgs(2),
@@ -354,6 +353,7 @@ func NewQueryCmdGranteeGrants(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 
 			contractID := args[0]
 			if err := collection.ValidateContractID(contractID); err != nil {
@@ -382,7 +382,7 @@ func NewQueryCmdGranteeGrants(ac address.Codec) *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdIsOperatorFor(ac address.Codec) *cobra.Command {
+func NewQueryCmdIsOperatorFor() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "approved [contract-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
@@ -393,6 +393,7 @@ func NewQueryCmdIsOperatorFor(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 
 			contractID := args[0]
 			if err := collection.ValidateContractID(contractID); err != nil {
@@ -427,7 +428,7 @@ func NewQueryCmdIsOperatorFor(ac address.Codec) *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdHoldersByOperator(ac address.Codec) *cobra.Command {
+func NewQueryCmdHoldersByOperator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "approvers [contract-id] [operator]",
 		Args:    cobra.ExactArgs(2),
@@ -438,6 +439,7 @@ func NewQueryCmdHoldersByOperator(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 
 			contractID := args[0]
 			if err := collection.ValidateContractID(contractID); err != nil {

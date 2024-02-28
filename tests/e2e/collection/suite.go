@@ -147,7 +147,7 @@ func (s *E2ETestSuite) mintNFT(contractID, operator, to, classID string) string 
 		fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 	}, s.commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintNFT(s.ac), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintNFT(), args)
 	s.Require().NoError(err)
 	txResp := s.getTxResp(out, 0)
 	var event collection.EventMintedNFT
@@ -188,7 +188,7 @@ func (s *E2ETestSuite) grant(contractID, granter, grantee string, permission col
 		collection.LegacyPermission(permission).String(),
 	}, s.commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdGrantPermission(s.ac), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdGrantPermission(), args)
 	s.Require().NoError(err)
 	_ = s.getTxResp(out, 0)
 }
@@ -201,7 +201,7 @@ func (s *E2ETestSuite) authorizeOperator(contractID, holder, operator string) {
 		operator,
 	}, s.commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(s.ac), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
 	s.Require().NoError(err)
 	_ = s.getTxResp(out, 0)
 }

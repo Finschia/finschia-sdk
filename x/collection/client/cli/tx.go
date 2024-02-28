@@ -6,8 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"cosmossdk.io/core/address"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -26,7 +24,7 @@ const (
 )
 
 // NewTxCmd returns the transaction commands for this module
-func NewTxCmd(ac address.Codec) *cobra.Command {
+func NewTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        collection.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", collection.ModuleName),
@@ -36,22 +34,22 @@ func NewTxCmd(ac address.Codec) *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewTxCmdSendNFT(ac),
-		NewTxCmdOperatorSendNFT(ac),
+		NewTxCmdSendNFT(),
+		NewTxCmdOperatorSendNFT(),
 		NewTxCmdCreateContract(),
 		NewTxCmdIssueNFT(),
-		NewTxCmdMintNFT(ac),
-		NewTxCmdGrantPermission(ac),
+		NewTxCmdMintNFT(),
+		NewTxCmdGrantPermission(),
 		NewTxCmdRevokePermission(),
-		NewTxCmdAuthorizeOperator(ac),
-		NewTxCmdRevokeOperator(ac),
+		NewTxCmdAuthorizeOperator(),
+		NewTxCmdRevokeOperator(),
 		NewTxCmdModify(),
 	)
 
 	return txCmd
 }
 
-func NewTxCmdSendNFT(ac address.Codec) *cobra.Command {
+func NewTxCmdSendNFT() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send-nft [contract-id] [from] [to] [token-id]",
 		Args:  cobra.ExactArgs(4),
@@ -68,6 +66,7 @@ func NewTxCmdSendNFT(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
 			}
@@ -90,7 +89,7 @@ func NewTxCmdSendNFT(ac address.Codec) *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdOperatorSendNFT(ac address.Codec) *cobra.Command {
+func NewTxCmdOperatorSendNFT() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "operator-send-nft [contract-id] [operator] [from] [to] [token-id]",
 		Args:  cobra.ExactArgs(5),
@@ -108,6 +107,7 @@ func NewTxCmdOperatorSendNFT(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
 			}
@@ -237,7 +237,7 @@ func NewTxCmdIssueNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdMintNFT(ac address.Codec) *cobra.Command {
+func NewTxCmdMintNFT() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mint-nft [contract-id] [operator] [to] [class-id]",
 		Args:  cobra.ExactArgs(4),
@@ -255,6 +255,7 @@ func NewTxCmdMintNFT(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
@@ -334,7 +335,7 @@ func NewTxCmdBurnNFT() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdOperatorBurnNFT(ac address.Codec) *cobra.Command {
+func NewTxCmdOperatorBurnNFT() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "operator-burn-nft [contract-id] [operator] [from] [token-id]",
 		Args:  cobra.ExactArgs(4),
@@ -352,6 +353,7 @@ func NewTxCmdOperatorBurnNFT(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
 			}
@@ -415,7 +417,7 @@ func NewTxCmdModify() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdGrantPermission(ac address.Codec) *cobra.Command {
+func NewTxCmdGrantPermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "grant-permission [contract-id] [granter] [grantee] [permission]",
 		Args:  cobra.ExactArgs(4),
@@ -433,6 +435,7 @@ func NewTxCmdGrantPermission(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
 			}
@@ -490,7 +493,7 @@ func NewTxCmdRevokePermission() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdAuthorizeOperator(ac address.Codec) *cobra.Command {
+func NewTxCmdAuthorizeOperator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "authorize-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
@@ -511,6 +514,7 @@ func NewTxCmdAuthorizeOperator(ac address.Codec) *cobra.Command {
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 			_, err = ac.StringToBytes(args[2])
 			if err != nil {
 				return err
@@ -529,7 +533,7 @@ func NewTxCmdAuthorizeOperator(ac address.Codec) *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdRevokeOperator(ac address.Codec) *cobra.Command {
+func NewTxCmdRevokeOperator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "revoke-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
@@ -547,6 +551,7 @@ func NewTxCmdRevokeOperator(ac address.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			ac := clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
 			if err = collection.ValidateContractID(args[0]); err != nil {
 				return err
 			}

@@ -59,7 +59,7 @@ func (s *E2ETestSuite) TestNewTxCmdSendNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdSendNFT(s.ac)
+			cmd := cli.NewTxCmdSendNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -141,7 +141,7 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorSendNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorSendNFT(s.ac)
+			cmd := cli.NewTxCmdOperatorSendNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -308,7 +308,7 @@ func (s *E2ETestSuite) TestNewTxCmdMintNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdMintNFT(s.ac)
+			cmd := cli.NewTxCmdMintNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -443,7 +443,7 @@ func (s *E2ETestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorBurnNFT(s.ac)
+			cmd := cli.NewTxCmdOperatorBurnNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -568,7 +568,7 @@ func (s *E2ETestSuite) TestNewTxCmdGrantPermission() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdGrantPermission(s.ac)
+			cmd := cli.NewTxCmdGrantPermission()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -666,7 +666,7 @@ func (s *E2ETestSuite) TestNewTxCmdAuthorizeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAuthorizeOperator(s.ac)
+			cmd := cli.NewTxCmdAuthorizeOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -715,7 +715,7 @@ func (s *E2ETestSuite) TestNewTxCmdRevokeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdRevokeOperator(s.ac)
+			cmd := cli.NewTxCmdRevokeOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, s.commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)

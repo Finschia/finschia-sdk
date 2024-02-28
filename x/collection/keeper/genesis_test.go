@@ -16,7 +16,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 
 	s.keeper.Abandon(ctx, s.contractID, s.vendor, collection.PermissionMint)
 
-	s.keeper.InitGenesis(ctx, genesis, s.addressCodec)
+	s.keeper.InitGenesis(ctx, genesis)
 
 	// export again and compare
 	newGenesis := s.keeper.ExportGenesis(s.ctx)

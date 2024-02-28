@@ -9,7 +9,6 @@ import (
 	rpcclientmock "github.com/cometbft/cometbft/rpc/client/mock"
 	"github.com/stretchr/testify/suite"
 
-	"cosmossdk.io/core/address"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -19,10 +18,10 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testutilmod "github.com/cosmos/cosmos-sdk/types/module/testutil"
-	"github.com/cosmos/cosmos-sdk/x/gov"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 	"github.com/Finschia/finschia-sdk/x/collection/client/cli"
+	collectionmodule "github.com/Finschia/finschia-sdk/x/collection/module"
 )
 
 type CLITestSuite struct {
@@ -30,7 +29,6 @@ type CLITestSuite struct {
 
 	kr          keyring.Keyring
 	encCfg      testutilmod.TestEncodingConfig
-	ac          address.Codec
 	baseCtx     client.Context
 	clientCtx   client.Context
 	commonFlags []string
@@ -50,13 +48,13 @@ func TestCLITestSuite(t *testing.T) {
 }
 
 func (s *CLITestSuite) SetupSuite() {
-	s.encCfg = testutilmod.MakeTestEncodingConfig(gov.AppModuleBasic{})
-	s.ac = s.encCfg.InterfaceRegistry.SigningContext().AddressCodec()
+	s.encCfg = testutilmod.MakeTestEncodingConfig(collectionmodule.AppModuleBasic{})
 	s.kr = keyring.NewInMemory(s.encCfg.Codec)
 	s.baseCtx = client.Context{}.
 		WithKeyring(s.kr).
 		WithTxConfig(s.encCfg.TxConfig).
 		WithCodec(s.encCfg.Codec).
+		WithInterfaceRegistry(s.encCfg.InterfaceRegistry).
 		WithClient(clitestutil.MockCometRPC{Client: rpcclientmock.Client{}}).
 		WithAccountRetriever(client.MockAccountRetriever{}).
 		WithOutput(io.Discard).
@@ -78,11 +76,12 @@ func (s *CLITestSuite) SetupSuite() {
 		fmt.Sprintf("--%s=test-chain", flags.FlagChainID),
 	}
 
-	val := testutil.CreateKeyringAccounts(s.T(), s.kr, 4)
-	s.vendor, _ = s.ac.BytesToString(val[0].Address)
-	s.operator, _ = s.ac.BytesToString(val[1].Address)
-	s.customer, _ = s.ac.BytesToString(val[2].Address)
-	s.stranger, _ = s.ac.BytesToString(val[3].Address)
+	ac := s.clientCtx.InterfaceRegistry.SigningContext().AddressCodec()
+	val := testutil.CreateKeyringAccounts(s.T(), s.kr, 6)
+	s.vendor, _ = ac.BytesToString(val[0].Address)
+	s.operator, _ = ac.BytesToString(val[1].Address)
+	s.customer, _ = ac.BytesToString(val[2].Address)
+	s.stranger, _ = ac.BytesToString(val[3].Address)
 
 	s.contractID = "678c146a"
 	s.classID = "10000001"
@@ -137,7 +136,7 @@ func (s *CLITestSuite) TestNewTxCmdSendNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdSendNFT(s.ac)
+			cmd := cli.NewTxCmdSendNFT()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -203,7 +202,7 @@ func (s *CLITestSuite) TestNewTxCmdOperatorSendNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorSendNFT(s.ac)
+			cmd := cli.NewTxCmdOperatorSendNFT()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -370,7 +369,7 @@ func (s *CLITestSuite) TestNewTxCmdMintNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdMintNFT(s.ac)
+			cmd := cli.NewTxCmdMintNFT()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -490,7 +489,7 @@ func (s *CLITestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorBurnNFT(s.ac)
+			cmd := cli.NewTxCmdOperatorBurnNFT()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -611,7 +610,7 @@ func (s *CLITestSuite) TestNewTxCmdGrantPermission() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdGrantPermission(s.ac)
+			cmd := cli.NewTxCmdGrantPermission()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -709,7 +708,7 @@ func (s *CLITestSuite) TestNewTxCmdAuthorizeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAuthorizeOperator(s.ac)
+			cmd := cli.NewTxCmdAuthorizeOperator()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -758,7 +757,7 @@ func (s *CLITestSuite) TestNewTxCmdRevokeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdRevokeOperator(s.ac)
+			cmd := cli.NewTxCmdRevokeOperator()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, append(tc.args, s.commonFlags...))
 			if !tc.valid {
 				s.Require().Error(err)

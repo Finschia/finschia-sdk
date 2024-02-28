@@ -3,7 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	"cosmossdk.io/core/address"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 
@@ -62,7 +61,8 @@ func (p *ProgressReporter) Tick() {
 }
 
 // InitGenesis new collection genesis
-func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState, addressCodec address.Codec) {
+func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
+	addressCodec := k.addressCodec
 	k.SetParams(ctx, data.Params)
 
 	reporter := newProgressReporter(k.Logger(ctx), "import contract", len(data.Contracts))

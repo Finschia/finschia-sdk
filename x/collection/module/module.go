@@ -8,7 +8,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
@@ -39,7 +38,6 @@ var (
 // AppModuleBasic defines the basic application module used by the collection module.
 type AppModuleBasic struct {
 	cdc codec.Codec
-	ac  address.Codec
 }
 
 // Name returns the ModuleName
@@ -68,7 +66,7 @@ func (ab AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodin
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", collection.ModuleName, err)
 	}
 
-	return collection.ValidateGenesis(data, ab.ac)
+	return collection.ValidateGenesis(data, ab.cdc.InterfaceRegistry().SigningContext().AddressCodec())
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the collection module.
@@ -80,12 +78,12 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 
 // GetQueryCmd returns the cli query commands for this module
 func (ab AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.NewQueryCmd(ab.ac)
+	return cli.NewQueryCmd()
 }
 
 // GetTxCmd returns the transaction commands for this module
 func (ab AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd(ab.ac)
+	return cli.NewTxCmd()
 }
 
 // ____________________________________________________________________________
@@ -99,9 +97,8 @@ type AppModule struct {
 
 // NewAppModule creates a new AppModule object
 func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
-	ac := cdc.InterfaceRegistry().SigningContext().AddressCodec()
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{cdc, ac},
+		AppModuleBasic: AppModuleBasic{cdc},
 		keeper:         keeper,
 	}
 }
@@ -132,7 +129,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
 	var genesisState collection.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
-	am.keeper.InitGenesis(ctx, &genesisState, am.ac)
+	am.keeper.InitGenesis(ctx, &genesisState)
 }
 
 // ExportGenesis returns the exported genesis state as raw bytes for the collection

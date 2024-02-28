@@ -133,9 +133,6 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 		ValAddressPrefix: "linkvaloper",
 	}.NewInterfaceRegistry()
 	encCfg.Codec = codec.NewProtoCodec(encCfg.InterfaceRegistry)
-	sdk.GetConfig().SetBech32PrefixForAccount("link", "linkpub")
-	sdk.GetConfig().SetBech32PrefixForValidator("linkvaloper", "linkvaloperpub")
-	sdk.GetConfig().SetBech32PrefixForConsensusNode("linkvalcons", "linkvalconspub")
 
 	collection.RegisterInterfaces(encCfg.InterfaceRegistry)
 	testdata.RegisterInterfaces(encCfg.InterfaceRegistry)
@@ -151,7 +148,7 @@ func (s *KeeperTestSuite) prepareInitialSetup() {
 
 	s.keeper = keeper.NewKeeper(encCfg.Codec, kvStoreService)
 	s.addressCodec = encCfg.Codec.InterfaceRegistry().SigningContext().AddressCodec()
-	s.keeper.InitGenesis(s.ctx, collection.DefaultGenesisState(), s.addressCodec)
+	s.keeper.InitGenesis(s.ctx, collection.DefaultGenesisState())
 	s.keeper.SetParams(s.ctx, collection.Params{})
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
