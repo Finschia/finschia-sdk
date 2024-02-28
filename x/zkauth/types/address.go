@@ -3,9 +3,10 @@ package types
 import (
 	"encoding/binary"
 	"errors"
+	"strings"
+
 	"github.com/Finschia/finschia-sdk/types"
 	"github.com/tendermint/crypto/blake2b"
-	"strings"
 )
 
 // AccAddressFromAddressSeed create an AccAddress from addressSeed string and iss string

@@ -27,10 +27,10 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
 	}
 
-	sigGasConsumer := opts.SigGasConsumer
-	if sigGasConsumer == nil {
-		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
-	}
+	//sigGasConsumer := opts.SigGasConsumer
+	//if sigGasConsumer == nil {
+	//	sigGasConsumer = ante.DefaultSigVerificationGasConsumer
+	//}
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
