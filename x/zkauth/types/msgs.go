@@ -94,8 +94,12 @@ func (e *MsgExecution) GetMessages() ([]sdk.Msg, error) {
 }
 
 func (e *MsgExecution) GetSigners() []sdk.AccAddress {
-	// TODO:
-	return []sdk.AccAddress{}
+	addr, err := e.ZkAuthSignature.ZkAuthInputs.AccAddress()
+	if err != nil {
+		return nil
+	}
+
+	return []sdk.AccAddress{addr}
 }
 
 func (e *MsgExecution) GetSignBytes() []byte {

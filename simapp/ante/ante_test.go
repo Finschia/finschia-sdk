@@ -51,18 +51,8 @@ func (f *fixture) CreateTestAccounts(numAcc int) ([]authtypes.AccountI, error) {
 
 	for i := 0; i < numAcc; i++ {
 		_, _, addr := testdata.KeyTestPubAddr()
-		acc := f.app.AccountKeeper.NewAccountWithAddress(f.ctx, addr)
-		if err := acc.SetAccountNumber(uint64(i)); err != nil {
-			return nil, err
-		}
-
-		f.app.AccountKeeper.SetAccount(f.ctx, acc)
-		someCoins := sdk.Coins{sdk.NewInt64Coin("cony", 10000000)}
-		if err := f.app.BankKeeper.MintCoins(f.ctx, minttypes.ModuleName, someCoins); err != nil {
-			return nil, err
-		}
-
-		if err := f.app.BankKeeper.SendCoinsFromModuleToAccount(f.ctx, minttypes.ModuleName, addr, someCoins); err != nil {
+		acc, err := f.addAccount(addr, i)
+		if err != nil {
 			return nil, err
 		}
 
@@ -71,8 +61,49 @@ func (f *fixture) CreateTestAccounts(numAcc int) ([]authtypes.AccountI, error) {
 	return accounts, nil
 }
 
+func (f *fixture) addAccount(accAddr sdk.AccAddress, accNum int) (authtypes.AccountI, error) {
+	acc := f.app.AccountKeeper.NewAccountWithAddress(f.ctx, accAddr)
+	if err := acc.SetAccountNumber(uint64(accNum)); err != nil {
+		return nil, err
+	}
+
+	f.app.AccountKeeper.SetAccount(f.ctx, acc)
+	someCoins := sdk.Coins{sdk.NewInt64Coin("cony", 10000000)}
+	if err := f.app.BankKeeper.MintCoins(f.ctx, minttypes.ModuleName, someCoins); err != nil {
+		return nil, err
+	}
+
+	if err := f.app.BankKeeper.SendCoinsFromModuleToAccount(f.ctx, minttypes.ModuleName, accAddr, someCoins); err != nil {
+		return nil, err
+	}
+
+	return acc, nil
+}
+
+func (f *fixture) AddTestAccounts(addrs []string) ([]authtypes.AccountI, error) {
+	var accounts []authtypes.AccountI
+
+	for i, addrStr := range addrs {
+		addr, err := sdk.AccAddressFromBech32(addrStr)
+		if err != nil {
+			return nil, err
+		}
+
+		acc, err := f.addAccount(addr, i)
+		if err != nil {
+			return nil, err
+		}
+
+		accounts = append(accounts, acc)
+	}
+
+	return accounts, nil
+}
+
 func TestAnteHandler(t *testing.T) {
 	f := initFixture(t)
+	_, err := f.AddTestAccounts([]string{"link1scmaqcayll6gqwuhl24vtvxe6484t35hqw2qn3ewfqsy704986hqcf5hdw"})
+	require.NoError(t, err)
 
 	const sampleTxBase64 = "CqcDCqQDCiUvZmluc2NoaWEuemthdXRoLnYxYmV0YTEuTXNnRXhlY3V0aW9uEvoCCo4BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm4KP2xpbmsxZzd1ZDYzZXFsbGo3emo0cTdma2NhNWg3czIyM2o3OHR5dnIwZTJjeHV3NHF5eWFhZjN1c2E2NGRxYxIrbGluazEwMDh3ZW5ncjI4ejVxdWF0MmR6cnBydDloOGV1YXY0aGVyZnl1bRLmAQrfAQoAEiRhSFIwY0hNNkx5OWhZMk52ZFc1MGN5NW5iMjluYkdVdVkyOXQaZmV5SmhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJalptT1RjM04yRTJPRFU1TURjM09UaGxaamM1TkRBMk1tTXdNR0kyTldRMk5tTXlOREJpTVdJaUxDSjBlWEFpT2lKS1YxUWlmUSJNMTUwMzUxNjE1NjAxNTk5NzE2MzM4MDA5ODM2MTk5MzE0OTg2OTYxNTI2MzM0MjY3NjgwMTY5NjYwNTc3NzA2NDMyNjIwMjIwOTYwNzMQsvUDEmQKTgpGCh8vY29zbW9zLmNyeXB0by5zZWNwMjU2azEuUHViS2V5EiMKIQKyVtAnnf04mVywH48pAVe6XiIYG8FAAUYUHj4rYpY8qxIECgIIARISCgwKBGNvbnkSBDIwMDAQwJoMGkBz80Odj/WNAR7enMKapTpn+uHqak/ZLD+zpC7CylCJjGd9ThHLAZteIB3W85ZuZfl5S3c37De7j7Z99p7M7sdv"
 	sampleTxBytes, err := base64.StdEncoding.DecodeString(sampleTxBase64)

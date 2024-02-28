@@ -41,9 +41,11 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewValidateMemoDecorator(opts.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
 		ante.NewDeductFeeDecorator(opts.AccountKeeper, opts.BankKeeper, opts.FeegrantKeeper),
-		ante.NewSetPubKeyDecorator(opts.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+		// todo: SetPubKeyDecorator should modify for zkauth
+		//ante.NewSetPubKeyDecorator(opts.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
-		ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
+		// todo: SigGasConsumeDecorator should modify for zkauth
+		//ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
 		ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
 		zkauthante.NewZKAuthMsgDecorator(opts.ZKAuthKeeper),
 		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),

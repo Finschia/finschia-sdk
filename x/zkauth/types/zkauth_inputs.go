@@ -11,6 +11,7 @@ import (
 	"github.com/iden3/go-iden3-crypto/poseidon"
 	"github.com/pkg/errors"
 
+	"github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
@@ -235,4 +236,8 @@ func (zk *ZKAuthInputs) Validate() error {
 	}
 
 	return nil
+}
+
+func (zk *ZKAuthInputs) AccAddress() (types.AccAddress, error) {
+	return AccAddressFromAddressSeed(zk.AddressSeed, zk.IssF)
 }
