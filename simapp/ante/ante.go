@@ -46,7 +46,7 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
 		// todo: SigGasConsumeDecorator should modify for zkauth
 		//ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
-		ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
+		//ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
 		zkauthante.NewZKAuthMsgDecorator(opts.ZKAuthKeeper),
 		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),
 	}

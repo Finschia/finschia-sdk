@@ -5,103 +5,20 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/Finschia/finschia-sdk/client"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	types2 "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/finschia-sdk/simapp"
-	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
-	xauthsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	banktype "github.com/Finschia/finschia-sdk/x/bank/types"
-	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/ante"
+	"github.com/Finschia/finschia-sdk/x/zkauth/testutil"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 )
 
-type fixture struct {
-	app       *simapp.SimApp
-	ctx       sdk.Context
-	clientCtx client.Context
-	txBuilder client.TxBuilder
-}
-
-func initFixture(t *testing.T) *fixture {
-	t.Helper()
-	const isCheckTx = false
-	app := simapp.Setup(isCheckTx)
-	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
-	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())
-
-	// Set up TxConfig
-	encodingConfig := simapp.MakeTestEncodingConfig()
-	encodingConfig.Amino.RegisterConcrete(&testdata.TestMsg{}, "testdata.TestMsg", nil)
-	testdata.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
-	clientCtx := client.Context{}.WithTxConfig(encodingConfig.TxConfig)
-
-	return &fixture{
-		app:       app,
-		ctx:       ctx,
-		clientCtx: clientCtx,
-		txBuilder: clientCtx.TxConfig.NewTxBuilder(),
-	}
-}
-
-func (f *fixture) CreateTestAccounts(numAcc int) ([]authtypes.AccountI, error) {
-	var accounts []authtypes.AccountI
-
-	for i := 0; i < numAcc; i++ {
-		_, _, addr := testdata.KeyTestPubAddr()
-		acc := f.app.AccountKeeper.NewAccountWithAddress(f.ctx, addr)
-		if err := acc.SetAccountNumber(uint64(i)); err != nil {
-			return nil, err
-		}
-
-		f.app.AccountKeeper.SetAccount(f.ctx, acc)
-		someCoins := sdk.Coins{sdk.NewInt64Coin("cony", 10000000)}
-		if err := f.app.BankKeeper.MintCoins(f.ctx, minttypes.ModuleName, someCoins); err != nil {
-			return nil, err
-		}
-
-		if err := f.app.BankKeeper.SendCoinsFromModuleToAccount(f.ctx, minttypes.ModuleName, addr, someCoins); err != nil {
-			return nil, err
-		}
-
-		accounts = append(accounts, acc)
-	}
-	return accounts, nil
-}
-
-func (f *fixture) CreateTestTx(pubs []types2.PubKey, accSeqs []uint64) (xauthsigning.Tx, error) {
-	var sigsV2 []signing.SignatureV2
-	for i, pub := range pubs {
-		sigV2 := signing.SignatureV2{
-			PubKey: pub,
-			Data: &signing.SingleSignatureData{
-				SignMode:  f.clientCtx.TxConfig.SignModeHandler().DefaultMode(),
-				Signature: nil,
-			},
-			Sequence: accSeqs[i],
-		}
-
-		sigsV2 = append(sigsV2, sigV2)
-	}
-	err := f.txBuilder.SetSignatures(sigsV2...)
-	if err != nil {
-		return nil, err
-	}
-
-	return f.txBuilder.GetTx(), nil
-}
-
 func TestNewZKAuthMsgDecorator(t *testing.T) {
-	f := initFixture(t)
-	decorator := ante.NewZKAuthMsgDecorator(f.app.ZKAuthKeeper)
+	f := testutil.ZkAuthKeeper(t)
+	decorator := ante.NewZKAuthMsgDecorator(f.ZKAuthKeeper)
 	accounts, err := f.CreateTestAccounts(2)
 	require.NoError(t, err)
 
@@ -125,7 +42,7 @@ func TestNewZKAuthMsgDecorator(t *testing.T) {
 			MaxBlockHeight: 32754,
 		},
 	}
-	err = f.txBuilder.SetMsgs(msg)
+	err = f.TxBuilder.SetMsgs(msg)
 	require.NoError(t, err)
 
 	ephPubKey, ok := new(big.Int).SetString("18948426102457371978524559226152399917062673825697601263047735920285791872240", 10)
@@ -134,7 +51,7 @@ func TestNewZKAuthMsgDecorator(t *testing.T) {
 	tx, err := f.CreateTestTx([]types2.PubKey{&pub}, []uint64{uint64(0)})
 	require.NoError(t, err)
 
-	_, err = decorator.AnteHandle(f.ctx, tx, false, func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
+	_, err = decorator.AnteHandle(f.Ctx, tx, false, func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
 		return ctx, nil
 	})
 	require.NoError(t, err)
