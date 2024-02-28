@@ -58,6 +58,13 @@ func ZkAuthKeeper(t testing.TB) TestApp {
 		Alg: "RS256",
 		Kid: "55c188a83546fc188e51576ba72836e0600e8b73",
 	})
+	jwKsMap.AddJWK(&types.JWK{
+		N:   "pOpd5-7RpMvcfBcSjqlTNYjGg3YRwYRV9T9k7eDOEWgMBQEs6ii3cjcuoa1oD6N48QJmcNvAme_ud985DV2mQpOaCUy22MVRKI8DHxAKGWzZO5yzn6otsN9Vy0vOEO_I-vnmrO1-1ONFuH2zieziaXCUVh9087dRkM9qaQYt6QJhMmiNpyrbods6AsU8N1jeAQl31ovHWGGk8axXNmwbx3dDZQhx-t9ZD31oF-usPhFZtM92mxgehDqi2kpvFmM0nzSVgPrOXlbDb9ztg8lclxKwnT1EtcwHUq4FeuOPQMtZ2WehrY10OvsqS5ml3mxXUQEXrtYfa5V1v4o3rWx9Ow",
+		Kty: "RSA",
+		Alg: "RS256",
+		E:   "AQAB",
+		Kid: "6f9777a685907798ef794062c00b65d66c240b1b",
+	})
 
 	homeDir := filepath.Join(t.TempDir(), "x_zkauth_keeper_test")
 	t.Log("home dir: ", homeDir)
