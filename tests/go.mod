@@ -20,7 +20,7 @@ require (
 	github.com/cosmos/cosmos-proto v1.0.0-beta.3 // indirect
 	// this version is not used as it is always replaced by the latest Cosmos SDK version
 	github.com/cosmos/cosmos-sdk v0.51.0
-	github.com/cosmos/gogoproto v1.4.11 // indirect
+	github.com/cosmos/gogoproto v1.4.11
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/stretchr/testify v1.8.4
@@ -33,7 +33,8 @@ require (
 require (
 	github.com/Finschia/finschia-sdk/simapp v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
-	github.com/gogo/protobuf v1.3.2
+	github.com/Finschia/finschia-sdk/x/stakingplus v0.0.0-00010101000000-000000000000
+	github.com/cosmos/go-bip39 v1.0.0
 )
 
 require (
@@ -69,7 +70,6 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cometbft/cometbft-db v0.9.1 // indirect
 	github.com/cosmos/btcutil v1.0.5 // indirect
-	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.0.0 // indirect
 	github.com/cosmos/ics23/go v0.10.0 // indirect
@@ -93,6 +93,7 @@ require (
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -214,11 +215,9 @@ replace (
 )
 
 replace (
+	github.com/Finschia/finschia-sdk/x/bankplus => ../x/bankplus
+	github.com/Finschia/finschia-sdk/x/foundation => ./../x/foundation
+	github.com/Finschia/finschia-sdk/x/stakingplus => ./../x/stakingplus
 	github.com/cometbft/cometbft => github.com/Finschia/cometbft v0.0.0-20231127181424-2aacfbe9832d
 	github.com/cosmos/cosmos-sdk => github.com/Finschia/cosmos-sdk v0.0.0-20231211060251-d8fb76d4c267
 )
-
-// transient in this PR
-replace github.com/Finschia/finschia-sdk/x/foundation => ./../x/foundation
-
-replace github.com/Finschia/finschia-sdk/x/bankplus => ../x/bankplus

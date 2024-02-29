@@ -8,5 +8,6 @@ use (
 	./simapp
 	./tests
 	./x/foundation
+	./x/stakingplus
 	./x/bankplus
 )

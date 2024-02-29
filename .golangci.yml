@@ -52,8 +52,7 @@ issues:
     - text: "SA1019: codec.NewAminoCodec is deprecated" # TODO remove once migration path is set out
       linters:
         - staticcheck
-    - path: "client/cli"  # TODO(@0Tech): remove after foundation exec proposal removed
-      text: "SA1019: govcli.FlagDescription is deprecated"
+    - text: "SA1019: govcli.FlagDescription is deprecated" # TODO(@0Tech): remove after foundation exec proposal removed
       linters:
         - staticcheck
     - text: "leading space"

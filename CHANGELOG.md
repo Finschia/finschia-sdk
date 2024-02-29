@@ -40,12 +40,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.48.0...HEAD)
 
 ### Features
-
-* (x/foundation) [\#1198](https://github.com/Finschia/finschia-sdk/pull/1198) update x/foundation to use
-  Finschia/cosmos-sdk
+* (x/staking) [\#1214](https://github.com/Finschia/finschia-sdk/pull/1214) update x/stakingplus to use Finschia/cosmos-sdk
+* (x/foundation) [\#1198](https://github.com/Finschia/finschia-sdk/pull/1198) update x/foundation to use Finschia/cosmos-sdk
 * (all) [\#1205](https://github.com/Finschia/finschia-sdk/pull/1205) delegate native logics to Finschia/cosmos-sdk
 * (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
-* (x/bankplus) [\#1223](https://github.com/Finschia/finschia-sdk/pull/1223) update x/bankplus to use Finschia/cosmos-sdk
 
 ### Improvements
 * (docs) [\#1120](https://github.com/Finschia/finschia-sdk/pull/1120) Update links in x/foundation README.md
@@ -55,6 +53,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/crisis) [#1167](https://github.com/Finschia/finschia-sdk/pull/1167) Use `CacheContext()` in `AssertInvariants()`
 * (chore) [\#1168](https://github.com/Finschia/finschia-sdk/pull/1168) Replace `ExactArgs(0)` with `NoArgs()` in `x/upgrade` module
 * (server) [\#1175](https://github.com/Finschia/finschia-sdk/pull/1175) Use go embed for swagger
+* (e2e) [\#1237](https://github.com/Finschia/finschia-sdk/pull/1237) Check tx result on x/foundation e2e test
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
@@ -63,7 +62,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
-* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24 
+* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
 
 ### State Machine Breaking
 
