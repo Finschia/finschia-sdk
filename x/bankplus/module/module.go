@@ -97,8 +97,6 @@ func init() {
 	)
 }
 
-type DeactMultiSend bool
-
 type ModuleInputs struct {
 	depinject.In
 
@@ -107,8 +105,7 @@ type ModuleInputs struct {
 	StoreService store.KVStoreService
 	Logger       log.Logger
 
-	AccountKeeper  banktypes.AccountKeeper
-	DeactMultiSend DeactMultiSend
+	AccountKeeper banktypes.AccountKeeper
 
 	// LegacySubspace is used solely for migration of x/params managed parameters
 	LegacySubspace exported.Subspace `optional:"true"`
