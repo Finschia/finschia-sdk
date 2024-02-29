@@ -45,9 +45,11 @@ type AppModule struct {
 	bankKeeper     bankkeeper.Keeper
 	accountKeeper  banktypes.AccountKeeper
 	legacySubspace exported.Subspace
+
+	bankplusKeeper keeper.BaseKeeper
 }
 
-func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accKeeper banktypes.AccountKeeper, ss exported.Subspace) AppModule {
+func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accKeeper banktypes.AccountKeeper, ss exported.Subspace, bankplus keeper.BaseKeeper) AppModule {
 	appModule := bank.NewAppModule(cdc, keeper, accKeeper, ss)
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{
@@ -57,6 +59,7 @@ func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accKeeper banktypes
 		bankKeeper:     keeper,
 		accountKeeper:  accKeeper,
 		legacySubspace: ss,
+		bankplusKeeper: bankplus,
 	}
 }
 
@@ -73,8 +76,8 @@ func (a AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 func (a AppModule) RegisterServices(cfg module.Configurator) {
 	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(a.bankKeeper))
 	banktypes.RegisterQueryServer(cfg.QueryServer(), a.bankKeeper)
-	m := bankkeeper.NewMigrator(a.bankKeeper.(bankkeeper.BaseKeeper), a.legacySubspace)
-	if err := cfg.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2); err != nil {
+	bkplusMigrator := keeper.NewMigrator(a.bankplusKeeper)
+	if err := cfg.RegisterMigration(banktypes.ModuleName, 1, bkplusMigrator.WrappedMigrateBankplusWithBankMigrate1to2); err != nil {
 		panic(fmt.Sprintf("failed to migrate x/bank from version 1 to 2: %v", err))
 	}
 }
@@ -158,13 +161,12 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.StoreService,
 		in.AccountKeeper,
 		blockedAddresses,
-		bool(in.DeactMultiSend),
 		authorityString,
 		in.Logger,
 	)
 
 	originalBankKeeper := bankkeeper.NewBaseKeeper(in.Cdc, in.StoreService, in.AccountKeeper, blockedAddresses, authorityString, in.Logger)
-	m := NewAppModule(in.Cdc, originalBankKeeper, in.AccountKeeper, in.LegacySubspace)
+	m := NewAppModule(in.Cdc, originalBankKeeper, in.AccountKeeper, in.LegacySubspace, bankKeeper)
 
 	return ModuleOutputs{
 		BankKeeper: bankKeeper,

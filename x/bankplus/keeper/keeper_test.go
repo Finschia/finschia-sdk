@@ -19,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -115,7 +114,6 @@ func (s *IntegrationTestSuite) SetupTest() {
 		storeService,
 		s.authKeeper,
 		map[string]bool{},
-		true,
 		authorityString,
 		log.NewNopLogger(),
 	)
@@ -192,59 +190,6 @@ func (s *IntegrationTestSuite) verifySendAccountToModule() {
 	s.Require().Equal(initCoins, getCoinsByName(s.ctx, s.cut, s.authKeeper, authtypes.Burner))
 }
 
-func (s *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
-	s.mintInitialBalances()
-	s.verifySendToBlockedAddr()
-	s.mintInitialBalances()
-	s.verifySendToBlockedAddrAfterRemoveIt()
-}
-
-func (s *IntegrationTestSuite) verifySendToBlockedAddr() {
-	s.Require().False(s.cut.IsInactiveAddr(s.blockedAcc.GetAddress()))
-	s.cut.AddToInactiveAddr(s.ctx, s.blockedAcc.GetAddress())
-	s.Require().True(s.cut.IsInactiveAddr(s.blockedAcc.GetAddress()))
-
-	err := s.cut.SendCoins(s.ctx, s.holderAcc.GetAddress(), s.blockedAcc.GetAddress(), initCoins)
-	s.Require().Contains(err.Error(), "is not allowed to receive funds")
-}
-
-func (s *IntegrationTestSuite) verifySendToBlockedAddrAfterRemoveIt() {
-	s.cut.DeleteFromInactiveAddr(s.ctx, s.blockedAcc.GetAddress())
-	s.Require().False(s.cut.IsInactiveAddr(s.blockedAcc.GetAddress()))
-	s.Require().NoError(s.cut.SendCoins(s.ctx, s.holderAcc.GetAddress(), s.blockedAcc.GetAddress(), initCoins))
-	s.Require().Equal(sdk.NewCoins().String(), s.cut.GetAllBalances(s.ctx, s.holderAcc.GetAddress()).String())
-}
-
-func (s *IntegrationTestSuite) TestInitializeBankPlus() {
-	authorityString, err := s.addrCdc.BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
-	s.Require().NoError(err)
-	newKeeper := NewBaseKeeper(
-		s.cdc,
-		s.storeService,
-		s.authKeeper,
-		map[string]bool{},
-		true,
-		authorityString,
-		log.NewNopLogger(),
-	)
-
-	newKeeper.AddToInactiveAddr(s.ctx, s.blockedAcc.GetAddress())
-	s.Require().True(newKeeper.IsInactiveAddr(s.blockedAcc.GetAddress()))
-
-	anotherNewKeeper := NewBaseKeeper(
-		s.cdc,
-		s.storeService,
-		s.authKeeper,
-		map[string]bool{},
-		true,
-		authorityString,
-		log.NewNopLogger(),
-	)
-
-	anotherNewKeeper.InitializeBankPlus(s.ctx)
-	s.Require().True(anotherNewKeeper.IsInactiveAddr(s.blockedAcc.GetAddress()))
-}
-
 func (s *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() {
 	addr1 := sdk.AccAddress("addr1_______________")
 	addr1String, err := s.addrCdc.BytesToString(addr1)
@@ -256,59 +201,10 @@ func (s *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() {
 		s.storeService,
 		s.authKeeper,
 		map[string]bool{addr1String: true},
-		true,
 		authorityString,
 		log.NewNopLogger(),
 	)
 
 	s.Require().NoError(newKeeper.MintCoins(s.ctx, minttypes.ModuleName, initCoins))
 	s.Require().Error(newKeeper.SendCoinsFromModuleToAccount(s.ctx, minttypes.ModuleName, addr1, initCoins))
-}
-
-func (s *IntegrationTestSuite) TestInputOutputCoins() {
-	// set initial balances
-	s.Require().NoError(s.cut.MintCoins(s.ctx, minttypes.ModuleName, initCoins))
-	s.Require().NoError(s.cut.SendCoinsFromModuleToAccount(s.ctx, minttypes.ModuleName, s.baseAcc.GetAddress(), initCoins))
-
-	input := types.NewInput(s.baseAcc.GetAddress(), initCoins)
-	outputs := []types.Output{types.NewOutput(s.burnerAcc.GetAddress(), initCoins)}
-
-	authorityString, err := s.addrCdc.BytesToString(authtypes.NewModuleAddress(govtypes.ModuleName))
-	s.Require().NoError(err)
-
-	targetKeeper := func(isDeact bool) BaseKeeper {
-		return NewBaseKeeper(
-			s.cdc,
-			s.storeService,
-			s.authKeeper,
-			make(map[string]bool),
-			isDeact,
-			authorityString,
-			log.NewNopLogger(),
-		)
-	}
-	tcs := map[string]struct {
-		deactMultiSend bool
-		err            error
-	}{
-		"MultiSend Off": {
-			true,
-			sdkerrors.ErrNotSupported.Wrap("MultiSend was deactivated"),
-		},
-		"MultiSend On": {
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range tcs {
-		tc := tc
-		s.T().Run(name, func(t *testing.T) {
-			if tc.err != nil {
-				s.EqualError(targetKeeper(tc.deactMultiSend).InputOutputCoins(s.ctx, input, outputs), tc.err.Error())
-			} else {
-				s.Require().NoError(targetKeeper(tc.deactMultiSend).InputOutputCoins(s.ctx, input, outputs))
-			}
-		})
-	}
 }
