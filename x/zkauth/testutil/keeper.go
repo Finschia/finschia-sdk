@@ -1,7 +1,6 @@
 package testutil
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -66,15 +65,11 @@ func ZkAuthKeeper(t testing.TB) TestApp {
 		Kid: "6f9777a685907798ef794062c00b65d66c240b1b",
 	})
 
-	homeDir := filepath.Join(t.TempDir(), "x_zkauth_keeper_test")
-	t.Log("home dir: ", homeDir)
-
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		jwKsMap,
 		types.NewZKAuthVerifier(verificationKey),
-		homeDir,
 		app.MsgServiceRouter(),
 	)
 

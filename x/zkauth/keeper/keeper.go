@@ -21,7 +21,6 @@ type Keeper struct {
 	storeKey   storetypes.StoreKey
 	jwksMap    *types.JWKsMap       // JWK manager
 	zkVerifier types.ZKAuthVerifier // zkp verification key byte
-	homePath   string               // root directory of app config
 	router     *baseapp.MsgServiceRouter
 }
 
@@ -32,7 +31,6 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	jwksMap *types.JWKsMap,
 	zkVerifier types.ZKAuthVerifier,
-	homePath string,
 	router *baseapp.MsgServiceRouter,
 ) *Keeper {
 	return &Keeper{
@@ -40,7 +38,6 @@ func NewKeeper(
 		storeKey:   storeKey,
 		jwksMap:    jwksMap,
 		zkVerifier: zkVerifier,
-		homePath:   homePath,
 		router:     router,
 	}
 }
