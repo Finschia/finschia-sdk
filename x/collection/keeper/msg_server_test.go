@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/math"
@@ -28,6 +29,27 @@ func mustJSONMarshal(v any) string {
 // w wraps input with double quotes if it is a string or fmt.Stringer.
 func w(input any) string {
 	switch input.(type) {
+	case sdk.AccAddress:
+		ac := authcodec.NewBech32Codec("link")
+		s, err := ac.BytesToString(input.([]byte))
+		if err != nil {
+			panic(err)
+		}
+		return fmt.Sprintf("\"%s\"", s)
+	case sdk.ValAddress:
+		ac := authcodec.NewBech32Codec("linkvaloper")
+		s, err := ac.BytesToString(input.([]byte))
+		if err != nil {
+			panic(err)
+		}
+		return fmt.Sprintf("\"%s\"", s)
+	case sdk.ConsAddress:
+		ac := authcodec.NewBech32Codec("linkvalcons")
+		s, err := ac.BytesToString(input.([]byte))
+		if err != nil {
+			panic(err)
+		}
+		return fmt.Sprintf("\"%s\"", s)
 	case string, fmt.Stringer:
 		return fmt.Sprintf("\"%s\"", input)
 	default:
