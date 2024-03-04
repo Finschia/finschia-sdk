@@ -6,13 +6,13 @@ import (
 	"strings"
 
 	abci "github.com/cometbft/cometbft/abci/types"
-	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
