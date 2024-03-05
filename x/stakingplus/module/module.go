@@ -5,18 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-
 	modulev1 "cosmossdk.io/api/cosmos/staking/module/v1"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
@@ -29,11 +28,12 @@ import (
 )
 
 var (
-	_ module.AppModuleBasic  = AppModuleBasic{}
-	_ module.HasServices     = AppModule{}
-	_ module.HasInvariants   = AppModule{}
-	_ module.HasABCIGenesis  = AppModule{}
-	_ module.HasABCIEndBlock = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.HasServices         = AppModule{}
+	_ module.HasInvariants       = AppModule{}
+	_ module.HasABCIGenesis      = AppModule{}
+	_ module.HasABCIEndBlock     = AppModule{}
+	_ module.AppModuleSimulation = AppModule{}
 
 	_ appmodule.AppModule       = AppModule{}
 	_ appmodule.HasBeginBlocker = AppModule{}
@@ -61,6 +61,18 @@ type AppModule struct {
 	bk     stakingtypes.BankKeeper
 	fk     stakingplus.FoundationKeeper
 	ls     exported.Subspace
+}
+
+func (am AppModule) GenerateGenesisState(simState *module.SimulationState) {
+	am.impl.GenerateGenesisState(simState)
+}
+
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
+	am.impl.RegisterStoreDecoder(sdr)
+}
+
+func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
+	return am.impl.WeightedOperations(simState)
 }
 
 // NewAppModule creates a new AppModule object
