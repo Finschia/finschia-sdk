@@ -11,8 +11,8 @@
 # "C:CLI":
 #   - client/**/*
 #   - x/*/client/**/*
-# "Type: ADR":
-#   - docs/architecture/**/*
+"C:x/collection":
+  - x/collection/**/*
 "C:x/foundation":
   - x/foundation/**/*
 "C:x/stakingplus":

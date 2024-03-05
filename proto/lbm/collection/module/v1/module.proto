@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package lbm.collection.module.v1;
+
+import "cosmos/app/v1alpha1/module.proto";
+
+// Module is the config object of the collection module.
+message Module {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import: "github.com/Finschia/finschia-sdk/x/collection"
+  };
+}
