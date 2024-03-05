@@ -13,6 +13,64 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
+func (s *KeeperTestSuite) TestMsgUpdateParams() {
+	testCases := map[string]struct {
+		malleate  func(ctx sdk.Context)
+		authority sdk.AccAddress
+		params    foundation.Params
+		valid     bool
+		events    sdk.Events
+	}{
+		"valid request": {
+			authority: s.authority,
+			params:    foundation.DefaultParams(),
+			valid:     true,
+			events:    sdk.Events{{Type: "lbm.foundation.v1.EventUpdateParams", Attributes: []abci.EventAttribute{{Key: "params", Value: "{\"foundation_tax\":\"0.000000000000000000\"}", Index: false}}}},
+		},
+		"invalid authority": {
+			authority: s.stranger,
+			params:    foundation.DefaultParams(),
+		},
+		"enabling foundation tax": {
+			malleate: func(ctx sdk.Context) {
+				s.impl.SetParams(ctx, foundation.Params{
+					FoundationTax: math.LegacyZeroDec(),
+				})
+			},
+			authority: s.authority,
+			params: foundation.Params{
+				FoundationTax: math.LegacyOneDec(),
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
+
+			req := &foundation.MsgUpdateParams{
+				Authority: s.bytesToString(tc.authority),
+				Params:    tc.params,
+			}
+			res, err := s.msgServer.UpdateParams(ctx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			s.Require().NotNil(res)
+
+			if s.deterministic {
+				s.Require().Equal(tc.events, ctx.EventManager().Events())
+			}
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestMsgFundTreasury() {
 	testCases := map[string]struct {
 		from   sdk.AccAddress

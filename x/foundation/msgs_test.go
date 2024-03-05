@@ -18,59 +18,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
-// func TestMsgUpdateParams(t *testing.T) {
-// 	addressCodec := addresscodec.NewBech32Codec("link")
-// 	bytesToString := func(addr sdk.AccAddress) string {
-// 		str, err := addressCodec.BytesToString(addr)
-// 		require.NoError(t, err)
-// 		return str
-// 	}
-
-// 	addrs := make([]sdk.AccAddress, 1)
-// 	for i := range addrs {
-// 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-// 	}
-
-// 	testCases := map[string]struct {
-// 		authority sdk.AccAddress
-// 		params    foundation.Params
-// 		valid     bool
-// 	}{
-// 		"handler for MsgUpdateParams removed, ValidateBasic should throw error always": {
-// 			authority: addrs[0],
-// 			params: foundation.Params{
-// 				FoundationTax: math.LegacyZeroDec(),
-// 			},
-// 			valid: false,
-// 		},
-// 	}
-
-// 	for name, tc := range testCases {
-// 		t.Run(name, func(t *testing.T) {
-// 			msg := foundation.MsgUpdateParams{
-// 				Authority: bytesToString(tc.authority),
-// 				Params:    tc.params,
-// 			}
-
-// 			err := msg.ValidateBasic()
-// 			require.Error(t, err)
-// 			require.ErrorIs(t, err, sdkerrors.ErrUnknownRequest)
-// 		})
-// 		msg := foundation.MsgUpdateParams{
-// 			addrs[0].String(),
-// 			foundation.Params{},
-// 		}
-// 		// Note: Dummy test for coverage of deprecated message
-// 		_ = msg.String()
-// 		_, _ = msg.Descriptor()
-// 		_, _ = msg.Marshal()
-// 		msg.ProtoMessage()
-// 		msg.Reset()
-// 		_ = msg.Size()
-// 		_ = msg.XXX_Size()
-// 	}
-// }
-
 func TestAminoJSON(t *testing.T) {
 	legacyAmino := codec.NewLegacyAmino()
 	foundation.RegisterLegacyAminoCodec(legacyAmino)

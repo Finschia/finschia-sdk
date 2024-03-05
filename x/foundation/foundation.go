@@ -70,6 +70,7 @@ func (p Params) ValidateBasic() error {
 }
 
 // ParamSetPairs implements params.ParamSet
+// TODO(@0Tech): remove it on v4
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair([]byte(ParamKeyFoundationTax), &p.FoundationTax, func(i interface{}) error {
@@ -83,6 +84,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
+// TODO(@0Tech): remove it on v4
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
 }

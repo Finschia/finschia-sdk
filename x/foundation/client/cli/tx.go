@@ -36,6 +36,15 @@ func validateGenerateOnly(cmd *cobra.Command) error {
 	return nil
 }
 
+func parseParams(codec codec.Codec, paramsJSON string) (*foundation.Params, error) {
+	var params foundation.Params
+	if err := codec.UnmarshalJSON([]byte(paramsJSON), &params); err != nil {
+		return nil, err
+	}
+
+	return &params, nil
+}
+
 func parseMemberRequests(codec codec.Codec, membersJSON string) ([]foundation.MemberRequest, error) {
 	var cliMembers []json.RawMessage
 	if err := json.Unmarshal([]byte(membersJSON), &cliMembers); err != nil {
@@ -158,6 +167,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		NewTxCmdUpdateParams(),
 		NewTxCmdFundTreasury(),
 		NewTxCmdWithdrawFromTreasury(),
 		NewTxCmdUpdateMembers(),
@@ -172,6 +182,44 @@ func NewTxCmd() *cobra.Command {
 	)
 
 	return txCmd
+}
+
+func NewTxCmdUpdateParams() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-params [authority] [params-json]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update params",
+		Long: `Update x/foundation parameters.
+Example of the content of params-json:
+{
+  "foundation_tax": "0.1"
+}
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := validateGenerateOnly(cmd); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			params, err := parseParams(clientCtx.Codec, args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgUpdateParams{
+				Authority: args[0],
+				Params:    *params,
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
 }
 
 func NewTxCmdFundTreasury() *cobra.Command {

@@ -27,6 +27,34 @@ func NewMsgServer(keeper Keeper) foundation.MsgServer {
 
 var _ foundation.MsgServer = msgServer{}
 
+func (s msgServer) UpdateParams(c context.Context, req *foundation.MsgUpdateParams) (*foundation.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if _, err := s.keeper.addressCodec().StringToBytes(req.Authority); err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", req.Authority)
+	}
+
+	if err := req.Params.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.UpdateParams(ctx, req.Params); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateParams{
+		Params: req.Params,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgUpdateParamsResponse{}, nil
+}
+
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	from, err := s.keeper.addressCodec().StringToBytes(req.From)

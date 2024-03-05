@@ -27,7 +27,6 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
@@ -138,14 +137,13 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 	ctrl := gomock.NewController(t)
 	authKeeper := foundationtestutil.NewMockAuthKeeper(ctrl)
 	bankKeeper := foundationtestutil.NewMockBankKeeper(ctrl)
-	subspace := paramstypes.NewSubspace(encCfg.Codec, encCfg.Amino, key, tkey, "params")
 
 	authority, err := addressCodec.BytesToString(foundation.DefaultAuthority())
 	require.NoError(t, err)
 
 	config := foundation.DefaultConfig()
 	feeCollector := authtypes.FeeCollectorName
-	k := keeper.NewKeeper(encCfg.Codec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
+	k := keeper.NewKeeper(encCfg.Codec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority)
 
 	impl := internal.NewKeeper(
 		encCfg.Codec,
@@ -156,7 +154,6 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 		feeCollector,
 		config,
 		authority,
-		subspace,
 	)
 
 	msgServer := keeper.NewMsgServer(k)
@@ -471,14 +468,13 @@ func TestNewKeeper(t *testing.T) {
 				ctrl := gomock.NewController(t)
 				authKeeper := foundationtestutil.NewMockAuthKeeper(ctrl)
 				bankKeeper := foundationtestutil.NewMockBankKeeper(ctrl)
-				subspace := paramstypes.NewSubspace(encCfg.Codec, encCfg.Amino, key, tkey, "params")
 
 				authority, err := addressCodec.BytesToString(tc.authority)
 				require.NoError(t, err)
 
 				config := foundation.DefaultConfig()
 				feeCollector := authtypes.FeeCollectorName
-				return keeper.NewKeeper(encCfg.Codec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority, subspace)
+				return keeper.NewKeeper(encCfg.Codec, runtime.NewKVStoreService(key), bapp.MsgServiceRouter(), authKeeper, bankKeeper, feeCollector, config, authority)
 			}
 
 			if tc.panics {
