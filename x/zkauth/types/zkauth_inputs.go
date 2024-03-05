@@ -2,6 +2,8 @@ package types
 
 import (
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"math"
 	"math/big"
 	"unicode/utf8"
@@ -9,6 +11,7 @@ import (
 	"github.com/iden3/go-iden3-crypto/poseidon"
 	"github.com/pkg/errors"
 
+	"github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
@@ -158,11 +161,7 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid Iss base64")
 	}
-	headerBytes, err := base64.StdEncoding.DecodeString(zk.HeaderBase64)
-	if err != nil {
-		return nil, err
-	}
-	headerF, err := HashASCIIStrToField(string(headerBytes), MaxHeaderLen)
+	headerF, err := HashASCIIStrToField(zk.HeaderBase64, MaxHeaderLen)
 	if err != nil {
 		return nil, sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid jwt header")
 	}
@@ -180,4 +179,65 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 		headerF,
 		modulusF,
 	})
+}
+
+func ValidIss(iss string) bool {
+	if _, ok := SupportedOidcProviders[iss]; ok {
+		return true
+	}
+
+	return false
+}
+
+func ValidJWTHeader(encodedHeader string) error {
+	decodedBytes, err := base64.RawURLEncoding.DecodeString(encodedHeader)
+	if err != nil {
+		return fmt.Errorf("invalid base64 in header: %w", err)
+	}
+
+	var header JWTHeader
+	if err = json.Unmarshal(decodedBytes, &header); err != nil {
+		return fmt.Errorf("invalid JSON in header: %w", err)
+	}
+
+	if header.Alg == "" {
+		return fmt.Errorf("missing 'alg' field in header")
+	}
+	if header.Typ == "" {
+		return fmt.Errorf("missing 'typ' field in header")
+	}
+
+	return nil
+}
+
+func (zk *ZKAuthInputs) Validate() error {
+	// check proof points
+	if zk.ProofPoints == nil {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid proof points")
+	}
+
+	// check iss
+	issBytes, err := base64.StdEncoding.DecodeString(zk.IssF)
+	if err != nil {
+		return sdkerrors.Wrapf(ErrInvalidZkAuthInputs, "invalid iss, %s", err)
+	}
+	if !ValidIss(string(issBytes)) {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid iss")
+	}
+
+	// check header
+	if err = ValidJWTHeader(zk.HeaderBase64); err != nil {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, err.Error())
+	}
+
+	// check address_seed
+	if len(zk.AddressSeed) == 0 {
+		return sdkerrors.Wrap(ErrInvalidZkAuthInputs, "invalid address_seed")
+	}
+
+	return nil
+}
+
+func (zk *ZKAuthInputs) AccAddress() (types.AccAddress, error) {
+	return AccAddressFromAddressSeed(zk.AddressSeed, zk.IssF)
 }

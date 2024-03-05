@@ -1,14 +1,12 @@
 package keeper
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/Finschia/ostracon/libs/log"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/codec"
@@ -16,26 +14,31 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
-	"github.com/Finschia/ostracon/libs/log"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type Keeper struct {
-	cdc      codec.BinaryCodec
-	storeKey storetypes.StoreKey
-	router   *baseapp.MsgServiceRouter
+	cdc        codec.BinaryCodec
+	storeKey   storetypes.StoreKey
+	jwksMap    *types.JWKsMap       // JWK manager
+	zkVerifier types.ZKAuthVerifier // zkp verification key byte
+	router     *baseapp.MsgServiceRouter
 }
+
+var _ types.ZKAuthKeeper = &Keeper{}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
+	jwksMap *types.JWKsMap,
+	zkVerifier types.ZKAuthVerifier,
 	router *baseapp.MsgServiceRouter,
 ) *Keeper {
-
 	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		router:   router,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		jwksMap:    jwksMap,
+		zkVerifier: zkVerifier,
+		router:     router,
 	}
 }
 
@@ -82,13 +85,14 @@ func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) 
 	return results, nil
 }
 
-func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
+func (k Keeper) FetchJWK(ctx sdk.Context) {
 	logger := k.Logger(ctx)
 	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 	var fetchIntervals uint64
 	go func() {
 		for {
 			select {
+			// goroutine ends when a timeout occurs
 			case <-ctx.Context().Done():
 				return
 			default:
@@ -96,29 +100,18 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 					provider := types.GetConfig(name)
 					fetchIntervals = provider.FetchIntervals
 
-					resp, err := k.GetJWK(provider.JwkEndpoint)
+					jwks, err := types.FetchJWK(provider.JwkEndpoint)
 					if err != nil {
 						time.Sleep(time.Duration(fetchIntervals) * time.Second)
 						logger.Error(fmt.Sprintf("%s", err))
 						continue
 					}
 
-					file, err := os.Create(filepath.Join(nodeHome, k.CreateJWKFileName(name)))
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
+					// add jwk
+					for _, jwk := range jwks.Keys {
+						jwkCopy := jwk
+						k.jwksMap.AddJWK(&jwkCopy)
 					}
-
-					_, err = io.Copy(file, resp.Body)
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
-					}
-
-					resp.Body.Close()
-					file.Close()
 				}
 				time.Sleep(time.Duration(fetchIntervals) * time.Second)
 			}
@@ -126,45 +119,14 @@ func (k Keeper) FetchJWK(ctx sdk.Context, nodeHome string) {
 	}()
 }
 
-func (k Keeper) ParseJWKs(byteArray []byte) (jwks []types.JWK, err error) {
-	var data map[string]interface{}
-	err = json.Unmarshal(byteArray, &data)
-	if err != nil {
-		return jwks, err
-	}
-
-	for _, v := range data["keys"].([]interface{}) {
-		var jwk types.JWK
-
-		b, err := json.Marshal(v)
-		if err != nil {
-			return jwks, err
-		}
-
-		if err := json.Unmarshal(b, &jwk); err != nil {
-			return jwks, err
-		}
-
-		jwks = append(jwks, jwk)
-	}
-
-	return jwks, nil
+func (k Keeper) GetJWKSize() int {
+	return k.jwksMap.Size()
 }
 
-func (k Keeper) GetJWK(endpoint string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", endpoint, nil)
-	if err != nil {
-		return nil, err
-	}
-	client := new(http.Client)
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+func (k Keeper) GetJWK(kid string) *types.JWK {
+	return k.jwksMap.GetJWK(kid)
 }
 
-func (k Keeper) CreateJWKFileName(name types.OidcProvider) string {
-	return fmt.Sprintf("jwk-%s.json", name)
+func (k Keeper) GetVerifier() *types.ZKAuthVerifier {
+	return &k.zkVerifier
 }

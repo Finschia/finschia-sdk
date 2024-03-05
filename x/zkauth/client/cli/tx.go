@@ -52,8 +52,11 @@ func NewCmdExecution() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			clientCtx.Codec.UnmarshalInterfaceJSON(bytes, &zkAuthInputs)
-			maxBlockHeight, err := strconv.ParseUint(args[2], 10, 64)
+			err = clientCtx.Codec.UnmarshalInterfaceJSON(bytes, &zkAuthInputs)
+			if err != nil {
+				return err
+			}
+			maxBlockHeight, err := strconv.ParseInt(args[2], 10, 64)
 			if err != nil {
 				return err
 			}

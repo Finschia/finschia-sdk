@@ -3,20 +3,19 @@ package keeper_test
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/testutil"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
-	"github.com/stretchr/testify/require"
 )
 
 const testData = `{
@@ -55,44 +54,11 @@ func mockHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(jsonData))
 }
 
-func TestGetJWK(t *testing.T) {
-	testApp := testutil.ZkAuthKeeper(t)
-	k := testApp.Keeper
-	server := httptest.NewServer(http.HandlerFunc(mockHandler))
-	defer server.Close()
-
-	res, err := k.GetJWK(server.URL)
-	defer res.Body.Close()
-	require.NoError(t, err)
-
-	expected := testData
-	bodyBytes, err := io.ReadAll(res.Body)
-	bodyString := string(bodyBytes)
-	require.Equal(t, expected, bodyString)
-}
-
-func TestParseJWKs(t *testing.T) {
-	testApp := testutil.ZkAuthKeeper(t)
-	k := testApp.Keeper
-	server := httptest.NewServer(http.HandlerFunc(mockHandler))
-	defer server.Close()
-
-	res, err := k.GetJWK(server.URL)
-	defer res.Body.Close()
-	require.NoError(t, err)
-
-	bodyBytes, err := io.ReadAll(res.Body)
-
-	jwks, err := k.ParseJWKs(bodyBytes)
-	require.NoError(t, err)
-	require.Equal(t, 3, len(jwks))
-}
-
 func TestFetchJwk(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockHandler))
 	defer server.Close()
 	testApp := testutil.ZkAuthKeeper(t)
-	k := testApp.Keeper
+	k := testApp.ZKAuthKeeper
 	ctx := testApp.Ctx
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -101,23 +67,19 @@ func TestFetchJwk(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
-	k.FetchJWK(ctx.WithContext(timeoutCtx), tempDir)
+	k.FetchJWK(ctx.WithContext(timeoutCtx))
 	<-timeoutCtx.Done()
 
-	content, err := os.ReadFile(filepath.Join(tempDir, k.CreateJWKFileName(types.Google)))
+	require.True(t, k.GetJWKSize() == 3)
 
+	var expectedObj types.JWKs
+	err = json.Unmarshal([]byte(testData), &expectedObj)
 	require.NoError(t, err)
-	var expectedObj []types.JWK
-	json.Unmarshal([]byte(testData), &expectedObj)
-
-	var actualObj []types.JWK
-	json.Unmarshal(content, &actualObj)
-	require.Equal(t, expectedObj, actualObj)
 }
 
 func TestDispatchMsgs(t *testing.T) {
 	testApp := testutil.ZkAuthKeeper(t)
-	app, k, ctx := testApp.Simapp, testApp.Keeper, testApp.Ctx
+	app, k, ctx := testApp.Simapp, testApp.ZKAuthKeeper, testApp.Ctx
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(100))
 	fromAddr := addrs[0]

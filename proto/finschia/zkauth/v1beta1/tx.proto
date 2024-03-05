@@ -28,5 +28,5 @@ message MsgExecutionResponse {
 
 message ZKAuthSignature {
     ZKAuthInputs zk_auth_inputs = 1;
-    uint64 max_block_height = 2;
+    int64 max_block_height = 2;
 }

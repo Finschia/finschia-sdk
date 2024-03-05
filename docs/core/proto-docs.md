@@ -9201,7 +9201,7 @@ Contains the values needed to calculate "all inputs hash".
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `zk_auth_inputs` | [ZKAuthInputs](#finschia.zkauth.v1beta1.ZKAuthInputs) |  |  |
-| `max_block_height` | [uint64](#uint64) |  |  |
+| `max_block_height` | [int64](#int64) |  |  |
 
 
 
