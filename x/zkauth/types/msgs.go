@@ -56,6 +56,18 @@ func (e *MsgExecution) SetMsgs(msgs []sdk.Msg) error {
 	return nil
 }
 
+func (m *MsgExecution) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
+	for _, any := range m.GetMsgs() {
+		var msg sdk.Msg
+		err := unpacker.UnpackAny(any, &msg)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (e *MsgExecution) ValidateBasic() error {
 	if len(e.GetMsgs()) == 0 {
 		return sdkerrors.Wrap(ErrInvalidMessage, "message is empty")
