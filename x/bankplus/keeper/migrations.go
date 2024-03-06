@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankv2 "github.com/cosmos/cosmos-sdk/x/bank/migrations/v2"
+	bankv3 "github.com/cosmos/cosmos-sdk/x/bank/migrations/v3"
 )
 
 type Migrator struct {
@@ -13,11 +14,14 @@ func NewMigrator(keeper BaseKeeper) *Migrator {
 	return &Migrator{keeper: keeper}
 }
 
-func (m Migrator) WrappedMigrateBankplusWithBankMigrate1to2(ctx sdk.Context) error {
-	err := DeprecateBankPlus(ctx, m.keeper.storeService)
-	if err != nil {
+func (m Migrator) WrappedMigrateBankplusWithBankMigrate1to2n3(ctx sdk.Context) error {
+	if err := DeprecateBankPlus(ctx, m.keeper.storeService); err != nil {
 		return err
 	}
 
-	return bankv2.MigrateStore(ctx, m.keeper.storeService, m.keeper.cdc)
+	if err := bankv2.MigrateStore(ctx, m.keeper.storeService, m.keeper.cdc); err != nil {
+		return err
+	}
+
+	return bankv3.MigrateStore(ctx, m.keeper.storeService, m.keeper.cdc)
 }

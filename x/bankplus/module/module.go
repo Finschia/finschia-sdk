@@ -77,8 +77,13 @@ func (a AppModule) RegisterServices(cfg module.Configurator) {
 	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(a.bankKeeper))
 	banktypes.RegisterQueryServer(cfg.QueryServer(), a.bankKeeper)
 	bkplusMigrator := keeper.NewMigrator(a.bankplusKeeper)
-	if err := cfg.RegisterMigration(banktypes.ModuleName, 1, bkplusMigrator.WrappedMigrateBankplusWithBankMigrate1to2); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/bank from version 1 to 2: %v", err))
+	if err := cfg.RegisterMigration(banktypes.ModuleName, 2, bkplusMigrator.WrappedMigrateBankplusWithBankMigrate1to2n3); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/bank from version 1 to 2,3(including original bank1 to 2,3: %v", err))
+	}
+
+	m := bankkeeper.NewMigrator(a.bankKeeper.(bankkeeper.BaseKeeper), a.legacySubspace)
+	if err := cfg.RegisterMigration(banktypes.ModuleName, 3, m.Migrate3to4); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/bank from version 3 to 4: %v", err))
 	}
 }
 
