@@ -56,8 +56,8 @@ func (e *MsgExecution) SetMsgs(msgs []sdk.Msg) error {
 	return nil
 }
 
-func (m *MsgExecution) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
-	for _, any := range m.GetMsgs() {
+func (e *MsgExecution) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
+	for _, any := range e.GetMsgs() {
 		var msg sdk.Msg
 		err := unpacker.UnpackAny(any, &msg)
 		if err != nil {
