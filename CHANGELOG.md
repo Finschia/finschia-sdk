@@ -41,6 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 * (x/staking) [\#1214](https://github.com/Finschia/finschia-sdk/pull/1214) update x/stakingplus to use Finschia/cosmos-sdk
+* (x/collection,token) [\#1208](https://github.com/Finschia/finschia-sdk/pull/1208) update x/collection to use Finschia/cosmos-sdk
 * (x/foundation) [\#1198](https://github.com/Finschia/finschia-sdk/pull/1198) update x/foundation to use Finschia/cosmos-sdk
 * (x/bankplus) [\#1223](https://github.com/Finschia/finschia-sdk/pull/1223) deprecate x/bankplus
 * (all) [\#1205](https://github.com/Finschia/finschia-sdk/pull/1205) delegate native logics to Finschia/cosmos-sdk

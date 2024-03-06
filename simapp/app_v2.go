@@ -47,6 +47,7 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
+	collectionkeeper "github.com/Finschia/finschia-sdk/x/collection/keeper"
 	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 )
 
@@ -86,6 +87,7 @@ type SimApp struct {
 	NFTKeeper             nftkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
 	CircuitBreakerKeeper  circuitkeeper.Keeper
+	CollectionKeeper      collectionkeeper.Keeper
 	FoundationKeeper      foundationkeeper.Keeper
 
 	// simulation manager
@@ -198,6 +200,7 @@ func NewSimApp(
 		&app.NFTKeeper,
 		&app.ConsensusParamsKeeper,
 		&app.CircuitBreakerKeeper,
+		&app.CollectionKeeper,
 		&app.FoundationKeeper,
 	); err != nil {
 		panic(err)

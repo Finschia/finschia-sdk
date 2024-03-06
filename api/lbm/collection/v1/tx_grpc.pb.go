@@ -19,19 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_SendFT_FullMethodName            = "/lbm.collection.v1.Msg/SendFT"
-	Msg_OperatorSendFT_FullMethodName    = "/lbm.collection.v1.Msg/OperatorSendFT"
 	Msg_SendNFT_FullMethodName           = "/lbm.collection.v1.Msg/SendNFT"
 	Msg_OperatorSendNFT_FullMethodName   = "/lbm.collection.v1.Msg/OperatorSendNFT"
 	Msg_AuthorizeOperator_FullMethodName = "/lbm.collection.v1.Msg/AuthorizeOperator"
 	Msg_RevokeOperator_FullMethodName    = "/lbm.collection.v1.Msg/RevokeOperator"
 	Msg_CreateContract_FullMethodName    = "/lbm.collection.v1.Msg/CreateContract"
-	Msg_IssueFT_FullMethodName           = "/lbm.collection.v1.Msg/IssueFT"
 	Msg_IssueNFT_FullMethodName          = "/lbm.collection.v1.Msg/IssueNFT"
-	Msg_MintFT_FullMethodName            = "/lbm.collection.v1.Msg/MintFT"
 	Msg_MintNFT_FullMethodName           = "/lbm.collection.v1.Msg/MintNFT"
-	Msg_BurnFT_FullMethodName            = "/lbm.collection.v1.Msg/BurnFT"
-	Msg_OperatorBurnFT_FullMethodName    = "/lbm.collection.v1.Msg/OperatorBurnFT"
 	Msg_BurnNFT_FullMethodName           = "/lbm.collection.v1.Msg/BurnNFT"
 	Msg_OperatorBurnNFT_FullMethodName   = "/lbm.collection.v1.Msg/OperatorBurnNFT"
 	Msg_Modify_FullMethodName            = "/lbm.collection.v1.Msg/Modify"
@@ -43,14 +37,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
-	// SendFT defines a method to send fungible tokens from one account to another account.
-	// Fires:
-	// - EventSent
-	SendFT(ctx context.Context, in *MsgSendFT, opts ...grpc.CallOption) (*MsgSendFTResponse, error)
-	// OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator.
-	// Fires:
-	// - EventSent
-	OperatorSendFT(ctx context.Context, in *MsgOperatorSendFT, opts ...grpc.CallOption) (*MsgOperatorSendFTResponse, error)
 	// SendNFT defines a method to send non-fungible tokens from one account to another account.
 	// Fires:
 	// - EventSent
@@ -72,33 +58,15 @@ type MsgClient interface {
 	// Fires:
 	// - EventCreatedContract
 	CreateContract(ctx context.Context, in *MsgCreateContract, opts ...grpc.CallOption) (*MsgCreateContractResponse, error)
-	// IssueFT defines a method to create a class of fungible token.
-	// Fires:
-	// - EventCreatedFTClass
-	// - EventMintedFT
-	// Note: it does not grant any permissions to its issuer.
-	IssueFT(ctx context.Context, in *MsgIssueFT, opts ...grpc.CallOption) (*MsgIssueFTResponse, error)
 	// IssueNFT defines a method to create a class of non-fungible token.
 	// Fires:
 	// - EventCreatedNFTClass
 	// Note: it DOES grant `mint` and `burn` permissions to its issuer.
 	IssueNFT(ctx context.Context, in *MsgIssueNFT, opts ...grpc.CallOption) (*MsgIssueNFTResponse, error)
-	// MintFT defines a method to mint fungible tokens.
-	// Fires:
-	// - EventMintedFT
-	MintFT(ctx context.Context, in *MsgMintFT, opts ...grpc.CallOption) (*MsgMintFTResponse, error)
 	// MintNFT defines a method to mint non-fungible tokens.
 	// Fires:
 	// - EventMintedNFT
 	MintNFT(ctx context.Context, in *MsgMintNFT, opts ...grpc.CallOption) (*MsgMintNFTResponse, error)
-	// BurnFT defines a method to burn fungible tokens.
-	// Fires:
-	// - EventBurned
-	BurnFT(ctx context.Context, in *MsgBurnFT, opts ...grpc.CallOption) (*MsgBurnFTResponse, error)
-	// OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator.
-	// Fires:
-	// - EventBurned
-	OperatorBurnFT(ctx context.Context, in *MsgOperatorBurnFT, opts ...grpc.CallOption) (*MsgOperatorBurnFTResponse, error)
 	// BurnNFT defines a method to burn non-fungible tokens.
 	// Fires:
 	// - EventBurned
@@ -129,24 +97,6 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
-}
-
-func (c *msgClient) SendFT(ctx context.Context, in *MsgSendFT, opts ...grpc.CallOption) (*MsgSendFTResponse, error) {
-	out := new(MsgSendFTResponse)
-	err := c.cc.Invoke(ctx, Msg_SendFT_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) OperatorSendFT(ctx context.Context, in *MsgOperatorSendFT, opts ...grpc.CallOption) (*MsgOperatorSendFTResponse, error) {
-	out := new(MsgOperatorSendFTResponse)
-	err := c.cc.Invoke(ctx, Msg_OperatorSendFT_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *msgClient) SendNFT(ctx context.Context, in *MsgSendNFT, opts ...grpc.CallOption) (*MsgSendNFTResponse, error) {
@@ -194,15 +144,6 @@ func (c *msgClient) CreateContract(ctx context.Context, in *MsgCreateContract, o
 	return out, nil
 }
 
-func (c *msgClient) IssueFT(ctx context.Context, in *MsgIssueFT, opts ...grpc.CallOption) (*MsgIssueFTResponse, error) {
-	out := new(MsgIssueFTResponse)
-	err := c.cc.Invoke(ctx, Msg_IssueFT_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) IssueNFT(ctx context.Context, in *MsgIssueNFT, opts ...grpc.CallOption) (*MsgIssueNFTResponse, error) {
 	out := new(MsgIssueNFTResponse)
 	err := c.cc.Invoke(ctx, Msg_IssueNFT_FullMethodName, in, out, opts...)
@@ -212,36 +153,9 @@ func (c *msgClient) IssueNFT(ctx context.Context, in *MsgIssueNFT, opts ...grpc.
 	return out, nil
 }
 
-func (c *msgClient) MintFT(ctx context.Context, in *MsgMintFT, opts ...grpc.CallOption) (*MsgMintFTResponse, error) {
-	out := new(MsgMintFTResponse)
-	err := c.cc.Invoke(ctx, Msg_MintFT_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) MintNFT(ctx context.Context, in *MsgMintNFT, opts ...grpc.CallOption) (*MsgMintNFTResponse, error) {
 	out := new(MsgMintNFTResponse)
 	err := c.cc.Invoke(ctx, Msg_MintNFT_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) BurnFT(ctx context.Context, in *MsgBurnFT, opts ...grpc.CallOption) (*MsgBurnFTResponse, error) {
-	out := new(MsgBurnFTResponse)
-	err := c.cc.Invoke(ctx, Msg_BurnFT_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) OperatorBurnFT(ctx context.Context, in *MsgOperatorBurnFT, opts ...grpc.CallOption) (*MsgOperatorBurnFTResponse, error) {
-	out := new(MsgOperatorBurnFTResponse)
-	err := c.cc.Invoke(ctx, Msg_OperatorBurnFT_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -297,14 +211,6 @@ func (c *msgClient) RevokePermission(ctx context.Context, in *MsgRevokePermissio
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
-	// SendFT defines a method to send fungible tokens from one account to another account.
-	// Fires:
-	// - EventSent
-	SendFT(context.Context, *MsgSendFT) (*MsgSendFTResponse, error)
-	// OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator.
-	// Fires:
-	// - EventSent
-	OperatorSendFT(context.Context, *MsgOperatorSendFT) (*MsgOperatorSendFTResponse, error)
 	// SendNFT defines a method to send non-fungible tokens from one account to another account.
 	// Fires:
 	// - EventSent
@@ -326,33 +232,15 @@ type MsgServer interface {
 	// Fires:
 	// - EventCreatedContract
 	CreateContract(context.Context, *MsgCreateContract) (*MsgCreateContractResponse, error)
-	// IssueFT defines a method to create a class of fungible token.
-	// Fires:
-	// - EventCreatedFTClass
-	// - EventMintedFT
-	// Note: it does not grant any permissions to its issuer.
-	IssueFT(context.Context, *MsgIssueFT) (*MsgIssueFTResponse, error)
 	// IssueNFT defines a method to create a class of non-fungible token.
 	// Fires:
 	// - EventCreatedNFTClass
 	// Note: it DOES grant `mint` and `burn` permissions to its issuer.
 	IssueNFT(context.Context, *MsgIssueNFT) (*MsgIssueNFTResponse, error)
-	// MintFT defines a method to mint fungible tokens.
-	// Fires:
-	// - EventMintedFT
-	MintFT(context.Context, *MsgMintFT) (*MsgMintFTResponse, error)
 	// MintNFT defines a method to mint non-fungible tokens.
 	// Fires:
 	// - EventMintedNFT
 	MintNFT(context.Context, *MsgMintNFT) (*MsgMintNFTResponse, error)
-	// BurnFT defines a method to burn fungible tokens.
-	// Fires:
-	// - EventBurned
-	BurnFT(context.Context, *MsgBurnFT) (*MsgBurnFTResponse, error)
-	// OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator.
-	// Fires:
-	// - EventBurned
-	OperatorBurnFT(context.Context, *MsgOperatorBurnFT) (*MsgOperatorBurnFTResponse, error)
 	// BurnNFT defines a method to burn non-fungible tokens.
 	// Fires:
 	// - EventBurned
@@ -382,12 +270,6 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (UnimplementedMsgServer) SendFT(context.Context, *MsgSendFT) (*MsgSendFTResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendFT not implemented")
-}
-func (UnimplementedMsgServer) OperatorSendFT(context.Context, *MsgOperatorSendFT) (*MsgOperatorSendFTResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OperatorSendFT not implemented")
-}
 func (UnimplementedMsgServer) SendNFT(context.Context, *MsgSendNFT) (*MsgSendNFTResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendNFT not implemented")
 }
@@ -403,23 +285,11 @@ func (UnimplementedMsgServer) RevokeOperator(context.Context, *MsgRevokeOperator
 func (UnimplementedMsgServer) CreateContract(context.Context, *MsgCreateContract) (*MsgCreateContractResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateContract not implemented")
 }
-func (UnimplementedMsgServer) IssueFT(context.Context, *MsgIssueFT) (*MsgIssueFTResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IssueFT not implemented")
-}
 func (UnimplementedMsgServer) IssueNFT(context.Context, *MsgIssueNFT) (*MsgIssueNFTResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IssueNFT not implemented")
 }
-func (UnimplementedMsgServer) MintFT(context.Context, *MsgMintFT) (*MsgMintFTResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MintFT not implemented")
-}
 func (UnimplementedMsgServer) MintNFT(context.Context, *MsgMintNFT) (*MsgMintNFTResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MintNFT not implemented")
-}
-func (UnimplementedMsgServer) BurnFT(context.Context, *MsgBurnFT) (*MsgBurnFTResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BurnFT not implemented")
-}
-func (UnimplementedMsgServer) OperatorBurnFT(context.Context, *MsgOperatorBurnFT) (*MsgOperatorBurnFTResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OperatorBurnFT not implemented")
 }
 func (UnimplementedMsgServer) BurnNFT(context.Context, *MsgBurnNFT) (*MsgBurnNFTResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BurnNFT not implemented")
@@ -447,42 +317,6 @@ type UnsafeMsgServer interface {
 
 func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
-}
-
-func _Msg_SendFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSendFT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).SendFT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_SendFT_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SendFT(ctx, req.(*MsgSendFT))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_OperatorSendFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgOperatorSendFT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).OperatorSendFT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_OperatorSendFT_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).OperatorSendFT(ctx, req.(*MsgOperatorSendFT))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_SendNFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -575,24 +409,6 @@ func _Msg_CreateContract_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_IssueFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgIssueFT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).IssueFT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_IssueFT_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).IssueFT(ctx, req.(*MsgIssueFT))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_IssueNFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgIssueNFT)
 	if err := dec(in); err != nil {
@@ -611,24 +427,6 @@ func _Msg_IssueNFT_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_MintFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgMintFT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).MintFT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_MintFT_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).MintFT(ctx, req.(*MsgMintFT))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_MintNFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgMintNFT)
 	if err := dec(in); err != nil {
@@ -643,42 +441,6 @@ func _Msg_MintNFT_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).MintNFT(ctx, req.(*MsgMintNFT))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_BurnFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgBurnFT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).BurnFT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_BurnFT_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).BurnFT(ctx, req.(*MsgBurnFT))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_OperatorBurnFT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgOperatorBurnFT)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).OperatorBurnFT(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_OperatorBurnFT_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).OperatorBurnFT(ctx, req.(*MsgOperatorBurnFT))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -781,14 +543,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendFT",
-			Handler:    _Msg_SendFT_Handler,
-		},
-		{
-			MethodName: "OperatorSendFT",
-			Handler:    _Msg_OperatorSendFT_Handler,
-		},
-		{
 			MethodName: "SendNFT",
 			Handler:    _Msg_SendNFT_Handler,
 		},
@@ -809,28 +563,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_CreateContract_Handler,
 		},
 		{
-			MethodName: "IssueFT",
-			Handler:    _Msg_IssueFT_Handler,
-		},
-		{
 			MethodName: "IssueNFT",
 			Handler:    _Msg_IssueNFT_Handler,
 		},
 		{
-			MethodName: "MintFT",
-			Handler:    _Msg_MintFT_Handler,
-		},
-		{
 			MethodName: "MintNFT",
 			Handler:    _Msg_MintNFT_Handler,
-		},
-		{
-			MethodName: "BurnFT",
-			Handler:    _Msg_BurnFT_Handler,
-		},
-		{
-			MethodName: "OperatorBurnFT",
-			Handler:    _Msg_OperatorBurnFT_Handler,
 		},
 		{
 			MethodName: "BurnNFT",

@@ -45,6 +45,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 
+	collectionmodule "github.com/Finschia/finschia-sdk/x/collection/module"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
 	stakingplusmodule "github.com/Finschia/finschia-sdk/x/stakingplus/module"
 )
@@ -207,6 +208,7 @@ func TestRunMigrations(t *testing.T) {
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
 					"foundation":   foundationmodule.AppModule{}.ConsensusVersion(),
+					"collection":   collectionmodule.AppModule{}.ConsensusVersion(),
 				},
 			)
 			if tc.expRunErr {
@@ -256,6 +258,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"evidence":     evidence.AppModule{}.ConsensusVersion(),
 			"crisis":       crisis.AppModule{}.ConsensusVersion(),
 			"genutil":      genutil.AppModule{}.ConsensusVersion(),
+			"collection":   collectionmodule.AppModule{}.ConsensusVersion(),
 		},
 	)
 	require.NoError(t, err)

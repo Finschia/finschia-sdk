@@ -71,8 +71,11 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	collectionmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
 	foundationmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
 	_ "github.com/Finschia/finschia-sdk/x/bankplus/module" // import for side-effects
+	"github.com/Finschia/finschia-sdk/x/collection"
+	_ "github.com/Finschia/finschia-sdk/x/collection/module" // import for side-effects
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	_ "github.com/Finschia/finschia-sdk/x/foundation/module"  // import for side-effects
 	_ "github.com/Finschia/finschia-sdk/x/stakingplus/module" // import for side-effects
@@ -88,6 +91,7 @@ var (
 		{Account: stakingtypes.NotBondedPoolName, Permissions: []string{authtypes.Burner, stakingtypes.ModuleName}},
 		{Account: govtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		{Account: nft.ModuleName},
+		{Account: collection.ModuleName},
 		{Account: foundation.ModuleName},
 		{Account: foundation.TreasuryName},
 	}
@@ -100,6 +104,7 @@ var (
 		stakingtypes.BondedPoolName,
 		stakingtypes.NotBondedPoolName,
 		nft.ModuleName,
+		collection.ModuleName,
 		foundation.ModuleName,
 		foundation.TreasuryName,
 		// We allow the following module accounts to receive funds:
@@ -167,6 +172,7 @@ var (
 						upgradetypes.ModuleName,
 						vestingtypes.ModuleName,
 						circuittypes.ModuleName,
+						collection.ModuleName,
 					},
 					// When ExportGenesis is not specified, the export genesis module order
 					// is equal to the init genesis order
@@ -270,6 +276,10 @@ var (
 			{
 				Name:   circuittypes.ModuleName,
 				Config: appconfig.WrapAny(&circuitmodulev1.Module{}),
+			},
+			{
+				Name:   collection.ModuleName,
+				Config: appconfig.WrapAny(&collectionmodulev1.Module{}),
 			},
 			{
 				Name: foundation.ModuleName,
