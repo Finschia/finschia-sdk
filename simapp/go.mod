@@ -20,6 +20,7 @@ require (
 	github.com/Finschia/finschia-sdk/x/collection v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/stakingplus v0.0.0-00010101000000-000000000000
+	github.com/Finschia/finschia-sdk/x/bankplus v0.0.0-00010101000000-000000000000
 	github.com/cometbft/cometbft v0.38.3
 	github.com/cosmos/cosmos-db v1.0.0
 	// this version is not used as it is always replaced by the latest Cosmos SDK version
@@ -32,8 +33,6 @@ require (
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/protobuf v1.32.0
 )
-
-require github.com/Finschia/finschia-sdk/x/bankplus v0.0.0-00010101000000-000000000000
 
 require (
 	cloud.google.com/go v0.112.0 // indirect
