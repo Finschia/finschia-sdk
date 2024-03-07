@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
@@ -60,7 +61,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 	return k.impl.ExportGenesis(ctx)
 }
 
-func (k Keeper) Hooks() internal.Hooks {
+func (k Keeper) Hooks() stakingtypes.StakingHooks {
 	return k.impl.Hooks()
 }
 
