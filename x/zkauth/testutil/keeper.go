@@ -17,6 +17,7 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/tx/signing"
+	authkeeper "github.com/Finschia/finschia-sdk/x/auth/keeper"
 	xauthsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
@@ -25,16 +26,21 @@ import (
 )
 
 type TestApp struct {
-	Simapp       *simapp.SimApp
-	ZKAuthKeeper *keeper.Keeper
-	Ctx          sdk.Context
-	ClientCtx    client.Context
-	TxBuilder    client.TxBuilder
+	Simapp          *simapp.SimApp
+	ZKAuthKeeper    *keeper.Keeper
+	AccountKeeper   authkeeper.AccountKeeper
+	SignModeHandler xauthsigning.SignModeHandler
+	Ctx             sdk.Context
+	ClientCtx       client.Context
+	TxBuilder       client.TxBuilder
 }
 
 func ZkAuthKeeper(t testing.TB) TestApp {
 	const checkTx = false
 	app := simapp.Setup(checkTx)
+	maccPerms := simapp.GetMaccPerms()
+	appCodec := simapp.MakeTestEncodingConfig().Marshaler
+
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -80,13 +86,19 @@ func ZkAuthKeeper(t testing.TB) TestApp {
 	testdata.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	clientCtx := client.Context{}.WithTxConfig(encodingConfig.TxConfig)
+	authKeeper := authkeeper.NewAccountKeeper(
+		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(authtypes.ModuleName),
+		authtypes.ProtoBaseAccount, maccPerms,
+	)
 
 	testApp := TestApp{
-		Simapp:       app,
-		ZKAuthKeeper: k,
-		Ctx:          ctx,
-		ClientCtx:    clientCtx,
-		TxBuilder:    clientCtx.TxConfig.NewTxBuilder(),
+		Simapp:          app,
+		ZKAuthKeeper:    k,
+		AccountKeeper:   authKeeper,
+		SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+		Ctx:             ctx,
+		ClientCtx:       clientCtx,
+		TxBuilder:       clientCtx.TxConfig.NewTxBuilder(),
 	}
 
 	return testApp

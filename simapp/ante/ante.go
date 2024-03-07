@@ -41,14 +41,12 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewValidateMemoDecorator(opts.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
 		ante.NewDeductFeeDecorator(opts.AccountKeeper, opts.BankKeeper, opts.FeegrantKeeper),
-		// todo: SetPubKeyDecorator should modify for zkauth
-		//ante.NewSetPubKeyDecorator(opts.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+		zkauthante.NewZKAuthSetPubKeyDecorator(opts.ZKAuthKeeper, opts.AccountKeeper), // replaces NewSetPubKeyDecorator(opts.AccountKeeper)
 		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
 		// todo: SigGasConsumeDecorator should modify for zkauth
-		//ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
-		//ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
-		zkauthante.NewZKAuthMsgDecorator(opts.ZKAuthKeeper),
-		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),
+		// ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
+		zkauthante.NewZKAuthMsgDecorator(opts.ZKAuthKeeper, opts.AccountKeeper, opts.SignModeHandler), // replaces NewSigVerificationDecorator
+		zkauthante.NewIncrementSequenceDecorator(opts.AccountKeeper),                                  // replaces NewIncrementSequenceDecorator(opts.AccountKeeper)
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil

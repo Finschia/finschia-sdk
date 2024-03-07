@@ -18,7 +18,7 @@ import (
 
 func TestNewZKAuthMsgDecorator(t *testing.T) {
 	f := testutil.ZkAuthKeeper(t)
-	decorator := ante.NewZKAuthMsgDecorator(f.ZKAuthKeeper)
+	decorator := ante.NewZKAuthMsgDecorator(f.ZKAuthKeeper, f.AccountKeeper, f.SignModeHandler)
 	accounts, err := f.CreateTestAccounts(2)
 	require.NoError(t, err)
 

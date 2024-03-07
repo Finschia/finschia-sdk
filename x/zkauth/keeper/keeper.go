@@ -47,8 +47,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) {
-	results := make([][]byte, len(msgs))
-
+	results := make([][]byte, 0, len(msgs))
 	for i, msg := range msgs {
 		signers := msg.GetSigners()
 		if len(signers) != 1 {
@@ -68,7 +67,7 @@ func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) 
 			return nil, sdkerrors.Wrapf(err, "failed to execute message; message %v", msg)
 		}
 
-		results[i] = msgResp.Data
+		results = append(results, msgResp.Data)
 
 		events := msgResp.Events
 		sdkEvents := make([]sdk.Event, 0, len(events))
