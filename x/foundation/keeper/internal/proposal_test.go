@@ -83,7 +83,7 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 }
 
 func TestAbortProposal(t *testing.T) {
-	impl, _, _, _, _, addressCodec, ctx := setupFoundationKeeper(t, nil, nil)
+	impl, _, _, _, _, addressCodec, _, ctx := setupFoundationKeeper(t, nil, nil)
 
 	bytesToString := func(addr sdk.AccAddress) string {
 		str, err := addressCodec.BytesToString(addr)

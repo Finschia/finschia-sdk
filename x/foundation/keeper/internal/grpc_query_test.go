@@ -30,7 +30,7 @@ type FoundationTestSuite struct {
 func (s *FoundationTestSuite) SetupTest() {
 	var encCfg moduletestutil.TestEncodingConfig
 	var k keeper.Keeper
-	s.impl, k, _, _, encCfg, _, s.ctx = setupFoundationKeeper(s.T(), nil, nil)
+	s.impl, k, _, _, encCfg, _, _, s.ctx = setupFoundationKeeper(s.T(), nil, nil)
 
 	queryHelper := baseapp.NewQueryServerTestHelper(s.ctx, encCfg.InterfaceRegistry)
 	foundation.RegisterQueryServer(queryHelper, keeper.NewQueryServer(k))
