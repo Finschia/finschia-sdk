@@ -40,8 +40,15 @@ func (h Hooks) AfterValidatorCreated(goCtx context.Context, valAddr sdk.ValAddre
 
 	grantee := sdk.AccAddress(valAddr)
 
+	valAddrStr, err := h.k.cdc.InterfaceRegistry().SigningContext().ValidatorAddressCodec().BytesToString(valAddr)
+	if err != nil {
+		return err
+	}
+
+	// This hook isn't run by any msgs other than MsgCreateValidator,
+	// so msg is able to be reconstruct without using ctx.TxBytes()
 	msg := stakingtypes.MsgCreateValidator{
-		ValidatorAddress: valAddr.String(),
+		ValidatorAddress: valAddrStr,
 	}
 
 	if err := h.k.Accept(ctx, grantee, &msg); err != nil {
