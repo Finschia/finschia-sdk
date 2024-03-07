@@ -22,7 +22,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	modulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
 	"github.com/Finschia/finschia-sdk/x/foundation"
@@ -220,7 +220,7 @@ type FoundationOutputs struct {
 
 	Keeper keeper.Keeper
 	Module appmodule.AppModule
-	Hooks  staking.StakingHooksWrapper
+	Hooks  stakingtypes.StakingHooksWrapper
 }
 
 func ProvideModule(in FoundationInputs) FoundationOutputs {
@@ -252,7 +252,7 @@ func ProvideModule(in FoundationInputs) FoundationOutputs {
 	return FoundationOutputs{
 		Keeper: k,
 		Module: m,
-		Hooks:  staking.StakingHooksWrapper{StakingHooks: k.Hooks()},
+		Hooks:  stakingtypes.StakingHooksWrapper{StakingHooks: k.Hooks()},
 	}
 }
 
