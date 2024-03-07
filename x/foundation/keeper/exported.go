@@ -60,6 +60,10 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 	return k.impl.ExportGenesis(ctx)
 }
 
+func (k Keeper) Hooks() internal.Hooks {
+	return k.impl.Hooks()
+}
+
 func NewMsgServer(k Keeper) foundation.MsgServer {
 	return internal.NewMsgServer(k.impl)
 }

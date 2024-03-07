@@ -44,10 +44,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
+	"github.com/cosmos/cosmos-sdk/x/staking"
 
 	collectionmodule "github.com/Finschia/finschia-sdk/x/collection/module"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
-	stakingplusmodule "github.com/Finschia/finschia-sdk/x/stakingplus/module"
 )
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
@@ -204,7 +204,7 @@ func TestRunMigrations(t *testing.T) {
 					"bank":         1,
 					"auth":         auth.AppModule{}.ConsensusVersion(),
 					"authz":        authzmodule.AppModule{}.ConsensusVersion(),
-					"staking":      stakingplusmodule.AppModule{}.ConsensusVersion(),
+					"staking":      staking.AppModule{}.ConsensusVersion(),
 					"mint":         mint.AppModule{}.ConsensusVersion(),
 					"distribution": distribution.AppModule{}.ConsensusVersion(),
 					"slashing":     slashing.AppModule{}.ConsensusVersion(),
@@ -256,7 +256,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"bank":         bank.AppModule{}.ConsensusVersion(),
 			"auth":         auth.AppModule{}.ConsensusVersion(),
 			"authz":        authzmodule.AppModule{}.ConsensusVersion(),
-			"staking":      stakingplusmodule.AppModule{}.ConsensusVersion(),
+			"staking":      staking.AppModule{}.ConsensusVersion(),
 			"mint":         mint.AppModule{}.ConsensusVersion(),
 			"distribution": distribution.AppModule{}.ConsensusVersion(),
 			"slashing":     slashing.AppModule{}.ConsensusVersion(),

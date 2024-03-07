@@ -20,7 +20,6 @@ require (
 	github.com/Finschia/finschia-sdk/x/collection v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
 	github.com/cometbft/cometbft v0.38.3
-	github.com/Finschia/finschia-sdk/x/stakingplus v0.0.0-00010101000000-000000000000
 	github.com/cosmos/cosmos-db v1.0.0
 	// this version is not used as it is always replaced by the latest Cosmos SDK version
 	github.com/cosmos/cosmos-sdk v0.50.3
@@ -220,7 +219,6 @@ replace (
 	github.com/Finschia/finschia-sdk/api => ../api
 	github.com/Finschia/finschia-sdk/x/collection => ../x/collection
 	github.com/Finschia/finschia-sdk/x/foundation => ../x/foundation
-	github.com/Finschia/finschia-sdk/x/stakingplus => ../x/stakingplus
 	// Fix upstream GHSA-h395-qcrw-5vmq and GHSA-3vp4-m3rf-835h vulnerabilities.
 	// TODO Remove it: https://github.com/cosmos/cosmos-sdk/issues/10409
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
