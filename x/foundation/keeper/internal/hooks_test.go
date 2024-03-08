@@ -1,9 +1,10 @@
 package internal_test
 
 import (
-	"github.com/Finschia/finschia-sdk/x/foundation"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 
 func (s *KeeperTestSuite) TestHooks() {
