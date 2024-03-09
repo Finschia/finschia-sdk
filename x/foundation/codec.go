@@ -66,6 +66,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*Authorization)(nil),
 		&ReceiveFromTreasuryAuthorization{},
+		&CreateValidatorAuthorization{},
 	)
 
 	registry.RegisterImplementations(

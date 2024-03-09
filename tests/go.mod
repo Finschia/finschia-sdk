@@ -33,7 +33,6 @@ require (
 require (
 	github.com/Finschia/finschia-sdk/simapp v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
-	github.com/Finschia/finschia-sdk/x/stakingplus v0.0.0-00010101000000-000000000000
 	github.com/cosmos/go-bip39 v1.0.0
 )
 
@@ -231,6 +230,5 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/Finschia/cosmos-sdk v0.0.0-20231211060251-d8fb76d4c267
 
 	github.com/Finschia/finschia-sdk/x/foundation => ./../x/foundation
-	github.com/Finschia/finschia-sdk/x/stakingplus => ./../x/stakingplus
 	github.com/Finschia/finschia-sdk/x/collection => ./../x/collection
 )
