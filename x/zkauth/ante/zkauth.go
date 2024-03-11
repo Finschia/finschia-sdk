@@ -161,6 +161,7 @@ func (zsg ZKAuthSigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	}
 
 	// Case of zkauth msg, does nothing in this case
+	// TODO: We need an algorithm to deduct fees from zkauth addresses.
 	return next(ctx, tx, simulate)
 }
 
