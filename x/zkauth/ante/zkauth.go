@@ -133,21 +133,38 @@ func isZKAuthTx(tx sdk.Tx) (bool, []*zkauthtypes.MsgExecution, []types.PubKey, e
 		return false, nil, nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
 	}
 
-	msgs := sigTx.GetMsgs()
-	pubKeys, err := sigTx.GetPubKeys()
+	pubKeys, err := getPubkeysFromTx(sigTx)
 	if err != nil {
 		return false, nil, nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "invalid public key, %s", err)
 	}
 
+	isOnlyMsgExecution, zkMsgs := getMsgExecutionFromTx(sigTx.GetMsgs())
+	if !isOnlyMsgExecution {
+		return false, nil, pubKeys, nil
+	}
+
+	return true, zkMsgs, pubKeys, nil
+}
+
+func getPubkeysFromTx(sigTx authsigning.SigVerifiableTx) ([]types.PubKey, error) {
+	pubKeys, err := sigTx.GetPubKeys()
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "invalid public key, %s", err)
+	}
+
+	return pubKeys, nil
+}
+
+func getMsgExecutionFromTx(msgs []sdk.Msg) (bool, []*zkauthtypes.MsgExecution) {
 	// In this implementation, it is assumed that there is only zkauth msg.
 	zkMsgs := make([]*zkauthtypes.MsgExecution, 0, len(msgs))
 	for _, msg := range msgs {
 		zkMsg, ok := msg.(*zkauthtypes.MsgExecution)
 		if !ok {
-			return false, nil, pubKeys, nil
+			return false, nil
 		}
 		zkMsgs = append(zkMsgs, zkMsg)
 	}
 
-	return true, zkMsgs, pubKeys, nil
+	return true, zkMsgs
 }

@@ -28,6 +28,7 @@ import (
 	"github.com/Finschia/finschia-sdk/server/api"
 	"github.com/Finschia/finschia-sdk/server/config"
 	servertypes "github.com/Finschia/finschia-sdk/server/types"
+	appante "github.com/Finschia/finschia-sdk/simapp/ante"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	"github.com/Finschia/finschia-sdk/store/streaming"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -109,8 +110,6 @@ import (
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/Finschia/finschia-sdk/client/docs/statik"
-
-	appante "github.com/Finschia/finschia-sdk/simapp/ante"
 )
 
 const appName = "SimApp"
