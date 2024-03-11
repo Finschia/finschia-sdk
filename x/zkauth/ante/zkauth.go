@@ -6,6 +6,7 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	authante "github.com/Finschia/finschia-sdk/x/auth/ante"
 	authsigning "github.com/Finschia/finschia-sdk/x/auth/signing"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	zkauthtypes "github.com/Finschia/finschia-sdk/x/zkauth/types"
 )
 
@@ -111,6 +112,55 @@ func (zkisd ZKAuthIncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk
 		}
 	}
 
+	return next(ctx, tx, simulate)
+}
+
+type ZKAuthDeductFeeDecorator struct {
+	ak             authante.AccountKeeper
+	bankKeeper     authtypes.BankKeeper
+	feegrantKeeper authante.FeegrantKeeper
+}
+
+func NewZKAuthDeductFeeDecorator(ak authante.AccountKeeper, bankKeeper authtypes.BankKeeper, feegrantKeeper authante.FeegrantKeeper) ZKAuthDeductFeeDecorator {
+	return ZKAuthDeductFeeDecorator{ak: ak, bankKeeper: bankKeeper, feegrantKeeper: feegrantKeeper}
+}
+
+func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	isZKAuthTx, _, _, err := getZKAuthInfoFromTx(tx)
+	if err != nil {
+		return ctx, err
+	}
+
+	if !isZKAuthTx {
+		dfd := authante.NewDeductFeeDecorator(zdf.ak, zdf.bankKeeper, zdf.feegrantKeeper)
+		return dfd.AnteHandle(ctx, tx, simulate, next)
+	}
+
+	// Case of zkauth msg, does nothing in this case
+	return next(ctx, tx, simulate)
+}
+
+type ZKAuthSigGasConsumeDecorator struct {
+	ak             authante.AccountKeeper
+	sigGasConsumer authante.SignatureVerificationGasConsumer
+}
+
+func NewZKAuthSigGasConsumeDecorator(ak authante.AccountKeeper, sigGasConsumer authante.SignatureVerificationGasConsumer) ZKAuthSigGasConsumeDecorator {
+	return ZKAuthSigGasConsumeDecorator{ak: ak, sigGasConsumer: sigGasConsumer}
+}
+
+func (zsg ZKAuthSigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	isZKAuthTx, _, _, err := getZKAuthInfoFromTx(tx)
+	if err != nil {
+		return ctx, err
+	}
+
+	if !isZKAuthTx {
+		sgc := authante.NewSigGasConsumeDecorator(zsg.ak, zsg.sigGasConsumer)
+		return sgc.AnteHandle(ctx, tx, simulate, next)
+	}
+
+	// Case of zkauth msg, does nothing in this case
 	return next(ctx, tx, simulate)
 }
 

@@ -27,10 +27,14 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
 	}
 
-	//sigGasConsumer := opts.SigGasConsumer
-	//if sigGasConsumer == nil {
-	//	sigGasConsumer = ante.DefaultSigVerificationGasConsumer
-	//}
+	if opts.ZKAuthKeeper == nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "zkauth keeper is required for ante builder")
+	}
+
+	sigGasConsumer := opts.SigGasConsumer
+	if sigGasConsumer == nil {
+		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
+	}
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
@@ -40,11 +44,10 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(opts.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
-		ante.NewDeductFeeDecorator(opts.AccountKeeper, opts.BankKeeper, opts.FeegrantKeeper),
+		zkauthante.NewZKAuthDeductFeeDecorator(opts.AccountKeeper, opts.BankKeeper, opts.FeegrantKeeper),
 		zkauthante.NewZKAuthSetPubKeyDecorator(opts.ZKAuthKeeper, opts.AccountKeeper), // replaces NewSetPubKeyDecorator(opts.AccountKeeper)
 		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
-		// todo: SigGasConsumeDecorator should modify for zkauth
-		// ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
+		zkauthante.NewZKAuthSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
 		zkauthante.NewZKAuthMsgDecorator(opts.ZKAuthKeeper, opts.AccountKeeper, opts.SignModeHandler), // replaces NewSigVerificationDecorator
 		zkauthante.NewIncrementSequenceDecorator(opts.AccountKeeper),                                  // replaces NewIncrementSequenceDecorator(opts.AccountKeeper)
 	}
