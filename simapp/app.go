@@ -28,6 +28,7 @@ import (
 	"github.com/Finschia/finschia-sdk/server/api"
 	"github.com/Finschia/finschia-sdk/server/config"
 	servertypes "github.com/Finschia/finschia-sdk/server/types"
+	appante "github.com/Finschia/finschia-sdk/simapp/ante"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	"github.com/Finschia/finschia-sdk/store/streaming"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -370,6 +371,10 @@ func NewSimApp(
 	zkauthKeeper := zkauthkeeper.NewKeeper(appCodec, keys[zkauthtypes.StoreKey], jwKsMap, zkAuthVerifier, app.MsgServiceRouter())
 	app.ZKAuthKeeper = *zkauthKeeper
 
+	// Fetch JWK
+	ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+	app.ZKAuthKeeper.FetchJWK(ctx)
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -514,27 +519,27 @@ func NewSimApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 
 	// todo: please use this code when integrate zkauth's anteHandler.
-	//anteHandler, err := appante.NewAnteHandler(
-	//	appante.HandlerOptions{
-	//		HandlerOptions: ante.HandlerOptions{
-	//			AccountKeeper:   app.AccountKeeper,
-	//			BankKeeper:      app.BankKeeper,
-	//			FeegrantKeeper:  app.FeeGrantKeeper,
-	//			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-	//			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-	//		},
-	//		ZKAuthKeeper: app.ZKAuthKeeper,
-	//	},
-	//)
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+	anteHandler, err := appante.NewAnteHandler(
+		appante.HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				BankKeeper:      app.BankKeeper,
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+			ZKAuthKeeper: app.ZKAuthKeeper,
 		},
 	)
+	// anteHandler, err := ante.NewAnteHandler(
+	// 	ante.HandlerOptions{
+	// 		AccountKeeper:   app.AccountKeeper,
+	// 		BankKeeper:      app.BankKeeper,
+	// 		SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+	// 		FeegrantKeeper:  app.FeeGrantKeeper,
+	// 		SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+	// 	},
+	// )
 	if err != nil {
 		panic(err)
 	}

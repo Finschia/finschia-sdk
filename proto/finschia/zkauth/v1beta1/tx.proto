@@ -17,7 +17,7 @@ service Msg {
 
 message MsgExecution {
     // msgs is the msg of the bank or collection that the account wants to execute.
-    repeated google.protobuf.Any msgs = 1 [(cosmos_proto.accepts_interface) = "sdk.Msg, zkauth.Execution"];
+    repeated google.protobuf.Any msgs = 1 [(cosmos_proto.accepts_interface) = "sdk.Msg"];
     // ZkAuthSignature is the signature required for zkp verification.
     ZKAuthSignature zk_auth_signature = 2 [(gogoproto.nullable) = false];
 }

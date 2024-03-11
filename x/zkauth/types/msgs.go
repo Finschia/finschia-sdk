@@ -11,14 +11,14 @@ var (
 )
 
 func NewMsgExecution(msgs []sdk.Msg, zkauthSignature ZKAuthSignature) *MsgExecution {
-	msgsAny := make([]*cdctypes.Any, len(msgs))
-	for i, msg := range msgs {
+	msgsAny := make([]*cdctypes.Any, 0, len(msgs))
+	for _, msg := range msgs {
 		any, err := cdctypes.NewAnyWithValue(msg)
 		if err != nil {
 			panic(err)
 		}
 
-		msgsAny[i] = any
+		msgsAny = append(msgsAny, any)
 	}
 
 	return &MsgExecution{
@@ -93,13 +93,13 @@ func (e *MsgExecution) ValidateBasic() error {
 }
 
 func (e *MsgExecution) GetMessages() ([]sdk.Msg, error) {
-	msgs := make([]sdk.Msg, len(e.Msgs))
-	for i, msgAny := range e.Msgs {
+	msgs := make([]sdk.Msg, 0, len(e.Msgs))
+	for _, msgAny := range e.Msgs {
 		msg, ok := msgAny.GetCachedValue().(sdk.Msg)
 		if !ok {
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "messages contains %T which is not a sdk.MsgRequest", msgAny)
 		}
-		msgs[i] = msg
+		msgs = append(msgs, msg)
 	}
 
 	return msgs, nil
