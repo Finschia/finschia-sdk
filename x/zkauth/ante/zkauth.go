@@ -31,7 +31,7 @@ func (zka ZKAuthMsgDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		Basically, in the case of zkauth msg, ephPubKey must be idempotent for each msg.
 	*/
 
-	isZKAuthTx, zkMsgs, pubKeys, err := isZKAuthTx(tx)
+	isZKAuthTx, zkMsgs, pubKeys, err := getZKAuthInfoFromTx(tx)
 	if err != nil {
 		return ctx, err
 	}
@@ -61,7 +61,7 @@ func NewZKAuthSetPubKeyDecorator(zk zkauthtypes.ZKAuthKeeper, ak authante.Accoun
 }
 
 func (zsp ZKAuthSetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	isZKAuthTx, zkMsgs, _, err := isZKAuthTx(tx)
+	isZKAuthTx, zkMsgs, _, err := getZKAuthInfoFromTx(tx)
 	if err != nil {
 		return ctx, err
 	}
@@ -72,14 +72,8 @@ func (zsp ZKAuthSetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	}
 
 	for _, zkMsg := range zkMsgs {
-		msgs, err := zkMsg.GetMessages()
-		if err != nil {
-			return ctx, err
-		}
-		for _, msg := range msgs {
-			for _, signer := range msg.GetSigners() {
-				zsp.ak.SetAccount(ctx, zsp.ak.NewAccountWithAddress(ctx, signer))
-			}
+		for _, signer := range zkMsg.GetSigners() {
+			zsp.ak.SetAccount(ctx, zsp.ak.NewAccountWithAddress(ctx, signer))
 		}
 	}
 
@@ -97,7 +91,7 @@ func NewIncrementSequenceDecorator(ak authante.AccountKeeper) ZKAuthIncrementSeq
 }
 
 func (zkisd ZKAuthIncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	isZKAuthTx, zkMsgs, _, err := isZKAuthTx(tx)
+	isZKAuthTx, zkMsgs, _, err := getZKAuthInfoFromTx(tx)
 	if err != nil {
 		return ctx, err
 	}
@@ -108,26 +102,19 @@ func (zkisd ZKAuthIncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk
 	}
 
 	for _, zkMsg := range zkMsgs {
-		msgs, err := zkMsg.GetMessages()
-		if err != nil {
-			return ctx, err
-		}
-		for _, msg := range msgs {
-			for _, signer := range msg.GetSigners() {
-				acc := zkisd.ak.GetAccount(ctx, signer)
-				if err := acc.SetSequence(acc.GetSequence() + 1); err != nil {
-					panic(err)
-				}
-
-				zkisd.ak.SetAccount(ctx, acc)
+		for _, signer := range zkMsg.GetSigners() {
+			acc := zkisd.ak.GetAccount(ctx, signer)
+			if err := acc.SetSequence(acc.GetSequence() + 1); err != nil {
+				panic(err)
 			}
+			zkisd.ak.SetAccount(ctx, acc)
 		}
 	}
 
 	return next(ctx, tx, simulate)
 }
 
-func isZKAuthTx(tx sdk.Tx) (bool, []*zkauthtypes.MsgExecution, []types.PubKey, error) {
+func getZKAuthInfoFromTx(tx sdk.Tx) (bool, []*zkauthtypes.MsgExecution, []types.PubKey, error) {
 	sigTx, ok := tx.(authsigning.SigVerifiableTx)
 	if !ok {
 		return false, nil, nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
@@ -140,10 +127,10 @@ func isZKAuthTx(tx sdk.Tx) (bool, []*zkauthtypes.MsgExecution, []types.PubKey, e
 
 	isOnlyMsgExecution, zkMsgs := getMsgExecutionFromTx(sigTx.GetMsgs())
 	if !isOnlyMsgExecution {
-		return false, nil, pubKeys, nil
+		return isOnlyMsgExecution, nil, pubKeys, nil
 	}
 
-	return true, zkMsgs, pubKeys, nil
+	return isOnlyMsgExecution, zkMsgs, pubKeys, nil
 }
 
 func getPubkeysFromTx(sigTx authsigning.SigVerifiableTx) ([]types.PubKey, error) {
