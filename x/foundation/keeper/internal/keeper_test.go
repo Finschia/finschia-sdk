@@ -28,6 +28,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
@@ -47,7 +48,8 @@ type KeeperTestSuite struct {
 	keeper     keeper.Keeper
 	impl       internal.Keeper
 
-	addressCodec address.Codec
+	addressCodec  address.Codec
+	valdatorCodec address.Codec
 
 	queryServer     foundation.QueryServer
 	msgServer       foundation.MsgServer
@@ -89,6 +91,12 @@ func (s *KeeperTestSuite) bytesToString(addr sdk.AccAddress) string {
 	return str
 }
 
+func (s *KeeperTestSuite) bytesToValString(addr sdk.AccAddress) string {
+	str, err := s.valdatorCodec.BytesToString(addr)
+	s.Require().NoError(err)
+	return str
+}
+
 func (s *KeeperTestSuite) newTestMsg(addrs ...sdk.AccAddress) *testdata.TestMsg {
 	accAddresses := make([]string, len(addrs))
 
@@ -108,6 +116,7 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 	*foundationtestutil.MockBankKeeper,
 	moduletestutil.TestEncodingConfig,
 	address.Codec,
+	address.Codec,
 	sdk.Context,
 ) {
 	key := storetypes.NewKVStoreKey(foundation.StoreKey)
@@ -126,6 +135,7 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 	testdata.RegisterInterfaces(ir)
 
 	addressCodec := ir.SigningContext().AddressCodec()
+	validatorCodec := ir.SigningContext().ValidatorAddressCodec()
 
 	bapp := baseapp.NewBaseApp(
 		"foundation",
@@ -234,7 +244,7 @@ func setupFoundationKeeper(t *testing.T, balance *math.Int, addrs []sdk.AccAddre
 		setBalance(ctx, addr, sdk.NewCoin(sdk.DefaultBondDenom, *balance))
 	}
 
-	return impl, k, authKeeper, bankKeeper, encCfg, addressCodec, ctx
+	return impl, k, authKeeper, bankKeeper, encCfg, addressCodec, validatorCodec, ctx
 }
 
 func (s *KeeperTestSuite) SetupTest() {
@@ -251,7 +261,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	var authKeeper *foundationtestutil.MockAuthKeeper
-	s.impl, s.keeper, authKeeper, s.bankKeeper, _, s.addressCodec, s.ctx = setupFoundationKeeper(s.T(), &s.balance, coinHolders)
+	s.impl, s.keeper, authKeeper, s.bankKeeper, _, s.addressCodec, s.valdatorCodec, s.ctx = setupFoundationKeeper(s.T(), &s.balance, coinHolders)
 
 	if s.deterministic {
 		s.ctx = s.ctx.WithBlockTime(time.Date(2023, 11, 7, 19, 32, 0, 0, time.UTC))
@@ -285,10 +295,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	gs.Foundation = info
 
-	gs.Censorships = []foundation.Censorship{{
-		MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
-		Authority:  foundation.CensorshipAuthorityFoundation,
-	}}
+	gs.Censorships = []foundation.Censorship{
+		{
+			MsgTypeUrl: sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+			Authority:  foundation.CensorshipAuthorityFoundation,
+		},
+		{
+			MsgTypeUrl: sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+			Authority:  foundation.CensorshipAuthorityFoundation,
+		},
+	}
 
 	gs.Pool = foundation.Pool{
 		Treasury: sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
@@ -405,6 +421,12 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// grant stranger to receive foundation treasury
 	err = s.impl.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
+	s.Require().NoError(err)
+
+	// grant stranger to create validator
+	err = s.impl.Grant(s.ctx, s.stranger, &foundation.CreateValidatorAuthorization{
+		ValidatorAddress: s.bytesToValString(s.stranger),
+	})
 	s.Require().NoError(err)
 }
 

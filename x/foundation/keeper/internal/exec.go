@@ -27,7 +27,11 @@ func ensureMsgAuthz(msgs []sdk.Msg, authority sdk.AccAddress, cdc codec.Codec) e
 
 		for _, signer := range signers {
 			if !bytes.Equal(signer, authority) {
-				return sdkerrors.ErrUnauthorized.Wrapf("bad signer; expected %s, got %s", authority, signer)
+				signerStr, err := cdc.InterfaceRegistry().SigningContext().AddressCodec().BytesToString(signer)
+				if err != nil {
+					return err
+				}
+				return sdkerrors.ErrUnauthorized.Wrapf("bad signer; expected %s, got %s", authority, signerStr)
 			}
 		}
 	}

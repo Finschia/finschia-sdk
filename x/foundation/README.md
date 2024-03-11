@@ -45,6 +45,9 @@ back these foundation-specific functionalities.
 * [Client](#client)
     * [CLI](#cli)
     * [gRPC](#grpc)
+* [Hooks](#hooks)
+    * [Staking Hooks](#staking-hooks)
+
 
 # Concepts
 
@@ -248,7 +251,7 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 ### CreateValidatorAuthorization
 
 `CreateValidatorAuthorization` implements the `Authorization` interface for the
-[Msg/CreateValidator](../stakingplus/spec/03_messages.md#msgcreatevalidator).
+[AfterValidatorCreated](#aftervalidatorcreated).
 An account must have this authorization prior to sending the message.
 
 **Note:** You MUST provide the `CreateValidatorAuthorization`s into the genesis
@@ -1614,3 +1617,11 @@ Example Output:
   ]
 }
 ```
+
+# Hooks
+
+## Staking Hooks
+
+### AfterValidatorCreated
+
+This module adds a validation as a hook to `Msg/CreateValidator` service. This validation is expected to fail if the operator address is not registered on x/foundation through [MsgGrant](#msggrant) with `CreateValidatorAuthorization`.

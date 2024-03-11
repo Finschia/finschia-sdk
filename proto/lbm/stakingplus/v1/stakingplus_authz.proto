@@ -3,7 +3,7 @@ package lbm.stakingplus.v1;
 
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/Finschia/finschia-sdk/x/stakingplus";
+option go_package = "github.com/Finschia/finschia-sdk/x/foundation";
 
 // CreateValidatorAuthorization allows the grantee to create a new validator.
 message CreateValidatorAuthorization {

@@ -71,15 +71,6 @@ updates:
       - "A:automerge"
       - dependencies
   - package-ecosystem: gomod
-    directory: "/x/stakingplus"
-    schedule:
-      interval: weekly
-      day: wednesday
-      time: "01:35"
-    labels:
-      - "A:automerge"
-      - dependencies
-  - package-ecosystem: gomod
     directory: "/x/bankplus"
     schedule:
       interval: weekly

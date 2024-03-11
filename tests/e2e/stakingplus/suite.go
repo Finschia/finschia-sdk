@@ -20,7 +20,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/Finschia/finschia-sdk/x/stakingplus"
 )
 
 type E2ETestSuite struct {
@@ -96,7 +95,7 @@ func (s *E2ETestSuite) SetupSuite() {
 	for _, grantee := range []sdk.AccAddress{s.grantee, val1} {
 		ga := foundation.GrantAuthorization{
 			Grantee: s.bytesToString(grantee),
-		}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
+		}.WithAuthorization(&foundation.CreateValidatorAuthorization{
 			ValidatorAddress: s.bytesToValString(grantee),
 		})
 		s.Require().NotNil(ga)

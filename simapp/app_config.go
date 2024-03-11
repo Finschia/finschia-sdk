@@ -69,6 +69,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	_ "github.com/cosmos/cosmos-sdk/x/slashing" // import for side-effects
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	collectionmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
@@ -77,8 +78,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/collection"
 	_ "github.com/Finschia/finschia-sdk/x/collection/module" // import for side-effects
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	_ "github.com/Finschia/finschia-sdk/x/foundation/module"  // import for side-effects
-	_ "github.com/Finschia/finschia-sdk/x/stakingplus/module" // import for side-effects
+	_ "github.com/Finschia/finschia-sdk/x/foundation/module" // import for side-effects
 )
 
 var (
