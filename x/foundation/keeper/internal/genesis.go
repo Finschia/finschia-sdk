@@ -48,6 +48,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 
 	k.SetPool(ctx, data.Pool)
 
+	// init module accounts just in case
+	_ = k.authKeeper.GetModuleAccount(ctx, foundation.ModuleName)
+	_ = k.authKeeper.GetModuleAccount(ctx, foundation.TreasuryName)
 	return nil
 }
 
