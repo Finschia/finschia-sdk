@@ -10,15 +10,20 @@ import (
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	types2 "github.com/Finschia/finschia-sdk/crypto/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	authante "github.com/Finschia/finschia-sdk/x/auth/ante"
 	banktype "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/ante"
 	"github.com/Finschia/finschia-sdk/x/zkauth/testutil"
 	"github.com/Finschia/finschia-sdk/x/zkauth/types"
 )
 
-func TestNewZKAuthMsgDecorator(t *testing.T) {
+func TestNewDecorators(t *testing.T) {
 	f := testutil.ZkAuthKeeper(t)
-	decorator := ante.NewZKAuthMsgDecorator(f.ZKAuthKeeper, f.AccountKeeper, f.SignModeHandler)
+	decorators := []sdk.AnteDecorator{
+		ante.NewZKAuthDeductFeeDecorator(f.AccountKeeper, f.BankKeeper, f.FeeGrantKeeper),
+		ante.NewZKAuthSigGasConsumeDecorator(f.AccountKeeper, authante.DefaultSigVerificationGasConsumer),
+		ante.NewZKAuthMsgDecorator(f.ZKAuthKeeper, f.AccountKeeper, f.SignModeHandler),
+	}
 	accounts, err := f.CreateTestAccounts(2)
 	require.NoError(t, err)
 
@@ -51,8 +56,10 @@ func TestNewZKAuthMsgDecorator(t *testing.T) {
 	tx, err := f.CreateTestTx([]types2.PubKey{&pub}, []uint64{uint64(0)})
 	require.NoError(t, err)
 
-	_, err = decorator.AnteHandle(f.Ctx, tx, false, func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
-		return ctx, nil
-	})
-	require.NoError(t, err)
+	for _, decorator := range decorators {
+		_, err = decorator.AnteHandle(f.Ctx, tx, false, func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
+			return ctx, nil
+		})
+		require.NoError(t, err)
+	}
 }
