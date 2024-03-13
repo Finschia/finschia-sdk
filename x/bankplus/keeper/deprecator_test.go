@@ -21,7 +21,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	v1 "github.com/Finschia/finschia-sdk/x/bankplus/migrations/v1"
 	"github.com/Finschia/finschia-sdk/x/bankplus/types"
 )
 
@@ -63,7 +62,7 @@ func (s *DeprecationTestSuite) TestDeprecateBankPlus() {
 	s.Require().True(isStoredInactiveAddr(s.ctx, s.storeService, oldAcc.GetAddress()))
 	s.Require().True(isStoredInactiveAddr(s.ctx, s.storeService, anotherOldAcc.GetAddress()))
 
-	err := DeprecateBankPlus(s.ctx, s.storeService)
+	err := DeprecateBankPlus(s.ctx, BaseKeeper{storeService: s.storeService})
 
 	s.Require().NoError(err)
 	s.Require().False(isStoredInactiveAddr(s.ctx, s.storeService, oldAcc.GetAddress()))
@@ -73,7 +72,7 @@ func (s *DeprecationTestSuite) TestDeprecateBankPlus() {
 // isStoredInactiveAddr checks if the address is stored or not as blocked address
 func isStoredInactiveAddr(ctx context.Context, storeService store.KVStoreService, address sdk.AccAddress) bool {
 	kvStore := storeService.OpenKVStore(ctx)
-	bz, _ := kvStore.Get(v1.InactiveAddrKey(address))
+	bz, _ := kvStore.Get(inactiveAddrKey(address))
 	return bz != nil
 }
 
@@ -87,7 +86,7 @@ func addToInactiveAddr(ctx context.Context, storeService store.KVStoreService, c
 
 	blockedCAddr := types.InactiveAddr{Address: addrString}
 	bz := cdc.MustMarshal(&blockedCAddr)
-	if err := kvStore.Set(v1.InactiveAddrKey(address), bz); err != nil {
+	if err := kvStore.Set(inactiveAddrKey(address), bz); err != nil {
 		panic(err)
 	}
 }

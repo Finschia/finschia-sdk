@@ -3,22 +3,28 @@ package keeper
 import (
 	"context"
 
-	"cosmossdk.io/core/store"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
-
-	v1 "github.com/Finschia/finschia-sdk/x/bankplus/migrations/v1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+// inactiveAddrsKeyPrefix Keys for bankplus store but this prefix must not be overlap with bank key prefix.
+var inactiveAddrsKeyPrefix = []byte{0xa0}
+
+// inactiveAddrKey key of a specific inactiveAddr from store
+func inactiveAddrKey(addr sdk.AccAddress) []byte {
+	return append(inactiveAddrsKeyPrefix, addr.Bytes()...)
+}
 
 // DeprecateBankPlus performs in-place store migrations for bankplus v1
 // migration includes:
 //
 // - Remove all the state(inactive addresses)
-func DeprecateBankPlus(ctx context.Context, storeService store.KVStoreService) error {
-	kvStore := storeService.OpenKVStore(ctx)
+func DeprecateBankPlus(ctx context.Context, keeper BaseKeeper) error {
+	kvStore := keeper.storeService.OpenKVStore(ctx)
 	adapter := runtime.KVStoreAdapter(kvStore)
-	iterator := storetypes.KVStorePrefixIterator(adapter, v1.InactiveAddrsKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

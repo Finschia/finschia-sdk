@@ -43,13 +43,12 @@ type AppModule struct {
 	bankAppModule bank.AppModule
 
 	bankKeeper     bankkeeper.Keeper
-	accountKeeper  banktypes.AccountKeeper
 	legacySubspace exported.Subspace
 
 	bankplusKeeper keeper.BaseKeeper
 }
 
-func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accKeeper banktypes.AccountKeeper, ss exported.Subspace, bankplus keeper.BaseKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accKeeper banktypes.AccountKeeper, ss exported.Subspace, bankplusKeeper keeper.BaseKeeper) AppModule {
 	appModule := bank.NewAppModule(cdc, keeper, accKeeper, ss)
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{
@@ -57,9 +56,8 @@ func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accKeeper banktypes
 		},
 		bankAppModule:  appModule,
 		bankKeeper:     keeper,
-		accountKeeper:  accKeeper,
 		legacySubspace: ss,
-		bankplusKeeper: bankplus,
+		bankplusKeeper: bankplusKeeper,
 	}
 }
 
@@ -76,13 +74,24 @@ func (a AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 func (a AppModule) RegisterServices(cfg module.Configurator) {
 	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(a.bankKeeper))
 	banktypes.RegisterQueryServer(cfg.QueryServer(), a.bankKeeper)
-	bkplusMigrator := keeper.NewMigrator(a.bankplusKeeper)
-	if err := cfg.RegisterMigration(banktypes.ModuleName, 2, bkplusMigrator.WrappedMigrateBankplusWithBankMigrate1to2n3); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/bank from version 1 to 2,3(including original bank1 to 2,3: %v", err))
-	}
 
 	m := bankkeeper.NewMigrator(a.bankKeeper.(bankkeeper.BaseKeeper), a.legacySubspace)
-	if err := cfg.RegisterMigration(banktypes.ModuleName, 3, m.Migrate3to4); err != nil {
+	if err := cfg.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/bank from version 1 to 2: %v", err))
+	}
+
+	if err := cfg.RegisterMigration(banktypes.ModuleName, 2, m.Migrate2to3); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/bank from version 2 to 3: %v", err))
+	}
+
+	if err := cfg.RegisterMigration(banktypes.ModuleName, 3,
+		func(ctx sdk.Context) error {
+			// This is only necessary for a legacy bankplus module of finschia
+			if err := keeper.DeprecateBankPlus(ctx, a.bankplusKeeper); err != nil {
+				return fmt.Errorf("bankplus migration logic for deprecation failed: %w", err)
+			}
+			return m.Migrate3to4(ctx)
+		}); err != nil {
 		panic(fmt.Sprintf("failed to migrate x/bank from version 3 to 4: %v", err))
 	}
 }
@@ -158,7 +167,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		panic(err)
 	}
 
-	bankKeeper := keeper.NewBaseKeeper(
+	bankplusKeeper := keeper.NewBaseKeeper(
 		in.Cdc,
 		in.StoreService,
 		in.AccountKeeper,
@@ -168,10 +177,10 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	)
 
 	originalBankKeeper := bankkeeper.NewBaseKeeper(in.Cdc, in.StoreService, in.AccountKeeper, blockedAddresses, authorityString, in.Logger)
-	m := NewAppModule(in.Cdc, originalBankKeeper, in.AccountKeeper, in.LegacySubspace, bankKeeper)
+	m := NewAppModule(in.Cdc, originalBankKeeper, in.AccountKeeper, in.LegacySubspace, bankplusKeeper)
 
 	return ModuleOutputs{
-		BankKeeper: bankKeeper,
+		BankKeeper: bankplusKeeper,
 		Module:     m,
 	}
 }
