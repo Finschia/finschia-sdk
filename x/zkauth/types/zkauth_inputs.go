@@ -153,7 +153,7 @@ func (zk *ZKAuthInputs) CalculateAllInputsHash(ephPkBytes, modulus []byte, maxBl
 	ephPkFs := SplitToTwoFields(ephPkBytes)
 	maxBlockHeightF := new(big.Int).SetInt64(maxBlockHeight)
 
-	issBytes, err := base64.StdEncoding.DecodeString(zk.IssF)
+	issBytes, err := base64.StdEncoding.DecodeString(zk.IssBase64)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +217,7 @@ func (zk *ZKAuthInputs) Validate() error {
 	}
 
 	// check iss
-	issBytes, err := base64.StdEncoding.DecodeString(zk.IssF)
+	issBytes, err := base64.StdEncoding.DecodeString(zk.IssBase64)
 	if err != nil {
 		return sdkerrors.Wrapf(ErrInvalidZkAuthInputs, "invalid iss, %s", err)
 	}
@@ -239,5 +239,5 @@ func (zk *ZKAuthInputs) Validate() error {
 }
 
 func (zk *ZKAuthInputs) AccAddress() (types.AccAddress, error) {
-	return AccAddressFromAddressSeed(zk.AddressSeed, zk.IssF)
+	return AccAddressFromAddressSeed(zk.AddressSeed, zk.IssBase64)
 }

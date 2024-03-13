@@ -25,7 +25,7 @@ message ZKAuthAccount {
 // Contains the values needed to calculate "all inputs hash".
 message ZKAuthInputs {
     bytes proof_points = 1;
-    string iss_f = 2;
+    string iss_base64 = 2;
     string header_base64 = 3;
     string address_seed = 4;
 }

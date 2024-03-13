@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 * (x/zkauth) [\#1239](https://github.com/Finschia/finschia-sdk/pull/1239) add CalculateAllInputsHash in ZKAuthInputs
 * (x/zkauth) [\#1275](https://github.com/Finschia/finschia-sdk/pull/1275) Ignore gas when zkauth
+* (x/zkauth) [\#1278](https://github.com/Finschia/finschia-sdk/pull/1278) Correct set of address
 
 ### Bug Fixes
 

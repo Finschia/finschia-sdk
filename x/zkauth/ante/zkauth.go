@@ -81,7 +81,10 @@ func (zsp ZKAuthSetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 
 	for _, zkMsg := range zkMsgs {
 		for _, signer := range zkMsg.GetSigners() {
-			zsp.ak.SetAccount(ctx, zsp.ak.NewAccountWithAddress(ctx, signer))
+			accExists := zsp.ak.HasAccount(ctx, signer)
+			if !accExists {
+				zsp.ak.SetAccount(ctx, zsp.ak.NewAccountWithAddress(ctx, signer))
+			}
 		}
 	}
 

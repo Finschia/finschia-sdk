@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/base64"
 	"encoding/binary"
 	"errors"
 	"math/big"
@@ -12,7 +13,7 @@ import (
 
 // AccAddressFromAddressSeed create an AccAddress from addressSeed string and iss string
 // AccAddress = blake2b_256(iss_L, iss, addressSeed)
-func AccAddressFromAddressSeed(addrSeed, iss string) (types.AccAddress, error) {
+func AccAddressFromAddressSeed(addrSeed, issBase64 string) (types.AccAddress, error) {
 	if len(strings.TrimSpace(addrSeed)) == 0 {
 		return types.AccAddress{}, errors.New("empty address seed string is not allowed")
 	}
@@ -23,11 +24,10 @@ func AccAddressFromAddressSeed(addrSeed, iss string) (types.AccAddress, error) {
 		return types.AccAddress{}, errors.New("invalid address seed")
 	}
 	addrSeedBytes := addrSeedBigInt.Bytes()
-
-	if iss == "accounts.google.com" {
-		iss = "https://accounts.google.com"
+	issBytes, err := base64.StdEncoding.DecodeString(issBase64)
+	if err != nil {
+		return types.AccAddress{}, err
 	}
-	issBytes := []byte(iss)
 
 	// convert the issBytes length to big endian 2 bytes
 	issL := make([]byte, 2)

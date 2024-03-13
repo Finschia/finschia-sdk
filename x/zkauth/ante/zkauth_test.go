@@ -40,7 +40,7 @@ func TestNewDecorators(t *testing.T) {
 		ZkAuthSignature: types.ZKAuthSignature{
 			ZkAuthInputs: &types.ZKAuthInputs{
 				ProofPoints:  []byte(proofStr),
-				IssF:         "aHR0cHM6Ly9hY2NvdW50cy5nb29nbGUuY29t",
+				IssBase64:    "aHR0cHM6Ly9hY2NvdW50cy5nb29nbGUuY29t",
 				HeaderBase64: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1YzE4OGE4MzU0NmZjMTg4ZTUxNTc2YmE3MjgzNmUwNjAwZThiNzMiLCJ0eXAiOiJKV1QifQ",
 				AddressSeed:  "15035161560159971633800983619931498696152633426768016966057770643262022096073",
 			},

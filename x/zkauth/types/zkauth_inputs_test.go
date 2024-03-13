@@ -102,7 +102,7 @@ func TestCalculateAllInputsHash(t *testing.T) {
 
 	zkAuthInputs := ZKAuthInputs{
 		ProofPoints:  nil,
-		IssF:         base64.StdEncoding.EncodeToString([]byte(iss)),
+		IssBase64:    base64.StdEncoding.EncodeToString([]byte(iss)),
 		HeaderBase64: jwtHeader,
 		AddressSeed:  addressSeed,
 	}
