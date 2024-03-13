@@ -11,13 +11,17 @@ import (
 )
 
 type ZKAuthMsgDecorator struct {
-	zk              zkauthtypes.ZKAuthKeeper
-	ak              authante.AccountKeeper
-	signModeHandler authsigning.SignModeHandler
+	zk  zkauthtypes.ZKAuthKeeper
+	ak  authante.AccountKeeper
+	svd *authante.SigVerificationDecorator
 }
 
 func NewZKAuthMsgDecorator(zk zkauthtypes.ZKAuthKeeper, ak authante.AccountKeeper, signModeHandler authsigning.SignModeHandler) ZKAuthMsgDecorator {
-	return ZKAuthMsgDecorator{zk: zk, ak: ak, signModeHandler: signModeHandler}
+	return ZKAuthMsgDecorator{
+		zk:  zk,
+		ak:  ak,
+		svd: authante.NewSigVerificationDecorator(ak, signModeHandler),
+	}
 }
 
 func (zka ZKAuthMsgDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
@@ -38,8 +42,7 @@ func (zka ZKAuthMsgDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 
 	if !isZKAuthTx {
-		svd := authante.NewSigVerificationDecorator(zka.ak, zka.signModeHandler)
-		return svd.AnteHandle(ctx, tx, simulate, next)
+		return zka.svd.AnteHandle(ctx, tx, simulate, next)
 	}
 
 	for i, zkMsg := range zkMsgs {
@@ -53,12 +56,17 @@ func (zka ZKAuthMsgDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 }
 
 type ZKAuthSetPubKeyDecorator struct {
-	zk zkauthtypes.ZKAuthKeeper
-	ak authante.AccountKeeper
+	zk  zkauthtypes.ZKAuthKeeper
+	ak  authante.AccountKeeper
+	spk authante.SetPubKeyDecorator
 }
 
 func NewZKAuthSetPubKeyDecorator(zk zkauthtypes.ZKAuthKeeper, ak authante.AccountKeeper) ZKAuthSetPubKeyDecorator {
-	return ZKAuthSetPubKeyDecorator{zk: zk, ak: ak}
+	return ZKAuthSetPubKeyDecorator{
+		zk:  zk,
+		ak:  ak,
+		spk: authante.NewSetPubKeyDecorator(ak),
+	}
 }
 
 func (zsp ZKAuthSetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
@@ -68,8 +76,7 @@ func (zsp ZKAuthSetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	}
 
 	if !isZKAuthTx {
-		spk := authante.NewSetPubKeyDecorator(zsp.ak)
-		return spk.AnteHandle(ctx, tx, simulate, next)
+		return zsp.spk.AnteHandle(ctx, tx, simulate, next)
 	}
 
 	for _, zkMsg := range zkMsgs {
@@ -82,12 +89,14 @@ func (zsp ZKAuthSetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 }
 
 type ZKAuthIncrementSequenceDecorator struct {
-	ak authante.AccountKeeper
+	ak  authante.AccountKeeper
+	isd authante.IncrementSequenceDecorator
 }
 
 func NewIncrementSequenceDecorator(ak authante.AccountKeeper) ZKAuthIncrementSequenceDecorator {
 	return ZKAuthIncrementSequenceDecorator{
-		ak: ak,
+		ak:  ak,
+		isd: authante.NewIncrementSequenceDecorator(ak),
 	}
 }
 
@@ -98,8 +107,7 @@ func (zkisd ZKAuthIncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk
 	}
 
 	if !isZKAuthTx {
-		isd := authante.NewIncrementSequenceDecorator(zkisd.ak)
-		return isd.AnteHandle(ctx, tx, simulate, next)
+		return zkisd.isd.AnteHandle(ctx, tx, simulate, next)
 	}
 
 	for _, zkMsg := range zkMsgs {
@@ -119,10 +127,16 @@ type ZKAuthDeductFeeDecorator struct {
 	ak             authante.AccountKeeper
 	bankKeeper     authtypes.BankKeeper
 	feegrantKeeper authante.FeegrantKeeper
+	dfd            authante.DeductFeeDecorator
 }
 
 func NewZKAuthDeductFeeDecorator(ak authante.AccountKeeper, bankKeeper authtypes.BankKeeper, feegrantKeeper authante.FeegrantKeeper) ZKAuthDeductFeeDecorator {
-	return ZKAuthDeductFeeDecorator{ak: ak, bankKeeper: bankKeeper, feegrantKeeper: feegrantKeeper}
+	return ZKAuthDeductFeeDecorator{
+		ak:             ak,
+		bankKeeper:     bankKeeper,
+		feegrantKeeper: feegrantKeeper,
+		dfd:            authante.NewDeductFeeDecorator(ak, bankKeeper, feegrantKeeper),
+	}
 }
 
 func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
@@ -132,8 +146,7 @@ func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	}
 
 	if !isZKAuthTx {
-		dfd := authante.NewDeductFeeDecorator(zdf.ak, zdf.bankKeeper, zdf.feegrantKeeper)
-		return dfd.AnteHandle(ctx, tx, simulate, next)
+		return zdf.dfd.AnteHandle(ctx, tx, simulate, next)
 	}
 
 	// Case of zkauth msg, does nothing in this case
@@ -143,10 +156,15 @@ func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 type ZKAuthSigGasConsumeDecorator struct {
 	ak             authante.AccountKeeper
 	sigGasConsumer authante.SignatureVerificationGasConsumer
+	sgc            authante.SigGasConsumeDecorator
 }
 
 func NewZKAuthSigGasConsumeDecorator(ak authante.AccountKeeper, sigGasConsumer authante.SignatureVerificationGasConsumer) ZKAuthSigGasConsumeDecorator {
-	return ZKAuthSigGasConsumeDecorator{ak: ak, sigGasConsumer: sigGasConsumer}
+	return ZKAuthSigGasConsumeDecorator{
+		ak:             ak,
+		sigGasConsumer: sigGasConsumer,
+		sgc:            authante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
+	}
 }
 
 func (zsg ZKAuthSigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
@@ -156,8 +174,7 @@ func (zsg ZKAuthSigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	}
 
 	if !isZKAuthTx {
-		sgc := authante.NewSigGasConsumeDecorator(zsg.ak, zsg.sigGasConsumer)
-		return sgc.AnteHandle(ctx, tx, simulate, next)
+		return zsg.sgc.AnteHandle(ctx, tx, simulate, next)
 	}
 
 	// Case of zkauth msg, does nothing in this case
