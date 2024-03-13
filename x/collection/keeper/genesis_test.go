@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
@@ -27,4 +28,18 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	// export again and compare
 	newGenesis := s.keeper.ExportGenesis(s.ctx)
 	s.Require().Equal(genesis, newGenesis)
+}
+
+func (s *KeeperTestSuite) TestShouldPanicWhenZeroNextTokenIdInGenesis() {
+	dontCare := "12345678"
+	state := &collection.GenesisState{
+		Params: collection.Params{},
+		NextTokenIds: []collection.ContractNextTokenIDs{
+			{ContractId: dontCare, TokenIds: []collection.NextTokenID{
+				{ClassId: dontCare, Id: types.NewUint(0)},
+			}},
+		},
+	}
+
+	s.Require().Panics(func() { s.keeper.InitGenesis(s.ctx, state) })
 }
