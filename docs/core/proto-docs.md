@@ -9136,7 +9136,7 @@ Contains the values needed to calculate "all inputs hash".
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `proof_points` | [bytes](#bytes) |  |  |
-| `iss_f` | [string](#string) |  |  |
+| `iss_base64` | [string](#string) |  |  |
 | `header_base64` | [string](#string) |  |  |
 | `address_seed` | [string](#string) |  |  |
 
