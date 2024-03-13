@@ -1,8 +1,9 @@
 package types
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestAccAddressFromAddressSeed(t *testing.T) {
@@ -12,11 +13,12 @@ func TestAccAddressFromAddressSeed(t *testing.T) {
 		"11967859756179757815812269077480243698674971831305032302706373939074904776780": "link1muet5uz59utufwvux67tn5lgez28dasg4renvzhuku4a0jz459cs7m6tuw",
 		"10248927216838193947032332743622432828052626024625324374470479888091711985426": "link14x0mfl95kxg739fqpqdyvrykhd9ghsqk4uew3tr4aqcprfmtpaesh858kj",
 		"16423356555234621455999265971523270820664611063213539441365583262907894845196": "link1a4m70fx99udpr6c2excsgxa9x0vmra9gvzs4w6cz78dx3djrhuaqlppfp2",
+		"15035161560159971633800983619931498696152633426768016966057770643262022096073": "link1g7ud63eqllj7zj4q7fkca5h7s223j78tyvr0e2cxuw4qyyaaf3usa64dqc",
 	}
 
-	iss := "accounts.google.com"
+	issBase64 := "aHR0cHM6Ly9hY2NvdW50cy5nb29nbGUuY29t"
 	for seed, exp := range addressSeeds {
-		acc, err := AccAddressFromAddressSeed(seed, iss)
+		acc, err := AccAddressFromAddressSeed(seed, issBase64)
 		require.NoError(t, err)
 		require.Equal(t, exp, acc.String())
 	}
