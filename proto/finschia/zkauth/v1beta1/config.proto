@@ -24,9 +24,6 @@ message ProviderConfig {
     // For example, if Google, iss is https://accounts.google.com and jwk_endpoint is https://www.googleapis.com/oauth2/v3/certs
     string iss = 1;
     string jwk_endpoint = 2;
-
-    // FetchIntervals is the interval at which the node fetches the oauth_pub_key.
-    uint64 fetch_intervals = 3;
 }
 
 // List of providers available with ZKAuth.

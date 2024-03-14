@@ -9042,7 +9042,6 @@ The JWK is used to verify the JWT token.
 | ----- | ---- | ----- | ----------- |
 | `iss` | [string](#string) |  | For example, if Google, iss is https://accounts.google.com and jwk_endpoint is https://www.googleapis.com/oauth2/v3/certs |
 | `jwk_endpoint` | [string](#string) |  |  |
-| `fetch_intervals` | [uint64](#uint64) |  | FetchIntervals is the interval at which the node fetches the oauth_pub_key. |
 
 
 

@@ -2,9 +2,8 @@ package types
 
 func NewProviderConfig(iss string, jwkEndpoint string) ProviderConfig {
 	return ProviderConfig{
-		Iss:            iss,
-		JwkEndpoint:    jwkEndpoint,
-		FetchIntervals: 60,
+		Iss:         iss,
+		JwkEndpoint: jwkEndpoint,
 	}
 }
 

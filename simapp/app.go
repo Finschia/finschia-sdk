@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
@@ -372,8 +373,13 @@ func NewSimApp(
 	app.ZKAuthKeeper = *zkauthKeeper
 
 	// Fetch JWK
+	var wg sync.WaitGroup
+	wg.Add(1)
+
 	ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
-	app.ZKAuthKeeper.FetchJWK(ctx)
+	go app.ZKAuthKeeper.FetchJWK(ctx, &wg)
+
+	wg.Wait()
 
 	/****  Module Options ****/
 
