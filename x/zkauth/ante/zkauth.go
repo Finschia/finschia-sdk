@@ -1,6 +1,8 @@
 package ante
 
 import (
+	"fmt"
+
 	"github.com/Finschia/finschia-sdk/crypto/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -143,7 +145,7 @@ func NewZKAuthDeductFeeDecorator(ak authante.AccountKeeper, bankKeeper authtypes
 }
 
 func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	isZKAuthTx, _, _, err := getZKAuthInfoFromTx(tx)
+	isZKAuthTx, zkMsgs, _, err := getZKAuthInfoFromTx(tx)
 	if err != nil {
 		return ctx, err
 	}
@@ -152,7 +154,63 @@ func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		return zdf.dfd.AnteHandle(ctx, tx, simulate, next)
 	}
 
-	// Case of zkauth msg, does nothing in this case
+	// Almost no different from the implementation of zdf.dfd.AnteHandle, uses ZKauthAddress for feePayer.
+	feeTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+	}
+
+	if addr := zdf.ak.GetModuleAddress(authtypes.FeeCollectorName); addr.Empty() {
+		return ctx, fmt.Errorf("fee collector module account (%s) has not been set", authtypes.FeeCollectorName)
+	}
+
+	fee := feeTx.GetFee()
+	signature := zkMsgs[0].GetZkAuthSignature()
+	feePayer, err := signature.GetZkAuthInputs().AccAddress()
+	if err != nil {
+		return ctx, err
+	}
+	feeGranter := feeTx.FeeGranter()
+
+	deductFeesFrom := feePayer
+
+	// if feegranter set deduct fee from feegranter account.
+	// this works with only when feegrant enabled.
+	if feeGranter != nil {
+		if zdf.feegrantKeeper == nil {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee grants are not enabled")
+		} else if !feeGranter.Equals(feePayer) {
+			err := zdf.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, fee, tx.GetMsgs())
+			if err != nil {
+				return ctx, sdkerrors.Wrapf(err, "%s not allowed to pay fees from %s", feeGranter, feePayer)
+			}
+		}
+
+		deductFeesFrom = feeGranter
+	}
+
+	deductFeesFromAcc := zdf.ak.GetAccount(ctx, deductFeesFrom)
+	if deductFeesFromAcc == nil {
+		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "fee payer address: %s does not exist", deductFeesFrom)
+	}
+
+	// deduct the fees
+	if !feeTx.GetFee().IsZero() {
+		err = authante.DeductFees(zdf.bankKeeper, ctx, deductFeesFromAcc, feeTx.GetFee())
+		if err != nil {
+			return ctx, err
+		}
+	}
+
+	events := sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeTx,
+			sdk.NewAttribute(sdk.AttributeKeyFee, fee.String()),
+			sdk.NewAttribute(sdk.AttributeKeyFeePayer, deductFeesFrom.String()),
+		),
+	}
+	ctx.EventManager().EmitEvents(events)
+
 	return next(ctx, tx, simulate)
 }
 

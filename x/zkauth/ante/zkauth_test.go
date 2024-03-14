@@ -26,6 +26,8 @@ func TestNewDecorators(t *testing.T) {
 	}
 	accounts, err := f.CreateTestAccounts(2)
 	require.NoError(t, err)
+	zkauthAddress, err := f.AddTestAccounts([]string{"link1g7ud63eqllj7zj4q7fkca5h7s223j78tyvr0e2cxuw4qyyaaf3usa64dqc"})
+	require.NoError(t, err)
 
 	// bank msg
 	subMsg := &banktype.MsgSend{
@@ -50,6 +52,7 @@ func TestNewDecorators(t *testing.T) {
 	err = f.TxBuilder.SetMsgs(msg)
 	require.NoError(t, err)
 
+	f.TxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewCoin("cony", sdk.NewInt(1000))))
 	ephPubKey, ok := new(big.Int).SetString("18948426102457371978524559226152399917062673825697601263047735920285791872240", 10)
 	require.True(t, ok)
 	pub := secp256k1.PubKey{Key: ephPubKey.Bytes()}
@@ -62,4 +65,8 @@ func TestNewDecorators(t *testing.T) {
 		})
 		require.NoError(t, err)
 	}
+
+	balance, err := f.BankKeeper.Balance(sdk.WrapSDKContext(f.Ctx), &banktype.QueryBalanceRequest{zkauthAddress[0].GetAddress().String(), "cony"})
+	require.NoError(t, err)
+	require.Equal(t, sdk.NewInt(9999000), balance.Balance.Amount)
 }
