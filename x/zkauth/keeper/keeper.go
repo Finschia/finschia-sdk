@@ -106,12 +106,12 @@ func (k Keeper) FetchJWK(ctx sdk.Context, wg *sync.WaitGroup) {
 	}()
 
 	go func() {
-		k.Fetch(ctx)
+		k.fetch(ctx)
 		for {
 			select {
 			case <-ticker.C:
 				ctx.Logger().Info(fmt.Sprintf("JWK fetch start in %s", types.ModuleName))
-				k.Fetch(ctx)
+				k.fetch(ctx)
 			case <-quit:
 				ctx.Logger().Info(fmt.Sprintf("Received quite signal, fetch jwk exiting in %s", types.ModuleName))
 				defer ticker.Stop()
@@ -124,7 +124,7 @@ func (k Keeper) FetchJWK(ctx sdk.Context, wg *sync.WaitGroup) {
 	}()
 }
 
-func (k Keeper) Fetch(ctx sdk.Context) {
+func (k Keeper) fetch(ctx sdk.Context) {
 	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
 
 	for _, name := range defaultZKAuthOAuthProviders {
