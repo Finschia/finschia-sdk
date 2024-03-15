@@ -303,11 +303,11 @@ func TestShouldPanicWhenFailToGenerateFoundationModuleAccountInInitGenesis(t *te
 	testCases := map[string]struct {
 		mockAccKeeper *stubAccKeeper
 	}{
-		"failed to generate foundation module account=" + foundation.ModuleName: {
-			mockAccKeeper: &stubAccKeeper{name: foundation.ModuleName},
+		"failed to generate module account=" + foundation.ModuleName: {
+			mockAccKeeper: &stubAccKeeper{nameToFail: foundation.ModuleName},
 		},
-		"failed to generate foundation module account=" + foundation.TreasuryName: {
-			mockAccKeeper: &stubAccKeeper{name: foundation.TreasuryName},
+		"failed to generate module account=" + foundation.TreasuryName: {
+			mockAccKeeper: &stubAccKeeper{nameToFail: foundation.TreasuryName},
 		},
 	}
 
@@ -334,12 +334,12 @@ func TestShouldPanicWhenFailToGenerateFoundationModuleAccountInInitGenesis(t *te
 }
 
 type stubAccKeeper struct {
-	name string
+	nameToFail string
 }
 
 func (s *stubAccKeeper) GetModuleAccount(_ sdk.Context, name string) authtypes.ModuleAccountI {
-	if s.name == name {
-		return authtypes.NewEmptyModuleAccount("dontcare")
+	if s.nameToFail == name {
+		return nil
 	}
-	return nil
+	return authtypes.NewEmptyModuleAccount("dontcare")
 }
