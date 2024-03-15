@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -11,7 +12,9 @@ import (
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
+	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 )
 
 func workingPolicy() foundation.DecisionPolicy {
@@ -284,4 +287,59 @@ func TestImportExportGenesis(t *testing.T) {
 		actual := keeper.ExportGenesis(ctx)
 		require.Equal(t, tc.export, actual, name)
 	}
+}
+
+func TestShouldPanicWhenFailToGenerateFoundationModuleAccountInInitGenesis(t *testing.T) {
+	checkTx := false
+	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+	testdata.RegisterMsgServer(app.MsgServiceRouter(), testdata.MsgServerImpl{})
+	gs := &foundation.GenesisState{
+		Params:     foundation.DefaultParams(),
+		Foundation: foundation.DefaultFoundation(),
+	}
+	ctx := app.BaseApp.NewContext(checkTx, tmproto.Header{})
+
+	testCases := map[string]struct {
+		mockAccKeeper *stubAccKeeper
+	}{
+		"failed to generate foundation module account=" + foundation.ModuleName: {
+			mockAccKeeper: &stubAccKeeper{name: foundation.ModuleName},
+		},
+		"failed to generate foundation module account=" + foundation.TreasuryName: {
+			mockAccKeeper: &stubAccKeeper{name: foundation.TreasuryName},
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			assert.Panics(t, func() {
+				k := internal.NewKeeper(
+					app.AppCodec(),
+					app.GetKey(foundation.ModuleName),
+					app.MsgServiceRouter(),
+					tc.mockAccKeeper,
+					app.BankKeeper,
+					authtypes.FeeCollectorName,
+					foundation.DefaultConfig(),
+					foundation.DefaultAuthority().String(),
+					app.GetSubspace(foundation.ModuleName),
+				)
+
+				_ = k.InitGenesis(ctx, gs)
+				assert.FailNow(t, "not supposed to reach here, should panic before")
+			})
+		})
+	}
+}
+
+type stubAccKeeper struct {
+	name string
+}
+
+func (s *stubAccKeeper) GetModuleAccount(_ sdk.Context, name string) authtypes.ModuleAccountI {
+	if s.name == name {
+		return authtypes.NewEmptyModuleAccount("dontcare")
+	}
+	return nil
 }
