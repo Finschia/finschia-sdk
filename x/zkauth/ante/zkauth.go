@@ -165,6 +165,7 @@ func (zdf ZKAuthDeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	}
 
 	fee := feeTx.GetFee()
+	// TODO: It is necessary to consider how to respond when multiple zkmsg are included in one tx.
 	signature := zkMsgs[0].GetZkAuthSignature()
 	feePayer, err := signature.GetZkAuthInputs().AccAddress()
 	if err != nil {
