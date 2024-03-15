@@ -97,9 +97,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 		contractID := contractNextTokenIDs.ContractId
 
 		for _, nextTokenID := range contractNextTokenIDs.TokenIds {
-			if nextTokenID.Id.IsZero() {
-				panic("nextTokenID.Id is not supposed to be zero")
-			}
 			k.setNextTokenID(ctx, contractID, nextTokenID.ClassId, nextTokenID.Id)
 		}
 
