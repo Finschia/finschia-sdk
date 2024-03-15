@@ -65,8 +65,11 @@ func ValidateGenesis(data GenesisState) error {
 		if len(contractNextTokenIDs.TokenIds) == 0 {
 			return sdkerrors.ErrInvalidRequest.Wrap("next token ids cannot be empty")
 		}
-		for _, nextTokenIDs := range contractNextTokenIDs.TokenIds {
-			if err := ValidateClassID(nextTokenIDs.ClassId); err != nil {
+		for _, nextTokenID := range contractNextTokenIDs.TokenIds {
+			if nextTokenID.Id.IsZero() {
+				return sdkerrors.ErrInvalidRequest.Wrap("nextTokenID.Id is not supposed to be zero")
+			}
+			if err := ValidateClassID(nextTokenID.ClassId); err != nil {
 				return err
 			}
 		}
