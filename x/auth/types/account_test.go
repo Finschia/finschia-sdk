@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -206,4 +206,9 @@ func TestGenesisAccountsContains(t *testing.T) {
 
 	genAccounts = append(genAccounts, acc)
 	require.True(t, genAccounts.Contains(acc.GetAddress()))
+}
+
+func TestModuleAccountValidateNilBaseAccount(t *testing.T) {
+	ma := &types.ModuleAccount{Name: "foo"}
+	_ = ma.Validate()
 }
