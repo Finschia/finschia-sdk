@@ -373,7 +373,7 @@ func NewSimApp(
 
 	// Fetch JWK
 	ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
-	go app.ZKAuthKeeper.FetchJWK(ctx)
+	app.ZKAuthKeeper.FetchJWK(ctx)
 
 	/****  Module Options ****/
 
