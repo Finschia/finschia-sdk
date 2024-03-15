@@ -30,7 +30,8 @@ type Keeper struct {
 
 var _ types.ZKAuthKeeper = &Keeper{}
 
-const fetchIntervals = 60
+// Currently, the FetchJWK interval is 60s, but this will change once the JWK rotation interval is known.
+const fetchIntervals = time.Duration(60) * time.Second
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
@@ -92,7 +93,7 @@ func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) 
 
 func (k Keeper) FetchJWK(ctx sdk.Context, wg *sync.WaitGroup) {
 	quit := make(chan struct{})
-	ticker := time.NewTicker(time.Duration(fetchIntervals) * time.Second)
+	ticker := time.NewTicker(fetchIntervals)
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
