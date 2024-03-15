@@ -2,7 +2,10 @@ package keeper
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 	"time"
 
 	"github.com/Finschia/ostracon/libs/log"
@@ -25,6 +28,9 @@ type Keeper struct {
 }
 
 var _ types.ZKAuthKeeper = &Keeper{}
+
+// Currently, the FetchJWK interval is 60s, but this will change once the JWK rotation interval is known.
+const fetchIntervals = time.Duration(60) * time.Second
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
@@ -85,37 +91,53 @@ func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) 
 }
 
 func (k Keeper) FetchJWK(ctx sdk.Context) {
-	logger := k.Logger(ctx)
-	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
-	var fetchIntervals uint64
+	quit := make(chan struct{})
+	ticker := time.NewTicker(fetchIntervals)
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+
 	go func() {
+		<-sigCh
+		close(quit)
+	}()
+
+	go func() {
+		k.fetch(ctx)
 		for {
 			select {
+			case <-ticker.C:
+				ctx.Logger().Info(fmt.Sprintf("JWK fetch start in %s", types.ModuleName))
+				k.fetch(ctx)
+			case <-quit:
+				ctx.Logger().Info(fmt.Sprintf("Received quite signal, fetch jwk exiting in %s", types.ModuleName))
+				defer ticker.Stop()
+				return
 			// goroutine ends when a timeout occurs
 			case <-ctx.Context().Done():
 				return
-			default:
-				for _, name := range defaultZKAuthOAuthProviders {
-					provider := types.GetConfig(name)
-					fetchIntervals = provider.FetchIntervals
-
-					jwks, err := types.FetchJWK(provider.JwkEndpoint)
-					if err != nil {
-						time.Sleep(time.Duration(fetchIntervals) * time.Second)
-						logger.Error(fmt.Sprintf("%s", err))
-						continue
-					}
-
-					// add jwk
-					for _, jwk := range jwks.Keys {
-						jwkCopy := jwk
-						k.jwksMap.AddJWK(&jwkCopy)
-					}
-				}
-				time.Sleep(time.Duration(fetchIntervals) * time.Second)
 			}
 		}
 	}()
+}
+
+func (k Keeper) fetch(ctx sdk.Context) {
+	var defaultZKAuthOAuthProviders = [1]types.OidcProvider{types.Google}
+
+	for _, name := range defaultZKAuthOAuthProviders {
+		provider := types.GetConfig(name)
+		jwks, err := types.FetchJWK(provider.JwkEndpoint)
+		if err != nil {
+			ctx.Logger().Error(fmt.Sprintf("%s", err))
+			continue
+		}
+
+		// add jwk
+		for _, jwk := range jwks.Keys {
+			jwkCopy := jwk
+			k.jwksMap.AddJWK(&jwkCopy)
+		}
+	}
 }
 
 func (k Keeper) GetJWKSize() int {
