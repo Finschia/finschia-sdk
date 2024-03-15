@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"sync"
 	"testing"
 	"time"
 
@@ -68,13 +67,8 @@ func TestFetchJwk(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
-	var wg sync.WaitGroup
-	wg.Add(1)
-
-	k.FetchJWK(ctx.WithContext(timeoutCtx), &wg)
+	k.FetchJWK(ctx.WithContext(timeoutCtx))
 	<-timeoutCtx.Done()
-
-	wg.Wait()
 
 	require.GreaterOrEqual(t, k.GetJWKSize(), 1)
 

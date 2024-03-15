@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
-	"sync"
 	"syscall"
 	"time"
 
@@ -91,14 +90,12 @@ func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) 
 	return results, nil
 }
 
-func (k Keeper) FetchJWK(ctx sdk.Context, wg *sync.WaitGroup) {
+func (k Keeper) FetchJWK(ctx sdk.Context) {
 	quit := make(chan struct{})
 	ticker := time.NewTicker(fetchIntervals)
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-
-	defer wg.Done()
 
 	go func() {
 		<-sigCh
