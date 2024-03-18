@@ -22,6 +22,7 @@ import (
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	bankpluskeeper "github.com/Finschia/finschia-sdk/x/bankplus/keeper"
+	feegrant "github.com/Finschia/finschia-sdk/x/feegrant"
 	feegrantkeeper "github.com/Finschia/finschia-sdk/x/feegrant/keeper"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 	"github.com/Finschia/finschia-sdk/x/zkauth/keeper"
@@ -92,12 +93,12 @@ func ZkAuthKeeper(t testing.TB) TestApp {
 
 	clientCtx := client.Context{}.WithTxConfig(encodingConfig.TxConfig)
 	authKeeper := authkeeper.NewAccountKeeper(
-		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(authtypes.ModuleName),
+		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName),
 		authtypes.ProtoBaseAccount, maccPerms,
 	)
-	feeGrantKeeper := feegrantkeeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), authKeeper)
+	feeGrantKeeper := feegrantkeeper.NewKeeper(appCodec, app.GetKey(feegrant.StoreKey), authKeeper)
 	bankKeeper := bankpluskeeper.NewBaseKeeper(
-		appCodec, app.GetKey(types.StoreKey), authKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(), false)
+		appCodec, app.GetKey(banktypes.StoreKey), authKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(), false)
 
 	testApp := TestApp{
 		Simapp:          app,
