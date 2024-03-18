@@ -259,6 +259,13 @@ func TestMsgSendNFT(t *testing.T) {
 			ids:        []string{""},
 			err:        collection.ErrInvalidTokenID,
 		},
+		"FT ids": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			to:         addrs[1],
+			ids:        []string{collection.NewFTID("deadbeef")},
+			err:        sdkerrors.ErrInvalidRequest.Wrapf("invalid id: %s", collection.NewFTID("deadbeef")),
+		},
 	}
 
 	for name, tc := range testCases {
