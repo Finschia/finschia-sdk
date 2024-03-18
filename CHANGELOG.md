@@ -46,6 +46,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/zkauth) [\#1275](https://github.com/Finschia/finschia-sdk/pull/1275) Ignore gas when zkauth
 * (x/zkauth) [\#1278](https://github.com/Finschia/finschia-sdk/pull/1278) Correct set of address
 * (x/zkauth) [\#1279](https://github.com/Finschia/finschia-sdk/pull/1279) Deduct gas fee from zkauth address
+* (x/zkauth) [\#1280](https://github.com/Finschia/finschia-sdk/pull/1280) Fetch jwk considering goroutine exit
 
 ### Bug Fixes
 
