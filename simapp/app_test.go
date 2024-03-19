@@ -145,9 +145,19 @@ func TestRunMigrations(t *testing.T) {
 			true, "module migration versions should start at 1: invalid version", false, "", 0,
 		},
 		{
-			"can register 1->2 migration handler for x/bank, can run migration",
+			"throws error on RunMigrations if no migration registered for bank",
+			"", 1, 2,
+			false, "", true, "no migrations found for module bank: not found", 0,
+		},
+		{
+			"can register 1->2 migration handler for x/bank, cannot run migration",
 			"bank", 1, 2,
-			false, "", false, "", 0,
+			false, "", true, "no migration found for module bank from version 2 to version 3: not found", 0,
+		},
+		{
+			"can register 2->3 migration handler for x/bank, can run migration",
+			"bank", 2, bank.AppModule{}.ConsensusVersion(),
+			false, "", false, "", int(bank.AppModule{}.ConsensusVersion() - 2), // minus 2 because 1-2 is run in the previous test case.
 		},
 		{
 			"cannot register migration handler for same module & fromVersion",
