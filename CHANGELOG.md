@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (x/auth) [#1281](https://github.com/Finschia/finschia-sdk/pull/1281) `ModuleAccount.Validate` now reports a nil `.BaseAccount` instead of panicking. (backport #1274)
+* (x/foundation) [\#1283](https://github.com/Finschia/finschia-sdk/pull/1283) add init logic of foundation module accounts to InitGenesis in order to eliminate potential panic (backport #1277)
 
 ### Removed
 
