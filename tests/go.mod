@@ -51,7 +51,6 @@ require (
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
 	github.com/Finschia/finschia-sdk/api v0.0.0-20231227090232-78fde403b78c // indirect
-	github.com/Finschia/finschia-sdk/x/bankplus v0.0.0-00010101000000-000000000000 // indirect
 	github.com/aws/aws-sdk-go v1.44.224 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
@@ -227,10 +226,9 @@ replace (
 )
 
 replace (
-	github.com/cometbft/cometbft => github.com/Finschia/cometbft v0.0.0-20231127181424-2aacfbe9832d
-	github.com/cosmos/cosmos-sdk => github.com/Finschia/cosmos-sdk v0.0.0-20231211060251-d8fb76d4c267
+	github.com/Finschia/finschia-sdk/x/collection => ./../x/collection
 
 	github.com/Finschia/finschia-sdk/x/foundation => ./../x/foundation
-	github.com/Finschia/finschia-sdk/x/collection => ./../x/collection
-	github.com/Finschia/finschia-sdk/x/bankplus => ../x/bankplus
+	github.com/cometbft/cometbft => github.com/Finschia/cometbft v0.0.0-20231127181424-2aacfbe9832d
+	github.com/cosmos/cosmos-sdk => github.com/Finschia/cosmos-sdk v0.0.0-20231211060251-d8fb76d4c267
 )

@@ -1,4 +1,4 @@
-package keeper
+package internal
 
 import (
 	"context"
@@ -17,18 +17,17 @@ func inactiveAddrKey(addr sdk.AccAddress) []byte {
 	return append(inactiveAddrsKeyPrefix, addr.Bytes()...)
 }
 
-// DeprecateBankPlus performs in-place store migrations for bankplus v1
-// migration includes:
-//
-// - Remove all the state(inactive addresses)
-func DeprecateBankPlus(ctx context.Context, keeper BaseKeeper) error {
-	kvStore := keeper.storeService.OpenKVStore(ctx)
-	adapter := runtime.KVStoreAdapter(kvStore)
-	iterator := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
-	defer iterator.Close()
+// DeprecateBankPlus performs remove logic for bankplus v1.
+// This will remove all the state(inactive addresses)
+func DeprecateBankPlus(ctx context.Context, bankKey *storetypes.KVStoreKey) error {
+	kss := runtime.NewKVStoreService(bankKey)
+	ks := kss.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(ks)
+	iter := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
+	defer iter.Close()
 
-	for ; iterator.Valid(); iterator.Next() {
-		err := kvStore.Delete(iterator.Key())
+	for ; iter.Valid(); iter.Next() {
+		err := ks.Delete(iter.Key())
 		if err != nil {
 			return err
 		}

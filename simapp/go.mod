@@ -18,7 +18,6 @@ require (
 	cosmossdk.io/x/upgrade v0.1.1
 	github.com/Finschia/finschia-sdk/api v0.0.0-20231227090232-78fde403b78c
 	github.com/Finschia/finschia-sdk/x/collection v0.0.0-00010101000000-000000000000
-	github.com/Finschia/finschia-sdk/x/bankplus v0.0.0-00010101000000-000000000000
 	github.com/Finschia/finschia-sdk/x/foundation v0.0.0-00010101000000-000000000000
 	github.com/cometbft/cometbft v0.38.3
 	github.com/cosmos/cosmos-db v1.0.0
@@ -32,6 +31,8 @@ require (
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/protobuf v1.32.0
 )
+
+require github.com/gogo/protobuf v1.3.2
 
 require (
 	cloud.google.com/go v0.112.0 // indirect
@@ -94,7 +95,6 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -218,7 +218,6 @@ replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	// Simapp always use the latest version of the finschia-sdk
 	github.com/Finschia/finschia-sdk/api => ../api
-	github.com/Finschia/finschia-sdk/x/bankplus => ../x/bankplus
 	github.com/Finschia/finschia-sdk/x/collection => ../x/collection
 	github.com/Finschia/finschia-sdk/x/foundation => ../x/foundation
 	// Fix upstream GHSA-h395-qcrw-5vmq and GHSA-3vp4-m3rf-835h vulnerabilities.

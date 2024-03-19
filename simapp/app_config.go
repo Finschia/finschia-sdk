@@ -48,6 +48,7 @@ import (
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	_ "github.com/cosmos/cosmos-sdk/x/authz/module" // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/bank"         // import for side-effects
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus" // import for side-effects
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
@@ -74,7 +75,6 @@ import (
 
 	collectionmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/collection/module/v1"
 	foundationmodulev1 "github.com/Finschia/finschia-sdk/api/lbm/foundation/module/v1"
-	_ "github.com/Finschia/finschia-sdk/x/bankplus/module" // import for side-effects
 	"github.com/Finschia/finschia-sdk/x/collection"
 	_ "github.com/Finschia/finschia-sdk/x/collection/module" // import for side-effects
 	"github.com/Finschia/finschia-sdk/x/foundation"

@@ -1,4 +1,4 @@
-package keeper
+package internal
 
 import (
 	"context"
@@ -20,8 +20,6 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	"github.com/Finschia/finschia-sdk/x/bankplus/types"
 )
 
 func TestDeprecateTestSuite(t *testing.T) {
@@ -33,11 +31,12 @@ type DeprecationTestSuite struct {
 	ctx          sdk.Context
 	cdc          codec.Codec
 	storeService store.KVStoreService
+	key          *storetypes.KVStoreKey
 }
 
 func (s *DeprecationTestSuite) SetupTest() {
-	key := storetypes.NewKVStoreKey(banktypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
+	s.key = storetypes.NewKVStoreKey(banktypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(s.T(), s.key, storetypes.NewTransientStoreKey("transient_test"))
 	s.ctx = testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: cmttime.Now()})
 	encCfg := moduletestutil.MakeTestEncodingConfig()
 	encCfg.Codec = codectestutil.CodecOptions{
@@ -46,7 +45,7 @@ func (s *DeprecationTestSuite) SetupTest() {
 	}.NewCodec()
 	s.cdc = encCfg.Codec
 
-	storeService := runtime.NewKVStoreService(key)
+	storeService := runtime.NewKVStoreService(s.key)
 	s.storeService = storeService
 }
 
@@ -62,7 +61,7 @@ func (s *DeprecationTestSuite) TestDeprecateBankPlus() {
 	s.Require().True(isStoredInactiveAddr(s.ctx, s.storeService, oldAcc.GetAddress()))
 	s.Require().True(isStoredInactiveAddr(s.ctx, s.storeService, anotherOldAcc.GetAddress()))
 
-	err := DeprecateBankPlus(s.ctx, BaseKeeper{storeService: s.storeService})
+	err := DeprecateBankPlus(s.ctx, s.key)
 
 	s.Require().NoError(err)
 	s.Require().False(isStoredInactiveAddr(s.ctx, s.storeService, oldAcc.GetAddress()))
@@ -84,7 +83,7 @@ func addToInactiveAddr(ctx context.Context, storeService store.KVStoreService, c
 		panic(err)
 	}
 
-	blockedCAddr := types.InactiveAddr{Address: addrString}
+	blockedCAddr := InactiveAddr{Address: addrString}
 	bz := cdc.MustMarshal(&blockedCAddr)
 	if err := kvStore.Set(inactiveAddrKey(address), bz); err != nil {
 		panic(err)
