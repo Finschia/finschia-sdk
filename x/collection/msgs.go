@@ -340,7 +340,7 @@ func (m MsgSendNFT) ValidateBasic() error {
 		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
-		if err := ValidateTokenID(id); err != nil {
+		if err := ValidateNFTID(id); err != nil {
 			return err
 		}
 	}
