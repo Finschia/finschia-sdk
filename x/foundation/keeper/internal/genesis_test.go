@@ -12,11 +12,8 @@ import (
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
-<<<<<<< HEAD
-
-=======
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
->>>>>>> 089aff838 (fix: add init logic of module accounts just in case (#1277))
+
 	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 )
