@@ -474,14 +474,17 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+	holderAcc, err := sdk.AccAddressFromBech32(m.Holder)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+
+	operatorAcc, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	if m.Operator == m.Holder {
+	if holderAcc.Equals(operatorAcc) {
 		return ErrApproverProxySame
 	}
 
