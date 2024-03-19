@@ -445,6 +445,17 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
+		"should throw error when next token id is zero in genesis": {
+			&collection.GenesisState{
+				Params: collection.Params{},
+				NextTokenIds: []collection.ContractNextTokenIDs{
+					{ContractId: "deadbeef", TokenIds: []collection.NextTokenID{
+						{ClassId: "deadbeef", Id: sdk.NewUint(0)},
+					}},
+				},
+			},
+			false,
+		},
 	}
 
 	for name, tc := range testCases {
