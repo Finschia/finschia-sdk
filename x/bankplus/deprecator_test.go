@@ -85,7 +85,7 @@ func addToInactiveAddr(ctx context.Context, storeService store.KVStoreService, c
 		panic(err)
 	}
 
-	blockedCAddr := types.InactiveAddr{Address: addrString} //lint:ignore SA1019 types.InactiveAddr is deprecated. Will be removed next version
+	blockedCAddr := types.InactiveAddr{Address: addrString} // nolint: staticcheck // SA1019 types.InactiveAddr is deprecated. Will be removed next version
 	bz := cdc.MustMarshal(&blockedCAddr)
 	if err := kvStore.Set(inactiveAddrKey(address), bz); err != nil {
 		panic(err)
