@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/zkauth) [\#1280](https://github.com/Finschia/finschia-sdk/pull/1280) Fetch jwk considering goroutine exit
 
 ### Bug Fixes
+* (x/zkauth) [\#1291](https://github.com/Finschia/finschia-sdk/pull/1291) Compare the signer of the normal message and the signer of MsgExcute
 
 ### Removed
 
