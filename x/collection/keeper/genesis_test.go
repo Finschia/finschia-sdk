@@ -28,3 +28,11 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	newGenesis := s.keeper.ExportGenesis(s.ctx)
 	s.Require().Equal(genesis, newGenesis)
 }
+
+func (s *KeeperTestSuite) TestExportGenesis() {
+	genesis := s.keeper.ExportGenesis(s.ctx)
+
+	params := genesis.Params
+	s.Require().NotZero(params.DepthLimit)
+	s.Require().NotZero(params.WidthLimit)
+}

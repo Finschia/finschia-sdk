@@ -211,6 +211,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 	contracts := k.getContracts(ctx)
 
 	return &collection.GenesisState{
+		Params:         k.GetParams(ctx),
 		Contracts:      contracts,
 		NextClassIds:   k.getAllNextClassIDs(ctx),
 		Classes:        k.getClasses(ctx, contracts),
