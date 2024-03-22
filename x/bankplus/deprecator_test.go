@@ -20,6 +20,8 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+
+	"github.com/Finschia/finschia-sdk/x/bankplus/types"
 )
 
 func TestDeprecateTestSuite(t *testing.T) {
@@ -83,7 +85,7 @@ func addToInactiveAddr(ctx context.Context, storeService store.KVStoreService, c
 		panic(err)
 	}
 
-	blockedCAddr := InactiveAddr{Address: addrString}
+	blockedCAddr := types.InactiveAddr{Address: addrString} //lint:ignore SA1019 types.InactiveAddr is deprecated. Will be removed next version
 	bz := cdc.MustMarshal(&blockedCAddr)
 	if err := kvStore.Set(inactiveAddrKey(address), bz); err != nil {
 		panic(err)
