@@ -27,7 +27,10 @@ func (k msgServer) Execution(goCtx context.Context, msg *types.MsgExecution) (*t
 		return nil, err
 	}
 
-	results, err := k.DispatchMsgs(ctx, msgs)
+	// zksigner is assumed to be one
+	zksigner := msg.GetSigners()[0]
+
+	results, err := k.DispatchMsgs(ctx, msgs, zksigner)
 	if err != nil {
 		return nil, err
 	}
