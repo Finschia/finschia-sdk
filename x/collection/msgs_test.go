@@ -85,6 +85,15 @@ func TestMsgSendFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidTokenID,
 		},
+		"nft id": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			to:         addrs[1],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -183,6 +192,16 @@ func TestMsgOperatorSendFT(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
+			err: collection.ErrInvalidTokenID,
+		},
+		"nft id": {
+			contractID: "deadbeef",
+			operator:   addrs[0],
+			from:       addrs[1],
+			to:         addrs[2],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
 			err: collection.ErrInvalidTokenID,
 		},
 	}
@@ -848,6 +867,15 @@ func TestMsgMintFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidTokenID,
 		},
+		"nft id": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -1030,6 +1058,14 @@ func TestMsgBurnFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidAmount,
 		},
+		"nft id": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -1109,6 +1145,15 @@ func TestMsgOperatorBurnFT(t *testing.T) {
 				Amount:  sdk.ZeroInt(),
 			}},
 			err: collection.ErrInvalidAmount,
+		},
+		"nft id": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			from:       addrs[1],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 

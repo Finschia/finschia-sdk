@@ -46,8 +46,8 @@ func validateAmount(amount sdk.Int) error {
 }
 
 // deprecated
-func validateCoins(amount []Coin) error {
-	return validateCoinsWithIDValidator(amount, ValidateTokenID)
+func validateFTCoins(amount []Coin) error {
+	return validateCoinsWithIDValidator(amount, ValidateFTID)
 }
 
 // deprecated
@@ -247,7 +247,7 @@ func (m MsgSendFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -293,7 +293,7 @@ func (m MsgOperatorSendFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -675,7 +675,7 @@ func (m MsgMintFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -775,7 +775,7 @@ func (m MsgBurnFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -818,7 +818,7 @@ func (m MsgOperatorBurnFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
