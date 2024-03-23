@@ -1064,7 +1064,7 @@ func TestMsgBurnFT(t *testing.T) {
 			amount: []collection.Coin{
 				collection.NewNFTCoin("deadbeef", 42),
 			},
-			err: collection.ErrInvalidAmount,
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -1153,7 +1153,7 @@ func TestMsgOperatorBurnFT(t *testing.T) {
 			amount: []collection.Coin{
 				collection.NewNFTCoin("deadbeef", 42),
 			},
-			err: collection.ErrInvalidAmount,
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
