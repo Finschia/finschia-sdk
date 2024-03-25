@@ -3,6 +3,7 @@ package bankplus
 import (
 	"context"
 
+	"cosmossdk.io/core/store"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -36,22 +37,22 @@ func inactiveAddrKey(addr sdk.AccAddress) []byte {
 //	func (app SimApp) deprecateBankPlusFromSimapp(ctx context.Context) {
 //		for _, key := range app.kvStoreKeys() {
 //			if key.Name() == banktypes.StoreKey {
-//				err := internal.DeprecateBankPlus(ctx, key)
+//				bankStoreService := runtime.NewKVStoreService(key)
+//				err := bankplus.DeprecateBankPlus(ctx, bankStoreService)
 //				if err != nil {
 //					panic(fmt.Errorf("failed to deprecate x/bankplus: %w", err))
 //				}
 //			}
 //		}
 //	}
-func DeprecateBankPlus(ctx context.Context, bankKey *storetypes.KVStoreKey) error {
-	kss := runtime.NewKVStoreService(bankKey)
-	ks := kss.OpenKVStore(ctx)
-	adapter := runtime.KVStoreAdapter(ks)
+func DeprecateBankPlus(ctx context.Context, bankStoreService store.KVStoreService) error {
+	kvStore := bankStoreService.OpenKVStore(ctx)
+	adapter := runtime.KVStoreAdapter(kvStore)
 	iter := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		err := ks.Delete(iter.Key())
+		err := kvStore.Delete(iter.Key())
 		if err != nil {
 			return err
 		}

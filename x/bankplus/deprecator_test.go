@@ -63,7 +63,7 @@ func (s *DeprecationTestSuite) TestDeprecateBankPlus() {
 	s.Require().True(isStoredInactiveAddr(s.ctx, s.storeService, oldAcc.GetAddress()))
 	s.Require().True(isStoredInactiveAddr(s.ctx, s.storeService, anotherOldAcc.GetAddress()))
 
-	err := DeprecateBankPlus(s.ctx, s.key)
+	err := DeprecateBankPlus(s.ctx, s.storeService)
 
 	s.Require().NoError(err)
 	s.Require().False(isStoredInactiveAddr(s.ctx, s.storeService, oldAcc.GetAddress()))
