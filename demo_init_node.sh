@@ -3,7 +3,6 @@
 
 set -ex
 
-mode="mainnet"
 FNSAD=${FNSAD:-simd}
 
 # initialize
