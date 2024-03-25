@@ -52,12 +52,15 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg) ([][]byte, error) {
+func (k Keeper) DispatchMsgs(ctx sdk.Context, msgs []sdk.Msg, author sdk.AccAddress) ([][]byte, error) {
 	results := make([][]byte, 0, len(msgs))
 	for i, msg := range msgs {
 		signers := msg.GetSigners()
 		if len(signers) != 1 {
 			return nil, sdkerrors.ErrInvalidRequest.Wrap("authorization can be given to msg with only one signer")
+		}
+		if !author.Equals(signers[0]) {
+			return nil, sdkerrors.ErrUnauthorized.Wrapf("bad signer; expected %s, got %s", author, signers[0])
 		}
 		if err := msg.ValidateBasic(); err != nil {
 			return nil, err
