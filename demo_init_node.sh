@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# This script is intended for demo purposes, so please do not use it in production.
+
 set -ex
 
 mode="mainnet"
