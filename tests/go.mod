@@ -219,7 +219,6 @@ replace (
 	github.com/Finschia/finschia-sdk/api => ../api
 	// We always want to test against the latest version of the simapp.
 	github.com/Finschia/finschia-sdk/simapp => ../simapp
-
 	// Fix upstream GHSA-h395-qcrw-5vmq and GHSA-3vp4-m3rf-835h vulnerabilities.
 	// TODO Remove it: https://github.com/cosmos/cosmos-sdk/issues/10409
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1

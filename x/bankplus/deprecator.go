@@ -51,8 +51,12 @@ func DeprecateBankPlus(ctx context.Context, bankStoreService store.KVStoreServic
 	iter := storetypes.KVStorePrefixIterator(adapter, inactiveAddrsKeyPrefix)
 	defer iter.Close()
 
+	keys := [][]byte{}
 	for ; iter.Valid(); iter.Next() {
-		err := kvStore.Delete(iter.Key())
+		keys = append(keys, iter.Key())
+	}
+	for _, key := range keys {
+		err := kvStore.Delete(key)
 		if err != nil {
 			return err
 		}
