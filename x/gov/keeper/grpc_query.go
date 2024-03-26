@@ -264,13 +264,8 @@ func (q Keeper) TallyResult(c context.Context, req *types.QueryTallyResultReques
 	case proposal.Status == types.StatusDepositPeriod:
 		tallyResult = types.EmptyTallyResult()
 
-<<<<<<< HEAD
-	case proposal.Status == types.StatusPassed || proposal.Status == types.StatusRejected:
+	case proposal.Status == types.StatusPassed || proposal.Status == types.StatusRejected || proposal.Status == types.StatusFailed:
 		tallyResult = proposal.FinalTallyResult
-=======
-	case proposal.Status == v1.StatusPassed || proposal.Status == v1.StatusRejected || proposal.Status == v1.StatusFailed:
-		tallyResult = *proposal.FinalTallyResult
->>>>>>> d961aef76b (fix(x/gov): grpc query tally for failed proposal (#19725))
 
 	default:
 		// proposal is in voting period

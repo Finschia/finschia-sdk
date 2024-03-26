@@ -4,6 +4,7 @@ import (
 	gocontext "context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -802,40 +803,25 @@ func (suite *KeeperTestSuite) TestGRPCQueryTally() {
 			"proposal status failed",
 			func() {
 				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:     1,
-					Status: v1.StatusFailed,
-					FinalTallyResult: &v1.TallyResult{
-						YesCount:         "4",
-						AbstainCount:     "1",
-						NoCount:          "0",
-						NoWithVetoCount:  "0",
-						OptionOneCount:   "4",
-						OptionTwoCount:   "1",
-						OptionThreeCount: "0",
-						OptionFourCount:  "0",
-						SpamCount:        "0",
+				proposal := types.Proposal{
+					ProposalId: 1,
+					Status:     types.StatusFailed,
+					FinalTallyResult: types.TallyResult{
+						Yes:        sdk.NewInt(4),
+						Abstain:    sdk.NewInt(1),
+						No:         sdk.NewInt(0),
+						NoWithVeto: sdk.NewInt(0),
 					},
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
+					SubmitTime:      propTime,
+					VotingStartTime: propTime,
+					VotingEndTime:   propTime,
 				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
+				app.GovKeeper.SetProposal(ctx, proposal)
 
-				req = &v1.QueryTallyResultRequest{ProposalId: proposal.Id}
+				req = &types.QueryTallyResultRequest{ProposalId: proposal.ProposalId}
 
-				expTally = &v1.TallyResult{
-					YesCount:         "4",
-					AbstainCount:     "1",
-					NoCount:          "0",
-					NoWithVetoCount:  "0",
-					OptionOneCount:   "4",
-					OptionTwoCount:   "1",
-					OptionThreeCount: "0",
-					OptionFourCount:  "0",
-					SpamCount:        "0",
+				expRes = &types.QueryTallyResultResponse{
+					Tally: proposal.FinalTallyResult,
 				}
 			},
 			true,
@@ -853,315 +839,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryTally() {
 				suite.Require().Equal(expRes.String(), tally.String())
 			} else {
 				suite.Require().Error(err)
-<<<<<<< HEAD
 				suite.Require().Nil(tally)
-=======
-				suite.Require().Nil(tallyRes)
-			}
-		})
-	}
-}
-
-func (suite *KeeperTestSuite) TestLegacyGRPCQueryTallyResult() {
-	suite.reset()
-	queryClient := suite.legacyQueryClient
-
-	var (
-		req      *v1beta1.QueryTallyResultRequest
-		expTally *v1beta1.TallyResult
-	)
-
-	testCases := []struct {
-		msg      string
-		malleate func()
-		expPass  bool
-	}{
-		{
-			"empty request",
-			func() {
-				req = &v1beta1.QueryTallyResultRequest{}
-			},
-			false,
-		},
-		{
-			"non existing proposal request",
-			func() {
-				req = &v1beta1.QueryTallyResultRequest{ProposalId: 2}
-			},
-			false,
-		},
-		{
-			"zero proposal id request",
-			func() {
-				req = &v1beta1.QueryTallyResultRequest{ProposalId: 0}
-			},
-			false,
-		},
-		{
-			"valid request with proposal status passed",
-			func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:     1,
-					Status: v1.StatusPassed,
-					FinalTallyResult: &v1.TallyResult{
-						YesCount:        "4",
-						AbstainCount:    "1",
-						NoCount:         "0",
-						NoWithVetoCount: "0",
-						SpamCount:       "0",
-					},
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-
-				req = &v1beta1.QueryTallyResultRequest{ProposalId: proposal.Id}
-
-				expTally = &v1beta1.TallyResult{
-					Yes:        math.NewInt(4),
-					Abstain:    math.NewInt(1),
-					No:         math.NewInt(0),
-					NoWithVeto: math.NewInt(0),
-				}
-			},
-			true,
-		},
-		{
-			"proposal status deposit",
-			func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:              1,
-					Status:          v1.StatusDepositPeriod,
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-
-				req = &v1beta1.QueryTallyResultRequest{ProposalId: proposal.Id}
-
-				expTally = &v1beta1.TallyResult{
-					Yes:        math.NewInt(0),
-					Abstain:    math.NewInt(0),
-					No:         math.NewInt(0),
-					NoWithVeto: math.NewInt(0),
-				}
-			},
-			true,
-		},
-		{
-			"proposal is in voting period",
-			func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:              1,
-					Status:          v1.StatusVotingPeriod,
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-				req = &v1beta1.QueryTallyResultRequest{ProposalId: proposal.Id}
-
-				expTally = &v1beta1.TallyResult{
-					Yes:        math.NewInt(0),
-					Abstain:    math.NewInt(0),
-					No:         math.NewInt(0),
-					NoWithVeto: math.NewInt(0),
-				}
-			},
-			true,
-		},
-		{
-			"proposal status failed",
-			func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:     1,
-					Status: v1.StatusFailed,
-					FinalTallyResult: &v1.TallyResult{
-						YesCount:        "4",
-						AbstainCount:    "1",
-						NoCount:         "0",
-						NoWithVetoCount: "0",
-						SpamCount:       "0",
-					},
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-
-				req = &v1beta1.QueryTallyResultRequest{ProposalId: proposal.Id}
-
-				expTally = &v1beta1.TallyResult{
-					Yes:        math.NewInt(4),
-					Abstain:    math.NewInt(1),
-					No:         math.NewInt(0),
-					NoWithVeto: math.NewInt(0),
-				}
-			},
-			true,
-		},
-	}
-
-	for _, tc := range testCases {
-		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
-			if tc.malleate != nil {
-				tc.malleate()
-			}
-
-			tallyRes, err := queryClient.TallyResult(gocontext.Background(), req)
-
-			if tc.expPass {
-				suite.Require().NoError(err)
-				suite.Require().NotEmpty(tallyRes.Tally.String())
-				suite.Require().Equal(expTally.String(), tallyRes.Tally.String())
-			} else {
-				suite.Require().Error(err)
-				suite.Require().Nil(tallyRes)
-			}
-		})
-	}
-}
-
-func (suite *KeeperTestSuite) TestProposalVoteOptions() {
-	suite.reset()
-
-	testCases := []struct {
-		name     string
-		malleate func()
-		req      *v1.QueryProposalVoteOptionsRequest
-		expResp  *v1.QueryProposalVoteOptionsResponse
-		errStr   string
-	}{
-		{
-			name:   "invalid proposal id",
-			req:    &v1.QueryProposalVoteOptionsRequest{},
-			errStr: "proposal id can not be 0",
-		},
-		{
-			name:   "proposal not found",
-			req:    &v1.QueryProposalVoteOptionsRequest{ProposalId: 1},
-			errStr: "proposal 1 doesn't exist",
-		},
-		{
-			name: "non multiple choice proposal",
-			malleate: func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:              1,
-					Status:          v1.StatusVotingPeriod,
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-					ProposalType:    v1.ProposalType_PROPOSAL_TYPE_STANDARD,
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-			},
-			req: &v1.QueryProposalVoteOptionsRequest{ProposalId: 1},
-			expResp: &v1.QueryProposalVoteOptionsResponse{
-				VoteOptions: &v1.ProposalVoteOptions{
-					OptionOne:   "yes",
-					OptionTwo:   "abstain",
-					OptionThree: "no",
-					OptionFour:  "no_with_veto",
-					OptionSpam:  "spam",
-				},
-			},
-		},
-		{
-			name: "invalid multiple choice proposal",
-			req:  &v1.QueryProposalVoteOptionsRequest{ProposalId: 2},
-			malleate: func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:              2,
-					Status:          v1.StatusVotingPeriod,
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-					ProposalType:    v1.ProposalType_PROPOSAL_TYPE_MULTIPLE_CHOICE,
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-
-				// multiple choice proposal, but no vote options set
-				// because the query does not check the proposal type,
-				// it falls back to the default vote options
-			},
-			expResp: &v1.QueryProposalVoteOptionsResponse{
-				VoteOptions: &v1.ProposalVoteOptions{
-					OptionOne:   "yes",
-					OptionTwo:   "abstain",
-					OptionThree: "no",
-					OptionFour:  "no_with_veto",
-					OptionSpam:  "spam",
-				},
-			},
-		},
-		{
-			name: "multiple choice proposal",
-			req:  &v1.QueryProposalVoteOptionsRequest{ProposalId: 3},
-			malleate: func() {
-				propTime := time.Now()
-				proposal := v1.Proposal{
-					Id:              3,
-					Status:          v1.StatusVotingPeriod,
-					SubmitTime:      &propTime,
-					VotingStartTime: &propTime,
-					VotingEndTime:   &propTime,
-					Metadata:        "proposal metadata",
-					ProposalType:    v1.ProposalType_PROPOSAL_TYPE_MULTIPLE_CHOICE,
-				}
-				err := suite.govKeeper.Proposals.Set(suite.ctx, proposal.Id, proposal)
-				suite.Require().NoError(err)
-				err = suite.govKeeper.ProposalVoteOptions.Set(suite.ctx, proposal.Id, v1.ProposalVoteOptions{
-					OptionOne:   "Vote for @tac0turle",
-					OptionTwo:   "Vote for @facudomedica",
-					OptionThree: "Vote for @alexanderbez",
-				})
-				suite.Require().NoError(err)
-			},
-			expResp: &v1.QueryProposalVoteOptionsResponse{
-				VoteOptions: &v1.ProposalVoteOptions{
-					OptionOne:   "Vote for @tac0turle",
-					OptionTwo:   "Vote for @facudomedica",
-					OptionThree: "Vote for @alexanderbez",
-					OptionSpam:  "spam",
-				},
-			},
-		},
-	}
-
-	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.malleate != nil {
-				tc.malleate()
-			}
-
-			resp, err := suite.queryClient.ProposalVoteOptions(suite.ctx, tc.req)
-			if tc.errStr != "" {
-				suite.Require().Error(err)
-				suite.Require().Contains(err.Error(), tc.errStr)
-			} else {
-				suite.Require().NoError(err)
-				suite.Require().Equal(tc.expResp, resp)
->>>>>>> d961aef76b (fix(x/gov): grpc query tally for failed proposal (#19725))
 			}
 		})
 	}
