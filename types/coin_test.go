@@ -1042,8 +1042,8 @@ func (s *coinTestSuite) TestCoinValidate() {
 	}{
 		{"nil coin: nil Amount", sdk.Coin{}, "invalid denom"},
 		{"non-blank coin, nil Amount", sdk.Coin{Denom: "atom"}, "amount is nil"},
-		{"valid coin", sdk.Coin{Denom: "atom", Amount: math.NewInt(100)}, ""},
-		{"negative coin", sdk.Coin{Denom: "atom", Amount: math.NewInt(-999)}, "negative coin amount"},
+		{"valid coin", sdk.Coin{Denom: "atom", Amount: sdk.NewInt(100)}, ""},
+		{"negative coin", sdk.Coin{Denom: "atom", Amount: sdk.NewInt(-999)}, "negative coin amount"},
 	}
 
 	for _, tc := range testCases {
