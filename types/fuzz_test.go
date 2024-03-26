@@ -3,7 +3,7 @@ package types
 import (
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/Finschia/finschia-sdk/codec"
 )
 
 func FuzzCoinUnmarshalJSON(f *testing.F) {
