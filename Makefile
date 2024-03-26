@@ -4,7 +4,7 @@ PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
-OCVERSION := $(shell sed -nE 's,^[[:blank:]]*github\.com/Finschia/ostracon v(.+)$$,\1,p' go.mod)
+OCVERSION := $(shell go list -m github.com/Finschia/ostracon | sed -e 's:.* v::')
 LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
