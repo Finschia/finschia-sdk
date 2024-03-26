@@ -60,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection, x/token) [\#1288](https://github.com/Finschia/finschia-sdk/pull/1288) use accAddress to compare in validatebasic function in collection & token modules
 * (x/collection) [\#1268](https://github.com/Finschia/finschia-sdk/pull/1268) export x/collection params into genesis
 * (x/collection) [\#1294](https://github.com/Finschia/finschia-sdk/pull/1294) reject NFT coins on FT APIs
+* (sec) [\#1302](https://github.com/Finschia/finschia-sdk/pull/1302) remove map iteration non-determinism with keys + sorting
 * (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx 
 
 ### Removed
