@@ -4,6 +4,7 @@ PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
+OCVERSION := $(shell sed -nE 's,^[[:blank:]]*github\.com/Finschia/ostracon v(.+)$$,\1,p' go.mod)
 LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
@@ -89,7 +90,8 @@ ldflags = -X github.com/Finschia/finschia-sdk/version.Name=sim \
 		  -X github.com/Finschia/finschia-sdk/version.Version=$(VERSION) \
 		  -X github.com/Finschia/finschia-sdk/version.Commit=$(COMMIT) \
 		  -X github.com/Finschia/finschia-sdk/types.DBBackend=$(DB_BACKEND) \
-		  -X "github.com/Finschia/finschia-sdk/version.BuildTags=$(build_tags_comma_sep)"
+		  -X "github.com/Finschia/finschia-sdk/version.BuildTags=$(build_tags_comma_sep)" \
+		  -X github.com/Finschia/ostracon/version.OCCoreSemVer=$(OCVERSION)
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
