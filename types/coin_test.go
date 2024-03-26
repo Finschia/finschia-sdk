@@ -1065,7 +1065,6 @@ func (s *coinTestSuite) TestCoinValidate() {
 			}
 		})
 	}
-
 }
 
 func (s *coinTestSuite) TestCoinAminoEncoding() {
