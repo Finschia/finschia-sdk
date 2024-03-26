@@ -213,6 +213,8 @@ func (f Factory) BuildUnsignedTx(msgs ...sdk.Msg) (client.TxBuilder, error) {
 			return nil, errors.New("cannot provide both fees and gas prices")
 		}
 
+		// f.gas is a uint64 and we should convert to LegacyDec
+		// without the risk of under/overflow via uint64->int64.
 		glDec := sdk.NewDecFromBigInt(new(big.Int).SetUint64(f.gas))
 
 		// Derive the fees based on the provided gas prices, where
