@@ -43,8 +43,10 @@ func TestSlashRedelegation(t *testing.T) {
 
 	// fund acc 1 and acc 2
 	testCoins := sdk.NewCoins(sdk.NewCoin(bondDenom, stakingKeeper.TokensFromConsensusPower(ctx, 10)))
-	banktestutil.FundAccount(bankKeeper, ctx, testAcc1, testCoins)
-	banktestutil.FundAccount(bankKeeper, ctx, testAcc2, testCoins)
+	err := banktestutil.FundAccount(bankKeeper, ctx, testAcc1, testCoins)
+	require.NoError(t, err)
+	err = banktestutil.FundAccount(bankKeeper, ctx, testAcc2, testCoins)
+	require.NoError(t, err)
 
 	balance1Before := bankKeeper.GetBalance(ctx, testAcc1, bondDenom)
 	balance2Before := bankKeeper.GetBalance(ctx, testAcc2, bondDenom)
@@ -55,15 +57,17 @@ func TestSlashRedelegation(t *testing.T) {
 
 	// creating evil val
 	evilValAddr := sdk.ValAddress(evilValPubKey.Address())
-	banktestutil.FundAccount(bankKeeper, ctx, sdk.AccAddress(evilValAddr), testCoins)
+	err = banktestutil.FundAccount(bankKeeper, ctx, sdk.AccAddress(evilValAddr), testCoins)
+	require.NoError(t, err)
 	createValMsg1, _ := stakingtypes.NewMsgCreateValidator(
 		evilValAddr, evilValPubKey, testCoins[0], stakingtypes.Description{Details: "test"}, stakingtypes.NewCommissionRates(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), sdk.NewDec(0)), sdk.OneInt())
-	_, err := stakingMsgServer.CreateValidator(sdk.WrapSDKContext(ctx), createValMsg1)
+	_, err = stakingMsgServer.CreateValidator(sdk.WrapSDKContext(ctx), createValMsg1)
 	require.NoError(t, err)
 
 	// creating good val
 	goodValAddr := sdk.ValAddress(goodValPubKey.Address())
-	banktestutil.FundAccount(bankKeeper, ctx, sdk.AccAddress(goodValAddr), testCoins)
+	err = banktestutil.FundAccount(bankKeeper, ctx, sdk.AccAddress(goodValAddr), testCoins)
+	require.NoError(t, err)
 	createValMsg2, _ := stakingtypes.NewMsgCreateValidator(
 		goodValAddr, goodValPubKey, testCoins[0], stakingtypes.Description{Details: "test"}, stakingtypes.NewCommissionRates(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), sdk.NewDec(0)), sdk.OneInt())
 	_, err = stakingMsgServer.CreateValidator(sdk.WrapSDKContext(ctx), createValMsg2)
@@ -85,7 +89,7 @@ func TestSlashRedelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	// next block, commit height 2, move to height 3
-	// with the new delegations, evil val increases in voting power and commit byzantine behaviour at height 3 consensus
+	// with the new delegations, evil val increases in voting power and commit byzantine behavior at height 3 consensus
 	// at the same time, acc 1 and acc 2 withdraw delegation from evil val
 	ctx = app.NextBlock(ctx, time.Duration(1))
 	require.NoError(t, err)
@@ -111,9 +115,9 @@ func TestSlashRedelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	// next block, commit height 3, move to height 4
-	// Slash evil val for byzantine behaviour at height 3 consensus,
+	// Slash evil val for byzantine behavior at height 3 consensus,
 	// at which acc 1 and acc 2 still contributed to evil val voting power
-	// even tho they undelegate at block 3, the valset update is applied after commited block 3 when height 3 consensus already passes
+	// even tho they undelegate at block 3, the valset update is applied after committed block 3 when height 3 consensus already passes
 	ctx = app.NextBlock(ctx, time.Duration(1))
 	require.NoError(t, err)
 
