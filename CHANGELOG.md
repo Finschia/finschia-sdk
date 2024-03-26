@@ -63,6 +63,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (sec) [\#1302](https://github.com/Finschia/finschia-sdk/pull/1302) remove map iteration non-determinism with keys + sorting
 * (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx 
 * (types) [\#1299](https://github.com/Finschia/finschia-sdk/pull/1299) add missing nil checks
+* (x/staking) [\#1301](https://github.com/Finschia/finschia-sdk/pull/1301) Use bytes instead of string comparison in delete validator queue (backport cosmos/cosmos-sdk#12303)
 
 ### Removed
 
