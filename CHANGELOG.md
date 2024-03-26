@@ -58,6 +58,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Event Breaking Changes
 
 ### Build, CI
+* (build) [#1298](https://github.com/Finschia/finschia-sdk/pull/1298) Set Finschia/ostracon version
 
 ### Document Updates
 * (x/token,collection) [#1201](https://github.com/Finschia/finschia-sdk/pull/1201) Deprecate legacy features on x/token,collection
