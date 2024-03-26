@@ -4,6 +4,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -12,9 +15,6 @@ import (
 	distributionkeeper "github.com/Finschia/finschia-sdk/x/distribution/keeper"
 	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
-	"github.com/stretchr/testify/require"
-
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestSlashRedelegation(t *testing.T) {
