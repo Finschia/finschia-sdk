@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cast"
@@ -595,6 +596,21 @@ func (app *SimApp) GetStakingKeeper() stakingkeeper.Keeper {
 // GetTxConfig implements the TestingApp interface.
 func (app *SimApp) GetTxConfig() client.TxConfig {
 	return MakeTestEncodingConfig().TxConfig
+}
+
+// NextBlock starts a new block.
+func (app *SimApp) NextBlock(ctx sdk.Context, jumpTime time.Duration) sdk.Context {
+	app.EndBlock(abci.RequestEndBlock{Height: ctx.BlockHeight()})
+
+	app.Commit()
+
+	newBlockTime := ctx.BlockTime().Add(jumpTime)
+	nextHeight := ctx.BlockHeight() + 1
+	newHeader := tmproto.Header{Height: nextHeight, Time: newBlockTime}
+
+	app.BeginBlock(abci.RequestBeginBlock{Header: newHeader})
+
+	return app.NewUncachedContext(false, newHeader)
 }
 
 // AppCodec returns SimApp's app codec.
