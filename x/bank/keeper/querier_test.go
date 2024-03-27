@@ -48,7 +48,7 @@ func (suite *IntegrationTestSuite) TestQuerier_QueryBalance() {
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
 	suite.Require().NoError(legacyAmino.UnmarshalJSON(res, &balance))
-	suite.True(balance.IsEqual(newFooCoin(50)))
+	suite.True(balance.Equal(newFooCoin(50)))
 }
 
 func (suite *IntegrationTestSuite) TestQuerier_QueryAllBalances() {
@@ -84,7 +84,7 @@ func (suite *IntegrationTestSuite) TestQuerier_QueryAllBalances() {
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
 	suite.Require().NoError(legacyAmino.UnmarshalJSON(res, &balances))
-	suite.True(balances.IsEqual(origCoins))
+	suite.True(balances.Equal(origCoins))
 }
 
 func (suite *IntegrationTestSuite) TestQuerier_QueryTotalSupply() {
