@@ -921,8 +921,7 @@ func TestCommitStores(t *testing.T) {
 			}
 			store.Committed = 0
 			var version int64 = 1
-			removalMap := map[types.StoreKey]bool{}
-			res := commitStores(version, storeMap, removalMap)
+			res := commitStores(version, storeMap)
 			for _, s := range res.StoreInfos {
 				require.Equal(t, version, s.CommitId.Version)
 			}
