@@ -64,6 +64,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx 
 * (types) [\#1299](https://github.com/Finschia/finschia-sdk/pull/1299) add missing nil checks
 * (x/staking) [\#1301](https://github.com/Finschia/finschia-sdk/pull/1301) Use bytes instead of string comparison in delete validator queue (backport cosmos/cosmos-sdk#12303)
+* (x/gov) [\#1304](https://github.com/Finschia/finschia-sdk/pull/1304) fetch a failed proposal tally from proposal.FinalTallyResult in the gprc query
 
 ### Removed
 

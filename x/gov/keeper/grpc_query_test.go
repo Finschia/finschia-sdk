@@ -4,6 +4,7 @@ import (
 	gocontext "context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -789,6 +790,33 @@ func (suite *KeeperTestSuite) TestGRPCQueryTally() {
 				proposal.Status = types.StatusPassed
 				app.GovKeeper.SetProposal(ctx, proposal)
 				proposal, _ = app.GovKeeper.GetProposal(ctx, proposal.ProposalId)
+
+				req = &types.QueryTallyResultRequest{ProposalId: proposal.ProposalId}
+
+				expRes = &types.QueryTallyResultResponse{
+					Tally: proposal.FinalTallyResult,
+				}
+			},
+			true,
+		},
+		{
+			"proposal status failed",
+			func() {
+				propTime := time.Now()
+				proposal := types.Proposal{
+					ProposalId: 1,
+					Status:     types.StatusFailed,
+					FinalTallyResult: types.TallyResult{
+						Yes:        sdk.NewInt(4),
+						Abstain:    sdk.NewInt(1),
+						No:         sdk.NewInt(0),
+						NoWithVeto: sdk.NewInt(0),
+					},
+					SubmitTime:      propTime,
+					VotingStartTime: propTime,
+					VotingEndTime:   propTime,
+				}
+				app.GovKeeper.SetProposal(ctx, proposal)
 
 				req = &types.QueryTallyResultRequest{ProposalId: proposal.ProposalId}
 
