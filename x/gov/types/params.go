@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
