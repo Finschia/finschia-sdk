@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
