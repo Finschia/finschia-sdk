@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (chore) [\#1168](https://github.com/Finschia/finschia-sdk/pull/1168) Replace `ExactArgs(0)` with `NoArgs()` in `x/upgrade` module
 * (server) [\#1175](https://github.com/Finschia/finschia-sdk/pull/1175) Use go embed for swagger
 * (x/collection) [\#1287](https://github.com/Finschia/finschia-sdk/pull/1287) add nft id validation to MsgSendNFT
+* (types) [\#1314](https://github.com/Finschia/finschia-sdk/pull/1314) replace IsEqual with Equal
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
@@ -66,6 +67,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/staking) [\#1301](https://github.com/Finschia/finschia-sdk/pull/1301) Use bytes instead of string comparison in delete validator queue (backport cosmos/cosmos-sdk#12303)
 * (x/gov) [\#1304](https://github.com/Finschia/finschia-sdk/pull/1304) fetch a failed proposal tally from proposal.FinalTallyResult in the gprc query
 * (x/staking) [\#1306](https://github.com/Finschia/finschia-sdk/pull/1306) add validation for potential slashing evasion during re-delegation
+* (client/keys) [#1312](https://github.com/Finschia/finschia-sdk/pull/1312) ignore error when key not found in `keys delete`
+* (store) [\#1310](https://github.com/Finschia/finschia-sdk/pull/1310) fix app-hash mismatch if upgrade migration commit is interrupted(backport cosmos/cosmos-sdk#13530)
+* (types) [\#1313](https://github.com/Finschia/finschia-sdk/pull/1313) fix correctly coalesce coins even with repeated denominations(backport cosmos/cosmos-sdk#13265)
 
 ### Removed
 
