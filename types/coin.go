@@ -82,12 +82,9 @@ func (coin Coin) IsLT(other Coin) bool {
 }
 
 // IsEqual returns true if the two sets of Coins have the same value
+// Deprecated: Use Coin.Equal instead.
 func (coin Coin) IsEqual(other Coin) bool {
-	if coin.Denom != other.Denom {
-		panic(fmt.Sprintf("invalid coin denominations; %s, %s", coin.Denom, other.Denom))
-	}
-
-	return coin.Amount.Equal(other.Amount)
+	return coin.Equal(other)
 }
 
 // Add adds amounts of two coins with same denom. If the coins differ in denom then
@@ -399,7 +396,7 @@ func (coins Coins) SafeSub(coinsB Coins) (Coins, bool) {
 //	a.IsAllLTE(a.Max(b))
 //	b.IsAllLTE(a.Max(b))
 //	a.IsAllLTE(c) && b.IsAllLTE(c) == a.Max(b).IsAllLTE(c)
-//	a.Add(b...).IsEqual(a.Min(b).Add(a.Max(b)...))
+//	a.Add(b...).Equal(a.Min(b).Add(a.Max(b)...))
 //
 // E.g.
 // {1A, 3B, 2C}.Max({4A, 2B, 2C} == {4A, 3B, 2C})
@@ -445,7 +442,7 @@ func (coins Coins) Max(coinsB Coins) Coins {
 //	a.Min(b).IsAllLTE(a)
 //	a.Min(b).IsAllLTE(b)
 //	c.IsAllLTE(a) && c.IsAllLTE(b) == c.IsAllLTE(a.Min(b))
-//	a.Add(b...).IsEqual(a.Min(b).Add(a.Max(b)...))
+//	a.Add(b...).Equal(a.Min(b).Add(a.Max(b)...))
 //
 // E.g.
 // {1A, 3B, 2C}.Min({4A, 2B, 2C} == {1A, 2B, 2C})
@@ -588,8 +585,8 @@ func (coins Coins) IsZero() bool {
 	return true
 }
 
-// IsEqual returns true if the two sets of Coins have the same value
-func (coins Coins) IsEqual(coinsB Coins) bool {
+// Equal returns true if the two sets of Coins have the same value
+func (coins Coins) Equal(coinsB Coins) bool {
 	if len(coins) != len(coinsB) {
 		return false
 	}
@@ -598,7 +595,7 @@ func (coins Coins) IsEqual(coinsB Coins) bool {
 	coinsB = coinsB.Sort()
 
 	for i := 0; i < len(coins); i++ {
-		if !coins[i].IsEqual(coinsB[i]) {
+		if !coins[i].Equal(coinsB[i]) {
 			return false
 		}
 	}
