@@ -110,7 +110,7 @@ func InitGenesis(
 		accountKeeper.SetModuleAccount(ctx, bondedPool)
 	}
 	// if balance is different from bonded coins panic because genesis is most likely malformed
-	if !bondedBalance.IsEqual(bondedCoins) {
+	if !bondedBalance.Equal(bondedCoins) {
 		panic(fmt.Sprintf("bonded pool balance is different from bonded coins: %s <-> %s", bondedBalance, bondedCoins))
 	}
 	notBondedPool := keeper.GetNotBondedPool(ctx)
@@ -123,7 +123,7 @@ func InitGenesis(
 		accountKeeper.SetModuleAccount(ctx, notBondedPool)
 	}
 	// if balance is different from non bonded coins panic because genesis is most likely malformed
-	if !notBondedBalance.IsEqual(notBondedCoins) {
+	if !notBondedBalance.Equal(notBondedCoins) {
 		panic(fmt.Sprintf("not bonded pool balance is different from not bonded coins: %s <-> %s", notBondedBalance, notBondedCoins))
 	}
 	// don't need to run Tendermint updates if we exported

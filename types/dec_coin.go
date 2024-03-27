@@ -79,12 +79,9 @@ func (coin DecCoin) IsLT(other DecCoin) bool {
 }
 
 // IsEqual returns true if the two sets of Coins have the same value.
+// Deprecated: Use DecCoin.Equal instead.
 func (coin DecCoin) IsEqual(other DecCoin) bool {
-	if coin.Denom != other.Denom {
-		panic(fmt.Sprintf("invalid coin denominations; %s, %s", coin.Denom, other.Denom))
-	}
-
-	return coin.Amount.Equal(other.Amount)
+	return coin.Equal(other)
 }
 
 // Add adds amounts of two decimal coins with same denom.
@@ -480,8 +477,8 @@ func (coins DecCoins) AmountOf(denom string) Dec {
 	}
 }
 
-// IsEqual returns true if the two sets of DecCoins have the same value.
-func (coins DecCoins) IsEqual(coinsB DecCoins) bool {
+// Equal returns true if the two sets of DecCoins have the same value.
+func (coins DecCoins) Equal(coinsB DecCoins) bool {
 	if len(coins) != len(coinsB) {
 		return false
 	}
@@ -490,7 +487,7 @@ func (coins DecCoins) IsEqual(coinsB DecCoins) bool {
 	coinsB = coinsB.Sort()
 
 	for i := 0; i < len(coins); i++ {
-		if !coins[i].IsEqual(coinsB[i]) {
+		if !coins[i].Equal(coinsB[i]) {
 			return false
 		}
 	}
