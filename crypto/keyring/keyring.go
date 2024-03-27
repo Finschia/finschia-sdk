@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/99designs/keyring"
-	bip39 "github.com/cosmos/go-bip39"
+	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
 	tmcrypto "github.com/tendermint/tendermint/crypto"
@@ -614,17 +614,26 @@ func SignWithLedger(info Info, msg []byte) (sig []byte, pub types.PubKey, err er
 
 	path, err := info.GetPath()
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 
 	priv, err := ledger.NewPrivKeySecp256k1Unsafe(*path)
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 
 	sig, err = priv.Sign(msg)
 	if err != nil {
 		return nil, nil, err
+	}
+	ledgerPubKey := priv.PubKey()
+	pubKey := info.GetPubKey()
+	if !pubKey.Equals(ledgerPubKey) {
+		return nil, nil, fmt.Errorf("the public key that the user attempted to sign with does not match the public key on the ledger device. %v does not match %v", pubKey.String(), ledgerPubKey.String())
+	}
+
+	if !priv.PubKey().VerifySignature(msg, sig) {
+		return nil, nil, errors.New("Ledger generated an invalid signature. Perhaps you have multiple ledgers and need to try another one")
 	}
 
 	return sig, priv.PubKey(), nil
