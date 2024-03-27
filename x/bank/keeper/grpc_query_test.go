@@ -41,7 +41,7 @@ func (suite *IntegrationTestSuite) TestQueryBalance() {
 	res, err = queryClient.Balance(gocontext.Background(), req)
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
-	suite.True(res.Balance.IsEqual(newFooCoin(50)))
+	suite.True(res.Balance.Equal(newFooCoin(50)))
 }
 
 func (suite *IntegrationTestSuite) TestQueryAllBalances() {

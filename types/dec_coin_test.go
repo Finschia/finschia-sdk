@@ -445,7 +445,7 @@ func (s *decCoinTestSuite) TestDecCoinsIntersect() {
 		s.Require().NoError(err, "unexpected parse error in %v", i)
 		exr, err := sdk.ParseDecCoins(tc.expectedResult)
 		s.Require().NoError(err, "unexpected parse error in %v", i)
-		s.Require().True(in1.Intersect(in2).IsEqual(exr), "in1.cap(in2) != exr in %v", i)
+		s.Require().True(in1.Intersect(in2).Equal(exr), "in1.cap(in2) != exr in %v", i)
 	}
 }
 
