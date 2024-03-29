@@ -33,7 +33,7 @@ func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 
 		treasury := k.GetTreasury(ctx)
 		msg := fmt.Sprintf("coins in the treasury; expected %s, got %s\n", treasury, balance)
-		broken := !treasury.IsEqual(sdk.NewDecCoinsFromCoins(balance...))
+		broken := !treasury.Equal(sdk.NewDecCoinsFromCoins(balance...))
 
 		return sdk.FormatInvariant(foundation.ModuleName, moduleAccountInvariant, msg), broken
 	}

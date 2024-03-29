@@ -47,7 +47,7 @@ func TestMsgDecode(t *testing.T) {
 	require.NoError(t, err)
 	msg2, ok := msgUnmarshaled.(*types.MsgCreateValidator)
 	require.True(t, ok)
-	require.True(t, msg.Value.IsEqual(msg2.Value))
+	require.True(t, msg.Value.Equal(msg2.Value))
 	require.True(t, msg.Pubkey.Equal(msg2.Pubkey))
 }
 
