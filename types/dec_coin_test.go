@@ -445,7 +445,7 @@ func (s *decCoinTestSuite) TestDecCoinsIntersect() {
 		s.Require().NoError(err, "unexpected parse error in %v", i)
 		exr, err := sdk.ParseDecCoins(tc.expectedResult)
 		s.Require().NoError(err, "unexpected parse error in %v", i)
-		s.Require().True(in1.Intersect(in2).IsEqual(exr), "in1.cap(in2) != exr in %v", i)
+		s.Require().True(in1.Intersect(in2).Equal(exr), "in1.cap(in2) != exr in %v", i)
 	}
 }
 
@@ -543,6 +543,29 @@ func (s *decCoinTestSuite) TestNewDecCoinsWithIsValid() {
 		} else {
 			s.Require().False(tc.coin.IsValid(), tc.msg)
 		}
+	}
+}
+
+func (s *decCoinTestSuite) TestNewDecCoinsWithZeroCoins() {
+	zeroCoins := append(sdk.NewCoins(sdk.NewCoin("mytoken", sdk.NewInt(0))), sdk.Coin{Denom: "wbtc", Amount: sdk.NewInt(10)})
+
+	tests := []struct {
+		coins        sdk.Coins
+		expectLength int
+	}{
+		{
+			sdk.NewCoins(sdk.NewCoin("mytoken", sdk.NewInt(10)), sdk.NewCoin("wbtc", sdk.NewInt(10))),
+			2,
+		},
+		{
+			zeroCoins,
+			1,
+		},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		s.Require().Equal(sdk.NewDecCoinsFromCoins(tc.coins...).Len(), tc.expectLength)
 	}
 }
 

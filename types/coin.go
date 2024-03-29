@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"regexp"
 	"sort"
@@ -44,6 +45,10 @@ func (coin Coin) Validate() error {
 		return err
 	}
 
+	if coin.Amount.IsNil() {
+		return errors.New("amount is nil")
+	}
+
 	if coin.Amount.IsNegative() {
 		return fmt.Errorf("negative coin amount: %v", coin.Amount)
 	}
@@ -82,12 +87,9 @@ func (coin Coin) IsLT(other Coin) bool {
 }
 
 // IsEqual returns true if the two sets of Coins have the same value
+// Deprecated: Use Coin.Equal instead.
 func (coin Coin) IsEqual(other Coin) bool {
-	if coin.Denom != other.Denom {
-		panic(fmt.Sprintf("invalid coin denominations; %s, %s", coin.Denom, other.Denom))
-	}
-
-	return coin.Amount.Equal(other.Amount)
+	return coin.Equal(other)
 }
 
 // Add adds amounts of two coins with same denom. If the coins differ in denom then
@@ -290,7 +292,7 @@ func (coins Coins) Add(coinsB ...Coin) Coins {
 // denomination and addition only occurs when the denominations match, otherwise
 // the coin is simply added to the sum assuming it's not zero.
 // The function panics if `coins` or  `coinsB` are not sorted (ascending).
-func (coins Coins) safeAdd(coinsB Coins) Coins {
+func (coins Coins) safeAdd(coinsB Coins) (coalesced Coins) {
 	// probably the best way will be to make Coins and interface and hide the structure
 	// definition (type alias)
 	if !coins.isSorted() {
@@ -300,51 +302,24 @@ func (coins Coins) safeAdd(coinsB Coins) Coins {
 		panic("Wrong argument: coins must be sorted")
 	}
 
-	sum := ([]Coin)(nil)
-	indexA, indexB := 0, 0
-	lenA, lenB := len(coins), len(coinsB)
-
-	for {
-		if indexA == lenA {
-			if indexB == lenB {
-				// return nil coins if both sets are empty
-				return sum
-			}
-
-			// return set B (excluding zero coins) if set A is empty
-			return append(sum, removeZeroCoins(coinsB[indexB:])...)
-		} else if indexB == lenB {
-			// return set A (excluding zero coins) if set B is empty
-			return append(sum, removeZeroCoins(coins[indexA:])...)
-		}
-
-		coinA, coinB := coins[indexA], coinsB[indexB]
-
-		switch strings.Compare(coinA.Denom, coinB.Denom) {
-		case -1: // coin A denom < coin B denom
-			if !coinA.IsZero() {
-				sum = append(sum, coinA)
-			}
-
-			indexA++
-
-		case 0: // coin A denom == coin B denom
-			res := coinA.Add(coinB)
-			if !res.IsZero() {
-				sum = append(sum, res)
-			}
-
-			indexA++
-			indexB++
-
-		case 1: // coin A denom > coin B denom
-			if !coinB.IsZero() {
-				sum = append(sum, coinB)
-			}
-
-			indexB++
+	uniqCoins := make(map[string]Coins, len(coins)+len(coinsB))
+	// Traverse all the coins for each of the coins and coinsB.
+	for _, cL := range []Coins{coins, coinsB} {
+		for _, c := range cL {
+			uniqCoins[c.Denom] = append(uniqCoins[c.Denom], c)
 		}
 	}
+
+	for denom, cL := range uniqCoins {
+		comboCoin := Coin{Denom: denom, Amount: NewInt(0)}
+		for _, c := range cL {
+			comboCoin = comboCoin.Add(c)
+		}
+		if !comboCoin.IsZero() {
+			coalesced = append(coalesced, comboCoin)
+		}
+	}
+	return coalesced.Sort()
 }
 
 // DenomsSubsetOf returns true if receiver's denom set
@@ -399,7 +374,7 @@ func (coins Coins) SafeSub(coinsB Coins) (Coins, bool) {
 //	a.IsAllLTE(a.Max(b))
 //	b.IsAllLTE(a.Max(b))
 //	a.IsAllLTE(c) && b.IsAllLTE(c) == a.Max(b).IsAllLTE(c)
-//	a.Add(b...).IsEqual(a.Min(b).Add(a.Max(b)...))
+//	a.Add(b...).Equal(a.Min(b).Add(a.Max(b)...))
 //
 // E.g.
 // {1A, 3B, 2C}.Max({4A, 2B, 2C} == {4A, 3B, 2C})
@@ -445,7 +420,7 @@ func (coins Coins) Max(coinsB Coins) Coins {
 //	a.Min(b).IsAllLTE(a)
 //	a.Min(b).IsAllLTE(b)
 //	c.IsAllLTE(a) && c.IsAllLTE(b) == c.IsAllLTE(a.Min(b))
-//	a.Add(b...).IsEqual(a.Min(b).Add(a.Max(b)...))
+//	a.Add(b...).Equal(a.Min(b).Add(a.Max(b)...))
 //
 // E.g.
 // {1A, 3B, 2C}.Min({4A, 2B, 2C} == {1A, 2B, 2C})
@@ -588,8 +563,8 @@ func (coins Coins) IsZero() bool {
 	return true
 }
 
-// IsEqual returns true if the two sets of Coins have the same value
-func (coins Coins) IsEqual(coinsB Coins) bool {
+// Equal returns true if the two sets of Coins have the same value
+func (coins Coins) Equal(coinsB Coins) bool {
 	if len(coins) != len(coinsB) {
 		return false
 	}
@@ -598,7 +573,7 @@ func (coins Coins) IsEqual(coinsB Coins) bool {
 	coinsB = coinsB.Sort()
 
 	for i := 0; i < len(coins); i++ {
-		if !coins[i].IsEqual(coinsB[i]) {
+		if !coins[i].Equal(coinsB[i]) {
 			return false
 		}
 	}
