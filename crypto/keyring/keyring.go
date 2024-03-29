@@ -11,12 +11,8 @@ import (
 	"strings"
 
 	"github.com/99designs/keyring"
-<<<<<<< HEAD
 	occrypto "github.com/Finschia/ostracon/crypto"
-	bip39 "github.com/cosmos/go-bip39"
-=======
 	"github.com/cosmos/go-bip39"
->>>>>>> e62a33006 (fix(crypto): error if incorrect ledger public key (#1316))
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
 
