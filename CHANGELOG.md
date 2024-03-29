@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#1295](https://github.com/Finschia/finschia-sdk/pull/1295) add missing error handling for migration
 * (sec) [\#1302](https://github.com/Finschia/finschia-sdk/pull/1302) remove map iteration non-determinism with keys + sorting
 * (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx 
+* (types) [\#1299](https://github.com/Finschia/finschia-sdk/pull/1299) add missing nil checks
 
 ### Removed
 
