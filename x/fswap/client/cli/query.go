@@ -6,11 +6,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/Finschia/finschia-sdk/client"
+	// "github.com/Finschia/finschia-sdk/client/flags"
+	// sdk "github.com/Finschia/finschia-sdk/types"
 
-	"fswap/x/fswap/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

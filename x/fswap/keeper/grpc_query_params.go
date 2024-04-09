@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 
-	"fswap/x/fswap/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

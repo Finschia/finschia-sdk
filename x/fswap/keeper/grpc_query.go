@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"fswap/x/fswap/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 var _ types.QueryServer = Keeper{}

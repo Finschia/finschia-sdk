@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"fswap/x/fswap/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 type msgServer struct {

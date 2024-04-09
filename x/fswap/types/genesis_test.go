@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"fswap/x/fswap/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/stretchr/testify/require"
 )
 

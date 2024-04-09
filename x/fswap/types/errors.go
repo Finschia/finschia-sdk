@@ -3,7 +3,7 @@ package types
 // DONTCOVER
 
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // x/fswap module sentinel errors

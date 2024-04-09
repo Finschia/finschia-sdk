@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"fswap/x/fswap/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // GetParams get all parameters as types.Params

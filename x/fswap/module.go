@@ -3,6 +3,7 @@ package fswap
 import (
 	"encoding/json"
 	"fmt"
+
 	// this line is used by starport scaffolding # 1
 
 	"github.com/gorilla/mux"
@@ -11,14 +12,15 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"fswap/x/fswap/client/cli"
-	"fswap/x/fswap/keeper"
-	"fswap/x/fswap/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/x/fswap/client/cli"
+	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
+
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
+	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/module"
 )
 
 var (

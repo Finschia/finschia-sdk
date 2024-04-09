@@ -3,9 +3,10 @@ package cli
 import (
 	"context"
 
-	"fswap/x/fswap/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
+
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/spf13/cobra"
 )
 

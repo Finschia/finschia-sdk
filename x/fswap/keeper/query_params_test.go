@@ -3,9 +3,10 @@
 // import (
 // 	"testing"
 
+// 	testkeeper "github.com/Finschia/finschia-sdk/testutil/keeper"
+
 // 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 
-// 	testkeeper "github.com/Finschia/finschia-sdk/testutil/keeper"
 // 	sdk "github.com/Finschia/finschia-sdk/types"
 // 	"github.com/stretchr/testify/require"
 // )

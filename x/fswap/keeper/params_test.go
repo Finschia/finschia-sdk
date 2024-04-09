@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	testkeeper "fswap/testutil/keeper"
-	"fswap/x/fswap/types"
+	testkeeper "github.com/Finschia/finschia-sdk/testutil/keeper"
+
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/stretchr/testify/require"
 )
 

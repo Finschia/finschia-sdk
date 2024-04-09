@@ -3,10 +3,11 @@ package fswap
 import (
 	"fmt"
 
-	"fswap/x/fswap/keeper"
-	"fswap/x/fswap/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // NewHandler ...
