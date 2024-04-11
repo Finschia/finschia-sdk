@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -15,3 +17,13 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 var _ types.MsgServer = msgServer{}
+
+// Swap implements types.MsgServer.
+func (m msgServer) Swap(context.Context, *types.MsgSwapRequest) (*types.MsgSwapResponse, error) {
+	panic("unimplemented")
+}
+
+// SwapAll implements types.MsgServer.
+func (m msgServer) SwapAll(context.Context, *types.MsgSwapAllRequest) (*types.MsgSwapAllResponse, error) {
+	panic("unimplemented")
+}
