@@ -1,0 +1,33 @@
+syntax = "proto3";
+package lbm.fswap.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+service Msg {
+  rpc Swap(MsgSwapRequest) returns (MsgSwapResponse);
+  rpc SwapAll(MsgSwapAllRequest) returns (MsgSwapAllResponse);
+}
+
+message MsgSwapRequest {
+  // holder's address
+  string from_address = 1;
+  // amount of old currency
+  cosmos.base.v1beta1.Coin amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}
+
+message MsgSwapResponse {}
+
+message MsgSwapAllRequest {
+  // holder's address
+  string from_address = 1;
+}
+
+message MsgSwapAllResponse {
+  // amount of swapped in new currency
+  cosmos.base.v1beta1.Coin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+package lbm.fswap.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+message EventSwapCoins {
+  // holder's address
+  string address = 1;
+  // amount of the old currency
+  cosmos.base.v1beta1.Coin old_coin_amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+  // amount of the new currency
+  cosmos.base.v1beta1.Coin new_coin_amount = 3
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}

@@ -1,0 +1,20 @@
+
+syntax = "proto3";
+package lbm.fswap.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  // upper limit in new coin that this module can swap
+  cosmos.base.v1beta1.Coin new_coin_swap_total_limit = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+  // constant value for swap rate, 148.079656
+  double swap_rate = 2;
+  // new denomination for new coin after swap
+  string new_coin_denom = 3;
+}

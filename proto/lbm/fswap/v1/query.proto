@@ -1,0 +1,31 @@
+syntax = "proto3";
+package lbm.fswap.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
+
+import "google/api/annotations.proto";
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+service Query {
+  rpc Swapped(QuerySwappedRequest) returns (QuerySwappedResponse) {
+    option (google.api.http).get = "/lbm/fswap/v1/swapped";
+  }
+  rpc TotalNewCurrencySwapLimit(QueryTotalSwappableAmountRequest) returns (QueryTotalSwappableAmountResponse) {
+    option (google.api.http).get = "/lbm/fswap/v1/swappable_new_coin_amount";
+  }
+}
+
+message QuerySwappedRequest {}
+message QuerySwappedResponse {
+  cosmos.base.v1beta1.Coin old_coin_amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+  cosmos.base.v1beta1.Coin new_coin_amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}
+
+message QueryTotalSwappableAmountRequest {}
+message QueryTotalSwappableAmountResponse {
+  cosmos.base.v1beta1.Coin swappable_new_coin_amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}
