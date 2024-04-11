@@ -856,6 +856,31 @@
   
     - [Msg](#lbm.foundation.v1.Msg)
   
+- [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
+    - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
+  
+- [lbm/fswap/v1/params.proto](#lbm/fswap/v1/params.proto)
+    - [Params](#lbm.fswap.v1.Params)
+  
+- [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
+    - [GenesisState](#lbm.fswap.v1.GenesisState)
+  
+- [lbm/fswap/v1/query.proto](#lbm/fswap/v1/query.proto)
+    - [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest)
+    - [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse)
+    - [QueryTotalSwappableAmountRequest](#lbm.fswap.v1.QueryTotalSwappableAmountRequest)
+    - [QueryTotalSwappableAmountResponse](#lbm.fswap.v1.QueryTotalSwappableAmountResponse)
+  
+    - [Query](#lbm.fswap.v1.Query)
+  
+- [lbm/fswap/v1/tx.proto](#lbm/fswap/v1/tx.proto)
+    - [MsgSwapAllRequest](#lbm.fswap.v1.MsgSwapAllRequest)
+    - [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse)
+    - [MsgSwapRequest](#lbm.fswap.v1.MsgSwapRequest)
+    - [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse)
+  
+    - [Msg](#lbm.fswap.v1.Msg)
+  
 - [lbm/stakingplus/v1/authz.proto](#lbm/stakingplus/v1/authz.proto)
     - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
   
@@ -12678,6 +12703,264 @@ Msg defines the foundation Msg service.
 | `UpdateCensorship` | [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship) | [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse) | UpdateCensorship updates censorship information. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/event.proto
+
+
+
+<a name="lbm.fswap.v1.EventSwapCoins"></a>
+
+### EventSwapCoins
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | holder's address |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the old currency |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the new currency |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/params.proto
+
+
+
+<a name="lbm.fswap.v1.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `new_coin_swap_total_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | upper limit in new coin that this module can swap |
+| `swap_rate` | [double](#double) |  | constant value for swap rate, 148.079656 |
+| `new_coin_denom` | [string](#string) |  | new denomination for new coin after swap |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/genesis.proto
+
+
+
+<a name="lbm.fswap.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the fswap module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fswap.v1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/query.proto
+
+
+
+<a name="lbm.fswap.v1.QuerySwappedRequest"></a>
+
+### QuerySwappedRequest
+
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QuerySwappedResponse"></a>
+
+### QuerySwappedResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QueryTotalSwappableAmountRequest"></a>
+
+### QueryTotalSwappableAmountRequest
+
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QueryTotalSwappableAmountResponse"></a>
+
+### QueryTotalSwappableAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swappable_new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fswap.v1.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) |  | GET|/lbm/fswap/v1/swapped|
+| `TotalNewCurrencySwapLimit` | [QueryTotalSwappableAmountRequest](#lbm.fswap.v1.QueryTotalSwappableAmountRequest) | [QueryTotalSwappableAmountResponse](#lbm.fswap.v1.QueryTotalSwappableAmountResponse) |  | GET|/lbm/fswap/v1/swappable_new_coin_amount|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/tx.proto
+
+
+
+<a name="lbm.fswap.v1.MsgSwapAllRequest"></a>
+
+### MsgSwapAllRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  | holder's address |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapAllResponse"></a>
+
+### MsgSwapAllResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of swapped in new currency |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapRequest"></a>
+
+### MsgSwapRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  | holder's address |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of old currency |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapResponse"></a>
+
+### MsgSwapResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fswap.v1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Swap` | [MsgSwapRequest](#lbm.fswap.v1.MsgSwapRequest) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
+| `SwapAll` | [MsgSwapAllRequest](#lbm.fswap.v1.MsgSwapAllRequest) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
 
  <!-- end services -->
 
