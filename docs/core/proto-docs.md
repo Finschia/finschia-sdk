@@ -12757,7 +12757,8 @@ Params defines the parameters for the module.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `new_coin_swap_total_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | upper limit in new coin that this module can swap |
-| `swap_rate` | [double](#double) |  | constant value for swap rate, 148.079656 |
+| `swap_rate` | [uint64](#uint64) |  | constant value representing the exchange rate, without decimal (148079656) |
+| `swap_rate_decimals` | [int32](#int32) |  | The number shows how to get the true exchange rate by dividing swap_rate by 10 to the power |
 | `new_coin_denom` | [string](#string) |  | new denomination for new coin after swap |
 
 

@@ -13,8 +13,10 @@ message Params {
   // upper limit in new coin that this module can swap
   cosmos.base.v1beta1.Coin new_coin_swap_total_limit = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
-  // constant value for swap rate, 148.079656
-  double swap_rate = 2;
+  // constant value representing the exchange rate, without decimal (148079656)
+  uint64 swap_rate = 2;
+  // The number shows how to get the true exchange rate by dividing swap_rate by 10 to the power
+  int32 swap_rate_decimals = 3;
   // new denomination for new coin after swap
-  string new_coin_denom = 3;
+  string new_coin_denom = 4;
 }
