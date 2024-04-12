@@ -3,8 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

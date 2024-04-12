@@ -4,23 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 
-	// this line is used by starport scaffolding # 1
-
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
-
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	"github.com/Finschia/finschia-sdk/x/fswap/client/cli"
-	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
-	"github.com/Finschia/finschia-sdk/x/fswap/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"
+	"github.com/Finschia/finschia-sdk/x/fswap/client/cli"
+	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 var (

@@ -1,10 +1,9 @@
 package fswap
 
 import (
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
-
-	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

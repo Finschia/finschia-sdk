@@ -5,10 +5,9 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/Finschia/finschia-sdk/x/fswap/types"
-
 	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
@@ -26,7 +25,6 @@ func NewKeeper(
 	storeKey,
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
-
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -34,7 +32,6 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-
 		cdc:        cdc,
 		storeKey:   storeKey,
 		memKey:     memKey,

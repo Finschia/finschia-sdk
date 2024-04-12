@@ -3,7 +3,6 @@ package types
 import (
 	"github.com/Finschia/finschia-sdk/codec"
 	cdctypes "github.com/Finschia/finschia-sdk/codec/types"
-
 	// this line is used by starport scaffolding # 1
 	"github.com/Finschia/finschia-sdk/types/msgservice"
 )
