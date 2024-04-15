@@ -14,12 +14,6 @@ func NewMsgSwapRequest(fromAddr, toAddr sdk.AccAddress, amount sdk.Coin) *MsgSwa
 	return &MsgSwapRequest{FromAddress: fromAddr.String(), Amount: amount}
 }
 
-// Route Implements Msg.
-func (msg MsgSwapRequest) Route() string { return RouterKey }
-
-// Type Implements Msg.
-func (msg MsgSwapRequest) Type() string { return sdk.MsgTypeURL(&msg) }
-
 // ValidateBasic Implements Msg.
 func (msg MsgSwapRequest) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
@@ -36,11 +30,6 @@ func (msg MsgSwapRequest) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes Implements Msg.
-func (msg MsgSwapRequest) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners Implements Msg.
@@ -61,12 +50,6 @@ func NewMsgSwapAllRequest(fromAddr, toAddr sdk.AccAddress) *MsgSwapAllRequest {
 	return &MsgSwapAllRequest{FromAddress: fromAddr.String()}
 }
 
-// Route Implements Msg.
-func (msg MsgSwapAllRequest) Route() string { return RouterKey }
-
-// Type Implements Msg.
-func (msg MsgSwapAllRequest) Type() string { return sdk.MsgTypeURL(&msg) }
-
 // ValidateBasic Implements Msg.
 func (msg MsgSwapAllRequest) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
@@ -75,11 +58,6 @@ func (msg MsgSwapAllRequest) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes Implements Msg.
-func (msg MsgSwapAllRequest) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners Implements Msg.
