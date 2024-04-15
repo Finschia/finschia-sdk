@@ -859,6 +859,9 @@
 - [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
+- [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
+    - [Swapped](#lbm.fswap.v1.Swapped)
+  
 - [lbm/fswap/v1/params.proto](#lbm/fswap/v1/params.proto)
     - [Params](#lbm.fswap.v1.Params)
   
@@ -12741,6 +12744,38 @@ Msg defines the foundation Msg service.
 
 
 
+<a name="lbm/fswap/v1/fswap.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/fswap.proto
+
+
+
+<a name="lbm.fswap.v1.Swapped"></a>
+
+### Swapped
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/fswap/v1/params.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -12756,9 +12791,6 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `new_coin_swap_total_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | upper limit in new coin that this module can swap |
-| `swap_rate` | [uint64](#uint64) |  | constant value representing the exchange rate, without decimal (148079656) |
-| `swap_rate_decimals` | [int32](#int32) |  | The number shows how to get the true exchange rate by dividing swap_rate by 10 to the power |
 | `new_coin_denom` | [string](#string) |  | new denomination for new coin after swap |
 
 
@@ -12791,6 +12823,7 @@ GenesisState defines the fswap module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.fswap.v1.Params) |  |  |
+| `swapped` | [Swapped](#lbm.fswap.v1.Swapped) |  |  |
 
 
 
@@ -12831,8 +12864,7 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `swapped` | [Swapped](#lbm.fswap.v1.Swapped) |  |  |
 
 
 

@@ -6,6 +6,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "lbm/fswap/v1/fswap.proto";
 
 service Query {
   rpc Swapped(QuerySwappedRequest) returns (QuerySwappedResponse) {
@@ -18,10 +19,7 @@ service Query {
 
 message QuerySwappedRequest {}
 message QuerySwappedResponse {
-  cosmos.base.v1beta1.Coin old_coin_amount = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
-  cosmos.base.v1beta1.Coin new_coin_amount = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+  Swapped swapped = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryTotalSwappableAmountRequest {}

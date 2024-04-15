@@ -1,22 +1,13 @@
-
 syntax = "proto3";
 package lbm.fswap.v1;
 
 option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
-import "cosmos/base/v1beta1/coin.proto";
 
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  // upper limit in new coin that this module can swap
-  cosmos.base.v1beta1.Coin new_coin_swap_total_limit = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
-  // constant value representing the exchange rate, without decimal (148079656)
-  uint64 swap_rate = 2;
-  // The number shows how to get the true exchange rate by dividing swap_rate by 10 to the power
-  int32 swap_rate_decimals = 3;
   // new denomination for new coin after swap
-  string new_coin_denom = 4;
+  string new_coin_denom = 1;
 }
