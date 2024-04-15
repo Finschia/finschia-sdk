@@ -12912,11 +12912,6 @@ GenesisState defines the fswap module's genesis state.
 
 
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of swapped in new currency |
-
-
 
 
 

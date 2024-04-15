@@ -26,8 +26,4 @@ message MsgSwapAllRequest {
   string from_address = 1;
 }
 
-message MsgSwapAllResponse {
-  // amount of swapped in new currency
-  cosmos.base.v1beta1.Coin amount = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
-}
+message MsgSwapAllResponse {}
