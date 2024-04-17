@@ -6,36 +6,31 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
+	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
-	paramtypes "github.com/Finschia/finschia-sdk/x/params/types"
 )
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   sdk.StoreKey
-		memKey     sdk.StoreKey
-		paramstore paramtypes.Subspace
+		cdc           codec.BinaryCodec
+		accountKeeper types.AccountKeeper
+		bankKeeper    types.BankKeeper
+		storeKey      storetypes.StoreKey
 	}
 )
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey sdk.StoreKey,
-	ps paramtypes.Subspace,
-) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
-	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+	ak types.AccountKeeper,
+	bk types.BankKeeper,
+	storeKey storetypes.StoreKey,
+) Keeper {
+	return Keeper{
+		cdc:           cdc,
+		accountKeeper: ak,
+		bankKeeper:    bk,
+		storeKey:      storeKey,
 	}
 }
 
