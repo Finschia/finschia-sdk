@@ -73,7 +73,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/crypto) [\#1316](https://github.com/Finschia/finschia-sdk/pull/1316) error if incorrect ledger public key (backport cosmos/cosmos-sdk#14460, cosmos/cosmos-sdk#19691) 
 * (x/auth) [#1319](https://github.com/Finschia/finschia-sdk/pull/1319) prevent signing from wrong key in multisig
 * (x/mint, x/slashing) [\#1323](https://github.com/Finschia/finschia-sdk/pull/1323) add missing nil check for params validation
-* (x/server) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
+* (x/server) [\#1337](https://github.com/Finschia/finschia-sdk/pull/1337) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
 
 ### Removed
 
