@@ -9,6 +9,7 @@
   * [Evidence](#evidence)
   * [Feegrant](#feegrant)
   * [Foundation](#foundation)
+  * [Fswap](#fswap)
   * [Gov](#gov)
   * [Params](#params)
   * [Slashing](#slashing)
@@ -171,6 +172,15 @@
 
 >You can also find detailed information in the following Errors.go files:
   * [foundation/errors.go](foundation/errors.go)
+
+## Fswap
+
+|Error Name|Codespace|Code|Description|
+|:-|:-|:-|:-|
+|ErrSample|fswap|1100|sample error|
+
+>You can also find detailed information in the following Errors.go files:
+  * [fswap/types/errors.go](fswap/types/errors.go)
 
 ## Gov
 
