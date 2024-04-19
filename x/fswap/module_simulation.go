@@ -3,16 +3,13 @@ package fswap
 import (
 	"math/rand"
 
-	"github.com/Finschia/finschia-sdk/x/fswap/types"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
+	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-var (
-	_ module.AppModuleSimulation = AppModule{}
-)
+var _ module.AppModuleSimulation = AppModule{}
 
 // GenerateGenesisState creates a randomized GenState of the module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
