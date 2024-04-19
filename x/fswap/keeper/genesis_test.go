@@ -7,8 +7,7 @@ import (
 )
 
 func (s *KeeperTestSuite) TestInitAndExportGenesis() {
-	err := s.keeper.InitGenesis(s.sdkCtx, s.bankKeeper, *types.DefaultGenesis())
-	s.Require().NoError(err)
+	s.keeper.InitGenesis(s.sdkCtx, s.bankKeeper, *types.DefaultGenesis())
 	got := s.keeper.ExportGenesis(s.sdkCtx)
 	s.Require().NotNil(got)
 	s.Require().Equal(types.DefaultParams(), got.Params)

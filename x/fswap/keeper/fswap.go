@@ -34,7 +34,6 @@ func (k Keeper) GetTotalSupply(ctx sdk.Context) sdk.DecCoin {
 	bz := store.Get([]byte{types.TotalSupplyKey})
 	var totalSupply sdk.DecCoin
 	if bz == nil {
-
 		panic(types.ErrParamsNotFound)
 	}
 	k.cdc.MustUnmarshal(bz, &totalSupply)

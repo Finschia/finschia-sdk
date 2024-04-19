@@ -7,20 +7,19 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis
 // state.
-func (k Keeper) InitGenesis(ctx sdk.Context, bk types.BankKeeper, genState types.GenesisState) error {
+func (k Keeper) InitGenesis(ctx sdk.Context, bk types.BankKeeper, genState types.GenesisState) {
 	if err := k.SetParams(ctx, genState.Params); err != nil {
-		return err
+		panic(err)
 	}
 	if err := k.SetSwapped(ctx, genState.Swapped); err != nil {
-		return err
+		panic(err)
 	}
 	totalOldCoinsSupply := bk.GetSupply(ctx, types.DefaultOldCoins).Amount
 	totalNewCoinsSupply := types.DefaultSwapRate.MulInt(totalOldCoinsSupply)
 	totalNewCoins := sdk.NewDecCoinFromDec(genState.Params.NewCoinDenom, totalNewCoinsSupply)
 	if err := k.SetTotalSupply(ctx, totalNewCoins); err != nil {
-		return err
+		panic(err)
 	}
-	return nil
 }
 
 // ExportGenesis returns the capability module's exported genesis.
