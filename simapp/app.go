@@ -735,5 +735,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(foundation.ModuleName)
 
+	paramsKeeper.Subspace(fswaptypes.ModuleName)
+
 	return paramsKeeper
 }
