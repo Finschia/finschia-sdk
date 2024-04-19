@@ -5,13 +5,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-const (
-	DefaultOldCoins string = "cony"
-)
-
-var DefaultSwapRate = sdk.NewDecWithPrec(148079656, 6)
-
-// InitGenesis initializes the capability module's state from a provided genesis
+// InitGenesis initializes the module's state from a provided genesis
 // state.
 func (k Keeper) InitGenesis(ctx sdk.Context, bk types.BankKeeper, genState types.GenesisState) error {
 	if err := k.SetParams(ctx, genState.Params); err != nil {
@@ -20,8 +14,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, bk types.BankKeeper, genState types
 	if err := k.SetSwapped(ctx, genState.Swapped); err != nil {
 		return err
 	}
-	totalOldCoinsSupply := bk.GetSupply(ctx, DefaultOldCoins).Amount
-	totalNewCoinsSupply := DefaultSwapRate.MulInt(totalOldCoinsSupply)
+	totalOldCoinsSupply := bk.GetSupply(ctx, types.DefaultOldCoins).Amount
+	totalNewCoinsSupply := types.DefaultSwapRate.MulInt(totalOldCoinsSupply)
 	totalNewCoins := sdk.NewDecCoinFromDec(genState.Params.NewCoinDenom, totalNewCoinsSupply)
 	if err := k.SetTotalSupply(ctx, totalNewCoins); err != nil {
 		return err

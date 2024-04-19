@@ -72,6 +72,9 @@ import (
 	foundationclient "github.com/Finschia/finschia-sdk/x/foundation/client"
 	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
+	"github.com/Finschia/finschia-sdk/x/fswap"
+	fswapkeeper "github.com/Finschia/finschia-sdk/x/fswap/keeper"
+	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/Finschia/finschia-sdk/x/genutil"
 	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 	"github.com/Finschia/finschia-sdk/x/gov"
@@ -197,6 +200,7 @@ type SimApp struct {
 	ClassKeeper      classkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
+	FswapKeeper      fswapkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -250,6 +254,7 @@ func NewSimApp(
 		token.StoreKey,
 		collection.StoreKey,
 		authzkeeper.StoreKey,
+		fswaptypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
@@ -352,6 +357,9 @@ func NewSimApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	/****  Phase 1 ****/
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper)
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -383,6 +391,7 @@ func NewSimApp(
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		fswap.NewAppModule(appCodec, app.FswapKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -410,6 +419,7 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		fswaptypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -431,6 +441,7 @@ func NewSimApp(
 		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		fswaptypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -458,6 +469,7 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		fswaptypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.

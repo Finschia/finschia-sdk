@@ -5,10 +5,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-func TestGenesisState_Validate(t *testing.T) {
+func TestGenesisStateValidate(t *testing.T) {
 	for _, tc := range []struct {
 		desc     string
 		genState *types.GenesisState
@@ -20,14 +21,52 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
-			genState: &types.GenesisState{
-
-				// this line is used by starport scaffolding # types/genesis/validField
-			},
-			valid: true,
+			desc:     "empty genesisState",
+			genState: &types.GenesisState{},
+			valid:    false,
 		},
-		// this line is used by starport scaffolding # types/genesis/testcase
+		{
+			desc: "empty params",
+			genState: &types.GenesisState{
+				Swapped: types.DefaultSwapped(),
+			},
+			valid: false,
+		},
+		{
+			desc: "empty swapped",
+			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
+			},
+			valid: false,
+		},
+		{
+			desc: "empty newCoinDenom in params",
+			genState: &types.GenesisState{
+				Params:  types.Params{},
+				Swapped: types.DefaultSwapped(),
+			},
+			valid: false,
+		},
+		{
+			desc: "empty oldCoin in Swapped",
+			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
+				Swapped: types.Swapped{
+					NewCoinAmount: sdk.NewInt64Coin("atom", 1),
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "empty newCoin in Swapped",
+			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
+				Swapped: types.Swapped{
+					OldCoinAmount: sdk.NewInt64Coin("cony", 1),
+				},
+			},
+			valid: false,
+		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			err := tc.genState.Validate()

@@ -1,5 +1,15 @@
 package types
 
+import (
+	sdk "github.com/Finschia/finschia-sdk/types"
+)
+
+const (
+	DefaultOldCoins string = "cony"
+)
+
+var DefaultSwapRate = sdk.NewDecWithPrec(148079656, 6)
+
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
