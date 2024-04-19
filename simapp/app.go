@@ -141,6 +141,7 @@ var (
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
+		fswap.AppModuleBasic{},
 	)
 
 	// module account permissions
