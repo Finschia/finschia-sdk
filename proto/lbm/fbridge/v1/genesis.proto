@@ -1,0 +1,13 @@
+syntax = "proto3";
+package lbm.fbridge.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
+
+import "gogoproto/gogo.proto";
+import "lbm/fbridge/v1/fbridge.proto";
+
+// GenesisState defines the fbridge module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  repeated Params params = 1 [(gogoproto.nullable) = false];
+}
