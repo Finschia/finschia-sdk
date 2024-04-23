@@ -18,8 +18,8 @@ const (
 )
 
 var (
-	SwappedKey     = byte(0x00)
-	TotalSupplyKey = byte(0x01)
+	SwappedKey                = byte(0x00)
+	SwappableNewCoinAmountKey = byte(0x01)
 )
 
 func KeyPrefix(p string) []byte {

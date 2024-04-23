@@ -11,7 +11,7 @@ type Config struct {
 	// NewCoinDenom defines the new coin denom.
 	NewCoinDenom string
 	// SwapRate defines the swap rate.
-	SwapRate sdk.Dec
+	SwapRate sdk.Int
 }
 
 // DefaultConfig returns the default config for fswap.
@@ -19,6 +19,6 @@ func DefaultConfig() Config {
 	return Config{
 		OldCoinDenom: "cony",
 		NewCoinDenom: "PDT",
-		SwapRate:     sdk.NewDecWithPrec(148079656, 6),
+		SwapRate:     sdk.NewInt(148079656000000),
 	}
 }
