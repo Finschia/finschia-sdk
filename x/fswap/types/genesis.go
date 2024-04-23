@@ -1,10 +1,15 @@
 package types
 
+// NewGenesis creates a new genesis state
+func NewGenesisState(config Config) *GenesisState {
+	return &GenesisState{
+		Swapped: NewSwapped(config),
+	}
+}
+
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
-	return &GenesisState{
-		Swapped: DefaultSwapped(),
-	}
+	return NewGenesisState(DefaultConfig())
 }
 
 // Validate performs basic genesis state validation returning an error upon any

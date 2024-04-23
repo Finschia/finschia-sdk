@@ -10,21 +10,17 @@ import (
 
 // NewSwapped creates a new Swapped instance
 func NewSwapped(
-	oldCoin sdk.Coin,
-	newCoin sdk.Coin,
+	config Config,
 ) Swapped {
 	return Swapped{
-		OldCoinAmount: oldCoin,
-		NewCoinAmount: newCoin,
+		OldCoinAmount: sdk.NewCoin(config.OldCoinDenom, sdk.NewInt(0)),
+		NewCoinAmount: sdk.NewCoin(config.NewCoinDenom, sdk.NewInt(0)),
 	}
 }
 
 // DefaultSwapped returns an initial Swapped object
 func DefaultSwapped() Swapped {
-	return NewSwapped(
-		sdk.NewCoin(DefaultConfig().OldCoinDenom, sdk.NewInt(0)),
-		sdk.NewCoin(DefaultConfig().NewCoinDenom, sdk.NewInt(0)),
-	)
+	return NewSwapped(DefaultConfig())
 }
 
 func validateCoin(i interface{}) error {
