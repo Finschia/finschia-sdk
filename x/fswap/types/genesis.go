@@ -2,9 +2,7 @@ package types
 
 import sdk "github.com/Finschia/finschia-sdk/types"
 
-var (
-	DefaultTotalSupply = sdk.NewCoin(DefaultConfig().NewCoinDenom, sdk.NewInt(100000))
-)
+var DefaultTotalSupply = sdk.NewCoin(DefaultConfig().NewCoinDenom, sdk.NewInt(100000))
 
 // NewGenesis creates a new genesis state
 func NewGenesisState(config Config, swappableNewCoinAmount sdk.Coin) *GenesisState {
