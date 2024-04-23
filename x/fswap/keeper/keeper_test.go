@@ -32,7 +32,7 @@ func TestKeeperTestSuite(t *testing.T) {
 func (s *KeeperTestSuite) SetupTest() {
 	ctrl := gomock.NewController(s.T())
 	bankKeeper := testutil.NewMockBankKeeper(ctrl)
-	bankKeeper.EXPECT().GetSupply(gomock.Any(), "cony").Return(testutil.MockOldCoin)
+	bankKeeper.EXPECT().GetSupply(gomock.Any(), types.DefaultConfig().OldCoinDenom).Return(testutil.MockOldCoin)
 	s.bankKeeper = bankKeeper
 	checkTx := false
 	app := simapp.Setup(checkTx)

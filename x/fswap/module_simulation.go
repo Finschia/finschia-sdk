@@ -14,7 +14,6 @@ var _ module.AppModuleSimulation = AppModule{}
 // GenerateGenesisState creates a randomized GenState of the module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	fswapGenesis := types.GenesisState{
-		Params:  types.DefaultParams(),
 		Swapped: types.DefaultSwapped(),
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&fswapGenesis)

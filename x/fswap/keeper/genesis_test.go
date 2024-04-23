@@ -10,11 +10,10 @@ func (s *KeeperTestSuite) TestInitAndExportGenesis() {
 	s.keeper.InitGenesis(s.sdkCtx, s.bankKeeper, *types.DefaultGenesis())
 	got := s.keeper.ExportGenesis(s.sdkCtx)
 	s.Require().NotNil(got)
-	s.Require().Equal(types.DefaultParams(), got.Params)
 	s.Require().Equal(types.DefaultSwapped(), got.Swapped)
 
 	gotTotalSupply := s.keeper.GetTotalSupply(s.sdkCtx)
-	totalNewCoinsSupply := types.DefaultSwapRate.MulInt(testutil.MockOldCoin.Amount)
-	expectedCoin := sdk.NewDecCoinFromDec(types.DefaultNewCoinDenom, totalNewCoinsSupply)
+	totalNewCoinsSupply := types.DefaultConfig().SwapRate.MulInt(testutil.MockOldCoin.Amount)
+	expectedCoin := sdk.NewDecCoinFromDec(types.DefaultConfig().NewCoinDenom, totalNewCoinsSupply)
 	s.Require().Equal(expectedCoin, gotTotalSupply)
 }

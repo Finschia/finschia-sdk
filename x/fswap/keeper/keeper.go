@@ -17,6 +17,7 @@ type (
 		storeKey      storetypes.StoreKey
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
+		config        types.Config
 	}
 )
 
@@ -25,12 +26,14 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
+	config types.Config,
 ) Keeper {
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		accountKeeper: ak,
 		bankKeeper:    bk,
+		config:        config,
 	}
 }
 

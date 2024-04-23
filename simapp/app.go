@@ -359,7 +359,8 @@ func NewSimApp(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	/****  Phase 1 ****/
-	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper)
+	fswapConfig := fswaptypes.DefaultConfig()
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper, fswapConfig)
 
 	/****  Module Options ****/
 
@@ -735,8 +736,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(foundation.ModuleName)
-
-	paramsKeeper.Subspace(fswaptypes.ModuleName)
 
 	return paramsKeeper
 }

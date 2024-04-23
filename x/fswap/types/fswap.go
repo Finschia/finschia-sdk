@@ -22,8 +22,8 @@ func NewSwapped(
 // DefaultSwapped returns an initial Swapped object
 func DefaultSwapped() Swapped {
 	return NewSwapped(
-		sdk.NewCoin("cony", sdk.NewInt(0)),
-		sdk.NewCoin(DefaultNewCoinDenom, sdk.NewInt(0)),
+		sdk.NewCoin(DefaultConfig().OldCoinDenom, sdk.NewInt(0)),
+		sdk.NewCoin(DefaultConfig().NewCoinDenom, sdk.NewInt(0)),
 	)
 }
 

@@ -862,9 +862,6 @@
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
     - [Swapped](#lbm.fswap.v1.Swapped)
   
-- [lbm/fswap/v1/params.proto](#lbm/fswap/v1/params.proto)
-    - [Params](#lbm.fswap.v1.Params)
-  
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
     - [GenesisState](#lbm.fswap.v1.GenesisState)
   
@@ -12776,37 +12773,6 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm/fswap/v1/params.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/fswap/v1/params.proto
-
-
-
-<a name="lbm.fswap.v1.Params"></a>
-
-### Params
-Params defines the parameters for the module.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `new_coin_denom` | [string](#string) |  | new denomination for new coin after swap |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/fswap/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -12822,7 +12788,6 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.fswap.v1.Params) |  |  |
 | `swapped` | [Swapped](#lbm.fswap.v1.Swapped) |  |  |
 
 
