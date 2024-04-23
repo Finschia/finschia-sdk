@@ -754,6 +754,62 @@
   
     - [Msg](#lbm.collection.v1.Msg)
   
+- [lbm/fbridge/v1/event.proto](#lbm/fbridge/v1/event.proto)
+    - [EventClaim](#lbm.fbridge.v1.EventClaim)
+    - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
+    - [EventProvision](#lbm.fbridge.v1.EventProvision)
+    - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
+  
+- [lbm/fbridge/v1/fbridge.proto](#lbm/fbridge/v1/fbridge.proto)
+    - [Fraction](#lbm.fbridge.v1.Fraction)
+    - [Params](#lbm.fbridge.v1.Params)
+    - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
+    - [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus)
+  
+- [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
+    - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
+    - [Commitment](#lbm.fbridge.v1.Commitment)
+    - [ConfirmedProvision](#lbm.fbridge.v1.ConfirmedProvision)
+    - [GenesisState](#lbm.fbridge.v1.GenesisState)
+    - [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo)
+    - [Provision](#lbm.fbridge.v1.Provision)
+    - [ReceivingState](#lbm.fbridge.v1.ReceivingState)
+    - [SendingState](#lbm.fbridge.v1.SendingState)
+  
+- [lbm/fbridge/v1/query.proto](#lbm/fbridge/v1/query.proto)
+    - [CommitmentsRequest](#lbm.fbridge.v1.CommitmentsRequest)
+    - [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse)
+    - [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest)
+    - [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse)
+    - [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest)
+    - [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse)
+    - [NextSeqToConfirmRequest](#lbm.fbridge.v1.NextSeqToConfirmRequest)
+    - [NextSeqToConfirmResponse](#lbm.fbridge.v1.NextSeqToConfirmResponse)
+    - [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse)
+    - [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest)
+    - [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse)
+  
+    - [Query](#lbm.fbridge.v1.Query)
+  
+- [lbm/fbridge/v1/tx.proto](#lbm/fbridge/v1/tx.proto)
+    - [ClaimBatchRequest](#lbm.fbridge.v1.ClaimBatchRequest)
+    - [ClaimBatchResponse](#lbm.fbridge.v1.ClaimBatchResponse)
+    - [ClaimRequest](#lbm.fbridge.v1.ClaimRequest)
+    - [ClaimResponse](#lbm.fbridge.v1.ClaimResponse)
+    - [HoldTransferRequest](#lbm.fbridge.v1.HoldTransferRequest)
+    - [HoldTransferResponse](#lbm.fbridge.v1.HoldTransferResponse)
+    - [ProvisionRequest](#lbm.fbridge.v1.ProvisionRequest)
+    - [ProvisionResponse](#lbm.fbridge.v1.ProvisionResponse)
+    - [ReleaseTransferRequest](#lbm.fbridge.v1.ReleaseTransferRequest)
+    - [ReleaseTransferResponse](#lbm.fbridge.v1.ReleaseTransferResponse)
+    - [RemoveProvisionRequest](#lbm.fbridge.v1.RemoveProvisionRequest)
+    - [RemoveProvisionResponse](#lbm.fbridge.v1.RemoveProvisionResponse)
+    - [TransferRequest](#lbm.fbridge.v1.TransferRequest)
+    - [TransferResponse](#lbm.fbridge.v1.TransferResponse)
+  
+    - [Msg](#lbm.fbridge.v1.Msg)
+  
 - [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
     - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
@@ -11295,6 +11351,746 @@ Msg defines the collection Msg service.
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
 | `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
 | `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | OperatorDetach defines a method to detach a token from another token by operator. Fires: - EventDetach - detach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/event.proto
+
+
+
+<a name="lbm.fbridge.v1.EventClaim"></a>
+
+### EventClaim
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventConfirmProvision"></a>
+
+### EventConfirmProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventProvision"></a>
+
+### EventProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+| `operator` | [string](#string) |  | the address of the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventTransfer"></a>
+
+### EventTransfer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/fbridge.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/fbridge.proto
+
+
+
+<a name="lbm.fbridge.v1.Fraction"></a>
+
+### Fraction
+Fraction defines the protobuf message type for tmmath.Fraction that only
+supports positive values.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `numerator` | [uint64](#uint64) |  |  |
+| `denominator` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many operators' confirmations are needed to be valid. |
+| `guardian_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many guardians' confirmations are needed to be valid. |
+| `judge_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many judges' confirmations are needed to be valid. |
+| `timelock_period` | [uint64](#uint64) |  | default timelock period for each provision (unix timestamp) |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ProvisionData"></a>
+
+### ProvisionData
+Provision is a struct that represents a provision internally.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ProvisionStatus"></a>
+
+### ProvisionStatus
+ProvisionStatus is a struct that represents the status of a provision.
+To optimize computational cost, we have collected frequently changing values from provision.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `timelock_end` | [uint64](#uint64) |  | the unix timestamp the provision will be able to be claimed (unix timestamp) |
+| `confirm_counts` | [int32](#int32) |  | a value that tells how many operators have submitted this provision |
+| `is_claimed` | [bool](#bool) |  | whether the provision has been claimed |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/genesis.proto
+
+
+
+<a name="lbm.fbridge.v1.BlockSeqInfo"></a>
+
+### BlockSeqInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+| `blocknum` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Commitment"></a>
+
+### Commitment
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the operator address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `commitment` | [string](#string) |  | commitment is the hash value of a provision |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ConfirmedProvision"></a>
+
+### ConfirmedProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `commitment` | [string](#string) |  | commitment is the hash value of a provision |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the fbridge module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines all the parameters of the module. |
+| `sending_state` | [SendingState](#lbm.fbridge.v1.SendingState) |  | sending_state defines status saved when sending tokens to a counterpart chain |
+| `receiving_state` | [ReceivingState](#lbm.fbridge.v1.ReceivingState) |  | receiving_state defines status saved when receiving tokens from a counterpart chain |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.OperatorSeqInfo"></a>
+
+### OperatorSeqInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the operator address |
+| `greatest_seq` | [uint64](#uint64) |  | the greatest sequence number confirmed by the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Provision"></a>
+
+### Provision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commitment` | [string](#string) |  |  |
+| `data` | [ProvisionData](#lbm.fbridge.v1.ProvisionData) |  |  |
+| `status` | [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ReceivingState"></a>
+
+### ReceivingState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `greatest_seq_per_operator` | [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo) | repeated | the greatest sequence number confirmed by each operator |
+| `next_seq_to_confirm` | [uint64](#uint64) |  | the next sequence numbers to confirm. (next_seq_to_confirm - 1) is confirmed by n-of-m operators |
+| `next_seq_to_claim` | [uint64](#uint64) |  | the next sequence numbers confirmed by n-of-m operators that have not been claimed yet |
+| `commitments` | [Commitment](#lbm.fbridge.v1.Commitment) | repeated | commitment is the hash value of a specific provision. |
+| `provisions` | [Provision](#lbm.fbridge.v1.Provision) | repeated | provision associated with a specific commitment. |
+| `confirmed_seq_to_commitment` | [ConfirmedProvision](#lbm.fbridge.v1.ConfirmedProvision) | repeated | map the sequence number confirmed by n-of-m operators with commitment |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.SendingState"></a>
+
+### SendingState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `next_seq` | [uint64](#uint64) |  | the next sequence number of the bridge request (greatest sequence number + 1) |
+| `seq_to_blocknum` | [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo) | repeated | sequence-per-block number mapping |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/query.proto
+
+
+
+<a name="lbm.fbridge.v1.CommitmentsRequest"></a>
+
+### CommitmentsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.CommitmentsResponse"></a>
+
+### CommitmentsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commitments` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ConfirmedProvisionRequest"></a>
+
+### ConfirmedProvisionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ConfirmedProvisionResponse"></a>
+
+### ConfirmedProvisionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [ProvisionData](#lbm.fbridge.v1.ProvisionData) |  |  |
+| `status` | [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.GreatestSeqByOperatorRequest"></a>
+
+### GreatestSeqByOperatorRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the address of the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.GreatestSeqByOperatorResponse"></a>
+
+### GreatestSeqByOperatorResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.NextSeqToConfirmRequest"></a>
+
+### NextSeqToConfirmRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.NextSeqToConfirmResponse"></a>
+
+### NextSeqToConfirmResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.SubmittedProvisionRequest"></a>
+
+### SubmittedProvisionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the address of the operator |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.SubmittedProvisionResponse"></a>
+
+### SubmittedProvisionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [ProvisionData](#lbm.fbridge.v1.ProvisionData) |  |  |
+| `status` | [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fbridge.v1.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse) | Params queries the parameters of x/fbridge module. | GET|/lbm/fbridge/v1/params|
+| `GreatestSeqByOperator` | [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest) | [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse) | Get a greatest sequence number to be confirmed by a particular operator | GET|/lbm/fbridge/v1/greatest_seq_by_operator/{operator}|
+| `NextSeqToConfirm` | [NextSeqToConfirmRequest](#lbm.fbridge.v1.NextSeqToConfirmRequest) | [NextSeqToConfirmResponse](#lbm.fbridge.v1.NextSeqToConfirmResponse) | Get a next sequence number to be confirmed by n-of-m operators | GET|/lbm/fbridge/v1/next_seq_to_confirm|
+| `SubmittedProvision` | [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest) | [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse) | Get a provision submitted by a particular operator | GET|/lbm/fbridge/v1/submitted_provision/{operator}/{seq}|
+| `ConfirmedProvision` | [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest) | [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse) | Get a specific confirmed provision | GET|/lbm/fbridge/v1/confirmed_provision/{seq}|
+| `Commitments` | [CommitmentsRequest](#lbm.fbridge.v1.CommitmentsRequest) | [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse) | Get commitments of a specific sequence number | GET|/lbm/fbridge/v1/commitments/{seq}|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/tx.proto
+
+
+
+<a name="lbm.fbridge.v1.ClaimBatchRequest"></a>
+
+### ClaimBatchRequest
+ClaimBatchRequest is input values required for claiming multiple claimable provisions
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `max_claims` | [uint64](#uint64) |  | the maximum number of claims to be made at once |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ClaimBatchResponse"></a>
+
+### ClaimBatchResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ClaimRequest"></a>
+
+### ClaimRequest
+ClaimRequest is input values required for claiming a provision
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ClaimResponse"></a>
+
+### ClaimResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.HoldTransferRequest"></a>
+
+### HoldTransferRequest
+HoldTransferRequest is input values required for holding transfer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.HoldTransferResponse"></a>
+
+### HoldTransferResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ProvisionRequest"></a>
+
+### ProvisionRequest
+ProvisionRequest is input values required for provisioning
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ProvisionResponse"></a>
+
+### ProvisionResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ReleaseTransferRequest"></a>
+
+### ReleaseTransferRequest
+ReleaseTransferRequest is input values required for releasing a held transfer by time lock
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ReleaseTransferResponse"></a>
+
+### ReleaseTransferResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveProvisionRequest"></a>
+
+### RemoveProvisionRequest
+RemoveProvisionRequest is input values required for removing a specific confirmed provision
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveProvisionResponse"></a>
+
+### RemoveProvisionResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.TransferRequest"></a>
+
+### TransferRequest
+TransferRequest is input values required for bridge transfer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.TransferResponse"></a>
+
+### TransferResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fbridge.v1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Transfer` | [TransferRequest](#lbm.fbridge.v1.TransferRequest) | [TransferResponse](#lbm.fbridge.v1.TransferResponse) | Submit a transfer request to the bridge module. | |
+| `Provision` | [ProvisionRequest](#lbm.fbridge.v1.ProvisionRequest) | [ProvisionResponse](#lbm.fbridge.v1.ProvisionResponse) | Submit a provision to the bridge module. | |
+| `HoldTransfer` | [HoldTransferRequest](#lbm.fbridge.v1.HoldTransferRequest) | [HoldTransferResponse](#lbm.fbridge.v1.HoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
+| `ReleaseTransfer` | [ReleaseTransferRequest](#lbm.fbridge.v1.ReleaseTransferRequest) | [ReleaseTransferResponse](#lbm.fbridge.v1.ReleaseTransferResponse) | Set the time lock value to 0 for specific confirmed provision. | |
+| `RemoveProvision` | [RemoveProvisionRequest](#lbm.fbridge.v1.RemoveProvisionRequest) | [RemoveProvisionResponse](#lbm.fbridge.v1.RemoveProvisionResponse) | Remove a specific confirmed provision (reset for specific sequence number). | |
+| `ClaimBatch` | [ClaimBatchRequest](#lbm.fbridge.v1.ClaimBatchRequest) | [ClaimBatchResponse](#lbm.fbridge.v1.ClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
+| `Claim` | [ClaimRequest](#lbm.fbridge.v1.ClaimRequest) | [ClaimResponse](#lbm.fbridge.v1.ClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
 
  <!-- end services -->
 

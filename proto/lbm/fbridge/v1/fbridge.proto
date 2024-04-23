@@ -3,4 +3,46 @@ package lbm.fbridge.v1;
 
 option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
 
-message Params {}
+import "gogoproto/gogo.proto";
+
+message Params {
+  // ratio of how many operators' confirmations are needed to be valid.
+  Fraction operator_trust_level = 1;
+  // ratio of how many guardians' confirmations are needed to be valid.
+  Fraction guardian_trust_level = 2;
+  // ratio of how many judges' confirmations are needed to be valid.
+  Fraction judge_trust_level = 3;
+  // default timelock period for each provision (unix timestamp)
+  uint64 timelock_period = 4;
+}
+
+// Provision is a struct that represents a provision internally.
+message ProvisionData {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the amount of token to be claimed
+  string amount = 2
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  // the sender address on the source chain
+  string sender = 3;
+  // the recipient address on the destination chain
+  string receiver = 4;
+}
+
+// ProvisionStatus is a struct that represents the status of a provision.
+// To optimize computational cost, we have collected frequently changing values from provision.
+message ProvisionStatus {
+  // the unix timestamp the provision will be able to be claimed (unix timestamp)
+  uint64 timelock_end = 1;
+  // a value that tells how many operators have submitted this provision
+  int32 confirm_counts = 2;
+  // whether the provision has been claimed
+  bool is_claimed = 3;
+}
+
+// Fraction defines the protobuf message type for tmmath.Fraction that only
+// supports positive values.
+message Fraction {
+  uint64 numerator   = 1;
+  uint64 denominator = 2;
+}

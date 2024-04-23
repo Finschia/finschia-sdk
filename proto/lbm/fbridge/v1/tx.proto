@@ -3,4 +3,95 @@ package lbm.fbridge.v1;
 
 option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
 
-service Msg {}
+import "gogoproto/gogo.proto";
+
+service Msg {
+  // Submit a transfer request to the bridge module.
+  rpc Transfer(TransferRequest) returns (TransferResponse);
+
+  // Submit a provision to the bridge module.
+  rpc Provision(ProvisionRequest) returns (ProvisionResponse);
+
+  // Set the time lock value from default value to uint64.max for specific confirmed provision.
+  rpc HoldTransfer(HoldTransferRequest) returns (HoldTransferResponse);
+
+  // Set the time lock value to 0 for specific confirmed provision.
+  rpc ReleaseTransfer(ReleaseTransferRequest) returns (ReleaseTransferResponse);
+
+  // Remove a specific confirmed provision (reset for specific sequence number).
+  rpc RemoveProvision(RemoveProvisionRequest) returns (RemoveProvisionResponse);
+
+  // ClaimBatch processes the claiming of multiple claimable provisions in a single operation
+  rpc ClaimBatch(ClaimBatchRequest) returns (ClaimBatchResponse);
+
+  // Claim processes the claiming of a provision with a specific sequence number
+  rpc Claim(ClaimRequest) returns (ClaimResponse);
+}
+
+// TransferRequest is input values required for bridge transfer
+message TransferRequest {
+  // the sender address on the source chain
+  string sender = 1;
+  // the recipient address on the destination chain
+  string receiver = 2;
+  // the amount of token to be transferred
+  string amount = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+message TransferResponse {}
+
+// ProvisionRequest is input values required for provisioning
+message ProvisionRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be claimed
+  string amount = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+message ProvisionResponse {}
+
+// HoldTransferRequest is input values required for holding transfer
+message HoldTransferRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message HoldTransferResponse {}
+
+// ReleaseTransferRequest is input values required for releasing a held transfer by time lock
+message ReleaseTransferRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message ReleaseTransferResponse {}
+
+// RemoveProvisionRequest is input values required for removing a specific confirmed provision
+message RemoveProvisionRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message RemoveProvisionResponse {}
+
+// ClaimBatchRequest is input values required for claiming multiple claimable provisions
+message ClaimBatchRequest {
+  // the maximum number of claims to be made at once
+  uint64 max_claims = 1;
+}
+
+message ClaimBatchResponse {}
+
+// ClaimRequest is input values required for claiming a provision
+message ClaimRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message ClaimResponse {}

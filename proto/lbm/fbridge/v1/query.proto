@@ -3,4 +3,90 @@ package lbm.fbridge.v1;
 
 option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
 
-service Query {}
+import "google/api/annotations.proto";
+import "gogoproto/gogo.proto";
+import "lbm/fbridge/v1/fbridge.proto";
+
+service Query {
+  // Params queries the parameters of x/fbridge module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/params";
+  }
+
+  // Get a greatest sequence number to be confirmed by a particular operator
+  rpc GreatestSeqByOperator(GreatestSeqByOperatorRequest) returns (GreatestSeqByOperatorResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/greatest_seq_by_operator/{operator}";
+  }
+
+  // Get a next sequence number to be confirmed by n-of-m operators
+  rpc NextSeqToConfirm(NextSeqToConfirmRequest) returns (NextSeqToConfirmResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/next_seq_to_confirm";
+  }
+
+  // Get a provision submitted by a particular operator
+  rpc SubmittedProvision(SubmittedProvisionRequest) returns (SubmittedProvisionResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/submitted_provision/{operator}/{seq}";
+  }
+
+  // Get a specific confirmed provision
+  rpc ConfirmedProvision(ConfirmedProvisionRequest) returns (ConfirmedProvisionResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/confirmed_provision/{seq}";
+  }
+
+  // Get commitments of a specific sequence number
+  rpc Commitments(CommitmentsRequest) returns (CommitmentsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/commitments/{seq}";
+  }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message GreatestSeqByOperatorRequest {
+  // the address of the operator
+  string operator = 1;
+}
+
+message GreatestSeqByOperatorResponse {
+  uint64 seq = 1;
+}
+
+message NextSeqToConfirmRequest {}
+
+message NextSeqToConfirmResponse {
+  uint64 seq = 1;
+}
+
+message SubmittedProvisionRequest {
+  // the address of the operator
+  string operator = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+}
+
+message SubmittedProvisionResponse {
+  ProvisionData   data   = 1 [(gogoproto.nullable) = false];
+  ProvisionStatus status = 2 [(gogoproto.nullable) = false];
+}
+
+message ConfirmedProvisionRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message ConfirmedProvisionResponse {
+  ProvisionData   data   = 1 [(gogoproto.nullable) = false];
+  ProvisionStatus status = 2 [(gogoproto.nullable) = false];
+}
+
+message CommitmentsRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message CommitmentsResponse {
+  repeated string commitments = 1;
+}

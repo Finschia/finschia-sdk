@@ -164,6 +164,15 @@
     },
     {
       "url": "./tmp-swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/fbridge/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "FBridgeParams",
+          "Commitments": "FBridgeCommitments"
+        }
+      }
     }
   ]
 }
