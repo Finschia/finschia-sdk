@@ -3,8 +3,9 @@ package types
 import (
 	fmt "fmt"
 
-	sdk "github.com/Finschia/finschia-sdk/types"
 	"gopkg.in/yaml.v2"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewSwapped creates a new Swapped instance
