@@ -28,24 +28,3 @@ func (k Keeper) SetSwapped(ctx sdk.Context, swapped types.Swapped) error {
 	store.Set([]byte{types.SwappedKey}, bz)
 	return nil
 }
-
-func (k Keeper) GetSwappableNewCoinAmount(ctx sdk.Context) sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte{types.SwappableNewCoinAmountKey})
-	var swappableNewCoinAmount sdk.Coin
-	if bz == nil {
-		panic(types.ErrSwappableNewCoinAmountNotFound)
-	}
-	k.cdc.MustUnmarshal(bz, &swappableNewCoinAmount)
-	return swappableNewCoinAmount
-}
-
-func (k Keeper) SetSwappableNewCoinAmount(ctx sdk.Context, swappableNewCoinAmount sdk.Coin) error {
-	store := ctx.KVStore(k.storeKey)
-	bz, err := k.cdc.Marshal(&swappableNewCoinAmount)
-	if err != nil {
-		return err
-	}
-	store.Set([]byte{types.SwappableNewCoinAmountKey}, bz)
-	return nil
-}

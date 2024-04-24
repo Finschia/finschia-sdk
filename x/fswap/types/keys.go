@@ -18,9 +18,8 @@ const (
 )
 
 var (
-	ParamsKey                 = byte(0x00)
-	SwappedKey                = byte(0x01)
-	SwappableNewCoinAmountKey = byte(0x02)
+	ParamsKey  = byte(0x00)
+	SwappedKey = byte(0x01)
 )
 
 func KeyPrefix(p string) []byte {

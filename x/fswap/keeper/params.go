@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -11,7 +12,7 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	bz := store.Get([]byte{types.ParamsKey})
 	var params types.Params
 	if bz == nil {
-		panic(types.ErrParamsNotFound)
+		panic(sdkerrors.ErrNotFound)
 	}
 	k.cdc.MustUnmarshal(bz, &params)
 	return params
