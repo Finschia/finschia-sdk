@@ -26,8 +26,23 @@ func TestGenesisStateValidate(t *testing.T) {
 			valid:    false,
 		},
 		{
-			desc: "empty totalSupply in Swapped",
+			desc: "empty params",
 			genState: &types.GenesisState{
+				Swapped: types.DefaultSwapped(),
+			},
+			valid: false,
+		},
+		{
+			desc: "empty swapped",
+			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
+			},
+			valid: false,
+		},
+		{
+			desc: "empty swappableNewCoinAmount in params",
+			genState: &types.GenesisState{
+				Params:  types.Params{},
 				Swapped: types.DefaultSwapped(),
 			},
 			valid: false,
@@ -35,20 +50,20 @@ func TestGenesisStateValidate(t *testing.T) {
 		{
 			desc: "empty oldCoin in Swapped",
 			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
 				Swapped: types.Swapped{
 					NewCoinAmount: sdk.NewInt64Coin("atom", 1),
 				},
-				SwappableNewCoinAmount: types.DefaultTotalSupply,
 			},
 			valid: false,
 		},
 		{
 			desc: "empty newCoin in Swapped",
 			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
 				Swapped: types.Swapped{
 					OldCoinAmount: sdk.NewInt64Coin("cony", 1),
 				},
-				SwappableNewCoinAmount: types.DefaultTotalSupply,
 			},
 			valid: false,
 		},

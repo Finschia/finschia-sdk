@@ -8,6 +8,6 @@ func (s *KeeperTestSuite) TestInitAndExportGenesis() {
 	s.keeper.InitGenesis(s.sdkCtx, *types.DefaultGenesis())
 	got := s.keeper.ExportGenesis(s.sdkCtx)
 	s.Require().NotNil(got)
+	s.Require().Equal(types.DefaultParams(), got.Params)
 	s.Require().Equal(types.DefaultSwapped(), got.Swapped)
-	s.Require().Equal(types.DefaultTotalSupply, got.SwappableNewCoinAmount)
 }

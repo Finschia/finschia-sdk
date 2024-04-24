@@ -8,6 +8,7 @@ import (
 
 // x/fswap module sentinel errors
 var (
-	ErrSwappedNotFound     = sdkerrors.Register(ModuleName, 1100, "swapped does not exist")
-	ErrTotalSupplyNotFound = sdkerrors.Register(ModuleName, 1101, "swappable new coin amount does not exist")
+	ErrParamsNotFound      = sdkerrors.Register(ModuleName, 1100, "params does not exist")
+	ErrSwappedNotFound     = sdkerrors.Register(ModuleName, 1101, "swapped does not exist")
+	ErrTotalSupplyNotFound = sdkerrors.Register(ModuleName, 1102, "swappable new coin amount does not exist")
 )

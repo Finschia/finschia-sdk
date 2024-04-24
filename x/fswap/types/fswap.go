@@ -23,7 +23,7 @@ func DefaultSwapped() Swapped {
 	return NewSwapped(DefaultConfig())
 }
 
-func ValidateCoin(i interface{}) error {
+func validateCoin(i interface{}) error {
 	v, ok := i.(sdk.Coin)
 	if !ok {
 		return fmt.Errorf("invalid coin amount: %T", i)
@@ -41,10 +41,10 @@ func ValidateCoin(i interface{}) error {
 
 // Validate validates the set of swapped
 func (s Swapped) Validate() error {
-	if err := ValidateCoin(s.OldCoinAmount); err != nil {
+	if err := validateCoin(s.OldCoinAmount); err != nil {
 		return err
 	}
-	if err := ValidateCoin(s.NewCoinAmount); err != nil {
+	if err := validateCoin(s.NewCoinAmount); err != nil {
 		return err
 	}
 	return nil

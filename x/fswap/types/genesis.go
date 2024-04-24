@@ -5,25 +5,25 @@ import sdk "github.com/Finschia/finschia-sdk/types"
 var DefaultTotalSupply = sdk.NewCoin(DefaultConfig().NewCoinDenom, sdk.NewInt(100000))
 
 // NewGenesis creates a new genesis state
-func NewGenesisState(config Config, swappableNewCoinAmount sdk.Coin) *GenesisState {
+func NewGenesisState(config Config, swappable sdk.Coin) *GenesisState {
 	return &GenesisState{
-		Swapped:                NewSwapped(config),
-		SwappableNewCoinAmount: swappableNewCoinAmount,
+		Params:  NewParams(swappable),
+		Swapped: NewSwapped(config),
 	}
 }
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
-	return NewGenesisState(DefaultConfig(), DefaultTotalSupply)
+	return NewGenesisState(DefaultConfig(), DefaultSwappableNewCoinAmount)
 }
 
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-	if err := gs.Swapped.Validate(); err != nil {
+	if err := gs.Params.Validate(); err != nil {
 		return err
 	}
-	if err := ValidateCoin(gs.SwappableNewCoinAmount); err != nil {
+	if err := gs.Swapped.Validate(); err != nil {
 		return err
 	}
 	return nil
