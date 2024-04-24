@@ -52,7 +52,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			genState: &types.GenesisState{
 				Params: types.DefaultParams(),
 				Swapped: types.Swapped{
-					NewCoinAmount: sdk.NewInt64Coin("atom", 1),
+					NewCoinAmount: sdk.ZeroInt(),
 				},
 			},
 			valid: false,
@@ -62,7 +62,18 @@ func TestGenesisStateValidate(t *testing.T) {
 			genState: &types.GenesisState{
 				Params: types.DefaultParams(),
 				Swapped: types.Swapped{
-					OldCoinAmount: sdk.NewInt64Coin("cony", 1),
+					OldCoinAmount: sdk.ZeroInt(),
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "coinAmount is negative",
+			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
+				Swapped: types.Swapped{
+					NewCoinAmount: sdk.ZeroInt(),
+					OldCoinAmount: sdk.NewInt(-1),
 				},
 			},
 			valid: false,

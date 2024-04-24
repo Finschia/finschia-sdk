@@ -28,7 +28,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	return nil
 }
 
-func (k Keeper) SwappableNewCoinAmount(ctx sdk.Context) sdk.Coin {
+func (k Keeper) SwappableNewCoinAmount(ctx sdk.Context) sdk.Int {
 	params := k.GetParams(ctx)
 	return params.SwappableNewCoinAmount
 }

@@ -1,18 +1,16 @@
 package types
 
-import sdk "github.com/Finschia/finschia-sdk/types"
-
 // NewGenesis creates a new genesis state
-func NewGenesisState(config Config, swappable sdk.Coin) *GenesisState {
+func NewGenesisState(params Params, swapped Swapped) *GenesisState {
 	return &GenesisState{
-		Params:  NewParams(swappable),
-		Swapped: NewSwapped(config),
+		Params:  params,
+		Swapped: swapped,
 	}
 }
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
-	return NewGenesisState(DefaultConfig(), DefaultSwappableNewCoinAmount)
+	return NewGenesisState(DefaultParams(), DefaultSwapped())
 }
 
 // Validate performs basic genesis state validation returning an error upon any

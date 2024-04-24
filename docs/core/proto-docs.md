@@ -12759,8 +12759,8 @@ Msg defines the foundation Msg service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `old_coin_amount` | [string](#string) |  |  |
+| `new_coin_amount` | [string](#string) |  |  |
 
 
 
@@ -12791,7 +12791,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `swappable_new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `swappable_new_coin_amount` | [string](#string) |  |  |
 
 
 
@@ -12864,7 +12864,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `swapped` | [Swapped](#lbm.fswap.v1.Swapped) |  |  |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 

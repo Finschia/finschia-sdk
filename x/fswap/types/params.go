@@ -6,11 +6,9 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
-var DefaultSwappableNewCoinAmount = sdk.NewCoin(DefaultConfig().NewCoinDenom, sdk.NewInt(0))
-
 // NewParams creates a new Params instance
 func NewParams(
-	swappableNewCoinAmount sdk.Coin,
+	swappableNewCoinAmount sdk.Int,
 ) Params {
 	return Params{
 		SwappableNewCoinAmount: swappableNewCoinAmount,
@@ -19,14 +17,12 @@ func NewParams(
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(
-		DefaultSwappableNewCoinAmount,
-	)
+	return NewParams(sdk.ZeroInt())
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateCoin(p.SwappableNewCoinAmount); err != nil {
+	if err := validateCoinAmount(p.SwappableNewCoinAmount); err != nil {
 		return err
 	}
 	return nil

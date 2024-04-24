@@ -1,39 +1,40 @@
 package types
 
 import (
-	"errors"
 	fmt "fmt"
-	"strings"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"gopkg.in/yaml.v2"
 )
 
 // NewSwapped creates a new Swapped instance
 func NewSwapped(
-	config Config,
+	oldCoinAmount sdk.Int,
+	newCoinAmount sdk.Int,
 ) Swapped {
 	return Swapped{
-		OldCoinAmount: sdk.NewCoin(config.OldCoinDenom, sdk.NewInt(0)),
-		NewCoinAmount: sdk.NewCoin(config.NewCoinDenom, sdk.NewInt(0)),
+		OldCoinAmount: oldCoinAmount,
+		NewCoinAmount: newCoinAmount,
 	}
 }
 
 // DefaultSwapped returns an initial Swapped object
 func DefaultSwapped() Swapped {
-	return NewSwapped(DefaultConfig())
+	return NewSwapped(sdk.ZeroInt(), sdk.ZeroInt())
 }
 
-func validateCoin(i interface{}) error {
-	v, ok := i.(sdk.Coin)
+func validateCoinAmount(i interface{}) error {
+	v, ok := i.(sdk.Int)
 	if !ok {
 		return fmt.Errorf("invalid coin amount: %T", i)
 	}
 
-	if strings.TrimSpace(v.Denom) == "" {
-		return errors.New("denom cannot be blank")
+	if v.IsNil() {
+		return fmt.Errorf("coin amount must be not nil")
 	}
-	if err := sdk.ValidateDenom(v.Denom); err != nil {
-		return err
+
+	if v.LT(sdk.ZeroInt()) {
+		return fmt.Errorf("coin amount cannot be lower than 0")
 	}
 
 	return nil
@@ -41,11 +42,17 @@ func validateCoin(i interface{}) error {
 
 // Validate validates the set of swapped
 func (s Swapped) Validate() error {
-	if err := validateCoin(s.OldCoinAmount); err != nil {
+	if err := validateCoinAmount(s.OldCoinAmount); err != nil {
 		return err
 	}
-	if err := validateCoin(s.NewCoinAmount); err != nil {
+	if err := validateCoinAmount(s.NewCoinAmount); err != nil {
 		return err
 	}
 	return nil
+}
+
+// String implements the Stringer interface.
+func (s Swapped) String() string {
+	out, _ := yaml.Marshal(s)
+	return string(out)
 }
