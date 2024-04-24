@@ -179,6 +179,7 @@
 |:-|:-|:-|:-|
 |ErrParamsNotFound|fswap|1100|params does not exist|
 |ErrSwappedNotFound|fswap|1101|swapped does not exist|
+|ErrExceedSwappable|fswap|1102|exceed swappable coin amount|
 
 >You can also find detailed information in the following Errors.go files:
   * [fswap/types/errors.go](fswap/types/errors.go)
