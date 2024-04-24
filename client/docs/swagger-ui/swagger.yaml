@@ -29970,6 +29970,82 @@ paths:
           type: string
       tags:
         - Query
+  /lbm/fbridge/v1/guardians:
+    get:
+      summary: Get a list of Guardians registered on the bridge
+      operationId: FBridgeGuardians
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              guardians:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/fbridge/v1/judges:
+    get:
+      summary: Get a list of Judges registered on the bridge
+      operationId: FBridgeJudges
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              judges:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
   /lbm/fbridge/v1/next_seq_to_confirm:
     get:
       summary: Get a next sequence number to be confirmed by n-of-m operators
@@ -29983,6 +30059,44 @@ paths:
               seq:
                 type: string
                 format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/fbridge/v1/operators:
+    get:
+      summary: Get a list of Operators registered on the bridge
+      operationId: FBridgeOperators
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              operators:
+                type: array
+                items:
+                  type: string
         default:
           description: An unexpected error response
           schema:
@@ -49788,12 +49902,33 @@ definitions:
       seq:
         type: string
         format: uint64
+  lbm.fbridge.v1.GuardiansResponse:
+    type: object
+    properties:
+      guardians:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.JudgesResponse:
+    type: object
+    properties:
+      judges:
+        type: array
+        items:
+          type: string
   lbm.fbridge.v1.NextSeqToConfirmResponse:
     type: object
     properties:
       seq:
         type: string
         format: uint64
+  lbm.fbridge.v1.OperatorsResponse:
+    type: object
+    properties:
+      operators:
+        type: array
+        items:
+          type: string
   lbm.fbridge.v1.Params:
     type: object
     properties:

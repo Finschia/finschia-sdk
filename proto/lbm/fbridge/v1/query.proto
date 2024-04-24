@@ -37,6 +37,21 @@ service Query {
   rpc Commitments(CommitmentsRequest) returns (CommitmentsResponse) {
     option (google.api.http).get = "/lbm/fbridge/v1/commitments/{seq}";
   }
+
+  // Get a list of Guardians registered on the bridge
+  rpc Guardians(GuardiansRequest) returns (GuardiansResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/guardians";
+  }
+
+  // Get a list of Operators registered on the bridge
+  rpc Operators(OperatorsRequest) returns (OperatorsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/operators";
+  }
+
+  // Get a list of Judges registered on the bridge
+  rpc Judges(JudgesRequest) returns (JudgesResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/judges";
+  }
 }
 
 message QueryParamsRequest {}
@@ -89,4 +104,22 @@ message CommitmentsRequest {
 
 message CommitmentsResponse {
   repeated string commitments = 1;
+}
+
+message GuardiansRequest {}
+
+message GuardiansResponse {
+  repeated string guardians = 1;
+}
+
+message OperatorsRequest {}
+
+message OperatorsResponse {
+  repeated string operators = 1;
+}
+
+message JudgesRequest {}
+
+message JudgesResponse {
+  repeated string judges = 1;
 }

@@ -26,6 +26,24 @@ service Msg {
 
   // Claim processes the claiming of a provision with a specific sequence number
   rpc Claim(ClaimRequest) returns (ClaimResponse);
+
+  // AddGuardian adds a guardian to the bridge module.
+  rpc AddGuardian(AddGuardianRequest) returns (AddGuardianResponse);
+
+  // RemoveGuardian removes a guardian from the bridge module.
+  rpc RemoveGuardian(RemoveGuardianRequest) returns (RemoveGuardianResponse);
+
+  // AddOperator adds an operator to the bridge module.
+  rpc AddOperator(AddOperatorRequest) returns (AddOperatorResponse);
+
+  // RemoveOperator removes an operator from the bridge module.
+  rpc RemoveOperator(RemoveOperatorRequest) returns (RemoveOperatorResponse);
+
+  // AddJudge adds a judge to the bridge module.
+  rpc AddJudge(AddJudgeRequest) returns (AddJudgeResponse);
+
+  // RemoveJudge removes a judge from the bridge module.
+  rpc RemoveJudge(RemoveJudgeRequest) returns (RemoveJudgeResponse);
 }
 
 // TransferRequest is input values required for bridge transfer
@@ -95,3 +113,51 @@ message ClaimRequest {
 }
 
 message ClaimResponse {}
+
+// AddGuardianRequest is input values required for adding a guardian
+message AddGuardianRequest {
+  // the guardian address to be added
+  string guardian = 1;
+}
+
+message AddGuardianResponse {}
+
+// RemoveGuardianRequest is input values required for removing a guardian
+message RemoveGuardianRequest {
+  // the guardian address to be removed
+  string guardian = 1;
+}
+
+message RemoveGuardianResponse {}
+
+// AddOperatorRequest is input values required for adding an operator
+message AddOperatorRequest {
+  // the operator address to be added
+  string operator = 1;
+}
+
+message AddOperatorResponse {}
+
+// RemoveOperatorRequest is input values required for removing an operator
+message RemoveOperatorRequest {
+  // the operator address to be removed
+  string operator = 1;
+}
+
+message RemoveOperatorResponse {}
+
+// AddJudgeRequest is input values required for adding a judge
+message AddJudgeRequest {
+  // the judge address to be added
+  string judge = 1;
+}
+
+message AddJudgeResponse {}
+
+// RemoveJudgeRequest is input values required for removing a judge
+message RemoveJudgeRequest {
+  // the judge address to be removed
+  string judge = 1;
+}
+
+message RemoveJudgeResponse {}

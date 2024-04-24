@@ -783,8 +783,14 @@
     - [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse)
     - [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest)
     - [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse)
+    - [GuardiansRequest](#lbm.fbridge.v1.GuardiansRequest)
+    - [GuardiansResponse](#lbm.fbridge.v1.GuardiansResponse)
+    - [JudgesRequest](#lbm.fbridge.v1.JudgesRequest)
+    - [JudgesResponse](#lbm.fbridge.v1.JudgesResponse)
     - [NextSeqToConfirmRequest](#lbm.fbridge.v1.NextSeqToConfirmRequest)
     - [NextSeqToConfirmResponse](#lbm.fbridge.v1.NextSeqToConfirmResponse)
+    - [OperatorsRequest](#lbm.fbridge.v1.OperatorsRequest)
+    - [OperatorsResponse](#lbm.fbridge.v1.OperatorsResponse)
     - [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse)
     - [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest)
@@ -793,6 +799,12 @@
     - [Query](#lbm.fbridge.v1.Query)
   
 - [lbm/fbridge/v1/tx.proto](#lbm/fbridge/v1/tx.proto)
+    - [AddGuardianRequest](#lbm.fbridge.v1.AddGuardianRequest)
+    - [AddGuardianResponse](#lbm.fbridge.v1.AddGuardianResponse)
+    - [AddJudgeRequest](#lbm.fbridge.v1.AddJudgeRequest)
+    - [AddJudgeResponse](#lbm.fbridge.v1.AddJudgeResponse)
+    - [AddOperatorRequest](#lbm.fbridge.v1.AddOperatorRequest)
+    - [AddOperatorResponse](#lbm.fbridge.v1.AddOperatorResponse)
     - [ClaimBatchRequest](#lbm.fbridge.v1.ClaimBatchRequest)
     - [ClaimBatchResponse](#lbm.fbridge.v1.ClaimBatchResponse)
     - [ClaimRequest](#lbm.fbridge.v1.ClaimRequest)
@@ -803,6 +815,12 @@
     - [ProvisionResponse](#lbm.fbridge.v1.ProvisionResponse)
     - [ReleaseTransferRequest](#lbm.fbridge.v1.ReleaseTransferRequest)
     - [ReleaseTransferResponse](#lbm.fbridge.v1.ReleaseTransferResponse)
+    - [RemoveGuardianRequest](#lbm.fbridge.v1.RemoveGuardianRequest)
+    - [RemoveGuardianResponse](#lbm.fbridge.v1.RemoveGuardianResponse)
+    - [RemoveJudgeRequest](#lbm.fbridge.v1.RemoveJudgeRequest)
+    - [RemoveJudgeResponse](#lbm.fbridge.v1.RemoveJudgeResponse)
+    - [RemoveOperatorRequest](#lbm.fbridge.v1.RemoveOperatorRequest)
+    - [RemoveOperatorResponse](#lbm.fbridge.v1.RemoveOperatorResponse)
     - [RemoveProvisionRequest](#lbm.fbridge.v1.RemoveProvisionRequest)
     - [RemoveProvisionResponse](#lbm.fbridge.v1.RemoveProvisionResponse)
     - [TransferRequest](#lbm.fbridge.v1.TransferRequest)
@@ -11778,6 +11796,56 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
+<a name="lbm.fbridge.v1.GuardiansRequest"></a>
+
+### GuardiansRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.GuardiansResponse"></a>
+
+### GuardiansResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardians` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.JudgesRequest"></a>
+
+### JudgesRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.JudgesResponse"></a>
+
+### JudgesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `judges` | [string](#string) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.NextSeqToConfirmRequest"></a>
 
 ### NextSeqToConfirmRequest
@@ -11797,6 +11865,31 @@ GenesisState defines the fbridge module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.OperatorsRequest"></a>
+
+### OperatorsRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.OperatorsResponse"></a>
+
+### OperatorsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operators` | [string](#string) | repeated |  |
 
 
 
@@ -11879,6 +11972,9 @@ GenesisState defines the fbridge module's genesis state.
 | `SubmittedProvision` | [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest) | [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse) | Get a provision submitted by a particular operator | GET|/lbm/fbridge/v1/submitted_provision/{operator}/{seq}|
 | `ConfirmedProvision` | [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest) | [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse) | Get a specific confirmed provision | GET|/lbm/fbridge/v1/confirmed_provision/{seq}|
 | `Commitments` | [CommitmentsRequest](#lbm.fbridge.v1.CommitmentsRequest) | [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse) | Get commitments of a specific sequence number | GET|/lbm/fbridge/v1/commitments/{seq}|
+| `Guardians` | [GuardiansRequest](#lbm.fbridge.v1.GuardiansRequest) | [GuardiansResponse](#lbm.fbridge.v1.GuardiansResponse) | Get a list of Guardians registered on the bridge | GET|/lbm/fbridge/v1/guardians|
+| `Operators` | [OperatorsRequest](#lbm.fbridge.v1.OperatorsRequest) | [OperatorsResponse](#lbm.fbridge.v1.OperatorsResponse) | Get a list of Operators registered on the bridge | GET|/lbm/fbridge/v1/operators|
+| `Judges` | [JudgesRequest](#lbm.fbridge.v1.JudgesRequest) | [JudgesResponse](#lbm.fbridge.v1.JudgesResponse) | Get a list of Judges registered on the bridge | GET|/lbm/fbridge/v1/judges|
 
  <!-- end services -->
 
@@ -11888,6 +11984,81 @@ GenesisState defines the fbridge module's genesis state.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/fbridge/v1/tx.proto
+
+
+
+<a name="lbm.fbridge.v1.AddGuardianRequest"></a>
+
+### AddGuardianRequest
+AddGuardianRequest is input values required for adding a guardian
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address to be added |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.AddGuardianResponse"></a>
+
+### AddGuardianResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.AddJudgeRequest"></a>
+
+### AddJudgeRequest
+AddJudgeRequest is input values required for adding a judge
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `judge` | [string](#string) |  | the judge address to be added |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.AddJudgeResponse"></a>
+
+### AddJudgeResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.AddOperatorRequest"></a>
+
+### AddOperatorRequest
+AddOperatorRequest is input values required for adding an operator
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the operator address to be added |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.AddOperatorResponse"></a>
+
+### AddOperatorResponse
+
+
+
+
 
 
 
@@ -12019,6 +12190,81 @@ ReleaseTransferRequest is input values required for releasing a held transfer by
 
 
 
+<a name="lbm.fbridge.v1.RemoveGuardianRequest"></a>
+
+### RemoveGuardianRequest
+RemoveGuardianRequest is input values required for removing a guardian
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address to be removed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveGuardianResponse"></a>
+
+### RemoveGuardianResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveJudgeRequest"></a>
+
+### RemoveJudgeRequest
+RemoveJudgeRequest is input values required for removing a judge
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `judge` | [string](#string) |  | the judge address to be removed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveJudgeResponse"></a>
+
+### RemoveJudgeResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveOperatorRequest"></a>
+
+### RemoveOperatorRequest
+RemoveOperatorRequest is input values required for removing an operator
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the operator address to be removed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RemoveOperatorResponse"></a>
+
+### RemoveOperatorResponse
+
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.RemoveProvisionRequest"></a>
 
 ### RemoveProvisionRequest
@@ -12091,6 +12337,12 @@ TransferRequest is input values required for bridge transfer
 | `RemoveProvision` | [RemoveProvisionRequest](#lbm.fbridge.v1.RemoveProvisionRequest) | [RemoveProvisionResponse](#lbm.fbridge.v1.RemoveProvisionResponse) | Remove a specific confirmed provision (reset for specific sequence number). | |
 | `ClaimBatch` | [ClaimBatchRequest](#lbm.fbridge.v1.ClaimBatchRequest) | [ClaimBatchResponse](#lbm.fbridge.v1.ClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
 | `Claim` | [ClaimRequest](#lbm.fbridge.v1.ClaimRequest) | [ClaimResponse](#lbm.fbridge.v1.ClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
+| `AddGuardian` | [AddGuardianRequest](#lbm.fbridge.v1.AddGuardianRequest) | [AddGuardianResponse](#lbm.fbridge.v1.AddGuardianResponse) | AddGuardian adds a guardian to the bridge module. | |
+| `RemoveGuardian` | [RemoveGuardianRequest](#lbm.fbridge.v1.RemoveGuardianRequest) | [RemoveGuardianResponse](#lbm.fbridge.v1.RemoveGuardianResponse) | RemoveGuardian removes a guardian from the bridge module. | |
+| `AddOperator` | [AddOperatorRequest](#lbm.fbridge.v1.AddOperatorRequest) | [AddOperatorResponse](#lbm.fbridge.v1.AddOperatorResponse) | AddOperator adds an operator to the bridge module. | |
+| `RemoveOperator` | [RemoveOperatorRequest](#lbm.fbridge.v1.RemoveOperatorRequest) | [RemoveOperatorResponse](#lbm.fbridge.v1.RemoveOperatorResponse) | RemoveOperator removes an operator from the bridge module. | |
+| `AddJudge` | [AddJudgeRequest](#lbm.fbridge.v1.AddJudgeRequest) | [AddJudgeResponse](#lbm.fbridge.v1.AddJudgeResponse) | AddJudge adds a judge to the bridge module. | |
+| `RemoveJudge` | [RemoveJudgeRequest](#lbm.fbridge.v1.RemoveJudgeRequest) | [RemoveJudgeResponse](#lbm.fbridge.v1.RemoveJudgeResponse) | RemoveJudge removes a judge from the bridge module. | |
 
  <!-- end services -->
 
