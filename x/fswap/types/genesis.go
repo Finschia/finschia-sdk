@@ -22,5 +22,8 @@ func (gs GenesisState) Validate() error {
 	if err := gs.Swapped.Validate(); err != nil {
 		return err
 	}
+	if gs.Params.SwappableNewCoinAmount.LT(gs.Swapped.NewCoinAmount) {
+		return ErrExceedSwappable
+	}
 	return nil
 }

@@ -78,6 +78,14 @@ func TestGenesisStateValidate(t *testing.T) {
 			},
 			valid: false,
 		},
+		{
+			desc: "swappable coin exceed",
+			genState: &types.GenesisState{
+				Params:  types.NewParams(sdk.NewInt(1000)),
+				Swapped: types.NewSwapped(sdk.NewInt(1000), sdk.NewInt(100000)),
+			},
+			valid: false,
+		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			err := tc.genState.Validate()
