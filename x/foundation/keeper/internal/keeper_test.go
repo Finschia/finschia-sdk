@@ -14,7 +14,7 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	keeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
+	"github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	"github.com/Finschia/finschia-sdk/x/foundation/keeper/internal"
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"

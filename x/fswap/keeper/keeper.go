@@ -1,91 +1,89 @@
 package keeper
 
 import (
-	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/fswap/config"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
-)
-
-// TODO: move const to proper place
-const (
-	OldDenom     = "cony"
-	NewDenom     = "TBD"
-	SwapMultiple = 123
 )
 
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
 
+	config.FswapConfig
+
 	AccountKeeper
 	BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, ak AccountKeeper, bk BankKeeper) *Keeper {
-	return &Keeper{
+func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, cfg config.FswapConfig, ak AccountKeeper, bk BankKeeper) Keeper {
+	if len(strings.TrimSpace(cfg.NewDenom())) == 0 {
+		panic("new denom must be provided")
+	}
+	// if strings.Compare(strings.TrimSpace(cfg.NewDenom()), cfg.SwapCap().Denom) != 0 {
+	//	panic("new denom does not match new denom")
+	//}
+	return Keeper{
 		cdc,
 		storeKey,
+		cfg,
 		ak,
 		bk,
 	}
 }
 
-func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error {
-	// 1. Check Balance
-	// 2. Check swapCap
-	// 3. Send coin to module
-	// 4. Burn & Mint TBD coins(with multiple)
-	// 5. Send back coins to addr
-	// 6. Update swapped state
-	if ok := k.HasBalance(ctx, addr, amount); !ok {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "not enough amount: %s", amount)
+func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, oldCoin sdk.Coin) error {
+	if ok := k.HasBalance(ctx, addr, oldCoin); !ok {
+		return sdkerrors.ErrInsufficientFunds
 	}
 
-	multipleAmount := amount.Amount.Mul(sdk.NewInt(SwapMultiple))
-	newAmount := sdk.NewCoin(NewDenom, multipleAmount)
+	newAmount := oldCoin.Amount.Mul(k.SwapMultiple())
+	newCoin := sdk.NewCoin(k.NewDenom(), newAmount)
 	if err := k.checkSwapCap(ctx, newAmount); err != nil {
 		return err
 	}
 
 	moduleAddr := k.GetModuleAddress(types.ModuleName)
-	if err := k.SendCoins(ctx, addr, moduleAddr, sdk.NewCoins(amount)); err != nil {
+	if err := k.SendCoins(ctx, addr, moduleAddr, sdk.NewCoins(oldCoin)); err != nil {
 		return err
 	}
 
-	if err := k.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(amount)); err != nil {
+	if err := k.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(oldCoin)); err != nil {
 		return err
 	}
 
-	if err := k.MintCoins(ctx, types.ModuleName, sdk.NewCoins(newAmount)); err != nil {
+	if err := k.MintCoins(ctx, types.ModuleName, sdk.NewCoins(newCoin)); err != nil {
 		return err
 	}
 
-	if err := k.SendCoins(ctx, moduleAddr, addr, sdk.NewCoins(newAmount)); err != nil {
+	if err := k.SendCoins(ctx, moduleAddr, addr, sdk.NewCoins(newCoin)); err != nil {
 		return err
 	}
 
-	if err := k.updateSwapped(ctx, amount, newAmount); err != nil {
+	if err := k.updateSwapped(ctx, oldCoin.Amount, newAmount); err != nil {
 		return err
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventSwapCoins{
 		Address:       addr.String(),
-		OldCoinAmount: amount,
-		NewCoinAmount: newAmount,
+		OldCoinAmount: oldCoin.Amount,
+		NewCoinAmount: newCoin.Amount,
 	}); err != nil {
-		panic(err)
+		return err
 	}
 	return nil
 }
 
 func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress) error {
-	balance := k.GetBalance(ctx, addr, OldDenom)
+	balance := k.GetBalance(ctx, addr, k.OldDenom())
 	if balance.IsZero() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "zero balance for %s", OldDenom)
+		return sdkerrors.ErrInsufficientFunds
 	}
 
 	if err := k.Swap(ctx, addr, balance); err != nil {
@@ -94,7 +92,7 @@ func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress) error {
 	return nil
 }
 
-func (k Keeper) updateSwapped(ctx sdk.Context, oldAmount sdk.Coin, newAmount sdk.Coin) error {
+func (k Keeper) updateSwapped(ctx sdk.Context, oldAmount, newAmount sdk.Int) error {
 	prevSwapped, err := k.GetSwapped(ctx)
 	if err != nil {
 		return err
@@ -125,37 +123,47 @@ func (k Keeper) GetSwapped(ctx sdk.Context) (types.Swapped, error) {
 	return swapped, nil
 }
 
-func (k Keeper) setSwapCap(ctx sdk.Context) error {
-	// TODO(bjs): how to set it only once
-	//store := ctx.KVStore(k.storeKey)
-	return nil
-}
-
-func (k Keeper) getSwapCap(ctx sdk.Context) (sdk.Coin, error) {
+func (k Keeper) SetSwapped(ctx sdk.Context, swapped types.Swapped) error {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(swapCapKey())
-	if bz == nil {
-		return sdk.Coin{}, errors.New("swap cap not found")
-	}
-
-	swapCap := sdk.Coin{}
-	if err := k.cdc.Unmarshal(bz, &swapCap); err != nil {
-		return sdk.Coin{}, err
-	}
-	return swapCap, nil
-}
-
-func (k Keeper) checkSwapCap(ctx sdk.Context, amountNewCoin sdk.Coin) error {
-	swapCap, err := k.getSwapCap(ctx)
+	key := swappedKey()
+	bz, err := k.cdc.Marshal(&swapped)
 	if err != nil {
 		return err
 	}
+	store.Set(key, bz)
+	return nil
+}
+
+func (k Keeper) checkSwapCap(ctx sdk.Context, newCoinAmount sdk.Int) error {
 	swapped, err := k.GetSwapped(ctx)
 	if err != nil {
 		return err
 	}
-	if swapCap.IsLT(swapped.GetNewCoinAmount().Add(amountNewCoin)) {
-		return errors.New("not enough swap coin amount")
+
+	if k.SwapCap().LT(swapped.NewCoinAmount.Add(newCoinAmount)) {
+		return fmt.Errorf("cann't swap more because of swapCap limit, amount=%s", newCoinAmount.String())
 	}
+
+	return nil
+}
+
+func (k Keeper) GetSwappableNewCoinAmount(ctx sdk.Context) sdk.Coin {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte{types.SwappableNewCoinAmountKey})
+	var swappableNewCoinAmount sdk.Coin
+	if bz == nil {
+		panic(types.ErrSwappableNewCoinAmountNotFound)
+	}
+	k.cdc.MustUnmarshal(bz, &swappableNewCoinAmount)
+	return swappableNewCoinAmount
+}
+
+func (k Keeper) SetSwappableNewCoinAmount(ctx sdk.Context, swappableNewCoinAmount sdk.Coin) error {
+	store := ctx.KVStore(k.storeKey)
+	bz, err := k.cdc.Marshal(&swappableNewCoinAmount)
+	if err != nil {
+		return err
+	}
+	store.Set([]byte{types.SwappableNewCoinAmountKey}, bz)
 	return nil
 }
