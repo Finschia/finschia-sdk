@@ -6,18 +6,14 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/module"
 	simtypes "github.com/Finschia/finschia-sdk/types/simulation"
-	"github.com/Finschia/finschia-sdk/x/fswap/types"
+	"github.com/Finschia/finschia-sdk/x/fswap/simulation"
 )
 
 var _ module.AppModuleSimulation = AppModule{}
 
 // GenerateGenesisState creates a randomized GenState of the module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
-	fswapGenesis := types.GenesisState{
-		Params:  types.DefaultParams(),
-		Swapped: types.DefaultSwapped(),
-	}
-	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&fswapGenesis)
+	simulation.RandomizedGenState(simState)
 }
 
 // RegisterStoreDecoder registers a decoder.
