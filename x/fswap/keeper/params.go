@@ -8,7 +8,7 @@ import (
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.ParamsKey())
+	bz := store.Get([]byte{types.ParamsKey})
 	var params types.Params
 	if bz == nil {
 		panic(types.ErrParamsNotFound)
@@ -24,7 +24,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	if err != nil {
 		return err
 	}
-	store.Set(types.ParamsKey(), bz)
+	store.Set([]byte{types.ParamsKey}, bz)
 	return nil
 }
 

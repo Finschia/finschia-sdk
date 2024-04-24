@@ -1,7 +1,5 @@
 package types
 
-import "cosmossdk.io/collections"
-
 const (
 	// ModuleName defines the module name
 	ModuleName = "fswap"
@@ -20,22 +18,10 @@ const (
 )
 
 var (
-	paramsKeyValue                 = collections.NewPrefix(0)
-	swappedKeyValue                = collections.NewPrefix(1)
-	swappableNewCoinAmountKeyValue = collections.NewPrefix(2)
+	ParamsKey                 = byte(0x00)
+	SwappedKey                = byte(0x01)
+	SwappableNewCoinAmountKey = byte(0x02)
 )
-
-func ParamsKey() []byte {
-	return paramsKeyValue.Bytes()
-}
-
-func SwappedKey() []byte {
-	return swappedKeyValue.Bytes()
-}
-
-func SwappableNewCoinAmountKey() []byte {
-	return swappableNewCoinAmountKeyValue.Bytes()
-}
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
