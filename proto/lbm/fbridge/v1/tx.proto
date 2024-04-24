@@ -4,50 +4,37 @@ package lbm.fbridge.v1;
 option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
 
 import "gogoproto/gogo.proto";
+import "lbm/fbridge/v1/fbridge.proto";
 
 service Msg {
   // Submit a transfer request to the bridge module.
-  rpc Transfer(TransferRequest) returns (TransferResponse);
+  rpc Transfer(MsgTransfer) returns (MsgTransferResponse);
 
   // Submit a provision to the bridge module.
-  rpc Provision(ProvisionRequest) returns (ProvisionResponse);
+  rpc Provision(MsgProvision) returns (MsgProvisionResponse);
 
   // Set the time lock value from default value to uint64.max for specific confirmed provision.
-  rpc HoldTransfer(HoldTransferRequest) returns (HoldTransferResponse);
+  rpc HoldTransfer(MsgHoldTransfer) returns (MsgHoldTransferResponse);
 
   // Set the time lock value to 0 for specific confirmed provision.
-  rpc ReleaseTransfer(ReleaseTransferRequest) returns (ReleaseTransferResponse);
+  rpc ReleaseTransfer(MsgReleaseTransfer) returns (MsgReleaseTransferResponse);
 
   // Remove a specific confirmed provision (reset for specific sequence number).
-  rpc RemoveProvision(RemoveProvisionRequest) returns (RemoveProvisionResponse);
+  rpc RemoveProvision(MsgRemoveProvision) returns (MsgRemoveProvisionResponse);
 
   // ClaimBatch processes the claiming of multiple claimable provisions in a single operation
-  rpc ClaimBatch(ClaimBatchRequest) returns (ClaimBatchResponse);
+  rpc ClaimBatch(MsgClaimBatch) returns (MsgClaimBatchResponse);
 
   // Claim processes the claiming of a provision with a specific sequence number
-  rpc Claim(ClaimRequest) returns (ClaimResponse);
+  rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
-  // AddGuardian adds a guardian to the bridge module.
-  rpc AddGuardian(AddGuardianRequest) returns (AddGuardianResponse);
-
-  // RemoveGuardian removes a guardian from the bridge module.
-  rpc RemoveGuardian(RemoveGuardianRequest) returns (RemoveGuardianResponse);
-
-  // AddOperator adds an operator to the bridge module.
-  rpc AddOperator(AddOperatorRequest) returns (AddOperatorResponse);
-
-  // RemoveOperator removes an operator from the bridge module.
-  rpc RemoveOperator(RemoveOperatorRequest) returns (RemoveOperatorResponse);
-
-  // AddJudge adds a judge to the bridge module.
-  rpc AddJudge(AddJudgeRequest) returns (AddJudgeResponse);
-
-  // RemoveJudge removes a judge from the bridge module.
-  rpc RemoveJudge(RemoveJudgeRequest) returns (RemoveJudgeResponse);
+  // UpdateRole updates the role of an address in the bridge module.
+  // The role can be one of the following: guardian, operator, judge.
+  rpc UpdateRole(MsgUpdateRole) returns (MsgUpdateRoleResponse);
 }
 
-// TransferRequest is input values required for bridge transfer
-message TransferRequest {
+// MsgTransfer is input values required for bridge transfer
+message MsgTransfer {
   // the sender address on the source chain
   string sender = 1;
   // the recipient address on the destination chain
@@ -57,10 +44,10 @@ message TransferRequest {
       [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-message TransferResponse {}
+message MsgTransferResponse {}
 
-// ProvisionRequest is input values required for provisioning
-message ProvisionRequest {
+// MsgProvision is input values required for provisioning
+message MsgProvision {
   // the sequence number of the bridge request
   uint64 seq = 1;
   // the sender address on the source chain
@@ -72,92 +59,58 @@ message ProvisionRequest {
       [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-message ProvisionResponse {}
+message MsgProvisionResponse {}
 
-// HoldTransferRequest is input values required for holding transfer
-message HoldTransferRequest {
+// MsgHoldTransfer is input values required for holding transfer
+message MsgHoldTransfer {
   // the sequence number of the bridge request
   uint64 seq = 1;
 }
 
-message HoldTransferResponse {}
+message MsgHoldTransferResponse {}
 
-// ReleaseTransferRequest is input values required for releasing a held transfer by time lock
-message ReleaseTransferRequest {
+// MsgReleaseTransfer is input values required for releasing a held transfer by time lock
+message MsgReleaseTransfer {
   // the sequence number of the bridge request
   uint64 seq = 1;
 }
 
-message ReleaseTransferResponse {}
+message MsgReleaseTransferResponse {}
 
-// RemoveProvisionRequest is input values required for removing a specific confirmed provision
-message RemoveProvisionRequest {
+// MsgRemoveProvision is input values required for removing a specific confirmed provision
+message MsgRemoveProvision {
   // the sequence number of the bridge request
   uint64 seq = 1;
 }
 
-message RemoveProvisionResponse {}
+message MsgRemoveProvisionResponse {}
 
-// ClaimBatchRequest is input values required for claiming multiple claimable provisions
-message ClaimBatchRequest {
+// MsgClaimBatch is input values required for claiming multiple claimable provisions
+message MsgClaimBatch {
   // the maximum number of claims to be made at once
   uint64 max_claims = 1;
 }
 
-message ClaimBatchResponse {}
+message MsgClaimBatchResponse {}
 
-// ClaimRequest is input values required for claiming a provision
-message ClaimRequest {
+// MsgClaim is input values required for claiming a provision
+message MsgClaim {
   // the sequence number of the bridge request
   uint64 seq = 1;
 }
 
-message ClaimResponse {}
+message MsgClaimResponse {}
 
-// AddGuardianRequest is input values required for adding a guardian
-message AddGuardianRequest {
-  // the guardian address to be added
-  string guardian = 1;
+// MsgUpdateRole is input values required for updating the role of an address
+message MsgUpdateRole {
+  // the address to update the role
+  string address = 1;
+  // the role to be updated
+  // - unspecified : 0, used to remove the address from a group
+  // - guardian : 1
+  // - operator : 2
+  // - judge : 3
+  Role role = 2;
 }
 
-message AddGuardianResponse {}
-
-// RemoveGuardianRequest is input values required for removing a guardian
-message RemoveGuardianRequest {
-  // the guardian address to be removed
-  string guardian = 1;
-}
-
-message RemoveGuardianResponse {}
-
-// AddOperatorRequest is input values required for adding an operator
-message AddOperatorRequest {
-  // the operator address to be added
-  string operator = 1;
-}
-
-message AddOperatorResponse {}
-
-// RemoveOperatorRequest is input values required for removing an operator
-message RemoveOperatorRequest {
-  // the operator address to be removed
-  string operator = 1;
-}
-
-message RemoveOperatorResponse {}
-
-// AddJudgeRequest is input values required for adding a judge
-message AddJudgeRequest {
-  // the judge address to be added
-  string judge = 1;
-}
-
-message AddJudgeResponse {}
-
-// RemoveJudgeRequest is input values required for removing a judge
-message RemoveJudgeRequest {
-  // the judge address to be removed
-  string judge = 1;
-}
-
-message RemoveJudgeResponse {}
+message MsgUpdateRoleResponse {}

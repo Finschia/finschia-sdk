@@ -46,3 +46,11 @@ message Fraction {
   uint64 numerator   = 1;
   uint64 denominator = 2;
 }
+
+// Role defines the role of the operator, guardian, and judge.
+enum Role {
+  UNSPECIFIED = 0;
+  GUARDIAN    = 1;
+  OPERATOR    = 2;
+  JUDGE       = 3;
+}

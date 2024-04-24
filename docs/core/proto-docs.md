@@ -766,6 +766,8 @@
     - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
     - [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus)
   
+    - [Role](#lbm.fbridge.v1.Role)
+  
 - [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
     - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
     - [Commitment](#lbm.fbridge.v1.Commitment)
@@ -799,32 +801,22 @@
     - [Query](#lbm.fbridge.v1.Query)
   
 - [lbm/fbridge/v1/tx.proto](#lbm/fbridge/v1/tx.proto)
-    - [AddGuardianRequest](#lbm.fbridge.v1.AddGuardianRequest)
-    - [AddGuardianResponse](#lbm.fbridge.v1.AddGuardianResponse)
-    - [AddJudgeRequest](#lbm.fbridge.v1.AddJudgeRequest)
-    - [AddJudgeResponse](#lbm.fbridge.v1.AddJudgeResponse)
-    - [AddOperatorRequest](#lbm.fbridge.v1.AddOperatorRequest)
-    - [AddOperatorResponse](#lbm.fbridge.v1.AddOperatorResponse)
-    - [ClaimBatchRequest](#lbm.fbridge.v1.ClaimBatchRequest)
-    - [ClaimBatchResponse](#lbm.fbridge.v1.ClaimBatchResponse)
-    - [ClaimRequest](#lbm.fbridge.v1.ClaimRequest)
-    - [ClaimResponse](#lbm.fbridge.v1.ClaimResponse)
-    - [HoldTransferRequest](#lbm.fbridge.v1.HoldTransferRequest)
-    - [HoldTransferResponse](#lbm.fbridge.v1.HoldTransferResponse)
-    - [ProvisionRequest](#lbm.fbridge.v1.ProvisionRequest)
-    - [ProvisionResponse](#lbm.fbridge.v1.ProvisionResponse)
-    - [ReleaseTransferRequest](#lbm.fbridge.v1.ReleaseTransferRequest)
-    - [ReleaseTransferResponse](#lbm.fbridge.v1.ReleaseTransferResponse)
-    - [RemoveGuardianRequest](#lbm.fbridge.v1.RemoveGuardianRequest)
-    - [RemoveGuardianResponse](#lbm.fbridge.v1.RemoveGuardianResponse)
-    - [RemoveJudgeRequest](#lbm.fbridge.v1.RemoveJudgeRequest)
-    - [RemoveJudgeResponse](#lbm.fbridge.v1.RemoveJudgeResponse)
-    - [RemoveOperatorRequest](#lbm.fbridge.v1.RemoveOperatorRequest)
-    - [RemoveOperatorResponse](#lbm.fbridge.v1.RemoveOperatorResponse)
-    - [RemoveProvisionRequest](#lbm.fbridge.v1.RemoveProvisionRequest)
-    - [RemoveProvisionResponse](#lbm.fbridge.v1.RemoveProvisionResponse)
-    - [TransferRequest](#lbm.fbridge.v1.TransferRequest)
-    - [TransferResponse](#lbm.fbridge.v1.TransferResponse)
+    - [MsgClaim](#lbm.fbridge.v1.MsgClaim)
+    - [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch)
+    - [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse)
+    - [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse)
+    - [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer)
+    - [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse)
+    - [MsgProvision](#lbm.fbridge.v1.MsgProvision)
+    - [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse)
+    - [MsgReleaseTransfer](#lbm.fbridge.v1.MsgReleaseTransfer)
+    - [MsgReleaseTransferResponse](#lbm.fbridge.v1.MsgReleaseTransferResponse)
+    - [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision)
+    - [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse)
+    - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
+    - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
+    - [MsgUpdateRole](#lbm.fbridge.v1.MsgUpdateRole)
+    - [MsgUpdateRoleResponse](#lbm.fbridge.v1.MsgUpdateRoleResponse)
   
     - [Msg](#lbm.fbridge.v1.Msg)
   
@@ -11539,6 +11531,20 @@ To optimize computational cost, we have collected frequently changing values fro
 
  <!-- end messages -->
 
+
+<a name="lbm.fbridge.v1.Role"></a>
+
+### Role
+Role defines the role of the operator, guardian, and judge.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UNSPECIFIED | 0 |  |
+| GUARDIAN | 1 |  |
+| OPERATOR | 2 |  |
+| JUDGE | 3 |  |
+
+
  <!-- end enums -->
 
  <!-- end HasExtensions -->
@@ -11987,85 +11993,25 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.AddGuardianRequest"></a>
+<a name="lbm.fbridge.v1.MsgClaim"></a>
 
-### AddGuardianRequest
-AddGuardianRequest is input values required for adding a guardian
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `guardian` | [string](#string) |  | the guardian address to be added |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.AddGuardianResponse"></a>
-
-### AddGuardianResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.AddJudgeRequest"></a>
-
-### AddJudgeRequest
-AddJudgeRequest is input values required for adding a judge
+### MsgClaim
+MsgClaim is input values required for claiming a provision
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `judge` | [string](#string) |  | the judge address to be added |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
 
 
 
 
 
 
-<a name="lbm.fbridge.v1.AddJudgeResponse"></a>
+<a name="lbm.fbridge.v1.MsgClaimBatch"></a>
 
-### AddJudgeResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.AddOperatorRequest"></a>
-
-### AddOperatorRequest
-AddOperatorRequest is input values required for adding an operator
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | the operator address to be added |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.AddOperatorResponse"></a>
-
-### AddOperatorResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.ClaimBatchRequest"></a>
-
-### ClaimBatchRequest
-ClaimBatchRequest is input values required for claiming multiple claimable provisions
+### MsgClaimBatch
+MsgClaimBatch is input values required for claiming multiple claimable provisions
 
 
 | Field | Type | Label | Description |
@@ -12077,34 +12023,9 @@ ClaimBatchRequest is input values required for claiming multiple claimable provi
 
 
 
-<a name="lbm.fbridge.v1.ClaimBatchResponse"></a>
+<a name="lbm.fbridge.v1.MsgClaimBatchResponse"></a>
 
-### ClaimBatchResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.ClaimRequest"></a>
-
-### ClaimRequest
-ClaimRequest is input values required for claiming a provision
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.ClaimResponse"></a>
-
-### ClaimResponse
+### MsgClaimBatchResponse
 
 
 
@@ -12112,10 +12033,20 @@ ClaimRequest is input values required for claiming a provision
 
 
 
-<a name="lbm.fbridge.v1.HoldTransferRequest"></a>
+<a name="lbm.fbridge.v1.MsgClaimResponse"></a>
 
-### HoldTransferRequest
-HoldTransferRequest is input values required for holding transfer
+### MsgClaimResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgHoldTransfer"></a>
+
+### MsgHoldTransfer
+MsgHoldTransfer is input values required for holding transfer
 
 
 | Field | Type | Label | Description |
@@ -12127,20 +12058,20 @@ HoldTransferRequest is input values required for holding transfer
 
 
 
-<a name="lbm.fbridge.v1.HoldTransferResponse"></a>
+<a name="lbm.fbridge.v1.MsgHoldTransferResponse"></a>
 
-### HoldTransferResponse
-
-
+### MsgHoldTransferResponse
 
 
 
 
 
-<a name="lbm.fbridge.v1.ProvisionRequest"></a>
 
-### ProvisionRequest
-ProvisionRequest is input values required for provisioning
+
+<a name="lbm.fbridge.v1.MsgProvision"></a>
+
+### MsgProvision
+MsgProvision is input values required for provisioning
 
 
 | Field | Type | Label | Description |
@@ -12155,20 +12086,20 @@ ProvisionRequest is input values required for provisioning
 
 
 
-<a name="lbm.fbridge.v1.ProvisionResponse"></a>
+<a name="lbm.fbridge.v1.MsgProvisionResponse"></a>
 
-### ProvisionResponse
-
-
+### MsgProvisionResponse
 
 
 
 
 
-<a name="lbm.fbridge.v1.ReleaseTransferRequest"></a>
 
-### ReleaseTransferRequest
-ReleaseTransferRequest is input values required for releasing a held transfer by time lock
+
+<a name="lbm.fbridge.v1.MsgReleaseTransfer"></a>
+
+### MsgReleaseTransfer
+MsgReleaseTransfer is input values required for releasing a held transfer by time lock
 
 
 | Field | Type | Label | Description |
@@ -12180,34 +12111,9 @@ ReleaseTransferRequest is input values required for releasing a held transfer by
 
 
 
-<a name="lbm.fbridge.v1.ReleaseTransferResponse"></a>
+<a name="lbm.fbridge.v1.MsgReleaseTransferResponse"></a>
 
-### ReleaseTransferResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.RemoveGuardianRequest"></a>
-
-### RemoveGuardianRequest
-RemoveGuardianRequest is input values required for removing a guardian
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `guardian` | [string](#string) |  | the guardian address to be removed |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.RemoveGuardianResponse"></a>
-
-### RemoveGuardianResponse
+### MsgReleaseTransferResponse
 
 
 
@@ -12215,60 +12121,10 @@ RemoveGuardianRequest is input values required for removing a guardian
 
 
 
-<a name="lbm.fbridge.v1.RemoveJudgeRequest"></a>
+<a name="lbm.fbridge.v1.MsgRemoveProvision"></a>
 
-### RemoveJudgeRequest
-RemoveJudgeRequest is input values required for removing a judge
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `judge` | [string](#string) |  | the judge address to be removed |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.RemoveJudgeResponse"></a>
-
-### RemoveJudgeResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.RemoveOperatorRequest"></a>
-
-### RemoveOperatorRequest
-RemoveOperatorRequest is input values required for removing an operator
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | the operator address to be removed |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.RemoveOperatorResponse"></a>
-
-### RemoveOperatorResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.RemoveProvisionRequest"></a>
-
-### RemoveProvisionRequest
-RemoveProvisionRequest is input values required for removing a specific confirmed provision
+### MsgRemoveProvision
+MsgRemoveProvision is input values required for removing a specific confirmed provision
 
 
 | Field | Type | Label | Description |
@@ -12280,20 +12136,20 @@ RemoveProvisionRequest is input values required for removing a specific confirme
 
 
 
-<a name="lbm.fbridge.v1.RemoveProvisionResponse"></a>
+<a name="lbm.fbridge.v1.MsgRemoveProvisionResponse"></a>
 
-### RemoveProvisionResponse
-
-
+### MsgRemoveProvisionResponse
 
 
 
 
 
-<a name="lbm.fbridge.v1.TransferRequest"></a>
 
-### TransferRequest
-TransferRequest is input values required for bridge transfer
+
+<a name="lbm.fbridge.v1.MsgTransfer"></a>
+
+### MsgTransfer
+MsgTransfer is input values required for bridge transfer
 
 
 | Field | Type | Label | Description |
@@ -12307,9 +12163,35 @@ TransferRequest is input values required for bridge transfer
 
 
 
-<a name="lbm.fbridge.v1.TransferResponse"></a>
+<a name="lbm.fbridge.v1.MsgTransferResponse"></a>
 
-### TransferResponse
+### MsgTransferResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateRole"></a>
+
+### MsgUpdateRole
+MsgUpdateRole is input values required for updating the role of an address
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | the address to update the role |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateRoleResponse"></a>
+
+### MsgUpdateRoleResponse
 
 
 
@@ -12330,19 +12212,14 @@ TransferRequest is input values required for bridge transfer
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Transfer` | [TransferRequest](#lbm.fbridge.v1.TransferRequest) | [TransferResponse](#lbm.fbridge.v1.TransferResponse) | Submit a transfer request to the bridge module. | |
-| `Provision` | [ProvisionRequest](#lbm.fbridge.v1.ProvisionRequest) | [ProvisionResponse](#lbm.fbridge.v1.ProvisionResponse) | Submit a provision to the bridge module. | |
-| `HoldTransfer` | [HoldTransferRequest](#lbm.fbridge.v1.HoldTransferRequest) | [HoldTransferResponse](#lbm.fbridge.v1.HoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
-| `ReleaseTransfer` | [ReleaseTransferRequest](#lbm.fbridge.v1.ReleaseTransferRequest) | [ReleaseTransferResponse](#lbm.fbridge.v1.ReleaseTransferResponse) | Set the time lock value to 0 for specific confirmed provision. | |
-| `RemoveProvision` | [RemoveProvisionRequest](#lbm.fbridge.v1.RemoveProvisionRequest) | [RemoveProvisionResponse](#lbm.fbridge.v1.RemoveProvisionResponse) | Remove a specific confirmed provision (reset for specific sequence number). | |
-| `ClaimBatch` | [ClaimBatchRequest](#lbm.fbridge.v1.ClaimBatchRequest) | [ClaimBatchResponse](#lbm.fbridge.v1.ClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
-| `Claim` | [ClaimRequest](#lbm.fbridge.v1.ClaimRequest) | [ClaimResponse](#lbm.fbridge.v1.ClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
-| `AddGuardian` | [AddGuardianRequest](#lbm.fbridge.v1.AddGuardianRequest) | [AddGuardianResponse](#lbm.fbridge.v1.AddGuardianResponse) | AddGuardian adds a guardian to the bridge module. | |
-| `RemoveGuardian` | [RemoveGuardianRequest](#lbm.fbridge.v1.RemoveGuardianRequest) | [RemoveGuardianResponse](#lbm.fbridge.v1.RemoveGuardianResponse) | RemoveGuardian removes a guardian from the bridge module. | |
-| `AddOperator` | [AddOperatorRequest](#lbm.fbridge.v1.AddOperatorRequest) | [AddOperatorResponse](#lbm.fbridge.v1.AddOperatorResponse) | AddOperator adds an operator to the bridge module. | |
-| `RemoveOperator` | [RemoveOperatorRequest](#lbm.fbridge.v1.RemoveOperatorRequest) | [RemoveOperatorResponse](#lbm.fbridge.v1.RemoveOperatorResponse) | RemoveOperator removes an operator from the bridge module. | |
-| `AddJudge` | [AddJudgeRequest](#lbm.fbridge.v1.AddJudgeRequest) | [AddJudgeResponse](#lbm.fbridge.v1.AddJudgeResponse) | AddJudge adds a judge to the bridge module. | |
-| `RemoveJudge` | [RemoveJudgeRequest](#lbm.fbridge.v1.RemoveJudgeRequest) | [RemoveJudgeResponse](#lbm.fbridge.v1.RemoveJudgeResponse) | RemoveJudge removes a judge from the bridge module. | |
+| `Transfer` | [MsgTransfer](#lbm.fbridge.v1.MsgTransfer) | [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse) | Submit a transfer request to the bridge module. | |
+| `Provision` | [MsgProvision](#lbm.fbridge.v1.MsgProvision) | [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse) | Submit a provision to the bridge module. | |
+| `HoldTransfer` | [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer) | [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
+| `ReleaseTransfer` | [MsgReleaseTransfer](#lbm.fbridge.v1.MsgReleaseTransfer) | [MsgReleaseTransferResponse](#lbm.fbridge.v1.MsgReleaseTransferResponse) | Set the time lock value to 0 for specific confirmed provision. | |
+| `RemoveProvision` | [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision) | [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse) | Remove a specific confirmed provision (reset for specific sequence number). | |
+| `ClaimBatch` | [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch) | [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
+| `Claim` | [MsgClaim](#lbm.fbridge.v1.MsgClaim) | [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
+| `UpdateRole` | [MsgUpdateRole](#lbm.fbridge.v1.MsgUpdateRole) | [MsgUpdateRoleResponse](#lbm.fbridge.v1.MsgUpdateRoleResponse) | UpdateRole updates the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. | |
 
  <!-- end services -->
 
