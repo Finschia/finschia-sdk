@@ -8,7 +8,7 @@ import (
 // GetSwapped get all parameters as types.Swapped
 func (k Keeper) GetSwapped(ctx sdk.Context) types.Swapped {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte{types.SwappedKey})
+	bz := store.Get(types.SwappedKey())
 	var swapped types.Swapped
 
 	if bz == nil {
@@ -25,13 +25,13 @@ func (k Keeper) SetSwapped(ctx sdk.Context, swapped types.Swapped) error {
 	if err != nil {
 		return err
 	}
-	store.Set([]byte{types.SwappedKey}, bz)
+	store.Set(types.SwappedKey(), bz)
 	return nil
 }
 
 func (k Keeper) GetSwappableNewCoinAmount(ctx sdk.Context) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte{types.SwappableNewCoinAmountKey})
+	bz := store.Get(types.SwappableNewCoinAmountKey())
 	var swappableNewCoinAmount sdk.Coin
 	if bz == nil {
 		panic(types.ErrSwappableNewCoinAmountNotFound)
@@ -46,6 +46,6 @@ func (k Keeper) SetSwappableNewCoinAmount(ctx sdk.Context, swappableNewCoinAmoun
 	if err != nil {
 		return err
 	}
-	store.Set([]byte{types.SwappableNewCoinAmountKey}, bz)
+	store.Set(types.SwappableNewCoinAmountKey(), bz)
 	return nil
 }
