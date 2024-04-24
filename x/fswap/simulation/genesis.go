@@ -34,7 +34,6 @@ func GenSwappableNewCoinAmount(r *rand.Rand) sdk.Int {
 
 // RandomizedGenState generates a random GenesisState for fswap
 func RandomizedGenState(simState *module.SimulationState) {
-
 	var oldCoinAmount sdk.Int
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, OldCoinAmount, &oldCoinAmount, simState.Rand,
