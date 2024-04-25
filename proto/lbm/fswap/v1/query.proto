@@ -19,11 +19,14 @@ service Query {
 
 message QuerySwappedRequest {}
 message QuerySwappedResponse {
-  Swapped swapped = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin old_coin = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+  cosmos.base.v1beta1.Coin new_coin = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
 
 message QueryTotalSwappableAmountRequest {}
 message QueryTotalSwappableAmountResponse {
-  cosmos.base.v1beta1.Coin swappable_new_coin_amount = 1
+  cosmos.base.v1beta1.Coin swappable_new_coin = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
