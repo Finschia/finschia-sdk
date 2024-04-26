@@ -4,11 +4,11 @@ package lbm.fswap.v1;
 option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
-import "lbm/fswap/v1/params.proto";
 import "lbm/fswap/v1/fswap.proto";
+import "lbm/fswap/v1/params.proto";
 
 // GenesisState defines the fswap module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.nullable) = false];
-  Swapped swapped =2 [(gogoproto.nullable) = false];
+  Params  params  = 1 [(gogoproto.nullable) = false];
+  Swapped swapped = 2 [(gogoproto.nullable) = false];
 }

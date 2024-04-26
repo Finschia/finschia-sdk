@@ -8,6 +8,5 @@ import "gogoproto/gogo.proto";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  // new denomination for new coin after swap
-  string new_coin_denom = 1;
+  string swappable_new_coin_amount    = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
