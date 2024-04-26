@@ -809,6 +809,8 @@
     - [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch)
     - [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse)
     - [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse)
+    - [MsgHalt](#lbm.fbridge.v1.MsgHalt)
+    - [MsgHaltResponse](#lbm.fbridge.v1.MsgHaltResponse)
     - [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer)
     - [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse)
     - [MsgProvision](#lbm.fbridge.v1.MsgProvision)
@@ -817,6 +819,8 @@
     - [MsgReleaseTransferResponse](#lbm.fbridge.v1.MsgReleaseTransferResponse)
     - [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision)
     - [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse)
+    - [MsgResume](#lbm.fbridge.v1.MsgResume)
+    - [MsgResumeResponse](#lbm.fbridge.v1.MsgResumeResponse)
     - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
     - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
     - [MsgUpdateRole](#lbm.fbridge.v1.MsgUpdateRole)
@@ -12064,6 +12068,7 @@ MsgClaim is input values required for claiming a provision
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the claimer address |
 | `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
 
 
@@ -12079,6 +12084,7 @@ MsgClaimBatch is input values required for claiming multiple claimable provision
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the claimer address |
 | `max_claims` | [uint64](#uint64) |  | the maximum number of claims to be made at once |
 
 
@@ -12106,6 +12112,31 @@ MsgClaimBatch is input values required for claiming multiple claimable provision
 
 
 
+<a name="lbm.fbridge.v1.MsgHalt"></a>
+
+### MsgHalt
+MsgHalt is input values required for halting the bridge module
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgHaltResponse"></a>
+
+### MsgHaltResponse
+
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.MsgHoldTransfer"></a>
 
 ### MsgHoldTransfer
@@ -12114,6 +12145,7 @@ MsgHoldTransfer is input values required for holding transfer
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the judge address |
 | `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
 
 
@@ -12139,6 +12171,7 @@ MsgProvision is input values required for provisioning
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the operator address |
 | `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
 | `sender` | [string](#string) |  | the sender address on the source chain |
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
@@ -12167,6 +12200,7 @@ MsgReleaseTransfer is input values required for releasing a held transfer by tim
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
 | `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
 
 
@@ -12192,6 +12226,7 @@ MsgRemoveProvision is input values required for removing a specific confirmed pr
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the judge address |
 | `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
 
 
@@ -12202,6 +12237,31 @@ MsgRemoveProvision is input values required for removing a specific confirmed pr
 <a name="lbm.fbridge.v1.MsgRemoveProvisionResponse"></a>
 
 ### MsgRemoveProvisionResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgResume"></a>
+
+### MsgResume
+MsgResume is input values required for resuming the bridge module
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgResumeResponse"></a>
+
+### MsgResumeResponse
 
 
 
@@ -12244,7 +12304,8 @@ MsgUpdateRole is input values required for updating the role of an address
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | the address to update the role |
+| `from` | [string](#string) |  | the guardian address |
+| `target` | [string](#string) |  | the address to update the role |
 | `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
 
 
@@ -12283,6 +12344,8 @@ MsgUpdateRole is input values required for updating the role of an address
 | `ClaimBatch` | [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch) | [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
 | `Claim` | [MsgClaim](#lbm.fbridge.v1.MsgClaim) | [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
 | `UpdateRole` | [MsgUpdateRole](#lbm.fbridge.v1.MsgUpdateRole) | [MsgUpdateRoleResponse](#lbm.fbridge.v1.MsgUpdateRoleResponse) | UpdateRole updates the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. | |
+| `Halt` | [MsgHalt](#lbm.fbridge.v1.MsgHalt) | [MsgHaltResponse](#lbm.fbridge.v1.MsgHaltResponse) | Halt the bridge module. | |
+| `Resume` | [MsgResume](#lbm.fbridge.v1.MsgResume) | [MsgResumeResponse](#lbm.fbridge.v1.MsgResumeResponse) | Resume the bridge module. | |
 
  <!-- end services -->
 

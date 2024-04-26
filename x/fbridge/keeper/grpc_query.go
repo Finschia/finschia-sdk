@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-	
+
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
