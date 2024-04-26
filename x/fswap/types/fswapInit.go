@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
 	"gopkg.in/yaml.v2"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // Validate validates the set of swapped

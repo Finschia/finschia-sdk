@@ -46,9 +46,13 @@ func (k Keeper) FswapInit(ctx sdk.Context, fswapInit types.FswapInit) error {
 	}
 
 	// need confirm: Is ibcState necessary? (please ref upgrade keeper)
-	k.SetFswapInit(ctx, fswapInit)
+	if err := k.SetFswapInit(ctx, fswapInit); err != nil {
+		return err
+	}
 	// need confirm: Is Swapped use sdk.Coin or sdk.Int
 	swapped := types.NewSwapped(sdk.ZeroInt(), sdk.ZeroInt())
-	k.SetSwapped(ctx, swapped)
+	if err := k.SetSwapped(ctx, swapped); err != nil {
+		return err
+	}
 	return nil
 }

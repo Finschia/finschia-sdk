@@ -1,8 +1,9 @@
 package types
 
 import (
-	gov "github.com/Finschia/finschia-sdk/x/gov/types"
 	"gopkg.in/yaml.v2"
+
+	gov "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 const (
@@ -12,7 +13,7 @@ const (
 // NewFswapInitProposal creates a new FswapInitProposal instance.
 // Deprecated: this proposal is considered legacy and is deprecated in favor of
 // Msg-based gov proposals. See MsgFswapInit.
-func NewFswapInitProposal(title string, description string, fswapInit FswapInit) *FswapInitProposal {
+func NewFswapInitProposal(title, description string, fswapInit FswapInit) *FswapInitProposal {
 	return &FswapInitProposal{title, description, fswapInit}
 }
 
