@@ -5,8 +5,32 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
 
+message FswapInit {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  string fromDenom   = 1;
+  string toDenom     = 2;
+  string AmountLimit = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string SwapRate = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+message FswapInitProposal {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  string    title       = 1;
+  string    description = 2;
+  FswapInit fswap_init  = 3 [(gogoproto.nullable) = false];
+}
+
 message Swapped {
   option (gogoproto.goproto_stringer) = false;
-  string old_coin_amount              = 1 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
-  string new_coin_amount              = 2 [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string old_coin_amount              = 1
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string new_coin_amount = 2
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }

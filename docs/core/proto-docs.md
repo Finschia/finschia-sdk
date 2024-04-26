@@ -860,10 +860,9 @@
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
+    - [FswapInit](#lbm.fswap.v1.FswapInit)
+    - [FswapInitProposal](#lbm.fswap.v1.FswapInitProposal)
     - [Swapped](#lbm.fswap.v1.Swapped)
-  
-- [lbm/fswap/v1/params.proto](#lbm/fswap/v1/params.proto)
-    - [Params](#lbm.fswap.v1.Params)
   
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
     - [GenesisState](#lbm.fswap.v1.GenesisState)
@@ -12751,6 +12750,41 @@ Msg defines the foundation Msg service.
 
 
 
+<a name="lbm.fswap.v1.FswapInit"></a>
+
+### FswapInit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fromDenom` | [string](#string) |  |  |
+| `toDenom` | [string](#string) |  |  |
+| `AmountLimit` | [string](#string) |  |  |
+| `SwapRate` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.FswapInitProposal"></a>
+
+### FswapInitProposal
+From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `fswap_init` | [FswapInit](#lbm.fswap.v1.FswapInit) |  |  |
+
+
+
+
+
+
 <a name="lbm.fswap.v1.Swapped"></a>
 
 ### Swapped
@@ -12761,37 +12795,6 @@ Msg defines the foundation Msg service.
 | ----- | ---- | ----- | ----------- |
 | `old_coin_amount` | [string](#string) |  |  |
 | `new_coin_amount` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/fswap/v1/params.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/fswap/v1/params.proto
-
-
-
-<a name="lbm.fswap.v1.Params"></a>
-
-### Params
-Params defines the parameters for the module.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `swappable_new_coin_amount` | [string](#string) |  |  |
 
 
 
@@ -12822,7 +12825,7 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.fswap.v1.Params) |  |  |
+| `fswap_init` | [FswapInit](#lbm.fswap.v1.FswapInit) |  |  |
 | `swapped` | [Swapped](#lbm.fswap.v1.Swapped) |  |  |
 
 
