@@ -47,3 +47,11 @@ func (m msgServer) Claim(ctx context.Context, claim *types.MsgClaim) (*types.Msg
 func (m msgServer) UpdateRole(ctx context.Context, role *types.MsgUpdateRole) (*types.MsgUpdateRoleResponse, error) {
 	panic("implement me")
 }
+
+func (m msgServer) Halt(ctx context.Context, halt *types.MsgHalt) (*types.MsgHaltResponse, error) {
+	panic("implement me")
+}
+
+func (m msgServer) Resume(ctx context.Context, resume *types.MsgResume) (*types.MsgResumeResponse, error) {
+	panic("implement me")
+}
