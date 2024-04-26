@@ -783,14 +783,18 @@
     - [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse)
     - [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest)
     - [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse)
+    - [GreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest)
+    - [GreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse)
     - [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest)
     - [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse)
     - [GuardiansRequest](#lbm.fbridge.v1.GuardiansRequest)
     - [GuardiansResponse](#lbm.fbridge.v1.GuardiansResponse)
     - [JudgesRequest](#lbm.fbridge.v1.JudgesRequest)
     - [JudgesResponse](#lbm.fbridge.v1.JudgesResponse)
-    - [NextSeqToConfirmRequest](#lbm.fbridge.v1.NextSeqToConfirmRequest)
-    - [NextSeqToConfirmResponse](#lbm.fbridge.v1.NextSeqToConfirmResponse)
+    - [NeededSubmissionSeqsRequest](#lbm.fbridge.v1.NeededSubmissionSeqsRequest)
+    - [NeededSubmissionSeqsResponse](#lbm.fbridge.v1.NeededSubmissionSeqsResponse)
+    - [NextSeqSendRequest](#lbm.fbridge.v1.NextSeqSendRequest)
+    - [NextSeqSendResponse](#lbm.fbridge.v1.NextSeqSendResponse)
     - [OperatorsRequest](#lbm.fbridge.v1.OperatorsRequest)
     - [OperatorsResponse](#lbm.fbridge.v1.OperatorsResponse)
     - [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest)
@@ -11635,7 +11639,7 @@ GenesisState defines the fbridge module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `operator` | [string](#string) |  | the operator address |
-| `greatest_seq` | [uint64](#uint64) |  | the greatest sequence number confirmed by the operator |
+| `seq` | [uint64](#uint64) |  | the sequence number |
 
 
 
@@ -11667,9 +11671,10 @@ GenesisState defines the fbridge module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `greatest_seq_per_operator` | [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo) | repeated | the greatest sequence number confirmed by each operator |
-| `next_seq_to_confirm` | [uint64](#uint64) |  | the next sequence numbers to confirm. (next_seq_to_confirm - 1) is confirmed by n-of-m operators |
-| `next_seq_to_claim` | [uint64](#uint64) |  | the next sequence numbers confirmed by n-of-m operators that have not been claimed yet |
+| `greatest_consecutive_seq_by_operator` | [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo) | repeated | the greatest consecutive sequence number confirmed by each operator |
+| `greatest_seq_by_operator` | [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo) | repeated | the greatest sequence number confirmed by each operator |
+| `greatest_consecutive_seq` | [uint64](#uint64) |  | the greatest consecutive sequence numbers confirmed by n-of-m operators consecutiveness is judged starting from the number closest to 0. |
+| `pending_claim_seqs` | [uint64](#uint64) | repeated | the set of sequence numbers to be claimed |
 | `commitments` | [Commitment](#lbm.fbridge.v1.Commitment) | repeated | commitment is the hash value of a specific provision. |
 | `provisions` | [Provision](#lbm.fbridge.v1.Provision) | repeated | provision associated with a specific commitment. |
 | `confirmed_seq_to_commitment` | [ConfirmedProvision](#lbm.fbridge.v1.ConfirmedProvision) | repeated | map the sequence number confirmed by n-of-m operators with commitment |
@@ -11772,6 +11777,31 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
+<a name="lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest"></a>
+
+### GreatestConsecutiveConfirmedSeqRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse"></a>
+
+### GreatestConsecutiveConfirmedSeqResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.GreatestSeqByOperatorRequest"></a>
 
 ### GreatestSeqByOperatorRequest
@@ -11852,19 +11882,50 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.NextSeqToConfirmRequest"></a>
+<a name="lbm.fbridge.v1.NeededSubmissionSeqsRequest"></a>
 
-### NextSeqToConfirmRequest
-
-
+### NeededSubmissionSeqsRequest
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the address of the operator |
+| `range` | [uint64](#uint64) |  | range specifies the size of the range to search |
 
 
-<a name="lbm.fbridge.v1.NextSeqToConfirmResponse"></a>
 
-### NextSeqToConfirmResponse
+
+
+
+<a name="lbm.fbridge.v1.NeededSubmissionSeqsResponse"></a>
+
+### NeededSubmissionSeqsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seqs` | [uint64](#uint64) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.NextSeqSendRequest"></a>
+
+### NextSeqSendRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.NextSeqSendResponse"></a>
+
+### NextSeqSendResponse
 
 
 
@@ -11973,10 +12034,12 @@ GenesisState defines the fbridge module's genesis state.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse) | Params queries the parameters of x/fbridge module. | GET|/lbm/fbridge/v1/params|
-| `GreatestSeqByOperator` | [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest) | [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse) | Get a greatest sequence number to be confirmed by a particular operator | GET|/lbm/fbridge/v1/greatest_seq_by_operator/{operator}|
-| `NextSeqToConfirm` | [NextSeqToConfirmRequest](#lbm.fbridge.v1.NextSeqToConfirmRequest) | [NextSeqToConfirmResponse](#lbm.fbridge.v1.NextSeqToConfirmResponse) | Get a next sequence number to be confirmed by n-of-m operators | GET|/lbm/fbridge/v1/next_seq_to_confirm|
-| `SubmittedProvision` | [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest) | [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse) | Get a provision submitted by a particular operator | GET|/lbm/fbridge/v1/submitted_provision/{operator}/{seq}|
-| `ConfirmedProvision` | [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest) | [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse) | Get a specific confirmed provision | GET|/lbm/fbridge/v1/confirmed_provision/{seq}|
+| `NextSeqSend` | [NextSeqSendRequest](#lbm.fbridge.v1.NextSeqSendRequest) | [NextSeqSendResponse](#lbm.fbridge.v1.NextSeqSendResponse) | NextSeqSend to be used when the next bridge request is made | GET|/lbm/fbridge/v1/nextseq_send|
+| `GreatestSeqByOperator` | [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest) | [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse) | Get a greatest sequence number confirmed by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/seq|
+| `GreatestConsecutiveConfirmedSeq` | [GreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest) | [GreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse) | Get a greatest consecutive sequence number confirmed by n-of-m operators | GET|/lbm/fbridge/v1/greatest_confirmed_seq|
+| `SubmittedProvision` | [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest) | [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse) | Get a provision submitted by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/provision/{seq}|
+| `ConfirmedProvision` | [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest) | [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse) | Get a particular sequence of confirmed provisions | GET|/lbm/fbridge/v1/provision/{seq}|
+| `NeededSubmissionSeqs` | [NeededSubmissionSeqsRequest](#lbm.fbridge.v1.NeededSubmissionSeqsRequest) | [NeededSubmissionSeqsResponse](#lbm.fbridge.v1.NeededSubmissionSeqsResponse) | Get a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs|
 | `Commitments` | [CommitmentsRequest](#lbm.fbridge.v1.CommitmentsRequest) | [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse) | Get commitments of a specific sequence number | GET|/lbm/fbridge/v1/commitments/{seq}|
 | `Guardians` | [GuardiansRequest](#lbm.fbridge.v1.GuardiansRequest) | [GuardiansResponse](#lbm.fbridge.v1.GuardiansResponse) | Get a list of Guardians registered on the bridge | GET|/lbm/fbridge/v1/guardians|
 | `Operators` | [OperatorsRequest](#lbm.fbridge.v1.OperatorsRequest) | [OperatorsResponse](#lbm.fbridge.v1.OperatorsResponse) | Get a list of Operators registered on the bridge | GET|/lbm/fbridge/v1/operators|

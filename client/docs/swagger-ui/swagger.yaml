@@ -29844,93 +29844,10 @@ paths:
           format: uint64
       tags:
         - Query
-  '/lbm/fbridge/v1/confirmed_provision/{seq}':
+  /lbm/fbridge/v1/greatest_confirmed_seq:
     get:
-      summary: Get a specific confirmed provision
-      operationId: ConfirmedProvision
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  seq:
-                    type: string
-                    format: uint64
-                    title: the sequence number of the bridge request
-                  amount:
-                    type: string
-                    title: the amount of token to be claimed
-                  sender:
-                    type: string
-                    title: the sender address on the source chain
-                  receiver:
-                    type: string
-                    title: the recipient address on the destination chain
-                description: Provision is a struct that represents a provision internally.
-              status:
-                type: object
-                properties:
-                  timelock_end:
-                    type: string
-                    format: uint64
-                    title: >-
-                      the unix timestamp the provision will be able to be
-                      claimed (unix timestamp)
-                  confirm_counts:
-                    type: integer
-                    format: int32
-                    title: >-
-                      a value that tells how many operators have submitted this
-                      provision
-                  is_claimed:
-                    type: boolean
-                    format: boolean
-                    title: whether the provision has been claimed
-                description: >-
-                  ProvisionStatus is a struct that represents the status of a
-                  provision.
-
-                  To optimize computational cost, we have collected frequently
-                  changing values from provision.
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: seq
-          description: the sequence number of the bridge request
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  '/lbm/fbridge/v1/greatest_seq_by_operator/{operator}':
-    get:
-      summary: Get a greatest sequence number to be confirmed by a particular operator
-      operationId: GreatestSeqByOperator
+      summary: Get a greatest consecutive sequence number confirmed by n-of-m operators
+      operationId: GreatestConsecutiveConfirmedSeq
       responses:
         '200':
           description: A successful response.
@@ -29962,12 +29879,6 @@ paths:
                     value:
                       type: string
                       format: byte
-      parameters:
-        - name: operator
-          description: the address of the operator
-          in: path
-          required: true
-          type: string
       tags:
         - Query
   /lbm/fbridge/v1/guardians:
@@ -30046,10 +29957,10 @@ paths:
                       format: byte
       tags:
         - Query
-  /lbm/fbridge/v1/next_seq_to_confirm:
+  /lbm/fbridge/v1/nextseq_send:
     get:
-      summary: Get a next sequence number to be confirmed by n-of-m operators
-      operationId: NextSeqToConfirm
+      summary: NextSeqSend to be used when the next bridge request is made
+      operationId: NextSeqSend
       responses:
         '200':
           description: A successful response.
@@ -30119,6 +30030,198 @@ paths:
                     value:
                       type: string
                       format: byte
+      tags:
+        - Query
+  '/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs':
+    get:
+      summary: >-
+        Get a list of sequence numbers that need to be submitted by a particular
+        operator
+
+        The search scope is [greatest_consecutive_seq_by_operator,
+        min(greatest_consecutive_seq_by_operator + range,
+
+        greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be
+        replaced with greatest_consecutive_seq if
+
+        the operator is newly added
+      operationId: NeededSubmissionSeqs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seqs:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+        - name: range
+          description: range specifies the size of the range to search.
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/operators/{operator}/provision/{seq}':
+    get:
+      summary: Get a provision submitted by a particular operator
+      operationId: SubmittedProvision
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  seq:
+                    type: string
+                    format: uint64
+                    title: the sequence number of the bridge request
+                  amount:
+                    type: string
+                    title: the amount of token to be claimed
+                  sender:
+                    type: string
+                    title: the sender address on the source chain
+                  receiver:
+                    type: string
+                    title: the recipient address on the destination chain
+                description: Provision is a struct that represents a provision internally.
+              status:
+                type: object
+                properties:
+                  timelock_end:
+                    type: string
+                    format: uint64
+                    title: >-
+                      the unix timestamp the provision will be able to be
+                      claimed (unix timestamp)
+                  confirm_counts:
+                    type: integer
+                    format: int32
+                    title: >-
+                      a value that tells how many operators have submitted this
+                      provision
+                  is_claimed:
+                    type: boolean
+                    format: boolean
+                    title: whether the provision has been claimed
+                description: >-
+                  ProvisionStatus is a struct that represents the status of a
+                  provision.
+
+                  To optimize computational cost, we have collected frequently
+                  changing values from provision.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/operators/{operator}/seq':
+    get:
+      summary: Get a greatest sequence number confirmed by a particular operator
+      operationId: GreatestSeqByOperator
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /lbm/fbridge/v1/params:
@@ -30200,10 +30303,10 @@ paths:
                       format: byte
       tags:
         - Query
-  '/lbm/fbridge/v1/submitted_provision/{operator}/{seq}':
+  '/lbm/fbridge/v1/provision/{seq}':
     get:
-      summary: Get a provision submitted by a particular operator
-      operationId: SubmittedProvision
+      summary: Get a particular sequence of confirmed provisions
+      operationId: ConfirmedProvision
       responses:
         '200':
           description: A successful response.
@@ -30275,11 +30378,6 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: operator
-          description: the address of the operator
-          in: path
-          required: true
-          type: string
         - name: seq
           description: the sequence number of the bridge request
           in: path
@@ -49896,6 +49994,12 @@ definitions:
     description: |-
       Fraction defines the protobuf message type for tmmath.Fraction that only
       supports positive values.
+  lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
   lbm.fbridge.v1.GreatestSeqByOperatorResponse:
     type: object
     properties:
@@ -49916,7 +50020,15 @@ definitions:
         type: array
         items:
           type: string
-  lbm.fbridge.v1.NextSeqToConfirmResponse:
+  lbm.fbridge.v1.NeededSubmissionSeqsResponse:
+    type: object
+    properties:
+      seqs:
+        type: array
+        items:
+          type: string
+          format: uint64
+  lbm.fbridge.v1.NextSeqSendResponse:
     type: object
     properties:
       seq:

@@ -33,25 +33,28 @@ message BlockSeqInfo {
 message ReceivingState {
   option (gogoproto.goproto_getters) = false;
 
+  // the greatest consecutive sequence number confirmed by each operator
+  repeated OperatorSeqInfo greatest_consecutive_seq_by_operator = 1;
   // the greatest sequence number confirmed by each operator
-  repeated OperatorSeqInfo greatest_seq_per_operator = 1;
-  // the next sequence numbers to confirm. (next_seq_to_confirm - 1) is confirmed by n-of-m operators
-  uint64 next_seq_to_confirm = 2;
-  // the next sequence numbers confirmed by n-of-m operators that have not been claimed yet
-  uint64 next_seq_to_claim = 3;
+  repeated OperatorSeqInfo greatest_seq_by_operator = 2;
+  // the greatest consecutive sequence numbers confirmed by n-of-m operators
+  // consecutiveness is judged starting from the number closest to 0.
+  uint64 greatest_consecutive_seq = 3;
+  // the set of sequence numbers to be claimed
+  repeated uint64 pending_claim_seqs = 4;
   // commitment is the hash value of a specific provision.
-  repeated Commitment commitments = 4;
+  repeated Commitment commitments = 6;
   // provision associated with a specific commitment.
-  repeated Provision provisions = 5;
+  repeated Provision provisions = 7;
   // map the sequence number confirmed by n-of-m operators with commitment
-  repeated ConfirmedProvision confirmed_seq_to_commitment = 7;
+  repeated ConfirmedProvision confirmed_seq_to_commitment = 8;
 }
 
 message OperatorSeqInfo {
   // the operator address
   string operator = 1;
-  // the greatest sequence number confirmed by the operator
-  uint64 greatest_seq = 2;
+  // the sequence number
+  uint64 seq = 2;
 }
 
 message Commitment {

@@ -109,6 +109,86 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+type NextSeqSendRequest struct {
+}
+
+func (m *NextSeqSendRequest) Reset()         { *m = NextSeqSendRequest{} }
+func (m *NextSeqSendRequest) String() string { return proto.CompactTextString(m) }
+func (*NextSeqSendRequest) ProtoMessage()    {}
+func (*NextSeqSendRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5e7780f9db9d346e, []int{2}
+}
+func (m *NextSeqSendRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NextSeqSendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NextSeqSendRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NextSeqSendRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NextSeqSendRequest.Merge(m, src)
+}
+func (m *NextSeqSendRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *NextSeqSendRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NextSeqSendRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NextSeqSendRequest proto.InternalMessageInfo
+
+type NextSeqSendResponse struct {
+	Seq uint64 `protobuf:"varint,1,opt,name=seq,proto3" json:"seq,omitempty"`
+}
+
+func (m *NextSeqSendResponse) Reset()         { *m = NextSeqSendResponse{} }
+func (m *NextSeqSendResponse) String() string { return proto.CompactTextString(m) }
+func (*NextSeqSendResponse) ProtoMessage()    {}
+func (*NextSeqSendResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5e7780f9db9d346e, []int{3}
+}
+func (m *NextSeqSendResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NextSeqSendResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NextSeqSendResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NextSeqSendResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NextSeqSendResponse.Merge(m, src)
+}
+func (m *NextSeqSendResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *NextSeqSendResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_NextSeqSendResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NextSeqSendResponse proto.InternalMessageInfo
+
+func (m *NextSeqSendResponse) GetSeq() uint64 {
+	if m != nil {
+		return m.Seq
+	}
+	return 0
+}
+
 type GreatestSeqByOperatorRequest struct {
 	// the address of the operator
 	Operator string `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
@@ -118,7 +198,7 @@ func (m *GreatestSeqByOperatorRequest) Reset()         { *m = GreatestSeqByOpera
 func (m *GreatestSeqByOperatorRequest) String() string { return proto.CompactTextString(m) }
 func (*GreatestSeqByOperatorRequest) ProtoMessage()    {}
 func (*GreatestSeqByOperatorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{2}
+	return fileDescriptor_5e7780f9db9d346e, []int{4}
 }
 func (m *GreatestSeqByOperatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -162,7 +242,7 @@ func (m *GreatestSeqByOperatorResponse) Reset()         { *m = GreatestSeqByOper
 func (m *GreatestSeqByOperatorResponse) String() string { return proto.CompactTextString(m) }
 func (*GreatestSeqByOperatorResponse) ProtoMessage()    {}
 func (*GreatestSeqByOperatorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{3}
+	return fileDescriptor_5e7780f9db9d346e, []int{5}
 }
 func (m *GreatestSeqByOperatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -198,21 +278,23 @@ func (m *GreatestSeqByOperatorResponse) GetSeq() uint64 {
 	return 0
 }
 
-type NextSeqToConfirmRequest struct {
+type GreatestConsecutiveConfirmedSeqRequest struct {
 }
 
-func (m *NextSeqToConfirmRequest) Reset()         { *m = NextSeqToConfirmRequest{} }
-func (m *NextSeqToConfirmRequest) String() string { return proto.CompactTextString(m) }
-func (*NextSeqToConfirmRequest) ProtoMessage()    {}
-func (*NextSeqToConfirmRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{4}
+func (m *GreatestConsecutiveConfirmedSeqRequest) Reset() {
+	*m = GreatestConsecutiveConfirmedSeqRequest{}
 }
-func (m *NextSeqToConfirmRequest) XXX_Unmarshal(b []byte) error {
+func (m *GreatestConsecutiveConfirmedSeqRequest) String() string { return proto.CompactTextString(m) }
+func (*GreatestConsecutiveConfirmedSeqRequest) ProtoMessage()    {}
+func (*GreatestConsecutiveConfirmedSeqRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5e7780f9db9d346e, []int{6}
+}
+func (m *GreatestConsecutiveConfirmedSeqRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *NextSeqToConfirmRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GreatestConsecutiveConfirmedSeqRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_NextSeqToConfirmRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GreatestConsecutiveConfirmedSeqRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -222,34 +304,36 @@ func (m *NextSeqToConfirmRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *NextSeqToConfirmRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NextSeqToConfirmRequest.Merge(m, src)
+func (m *GreatestConsecutiveConfirmedSeqRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GreatestConsecutiveConfirmedSeqRequest.Merge(m, src)
 }
-func (m *NextSeqToConfirmRequest) XXX_Size() int {
+func (m *GreatestConsecutiveConfirmedSeqRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *NextSeqToConfirmRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_NextSeqToConfirmRequest.DiscardUnknown(m)
+func (m *GreatestConsecutiveConfirmedSeqRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GreatestConsecutiveConfirmedSeqRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NextSeqToConfirmRequest proto.InternalMessageInfo
+var xxx_messageInfo_GreatestConsecutiveConfirmedSeqRequest proto.InternalMessageInfo
 
-type NextSeqToConfirmResponse struct {
+type GreatestConsecutiveConfirmedSeqResponse struct {
 	Seq uint64 `protobuf:"varint,1,opt,name=seq,proto3" json:"seq,omitempty"`
 }
 
-func (m *NextSeqToConfirmResponse) Reset()         { *m = NextSeqToConfirmResponse{} }
-func (m *NextSeqToConfirmResponse) String() string { return proto.CompactTextString(m) }
-func (*NextSeqToConfirmResponse) ProtoMessage()    {}
-func (*NextSeqToConfirmResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{5}
+func (m *GreatestConsecutiveConfirmedSeqResponse) Reset() {
+	*m = GreatestConsecutiveConfirmedSeqResponse{}
 }
-func (m *NextSeqToConfirmResponse) XXX_Unmarshal(b []byte) error {
+func (m *GreatestConsecutiveConfirmedSeqResponse) String() string { return proto.CompactTextString(m) }
+func (*GreatestConsecutiveConfirmedSeqResponse) ProtoMessage()    {}
+func (*GreatestConsecutiveConfirmedSeqResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5e7780f9db9d346e, []int{7}
+}
+func (m *GreatestConsecutiveConfirmedSeqResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *NextSeqToConfirmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GreatestConsecutiveConfirmedSeqResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_NextSeqToConfirmResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GreatestConsecutiveConfirmedSeqResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -259,19 +343,19 @@ func (m *NextSeqToConfirmResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *NextSeqToConfirmResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NextSeqToConfirmResponse.Merge(m, src)
+func (m *GreatestConsecutiveConfirmedSeqResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GreatestConsecutiveConfirmedSeqResponse.Merge(m, src)
 }
-func (m *NextSeqToConfirmResponse) XXX_Size() int {
+func (m *GreatestConsecutiveConfirmedSeqResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *NextSeqToConfirmResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_NextSeqToConfirmResponse.DiscardUnknown(m)
+func (m *GreatestConsecutiveConfirmedSeqResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GreatestConsecutiveConfirmedSeqResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NextSeqToConfirmResponse proto.InternalMessageInfo
+var xxx_messageInfo_GreatestConsecutiveConfirmedSeqResponse proto.InternalMessageInfo
 
-func (m *NextSeqToConfirmResponse) GetSeq() uint64 {
+func (m *GreatestConsecutiveConfirmedSeqResponse) GetSeq() uint64 {
 	if m != nil {
 		return m.Seq
 	}
@@ -289,7 +373,7 @@ func (m *SubmittedProvisionRequest) Reset()         { *m = SubmittedProvisionReq
 func (m *SubmittedProvisionRequest) String() string { return proto.CompactTextString(m) }
 func (*SubmittedProvisionRequest) ProtoMessage()    {}
 func (*SubmittedProvisionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{6}
+	return fileDescriptor_5e7780f9db9d346e, []int{8}
 }
 func (m *SubmittedProvisionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -341,7 +425,7 @@ func (m *SubmittedProvisionResponse) Reset()         { *m = SubmittedProvisionRe
 func (m *SubmittedProvisionResponse) String() string { return proto.CompactTextString(m) }
 func (*SubmittedProvisionResponse) ProtoMessage()    {}
 func (*SubmittedProvisionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{7}
+	return fileDescriptor_5e7780f9db9d346e, []int{9}
 }
 func (m *SubmittedProvisionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -384,6 +468,104 @@ func (m *SubmittedProvisionResponse) GetStatus() ProvisionStatus {
 	return ProvisionStatus{}
 }
 
+type NeededSubmissionSeqsRequest struct {
+	// the address of the operator
+	Operator string `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
+	// range specifies the size of the range to search
+	Range uint64 `protobuf:"varint,2,opt,name=range,proto3" json:"range,omitempty"`
+}
+
+func (m *NeededSubmissionSeqsRequest) Reset()         { *m = NeededSubmissionSeqsRequest{} }
+func (m *NeededSubmissionSeqsRequest) String() string { return proto.CompactTextString(m) }
+func (*NeededSubmissionSeqsRequest) ProtoMessage()    {}
+func (*NeededSubmissionSeqsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5e7780f9db9d346e, []int{10}
+}
+func (m *NeededSubmissionSeqsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NeededSubmissionSeqsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NeededSubmissionSeqsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NeededSubmissionSeqsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NeededSubmissionSeqsRequest.Merge(m, src)
+}
+func (m *NeededSubmissionSeqsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *NeededSubmissionSeqsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NeededSubmissionSeqsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NeededSubmissionSeqsRequest proto.InternalMessageInfo
+
+func (m *NeededSubmissionSeqsRequest) GetOperator() string {
+	if m != nil {
+		return m.Operator
+	}
+	return ""
+}
+
+func (m *NeededSubmissionSeqsRequest) GetRange() uint64 {
+	if m != nil {
+		return m.Range
+	}
+	return 0
+}
+
+type NeededSubmissionSeqsResponse struct {
+	Seqs []uint64 `protobuf:"varint,1,rep,packed,name=seqs,proto3" json:"seqs,omitempty"`
+}
+
+func (m *NeededSubmissionSeqsResponse) Reset()         { *m = NeededSubmissionSeqsResponse{} }
+func (m *NeededSubmissionSeqsResponse) String() string { return proto.CompactTextString(m) }
+func (*NeededSubmissionSeqsResponse) ProtoMessage()    {}
+func (*NeededSubmissionSeqsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5e7780f9db9d346e, []int{11}
+}
+func (m *NeededSubmissionSeqsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NeededSubmissionSeqsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NeededSubmissionSeqsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NeededSubmissionSeqsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NeededSubmissionSeqsResponse.Merge(m, src)
+}
+func (m *NeededSubmissionSeqsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *NeededSubmissionSeqsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_NeededSubmissionSeqsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NeededSubmissionSeqsResponse proto.InternalMessageInfo
+
+func (m *NeededSubmissionSeqsResponse) GetSeqs() []uint64 {
+	if m != nil {
+		return m.Seqs
+	}
+	return nil
+}
+
 type ConfirmedProvisionRequest struct {
 	// the sequence number of the bridge request
 	Seq uint64 `protobuf:"varint,1,opt,name=seq,proto3" json:"seq,omitempty"`
@@ -393,7 +575,7 @@ func (m *ConfirmedProvisionRequest) Reset()         { *m = ConfirmedProvisionReq
 func (m *ConfirmedProvisionRequest) String() string { return proto.CompactTextString(m) }
 func (*ConfirmedProvisionRequest) ProtoMessage()    {}
 func (*ConfirmedProvisionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{8}
+	return fileDescriptor_5e7780f9db9d346e, []int{12}
 }
 func (m *ConfirmedProvisionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -438,7 +620,7 @@ func (m *ConfirmedProvisionResponse) Reset()         { *m = ConfirmedProvisionRe
 func (m *ConfirmedProvisionResponse) String() string { return proto.CompactTextString(m) }
 func (*ConfirmedProvisionResponse) ProtoMessage()    {}
 func (*ConfirmedProvisionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{9}
+	return fileDescriptor_5e7780f9db9d346e, []int{13}
 }
 func (m *ConfirmedProvisionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -490,7 +672,7 @@ func (m *CommitmentsRequest) Reset()         { *m = CommitmentsRequest{} }
 func (m *CommitmentsRequest) String() string { return proto.CompactTextString(m) }
 func (*CommitmentsRequest) ProtoMessage()    {}
 func (*CommitmentsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{10}
+	return fileDescriptor_5e7780f9db9d346e, []int{14}
 }
 func (m *CommitmentsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -534,7 +716,7 @@ func (m *CommitmentsResponse) Reset()         { *m = CommitmentsResponse{} }
 func (m *CommitmentsResponse) String() string { return proto.CompactTextString(m) }
 func (*CommitmentsResponse) ProtoMessage()    {}
 func (*CommitmentsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{11}
+	return fileDescriptor_5e7780f9db9d346e, []int{15}
 }
 func (m *CommitmentsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -577,7 +759,7 @@ func (m *GuardiansRequest) Reset()         { *m = GuardiansRequest{} }
 func (m *GuardiansRequest) String() string { return proto.CompactTextString(m) }
 func (*GuardiansRequest) ProtoMessage()    {}
 func (*GuardiansRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{12}
+	return fileDescriptor_5e7780f9db9d346e, []int{16}
 }
 func (m *GuardiansRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -614,7 +796,7 @@ func (m *GuardiansResponse) Reset()         { *m = GuardiansResponse{} }
 func (m *GuardiansResponse) String() string { return proto.CompactTextString(m) }
 func (*GuardiansResponse) ProtoMessage()    {}
 func (*GuardiansResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{13}
+	return fileDescriptor_5e7780f9db9d346e, []int{17}
 }
 func (m *GuardiansResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -657,7 +839,7 @@ func (m *OperatorsRequest) Reset()         { *m = OperatorsRequest{} }
 func (m *OperatorsRequest) String() string { return proto.CompactTextString(m) }
 func (*OperatorsRequest) ProtoMessage()    {}
 func (*OperatorsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{14}
+	return fileDescriptor_5e7780f9db9d346e, []int{18}
 }
 func (m *OperatorsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -694,7 +876,7 @@ func (m *OperatorsResponse) Reset()         { *m = OperatorsResponse{} }
 func (m *OperatorsResponse) String() string { return proto.CompactTextString(m) }
 func (*OperatorsResponse) ProtoMessage()    {}
 func (*OperatorsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{15}
+	return fileDescriptor_5e7780f9db9d346e, []int{19}
 }
 func (m *OperatorsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -737,7 +919,7 @@ func (m *JudgesRequest) Reset()         { *m = JudgesRequest{} }
 func (m *JudgesRequest) String() string { return proto.CompactTextString(m) }
 func (*JudgesRequest) ProtoMessage()    {}
 func (*JudgesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{16}
+	return fileDescriptor_5e7780f9db9d346e, []int{20}
 }
 func (m *JudgesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -774,7 +956,7 @@ func (m *JudgesResponse) Reset()         { *m = JudgesResponse{} }
 func (m *JudgesResponse) String() string { return proto.CompactTextString(m) }
 func (*JudgesResponse) ProtoMessage()    {}
 func (*JudgesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5e7780f9db9d346e, []int{17}
+	return fileDescriptor_5e7780f9db9d346e, []int{21}
 }
 func (m *JudgesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -813,12 +995,16 @@ func (m *JudgesResponse) GetJudges() []string {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "lbm.fbridge.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "lbm.fbridge.v1.QueryParamsResponse")
+	proto.RegisterType((*NextSeqSendRequest)(nil), "lbm.fbridge.v1.NextSeqSendRequest")
+	proto.RegisterType((*NextSeqSendResponse)(nil), "lbm.fbridge.v1.NextSeqSendResponse")
 	proto.RegisterType((*GreatestSeqByOperatorRequest)(nil), "lbm.fbridge.v1.GreatestSeqByOperatorRequest")
 	proto.RegisterType((*GreatestSeqByOperatorResponse)(nil), "lbm.fbridge.v1.GreatestSeqByOperatorResponse")
-	proto.RegisterType((*NextSeqToConfirmRequest)(nil), "lbm.fbridge.v1.NextSeqToConfirmRequest")
-	proto.RegisterType((*NextSeqToConfirmResponse)(nil), "lbm.fbridge.v1.NextSeqToConfirmResponse")
+	proto.RegisterType((*GreatestConsecutiveConfirmedSeqRequest)(nil), "lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest")
+	proto.RegisterType((*GreatestConsecutiveConfirmedSeqResponse)(nil), "lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse")
 	proto.RegisterType((*SubmittedProvisionRequest)(nil), "lbm.fbridge.v1.SubmittedProvisionRequest")
 	proto.RegisterType((*SubmittedProvisionResponse)(nil), "lbm.fbridge.v1.SubmittedProvisionResponse")
+	proto.RegisterType((*NeededSubmissionSeqsRequest)(nil), "lbm.fbridge.v1.NeededSubmissionSeqsRequest")
+	proto.RegisterType((*NeededSubmissionSeqsResponse)(nil), "lbm.fbridge.v1.NeededSubmissionSeqsResponse")
 	proto.RegisterType((*ConfirmedProvisionRequest)(nil), "lbm.fbridge.v1.ConfirmedProvisionRequest")
 	proto.RegisterType((*ConfirmedProvisionResponse)(nil), "lbm.fbridge.v1.ConfirmedProvisionResponse")
 	proto.RegisterType((*CommitmentsRequest)(nil), "lbm.fbridge.v1.CommitmentsRequest")
@@ -834,59 +1020,66 @@ func init() {
 func init() { proto.RegisterFile("lbm/fbridge/v1/query.proto", fileDescriptor_5e7780f9db9d346e) }
 
 var fileDescriptor_5e7780f9db9d346e = []byte{
-	// 818 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0xcf, 0x4f, 0x13, 0x4d,
-	0x18, 0xee, 0x02, 0x5f, 0xf3, 0xf5, 0x6d, 0x3e, 0x3e, 0xbe, 0x81, 0x0f, 0xdb, 0xb5, 0x2c, 0x65,
-	0x89, 0x5a, 0x04, 0xba, 0x16, 0x50, 0x12, 0x7f, 0x5c, 0xc0, 0x48, 0xc4, 0x44, 0xb1, 0x78, 0xf2,
-	0xd2, 0x6c, 0xdb, 0x61, 0x59, 0x65, 0x77, 0xda, 0x9d, 0x29, 0xa1, 0x21, 0x1c, 0xf4, 0x2f, 0x30,
-	0xea, 0xd9, 0xbb, 0x47, 0xff, 0x0b, 0x8e, 0x24, 0x5e, 0x3c, 0x19, 0x03, 0x26, 0xfe, 0x1b, 0xa6,
-	0xb3, 0xb3, 0xdb, 0x76, 0xa7, 0x0b, 0xdc, 0xbc, 0xcd, 0xbe, 0xf3, 0xbc, 0xcf, 0xf3, 0xcc, 0xcb,
-	0xcc, 0x43, 0x41, 0xdd, 0xab, 0x3a, 0xc6, 0x4e, 0xd5, 0xb3, 0xeb, 0x16, 0x36, 0xf6, 0x4b, 0x46,
-	0xb3, 0x85, 0xbd, 0x76, 0xb1, 0xe1, 0x11, 0x46, 0xd0, 0xe8, 0x5e, 0xd5, 0x29, 0x8a, 0xbd, 0xe2,
-	0x7e, 0x49, 0xcd, 0x59, 0x84, 0x58, 0x7b, 0xd8, 0x30, 0x1b, 0xb6, 0x61, 0xba, 0x2e, 0x61, 0x26,
-	0xb3, 0x89, 0x4b, 0x7d, 0xb4, 0x3a, 0x61, 0x11, 0x8b, 0xf0, 0xa5, 0xd1, 0x59, 0x89, 0x6a, 0x2e,
-	0xc2, 0x1f, 0xd0, 0xf1, 0x5d, 0x7d, 0x02, 0xd0, 0xf3, 0x8e, 0xe0, 0x96, 0xe9, 0x99, 0x0e, 0x2d,
-	0xe3, 0x66, 0x0b, 0x53, 0xa6, 0x3f, 0x81, 0xf1, 0xbe, 0x2a, 0x6d, 0x10, 0x97, 0x62, 0xb4, 0x02,
-	0xc9, 0x06, 0xaf, 0x64, 0x94, 0xbc, 0x52, 0x48, 0x2f, 0x4d, 0x16, 0xfb, 0xfd, 0x15, 0x7d, 0xfc,
-	0xda, 0xc8, 0xf1, 0xf7, 0xe9, 0x44, 0x59, 0x60, 0xf5, 0xbb, 0x90, 0xdb, 0xf0, 0xb0, 0xc9, 0x30,
-	0x65, 0xdb, 0xb8, 0xb9, 0xd6, 0x7e, 0xd6, 0xc0, 0x9e, 0xc9, 0x88, 0x27, 0xc4, 0x90, 0x0a, 0x7f,
-	0x13, 0x51, 0xe2, 0xbc, 0xa9, 0x72, 0xf8, 0xad, 0x97, 0x60, 0x2a, 0xa6, 0x57, 0x58, 0x1a, 0x83,
-	0x61, 0x8a, 0x9b, 0xbc, 0x6f, 0xa4, 0xdc, 0x59, 0xea, 0x59, 0xb8, 0xf2, 0x14, 0x1f, 0x74, 0xe0,
-	0x2f, 0xc8, 0x3a, 0x71, 0x77, 0x6c, 0xcf, 0x09, 0x8e, 0xb5, 0x00, 0x19, 0x79, 0x2b, 0x96, 0xe8,
-	0x31, 0x64, 0xb7, 0x5b, 0x55, 0xc7, 0x66, 0x0c, 0xd7, 0xb7, 0x3c, 0xb2, 0x6f, 0x53, 0x9b, 0xb8,
-	0x97, 0x30, 0x1d, 0x50, 0x0d, 0x75, 0xa9, 0x3e, 0x2a, 0xa0, 0x0e, 0xe2, 0x12, 0xda, 0xab, 0x30,
-	0x52, 0x37, 0x99, 0x29, 0xa6, 0x3a, 0x25, 0x4d, 0x35, 0x68, 0x78, 0x68, 0x32, 0x53, 0x0c, 0x97,
-	0x37, 0xa0, 0x07, 0x90, 0xa4, 0xcc, 0x64, 0x2d, 0xca, 0xc5, 0xd2, 0x4b, 0xd3, 0xb1, 0xad, 0xdb,
-	0x1c, 0x16, 0xfc, 0x65, 0xfc, 0x26, 0x7d, 0x11, 0xb2, 0x62, 0x0c, 0x03, 0x4e, 0x28, 0x0f, 0xa4,
-	0x73, 0x8a, 0x41, 0xf8, 0x3f, 0x7c, 0x8a, 0xeb, 0x80, 0xd6, 0x89, 0xe3, 0xd8, 0xcc, 0xc1, 0x2e,
-	0xa3, 0xf1, 0xf6, 0x57, 0x61, 0xbc, 0x0f, 0x27, 0x6c, 0xe7, 0x21, 0x5d, 0xeb, 0x96, 0x33, 0x4a,
-	0x7e, 0xb8, 0x90, 0x2a, 0xf7, 0x96, 0x74, 0x04, 0x63, 0x1b, 0x2d, 0xd3, 0xab, 0xdb, 0xa6, 0x1b,
-	0xbe, 0x90, 0x12, 0xfc, 0xd7, 0x53, 0x13, 0x54, 0x39, 0x48, 0x59, 0x41, 0x51, 0x10, 0x75, 0x0b,
-	0x1d, 0x9a, 0xe0, 0xfa, 0xf6, 0xd2, 0xf4, 0xd4, 0xba, 0x34, 0xc1, 0x5d, 0x0a, 0x69, 0xc2, 0x82,
-	0xfe, 0x2f, 0xfc, 0xb3, 0xd9, 0xaa, 0x5b, 0x38, 0xe4, 0x28, 0xc0, 0x68, 0x50, 0x10, 0x04, 0x93,
-	0x90, 0x7c, 0xc5, 0x2b, 0xa2, 0x5b, 0x7c, 0x2d, 0xfd, 0x4a, 0xc1, 0x5f, 0xfc, 0x5d, 0xa3, 0x26,
-	0x24, 0xfd, 0xb7, 0x8a, 0xf4, 0xe8, 0xb0, 0xe5, 0x38, 0x50, 0x67, 0xcf, 0xc5, 0xf8, 0xa2, 0xba,
-	0xf6, 0xf6, 0xeb, 0xcf, 0x0f, 0x43, 0x19, 0x34, 0x69, 0x44, 0x02, 0xc7, 0x8f, 0x01, 0xf4, 0x45,
-	0x81, 0xff, 0x07, 0xbe, 0x65, 0xb4, 0x10, 0xa5, 0x3f, 0x2f, 0x2e, 0xd4, 0xc5, 0x4b, 0xa2, 0x85,
-	0xad, 0x7b, 0xdc, 0xd6, 0x6d, 0xb4, 0x1c, 0xb5, 0x65, 0x89, 0xb6, 0x0a, 0xc5, 0xcd, 0x4a, 0xb5,
-	0x5d, 0x09, 0x26, 0x6c, 0x1c, 0x06, 0xab, 0x23, 0xf4, 0x5e, 0x81, 0xb1, 0x68, 0x62, 0xa0, 0x1b,
-	0x51, 0x03, 0x31, 0x71, 0xa3, 0x16, 0x2e, 0x06, 0x0a, 0x93, 0xf3, 0xdc, 0xe4, 0x35, 0x34, 0x1b,
-	0x35, 0xe9, 0xe2, 0x03, 0xdf, 0x20, 0x23, 0x95, 0x9a, 0xd0, 0xff, 0xac, 0x00, 0x92, 0xc3, 0x04,
-	0xcd, 0x45, 0xd5, 0x62, 0xc3, 0x4b, 0xbd, 0x79, 0x19, 0xa8, 0xb0, 0x76, 0x9f, 0x5b, 0xbb, 0x83,
-	0x56, 0xa2, 0xd6, 0x68, 0xd0, 0x53, 0x69, 0x04, 0x4d, 0x3d, 0xa3, 0x33, 0x0e, 0x29, 0x6e, 0x1e,
-	0xa1, 0x4f, 0x4a, 0xe7, 0x71, 0x46, 0x23, 0x43, 0xf6, 0x1a, 0x1b, 0x43, 0xb2, 0xd7, 0xf8, 0x04,
-	0xd2, 0x4b, 0xdc, 0xeb, 0x3c, 0x9a, 0x8b, 0x7a, 0xad, 0x05, 0x3d, 0xbd, 0x5e, 0xb9, 0xc1, 0x37,
-	0x0a, 0xa4, 0x7b, 0x52, 0x41, 0x7e, 0x0e, 0x72, 0xb4, 0xc8, 0xcf, 0x61, 0x40, 0xac, 0xe8, 0x73,
-	0xdc, 0xcb, 0x2c, 0x9a, 0x91, 0xbd, 0x84, 0x60, 0xe1, 0x81, 0x42, 0x2a, 0xcc, 0x12, 0x94, 0x97,
-	0xae, 0x77, 0x24, 0x7a, 0xd4, 0x99, 0x73, 0x10, 0x42, 0x7c, 0x86, 0x8b, 0x5f, 0x45, 0x59, 0xe9,
-	0xd2, 0x87, 0x3a, 0x14, 0x52, 0x61, 0xf2, 0xc8, 0xa2, 0xd1, 0xa0, 0x92, 0x45, 0xa5, 0xd8, 0x8a,
-	0x17, 0x0d, 0xb3, 0x0b, 0x59, 0x90, 0xf4, 0xa3, 0x0a, 0x49, 0xff, 0x1e, 0xfa, 0x32, 0x4d, 0xd5,
-	0xe2, 0xb6, 0x2f, 0x0a, 0x1b, 0x3f, 0xe9, 0xd6, 0x36, 0x8f, 0x4f, 0x35, 0xe5, 0xe4, 0x54, 0x53,
-	0x7e, 0x9c, 0x6a, 0xca, 0xbb, 0x33, 0x2d, 0x71, 0x72, 0xa6, 0x25, 0xbe, 0x9d, 0x69, 0x89, 0x97,
-	0xb7, 0x2c, 0x9b, 0xed, 0xb6, 0xaa, 0xc5, 0x1a, 0x71, 0x8c, 0x47, 0xb6, 0x4b, 0x6b, 0xbb, 0xb6,
-	0x69, 0xec, 0x88, 0xc5, 0x22, 0xad, 0xbf, 0x36, 0x0e, 0x42, 0x3e, 0xd6, 0x6e, 0x60, 0x5a, 0x4d,
-	0xf2, 0x5f, 0x4a, 0xcb, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x55, 0x64, 0x53, 0xe7, 0xa9, 0x09,
-	0x00, 0x00,
+	// 943 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x41, 0x8f, 0xdb, 0x44,
+	0x14, 0x5e, 0xb7, 0x69, 0x44, 0x5e, 0xa0, 0x94, 0xd9, 0x65, 0xd5, 0x75, 0x53, 0x67, 0xe3, 0xa2,
+	0xdd, 0xb4, 0x74, 0xe3, 0x26, 0x54, 0x5d, 0x89, 0xd2, 0xcb, 0x06, 0x51, 0x51, 0xa4, 0xb6, 0x24,
+	0x37, 0x2e, 0xd1, 0x24, 0x9e, 0x75, 0x0d, 0x6b, 0x4f, 0xec, 0x19, 0x47, 0xbb, 0x2a, 0x3d, 0xc0,
+	0x2f, 0x40, 0xa2, 0xbf, 0x01, 0x89, 0x3f, 0x80, 0xc4, 0x95, 0x53, 0x8f, 0x2b, 0x71, 0xe1, 0x84,
+	0xd0, 0x2e, 0x3f, 0x04, 0x79, 0x3c, 0x76, 0x12, 0x4f, 0x9c, 0x0d, 0xa7, 0xde, 0xc6, 0xcf, 0xef,
+	0x7d, 0xdf, 0xf7, 0xde, 0xcb, 0x7c, 0x0e, 0xe8, 0x47, 0x43, 0xcf, 0x3a, 0x1c, 0x86, 0xae, 0xed,
+	0x10, 0x6b, 0xd2, 0xb6, 0x82, 0x88, 0x84, 0x27, 0xad, 0x71, 0x48, 0x39, 0x45, 0x57, 0x8f, 0x86,
+	0x5e, 0x4b, 0xbe, 0x6b, 0x4d, 0xda, 0x7a, 0xcd, 0xa1, 0xd4, 0x39, 0x22, 0x16, 0x1e, 0xbb, 0x16,
+	0xf6, 0x7d, 0xca, 0x31, 0x77, 0xa9, 0xcf, 0x92, 0x6c, 0x7d, 0xc3, 0xa1, 0x0e, 0x15, 0x47, 0x2b,
+	0x3e, 0xc9, 0x68, 0x2d, 0x87, 0x9f, 0xc2, 0x89, 0xb7, 0xe6, 0x06, 0xa0, 0xaf, 0x63, 0xc2, 0xe7,
+	0x38, 0xc4, 0x1e, 0xeb, 0x91, 0x20, 0x22, 0x8c, 0x9b, 0x5f, 0xc1, 0xfa, 0x5c, 0x94, 0x8d, 0xa9,
+	0xcf, 0x08, 0xba, 0x0f, 0xe5, 0xb1, 0x88, 0x5c, 0xd7, 0xb6, 0xb5, 0x66, 0xb5, 0xb3, 0xd9, 0x9a,
+	0xd7, 0xd7, 0x4a, 0xf2, 0x0f, 0x4a, 0x6f, 0xfe, 0xae, 0xaf, 0xf5, 0x64, 0x6e, 0x4c, 0xf1, 0x94,
+	0x1c, 0xf3, 0x3e, 0x09, 0xfa, 0xc4, 0xb7, 0x53, 0x8a, 0x5d, 0x58, 0x9f, 0x8b, 0x4a, 0x8a, 0x6b,
+	0x70, 0x99, 0x91, 0x40, 0xe0, 0x97, 0x7a, 0xf1, 0xd1, 0xfc, 0x14, 0x6a, 0x8f, 0x43, 0x82, 0x39,
+	0x61, 0x71, 0xf2, 0xc1, 0xc9, 0xb3, 0x31, 0x09, 0x31, 0xa7, 0xa1, 0x04, 0x42, 0x3a, 0xbc, 0x43,
+	0x65, 0x48, 0x94, 0x55, 0x7a, 0xd9, 0xb3, 0xd9, 0x86, 0x9b, 0x05, 0xb5, 0x85, 0x74, 0x4d, 0xd8,
+	0x49, 0x4b, 0xba, 0x71, 0xca, 0x28, 0xe2, 0xee, 0x84, 0x74, 0xa9, 0x7f, 0xe8, 0x86, 0x1e, 0xb1,
+	0xfb, 0x24, 0x48, 0x3b, 0x78, 0x08, 0xbb, 0x17, 0x66, 0x16, 0xd2, 0x7c, 0x09, 0x5b, 0xfd, 0x68,
+	0xe8, 0xb9, 0x9c, 0x13, 0xfb, 0x79, 0x48, 0x27, 0x2e, 0x73, 0xa9, 0xbf, 0x42, 0x4b, 0x29, 0xd4,
+	0xa5, 0x29, 0xd4, 0x6b, 0x0d, 0xf4, 0x45, 0x58, 0x92, 0x7b, 0x1f, 0x4a, 0x36, 0xe6, 0x58, 0xae,
+	0xec, 0xa6, 0xb2, 0xb2, 0xb4, 0xe0, 0x73, 0xcc, 0xb1, 0xdc, 0x9c, 0x28, 0x40, 0x8f, 0xa0, 0xcc,
+	0x38, 0xe6, 0x11, 0x13, 0x64, 0xd5, 0x4e, 0xbd, 0xb0, 0xb4, 0x2f, 0xd2, 0xd2, 0xb5, 0x27, 0x45,
+	0xe6, 0x33, 0xb8, 0xf1, 0x94, 0x10, 0x9b, 0xd8, 0x42, 0x1b, 0x13, 0x79, 0x24, 0x60, 0xab, 0xf4,
+	0xb8, 0x01, 0x57, 0x42, 0xec, 0x3b, 0x44, 0x76, 0x99, 0x3c, 0x98, 0x1d, 0xa8, 0x2d, 0x06, 0x94,
+	0x8d, 0x22, 0x28, 0x31, 0x12, 0xc4, 0xbf, 0xcd, 0xcb, 0xcd, 0x52, 0x4f, 0x9c, 0xcd, 0x3d, 0xd8,
+	0xca, 0x16, 0xa2, 0x8c, 0x59, 0xdd, 0x4a, 0x3c, 0xca, 0x45, 0xf9, 0x6f, 0x79, 0x94, 0x3b, 0x80,
+	0xba, 0xd4, 0xf3, 0x5c, 0xee, 0x11, 0x9f, 0xb3, 0x62, 0xf9, 0xfb, 0xb0, 0x3e, 0x97, 0x27, 0x65,
+	0x6f, 0x43, 0x75, 0x34, 0x0d, 0x8b, 0xf9, 0x54, 0x7a, 0xb3, 0x21, 0x13, 0xc1, 0xb5, 0xc7, 0x11,
+	0x0e, 0x6d, 0x17, 0xfb, 0x99, 0x07, 0xb4, 0xe1, 0x83, 0x99, 0x98, 0x84, 0xaa, 0x41, 0xc5, 0x49,
+	0x83, 0x12, 0x68, 0x1a, 0x88, 0x61, 0xd2, 0x1b, 0x36, 0x0b, 0x33, 0x13, 0x9b, 0xc2, 0xa4, 0xcb,
+	0xce, 0x60, 0xb2, 0x80, 0xf9, 0x3e, 0xbc, 0xf7, 0x24, 0xb2, 0x1d, 0x92, 0x61, 0x34, 0xe1, 0x6a,
+	0x1a, 0x90, 0x00, 0x9b, 0x50, 0xfe, 0x56, 0x44, 0x64, 0xb5, 0x7c, 0xea, 0xfc, 0xfe, 0x2e, 0x5c,
+	0x11, 0xce, 0x85, 0x02, 0x28, 0x27, 0x6e, 0x84, 0xcc, 0xfc, 0xb0, 0x55, 0xc3, 0xd3, 0x6f, 0x2d,
+	0xcd, 0x49, 0x48, 0x4d, 0xe3, 0xc7, 0x3f, 0xff, 0xfd, 0xf9, 0xd2, 0x75, 0xb4, 0x69, 0xe5, 0x2c,
+	0x35, 0x31, 0x3a, 0xf4, 0x3d, 0x54, 0x67, 0x2c, 0x4d, 0xe5, 0x55, 0x5d, 0x50, 0xe5, 0x5d, 0xe0,
+	0x89, 0xe6, 0x47, 0x82, 0xd7, 0x40, 0xb5, 0x3c, 0xaf, 0x4f, 0x8e, 0x39, 0x23, 0xc1, 0x80, 0xc5,
+	0x74, 0xbf, 0x68, 0xf0, 0xe1, 0x42, 0xb3, 0x43, 0x77, 0xf3, 0x24, 0xcb, 0xfc, 0x54, 0xdf, 0x5b,
+	0x31, 0x5b, 0x8a, 0xbb, 0x27, 0xc4, 0xdd, 0x41, 0xcd, 0xbc, 0xb8, 0x6c, 0x9f, 0xd6, 0xcb, 0xf4,
+	0xf8, 0xca, 0x62, 0x24, 0x40, 0x7f, 0x68, 0x50, 0xbf, 0xc0, 0x38, 0xd1, 0x83, 0x22, 0x11, 0xcb,
+	0x3d, 0x59, 0xdf, 0xff, 0xdf, 0x75, 0xb2, 0x8d, 0x96, 0x68, 0xa3, 0x89, 0x76, 0xf2, 0x6d, 0x38,
+	0x12, 0x60, 0x30, 0x4a, 0xcb, 0x06, 0x71, 0x13, 0xbf, 0x6a, 0x80, 0x54, 0xd3, 0x45, 0xb7, 0xf3,
+	0xfc, 0x85, 0x26, 0xaf, 0xdf, 0x59, 0x25, 0x55, 0xaa, 0xfb, 0x4c, 0xa8, 0x7b, 0x80, 0xee, 0xaf,
+	0x34, 0xe4, 0x71, 0x5a, 0x6f, 0xbd, 0x64, 0x24, 0x78, 0x85, 0x5e, 0x6b, 0xb1, 0x7f, 0xe4, 0x5d,
+	0x4d, 0xd5, 0x5a, 0xe8, 0x94, 0xaa, 0xd6, 0x62, 0x93, 0x34, 0x77, 0x85, 0xd6, 0x06, 0xaa, 0x2b,
+	0xb7, 0x24, 0x27, 0xeb, 0x37, 0x0d, 0x36, 0x16, 0x19, 0x3a, 0xfa, 0x58, 0xbd, 0x14, 0x85, 0xdf,
+	0x11, 0xfd, 0xee, 0x6a, 0xc9, 0x52, 0x5c, 0x57, 0x88, 0x7b, 0x84, 0x1e, 0xae, 0x34, 0x48, 0x5f,
+	0x40, 0x0d, 0x58, 0x86, 0x15, 0xaf, 0x9e, 0xa1, 0x1f, 0x34, 0xa8, 0xce, 0xf8, 0xac, 0x7a, 0xd1,
+	0x55, 0xb3, 0x56, 0x2f, 0xfa, 0x02, 0xa3, 0x36, 0x6f, 0x0b, 0x75, 0xb7, 0x50, 0x23, 0xaf, 0x6e,
+	0xc6, 0xab, 0xe5, 0xf0, 0x18, 0x54, 0x32, 0x77, 0x46, 0xdb, 0xca, 0xaf, 0x3e, 0x67, 0xe6, 0x7a,
+	0x63, 0x49, 0x86, 0x24, 0x6f, 0x08, 0xf2, 0x1b, 0x68, 0x4b, 0xb9, 0x01, 0x19, 0x0f, 0x83, 0x4a,
+	0xe6, 0xe5, 0x2a, 0x69, 0xde, 0xfa, 0x55, 0x52, 0xe5, 0x43, 0x50, 0x4c, 0x9a, 0xed, 0x03, 0x39,
+	0x50, 0x4e, 0xcc, 0x1f, 0x29, 0x1f, 0xdc, 0xb9, 0xaf, 0x84, 0x6e, 0x14, 0xbd, 0xbe, 0xc8, 0xbe,
+	0x93, 0x6f, 0xc7, 0xc1, 0x93, 0x37, 0x67, 0x86, 0x76, 0x7a, 0x66, 0x68, 0xff, 0x9c, 0x19, 0xda,
+	0x4f, 0xe7, 0xc6, 0xda, 0xe9, 0xb9, 0xb1, 0xf6, 0xd7, 0xb9, 0xb1, 0xf6, 0xcd, 0x3d, 0xc7, 0xe5,
+	0x2f, 0xa2, 0x61, 0x6b, 0x44, 0x3d, 0xeb, 0x0b, 0xd7, 0x67, 0xa3, 0x17, 0x2e, 0xb6, 0x0e, 0xe5,
+	0x61, 0x8f, 0xd9, 0xdf, 0x59, 0xc7, 0x19, 0x1e, 0x3f, 0x19, 0x13, 0x36, 0x2c, 0x8b, 0x7f, 0xd7,
+	0x9f, 0xfc, 0x17, 0x00, 0x00, 0xff, 0xff, 0x20, 0x1a, 0xcc, 0x0b, 0xdd, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -903,14 +1096,21 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Params queries the parameters of x/fbridge module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Get a greatest sequence number to be confirmed by a particular operator
+	// NextSeqSend to be used when the next bridge request is made
+	NextSeqSend(ctx context.Context, in *NextSeqSendRequest, opts ...grpc.CallOption) (*NextSeqSendResponse, error)
+	// Get a greatest sequence number confirmed by a particular operator
 	GreatestSeqByOperator(ctx context.Context, in *GreatestSeqByOperatorRequest, opts ...grpc.CallOption) (*GreatestSeqByOperatorResponse, error)
-	// Get a next sequence number to be confirmed by n-of-m operators
-	NextSeqToConfirm(ctx context.Context, in *NextSeqToConfirmRequest, opts ...grpc.CallOption) (*NextSeqToConfirmResponse, error)
+	// Get a greatest consecutive sequence number confirmed by n-of-m operators
+	GreatestConsecutiveConfirmedSeq(ctx context.Context, in *GreatestConsecutiveConfirmedSeqRequest, opts ...grpc.CallOption) (*GreatestConsecutiveConfirmedSeqResponse, error)
 	// Get a provision submitted by a particular operator
 	SubmittedProvision(ctx context.Context, in *SubmittedProvisionRequest, opts ...grpc.CallOption) (*SubmittedProvisionResponse, error)
-	// Get a specific confirmed provision
+	// Get a particular sequence of confirmed provisions
 	ConfirmedProvision(ctx context.Context, in *ConfirmedProvisionRequest, opts ...grpc.CallOption) (*ConfirmedProvisionResponse, error)
+	// Get a list of sequence numbers that need to be submitted by a particular operator
+	// The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range,
+	// greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if
+	// the operator is newly added
+	NeededSubmissionSeqs(ctx context.Context, in *NeededSubmissionSeqsRequest, opts ...grpc.CallOption) (*NeededSubmissionSeqsResponse, error)
 	// Get commitments of a specific sequence number
 	Commitments(ctx context.Context, in *CommitmentsRequest, opts ...grpc.CallOption) (*CommitmentsResponse, error)
 	// Get a list of Guardians registered on the bridge
@@ -938,6 +1138,15 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) NextSeqSend(ctx context.Context, in *NextSeqSendRequest, opts ...grpc.CallOption) (*NextSeqSendResponse, error) {
+	out := new(NextSeqSendResponse)
+	err := c.cc.Invoke(ctx, "/lbm.fbridge.v1.Query/NextSeqSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) GreatestSeqByOperator(ctx context.Context, in *GreatestSeqByOperatorRequest, opts ...grpc.CallOption) (*GreatestSeqByOperatorResponse, error) {
 	out := new(GreatestSeqByOperatorResponse)
 	err := c.cc.Invoke(ctx, "/lbm.fbridge.v1.Query/GreatestSeqByOperator", in, out, opts...)
@@ -947,9 +1156,9 @@ func (c *queryClient) GreatestSeqByOperator(ctx context.Context, in *GreatestSeq
 	return out, nil
 }
 
-func (c *queryClient) NextSeqToConfirm(ctx context.Context, in *NextSeqToConfirmRequest, opts ...grpc.CallOption) (*NextSeqToConfirmResponse, error) {
-	out := new(NextSeqToConfirmResponse)
-	err := c.cc.Invoke(ctx, "/lbm.fbridge.v1.Query/NextSeqToConfirm", in, out, opts...)
+func (c *queryClient) GreatestConsecutiveConfirmedSeq(ctx context.Context, in *GreatestConsecutiveConfirmedSeqRequest, opts ...grpc.CallOption) (*GreatestConsecutiveConfirmedSeqResponse, error) {
+	out := new(GreatestConsecutiveConfirmedSeqResponse)
+	err := c.cc.Invoke(ctx, "/lbm.fbridge.v1.Query/GreatestConsecutiveConfirmedSeq", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -968,6 +1177,15 @@ func (c *queryClient) SubmittedProvision(ctx context.Context, in *SubmittedProvi
 func (c *queryClient) ConfirmedProvision(ctx context.Context, in *ConfirmedProvisionRequest, opts ...grpc.CallOption) (*ConfirmedProvisionResponse, error) {
 	out := new(ConfirmedProvisionResponse)
 	err := c.cc.Invoke(ctx, "/lbm.fbridge.v1.Query/ConfirmedProvision", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) NeededSubmissionSeqs(ctx context.Context, in *NeededSubmissionSeqsRequest, opts ...grpc.CallOption) (*NeededSubmissionSeqsResponse, error) {
+	out := new(NeededSubmissionSeqsResponse)
+	err := c.cc.Invoke(ctx, "/lbm.fbridge.v1.Query/NeededSubmissionSeqs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1014,14 +1232,21 @@ func (c *queryClient) Judges(ctx context.Context, in *JudgesRequest, opts ...grp
 type QueryServer interface {
 	// Params queries the parameters of x/fbridge module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Get a greatest sequence number to be confirmed by a particular operator
+	// NextSeqSend to be used when the next bridge request is made
+	NextSeqSend(context.Context, *NextSeqSendRequest) (*NextSeqSendResponse, error)
+	// Get a greatest sequence number confirmed by a particular operator
 	GreatestSeqByOperator(context.Context, *GreatestSeqByOperatorRequest) (*GreatestSeqByOperatorResponse, error)
-	// Get a next sequence number to be confirmed by n-of-m operators
-	NextSeqToConfirm(context.Context, *NextSeqToConfirmRequest) (*NextSeqToConfirmResponse, error)
+	// Get a greatest consecutive sequence number confirmed by n-of-m operators
+	GreatestConsecutiveConfirmedSeq(context.Context, *GreatestConsecutiveConfirmedSeqRequest) (*GreatestConsecutiveConfirmedSeqResponse, error)
 	// Get a provision submitted by a particular operator
 	SubmittedProvision(context.Context, *SubmittedProvisionRequest) (*SubmittedProvisionResponse, error)
-	// Get a specific confirmed provision
+	// Get a particular sequence of confirmed provisions
 	ConfirmedProvision(context.Context, *ConfirmedProvisionRequest) (*ConfirmedProvisionResponse, error)
+	// Get a list of sequence numbers that need to be submitted by a particular operator
+	// The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range,
+	// greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if
+	// the operator is newly added
+	NeededSubmissionSeqs(context.Context, *NeededSubmissionSeqsRequest) (*NeededSubmissionSeqsResponse, error)
 	// Get commitments of a specific sequence number
 	Commitments(context.Context, *CommitmentsRequest) (*CommitmentsResponse, error)
 	// Get a list of Guardians registered on the bridge
@@ -1039,17 +1264,23 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
+func (*UnimplementedQueryServer) NextSeqSend(ctx context.Context, req *NextSeqSendRequest) (*NextSeqSendResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NextSeqSend not implemented")
+}
 func (*UnimplementedQueryServer) GreatestSeqByOperator(ctx context.Context, req *GreatestSeqByOperatorRequest) (*GreatestSeqByOperatorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GreatestSeqByOperator not implemented")
 }
-func (*UnimplementedQueryServer) NextSeqToConfirm(ctx context.Context, req *NextSeqToConfirmRequest) (*NextSeqToConfirmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NextSeqToConfirm not implemented")
+func (*UnimplementedQueryServer) GreatestConsecutiveConfirmedSeq(ctx context.Context, req *GreatestConsecutiveConfirmedSeqRequest) (*GreatestConsecutiveConfirmedSeqResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GreatestConsecutiveConfirmedSeq not implemented")
 }
 func (*UnimplementedQueryServer) SubmittedProvision(ctx context.Context, req *SubmittedProvisionRequest) (*SubmittedProvisionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmittedProvision not implemented")
 }
 func (*UnimplementedQueryServer) ConfirmedProvision(ctx context.Context, req *ConfirmedProvisionRequest) (*ConfirmedProvisionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConfirmedProvision not implemented")
+}
+func (*UnimplementedQueryServer) NeededSubmissionSeqs(ctx context.Context, req *NeededSubmissionSeqsRequest) (*NeededSubmissionSeqsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NeededSubmissionSeqs not implemented")
 }
 func (*UnimplementedQueryServer) Commitments(ctx context.Context, req *CommitmentsRequest) (*CommitmentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Commitments not implemented")
@@ -1086,6 +1317,24 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_NextSeqSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NextSeqSendRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).NextSeqSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lbm.fbridge.v1.Query/NextSeqSend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).NextSeqSend(ctx, req.(*NextSeqSendRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_GreatestSeqByOperator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GreatestSeqByOperatorRequest)
 	if err := dec(in); err != nil {
@@ -1104,20 +1353,20 @@ func _Query_GreatestSeqByOperator_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_NextSeqToConfirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NextSeqToConfirmRequest)
+func _Query_GreatestConsecutiveConfirmedSeq_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GreatestConsecutiveConfirmedSeqRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).NextSeqToConfirm(ctx, in)
+		return srv.(QueryServer).GreatestConsecutiveConfirmedSeq(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.fbridge.v1.Query/NextSeqToConfirm",
+		FullMethod: "/lbm.fbridge.v1.Query/GreatestConsecutiveConfirmedSeq",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).NextSeqToConfirm(ctx, req.(*NextSeqToConfirmRequest))
+		return srv.(QueryServer).GreatestConsecutiveConfirmedSeq(ctx, req.(*GreatestConsecutiveConfirmedSeqRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1154,6 +1403,24 @@ func _Query_ConfirmedProvision_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ConfirmedProvision(ctx, req.(*ConfirmedProvisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_NeededSubmissionSeqs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NeededSubmissionSeqsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).NeededSubmissionSeqs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lbm.fbridge.v1.Query/NeededSubmissionSeqs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).NeededSubmissionSeqs(ctx, req.(*NeededSubmissionSeqsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1239,12 +1506,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
+			MethodName: "NextSeqSend",
+			Handler:    _Query_NextSeqSend_Handler,
+		},
+		{
 			MethodName: "GreatestSeqByOperator",
 			Handler:    _Query_GreatestSeqByOperator_Handler,
 		},
 		{
-			MethodName: "NextSeqToConfirm",
-			Handler:    _Query_NextSeqToConfirm_Handler,
+			MethodName: "GreatestConsecutiveConfirmedSeq",
+			Handler:    _Query_GreatestConsecutiveConfirmedSeq_Handler,
 		},
 		{
 			MethodName: "SubmittedProvision",
@@ -1253,6 +1524,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConfirmedProvision",
 			Handler:    _Query_ConfirmedProvision_Handler,
+		},
+		{
+			MethodName: "NeededSubmissionSeqs",
+			Handler:    _Query_NeededSubmissionSeqs_Handler,
 		},
 		{
 			MethodName: "Commitments",
@@ -1331,6 +1606,57 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *NextSeqSendRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NextSeqSendRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NextSeqSendRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *NextSeqSendResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NextSeqSendResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NextSeqSendResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Seq != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Seq))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *GreatestSeqByOperatorRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1389,7 +1715,7 @@ func (m *GreatestSeqByOperatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *NextSeqToConfirmRequest) Marshal() (dAtA []byte, err error) {
+func (m *GreatestConsecutiveConfirmedSeqRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1399,12 +1725,12 @@ func (m *NextSeqToConfirmRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *NextSeqToConfirmRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *GreatestConsecutiveConfirmedSeqRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *NextSeqToConfirmRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GreatestConsecutiveConfirmedSeqRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1412,7 +1738,7 @@ func (m *NextSeqToConfirmRequest) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *NextSeqToConfirmResponse) Marshal() (dAtA []byte, err error) {
+func (m *GreatestConsecutiveConfirmedSeqResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1422,12 +1748,12 @@ func (m *NextSeqToConfirmResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *NextSeqToConfirmResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *GreatestConsecutiveConfirmedSeqResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *NextSeqToConfirmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GreatestConsecutiveConfirmedSeqResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1515,6 +1841,82 @@ func (m *SubmittedProvisionResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	}
 	i--
 	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *NeededSubmissionSeqsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NeededSubmissionSeqsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NeededSubmissionSeqsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Range != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Range))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Operator) > 0 {
+		i -= len(m.Operator)
+		copy(dAtA[i:], m.Operator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Operator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NeededSubmissionSeqsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NeededSubmissionSeqsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NeededSubmissionSeqsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Seqs) > 0 {
+		dAtA5 := make([]byte, len(m.Seqs)*10)
+		var j4 int
+		for _, num := range m.Seqs {
+			for num >= 1<<7 {
+				dAtA5[j4] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j4++
+			}
+			dAtA5[j4] = uint8(num)
+			j4++
+		}
+		i -= j4
+		copy(dAtA[i:], dAtA5[:j4])
+		i = encodeVarintQuery(dAtA, i, uint64(j4))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1845,6 +2247,27 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
+func (m *NextSeqSendRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *NextSeqSendResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Seq != 0 {
+		n += 1 + sovQuery(uint64(m.Seq))
+	}
+	return n
+}
+
 func (m *GreatestSeqByOperatorRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1870,7 +2293,7 @@ func (m *GreatestSeqByOperatorResponse) Size() (n int) {
 	return n
 }
 
-func (m *NextSeqToConfirmRequest) Size() (n int) {
+func (m *GreatestConsecutiveConfirmedSeqRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1879,7 +2302,7 @@ func (m *NextSeqToConfirmRequest) Size() (n int) {
 	return n
 }
 
-func (m *NextSeqToConfirmResponse) Size() (n int) {
+func (m *GreatestConsecutiveConfirmedSeqResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1917,6 +2340,38 @@ func (m *SubmittedProvisionResponse) Size() (n int) {
 	n += 1 + l + sovQuery(uint64(l))
 	l = m.Status.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *NeededSubmissionSeqsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Operator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Range != 0 {
+		n += 1 + sovQuery(uint64(m.Range))
+	}
+	return n
+}
+
+func (m *NeededSubmissionSeqsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Seqs) > 0 {
+		l = 0
+		for _, e := range m.Seqs {
+			l += sovQuery(uint64(e))
+		}
+		n += 1 + sovQuery(uint64(l)) + l
+	}
 	return n
 }
 
@@ -2183,6 +2638,125 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *NextSeqSendRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NextSeqSendRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NextSeqSendRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NextSeqSendResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NextSeqSendResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NextSeqSendResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Seq", wireType)
+			}
+			m.Seq = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Seq |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *GreatestSeqByOperatorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2334,7 +2908,7 @@ func (m *GreatestSeqByOperatorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *NextSeqToConfirmRequest) Unmarshal(dAtA []byte) error {
+func (m *GreatestConsecutiveConfirmedSeqRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2357,10 +2931,10 @@ func (m *NextSeqToConfirmRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: NextSeqToConfirmRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: GreatestConsecutiveConfirmedSeqRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: NextSeqToConfirmRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GreatestConsecutiveConfirmedSeqRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2384,7 +2958,7 @@ func (m *NextSeqToConfirmRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *NextSeqToConfirmResponse) Unmarshal(dAtA []byte) error {
+func (m *GreatestConsecutiveConfirmedSeqResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2407,10 +2981,10 @@ func (m *NextSeqToConfirmResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: NextSeqToConfirmResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: GreatestConsecutiveConfirmedSeqResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: NextSeqToConfirmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GreatestConsecutiveConfirmedSeqResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2649,6 +3223,233 @@ func (m *SubmittedProvisionResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NeededSubmissionSeqsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NeededSubmissionSeqsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NeededSubmissionSeqsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Operator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Operator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Range", wireType)
+			}
+			m.Range = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Range |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NeededSubmissionSeqsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NeededSubmissionSeqsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NeededSubmissionSeqsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuery
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.Seqs = append(m.Seqs, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuery
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthQuery
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthQuery
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.Seqs) == 0 {
+					m.Seqs = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuery
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.Seqs = append(m.Seqs, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field Seqs", wireType)
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
