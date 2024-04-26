@@ -30,7 +30,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 func CmdQuerySwapped() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "fswap swapped",
+		Use:   "swapped",
 		Short: "shows the current swap status, including both old and new coin amount",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -55,7 +55,7 @@ func CmdQuerySwapped() *cobra.Command {
 
 func CmdQueryTotalSwappableAmount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "fswap total-swappable-amount",
+		Use:   "total-swappable-amount",
 		Short: "shows the current total amount of new coin that're swappable",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
