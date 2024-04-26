@@ -73,6 +73,7 @@ import (
 	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
 	"github.com/Finschia/finschia-sdk/x/fswap"
+	fswapclient "github.com/Finschia/finschia-sdk/x/fswap/client"
 	fswapkeeper "github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/Finschia/finschia-sdk/x/genutil"
@@ -130,6 +131,7 @@ var (
 			upgradeclient.ProposalHandler,
 			upgradeclient.CancelProposalHandler,
 			foundationclient.ProposalHandler,
+			fswapclient.FswapInitHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -324,6 +326,9 @@ func NewSimApp(
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.ClassKeeper)
 	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], app.ClassKeeper)
 
+	/****  Phase 1 ****/
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.StakingKeeper = *stakingKeeper.SetHooks(
@@ -338,7 +343,8 @@ func NewSimApp(
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
+		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper)).
+		AddRoute(fswaptypes.RouterKey, fswap.NewFswapInitHandler(app.FswapKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -357,10 +363,6 @@ func NewSimApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
-
-	/****  Phase 1 ****/
-	fswapConfig := fswaptypes.DefaultConfig()
-	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper, fswapConfig)
 
 	/****  Module Options ****/
 

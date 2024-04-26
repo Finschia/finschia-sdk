@@ -17,7 +17,6 @@ type (
 		storeKey      storetypes.StoreKey
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
-		config        types.Config
 	}
 )
 
@@ -26,17 +25,30 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
-	config types.Config,
 ) Keeper {
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		accountKeeper: ak,
 		bankKeeper:    bk,
-		config:        config,
 	}
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k Keeper) FswapInit(ctx sdk.Context, fswapInit types.FswapInit) error {
+	// todo validate & check the first time (or not will reject the proposal)
+	// todo add test for this keeper in keeper test
+	if err := fswapInit.ValidateBasic(); err != nil {
+		return err
+	}
+
+	// need confirm: Is ibcState necessary? (please ref upgrade keeper)
+	k.SetFswapInit(ctx, fswapInit)
+	// need confirm: Is Swapped use sdk.Coin or sdk.Int
+	swapped := types.NewSwapped(sdk.ZeroInt(), sdk.ZeroInt())
+	k.SetSwapped(ctx, swapped)
+	return nil
 }

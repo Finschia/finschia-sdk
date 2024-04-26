@@ -11,6 +11,15 @@ import (
 	"github.com/Finschia/finschia-sdk/client/tx"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
+	"github.com/Finschia/finschia-sdk/x/gov/client/cli"
+	gov "github.com/Finschia/finschia-sdk/x/gov/types"
+)
+
+const (
+	FlagFromDenom   = "from-denom"
+	FlagToDenom     = "to-denom"
+	FlagAmountLimit = "amount-limit"
+	FlagSwapRate    = "swap-rate"
 )
 
 var DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
@@ -92,4 +101,95 @@ func CmdTxMsgSwapAll() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
+}
+
+// NewCmdFswapInitProposal implements a command handler for submitting a fswap init proposal transaction.
+func NewCmdFswapInitProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "fswap-init [flags]",
+		Args:  cobra.ExactArgs(0),
+		Short: "todo",
+		Long:  "todo",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			// need confirm parse with flags or parse with args
+			contents, err := parseArgsToContent(cmd)
+			if err != nil {
+				return err
+			}
+
+			from := clientCtx.GetFromAddress()
+
+			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			if err != nil {
+				return err
+			}
+			deposit, err := sdk.ParseCoinsNormalized(depositStr)
+			if err != nil {
+				return err
+			}
+
+			msg, err := gov.NewMsgSubmitProposal(contents, deposit, from)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
+	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	cmd.Flags().String(FlagFromDenom, "", "cony")
+	cmd.Flags().String(FlagToDenom, "", "PDT")
+	cmd.Flags().Int64(FlagAmountLimit, 0, "tbd")
+	cmd.Flags().Int64(FlagSwapRate, 0, "tbd")
+
+	return cmd
+}
+
+func parseArgsToContent(cmd *cobra.Command) (gov.Content, error) {
+	title, err := cmd.Flags().GetString(cli.FlagTitle)
+	if err != nil {
+		return nil, err
+	}
+
+	description, err := cmd.Flags().GetString(cli.FlagDescription)
+	if err != nil {
+		return nil, err
+	}
+
+	from_denom, err := cmd.Flags().GetString(FlagFromDenom)
+	if err != nil {
+		return nil, err
+	}
+
+	to_denom, err := cmd.Flags().GetString(FlagToDenom)
+	if err != nil {
+		return nil, err
+	}
+
+	amount_limit, err := cmd.Flags().GetInt64(FlagAmountLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	swap_rate, err := cmd.Flags().GetInt64(FlagSwapRate)
+	if err != nil {
+		return nil, err
+	}
+
+	fswapInit := types.FswapInit{
+		FromDenom:   from_denom,
+		ToDenom:     to_denom,
+		AmountLimit: sdk.NewInt(amount_limit),
+		SwapRate:    sdk.NewInt(swap_rate),
+	}
+
+	content := types.NewFswapInitProposal(title, description, fswapInit)
+	return content, nil
 }

@@ -7,6 +7,7 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // NewHandler ...
@@ -23,4 +24,22 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
 		// }
 	}
+}
+
+// NewFswapInitHandler creates a governance handler to manage new proposal types.
+// It enables FswapInit to propose an fswap init
+func NewFswapInitHandler(k keeper.Keeper) govtypes.Handler {
+	return func(ctx sdk.Context, content govtypes.Content) error {
+		switch c := content.(type) {
+		case *types.FswapInitProposal:
+			return handleFswapInit(ctx, k, c)
+
+		default:
+			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized fsawp proposal content type: %T", c)
+		}
+	}
+}
+
+func handleFswapInit(ctx sdk.Context, k keeper.Keeper, p *types.FswapInitProposal) error {
+	return k.FswapInit(ctx, p.FswapInit)
 }
