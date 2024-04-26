@@ -28,3 +28,26 @@ func (k Keeper) SetSwapped(ctx sdk.Context, swapped types.Swapped) error {
 	store.Set([]byte{types.SwappedKey}, bz)
 	return nil
 }
+
+// GetFswapInit get all parameters as types.FswapInit
+func (k Keeper) GetFswapInit(ctx sdk.Context) types.FswapInit {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte{types.FswapInitKey})
+	var fswapInit types.FswapInit
+	if bz == nil {
+		panic(types.ErrFswapInitNotFound)
+	}
+	k.cdc.MustUnmarshal(bz, &fswapInit)
+	return fswapInit
+}
+
+// SetfswapInit set the fswapInit
+func (k Keeper) SetFswapInit(ctx sdk.Context, fswapInit types.FswapInit) error {
+	store := ctx.KVStore(k.storeKey)
+	bz, err := k.cdc.Marshal(&fswapInit)
+	if err != nil {
+		return err
+	}
+	store.Set([]byte{types.FswapInitKey}, bz)
+	return nil
+}

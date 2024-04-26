@@ -177,7 +177,7 @@
 
 |Error Name|Codespace|Code|Description|
 |:-|:-|:-|:-|
-|ErrParamsNotFound|fswap|1100|params does not exist|
+|ErrFswapInitNotFound|fswap|1100|fswap init does not exist|
 |ErrSwappedNotFound|fswap|1101|swapped does not exist|
 |ErrExceedSwappable|fswap|1102|exceed swappable coin amount|
 
