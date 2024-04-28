@@ -43,7 +43,7 @@ func GetTxCmd() *cobra.Command {
 
 func CmdTxMsgSwap() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "fswap swap [address] [fnsa_amount]",
+		Use:   "swap [address] [fnsa_amount]",
 		Short: "swap amounts of old coin to new coin. Note, the'--from' flag is ignored as it is implied from [address].",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -77,7 +77,7 @@ func CmdTxMsgSwap() *cobra.Command {
 
 func CmdTxMsgSwapAll() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "fswap swap-all [address]",
+		Use:   "swap-all [address]",
 		Short: "swap all the old coins. Note, the'--from' flag is ignored as it is implied from [address].",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
