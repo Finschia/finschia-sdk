@@ -10,7 +10,8 @@ var (
 	_ sdk.Msg = &MsgRemoveProvision{}
 	_ sdk.Msg = &MsgClaimBatch{}
 	_ sdk.Msg = &MsgClaim{}
-	_ sdk.Msg = &MsgUpdateRole{}
+	_ sdk.Msg = &MsgSuggestRole{}
+	_ sdk.Msg = &MsgAddVoteForRole{}
 	_ sdk.Msg = &MsgHalt{}
 	_ sdk.Msg = &MsgResume{}
 )
@@ -85,13 +86,23 @@ func (m MsgClaim) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-func (m MsgUpdateRole) ValidateBasic() error { return nil }
+func (m MsgSuggestRole) ValidateBasic() error { return nil }
 
-func (m MsgUpdateRole) GetSigners() []sdk.AccAddress {
+func (m MsgSuggestRole) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.From)}
 }
 
-func (m MsgUpdateRole) GetSignBytes() []byte {
+func (m MsgSuggestRole) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
+func (m MsgAddVoteForRole) ValidateBasic() error { return nil }
+
+func (m MsgAddVoteForRole) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.From)}
+}
+
+func (m MsgAddVoteForRole) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 

@@ -14,6 +14,8 @@ message Params {
   Fraction judge_trust_level = 3;
   // default timelock period for each provision (unix timestamp)
   uint64 timelock_period = 4;
+  // default period of the proposal to update the role
+  uint64 proposal_period = 5;
 }
 
 // Provision is a struct that represents a provision internally.
@@ -53,4 +55,21 @@ enum Role {
   GUARDIAN    = 1;
   OPERATOR    = 2;
   JUDGE       = 3;
+}
+
+message RoleProposal {
+  uint64 id = 1;
+  // the proposer address
+  string proposer = 2;
+  // the address to update the role
+  string target = 3;
+  // the role to be updated
+  // - unspecified : 0, used to remove the address from a group
+  // - guardian : 1
+  // - operator : 2
+  // - judge : 3
+  Role role = 4;
+
+  // the unix timestamp the proposal will be expired (unix timestamp)
+  uint64 expired_at = 5;
 }

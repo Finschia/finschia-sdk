@@ -765,6 +765,7 @@
     - [Params](#lbm.fbridge.v1.Params)
     - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
     - [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus)
+    - [RoleProposal](#lbm.fbridge.v1.RoleProposal)
   
     - [Role](#lbm.fbridge.v1.Role)
   
@@ -779,32 +780,38 @@
     - [SendingState](#lbm.fbridge.v1.SendingState)
   
 - [lbm/fbridge/v1/query.proto](#lbm/fbridge/v1/query.proto)
-    - [CommitmentsRequest](#lbm.fbridge.v1.CommitmentsRequest)
-    - [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse)
-    - [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest)
-    - [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse)
-    - [GreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest)
-    - [GreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse)
-    - [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest)
-    - [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse)
-    - [GuardiansRequest](#lbm.fbridge.v1.GuardiansRequest)
-    - [GuardiansResponse](#lbm.fbridge.v1.GuardiansResponse)
-    - [JudgesRequest](#lbm.fbridge.v1.JudgesRequest)
-    - [JudgesResponse](#lbm.fbridge.v1.JudgesResponse)
-    - [NeededSubmissionSeqsRequest](#lbm.fbridge.v1.NeededSubmissionSeqsRequest)
-    - [NeededSubmissionSeqsResponse](#lbm.fbridge.v1.NeededSubmissionSeqsResponse)
-    - [NextSeqSendRequest](#lbm.fbridge.v1.NextSeqSendRequest)
-    - [NextSeqSendResponse](#lbm.fbridge.v1.NextSeqSendResponse)
-    - [OperatorsRequest](#lbm.fbridge.v1.OperatorsRequest)
-    - [OperatorsResponse](#lbm.fbridge.v1.OperatorsResponse)
+    - [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest)
+    - [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse)
+    - [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest)
+    - [QueryConfirmedProvisionResponse](#lbm.fbridge.v1.QueryConfirmedProvisionResponse)
+    - [QueryGreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest)
+    - [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse)
+    - [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest)
+    - [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse)
+    - [QueryGuardiansRequest](#lbm.fbridge.v1.QueryGuardiansRequest)
+    - [QueryGuardiansResponse](#lbm.fbridge.v1.QueryGuardiansResponse)
+    - [QueryJudgesRequest](#lbm.fbridge.v1.QueryJudgesRequest)
+    - [QueryJudgesResponse](#lbm.fbridge.v1.QueryJudgesResponse)
+    - [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest)
+    - [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse)
+    - [QueryNextSeqSendRequest](#lbm.fbridge.v1.QueryNextSeqSendRequest)
+    - [QueryNextSeqSendResponse](#lbm.fbridge.v1.QueryNextSeqSendResponse)
+    - [QueryOperatorsRequest](#lbm.fbridge.v1.QueryOperatorsRequest)
+    - [QueryOperatorsResponse](#lbm.fbridge.v1.QueryOperatorsResponse)
     - [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse)
-    - [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest)
-    - [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse)
+    - [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest)
+    - [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse)
+    - [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest)
+    - [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse)
+    - [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest)
+    - [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse)
   
     - [Query](#lbm.fbridge.v1.Query)
   
 - [lbm/fbridge/v1/tx.proto](#lbm/fbridge/v1/tx.proto)
+    - [MsgAddVoteForRole](#lbm.fbridge.v1.MsgAddVoteForRole)
+    - [MsgAddVoteForRoleResponse](#lbm.fbridge.v1.MsgAddVoteForRoleResponse)
     - [MsgClaim](#lbm.fbridge.v1.MsgClaim)
     - [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch)
     - [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse)
@@ -821,10 +828,10 @@
     - [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse)
     - [MsgResume](#lbm.fbridge.v1.MsgResume)
     - [MsgResumeResponse](#lbm.fbridge.v1.MsgResumeResponse)
+    - [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole)
+    - [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse)
     - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
     - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
-    - [MsgUpdateRole](#lbm.fbridge.v1.MsgUpdateRole)
-    - [MsgUpdateRoleResponse](#lbm.fbridge.v1.MsgUpdateRoleResponse)
   
     - [Msg](#lbm.fbridge.v1.Msg)
   
@@ -11496,6 +11503,7 @@ supports positive values.
 | `guardian_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many guardians' confirmations are needed to be valid. |
 | `judge_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many judges' confirmations are needed to be valid. |
 | `timelock_period` | [uint64](#uint64) |  | default timelock period for each provision (unix timestamp) |
+| `proposal_period` | [uint64](#uint64) |  | default period of the proposal to update the role |
 
 
 
@@ -11532,6 +11540,25 @@ To optimize computational cost, we have collected frequently changing values fro
 | `timelock_end` | [uint64](#uint64) |  | the unix timestamp the provision will be able to be claimed (unix timestamp) |
 | `confirm_counts` | [int32](#int32) |  | a value that tells how many operators have submitted this provision |
 | `is_claimed` | [bool](#bool) |  | whether the provision has been claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RoleProposal"></a>
+
+### RoleProposal
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `proposer` | [string](#string) |  | the proposer address |
+| `target` | [string](#string) |  | the address to update the role |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
+| `expired_at` | [uint64](#uint64) |  | the unix timestamp the proposal will be expired (unix timestamp) |
 
 
 
@@ -11720,9 +11747,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.CommitmentsRequest"></a>
+<a name="lbm.fbridge.v1.QueryCommitmentsRequest"></a>
 
-### CommitmentsRequest
+### QueryCommitmentsRequest
 
 
 
@@ -11735,9 +11762,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.CommitmentsResponse"></a>
+<a name="lbm.fbridge.v1.QueryCommitmentsResponse"></a>
 
-### CommitmentsResponse
+### QueryCommitmentsResponse
 
 
 
@@ -11750,9 +11777,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.ConfirmedProvisionRequest"></a>
+<a name="lbm.fbridge.v1.QueryConfirmedProvisionRequest"></a>
 
-### ConfirmedProvisionRequest
+### QueryConfirmedProvisionRequest
 
 
 
@@ -11765,9 +11792,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.ConfirmedProvisionResponse"></a>
+<a name="lbm.fbridge.v1.QueryConfirmedProvisionResponse"></a>
 
-### ConfirmedProvisionResponse
+### QueryConfirmedProvisionResponse
 
 
 
@@ -11781,19 +11808,19 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest"></a>
+<a name="lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest"></a>
 
-### GreatestConsecutiveConfirmedSeqRequest
-
-
+### QueryGreatestConsecutiveConfirmedSeqRequest
 
 
 
 
 
-<a name="lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse"></a>
 
-### GreatestConsecutiveConfirmedSeqResponse
+
+<a name="lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse"></a>
+
+### QueryGreatestConsecutiveConfirmedSeqResponse
 
 
 
@@ -11806,9 +11833,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.GreatestSeqByOperatorRequest"></a>
+<a name="lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest"></a>
 
-### GreatestSeqByOperatorRequest
+### QueryGreatestSeqByOperatorRequest
 
 
 
@@ -11821,9 +11848,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.GreatestSeqByOperatorResponse"></a>
+<a name="lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse"></a>
 
-### GreatestSeqByOperatorResponse
+### QueryGreatestSeqByOperatorResponse
 
 
 
@@ -11836,19 +11863,19 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.GuardiansRequest"></a>
+<a name="lbm.fbridge.v1.QueryGuardiansRequest"></a>
 
-### GuardiansRequest
-
-
+### QueryGuardiansRequest
 
 
 
 
 
-<a name="lbm.fbridge.v1.GuardiansResponse"></a>
 
-### GuardiansResponse
+
+<a name="lbm.fbridge.v1.QueryGuardiansResponse"></a>
+
+### QueryGuardiansResponse
 
 
 
@@ -11861,19 +11888,19 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.JudgesRequest"></a>
+<a name="lbm.fbridge.v1.QueryJudgesRequest"></a>
 
-### JudgesRequest
-
-
+### QueryJudgesRequest
 
 
 
 
 
-<a name="lbm.fbridge.v1.JudgesResponse"></a>
 
-### JudgesResponse
+
+<a name="lbm.fbridge.v1.QueryJudgesResponse"></a>
+
+### QueryJudgesResponse
 
 
 
@@ -11886,9 +11913,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.NeededSubmissionSeqsRequest"></a>
+<a name="lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest"></a>
 
-### NeededSubmissionSeqsRequest
+### QueryNeededSubmissionSeqsRequest
 
 
 
@@ -11902,9 +11929,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.NeededSubmissionSeqsResponse"></a>
+<a name="lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse"></a>
 
-### NeededSubmissionSeqsResponse
+### QueryNeededSubmissionSeqsResponse
 
 
 
@@ -11917,19 +11944,19 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.NextSeqSendRequest"></a>
+<a name="lbm.fbridge.v1.QueryNextSeqSendRequest"></a>
 
-### NextSeqSendRequest
-
-
+### QueryNextSeqSendRequest
 
 
 
 
 
-<a name="lbm.fbridge.v1.NextSeqSendResponse"></a>
 
-### NextSeqSendResponse
+
+<a name="lbm.fbridge.v1.QueryNextSeqSendResponse"></a>
+
+### QueryNextSeqSendResponse
 
 
 
@@ -11942,19 +11969,19 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.OperatorsRequest"></a>
+<a name="lbm.fbridge.v1.QueryOperatorsRequest"></a>
 
-### OperatorsRequest
-
-
+### QueryOperatorsRequest
 
 
 
 
 
-<a name="lbm.fbridge.v1.OperatorsResponse"></a>
 
-### OperatorsResponse
+
+<a name="lbm.fbridge.v1.QueryOperatorsResponse"></a>
+
+### QueryOperatorsResponse
 
 
 
@@ -11992,9 +12019,69 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.SubmittedProvisionRequest"></a>
+<a name="lbm.fbridge.v1.QueryProposalRequest"></a>
 
-### SubmittedProvisionRequest
+### QueryProposalRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [string](#string) |  | the proposal id |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalResponse"></a>
+
+### QueryProposalResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalsRequest"></a>
+
+### QueryProposalsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalsResponse"></a>
+
+### QueryProposalsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySubmittedProvisionRequest"></a>
+
+### QuerySubmittedProvisionRequest
 
 
 
@@ -12008,9 +12095,9 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
-<a name="lbm.fbridge.v1.SubmittedProvisionResponse"></a>
+<a name="lbm.fbridge.v1.QuerySubmittedProvisionResponse"></a>
 
-### SubmittedProvisionResponse
+### QuerySubmittedProvisionResponse
 
 
 
@@ -12038,16 +12125,18 @@ GenesisState defines the fbridge module's genesis state.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse) | Params queries the parameters of x/fbridge module. | GET|/lbm/fbridge/v1/params|
-| `NextSeqSend` | [NextSeqSendRequest](#lbm.fbridge.v1.NextSeqSendRequest) | [NextSeqSendResponse](#lbm.fbridge.v1.NextSeqSendResponse) | NextSeqSend to be used when the next bridge request is made | GET|/lbm/fbridge/v1/nextseq_send|
-| `GreatestSeqByOperator` | [GreatestSeqByOperatorRequest](#lbm.fbridge.v1.GreatestSeqByOperatorRequest) | [GreatestSeqByOperatorResponse](#lbm.fbridge.v1.GreatestSeqByOperatorResponse) | Get a greatest sequence number confirmed by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/seq|
-| `GreatestConsecutiveConfirmedSeq` | [GreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqRequest) | [GreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.GreatestConsecutiveConfirmedSeqResponse) | Get a greatest consecutive sequence number confirmed by n-of-m operators | GET|/lbm/fbridge/v1/greatest_confirmed_seq|
-| `SubmittedProvision` | [SubmittedProvisionRequest](#lbm.fbridge.v1.SubmittedProvisionRequest) | [SubmittedProvisionResponse](#lbm.fbridge.v1.SubmittedProvisionResponse) | Get a provision submitted by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/provision/{seq}|
-| `ConfirmedProvision` | [ConfirmedProvisionRequest](#lbm.fbridge.v1.ConfirmedProvisionRequest) | [ConfirmedProvisionResponse](#lbm.fbridge.v1.ConfirmedProvisionResponse) | Get a particular sequence of confirmed provisions | GET|/lbm/fbridge/v1/provision/{seq}|
-| `NeededSubmissionSeqs` | [NeededSubmissionSeqsRequest](#lbm.fbridge.v1.NeededSubmissionSeqsRequest) | [NeededSubmissionSeqsResponse](#lbm.fbridge.v1.NeededSubmissionSeqsResponse) | Get a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs|
-| `Commitments` | [CommitmentsRequest](#lbm.fbridge.v1.CommitmentsRequest) | [CommitmentsResponse](#lbm.fbridge.v1.CommitmentsResponse) | Get commitments of a specific sequence number | GET|/lbm/fbridge/v1/commitments/{seq}|
-| `Guardians` | [GuardiansRequest](#lbm.fbridge.v1.GuardiansRequest) | [GuardiansResponse](#lbm.fbridge.v1.GuardiansResponse) | Get a list of Guardians registered on the bridge | GET|/lbm/fbridge/v1/guardians|
-| `Operators` | [OperatorsRequest](#lbm.fbridge.v1.OperatorsRequest) | [OperatorsResponse](#lbm.fbridge.v1.OperatorsResponse) | Get a list of Operators registered on the bridge | GET|/lbm/fbridge/v1/operators|
-| `Judges` | [JudgesRequest](#lbm.fbridge.v1.JudgesRequest) | [JudgesResponse](#lbm.fbridge.v1.JudgesResponse) | Get a list of Judges registered on the bridge | GET|/lbm/fbridge/v1/judges|
+| `NextSeqSend` | [QueryNextSeqSendRequest](#lbm.fbridge.v1.QueryNextSeqSendRequest) | [QueryNextSeqSendResponse](#lbm.fbridge.v1.QueryNextSeqSendResponse) | NextSeqSend queries the sequence of next bridge request | GET|/lbm/fbridge/v1/nextseq_send|
+| `GreatestSeqByOperator` | [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest) | [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse) | GreatestSeqByOperator queries a greatest sequence number confirmed by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/seq|
+| `GreatestConsecutiveConfirmedSeq` | [QueryGreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest) | [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse) | GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence number confirmed by n-of-m operators | GET|/lbm/fbridge/v1/greatest_confirmed_seq|
+| `SubmittedProvision` | [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest) | [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse) | SubmittedProvision queries a provision submitted by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/provision/{seq}|
+| `ConfirmedProvision` | [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest) | [QueryConfirmedProvisionResponse](#lbm.fbridge.v1.QueryConfirmedProvisionResponse) | ConfirmedProvision queries a particular sequence of confirmed provisions | GET|/lbm/fbridge/v1/provision/{seq}|
+| `NeededSubmissionSeqs` | [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest) | [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse) | NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs|
+| `Commitments` | [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest) | [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse) | Commitments queries commitments of a specific sequence number | GET|/lbm/fbridge/v1/commitments/{seq}|
+| `Guardians` | [QueryGuardiansRequest](#lbm.fbridge.v1.QueryGuardiansRequest) | [QueryGuardiansResponse](#lbm.fbridge.v1.QueryGuardiansResponse) | Guardians queries a list of Guardians registered on the bridge | GET|/lbm/fbridge/v1/guardians|
+| `Operators` | [QueryOperatorsRequest](#lbm.fbridge.v1.QueryOperatorsRequest) | [QueryOperatorsResponse](#lbm.fbridge.v1.QueryOperatorsResponse) | Operators queries a list of Operators registered on the bridge | GET|/lbm/fbridge/v1/operators|
+| `Judges` | [QueryJudgesRequest](#lbm.fbridge.v1.QueryJudgesRequest) | [QueryJudgesResponse](#lbm.fbridge.v1.QueryJudgesResponse) | Judges queries a list of Judges registered on the bridge | GET|/lbm/fbridge/v1/judges|
+| `Proposals` | [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse) | Proposals queries a list of SuggestRole Proposals | GET|/lbm/fbridge/v1/role/proposals|
+| `Proposal` | [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse) | Proposal queries a SuggestRole Proposal | GET|/lbm/fbridge/v1/role/proposals/{proposal_id}|
 
  <!-- end services -->
 
@@ -12057,6 +12146,33 @@ GenesisState defines the fbridge module's genesis state.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/fbridge/v1/tx.proto
+
+
+
+<a name="lbm.fbridge.v1.MsgAddVoteForRole"></a>
+
+### MsgAddVoteForRole
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
+| `proposal_id` | [uint64](#uint64) |  | the proposal ID |
+| `option` | [bool](#bool) |  | the vote option - yes : true - no : false |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgAddVoteForRoleResponse"></a>
+
+### MsgAddVoteForRoleResponse
+
+
+
+
 
 
 
@@ -12269,6 +12385,33 @@ MsgResume is input values required for resuming the bridge module
 
 
 
+<a name="lbm.fbridge.v1.MsgSuggestRole"></a>
+
+### MsgSuggestRole
+MsgUpdateRole is input values required for updating the role of an address
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
+| `target` | [string](#string) |  | the address to update the role |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgSuggestRoleResponse"></a>
+
+### MsgSuggestRoleResponse
+
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.MsgTransfer"></a>
 
 ### MsgTransfer
@@ -12289,33 +12432,6 @@ MsgTransfer is input values required for bridge transfer
 <a name="lbm.fbridge.v1.MsgTransferResponse"></a>
 
 ### MsgTransferResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.MsgUpdateRole"></a>
-
-### MsgUpdateRole
-MsgUpdateRole is input values required for updating the role of an address
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `from` | [string](#string) |  | the guardian address |
-| `target` | [string](#string) |  | the address to update the role |
-| `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.MsgUpdateRoleResponse"></a>
-
-### MsgUpdateRoleResponse
 
 
 
@@ -12343,7 +12459,8 @@ MsgUpdateRole is input values required for updating the role of an address
 | `RemoveProvision` | [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision) | [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse) | Remove a specific confirmed provision (reset for specific sequence number). | |
 | `ClaimBatch` | [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch) | [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
 | `Claim` | [MsgClaim](#lbm.fbridge.v1.MsgClaim) | [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
-| `UpdateRole` | [MsgUpdateRole](#lbm.fbridge.v1.MsgUpdateRole) | [MsgUpdateRoleResponse](#lbm.fbridge.v1.MsgUpdateRoleResponse) | UpdateRole updates the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. | |
+| `SuggestRole` | [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole) | [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse) | SuggestRole suggests updating the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. The proposal will be passed only with the consent of +2/3 Guardian members. | |
+| `AddVoteForRole` | [MsgAddVoteForRole](#lbm.fbridge.v1.MsgAddVoteForRole) | [MsgAddVoteForRoleResponse](#lbm.fbridge.v1.MsgAddVoteForRoleResponse) | AddVoteForRole adds a vote for a role change proposal. | |
 | `Halt` | [MsgHalt](#lbm.fbridge.v1.MsgHalt) | [MsgHaltResponse](#lbm.fbridge.v1.MsgHaltResponse) | Halt the bridge module. | |
 | `Resume` | [MsgResume](#lbm.fbridge.v1.MsgResume) | [MsgResumeResponse](#lbm.fbridge.v1.MsgResumeResponse) | Resume the bridge module. | |
 

@@ -20,7 +20,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgRemoveProvision{}, "lbm-sdk/MsgRemoveProvision")
 	legacy.RegisterAminoMsg(cdc, &MsgClaimBatch{}, "lbm-sdk/MsgClaimBatch")
 	legacy.RegisterAminoMsg(cdc, &MsgClaim{}, "lbm-sdk/MsgClaim")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateRole{}, "lbm-sdk/MsgUpdateRole")
+	legacy.RegisterAminoMsg(cdc, &MsgSuggestRole{}, "lbm-sdk/MsgSuggestRole")
+	legacy.RegisterAminoMsg(cdc, &MsgAddVoteForRole{}, "lbm-sdk/MsgAddVoteForRole")
 	legacy.RegisterAminoMsg(cdc, &MsgHalt{}, "lbm-sdk/MsgHalt")
 	legacy.RegisterAminoMsg(cdc, &MsgResume{}, "lbm-sdk/MsgResume")
 }
@@ -35,7 +36,8 @@ func RegisterInterfaces(registrar types.InterfaceRegistry) {
 		&MsgRemoveProvision{},
 		&MsgClaimBatch{},
 		&MsgClaim{},
-		&MsgUpdateRole{},
+		&MsgSuggestRole{},
+		&MsgAddVoteForRole{},
 		&MsgHalt{},
 		&MsgResume{},
 	)

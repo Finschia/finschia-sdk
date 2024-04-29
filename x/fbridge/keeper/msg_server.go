@@ -44,7 +44,11 @@ func (m msgServer) Claim(ctx context.Context, claim *types.MsgClaim) (*types.Msg
 	panic("implement me")
 }
 
-func (m msgServer) UpdateRole(ctx context.Context, role *types.MsgUpdateRole) (*types.MsgUpdateRoleResponse, error) {
+func (m msgServer) SuggestRole(ctx context.Context, role *types.MsgSuggestRole) (*types.MsgSuggestRoleResponse, error) {
+	panic("implement me")
+}
+
+func (m msgServer) AddVoteForRole(ctx context.Context, role *types.MsgAddVoteForRole) (*types.MsgAddVoteForRoleResponse, error) {
 	panic("implement me")
 }
 

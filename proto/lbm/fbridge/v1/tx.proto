@@ -28,9 +28,13 @@ service Msg {
   // Claim processes the claiming of a provision with a specific sequence number
   rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
-  // UpdateRole updates the role of an address in the bridge module.
+  // SuggestRole suggests updating the role of an address in the bridge module.
   // The role can be one of the following: guardian, operator, judge.
-  rpc UpdateRole(MsgUpdateRole) returns (MsgUpdateRoleResponse);
+  // The proposal will be passed only with the consent of +2/3 Guardian members.
+  rpc SuggestRole(MsgSuggestRole) returns (MsgSuggestRoleResponse);
+
+  // AddVoteForRole adds a vote for a role change proposal.
+  rpc AddVoteForRole(MsgAddVoteForRole) returns (MsgAddVoteForRoleResponse);
 
   // Halt the bridge module.
   rpc Halt(MsgHalt) returns (MsgHaltResponse);
@@ -120,7 +124,7 @@ message MsgClaim {
 message MsgClaimResponse {}
 
 // MsgUpdateRole is input values required for updating the role of an address
-message MsgUpdateRole {
+message MsgSuggestRole {
   // the guardian address
   string from = 1;
   // the address to update the role
@@ -133,7 +137,20 @@ message MsgUpdateRole {
   Role role = 3;
 }
 
-message MsgUpdateRoleResponse {}
+message MsgSuggestRoleResponse {}
+
+message MsgAddVoteForRole {
+  // the guardian address
+  string from = 1;
+  // the proposal ID
+  uint64 proposal_id = 2;
+  // the vote option
+  // - yes : true
+  // - no : false
+  bool option = 3;
+}
+
+message MsgAddVoteForRoleResponse {}
 
 // MsgHalt is input values required for halting the bridge module
 message MsgHalt {
