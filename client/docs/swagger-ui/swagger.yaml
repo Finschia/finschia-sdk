@@ -29799,6 +29799,813 @@ paths:
                       format: byte
       tags:
         - Service
+  '/lbm/fbridge/v1/commitments/{seq}':
+    get:
+      summary: Commitments queries commitments of a specific sequence number
+      operationId: FBridgeCommitments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              commitments:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /lbm/fbridge/v1/greatest_confirmed_seq:
+    get:
+      summary: >-
+        GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence
+        number confirmed by n-of-m operators
+      operationId: GreatestConsecutiveConfirmedSeq
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/fbridge/v1/guardians:
+    get:
+      summary: Guardians queries a list of Guardians registered on the bridge
+      operationId: FBridgeGuardians
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              guardians:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/fbridge/v1/judges:
+    get:
+      summary: Judges queries a list of Judges registered on the bridge
+      operationId: FBridgeJudges
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              judges:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/fbridge/v1/nextseq_send:
+    get:
+      summary: NextSeqSend queries the sequence of next bridge request
+      operationId: NextSeqSend
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/fbridge/v1/operators:
+    get:
+      summary: Operators queries a list of Operators registered on the bridge
+      operationId: FBridgeOperators
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              operators:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  '/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs':
+    get:
+      summary: >-
+        NeededSubmissionSeqs queries a list of sequence numbers that need to be
+        submitted by a particular operator
+
+        The search scope is [greatest_consecutive_seq_by_operator,
+        min(greatest_consecutive_seq_by_operator + range,
+
+        greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be
+        replaced with greatest_consecutive_seq if
+
+        the operator is newly added
+      operationId: NeededSubmissionSeqs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seqs:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+        - name: range
+          description: range specifies the size of the range to search.
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/operators/{operator}/provision/{seq}':
+    get:
+      summary: >-
+        SubmittedProvision queries a provision submitted by a particular
+        operator
+      operationId: SubmittedProvision
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  seq:
+                    type: string
+                    format: uint64
+                    title: the sequence number of the bridge request
+                  amount:
+                    type: string
+                    title: the amount of token to be claimed
+                  sender:
+                    type: string
+                    title: the sender address on the source chain
+                  receiver:
+                    type: string
+                    title: the recipient address on the destination chain
+                description: Provision is a struct that represents a provision internally.
+              status:
+                type: object
+                properties:
+                  timelock_end:
+                    type: string
+                    format: uint64
+                    title: >-
+                      the unix timestamp the provision will be able to be
+                      claimed (unix timestamp)
+                  confirm_counts:
+                    type: integer
+                    format: int32
+                    title: >-
+                      a value that tells how many operators have submitted this
+                      provision
+                  is_claimed:
+                    type: boolean
+                    format: boolean
+                    title: whether the provision has been claimed
+                description: >-
+                  ProvisionStatus is a struct that represents the status of a
+                  provision.
+
+                  To optimize computational cost, we have collected frequently
+                  changing values from provision.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/operators/{operator}/seq':
+    get:
+      summary: >-
+        GreatestSeqByOperator queries a greatest sequence number confirmed by a
+        particular operator
+      operationId: GreatestSeqByOperator
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /lbm/fbridge/v1/params:
+    get:
+      summary: Params queries the parameters of x/fbridge module.
+      operationId: FBridgeParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  operator_trust_level:
+                    description: >-
+                      ratio of how many operators' confirmations are needed to
+                      be valid.
+                    type: object
+                    properties:
+                      numerator:
+                        type: string
+                        format: uint64
+                      denominator:
+                        type: string
+                        format: uint64
+                  guardian_trust_level:
+                    description: >-
+                      ratio of how many guardians' confirmations are needed to
+                      be valid.
+                    type: object
+                    properties:
+                      numerator:
+                        type: string
+                        format: uint64
+                      denominator:
+                        type: string
+                        format: uint64
+                  judge_trust_level:
+                    description: >-
+                      ratio of how many judges' confirmations are needed to be
+                      valid.
+                    type: object
+                    properties:
+                      numerator:
+                        type: string
+                        format: uint64
+                      denominator:
+                        type: string
+                        format: uint64
+                  timelock_period:
+                    type: string
+                    format: uint64
+                    title: >-
+                      default timelock period for each provision (unix
+                      timestamp)
+                  proposal_period:
+                    type: string
+                    format: uint64
+                    title: default period of the proposal to update the role
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  '/lbm/fbridge/v1/provision/{seq}':
+    get:
+      summary: ConfirmedProvision queries a particular sequence of confirmed provisions
+      operationId: ConfirmedProvision
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  seq:
+                    type: string
+                    format: uint64
+                    title: the sequence number of the bridge request
+                  amount:
+                    type: string
+                    title: the amount of token to be claimed
+                  sender:
+                    type: string
+                    title: the sender address on the source chain
+                  receiver:
+                    type: string
+                    title: the recipient address on the destination chain
+                description: Provision is a struct that represents a provision internally.
+              status:
+                type: object
+                properties:
+                  timelock_end:
+                    type: string
+                    format: uint64
+                    title: >-
+                      the unix timestamp the provision will be able to be
+                      claimed (unix timestamp)
+                  confirm_counts:
+                    type: integer
+                    format: int32
+                    title: >-
+                      a value that tells how many operators have submitted this
+                      provision
+                  is_claimed:
+                    type: boolean
+                    format: boolean
+                    title: whether the provision has been claimed
+                description: >-
+                  ProvisionStatus is a struct that represents the status of a
+                  provision.
+
+                  To optimize computational cost, we have collected frequently
+                  changing values from provision.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /lbm/fbridge/v1/role/proposals:
+    get:
+      summary: Proposals queries a list of SuggestRole Proposals
+      operationId: FBridgeProposals
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              proposals:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    proposer:
+                      type: string
+                      title: the proposer address
+                    target:
+                      type: string
+                      title: the address to update the role
+                    role:
+                      title: >-
+                        the role to be updated
+
+                        - unspecified : 0, used to remove the address from a
+                        group
+
+                        - guardian : 1
+
+                        - operator : 2
+
+                        - judge : 3
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - GUARDIAN
+                        - OPERATOR
+                        - JUDGE
+                      default: UNSPECIFIED
+                      description: >-
+                        Role defines the role of the operator, guardian, and
+                        judge.
+                    expired_at:
+                      type: string
+                      format: uint64
+                      title: >-
+                        the unix timestamp the proposal will be expired (unix
+                        timestamp)
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/lbm/fbridge/v1/role/proposals/{proposal_id}':
+    get:
+      summary: Proposal queries a SuggestRole Proposal
+      operationId: FBridgeProposal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              proposal:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  proposer:
+                    type: string
+                    title: the proposer address
+                  target:
+                    type: string
+                    title: the address to update the role
+                  role:
+                    title: |-
+                      the role to be updated
+                      - unspecified : 0, used to remove the address from a group
+                      - guardian : 1
+                      - operator : 2
+                      - judge : 3
+                    type: string
+                    enum:
+                      - UNSPECIFIED
+                      - GUARDIAN
+                      - OPERATOR
+                      - JUDGE
+                    default: UNSPECIFIED
+                    description: >-
+                      Role defines the role of the operator, guardian, and
+                      judge.
+                  expired_at:
+                    type: string
+                    format: uint64
+                    title: >-
+                      the unix timestamp the proposal will be expired (unix
+                      timestamp)
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: proposal_id
+          description: the proposal id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.Params:
     type: object
@@ -49344,3 +50151,391 @@ definitions:
       minimum_gas_price:
         type: string
     description: ConfigResponse defines the response structure for the Config gRPC query.
+  lbm.fbridge.v1.Fraction:
+    type: object
+    properties:
+      numerator:
+        type: string
+        format: uint64
+      denominator:
+        type: string
+        format: uint64
+    description: |-
+      Fraction defines the protobuf message type for tmmath.Fraction that only
+      supports positive values.
+  lbm.fbridge.v1.Params:
+    type: object
+    properties:
+      operator_trust_level:
+        description: ratio of how many operators' confirmations are needed to be valid.
+        type: object
+        properties:
+          numerator:
+            type: string
+            format: uint64
+          denominator:
+            type: string
+            format: uint64
+      guardian_trust_level:
+        description: ratio of how many guardians' confirmations are needed to be valid.
+        type: object
+        properties:
+          numerator:
+            type: string
+            format: uint64
+          denominator:
+            type: string
+            format: uint64
+      judge_trust_level:
+        description: ratio of how many judges' confirmations are needed to be valid.
+        type: object
+        properties:
+          numerator:
+            type: string
+            format: uint64
+          denominator:
+            type: string
+            format: uint64
+      timelock_period:
+        type: string
+        format: uint64
+        title: default timelock period for each provision (unix timestamp)
+      proposal_period:
+        type: string
+        format: uint64
+        title: default period of the proposal to update the role
+  lbm.fbridge.v1.ProvisionData:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+        title: the sequence number of the bridge request
+      amount:
+        type: string
+        title: the amount of token to be claimed
+      sender:
+        type: string
+        title: the sender address on the source chain
+      receiver:
+        type: string
+        title: the recipient address on the destination chain
+    description: Provision is a struct that represents a provision internally.
+  lbm.fbridge.v1.ProvisionStatus:
+    type: object
+    properties:
+      timelock_end:
+        type: string
+        format: uint64
+        title: >-
+          the unix timestamp the provision will be able to be claimed (unix
+          timestamp)
+      confirm_counts:
+        type: integer
+        format: int32
+        title: a value that tells how many operators have submitted this provision
+      is_claimed:
+        type: boolean
+        format: boolean
+        title: whether the provision has been claimed
+    description: >-
+      ProvisionStatus is a struct that represents the status of a provision.
+
+      To optimize computational cost, we have collected frequently changing
+      values from provision.
+  lbm.fbridge.v1.QueryCommitmentsResponse:
+    type: object
+    properties:
+      commitments:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.QueryConfirmedProvisionResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          seq:
+            type: string
+            format: uint64
+            title: the sequence number of the bridge request
+          amount:
+            type: string
+            title: the amount of token to be claimed
+          sender:
+            type: string
+            title: the sender address on the source chain
+          receiver:
+            type: string
+            title: the recipient address on the destination chain
+        description: Provision is a struct that represents a provision internally.
+      status:
+        type: object
+        properties:
+          timelock_end:
+            type: string
+            format: uint64
+            title: >-
+              the unix timestamp the provision will be able to be claimed (unix
+              timestamp)
+          confirm_counts:
+            type: integer
+            format: int32
+            title: >-
+              a value that tells how many operators have submitted this
+              provision
+          is_claimed:
+            type: boolean
+            format: boolean
+            title: whether the provision has been claimed
+        description: >-
+          ProvisionStatus is a struct that represents the status of a provision.
+
+          To optimize computational cost, we have collected frequently changing
+          values from provision.
+  lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+  lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+  lbm.fbridge.v1.QueryGuardiansResponse:
+    type: object
+    properties:
+      guardians:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.QueryJudgesResponse:
+    type: object
+    properties:
+      judges:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse:
+    type: object
+    properties:
+      seqs:
+        type: array
+        items:
+          type: string
+          format: uint64
+  lbm.fbridge.v1.QueryNextSeqSendResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+  lbm.fbridge.v1.QueryOperatorsResponse:
+    type: object
+    properties:
+      operators:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          operator_trust_level:
+            description: ratio of how many operators' confirmations are needed to be valid.
+            type: object
+            properties:
+              numerator:
+                type: string
+                format: uint64
+              denominator:
+                type: string
+                format: uint64
+          guardian_trust_level:
+            description: ratio of how many guardians' confirmations are needed to be valid.
+            type: object
+            properties:
+              numerator:
+                type: string
+                format: uint64
+              denominator:
+                type: string
+                format: uint64
+          judge_trust_level:
+            description: ratio of how many judges' confirmations are needed to be valid.
+            type: object
+            properties:
+              numerator:
+                type: string
+                format: uint64
+              denominator:
+                type: string
+                format: uint64
+          timelock_period:
+            type: string
+            format: uint64
+            title: default timelock period for each provision (unix timestamp)
+          proposal_period:
+            type: string
+            format: uint64
+            title: default period of the proposal to update the role
+  lbm.fbridge.v1.QueryProposalResponse:
+    type: object
+    properties:
+      proposal:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          proposer:
+            type: string
+            title: the proposer address
+          target:
+            type: string
+            title: the address to update the role
+          role:
+            title: |-
+              the role to be updated
+              - unspecified : 0, used to remove the address from a group
+              - guardian : 1
+              - operator : 2
+              - judge : 3
+            type: string
+            enum:
+              - UNSPECIFIED
+              - GUARDIAN
+              - OPERATOR
+              - JUDGE
+            default: UNSPECIFIED
+            description: 'Role defines the role of the operator, guardian, and judge.'
+          expired_at:
+            type: string
+            format: uint64
+            title: the unix timestamp the proposal will be expired (unix timestamp)
+  lbm.fbridge.v1.QueryProposalsResponse:
+    type: object
+    properties:
+      proposals:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            proposer:
+              type: string
+              title: the proposer address
+            target:
+              type: string
+              title: the address to update the role
+            role:
+              title: |-
+                the role to be updated
+                - unspecified : 0, used to remove the address from a group
+                - guardian : 1
+                - operator : 2
+                - judge : 3
+              type: string
+              enum:
+                - UNSPECIFIED
+                - GUARDIAN
+                - OPERATOR
+                - JUDGE
+              default: UNSPECIFIED
+              description: 'Role defines the role of the operator, guardian, and judge.'
+            expired_at:
+              type: string
+              format: uint64
+              title: the unix timestamp the proposal will be expired (unix timestamp)
+  lbm.fbridge.v1.QuerySubmittedProvisionResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          seq:
+            type: string
+            format: uint64
+            title: the sequence number of the bridge request
+          amount:
+            type: string
+            title: the amount of token to be claimed
+          sender:
+            type: string
+            title: the sender address on the source chain
+          receiver:
+            type: string
+            title: the recipient address on the destination chain
+        description: Provision is a struct that represents a provision internally.
+      status:
+        type: object
+        properties:
+          timelock_end:
+            type: string
+            format: uint64
+            title: >-
+              the unix timestamp the provision will be able to be claimed (unix
+              timestamp)
+          confirm_counts:
+            type: integer
+            format: int32
+            title: >-
+              a value that tells how many operators have submitted this
+              provision
+          is_claimed:
+            type: boolean
+            format: boolean
+            title: whether the provision has been claimed
+        description: >-
+          ProvisionStatus is a struct that represents the status of a provision.
+
+          To optimize computational cost, we have collected frequently changing
+          values from provision.
+  lbm.fbridge.v1.Role:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - GUARDIAN
+      - OPERATOR
+      - JUDGE
+    default: UNSPECIFIED
+    description: 'Role defines the role of the operator, guardian, and judge.'
+  lbm.fbridge.v1.RoleProposal:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      proposer:
+        type: string
+        title: the proposer address
+      target:
+        type: string
+        title: the address to update the role
+      role:
+        title: |-
+          the role to be updated
+          - unspecified : 0, used to remove the address from a group
+          - guardian : 1
+          - operator : 2
+          - judge : 3
+        type: string
+        enum:
+          - UNSPECIFIED
+          - GUARDIAN
+          - OPERATOR
+          - JUDGE
+        default: UNSPECIFIED
+        description: 'Role defines the role of the operator, guardian, and judge.'
+      expired_at:
+        type: string
+        format: uint64
+        title: the unix timestamp the proposal will be expired (unix timestamp)
