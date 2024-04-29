@@ -25,10 +25,10 @@ func (k Keeper) handleBridgeTransfer(ctx sdk.Context, sender sdk.AccAddress, amo
 		panic(fmt.Errorf("cannot burn coins after a successful send to a module account: %v", err))
 	}
 
-	nextSeq := k.GetNextSequence(ctx) + 1
-	k.setNextSequence(ctx, nextSeq)
+	seq := k.GetNextSequence(ctx)
+	k.setNextSequence(ctx, seq+1)
 
-	return nextSeq, nil
+	return seq, nil
 }
 
 func (k Keeper) GetNextSequence(ctx sdk.Context) uint64 {

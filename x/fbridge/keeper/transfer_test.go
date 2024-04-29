@@ -27,14 +27,16 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(nil)
 
 	k := NewKeeper(encCfg.Codec, key, authKeeper, bankKeeper, denom, "gov")
-	beforeSeq := uint64(2)
+	targetSeq := uint64(2)
 	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, beforeSeq)
+	binary.BigEndian.PutUint64(bz, targetSeq)
 	ctx.KVStore(key).Set(types.KeyNextSeqSend, bz)
 
-	afterSeq, err := k.handleBridgeTransfer(ctx, sender, amt)
+	handledSeq, err := k.handleBridgeTransfer(ctx, sender, amt)
 	require.NoError(t, err)
-	require.Equal(t, beforeSeq+1, afterSeq)
+	require.Equal(t, targetSeq, handledSeq)
+	afterSeq := k.GetNextSequence(ctx)
+	require.Equal(t, targetSeq+1, afterSeq)
 }
 
 func TestIsValidEthereumAddress(t *testing.T) {
