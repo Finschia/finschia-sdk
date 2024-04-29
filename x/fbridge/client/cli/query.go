@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"github.com/Finschia/finschia-sdk/client"
-	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/spf13/cobra"
 
+	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 

@@ -1,13 +1,13 @@
 package cli
 
 import (
+	"github.com/spf13/cobra"
+
+	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/spf13/cobra"
-
-	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
@@ -44,6 +44,9 @@ func NewTransferTxCmd() *cobra.Command {
 			}
 			toAddr := args[0]
 			coins, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
 			if len(coins) != 1 {
 				return sdkerrors.ErrInvalidRequest.Wrapf("only one native coin type is allowed")
 			}

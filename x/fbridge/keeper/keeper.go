@@ -2,13 +2,13 @@ package keeper
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
-	"strings"
 )
 
 type Keeper struct {

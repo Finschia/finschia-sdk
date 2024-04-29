@@ -2,12 +2,12 @@ package keeper
 
 import (
 	"encoding/binary"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/testutil"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )

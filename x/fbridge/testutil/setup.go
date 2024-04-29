@@ -1,11 +1,10 @@
 package testutil
 
 import (
-	"github.com/golang/mock/gomock"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
@@ -61,10 +60,12 @@ func MakeTestEncodingConfig() TestEncodingConfig {
 	return encCfg
 }
 
-func PrepareFbridgeTest(t testing.TB) (*sdk.KVStoreKey, sdk.Context, TestEncodingConfig, *MockAccountKeeper, *MockBankKeeper) {
-	ctrl := gomock.NewController(t)
+func PrepareFbridgeTest(tb testing.TB) (*sdk.KVStoreKey, sdk.Context, TestEncodingConfig, *MockAccountKeeper, *MockBankKeeper) {
+	tb.Helper()
+
+	ctrl := gomock.NewController(tb)
 	key := storetypes.NewKVStoreKey(types.StoreKey)
-	ctx := DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	ctx := DefaultContextWithDB(tb, key, sdk.NewTransientStoreKey("transient_test"))
 	encCfg := MakeTestEncodingConfig()
 
 	authKeeper := NewMockAccountKeeper(ctrl)

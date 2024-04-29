@@ -2,9 +2,9 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
