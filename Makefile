@@ -145,6 +145,7 @@ mocks: $(MOCKS_DIR)
 	mockgen -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/tendermint/tendermint/libs/log Logger
 	mockgen -source=x/stakingplus/expected_keepers.go -package testutil -destination x/stakingplus/testutil/expected_keepers_mocks.go
 	mockgen -source=x/fswap/types/expected_keepers.go -package testutil -destination x/fswap/testutil/expected_keepers_mocks.go
+	mockgen -source=x/fbridge/types/expected_keepers.go -package testutil -destination x/fbridge/testutil/expected_keepers_mocks.go
 .PHONY: mocks
 
 $(MOCKS_DIR):

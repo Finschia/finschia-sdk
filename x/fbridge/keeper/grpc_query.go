@@ -2,8 +2,10 @@ package keeper
 
 import (
 	"context"
-
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -12,8 +14,15 @@ func (k Keeper) Params(ctx context.Context, request *types.QueryParamsRequest) (
 	panic("implement me")
 }
 
-func (k Keeper) NextSeqSend(ctx context.Context, request *types.QueryNextSeqSendRequest) (*types.QueryNextSeqSendResponse, error) {
-	panic("implement me")
+func (k Keeper) NextSeqSend(goCtx context.Context, req *types.QueryNextSeqSendRequest) (*types.QueryNextSeqSendResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	seq := k.GetNextSequence(ctx)
+
+	return &types.QueryNextSeqSendResponse{Seq: seq}, nil
 }
 
 func (k Keeper) GreatestSeqByOperator(ctx context.Context, request *types.QueryGreatestSeqByOperatorRequest) (*types.QueryGreatestSeqByOperatorResponse, error) {
