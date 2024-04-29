@@ -4,16 +4,17 @@ package lbm.fswap.v1;
 option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 message FswapInit {
   option (gogoproto.equal)            = true;
   option (gogoproto.goproto_stringer) = false;
 
-  string fromDenom   = 1;
-  string toDenom     = 2;
-  string AmountLimit = 3
+  string from_denom              = 1;
+  string to_denom                = 2;
+  string amount_cap_for_to_denom = 3
       [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
-  string SwapRate = 4
+  string swap_multiple = 4
       [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -28,9 +29,9 @@ message FswapInitProposal {
 }
 
 message Swapped {
-  option (gogoproto.goproto_stringer) = false;
-  string old_coin_amount              = 1
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
-  string new_coin_amount = 2
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  option (gogoproto.goproto_stringer)      = false;
+  cosmos.base.v1beta1.Coin old_coin_amount = 1
+      [(gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin new_coin_amount = 2
+      [(gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin", (gogoproto.nullable) = false];
 }

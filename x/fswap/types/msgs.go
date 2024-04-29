@@ -15,26 +15,26 @@ func NewMsgSwapRequest(fromAddr, toAddr sdk.AccAddress, amount sdk.Coin) *MsgSwa
 }
 
 // ValidateBasic Implements Msg.
-func (msg MsgSwapRequest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwapRequest) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
 
-	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+	if !m.Amount.IsValid() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 
-	if !msg.Amount.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+	if !m.Amount.IsPositive() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 
 	return nil
 }
 
 // GetSigners Implements Msg.
-func (msg MsgSwapRequest) GetSigners() []sdk.AccAddress {
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwapRequest) GetSigners() []sdk.AccAddress {
+	from, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -51,8 +51,8 @@ func NewMsgSwapAllRequest(fromAddr, toAddr sdk.AccAddress) *MsgSwapAllRequest {
 }
 
 // ValidateBasic Implements Msg.
-func (msg MsgSwapAllRequest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwapAllRequest) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
@@ -61,8 +61,8 @@ func (msg MsgSwapAllRequest) ValidateBasic() error {
 }
 
 // GetSigners Implements Msg.
-func (msg MsgSwapAllRequest) GetSigners() []sdk.AccAddress {
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwapAllRequest) GetSigners() []sdk.AccAddress {
+	from, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
 		panic(err)
 	}

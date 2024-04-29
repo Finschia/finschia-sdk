@@ -25,8 +25,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the fswap module's genesis state.
 type GenesisState struct {
-	FswapInit FswapInit `protobuf:"bytes,1,opt,name=fswap_init,json=fswapInit,proto3" json:"fswap_init"`
-	Swapped   Swapped   `protobuf:"bytes,2,opt,name=swapped,proto3" json:"swapped"`
+	FswapInit []FswapInit `protobuf:"bytes,1,rep,name=fswap_init,json=fswapInit,proto3" json:"fswap_init"`
+	Swapped   []Swapped   `protobuf:"bytes,2,rep,name=swapped,proto3" json:"swapped"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -62,18 +62,18 @@ func (m *GenesisState) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
-func (m *GenesisState) GetFswapInit() FswapInit {
+func (m *GenesisState) GetFswapInit() []FswapInit {
 	if m != nil {
 		return m.FswapInit
 	}
-	return FswapInit{}
+	return nil
 }
 
-func (m *GenesisState) GetSwapped() Swapped {
+func (m *GenesisState) GetSwapped() []Swapped {
 	if m != nil {
 		return m.Swapped
 	}
-	return Swapped{}
+	return nil
 }
 
 func init() {
@@ -90,15 +90,15 @@ var fileDescriptor_94e309cb1db27661 = []byte{
 	0x19, 0x4a, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x25, 0xf4, 0x41, 0x2c, 0x88, 0x1a, 0x29, 0x09,
 	0x14, 0xfd, 0x10, 0xc5, 0x60, 0x19, 0xa5, 0x66, 0x46, 0x2e, 0x1e, 0x77, 0x88, 0x79, 0xc1, 0x25,
 	0x89, 0x25, 0xa9, 0x42, 0x36, 0x5c, 0x5c, 0x60, 0xf9, 0xf8, 0xcc, 0xbc, 0xcc, 0x12, 0x09, 0x46,
-	0x05, 0x46, 0x0d, 0x6e, 0x23, 0x71, 0x3d, 0x64, 0x3b, 0xf4, 0xdc, 0x40, 0x0c, 0xcf, 0xbc, 0xcc,
+	0x05, 0x66, 0x0d, 0x6e, 0x23, 0x71, 0x3d, 0x64, 0x3b, 0xf4, 0xdc, 0x40, 0x0c, 0xcf, 0xbc, 0xcc,
 	0x12, 0x27, 0x96, 0x13, 0xf7, 0xe4, 0x19, 0x82, 0x38, 0xd3, 0x60, 0x02, 0x42, 0xa6, 0x5c, 0xec,
 	0x20, 0x76, 0x41, 0x6a, 0x8a, 0x04, 0x13, 0x58, 0xab, 0x28, 0xaa, 0xd6, 0x60, 0x88, 0x24, 0x54,
 	0x23, 0x4c, 0xad, 0x93, 0xc7, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24,
 	0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x44, 0xe9,
 	0xa5, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0xea, 0xbb, 0x65, 0xe6, 0x15, 0x27,
 	0x67, 0x64, 0x26, 0xea, 0xa7, 0x41, 0x19, 0xba, 0xc5, 0x29, 0xd9, 0xfa, 0x15, 0x50, 0x8f, 0x95,
-	0x54, 0x16, 0xa4, 0x16, 0x27, 0xb1, 0x81, 0xbd, 0x65, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x41,
-	0x8c, 0x3c, 0xe3, 0x32, 0x01, 0x00, 0x00,
+	0x54, 0x16, 0xa4, 0x16, 0x27, 0xb1, 0x81, 0xbd, 0x65, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x8c,
+	0x44, 0xd5, 0xdb, 0x32, 0x01, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -121,26 +121,34 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.Swapped.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
+	if len(m.Swapped) > 0 {
+		for iNdEx := len(m.Swapped) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Swapped[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
 		}
-		i -= size
-		i = encodeVarintGenesis(dAtA, i, uint64(size))
 	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size, err := m.FswapInit.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
+	if len(m.FswapInit) > 0 {
+		for iNdEx := len(m.FswapInit) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.FswapInit[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
 		}
-		i -= size
-		i = encodeVarintGenesis(dAtA, i, uint64(size))
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -161,10 +169,18 @@ func (m *GenesisState) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.FswapInit.Size()
-	n += 1 + l + sovGenesis(uint64(l))
-	l = m.Swapped.Size()
-	n += 1 + l + sovGenesis(uint64(l))
+	if len(m.FswapInit) > 0 {
+		for _, e := range m.FswapInit {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.Swapped) > 0 {
+		for _, e := range m.Swapped {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -232,7 +248,8 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.FswapInit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.FswapInit = append(m.FswapInit, FswapInit{})
+			if err := m.FswapInit[len(m.FswapInit)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -265,7 +282,8 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Swapped.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Swapped = append(m.Swapped, Swapped{})
+			if err := m.Swapped[len(m.Swapped)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

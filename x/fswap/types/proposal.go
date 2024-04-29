@@ -25,21 +25,21 @@ func init() {
 }
 
 // ProposalRoute gets the proposal's router key
-func (fip *FswapInitProposal) ProposalRoute() string { return RouterKey }
+func (m *FswapInitProposal) ProposalRoute() string { return RouterKey }
 
 // ProposalType is "FswapInit"
-func (fip *FswapInitProposal) ProposalType() string { return ProposalTypeFswapInit }
+func (m *FswapInitProposal) ProposalType() string { return ProposalTypeFswapInit }
 
 // String implements the Stringer interface.
-func (fip *FswapInitProposal) String() string {
-	out, _ := yaml.Marshal(fip)
+func (m *FswapInitProposal) String() string {
+	out, _ := yaml.Marshal(m)
 	return string(out)
 }
 
 // ValidateBasic validates the proposal
-func (fip *FswapInitProposal) ValidateBasic() error {
-	if err := fip.FswapInit.ValidateBasic(); err != nil {
+func (m *FswapInitProposal) ValidateBasic() error {
+	if err := m.FswapInit.ValidateBasic(); err != nil {
 		return err
 	}
-	return gov.ValidateAbstract(fip)
+	return gov.ValidateAbstract(m)
 }

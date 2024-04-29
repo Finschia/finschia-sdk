@@ -12726,8 +12726,8 @@ Msg defines the foundation Msg service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | holder's address |
-| `old_coin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the old currency |
-| `new_coin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the new currency |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the old currency |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the new currency |
 
 
 
@@ -12758,10 +12758,10 @@ Msg defines the foundation Msg service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `fromDenom` | [string](#string) |  |  |
-| `toDenom` | [string](#string) |  |  |
-| `AmountLimit` | [string](#string) |  |  |
-| `SwapRate` | [string](#string) |  |  |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
+| `amount_cap_for_to_denom` | [string](#string) |  |  |
+| `swap_multiple` | [string](#string) |  |  |
 
 
 
@@ -12793,8 +12793,8 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `old_coin_amount` | [string](#string) |  |  |
-| `new_coin_amount` | [string](#string) |  |  |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -12825,8 +12825,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `fswap_init` | [FswapInit](#lbm.fswap.v1.FswapInit) |  |  |
-| `swapped` | [Swapped](#lbm.fswap.v1.Swapped) |  |  |
+| `fswap_init` | [FswapInit](#lbm.fswap.v1.FswapInit) | repeated |  |
+| `swapped` | [Swapped](#lbm.fswap.v1.Swapped) | repeated |  |
 
 
 
@@ -12867,8 +12867,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `old_coin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `new_coin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -12913,8 +12913,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) |  | GET|/lbm/fswap/v1/swapped|
-| `TotalNewCurrencySwapLimit` | [QueryTotalSwappableAmountRequest](#lbm.fswap.v1.QueryTotalSwappableAmountRequest) | [QueryTotalSwappableAmountResponse](#lbm.fswap.v1.QueryTotalSwappableAmountResponse) |  | GET|/lbm/fswap/v1/swappable_new_coin_amount|
+| `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of old coin and a minted amount of new coin. | GET|/lbm/fswap/v1/swapped|
+| `TotalSwappableAmount` | [QueryTotalSwappableAmountRequest](#lbm.fswap.v1.QueryTotalSwappableAmountRequest) | [QueryTotalSwappableAmountResponse](#lbm.fswap.v1.QueryTotalSwappableAmountResponse) | TotalSwappableAmount queries the current swappable amount for new coin. | GET|/lbm/fswap/v1/swappable_new_coin_amount|
 
  <!-- end services -->
 

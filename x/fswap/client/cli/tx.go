@@ -184,10 +184,10 @@ func parseArgsToContent(cmd *cobra.Command) (gov.Content, error) {
 	}
 
 	fswapInit := types.FswapInit{
-		FromDenom:   from_denom,
-		ToDenom:     to_denom,
-		AmountLimit: sdk.NewInt(amount_limit),
-		SwapRate:    sdk.NewInt(swap_rate),
+		FromDenom:           from_denom,
+		ToDenom:             to_denom,
+		AmountCapForToDenom: sdk.NewInt(amount_limit),
+		SwapMultiple:        sdk.NewInt(swap_rate),
 	}
 
 	content := types.NewFswapInitProposal(title, description, fswapInit)
