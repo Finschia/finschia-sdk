@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
@@ -12,8 +12,11 @@ func (k Keeper) Params(ctx context.Context, request *types.QueryParamsRequest) (
 	panic("implement me")
 }
 
-func (k Keeper) NextSeqSend(ctx context.Context, request *types.QueryNextSeqSendRequest) (*types.QueryNextSeqSendResponse, error) {
-	panic("implement me")
+func (k Keeper) NextSeqSend(goCtx context.Context, request *types.QueryNextSeqSendRequest) (*types.QueryNextSeqSendResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	seq := k.GetNextSequence(ctx)
+
+	return &types.QueryNextSeqSendResponse{Seq: seq}, nil
 }
 
 func (k Keeper) GreatestSeqByOperator(ctx context.Context, request *types.QueryGreatestSeqByOperatorRequest) (*types.QueryGreatestSeqByOperatorResponse, error) {

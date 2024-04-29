@@ -7,11 +7,11 @@ import "gogoproto/gogo.proto";
 
 message Params {
   // ratio of how many operators' confirmations are needed to be valid.
-  Fraction operator_trust_level = 1;
+  Fraction operator_trust_level = 1 [(gogoproto.nullable) = false];
   // ratio of how many guardians' confirmations are needed to be valid.
-  Fraction guardian_trust_level = 2;
+  Fraction guardian_trust_level = 2 [(gogoproto.nullable) = false];
   // ratio of how many judges' confirmations are needed to be valid.
-  Fraction judge_trust_level = 3;
+  Fraction judge_trust_level = 3 [(gogoproto.nullable) = false];
   // default timelock period for each provision (unix timestamp)
   uint64 timelock_period = 4;
   // default period of the proposal to update the role
