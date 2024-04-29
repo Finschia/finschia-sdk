@@ -6,24 +6,43 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-type msgServer struct {
-	Keeper
+var _ types.MsgServer = MsgServer{}
+
+type MsgServer struct {
+	keeper Keeper
 }
 
-// NewMsgServerImpl returns an implementation of the MsgServer interface
-// for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper) types.MsgServer {
-	return &msgServer{Keeper: keeper}
+func NewMsgServer(keeper Keeper) *MsgServer {
+	return &MsgServer{keeper}
 }
 
-var _ types.MsgServer = msgServer{}
-
-// Swap implements types.MsgServer.
-func (m msgServer) Swap(context.Context, *types.MsgSwapRequest) (*types.MsgSwapResponse, error) {
-	panic("unimplemented")
+func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwapRequest) (*types.MsgSwapResponse, error) {
+	//c := sdk.UnwrapSDKContext(ctx)
+	//swapped, err := s.keeper.GetSwapped(c)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//if req.GetAmount().Denom != swapped.OldCoinAmount.Denom {
+	//	return nil, sdkerrors.ErrInvalidCoins
+	//}
+	//from, err := sdk.AccAddressFromBech32(req.FromAddress)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//if err := s.keeper.Swap(c, from, req.GetAmount()); err != nil {
+	//	return nil, err
+	//}
+	return &types.MsgSwapResponse{}, nil
 }
 
-// SwapAll implements types.MsgServer.
-func (m msgServer) SwapAll(context.Context, *types.MsgSwapAllRequest) (*types.MsgSwapAllResponse, error) {
-	panic("unimplemented")
+func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAllRequest) (*types.MsgSwapAllResponse, error) {
+	//c := sdk.UnwrapSDKContext(ctx)
+	//from, err := sdk.AccAddressFromBech32(req.FromAddress)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//if err := s.keeper.SwapAll(c, from); err != nil {
+	//	return nil, err
+	//}
+	return &types.MsgSwapAllResponse{}, nil
 }

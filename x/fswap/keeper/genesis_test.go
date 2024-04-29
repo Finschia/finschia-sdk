@@ -5,9 +5,13 @@ import (
 )
 
 func (s *KeeperTestSuite) TestInitAndExportGenesis() {
-	s.keeper.InitGenesis(s.sdkCtx, *types.DefaultGenesis())
-	got := s.keeper.ExportGenesis(s.sdkCtx)
-	s.Require().NotNil(got)
-	s.Require().Equal(types.DefaultFswapInit(), got.FswapInit)
-	s.Require().Equal(types.DefaultSwapped(), got.Swapped)
+	ctx, _ := s.sdkCtx.CacheContext()
+	defaultGenesis := types.DefaultGenesis()
+	err := s.keeper.InitGenesis(ctx, defaultGenesis)
+	s.Require().NoError(err)
+
+	exportGenesis := s.keeper.ExportGenesis(ctx)
+	s.Require().Equal(defaultGenesis, exportGenesis)
+	s.Require().Equal(defaultGenesis.GetFswapInit(), exportGenesis.GetFswapInit())
+	s.Require().Equal(defaultGenesis.GetSwapped(), exportGenesis.GetSwapped())
 }

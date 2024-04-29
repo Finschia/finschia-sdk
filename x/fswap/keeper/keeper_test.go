@@ -39,5 +39,5 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.goCtx = sdk.WrapSDKContext(s.sdkCtx)
 	s.keeper = app.FswapKeeper
 
-	s.msgServer = keeper.NewMsgServerImpl(s.keeper)
+	s.msgServer = keeper.NewMsgServer(s.keeper)
 }

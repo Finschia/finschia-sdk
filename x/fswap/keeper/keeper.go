@@ -50,7 +50,16 @@ func (k Keeper) FswapInit(ctx sdk.Context, fswapInit types.FswapInit) error {
 		return err
 	}
 	// need confirm: Is Swapped use sdk.Coin or sdk.Int
-	swapped := types.NewSwapped(sdk.ZeroInt(), sdk.ZeroInt())
+	swapped := types.Swapped{
+		OldCoinAmount: sdk.Coin{
+			Denom:  "",
+			Amount: sdk.ZeroInt(),
+		},
+		NewCoinAmount: sdk.Coin{
+			Denom:  "",
+			Amount: sdk.ZeroInt(),
+		},
+	}
 	if err := k.SetSwapped(ctx, swapped); err != nil {
 		return err
 	}
