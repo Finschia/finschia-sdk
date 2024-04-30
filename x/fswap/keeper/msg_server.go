@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -17,32 +19,35 @@ func NewMsgServer(keeper Keeper) *MsgServer {
 }
 
 func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwapRequest) (*types.MsgSwapResponse, error) {
-	//c := sdk.UnwrapSDKContext(ctx)
-	//swapped, err := s.keeper.GetSwapped(c)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if req.GetAmount().Denom != swapped.OldCoinAmount.Denom {
-	//	return nil, sdkerrors.ErrInvalidCoins
-	//}
-	//from, err := sdk.AccAddressFromBech32(req.FromAddress)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if err := s.keeper.Swap(c, from, req.GetAmount()); err != nil {
-	//	return nil, err
-	//}
+	c := sdk.UnwrapSDKContext(ctx)
+	fswapInit, err := s.keeper.getFswapInit(c)
+	if err != nil {
+		return &types.MsgSwapResponse{}, err
+	}
+	if req.GetAmount().Denom != fswapInit.GetFromDenom() {
+		return nil, sdkerrors.ErrInvalidCoins
+	}
+	from, err := sdk.AccAddressFromBech32(req.FromAddress)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Swap(c, from, req.GetAmount()); err != nil {
+		return nil, err
+	}
 	return &types.MsgSwapResponse{}, nil
 }
 
 func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAllRequest) (*types.MsgSwapAllResponse, error) {
-	//c := sdk.UnwrapSDKContext(ctx)
-	//from, err := sdk.AccAddressFromBech32(req.FromAddress)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if err := s.keeper.SwapAll(c, from); err != nil {
-	//	return nil, err
-	//}
+	c := sdk.UnwrapSDKContext(ctx)
+	if !s.keeper.hasBeenInitialized(c) {
+		return &types.MsgSwapAllResponse{}, types.ErrFswapNotInitilized
+	}
+	from, err := sdk.AccAddressFromBech32(req.FromAddress)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.SwapAll(c, from); err != nil {
+		return nil, err
+	}
 	return &types.MsgSwapAllResponse{}, nil
 }

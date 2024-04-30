@@ -5,7 +5,7 @@ import (
 )
 
 func (s *KeeperTestSuite) TestInitAndExportGenesis() {
-	ctx, _ := s.sdkCtx.CacheContext()
+	ctx, _ := s.ctx.CacheContext()
 	defaultGenesis := types.DefaultGenesis()
 	err := s.keeper.InitGenesis(ctx, defaultGenesis)
 	s.Require().NoError(err)

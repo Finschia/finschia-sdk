@@ -16,7 +16,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error
 		return fmt.Errorf("cannot initialize genesis state, there are more than 1 swapped")
 	}
 	for _, fswapInit := range genState.GetFswapInit() {
-		if err := k.SetFswapInit(ctx, fswapInit); err != nil {
+		if err := k.setFswapInit(ctx, fswapInit); err != nil {
 			panic(err)
 		}
 	}
@@ -31,7 +31,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error
 // ExportGenesis returns the module's exported genesis.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
-		FswapInit: k.GetAllFswapInits(ctx),
-		Swapped:   k.GetAllSwapped(ctx),
+		FswapInit: k.getAllFswapInits(ctx),
+		Swapped:   k.getAllSwapped(ctx),
 	}
 }

@@ -156,6 +156,7 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
+		fswaptypes.ModuleName:          {authtypes.Burner, authtypes.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
