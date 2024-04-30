@@ -870,8 +870,8 @@
 - [lbm/fswap/v1/query.proto](#lbm/fswap/v1/query.proto)
     - [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest)
     - [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse)
-    - [QueryTotalSwappableAmountRequest](#lbm.fswap.v1.QueryTotalSwappableAmountRequest)
-    - [QueryTotalSwappableAmountResponse](#lbm.fswap.v1.QueryTotalSwappableAmountResponse)
+    - [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest)
+    - [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse)
   
     - [Query](#lbm.fswap.v1.Query)
   
@@ -12726,8 +12726,8 @@ Msg defines the foundation Msg service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | holder's address |
-| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the old currency |
-| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of the new currency |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | to-coin amount |
 
 
 
@@ -12793,8 +12793,8 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -12867,33 +12867,33 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `old_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `new_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
 
 
 
-<a name="lbm.fswap.v1.QueryTotalSwappableAmountRequest"></a>
+<a name="lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest"></a>
 
-### QueryTotalSwappableAmountRequest
-
-
+### QueryTotalSwappableToCoinAmountRequest
 
 
 
 
 
-<a name="lbm.fswap.v1.QueryTotalSwappableAmountResponse"></a>
 
-### QueryTotalSwappableAmountResponse
+
+<a name="lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse"></a>
+
+### QueryTotalSwappableToCoinAmountResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `swappable_new_coin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `swappable_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -12913,8 +12913,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of old coin and a minted amount of new coin. | GET|/lbm/fswap/v1/swapped|
-| `TotalSwappableAmount` | [QueryTotalSwappableAmountRequest](#lbm.fswap.v1.QueryTotalSwappableAmountRequest) | [QueryTotalSwappableAmountResponse](#lbm.fswap.v1.QueryTotalSwappableAmountResponse) | TotalSwappableAmount queries the current swappable amount for new coin. | GET|/lbm/fswap/v1/swappable_new_coin_amount|
+| `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of to-coin. | GET|/lbm/fswap/v1/swapped|
+| `TotalSwappableToCoinAmount` | [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest) | [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse) | TotalSwappableToCoinAmount queries the current swappable amount for to-coin. | GET|/lbm/fswap/v1/swappable_new_coin_amount|
 
  <!-- end services -->
 
@@ -12961,7 +12961,7 @@ GenesisState defines the fswap module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `from_address` | [string](#string) |  | holder's address |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | amount of old currency |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
 
 
 

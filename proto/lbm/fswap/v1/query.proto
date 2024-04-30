@@ -9,27 +9,28 @@ import "cosmos/base/v1beta1/coin.proto";
 import "lbm/fswap/v1/fswap.proto";
 
 service Query {
-  // Swapped queries the current swapped status that includes a burnt amount of old coin and a minted amount of new
-  // coin.
+  // Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of
+  // to-coin.
   rpc Swapped(QuerySwappedRequest) returns (QuerySwappedResponse) {
     option (google.api.http).get = "/lbm/fswap/v1/swapped";
   }
-  // TotalSwappableAmount queries the current swappable amount for new coin.
-  rpc TotalSwappableAmount(QueryTotalSwappableAmountRequest) returns (QueryTotalSwappableAmountResponse) {
+  // TotalSwappableToCoinAmount queries the current swappable amount for to-coin.
+  rpc TotalSwappableToCoinAmount(QueryTotalSwappableToCoinAmountRequest)
+      returns (QueryTotalSwappableToCoinAmountResponse) {
     option (google.api.http).get = "/lbm/fswap/v1/swappable_new_coin_amount";
   }
 }
 
 message QuerySwappedRequest {}
 message QuerySwappedResponse {
-  cosmos.base.v1beta1.Coin old_coin_amount = 1
+  cosmos.base.v1beta1.Coin from_coin_amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
-  cosmos.base.v1beta1.Coin new_coin_amount = 2
+  cosmos.base.v1beta1.Coin to_coin_amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
 
-message QueryTotalSwappableAmountRequest {}
-message QueryTotalSwappableAmountResponse {
-  cosmos.base.v1beta1.Coin swappable_new_coin = 1
+message QueryTotalSwappableToCoinAmountRequest {}
+message QueryTotalSwappableToCoinAmountResponse {
+  cosmos.base.v1beta1.Coin swappable_amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }

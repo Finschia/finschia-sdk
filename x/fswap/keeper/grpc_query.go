@@ -26,18 +26,18 @@ func (s QueryServer) Swapped(ctx context.Context, _ *types.QuerySwappedRequest) 
 		return nil, err
 	}
 	return &types.QuerySwappedResponse{
-		OldCoinAmount: swapped.GetOldCoinAmount(),
-		NewCoinAmount: swapped.GetNewCoinAmount(),
+		FromCoinAmount: swapped.GetFromCoinAmount(),
+		ToCoinAmount:   swapped.GetToCoinAmount(),
 	}, nil
 }
 
-func (s QueryServer) TotalSwappableAmount(ctx context.Context, _ *types.QueryTotalSwappableAmountRequest) (*types.QueryTotalSwappableAmountResponse, error) {
+func (s QueryServer) TotalSwappableToCoinAmount(ctx context.Context, _ *types.QueryTotalSwappableToCoinAmountRequest) (*types.QueryTotalSwappableToCoinAmountResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
 	amount, err := s.Keeper.getSwappableNewCoinAmount(c)
 	if err != nil {
-		return &types.QueryTotalSwappableAmountResponse{}, err
+		return &types.QueryTotalSwappableToCoinAmountResponse{}, err
 	}
-	return &types.QueryTotalSwappableAmountResponse{
-		SwappableNewCoin: amount,
+	return &types.QueryTotalSwappableToCoinAmountResponse{
+		SwappableAmount: amount,
 	}, nil
 }

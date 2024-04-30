@@ -14,8 +14,8 @@ func NewSwapped(
 	newCoinAmount sdk.Coin,
 ) Swapped {
 	return Swapped{
-		OldCoinAmount: oldCoinAmount,
-		NewCoinAmount: newCoinAmount,
+		FromCoinAmount: oldCoinAmount,
+		ToCoinAmount:   newCoinAmount,
 	}
 }
 
@@ -40,10 +40,10 @@ func validateCoinAmount(i interface{}) error {
 
 // Validate validates the set of swapped
 func (s Swapped) Validate() error {
-	if err := validateCoinAmount(s.OldCoinAmount); err != nil {
+	if err := validateCoinAmount(s.FromCoinAmount); err != nil {
 		return err
 	}
-	if err := validateCoinAmount(s.NewCoinAmount); err != nil {
+	if err := validateCoinAmount(s.ToCoinAmount); err != nil {
 		return err
 	}
 	return nil

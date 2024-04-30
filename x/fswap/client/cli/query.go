@@ -65,7 +65,7 @@ func CmdQueryTotalSwappableAmount() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.TotalSwappableAmount(cmd.Context(), &types.QueryTotalSwappableAmountRequest{})
+			res, err := queryClient.TotalSwappableToCoinAmount(cmd.Context(), &types.QueryTotalSwappableToCoinAmountRequest{})
 			if err != nil {
 				return err
 			}

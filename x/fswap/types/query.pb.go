@@ -67,8 +67,8 @@ func (m *QuerySwappedRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QuerySwappedRequest proto.InternalMessageInfo
 
 type QuerySwappedResponse struct {
-	OldCoinAmount types.Coin `protobuf:"bytes,1,opt,name=old_coin_amount,json=oldCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"old_coin_amount"`
-	NewCoinAmount types.Coin `protobuf:"bytes,2,opt,name=new_coin_amount,json=newCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"new_coin_amount"`
+	FromCoinAmount types.Coin `protobuf:"bytes,1,opt,name=from_coin_amount,json=fromCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"from_coin_amount"`
+	ToCoinAmount   types.Coin `protobuf:"bytes,2,opt,name=to_coin_amount,json=toCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"to_coin_amount"`
 }
 
 func (m *QuerySwappedResponse) Reset()         { *m = QuerySwappedResponse{} }
@@ -104,35 +104,37 @@ func (m *QuerySwappedResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QuerySwappedResponse proto.InternalMessageInfo
 
-func (m *QuerySwappedResponse) GetOldCoinAmount() types.Coin {
+func (m *QuerySwappedResponse) GetFromCoinAmount() types.Coin {
 	if m != nil {
-		return m.OldCoinAmount
+		return m.FromCoinAmount
 	}
 	return types.Coin{}
 }
 
-func (m *QuerySwappedResponse) GetNewCoinAmount() types.Coin {
+func (m *QuerySwappedResponse) GetToCoinAmount() types.Coin {
 	if m != nil {
-		return m.NewCoinAmount
+		return m.ToCoinAmount
 	}
 	return types.Coin{}
 }
 
-type QueryTotalSwappableAmountRequest struct {
+type QueryTotalSwappableToCoinAmountRequest struct {
 }
 
-func (m *QueryTotalSwappableAmountRequest) Reset()         { *m = QueryTotalSwappableAmountRequest{} }
-func (m *QueryTotalSwappableAmountRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryTotalSwappableAmountRequest) ProtoMessage()    {}
-func (*QueryTotalSwappableAmountRequest) Descriptor() ([]byte, []int) {
+func (m *QueryTotalSwappableToCoinAmountRequest) Reset() {
+	*m = QueryTotalSwappableToCoinAmountRequest{}
+}
+func (m *QueryTotalSwappableToCoinAmountRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTotalSwappableToCoinAmountRequest) ProtoMessage()    {}
+func (*QueryTotalSwappableToCoinAmountRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_01deae9da7816d6a, []int{2}
 }
-func (m *QueryTotalSwappableAmountRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryTotalSwappableToCoinAmountRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryTotalSwappableAmountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTotalSwappableToCoinAmountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryTotalSwappableAmountRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTotalSwappableToCoinAmountRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -142,34 +144,36 @@ func (m *QueryTotalSwappableAmountRequest) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *QueryTotalSwappableAmountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryTotalSwappableAmountRequest.Merge(m, src)
+func (m *QueryTotalSwappableToCoinAmountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTotalSwappableToCoinAmountRequest.Merge(m, src)
 }
-func (m *QueryTotalSwappableAmountRequest) XXX_Size() int {
+func (m *QueryTotalSwappableToCoinAmountRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryTotalSwappableAmountRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryTotalSwappableAmountRequest.DiscardUnknown(m)
+func (m *QueryTotalSwappableToCoinAmountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTotalSwappableToCoinAmountRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryTotalSwappableAmountRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryTotalSwappableToCoinAmountRequest proto.InternalMessageInfo
 
-type QueryTotalSwappableAmountResponse struct {
-	SwappableNewCoin types.Coin `protobuf:"bytes,1,opt,name=swappable_new_coin,json=swappableNewCoin,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"swappable_new_coin"`
+type QueryTotalSwappableToCoinAmountResponse struct {
+	SwappableAmount types.Coin `protobuf:"bytes,1,opt,name=swappable_amount,json=swappableAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"swappable_amount"`
 }
 
-func (m *QueryTotalSwappableAmountResponse) Reset()         { *m = QueryTotalSwappableAmountResponse{} }
-func (m *QueryTotalSwappableAmountResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryTotalSwappableAmountResponse) ProtoMessage()    {}
-func (*QueryTotalSwappableAmountResponse) Descriptor() ([]byte, []int) {
+func (m *QueryTotalSwappableToCoinAmountResponse) Reset() {
+	*m = QueryTotalSwappableToCoinAmountResponse{}
+}
+func (m *QueryTotalSwappableToCoinAmountResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTotalSwappableToCoinAmountResponse) ProtoMessage()    {}
+func (*QueryTotalSwappableToCoinAmountResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_01deae9da7816d6a, []int{3}
 }
-func (m *QueryTotalSwappableAmountResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryTotalSwappableToCoinAmountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryTotalSwappableAmountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTotalSwappableToCoinAmountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryTotalSwappableAmountResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTotalSwappableToCoinAmountResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -179,21 +183,21 @@ func (m *QueryTotalSwappableAmountResponse) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *QueryTotalSwappableAmountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryTotalSwappableAmountResponse.Merge(m, src)
+func (m *QueryTotalSwappableToCoinAmountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTotalSwappableToCoinAmountResponse.Merge(m, src)
 }
-func (m *QueryTotalSwappableAmountResponse) XXX_Size() int {
+func (m *QueryTotalSwappableToCoinAmountResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryTotalSwappableAmountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryTotalSwappableAmountResponse.DiscardUnknown(m)
+func (m *QueryTotalSwappableToCoinAmountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTotalSwappableToCoinAmountResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryTotalSwappableAmountResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryTotalSwappableToCoinAmountResponse proto.InternalMessageInfo
 
-func (m *QueryTotalSwappableAmountResponse) GetSwappableNewCoin() types.Coin {
+func (m *QueryTotalSwappableToCoinAmountResponse) GetSwappableAmount() types.Coin {
 	if m != nil {
-		return m.SwappableNewCoin
+		return m.SwappableAmount
 	}
 	return types.Coin{}
 }
@@ -201,42 +205,42 @@ func (m *QueryTotalSwappableAmountResponse) GetSwappableNewCoin() types.Coin {
 func init() {
 	proto.RegisterType((*QuerySwappedRequest)(nil), "lbm.fswap.v1.QuerySwappedRequest")
 	proto.RegisterType((*QuerySwappedResponse)(nil), "lbm.fswap.v1.QuerySwappedResponse")
-	proto.RegisterType((*QueryTotalSwappableAmountRequest)(nil), "lbm.fswap.v1.QueryTotalSwappableAmountRequest")
-	proto.RegisterType((*QueryTotalSwappableAmountResponse)(nil), "lbm.fswap.v1.QueryTotalSwappableAmountResponse")
+	proto.RegisterType((*QueryTotalSwappableToCoinAmountRequest)(nil), "lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest")
+	proto.RegisterType((*QueryTotalSwappableToCoinAmountResponse)(nil), "lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse")
 }
 
 func init() { proto.RegisterFile("lbm/fswap/v1/query.proto", fileDescriptor_01deae9da7816d6a) }
 
 var fileDescriptor_01deae9da7816d6a = []byte{
-	// 441 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x93, 0xc1, 0xaa, 0xd3, 0x40,
-	0x14, 0x86, 0x93, 0x80, 0x0a, 0xa3, 0xa2, 0x8c, 0xbd, 0x78, 0x0d, 0x9a, 0x7b, 0x6f, 0x36, 0x2a,
-	0xe2, 0x0c, 0xb9, 0xf7, 0x09, 0xac, 0x20, 0xae, 0x04, 0xab, 0x2b, 0x37, 0x65, 0x92, 0x4c, 0xd3,
-	0x60, 0x32, 0x27, 0xed, 0x4c, 0x12, 0x0b, 0xae, 0x5c, 0xb8, 0x16, 0x7c, 0x02, 0x71, 0x23, 0x3e,
-	0x49, 0x97, 0x05, 0x37, 0xae, 0x54, 0x5a, 0x1f, 0x44, 0x32, 0x99, 0xaa, 0x81, 0x50, 0xdd, 0x74,
-	0x77, 0x98, 0xff, 0x64, 0xbe, 0x7f, 0xfe, 0x73, 0x82, 0x0e, 0xb3, 0x30, 0xa7, 0x13, 0x59, 0xb3,
-	0x82, 0x56, 0x01, 0x9d, 0x95, 0x7c, 0xbe, 0x20, 0xc5, 0x1c, 0x14, 0xe0, 0x4b, 0x59, 0x98, 0x13,
-	0xad, 0x90, 0x2a, 0x70, 0x6f, 0x26, 0x00, 0x49, 0xc6, 0x29, 0x2b, 0x52, 0xca, 0x84, 0x00, 0xc5,
-	0x54, 0x0a, 0x42, 0xb6, 0xbd, 0xee, 0x20, 0x81, 0x04, 0x74, 0x49, 0x9b, 0xca, 0x9c, 0x7a, 0x11,
-	0xc8, 0x1c, 0x24, 0x0d, 0x99, 0xe4, 0xb4, 0x0a, 0x42, 0xae, 0x58, 0x40, 0x23, 0x48, 0x85, 0xd1,
-	0xbb, 0xec, 0x16, 0xa5, 0x15, 0xff, 0x00, 0x5d, 0x7b, 0xda, 0x58, 0x79, 0x56, 0xb3, 0xa2, 0xe0,
-	0xf1, 0x88, 0xcf, 0x4a, 0x2e, 0x95, 0xff, 0xd6, 0x41, 0x83, 0xee, 0xb9, 0x2c, 0x40, 0x48, 0x8e,
-	0x2b, 0x74, 0x05, 0xb2, 0x78, 0xdc, 0xdc, 0x3d, 0x66, 0x39, 0x94, 0x42, 0x1d, 0xda, 0xc7, 0xf6,
-	0x9d, 0x8b, 0xa7, 0x37, 0x48, 0xeb, 0x81, 0x34, 0x1e, 0x88, 0xf1, 0x40, 0x1e, 0x42, 0x2a, 0x86,
-	0x67, 0xcb, 0x6f, 0x47, 0xd6, 0xe7, 0xef, 0x47, 0xf7, 0x92, 0x54, 0x4d, 0xcb, 0x90, 0x44, 0x90,
-	0xd3, 0x47, 0xa9, 0x90, 0xd1, 0x34, 0x65, 0x74, 0x62, 0x8a, 0xfb, 0x32, 0x7e, 0x49, 0xd5, 0xa2,
-	0xe0, 0x52, 0x7f, 0x34, 0xba, 0x0c, 0x59, 0xdc, 0x14, 0x0f, 0x34, 0xa4, 0xe1, 0x0a, 0x5e, 0x77,
-	0xb8, 0xce, 0x7e, 0xb8, 0x82, 0xd7, 0x7f, 0xb8, 0xbe, 0x8f, 0x8e, 0x75, 0x0e, 0xcf, 0x41, 0xb1,
-	0x4c, 0x87, 0xc1, 0xc2, 0x8c, 0xb7, 0xe2, 0x36, 0xac, 0x0f, 0x36, 0x3a, 0xd9, 0xd1, 0x64, 0x92,
-	0x7b, 0x8d, 0xb0, 0xdc, 0x4a, 0xe3, 0xed, 0x5b, 0xf6, 0x14, 0xde, 0xd5, 0xdf, 0xa4, 0x27, 0xed,
-	0x6b, 0x4e, 0x3f, 0x3a, 0xe8, 0x9c, 0xf6, 0x88, 0x01, 0x5d, 0x30, 0x43, 0xc5, 0x27, 0xe4, 0xef,
-	0xcd, 0x23, 0x3d, 0x8b, 0xe0, 0xfa, 0xbb, 0x5a, 0xda, 0x97, 0xf9, 0xb7, 0xde, 0x7c, 0xf9, 0xf9,
-	0xde, 0xb9, 0x8e, 0x0f, 0x68, 0x67, 0xcd, 0xa4, 0xa1, 0x7c, 0xb2, 0xd1, 0xa0, 0x2f, 0x19, 0x4c,
-	0x7a, 0xee, 0xde, 0x91, 0xb3, 0x4b, 0xff, 0xbb, 0xdf, 0x18, 0xa3, 0xda, 0xd8, 0x5d, 0x7c, 0xbb,
-	0xc7, 0x58, 0x67, 0x0c, 0x66, 0xa5, 0x86, 0x8f, 0x97, 0x6b, 0xcf, 0x5e, 0xad, 0x3d, 0xfb, 0xc7,
-	0xda, 0xb3, 0xdf, 0x6d, 0x3c, 0x6b, 0xb5, 0xf1, 0xac, 0xaf, 0x1b, 0xcf, 0x7a, 0x41, 0xfe, 0x19,
-	0xff, 0x2b, 0x03, 0xd0, 0x63, 0x08, 0xcf, 0xeb, 0xdf, 0xeb, 0xec, 0x57, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0x63, 0x79, 0x56, 0x3c, 0xf6, 0x03, 0x00, 0x00,
+	// 444 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x93, 0x3f, 0x8f, 0xd3, 0x30,
+	0x18, 0xc6, 0x93, 0x48, 0x80, 0x64, 0x4e, 0xc7, 0xc9, 0xdc, 0x89, 0x23, 0x82, 0x1c, 0x64, 0xe0,
+	0x0e, 0x21, 0x6c, 0xa5, 0x85, 0x0f, 0x40, 0x91, 0x10, 0x2b, 0xa5, 0x13, 0x4b, 0xe5, 0xa4, 0x6e,
+	0x1a, 0x91, 0xf8, 0x4d, 0x6b, 0xa7, 0x7f, 0x56, 0x06, 0x66, 0x24, 0xbe, 0x02, 0x13, 0x3b, 0x0b,
+	0x9f, 0xa0, 0x63, 0x25, 0x16, 0x26, 0x40, 0x2d, 0x1f, 0x04, 0xc5, 0x71, 0xa1, 0x91, 0x0a, 0x15,
+	0x43, 0xb7, 0x57, 0x7e, 0x1f, 0xe7, 0xf7, 0xe4, 0x79, 0x5f, 0xa3, 0xd3, 0x34, 0xcc, 0x68, 0x5f,
+	0x4e, 0x58, 0x4e, 0xc7, 0x01, 0x1d, 0x16, 0x7c, 0x34, 0x23, 0xf9, 0x08, 0x14, 0xe0, 0x83, 0x34,
+	0xcc, 0x88, 0xee, 0x90, 0x71, 0xe0, 0xde, 0x8a, 0x01, 0xe2, 0x94, 0x53, 0x96, 0x27, 0x94, 0x09,
+	0x01, 0x8a, 0xa9, 0x04, 0x84, 0xac, 0xb4, 0xee, 0x71, 0x0c, 0x31, 0xe8, 0x92, 0x96, 0x95, 0x39,
+	0xf5, 0x22, 0x90, 0x19, 0x48, 0x1a, 0x32, 0xc9, 0xe9, 0x38, 0x08, 0xb9, 0x62, 0x01, 0x8d, 0x20,
+	0x11, 0xa6, 0x5f, 0x67, 0x57, 0x28, 0xdd, 0xf1, 0x4f, 0xd0, 0xf5, 0x17, 0xa5, 0x95, 0x97, 0x13,
+	0x96, 0xe7, 0xbc, 0xd7, 0xe6, 0xc3, 0x82, 0x4b, 0xe5, 0xbf, 0x75, 0xd0, 0x71, 0xfd, 0x5c, 0xe6,
+	0x20, 0x24, 0xc7, 0x53, 0x74, 0xd4, 0x1f, 0x41, 0xd6, 0x2d, 0x3f, 0xde, 0x65, 0x19, 0x14, 0x42,
+	0x9d, 0xda, 0x77, 0xec, 0x8b, 0xab, 0x8d, 0x9b, 0xa4, 0x32, 0x41, 0x4a, 0x13, 0xc4, 0x98, 0x20,
+	0x4f, 0x21, 0x11, 0xad, 0xe6, 0xfc, 0xdb, 0x99, 0xf5, 0xf1, 0xfb, 0xd9, 0x83, 0x38, 0x51, 0x83,
+	0x22, 0x24, 0x11, 0x64, 0xf4, 0x59, 0x22, 0x64, 0x34, 0x48, 0x18, 0xed, 0x9b, 0xe2, 0xa1, 0xec,
+	0xbd, 0xa6, 0x6a, 0x96, 0x73, 0xa9, 0x2f, 0xb5, 0x0f, 0x4b, 0x4e, 0x59, 0x3d, 0xd1, 0x14, 0xac,
+	0xd0, 0xa1, 0x82, 0x1a, 0xd7, 0xd9, 0x0b, 0xf7, 0x40, 0xc1, 0x1f, 0xaa, 0x7f, 0x81, 0xee, 0xe9,
+	0x1c, 0x3a, 0xa0, 0x58, 0xaa, 0xc3, 0x60, 0x61, 0xca, 0x3b, 0x1b, 0x92, 0x75, 0x64, 0x1f, 0x6c,
+	0x74, 0xbe, 0x53, 0x6a, 0x52, 0x9c, 0xa1, 0x23, 0xb9, 0x16, 0xec, 0x37, 0xc5, 0x6b, 0xbf, 0x39,
+	0x95, 0x85, 0xc6, 0x27, 0x07, 0x5d, 0xd2, 0x36, 0x31, 0xa0, 0x2b, 0x66, 0xba, 0xf8, 0x2e, 0xd9,
+	0x5c, 0x41, 0xb2, 0x65, 0x23, 0x5c, 0xff, 0x5f, 0x92, 0xea, 0xb7, 0xfc, 0xdb, 0x6f, 0xbe, 0xfc,
+	0x7c, 0xef, 0xdc, 0xc0, 0x27, 0xb4, 0xb6, 0x6f, 0xd2, 0x50, 0x3e, 0xdb, 0xc8, 0xfd, 0x7b, 0x38,
+	0xf8, 0xd1, 0x16, 0xc2, 0xce, 0xd8, 0xdd, 0xc7, 0xff, 0x79, 0xcb, 0x58, 0xa5, 0xda, 0xea, 0x7d,
+	0x7c, 0xbe, 0xc5, 0xaa, 0x9e, 0x8a, 0xe0, 0x93, 0xcd, 0x65, 0x6b, 0x3d, 0x9f, 0x2f, 0x3d, 0x7b,
+	0xb1, 0xf4, 0xec, 0x1f, 0x4b, 0xcf, 0x7e, 0xb7, 0xf2, 0xac, 0xc5, 0xca, 0xb3, 0xbe, 0xae, 0x3c,
+	0xeb, 0x15, 0xd9, 0x39, 0x8f, 0xa9, 0x01, 0xe8, 0xb9, 0x84, 0x97, 0xf5, 0xcb, 0x6b, 0xfe, 0x0a,
+	0x00, 0x00, 0xff, 0xff, 0x8c, 0x3e, 0xc5, 0x8e, 0x11, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -251,11 +255,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Swapped queries the current swapped status that includes a burnt amount of old coin and a minted amount of new
-	// coin.
+	// Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of
+	// to-coin.
 	Swapped(ctx context.Context, in *QuerySwappedRequest, opts ...grpc.CallOption) (*QuerySwappedResponse, error)
-	// TotalSwappableAmount queries the current swappable amount for new coin.
-	TotalSwappableAmount(ctx context.Context, in *QueryTotalSwappableAmountRequest, opts ...grpc.CallOption) (*QueryTotalSwappableAmountResponse, error)
+	// TotalSwappableToCoinAmount queries the current swappable amount for to-coin.
+	TotalSwappableToCoinAmount(ctx context.Context, in *QueryTotalSwappableToCoinAmountRequest, opts ...grpc.CallOption) (*QueryTotalSwappableToCoinAmountResponse, error)
 }
 
 type queryClient struct {
@@ -275,9 +279,9 @@ func (c *queryClient) Swapped(ctx context.Context, in *QuerySwappedRequest, opts
 	return out, nil
 }
 
-func (c *queryClient) TotalSwappableAmount(ctx context.Context, in *QueryTotalSwappableAmountRequest, opts ...grpc.CallOption) (*QueryTotalSwappableAmountResponse, error) {
-	out := new(QueryTotalSwappableAmountResponse)
-	err := c.cc.Invoke(ctx, "/lbm.fswap.v1.Query/TotalSwappableAmount", in, out, opts...)
+func (c *queryClient) TotalSwappableToCoinAmount(ctx context.Context, in *QueryTotalSwappableToCoinAmountRequest, opts ...grpc.CallOption) (*QueryTotalSwappableToCoinAmountResponse, error) {
+	out := new(QueryTotalSwappableToCoinAmountResponse)
+	err := c.cc.Invoke(ctx, "/lbm.fswap.v1.Query/TotalSwappableToCoinAmount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -286,11 +290,11 @@ func (c *queryClient) TotalSwappableAmount(ctx context.Context, in *QueryTotalSw
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Swapped queries the current swapped status that includes a burnt amount of old coin and a minted amount of new
-	// coin.
+	// Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of
+	// to-coin.
 	Swapped(context.Context, *QuerySwappedRequest) (*QuerySwappedResponse, error)
-	// TotalSwappableAmount queries the current swappable amount for new coin.
-	TotalSwappableAmount(context.Context, *QueryTotalSwappableAmountRequest) (*QueryTotalSwappableAmountResponse, error)
+	// TotalSwappableToCoinAmount queries the current swappable amount for to-coin.
+	TotalSwappableToCoinAmount(context.Context, *QueryTotalSwappableToCoinAmountRequest) (*QueryTotalSwappableToCoinAmountResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -300,8 +304,8 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Swapped(ctx context.Context, req *QuerySwappedRequest) (*QuerySwappedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Swapped not implemented")
 }
-func (*UnimplementedQueryServer) TotalSwappableAmount(ctx context.Context, req *QueryTotalSwappableAmountRequest) (*QueryTotalSwappableAmountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TotalSwappableAmount not implemented")
+func (*UnimplementedQueryServer) TotalSwappableToCoinAmount(ctx context.Context, req *QueryTotalSwappableToCoinAmountRequest) (*QueryTotalSwappableToCoinAmountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalSwappableToCoinAmount not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -326,20 +330,20 @@ func _Query_Swapped_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_TotalSwappableAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryTotalSwappableAmountRequest)
+func _Query_TotalSwappableToCoinAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalSwappableToCoinAmountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).TotalSwappableAmount(ctx, in)
+		return srv.(QueryServer).TotalSwappableToCoinAmount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.fswap.v1.Query/TotalSwappableAmount",
+		FullMethod: "/lbm.fswap.v1.Query/TotalSwappableToCoinAmount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TotalSwappableAmount(ctx, req.(*QueryTotalSwappableAmountRequest))
+		return srv.(QueryServer).TotalSwappableToCoinAmount(ctx, req.(*QueryTotalSwappableToCoinAmountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -353,8 +357,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Swapped_Handler,
 		},
 		{
-			MethodName: "TotalSwappableAmount",
-			Handler:    _Query_TotalSwappableAmount_Handler,
+			MethodName: "TotalSwappableToCoinAmount",
+			Handler:    _Query_TotalSwappableToCoinAmount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -405,7 +409,7 @@ func (m *QuerySwappedResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size, err := m.NewCoinAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.ToCoinAmount.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -415,7 +419,7 @@ func (m *QuerySwappedResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x12
 	{
-		size, err := m.OldCoinAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.FromCoinAmount.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -427,7 +431,7 @@ func (m *QuerySwappedResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryTotalSwappableAmountRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryTotalSwappableToCoinAmountRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -437,12 +441,12 @@ func (m *QueryTotalSwappableAmountRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryTotalSwappableAmountRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTotalSwappableToCoinAmountRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryTotalSwappableAmountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTotalSwappableToCoinAmountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -450,7 +454,7 @@ func (m *QueryTotalSwappableAmountRequest) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryTotalSwappableAmountResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryTotalSwappableToCoinAmountResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -460,18 +464,18 @@ func (m *QueryTotalSwappableAmountResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryTotalSwappableAmountResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTotalSwappableToCoinAmountResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryTotalSwappableAmountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTotalSwappableToCoinAmountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.SwappableNewCoin.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.SwappableAmount.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -509,14 +513,14 @@ func (m *QuerySwappedResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.OldCoinAmount.Size()
+	l = m.FromCoinAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	l = m.NewCoinAmount.Size()
+	l = m.ToCoinAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
-func (m *QueryTotalSwappableAmountRequest) Size() (n int) {
+func (m *QueryTotalSwappableToCoinAmountRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -525,13 +529,13 @@ func (m *QueryTotalSwappableAmountRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryTotalSwappableAmountResponse) Size() (n int) {
+func (m *QueryTotalSwappableToCoinAmountResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.SwappableNewCoin.Size()
+	l = m.SwappableAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
@@ -623,7 +627,7 @@ func (m *QuerySwappedResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OldCoinAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field FromCoinAmount", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -650,13 +654,13 @@ func (m *QuerySwappedResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.OldCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.FromCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NewCoinAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ToCoinAmount", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -683,7 +687,7 @@ func (m *QuerySwappedResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.NewCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.ToCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -708,7 +712,7 @@ func (m *QuerySwappedResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryTotalSwappableAmountRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryTotalSwappableToCoinAmountRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -731,10 +735,10 @@ func (m *QueryTotalSwappableAmountRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryTotalSwappableAmountRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTotalSwappableToCoinAmountRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryTotalSwappableAmountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTotalSwappableToCoinAmountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -758,7 +762,7 @@ func (m *QueryTotalSwappableAmountRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryTotalSwappableAmountResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryTotalSwappableToCoinAmountResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -781,15 +785,15 @@ func (m *QueryTotalSwappableAmountResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryTotalSwappableAmountResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTotalSwappableToCoinAmountResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryTotalSwappableAmountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTotalSwappableToCoinAmountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SwappableNewCoin", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SwappableAmount", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -816,7 +820,7 @@ func (m *QueryTotalSwappableAmountResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.SwappableNewCoin.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.SwappableAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

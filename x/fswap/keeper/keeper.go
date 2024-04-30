@@ -55,11 +55,11 @@ func (k Keeper) SwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
 		return err
 	}
 	swapped := types.Swapped{
-		OldCoinAmount: sdk.Coin{
+		FromCoinAmount: sdk.Coin{
 			Denom:  swapInit.GetFromDenom(),
 			Amount: sdk.ZeroInt(),
 		},
-		NewCoinAmount: sdk.Coin{
+		ToCoinAmount: sdk.Coin{
 			Denom:  swapInit.GetToDenom(),
 			Amount: sdk.ZeroInt(),
 		},
@@ -110,9 +110,9 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, oldCoinAmount sdk.Coi
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventSwapCoins{
-		Address:       addr.String(),
-		OldCoinAmount: oldCoinAmount,
-		NewCoinAmount: newCoinAmount,
+		Address:        addr.String(),
+		FromCoinAmount: oldCoinAmount,
+		ToCoinAmount:   newCoinAmount,
 	}); err != nil {
 		return err
 	}
@@ -190,7 +190,7 @@ func (k Keeper) getSwapped(ctx sdk.Context) (types.Swapped, error) {
 
 func (k Keeper) setSwapped(ctx sdk.Context, swapped types.Swapped) error {
 	store := ctx.KVStore(k.storeKey)
-	key := swappedKey(swapped.NewCoinAmount.Denom)
+	key := swappedKey(swapped.ToCoinAmount.Denom)
 	bz, err := k.cdc.Marshal(&swapped)
 	if err != nil {
 		return err
@@ -238,7 +238,7 @@ func (k Keeper) getSwappableNewCoinAmount(ctx sdk.Context) (sdk.Coin, error) {
 		return sdk.Coin{}, err
 	}
 
-	remainingAmount := swapCap.Sub(swapped.GetNewCoinAmount().Amount)
+	remainingAmount := swapCap.Sub(swapped.GetToCoinAmount().Amount)
 	return sdk.NewCoin(denom, remainingAmount), nil
 }
 
@@ -304,8 +304,8 @@ func (k Keeper) updateSwapped(ctx sdk.Context, oldAmount, newAmount sdk.Coin) er
 		return err
 	}
 	updatedSwapped := &types.Swapped{
-		OldCoinAmount: oldAmount.Add(prevSwapped.OldCoinAmount),
-		NewCoinAmount: newAmount.Add(prevSwapped.NewCoinAmount),
+		FromCoinAmount: oldAmount.Add(prevSwapped.FromCoinAmount),
+		ToCoinAmount:   newAmount.Add(prevSwapped.ToCoinAmount),
 	}
 
 	store := ctx.KVStore(k.storeKey)
@@ -328,7 +328,7 @@ func (k Keeper) checkSwapCap(ctx sdk.Context, newCoinAmount sdk.Coin) error {
 		return err
 	}
 
-	if swapCap.LT(swapped.NewCoinAmount.Add(newCoinAmount).Amount) {
+	if swapCap.LT(swapped.ToCoinAmount.Add(newCoinAmount).Amount) {
 		return fmt.Errorf("cann't swap more because of swapCap limit, amount=%s", newCoinAmount.String())
 	}
 

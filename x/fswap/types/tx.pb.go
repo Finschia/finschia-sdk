@@ -32,7 +32,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSwapRequest struct {
 	// holder's address
 	FromAddress string `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
-	// amount of old currency
+	// from-coin amount
 	Amount types.Coin `protobuf:"bytes,2,opt,name=amount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"amount"`
 }
 

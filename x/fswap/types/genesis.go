@@ -37,7 +37,7 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
-	if swapInit.AmountCapForToDenom.LT(swapped.GetNewCoinAmount().Amount) {
+	if swapInit.AmountCapForToDenom.LT(swapped.GetToCoinAmount().Amount) {
 		return ErrExceedSwappable
 	}
 	return nil
