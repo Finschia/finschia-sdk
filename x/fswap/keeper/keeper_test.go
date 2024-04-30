@@ -30,11 +30,7 @@ type KeeperTestSuite struct {
 	accWithToCoin   sdk.AccAddress
 	initBalance     sdk.Int
 
-	swapInit     types.SwapInit
-	fromDenom    string
-	toDenom      string
-	swapMultiple sdk.Int
-	swapCap      sdk.Int
+	swapInit types.SwapInit
 }
 
 func (s *KeeperTestSuite) createRandomAccounts(n int) []sdk.AccAddress {
@@ -66,17 +62,13 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
-	s.fromDenom = "fromdenom"
-	s.toDenom = "todenom"
-	s.swapMultiple = sdk.NewInt(1000)
-	s.initBalance = sdk.NewInt(123456789)
 	numAcc := int64(2)
-	s.swapCap = s.initBalance.Mul(s.swapMultiple.Mul(sdk.NewInt(numAcc)))
+	s.initBalance = sdk.NewInt(123456789)
 	s.swapInit = types.SwapInit{
-		FromDenom:           s.fromDenom,
-		ToDenom:             s.toDenom,
-		AmountCapForToDenom: s.swapCap,
-		SwapMultiple:        s.swapMultiple,
+		FromDenom:           "fromdenom",
+		ToDenom:             "todenom",
+		AmountCapForToDenom: s.initBalance.Mul(sdk.NewInt(1000).Mul(sdk.NewInt(numAcc))),
+		SwapMultiple:        sdk.NewInt(1000),
 	}
 	s.createAccountsWithInitBalance(app)
 	app.AccountKeeper.GetModuleAccount(s.ctx, types.ModuleName)
@@ -91,11 +83,11 @@ func (s *KeeperTestSuite) createAccountsWithInitBalance(app *simapp.SimApp) {
 		*addresses[i] = address
 	}
 	minter := app.AccountKeeper.GetModuleAccount(s.ctx, minttypes.ModuleName).GetAddress()
-	fromAmount := sdk.NewCoins(sdk.NewCoin(s.fromDenom, s.initBalance))
+	fromAmount := sdk.NewCoins(sdk.NewCoin(s.swapInit.GetFromDenom(), s.initBalance))
 	s.Require().NoError(app.BankKeeper.MintCoins(s.ctx, minttypes.ModuleName, fromAmount))
 	s.Require().NoError(app.BankKeeper.SendCoins(s.ctx, minter, s.accWithFromCoin, fromAmount))
 
-	toAmount := sdk.NewCoins(sdk.NewCoin(s.toDenom, s.initBalance))
+	toAmount := sdk.NewCoins(sdk.NewCoin(s.swapInit.GetToDenom(), s.initBalance))
 	s.Require().NoError(app.BankKeeper.MintCoins(s.ctx, minttypes.ModuleName, toAmount))
 	s.Require().NoError(app.BankKeeper.SendCoins(s.ctx, minter, s.accWithToCoin, toAmount))
 }
@@ -115,40 +107,40 @@ func (s *KeeperTestSuite) TestSwap() {
 	}{
 		"swap some": {
 			s.accWithFromCoin,
-			sdk.NewCoin(s.fromDenom, sdk.NewInt(100)),
-			s.toDenom,
+			sdk.NewCoin(s.swapInit.GetFromDenom(), sdk.NewInt(100)),
+			s.swapInit.GetToDenom(),
 			sdk.NewInt(100),
 			false,
 			nil,
 		},
 		"swap all the balance": {
 			s.accWithFromCoin,
-			sdk.NewCoin(s.fromDenom, s.initBalance),
-			s.toDenom,
+			sdk.NewCoin(s.swapInit.GetFromDenom(), s.initBalance),
+			s.swapInit.GetToDenom(),
 			s.initBalance,
 			false,
 			nil,
 		},
 		"swap without holding enough balance": {
 			s.accWithFromCoin,
-			sdk.NewCoin(s.fromDenom, sdk.OneInt().Add(s.initBalance)),
-			s.toDenom,
+			sdk.NewCoin(s.swapInit.GetFromDenom(), sdk.OneInt().Add(s.initBalance)),
+			s.swapInit.GetToDenom(),
 			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInsufficientFunds,
 		},
 		"account holding new coin only": {
 			s.accWithToCoin,
-			sdk.NewCoin(s.fromDenom, sdk.NewInt(100)),
-			s.toDenom,
+			sdk.NewCoin(s.swapInit.GetFromDenom(), sdk.NewInt(100)),
+			s.swapInit.GetToDenom(),
 			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInsufficientFunds,
 		},
 		"swap with the same from-denom and to-denom": {
 			s.accWithFromCoin,
-			sdk.NewCoin(s.toDenom, s.initBalance),
-			s.toDenom,
+			sdk.NewCoin(s.swapInit.GetToDenom(), s.initBalance),
+			s.swapInit.GetToDenom(),
 			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInvalidRequest,
@@ -167,8 +159,8 @@ func (s *KeeperTestSuite) TestSwap() {
 			}
 			s.Require().NoError(err)
 
-			actualAmount := s.keeper.GetBalance(ctx, tc.from, s.toDenom).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swapMultiple)
+			actualAmount := s.keeper.GetBalance(ctx, tc.from, s.swapInit.GetToDenom()).Amount
+			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swapInit.SwapMultiple)
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}
@@ -185,16 +177,16 @@ func (s *KeeperTestSuite) TestSwapAll() {
 	}{
 		"account holding from coin": {
 			s.accWithFromCoin,
-			s.fromDenom,
-			s.toDenom,
+			s.swapInit.GetFromDenom(),
+			s.swapInit.GetToDenom(),
 			s.initBalance,
 			false,
 			nil,
 		},
 		"account holding to coin only": {
 			s.accWithToCoin,
-			s.fromDenom,
-			s.toDenom,
+			s.swapInit.GetFromDenom(),
+			s.swapInit.GetToDenom(),
 			s.initBalance,
 			true,
 			sdkerrors.ErrInsufficientFunds,
@@ -213,8 +205,8 @@ func (s *KeeperTestSuite) TestSwapAll() {
 			}
 			s.Require().NoError(err)
 
-			actualAmount := s.keeper.GetBalance(ctx, tc.from, s.toDenom).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swapMultiple)
+			actualAmount := s.keeper.GetBalance(ctx, tc.from, s.swapInit.GetToDenom()).Amount
+			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swapInit.SwapMultiple)
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}
