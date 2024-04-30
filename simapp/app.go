@@ -131,7 +131,7 @@ var (
 			upgradeclient.ProposalHandler,
 			upgradeclient.CancelProposalHandler,
 			foundationclient.ProposalHandler,
-			fswapclient.SwapInitHandler,
+			fswapclient.ProposalHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
