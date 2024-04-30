@@ -876,9 +876,9 @@
     - [Query](#lbm.fswap.v1.Query)
   
 - [lbm/fswap/v1/tx.proto](#lbm/fswap/v1/tx.proto)
-    - [MsgSwapAllRequest](#lbm.fswap.v1.MsgSwapAllRequest)
+    - [MsgSwap](#lbm.fswap.v1.MsgSwap)
+    - [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll)
     - [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse)
-    - [MsgSwapRequest](#lbm.fswap.v1.MsgSwapRequest)
     - [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse)
   
     - [Msg](#lbm.fswap.v1.Msg)
@@ -12914,7 +12914,7 @@ GenesisState defines the fswap module's genesis state.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of to-coin. | GET|/lbm/fswap/v1/swapped|
-| `TotalSwappableToCoinAmount` | [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest) | [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse) | TotalSwappableToCoinAmount queries the current swappable amount for to-coin. | GET|/lbm/fswap/v1/swappable_new_coin_amount|
+| `TotalSwappableToCoinAmount` | [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest) | [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse) | TotalSwappableToCoinAmount queries the current swappable amount for to-coin. | GET|/lbm/fswap/v1/total_swappable_to_coin_amount|
 
  <!-- end services -->
 
@@ -12927,15 +12927,34 @@ GenesisState defines the fswap module's genesis state.
 
 
 
-<a name="lbm.fswap.v1.MsgSwapAllRequest"></a>
+<a name="lbm.fswap.v1.MsgSwap"></a>
 
-### MsgSwapAllRequest
+### MsgSwap
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `from_address` | [string](#string) |  | holder's address |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
+| `to_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapAll"></a>
+
+### MsgSwapAll
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  | holder's address |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
 
 
 
@@ -12946,22 +12965,6 @@ GenesisState defines the fswap module's genesis state.
 
 ### MsgSwapAllResponse
 
-
-
-
-
-
-
-<a name="lbm.fswap.v1.MsgSwapRequest"></a>
-
-### MsgSwapRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `from_address` | [string](#string) |  | holder's address |
-| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
 
 
 
@@ -12991,8 +12994,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Swap` | [MsgSwapRequest](#lbm.fswap.v1.MsgSwapRequest) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
-| `SwapAll` | [MsgSwapAllRequest](#lbm.fswap.v1.MsgSwapAllRequest) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
+| `Swap` | [MsgSwap](#lbm.fswap.v1.MsgSwap) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
+| `SwapAll` | [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
 
  <!-- end services -->
 

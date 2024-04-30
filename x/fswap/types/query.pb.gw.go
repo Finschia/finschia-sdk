@@ -200,7 +200,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Swapped_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "fswap", "v1", "swapped"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_TotalSwappableToCoinAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "fswap", "v1", "swappable_new_coin_amount"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_TotalSwappableToCoinAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "fswap", "v1", "total_swappable_to_coin_amount"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

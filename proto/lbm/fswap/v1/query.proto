@@ -17,7 +17,7 @@ service Query {
   // TotalSwappableToCoinAmount queries the current swappable amount for to-coin.
   rpc TotalSwappableToCoinAmount(QueryTotalSwappableToCoinAmountRequest)
       returns (QueryTotalSwappableToCoinAmountResponse) {
-    option (google.api.http).get = "/lbm/fswap/v1/swappable_new_coin_amount";
+    option (google.api.http).get = "/lbm/fswap/v1/total_swappable_to_coin_amount";
   }
 }
 

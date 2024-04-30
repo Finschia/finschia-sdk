@@ -60,7 +60,7 @@ func CmdTxMsgSwap() *cobra.Command {
 				return err
 			}
 
-			msg := &types.MsgSwapRequest{
+			msg := &types.MsgSwap{
 				FromAddress:    clientCtx.GetFromAddress().String(),
 				FromCoinAmount: coin,
 			}
@@ -89,7 +89,7 @@ func CmdTxMsgSwapAll() *cobra.Command {
 				return err
 			}
 
-			msg := &types.MsgSwapAllRequest{
+			msg := &types.MsgSwapAll{
 				FromAddress: clientCtx.GetFromAddress().String(),
 			}
 			if err := msg.ValidateBasic(); err != nil {

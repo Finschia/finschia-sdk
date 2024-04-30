@@ -71,18 +71,22 @@ func (k Keeper) SwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
 	return nil
 }
 
-func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Coin) error {
+func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Coin, toDenom string) error {
 	swapInit, err := k.getSwapInit(ctx)
 	if err != nil {
 		return err
 	}
 
-	if fromCoinAmount.GetDenom() != swapInit.GetFromDenom() {
+	if swapInit.GetFromDenom() != fromCoinAmount.GetDenom() {
 		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swapInit.GetFromDenom(), fromCoinAmount.Denom)
 	}
 
+	if swapInit.GetToDenom() != toDenom {
+		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swapInit.GetToDenom(), toDenom)
+	}
+
 	newAmount := fromCoinAmount.Amount.Mul(swapInit.SwapMultiple)
-	newCoinAmount := sdk.NewCoin(swapInit.ToDenom, newAmount)
+	newCoinAmount := sdk.NewCoin(toDenom, newAmount)
 	if err := k.checkSwapCap(ctx, newCoinAmount); err != nil {
 		return err
 	}
@@ -117,17 +121,13 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 	return nil
 }
 
-func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress) error {
-	oldDenom, err := k.getFromDenom(ctx)
-	if err != nil {
-		return err
-	}
-	balance := k.GetBalance(ctx, addr, oldDenom)
+func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress, fromDenom, toDenom string) error {
+	balance := k.GetBalance(ctx, addr, fromDenom)
 	if balance.IsZero() {
 		return sdkerrors.ErrInsufficientFunds
 	}
 
-	if err := k.Swap(ctx, addr, balance); err != nil {
+	if err := k.Swap(ctx, addr, balance, toDenom); err != nil {
 		return err
 	}
 	return nil
@@ -144,7 +144,7 @@ func (k Keeper) setSwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
 }
 
 func (k Keeper) getAllSwapped(ctx sdk.Context) []types.Swapped {
-	swappedSlice := make([]types.Swapped, 0)
+	swappedSlice := make([]types.Swapped, 0) // TODO(bjs)
 	k.iterateAllSwapped(ctx, func(swapped types.Swapped) bool {
 		swappedSlice = append(swappedSlice, swapped)
 		return false

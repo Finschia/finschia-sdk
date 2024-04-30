@@ -108,6 +108,7 @@ func (s *KeeperTestSuite) TestSwap() {
 	testCases := map[string]struct {
 		from                           sdk.AccAddress
 		amountToSwap                   sdk.Coin
+		toDenom                        string
 		expectedBalanceWithoutMultiply sdk.Int
 		shouldThrowError               bool
 		expectedError                  error
@@ -115,6 +116,7 @@ func (s *KeeperTestSuite) TestSwap() {
 		"swap some": {
 			s.accWithFromCoin,
 			sdk.NewCoin(s.fromDenom, sdk.NewInt(100)),
+			s.toDenom,
 			sdk.NewInt(100),
 			false,
 			nil,
@@ -122,6 +124,7 @@ func (s *KeeperTestSuite) TestSwap() {
 		"swap all the balance": {
 			s.accWithFromCoin,
 			sdk.NewCoin(s.fromDenom, s.initBalance),
+			s.toDenom,
 			s.initBalance,
 			false,
 			nil,
@@ -129,6 +132,7 @@ func (s *KeeperTestSuite) TestSwap() {
 		"swap without holding enough balance": {
 			s.accWithFromCoin,
 			sdk.NewCoin(s.fromDenom, sdk.OneInt().Add(s.initBalance)),
+			s.toDenom,
 			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInsufficientFunds,
@@ -136,6 +140,7 @@ func (s *KeeperTestSuite) TestSwap() {
 		"account holding new coin only": {
 			s.accWithToCoin,
 			sdk.NewCoin(s.fromDenom, sdk.NewInt(100)),
+			s.toDenom,
 			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInsufficientFunds,
@@ -143,6 +148,7 @@ func (s *KeeperTestSuite) TestSwap() {
 		"swap with the same from-denom and to-denom": {
 			s.accWithFromCoin,
 			sdk.NewCoin(s.toDenom, s.initBalance),
+			s.toDenom,
 			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInvalidRequest,
@@ -154,7 +160,7 @@ func (s *KeeperTestSuite) TestSwap() {
 			err := s.keeper.SwapInit(ctx, s.swapInit)
 			s.Require().NoError(err)
 
-			err = s.keeper.Swap(ctx, tc.from, tc.amountToSwap)
+			err = s.keeper.Swap(ctx, tc.from, tc.amountToSwap, tc.toDenom)
 			if tc.shouldThrowError {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return
@@ -171,18 +177,24 @@ func (s *KeeperTestSuite) TestSwap() {
 func (s *KeeperTestSuite) TestSwapAll() {
 	testCases := map[string]struct {
 		from                           sdk.AccAddress
+		fromDenom                      string
+		toDenom                        string
 		expectedBalanceWithoutMultiply sdk.Int
 		shouldThrowError               bool
 		expectedError                  error
 	}{
 		"account holding from coin": {
 			s.accWithFromCoin,
+			s.fromDenom,
+			s.toDenom,
 			s.initBalance,
 			false,
 			nil,
 		},
 		"account holding to coin only": {
 			s.accWithToCoin,
+			s.fromDenom,
+			s.toDenom,
 			s.initBalance,
 			true,
 			sdkerrors.ErrInsufficientFunds,
@@ -194,7 +206,7 @@ func (s *KeeperTestSuite) TestSwapAll() {
 			err := s.keeper.SwapInit(ctx, s.swapInit)
 			s.Require().NoError(err)
 
-			err = s.keeper.SwapAll(ctx, tc.from)
+			err = s.keeper.SwapAll(ctx, tc.from, tc.fromDenom, tc.toDenom)
 			if tc.shouldThrowError {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return
