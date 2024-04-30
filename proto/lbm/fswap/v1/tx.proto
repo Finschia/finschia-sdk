@@ -15,7 +15,7 @@ message MsgSwapRequest {
   // holder's address
   string from_address = 1;
   // from-coin amount
-  cosmos.base.v1beta1.Coin amount = 2
+  cosmos.base.v1beta1.Coin from_coin_amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
 

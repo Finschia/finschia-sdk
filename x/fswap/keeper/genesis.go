@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
@@ -10,10 +8,10 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error {
 	if len(genState.GetSwapInit()) > 1 {
-		return fmt.Errorf("cannot initialize genesis state, there are more than 1 swapInit")
+		return types.ErrSwapCanNotBeInitializedTwice.Wrap("cannot initialize genesis state, there are more than 1 swapInit")
 	}
 	if len(genState.GetSwapped()) > 1 {
-		return fmt.Errorf("cannot initialize genesis state, there are more than 1 swapped")
+		return types.ErrSwapCanNotBeInitializedTwice.Wrap("cannot initialize genesis state, there are more than 1 swapped")
 	}
 	for _, swapInit := range genState.GetSwapInit() {
 		if err := k.setSwapInit(ctx, swapInit); err != nil {

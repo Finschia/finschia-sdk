@@ -1,11 +1,10 @@
 package types
 
 import (
-	"fmt"
-
 	"gopkg.in/yaml.v2"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 // NewSwapped creates a new Swapped instance
@@ -27,19 +26,19 @@ func DefaultSwapped() Swapped {
 func validateCoinAmount(i interface{}) error {
 	v, ok := i.(sdk.Coin)
 	if !ok {
-		return fmt.Errorf("invalid coin amount: %T", i)
+		return sdkerrors.ErrInvalidCoins.Wrapf("invalid coin amount: %T", i)
 	}
 	if v.IsNil() {
-		return fmt.Errorf("coin amount must be not nil")
+		return sdkerrors.ErrInvalidCoins.Wrap("coin amount must be not nil")
 	}
 	if err := v.Validate(); err != nil {
-		return err
+		return sdkerrors.ErrInvalidCoins.Wrap(err.Error())
 	}
 	return nil
 }
 
-// Validate validates the set of swapped
-func (s Swapped) Validate() error {
+// Validate validates the set of Swapped
+func (s *Swapped) Validate() error {
 	if err := validateCoinAmount(s.FromCoinAmount); err != nil {
 		return err
 	}
@@ -50,33 +49,49 @@ func (s Swapped) Validate() error {
 }
 
 // String implements the Stringer interface.
-func (s Swapped) String() string {
+func (s *Swapped) String() string {
 	out, _ := yaml.Marshal(s)
 	return string(out)
 }
 
-// Validate validates the set of swapped
-func (s SwapInit) ValidateBasic() error {
+// ValidateBasic validates the set of SwapInit
+func (s *SwapInit) ValidateBasic() error {
 	if s.FromDenom == "" {
-		return fmt.Errorf("from denomination cannot be empty")
+		return sdkerrors.ErrInvalidRequest.Wrap("from denomination cannot be empty")
 	}
 	if s.ToDenom == "" {
-		return fmt.Errorf("to denomination cannot be empty")
+		return sdkerrors.ErrInvalidRequest.Wrap("to denomination cannot be empty")
 	}
 	if s.FromDenom == s.ToDenom {
-		return fmt.Errorf("from denomination cannot be equal to to denomination")
+		return sdkerrors.ErrInvalidRequest.Wrap("from denomination cannot be equal to to denomination")
 	}
-	if s.AmountCapForToDenom.LT(sdk.ZeroInt()) {
-		return fmt.Errorf("amount cannot be less than zero")
+	if s.AmountCapForToDenom.LT(sdk.OneInt()) {
+		return sdkerrors.ErrInvalidRequest.Wrap("amount cannot be less than one")
 	}
-	if s.SwapMultiple.LT(sdk.ZeroInt()) {
-		return fmt.Errorf("swap multiple cannot be less than zero")
+	if s.SwapMultiple.LT(sdk.OneInt()) {
+		return sdkerrors.ErrInvalidRequest.Wrap("swap multiple cannot be less than one")
 	}
 	return nil
 }
 
 // String implements the Stringer interface.
-func (s SwapInit) String() string {
+func (s *SwapInit) String() string {
 	out, _ := yaml.Marshal(s)
 	return string(out)
+}
+
+func (s *SwapInit) IsEmpty() bool {
+	if s.FromDenom == "" {
+		return true
+	}
+	if s.ToDenom == "" {
+		return true
+	}
+	if s.AmountCapForToDenom.IsZero() {
+		return true
+	}
+	if s.SwapMultiple.IsZero() {
+		return true
+	}
+	return false
 }

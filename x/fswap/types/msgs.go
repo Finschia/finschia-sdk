@@ -7,13 +7,6 @@ import (
 
 var _ sdk.Msg = &MsgSwapRequest{}
 
-// NewMsgSwapRequest - construct a msg to swap amounts of old coin to new coin
-//
-//nolint:interfacer
-func NewMsgSwapRequest(fromAddr, toAddr sdk.AccAddress, amount sdk.Coin) *MsgSwapRequest {
-	return &MsgSwapRequest{FromAddress: fromAddr.String(), Amount: amount}
-}
-
 // ValidateBasic Implements Msg.
 func (m *MsgSwapRequest) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(m.FromAddress)
@@ -21,12 +14,12 @@ func (m *MsgSwapRequest) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	if !m.FromCoinAmount.IsValid() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.FromCoinAmount.String())
 	}
 
-	if !m.Amount.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	if !m.FromCoinAmount.IsPositive() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.FromCoinAmount.String())
 	}
 
 	return nil

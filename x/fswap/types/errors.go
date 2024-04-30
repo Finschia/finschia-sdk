@@ -8,8 +8,8 @@ import (
 
 // x/fswap module sentinel errors
 var (
-	ErrSwapInitNotFound  = sdkerrors.Register(ModuleName, 1100, "swap init does not exist")
-	ErrSwappedNotFound   = sdkerrors.Register(ModuleName, 1101, "swapped does not exist")
-	ErrExceedSwappable   = sdkerrors.Register(ModuleName, 1102, "exceed swappable coin amount")
-	ErrSwapNotInitilized = sdkerrors.Register(ModuleName, 1103, "swap not initilized")
+	ErrSwapNotInitialized           = sdkerrors.Register(ModuleName, 1100, "swap not initialized")
+	ErrSwapCanNotBeInitializedTwice = sdkerrors.Register(ModuleName, 1101, "swap cannot be initialized twice")
+	ErrSwappedNotFound              = sdkerrors.Register(ModuleName, 1102, "swapped does not exist")
+	ErrExceedSwappableToCoinAmount  = sdkerrors.Register(ModuleName, 1103, "exceed swappable to-coin amount")
 )

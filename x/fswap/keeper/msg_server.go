@@ -26,7 +26,7 @@ func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwapRequest) (*types.
 		return &types.MsgSwapResponse{}, err
 	}
 
-	if req.GetAmount().Denom != swapInit.GetFromDenom() {
+	if req.GetFromCoinAmount().Denom != swapInit.GetFromDenom() {
 		return nil, sdkerrors.ErrInvalidCoins
 	}
 
@@ -35,7 +35,7 @@ func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwapRequest) (*types.
 		return nil, err
 	}
 
-	if err := s.keeper.Swap(c, from, req.GetAmount()); err != nil {
+	if err := s.keeper.Swap(c, from, req.GetFromCoinAmount()); err != nil {
 		return nil, err
 	}
 
@@ -46,7 +46,7 @@ func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAllRequest) (*
 	c := sdk.UnwrapSDKContext(ctx)
 
 	if !s.keeper.hasBeenInitialized(c) {
-		return &types.MsgSwapAllResponse{}, types.ErrSwapNotInitilized
+		return &types.MsgSwapAllResponse{}, types.ErrSwapNotInitialized
 	}
 
 	from, err := sdk.AccAddressFromBech32(req.FromAddress)
