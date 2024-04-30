@@ -103,10 +103,10 @@ func CmdTxMsgSwapAll() *cobra.Command {
 	return cmd
 }
 
-// NewCmdFswapInitProposal implements a command handler for submitting a fswap init proposal transaction.
-func NewCmdFswapInitProposal() *cobra.Command {
+// NewCmdSwapInitProposal implements a command handler for submitting a swap init proposal transaction.
+func NewCmdSwapInitProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "fswap-init [flags]",
+		Use:   "swap-init [flags]",
 		Args:  cobra.ExactArgs(0),
 		Short: "todo",
 		Long:  "todo",
@@ -183,13 +183,13 @@ func parseArgsToContent(cmd *cobra.Command) (gov.Content, error) {
 		return nil, err
 	}
 
-	fswapInit := types.FswapInit{
+	swapInit := types.SwapInit{
 		FromDenom:           from_denom,
 		ToDenom:             to_denom,
 		AmountCapForToDenom: sdk.NewInt(amount_limit),
 		SwapMultiple:        sdk.NewInt(swap_rate),
 	}
 
-	content := types.NewFswapInitProposal(title, description, fswapInit)
+	content := types.NewSwapInitProposal(title, description, swapInit)
 	return content, nil
 }

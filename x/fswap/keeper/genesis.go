@@ -9,14 +9,14 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error {
-	if len(genState.GetFswapInit()) > 1 {
-		return fmt.Errorf("cannot initialize genesis state, there are more than 1 fswapInit")
+	if len(genState.GetSwapInit()) > 1 {
+		return fmt.Errorf("cannot initialize genesis state, there are more than 1 swapInit")
 	}
 	if len(genState.GetSwapped()) > 1 {
 		return fmt.Errorf("cannot initialize genesis state, there are more than 1 swapped")
 	}
-	for _, fswapInit := range genState.GetFswapInit() {
-		if err := k.setFswapInit(ctx, fswapInit); err != nil {
+	for _, swapInit := range genState.GetSwapInit() {
+		if err := k.setSwapInit(ctx, swapInit); err != nil {
 			panic(err)
 		}
 	}
@@ -31,7 +31,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error
 // ExportGenesis returns the module's exported genesis.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
-		FswapInit: k.getAllFswapInits(ctx),
-		Swapped:   k.getAllSwapped(ctx),
+		SwapInit: k.getAllSwapInits(ctx),
+		Swapped:  k.getAllSwapped(ctx),
 	}
 }

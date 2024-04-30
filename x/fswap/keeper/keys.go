@@ -1,21 +1,16 @@
 package keeper
 
 var (
-	fswapInitPrefix         = []byte{0x01}
-	swappedKeyPrefix        = []byte{0x02}
-	allowFswapInitOnceValue = []byte{0x03}
+	swapInitPrefix   = []byte{0x01}
+	swappedKeyPrefix = []byte{0x02}
 )
 
-// fswapInitKey key(prefix + toDenom)
-func fswapInitKey(toDenom string) []byte {
-	return append(fswapInitPrefix, toDenom...)
+// swapInitKey key(prefix + toDenom)
+func swapInitKey(toDenom string) []byte {
+	return append(swapInitPrefix, toDenom...)
 }
 
 // swappedKey key(prefix + toDenom)
 func swappedKey(toDenom string) []byte {
 	return append(swappedKeyPrefix, toDenom...)
-}
-
-func allowFswapInitOnceKey() []byte {
-	return allowFswapInitOnceValue
 }

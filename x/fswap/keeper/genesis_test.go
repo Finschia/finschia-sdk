@@ -12,6 +12,6 @@ func (s *KeeperTestSuite) TestInitAndExportGenesis() {
 
 	exportGenesis := s.keeper.ExportGenesis(ctx)
 	s.Require().Equal(defaultGenesis, exportGenesis)
-	s.Require().Equal(defaultGenesis.GetFswapInit(), exportGenesis.GetFswapInit())
+	s.Require().Equal(defaultGenesis.GetSwapInit(), exportGenesis.GetSwapInit())
 	s.Require().Equal(defaultGenesis.GetSwapped(), exportGenesis.GetSwapped())
 }

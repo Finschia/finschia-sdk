@@ -8,6 +8,6 @@ import "lbm/fswap/v1/fswap.proto";
 
 // GenesisState defines the fswap module's genesis state.
 message GenesisState {
-  repeated FswapInit fswap_init = 1 [(gogoproto.nullable) = false];
-  repeated Swapped   swapped    = 2 [(gogoproto.nullable) = false];
+  repeated SwapInit swap_init = 1 [(gogoproto.nullable) = false];
+  repeated Swapped  swapped   = 2 [(gogoproto.nullable) = false];
 }

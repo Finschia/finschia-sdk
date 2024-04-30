@@ -860,8 +860,8 @@
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
-    - [FswapInit](#lbm.fswap.v1.FswapInit)
-    - [FswapInitProposal](#lbm.fswap.v1.FswapInitProposal)
+    - [SwapInit](#lbm.fswap.v1.SwapInit)
+    - [SwapInitProposal](#lbm.fswap.v1.SwapInitProposal)
     - [Swapped](#lbm.fswap.v1.Swapped)
   
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
@@ -12750,9 +12750,9 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.FswapInit"></a>
+<a name="lbm.fswap.v1.SwapInit"></a>
 
-### FswapInit
+### SwapInit
 
 
 
@@ -12768,9 +12768,9 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.FswapInitProposal"></a>
+<a name="lbm.fswap.v1.SwapInitProposal"></a>
 
-### FswapInitProposal
+### SwapInitProposal
 From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
 
 
@@ -12778,7 +12778,7 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `fswap_init` | [FswapInit](#lbm.fswap.v1.FswapInit) |  |  |
+| `swap_init` | [SwapInit](#lbm.fswap.v1.SwapInit) |  |  |
 
 
 
@@ -12825,7 +12825,7 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `fswap_init` | [FswapInit](#lbm.fswap.v1.FswapInit) | repeated |  |
+| `swap_init` | [SwapInit](#lbm.fswap.v1.SwapInit) | repeated |  |
 | `swapped` | [Swapped](#lbm.fswap.v1.Swapped) | repeated |  |
 
 

@@ -20,11 +20,11 @@ func NewMsgServer(keeper Keeper) *MsgServer {
 
 func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwapRequest) (*types.MsgSwapResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
-	fswapInit, err := s.keeper.getFswapInit(c)
+	swapInit, err := s.keeper.getSwapInit(c)
 	if err != nil {
 		return &types.MsgSwapResponse{}, err
 	}
-	if req.GetAmount().Denom != fswapInit.GetFromDenom() {
+	if req.GetAmount().Denom != swapInit.GetFromDenom() {
 		return nil, sdkerrors.ErrInvalidCoins
 	}
 	from, err := sdk.AccAddressFromBech32(req.FromAddress)
@@ -40,7 +40,7 @@ func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwapRequest) (*types.
 func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAllRequest) (*types.MsgSwapAllResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
 	if !s.keeper.hasBeenInitialized(c) {
-		return &types.MsgSwapAllResponse{}, types.ErrFswapNotInitilized
+		return &types.MsgSwapAllResponse{}, types.ErrSwapNotInitilized
 	}
 	from, err := sdk.AccAddressFromBech32(req.FromAddress)
 	if err != nil {

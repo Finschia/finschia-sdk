@@ -26,20 +26,20 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 	}
 }
 
-// NewFswapInitHandler creates a governance handler to manage new proposal types.
-// It enables FswapInit to propose an fswap init
-func NewFswapInitHandler(k keeper.Keeper) govtypes.Handler {
+// NewSwapInitHandler creates a governance handler to manage new proposal types.
+// It enables SwapInit to propose an fswap init
+func NewSwapInitHandler(k keeper.Keeper) govtypes.Handler {
 	return func(ctx sdk.Context, content govtypes.Content) error {
 		switch c := content.(type) {
-		case *types.FswapInitProposal:
-			return handleFswapInit(ctx, k, c)
+		case *types.SwapInitProposal:
+			return handleSwapInit(ctx, k, c)
 
 		default:
-			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized fsawp proposal content type: %T", c)
+			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized sawp proposal content type: %T", c)
 		}
 	}
 }
 
-func handleFswapInit(ctx sdk.Context, k keeper.Keeper, p *types.FswapInitProposal) error {
-	return k.FswapInit(ctx, p.FswapInit)
+func handleSwapInit(ctx sdk.Context, k keeper.Keeper, p *types.SwapInitProposal) error {
+	return k.SwapInit(ctx, p.SwapInit)
 }

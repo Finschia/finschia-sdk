@@ -56,27 +56,27 @@ func (s Swapped) String() string {
 }
 
 // Validate validates the set of swapped
-func (f FswapInit) ValidateBasic() error {
-	if f.FromDenom == "" {
+func (s SwapInit) ValidateBasic() error {
+	if s.FromDenom == "" {
 		return fmt.Errorf("from denomination cannot be empty")
 	}
-	if f.ToDenom == "" {
+	if s.ToDenom == "" {
 		return fmt.Errorf("to denomination cannot be empty")
 	}
-	if f.FromDenom == f.ToDenom {
+	if s.FromDenom == s.ToDenom {
 		return fmt.Errorf("from denomination cannot be equal to to denomination")
 	}
-	if f.AmountCapForToDenom.LT(sdk.ZeroInt()) {
+	if s.AmountCapForToDenom.LT(sdk.ZeroInt()) {
 		return fmt.Errorf("amount cannot be less than zero")
 	}
-	if f.SwapMultiple.LT(sdk.ZeroInt()) {
+	if s.SwapMultiple.LT(sdk.ZeroInt()) {
 		return fmt.Errorf("swap multiple cannot be less than zero")
 	}
 	return nil
 }
 
 // String implements the Stringer interface.
-func (f FswapInit) String() string {
-	out, _ := yaml.Marshal(f)
+func (s SwapInit) String() string {
+	out, _ := yaml.Marshal(s)
 	return string(out)
 }

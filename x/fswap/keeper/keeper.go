@@ -44,23 +44,23 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) FswapInit(ctx sdk.Context, fswapInit types.FswapInit) error {
-	if err := fswapInit.ValidateBasic(); err != nil {
+func (k Keeper) SwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
+	if err := swapInit.ValidateBasic(); err != nil {
 		return err
 	}
 	if k.hasBeenInitialized(ctx) {
 		return errors.New("already initialized")
 	}
-	if err := k.setFswapInit(ctx, fswapInit); err != nil {
+	if err := k.setSwapInit(ctx, swapInit); err != nil {
 		return err
 	}
 	swapped := types.Swapped{
 		OldCoinAmount: sdk.Coin{
-			Denom:  fswapInit.GetFromDenom(),
+			Denom:  swapInit.GetFromDenom(),
 			Amount: sdk.ZeroInt(),
 		},
 		NewCoinAmount: sdk.Coin{
-			Denom:  fswapInit.GetToDenom(),
+			Denom:  swapInit.GetToDenom(),
 			Amount: sdk.ZeroInt(),
 		},
 	}
@@ -74,16 +74,16 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, oldCoinAmount sdk.Coi
 	if ok := k.HasBalance(ctx, addr, oldCoinAmount); !ok {
 		return sdkerrors.ErrInsufficientFunds
 	}
-	fswapInit, err := k.getFswapInit(ctx)
+	swapInit, err := k.getSwapInit(ctx)
 	if err != nil {
 		return err
 	}
-	if oldCoinAmount.GetDenom() != fswapInit.GetFromDenom() {
+	if oldCoinAmount.GetDenom() != swapInit.GetFromDenom() {
 		return errors.New("denom mismatch")
 	}
 
-	newAmount := oldCoinAmount.Amount.Mul(fswapInit.SwapMultiple)
-	newCoinAmount := sdk.NewCoin(fswapInit.ToDenom, newAmount)
+	newAmount := oldCoinAmount.Amount.Mul(swapInit.SwapMultiple)
+	newCoinAmount := sdk.NewCoin(swapInit.ToDenom, newAmount)
 	if err := k.checkSwapCap(ctx, newCoinAmount); err != nil {
 		return err
 	}
@@ -135,17 +135,13 @@ func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress) error {
 	return nil
 }
 
-func (k Keeper) setFswapInit(ctx sdk.Context, fswapInit types.FswapInit) error {
+func (k Keeper) setSwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
 	store := ctx.KVStore(k.storeKey)
-	//if store.Has(allowFswapInitOnceKey()) {
-	//	return errors.New("fswap already initialized, allow only one init")
-	//}
-	//store.Set(allowFswapInitOnceKey(), []byte{})
-	bz, err := k.cdc.Marshal(&fswapInit)
+	bz, err := k.cdc.Marshal(&swapInit)
 	if err != nil {
 		return err
 	}
-	store.Set(fswapInitKey(fswapInit.ToDenom), bz)
+	store.Set(swapInitKey(swapInit.ToDenom), bz)
 	return nil
 }
 
@@ -203,26 +199,26 @@ func (k Keeper) setSwapped(ctx sdk.Context, swapped types.Swapped) error {
 	return nil
 }
 
-func (k Keeper) getAllFswapInits(ctx sdk.Context) []types.FswapInit {
-	fswapInits := make([]types.FswapInit, 0)
-	k.iterateAllFswapInits(ctx, func(fswapInit types.FswapInit) bool {
-		fswapInits = append(fswapInits, fswapInit)
+func (k Keeper) getAllSwapInits(ctx sdk.Context) []types.SwapInit {
+	swapInits := make([]types.SwapInit, 0)
+	k.iterateAllSwapInits(ctx, func(swapInit types.SwapInit) bool {
+		swapInits = append(swapInits, swapInit)
 		return false
 	})
-	return fswapInits
+	return swapInits
 }
 
-func (k Keeper) iterateAllFswapInits(ctx sdk.Context, cb func(swapped types.FswapInit) (stop bool)) {
+func (k Keeper) iterateAllSwapInits(ctx sdk.Context, cb func(swapped types.SwapInit) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	fswapInitDataStore := prefix.NewStore(store, fswapInitPrefix)
+	swapInitDataStore := prefix.NewStore(store, swapInitPrefix)
 
-	iterator := fswapInitDataStore.Iterator(nil, nil)
+	iterator := swapInitDataStore.Iterator(nil, nil)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		fswapInit := types.FswapInit{}
-		k.cdc.MustUnmarshal(iterator.Value(), &fswapInit)
-		if cb(fswapInit) {
+		swapInit := types.SwapInit{}
+		k.cdc.MustUnmarshal(iterator.Value(), &swapInit)
+		if cb(swapInit) {
 			break
 		}
 	}
@@ -250,11 +246,11 @@ func (k Keeper) getFromDenom(ctx sdk.Context) (string, error) {
 	if len(k.fromDenom) > 0 {
 		return k.fromDenom, nil
 	}
-	fswapInit, err := k.getFswapInit(ctx)
+	swapInit, err := k.getSwapInit(ctx)
 	if err != nil {
 		return "", err
 	}
-	k.fromDenom = fswapInit.GetFromDenom()
+	k.fromDenom = swapInit.GetFromDenom()
 	return k.fromDenom, nil
 }
 
@@ -262,11 +258,11 @@ func (k Keeper) getToDenom(ctx sdk.Context) (string, error) {
 	if len(k.toDenom) > 0 {
 		return k.toDenom, nil
 	}
-	fswapInit, err := k.getFswapInit(ctx)
+	swapInit, err := k.getSwapInit(ctx)
 	if err != nil {
 		return "", err
 	}
-	k.toDenom = fswapInit.GetToDenom()
+	k.toDenom = swapInit.GetToDenom()
 	return k.toDenom, nil
 }
 
@@ -274,11 +270,11 @@ func (k Keeper) getSwapMultiple(ctx sdk.Context) (sdk.Int, error) {
 	if k.swapMultiple.IsPositive() {
 		return k.swapMultiple, nil
 	}
-	fswapInit, err := k.getFswapInit(ctx)
+	swapInit, err := k.getSwapInit(ctx)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
-	k.swapMultiple = fswapInit.SwapMultiple
+	k.swapMultiple = swapInit.SwapMultiple
 	return k.swapMultiple, nil
 }
 
@@ -286,20 +282,20 @@ func (k Keeper) getSwapCap(ctx sdk.Context) (sdk.Int, error) {
 	if k.swapCap.IsPositive() {
 		return k.swapCap, nil
 	}
-	fswapInit, err := k.getFswapInit(ctx)
+	swapInit, err := k.getSwapInit(ctx)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
-	k.swapCap = fswapInit.AmountCapForToDenom
+	k.swapCap = swapInit.AmountCapForToDenom
 	return k.swapCap, nil
 }
 
-func (k Keeper) getFswapInit(ctx sdk.Context) (types.FswapInit, error) {
-	fswapInits := k.getAllFswapInits(ctx)
-	if len(fswapInits) == 0 {
-		return types.FswapInit{}, types.ErrFswapNotInitilized
+func (k Keeper) getSwapInit(ctx sdk.Context) (types.SwapInit, error) {
+	swapInits := k.getAllSwapInits(ctx)
+	if len(swapInits) == 0 {
+		return types.SwapInit{}, types.ErrSwapNotInitilized
 	}
-	return fswapInits[0], nil
+	return swapInits[0], nil
 }
 
 func (k Keeper) updateSwapped(ctx sdk.Context, oldAmount, newAmount sdk.Coin) error {
@@ -340,6 +336,6 @@ func (k Keeper) checkSwapCap(ctx sdk.Context, newCoinAmount sdk.Coin) error {
 }
 
 func (k Keeper) hasBeenInitialized(ctx sdk.Context) bool {
-	inits := k.getAllFswapInits(ctx)
+	inits := k.getAllSwapInits(ctx)
 	return len(inits) > 0
 }

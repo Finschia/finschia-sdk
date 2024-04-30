@@ -30,7 +30,7 @@ type KeeperTestSuite struct {
 	accWithNewCoin sdk.AccAddress
 	initBalance    sdk.Int
 
-	fswapInit    types.FswapInit
+	swapInit     types.SwapInit
 	oldDenom     string
 	newDenom     string
 	swapMultiple sdk.Int
@@ -72,7 +72,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.initBalance = sdk.NewInt(123456789)
 	numAcc := int64(2)
 	s.swapCap = s.initBalance.Mul(s.swapMultiple.Mul(sdk.NewInt(numAcc)))
-	s.fswapInit = types.FswapInit{
+	s.swapInit = types.SwapInit{
 		FromDenom:           s.oldDenom,
 		ToDenom:             s.newDenom,
 		AmountCapForToDenom: s.swapCap,
@@ -105,7 +105,7 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) TestSwap() {
-	err := s.keeper.FswapInit(s.ctx, s.fswapInit)
+	err := s.keeper.SwapInit(s.ctx, s.swapInit)
 	s.Require().NoError(err)
 	testCases := map[string]struct {
 		from                           sdk.AccAddress
