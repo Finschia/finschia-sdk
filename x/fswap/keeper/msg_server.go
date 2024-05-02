@@ -25,6 +25,10 @@ func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwap) (*types.MsgSwap
 		return nil, err
 	}
 
+	if err := s.keeper.IsSendEnabledCoins(c, req.GetFromCoinAmount()); err != nil {
+		return &types.MsgSwapResponse{}, err
+	}
+
 	if err := s.keeper.Swap(c, from, req.GetFromCoinAmount(), req.GetToDenom()); err != nil {
 		return nil, err
 	}

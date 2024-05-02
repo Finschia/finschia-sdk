@@ -89,6 +89,10 @@ func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress, fromDenom, toDenom
 		return sdkerrors.ErrInsufficientFunds
 	}
 
+	if err := k.IsSendEnabledCoins(ctx, balance); err != nil {
+		return err
+	}
+
 	if err := k.Swap(ctx, addr, balance, toDenom); err != nil {
 		return err
 	}

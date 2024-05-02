@@ -11,5 +11,6 @@ type (
 		SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 		MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 		BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+		IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
 	}
 )

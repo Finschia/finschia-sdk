@@ -13,10 +13,6 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
 	}
 
 	isNewSwap := true
-	if _, err := k.getSwap(ctx, swap.ToDenom, swap.FromDenom); err == nil {
-		return errors.ErrInvalidRequest.Wrap("there is already a swap in reverse way, only one way swap allowed")
-	}
-
 	if _, err := k.getSwap(ctx, swap.FromDenom, swap.ToDenom); err == nil {
 		isNewSwap = false
 	}
@@ -25,8 +21,10 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
 		return errors.ErrInvalidRequest.Wrap("update existing swap not allowed")
 	}
 
-	if err := k.increaseSwapCount(ctx); err != nil {
-		return err
+	if isNewSwap {
+		if err := k.increaseSwapCount(ctx); err != nil {
+			return err
+		}
 	}
 
 	key := swapKey(swap.FromDenom, swap.ToDenom)
