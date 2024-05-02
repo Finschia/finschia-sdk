@@ -19,10 +19,25 @@ func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
 		k.setVote(ctx, vote.ProposalId, sdk.MustAccAddressFromBech32(vote.Voter), vote.Option)
 	}
 
-	k.SetRoleMetadata(ctx, gs.RoleMetadata)
+	expectedRoleMeta := types.RoleMetadata{}
 	for _, pair := range gs.Roles {
 		k.SetRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
+		switch pair.Role {
+		case types.RoleGuardian:
+			expectedRoleMeta.Guardian++
+		case types.RoleOperator:
+			expectedRoleMeta.Operator++
+		case types.RoleJudge:
+			expectedRoleMeta.Judge++
+		}
 	}
+
+	if expectedRoleMeta.Guardian != gs.RoleMetadata.Guardian ||
+		expectedRoleMeta.Operator != gs.RoleMetadata.Operator ||
+		expectedRoleMeta.Judge != gs.RoleMetadata.Judge {
+		panic("role metadata does not match the number of roles")
+	}
+	k.SetRoleMetadata(ctx, gs.RoleMetadata)
 
 	// TODO: we initialize the appropriate genesis parameters whenever the feature is added
 
