@@ -21,8 +21,8 @@ func (s *Swap) ValidateBasic() error {
 	if s.AmountCapForToDenom.LT(sdk.OneInt()) {
 		return sdkerrors.ErrInvalidRequest.Wrap("amount cannot be less than one")
 	}
-	if s.SwapMultiple.LT(sdk.OneInt()) {
-		return sdkerrors.ErrInvalidRequest.Wrap("swap multiple cannot be less than one")
+	if s.SwapRate.IsZero() {
+		return sdkerrors.ErrInvalidRequest.Wrap("swap rate cannot be zero")
 	}
 	return nil
 }

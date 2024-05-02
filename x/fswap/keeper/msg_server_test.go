@@ -63,7 +63,8 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 			from, err := sdk.AccAddressFromBech32(tc.request.FromAddress)
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swap.SwapMultiple)
+			multipliedAmountDec := s.swap.SwapRate.Mul(sdk.NewDecFromBigInt(tc.expectedBalanceWithoutMultiply.BigInt()))
+			expectedAmount := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}
@@ -114,7 +115,8 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 			from, err := sdk.AccAddressFromBech32(tc.request.FromAddress)
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swap.SwapMultiple)
+			multipliedAmountDec := s.swap.SwapRate.Mul(sdk.NewDecFromBigInt(tc.expectedBalanceWithoutMultiply.BigInt()))
+			expectedAmount := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}

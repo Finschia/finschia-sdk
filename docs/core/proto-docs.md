@@ -13950,7 +13950,7 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 | `from_denom` | [string](#string) |  |  |
 | `to_denom` | [string](#string) |  |  |
 | `amount_cap_for_to_denom` | [string](#string) |  |  |
-| `swap_multiple` | [string](#string) |  |  |
+| `swap_rate` | [string](#string) |  |  |
 
 
 

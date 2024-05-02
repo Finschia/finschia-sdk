@@ -66,11 +66,16 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	numAcc := int64(2)
 	s.initBalance = sdk.NewInt(123456789)
+	swapRateForCony, err := sdk.NewDecFromStr("148079656000000")
+	s.Require().NoError(err)
+	swapCap := sdk.NewIntFromBigInt(swapRateForCony.Mul(s.initBalance.ToDec()).BigInt())
+	swapCap = swapCap.Mul(sdk.NewInt(numAcc))
+	s.Require().NoError(err)
 	s.swap = types.Swap{
 		FromDenom:           "fromdenom",
 		ToDenom:             "todenom",
-		AmountCapForToDenom: s.initBalance.Mul(sdk.NewInt(1000).Mul(sdk.NewInt(numAcc))),
-		SwapMultiple:        sdk.NewInt(1000),
+		AmountCapForToDenom: swapCap,
+		SwapRate:            swapRateForCony,
 	}
 	s.toDenomMetadata = bank.Metadata{
 		Description: "This is metadata for to-coin",
@@ -153,8 +158,7 @@ func (s *KeeperTestSuite) TestSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			dontCareForThisTest := bank.Metadata{Base: "dummy"}
-			err := s.keeper.MakeSwap(ctx, s.swap, dontCareForThisTest)
+			err := s.keeper.MakeSwap(ctx, s.swap, s.toDenomMetadata)
 			s.Require().NoError(err)
 
 			err = s.keeper.Swap(ctx, tc.from, tc.amountToSwap, tc.toDenom)
@@ -165,7 +169,8 @@ func (s *KeeperTestSuite) TestSwap() {
 			s.Require().NoError(err)
 
 			actualAmount := s.keeper.GetBalance(ctx, tc.from, s.swap.GetToDenom()).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swap.SwapMultiple)
+			multipliedAmountDec := s.swap.SwapRate.Mul(sdk.NewDecFromBigInt(tc.expectedBalanceWithoutMultiply.BigInt()))
+			expectedAmount := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}

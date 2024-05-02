@@ -40,8 +40,9 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 		return err
 	}
 
-	newAmount := fromCoinAmount.Amount.Mul(swap.SwapMultiple)
-	newCoinAmount := sdk.NewCoin(toDenom, newAmount)
+	multipliedAmountDec := swap.SwapRate.Mul(sdk.NewDecFromBigInt(fromCoinAmount.Amount.BigInt()))
+	multipliedAmountInt := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
+	newCoinAmount := sdk.NewCoin(toDenom, multipliedAmountInt)
 	swapped, err := k.getSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom())
 	if err != nil {
 		return err

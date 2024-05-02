@@ -21,7 +21,7 @@ const (
 	FlagFromDenom           = "from-denom"
 	FlagToDenom             = "to-denom"
 	FlagAmountCapForToDenom = "to-coin-amount-cap"
-	FlagSwapMultiple        = "swap-multiple"
+	FlagSwapRate            = "swap-rate"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -184,16 +184,19 @@ Example of the content of messages-json:
 				return err
 			}
 
-			swapMultiple, err := cmd.Flags().GetInt64(FlagSwapMultiple)
+			swapRate, err := cmd.Flags().GetString(FlagSwapRate)
 			if err != nil {
 				return err
 			}
-
+			swapRateDec, err := sdk.NewDecFromStr(swapRate)
+			if err != nil {
+				return err
+			}
 			swap := types.Swap{
 				FromDenom:           fromDenom,
 				ToDenom:             toDenom,
 				AmountCapForToDenom: sdk.NewInt(amountCap),
-				SwapMultiple:        sdk.NewInt(swapMultiple),
+				SwapRate:            swapRateDec,
 			}
 
 			toDenomMetadata, err := parseToDenomMetadata(clientCtx.Codec, args[0])
@@ -227,7 +230,7 @@ Example of the content of messages-json:
 	cmd.Flags().String(FlagFromDenom, "", "cony")
 	cmd.Flags().String(FlagToDenom, "", "PDT")
 	cmd.Flags().Int64(FlagAmountCapForToDenom, 0, "tbd")
-	cmd.Flags().Int64(FlagSwapMultiple, 0, "tbd")
+	cmd.Flags().Int64(FlagSwapRate, 0, "tbd")
 
 	return cmd
 }

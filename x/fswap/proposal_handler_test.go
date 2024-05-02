@@ -21,11 +21,13 @@ func TestProposalHandlerPassed(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
+	forConyRate, err := sdk.NewDecFromStr("148079656000000")
+	require.NoError(t, err)
 	swap := types.Swap{
 		FromDenom:           "aaa",
 		ToDenom:             "bbb",
 		AmountCapForToDenom: sdk.NewInt(100),
-		SwapMultiple:        sdk.NewInt(10),
+		SwapRate:            forConyRate,
 	}
 	tp := testProposal(swap)
 	hdlr := fswap.NewSwapHandler(app.FswapKeeper)

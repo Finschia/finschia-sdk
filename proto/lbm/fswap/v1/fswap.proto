@@ -15,8 +15,8 @@ message Swap {
   string to_denom                = 2;
   string amount_cap_for_to_denom = 3
       [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
-  string swap_multiple = 4
-      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string swap_rate = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message SwapStats {
