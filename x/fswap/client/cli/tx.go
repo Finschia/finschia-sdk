@@ -190,6 +190,6 @@ func parseArgsToContent(cmd *cobra.Command) (gov.Content, error) {
 		SwapMultiple:        sdk.NewInt(swap_rate),
 	}
 
-	content := types.NewSwapProposal(title, description, swapInit)
+	content := types.NewMakeSwapProposal(title, description, swapInit)
 	return content, nil
 }

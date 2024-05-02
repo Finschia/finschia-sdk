@@ -10,34 +10,34 @@ const (
 	ProposalTypeSwap string = "Swap"
 )
 
-// NewSwapProposal creates a new SwapProposal instance.
+// NewMakeSwapProposal creates a new SwapProposal instance.
 // Deprecated: this proposal is considered legacy and is deprecated in favor of
 // Msg-based gov proposals. See MsgSwap.
-func NewSwapProposal(title, description string, swap Swap) *SwapProposal {
-	return &SwapProposal{title, description, swap}
+func NewMakeSwapProposal(title, description string, swap Swap) *MakeSwapProposal {
+	return &MakeSwapProposal{title, description, swap}
 }
 
 // Implements Proposal Interface
-var _ gov.Content = &SwapProposal{}
+var _ gov.Content = &MakeSwapProposal{}
 
 func init() {
 	gov.RegisterProposalType(ProposalTypeSwap)
 }
 
 // ProposalRoute gets the proposal's router key
-func (m *SwapProposal) ProposalRoute() string { return RouterKey }
+func (m *MakeSwapProposal) ProposalRoute() string { return RouterKey }
 
 // ProposalType is "Swap"
-func (m *SwapProposal) ProposalType() string { return ProposalTypeSwap }
+func (m *MakeSwapProposal) ProposalType() string { return ProposalTypeSwap }
 
 // String implements the Stringer interface.
-func (m *SwapProposal) String() string {
+func (m *MakeSwapProposal) String() string {
 	out, _ := yaml.Marshal(m)
 	return string(out)
 }
 
 // ValidateBasic validates the proposal
-func (m *SwapProposal) ValidateBasic() error {
+func (m *MakeSwapProposal) ValidateBasic() error {
 	if err := m.Swap.ValidateBasic(); err != nil {
 		return err
 	}

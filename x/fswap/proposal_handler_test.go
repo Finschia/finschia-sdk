@@ -6,8 +6,8 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-func testProposal(swapInit types.Swap) *types.SwapProposal {
-	return types.NewSwapProposal("Test", "description", swapInit)
+func testProposal(swapInit types.Swap) *types.MakeSwapProposal {
+	return types.NewMakeSwapProposal("Test", "description", swapInit)
 }
 
 func TestProposalHandlerPassed(t *testing.T) {

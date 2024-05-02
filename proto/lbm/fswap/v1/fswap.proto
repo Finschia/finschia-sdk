@@ -26,7 +26,7 @@ message SwapStats {
 }
 
 // From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
-message SwapProposal {
+message MakeSwapProposal {
   option (gogoproto.equal)            = true;
   option (gogoproto.goproto_stringer) = false;
 

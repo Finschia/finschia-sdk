@@ -860,8 +860,8 @@
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
+    - [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal)
     - [Swap](#lbm.fswap.v1.Swap)
-    - [SwapProposal](#lbm.fswap.v1.SwapProposal)
     - [SwapStats](#lbm.fswap.v1.SwapStats)
     - [Swapped](#lbm.fswap.v1.Swapped)
   
@@ -12751,6 +12751,23 @@ Msg defines the foundation Msg service.
 
 
 
+<a name="lbm.fswap.v1.MakeSwapProposal"></a>
+
+### MakeSwapProposal
+From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+
+
+
+
+
+
 <a name="lbm.fswap.v1.Swap"></a>
 
 ### Swap
@@ -12763,23 +12780,6 @@ Msg defines the foundation Msg service.
 | `to_denom` | [string](#string) |  |  |
 | `amount_cap_for_to_denom` | [string](#string) |  |  |
 | `swap_multiple` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.fswap.v1.SwapProposal"></a>
-
-### SwapProposal
-From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
 
 
 
