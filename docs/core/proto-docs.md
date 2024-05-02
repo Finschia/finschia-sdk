@@ -860,8 +860,9 @@
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
-    - [SwapInit](#lbm.fswap.v1.SwapInit)
-    - [SwapInitProposal](#lbm.fswap.v1.SwapInitProposal)
+    - [Swap](#lbm.fswap.v1.Swap)
+    - [SwapProposal](#lbm.fswap.v1.SwapProposal)
+    - [SwapStats](#lbm.fswap.v1.SwapStats)
     - [Swapped](#lbm.fswap.v1.Swapped)
   
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
@@ -12750,9 +12751,9 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.SwapInit"></a>
+<a name="lbm.fswap.v1.Swap"></a>
 
-### SwapInit
+### Swap
 
 
 
@@ -12768,9 +12769,9 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.SwapInitProposal"></a>
+<a name="lbm.fswap.v1.SwapProposal"></a>
 
-### SwapInitProposal
+### SwapProposal
 From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
 
 
@@ -12778,7 +12779,22 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `swap_init` | [SwapInit](#lbm.fswap.v1.SwapInit) |  |  |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.SwapStats"></a>
+
+### SwapStats
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swap_count` | [int32](#int32) |  |  |
 
 
 
@@ -12825,8 +12841,9 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `swap_init` | [SwapInit](#lbm.fswap.v1.SwapInit) | repeated |  |
-| `swapped` | [Swapped](#lbm.fswap.v1.Swapped) | repeated |  |
+| `swaps` | [Swap](#lbm.fswap.v1.Swap) | repeated |  |
+| `swap_stats` | [SwapStats](#lbm.fswap.v1.SwapStats) |  |  |
+| `swappeds` | [Swapped](#lbm.fswap.v1.Swapped) | repeated |  |
 
 
 
@@ -12855,6 +12872,12 @@ GenesisState defines the fswap module's genesis state.
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fromDenom` | [string](#string) |  |  |
+| `toDenom` | [string](#string) |  |  |
+
+
 
 
 
@@ -12879,6 +12902,12 @@ GenesisState defines the fswap module's genesis state.
 
 ### QueryTotalSwappableToCoinAmountRequest
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fromDenom` | [string](#string) |  |  |
+| `toDenom` | [string](#string) |  |  |
 
 
 

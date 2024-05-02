@@ -25,24 +25,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type SwapInit struct {
+type Swap struct {
 	FromDenom           string                                     `protobuf:"bytes,1,opt,name=from_denom,json=fromDenom,proto3" json:"from_denom,omitempty"`
 	ToDenom             string                                     `protobuf:"bytes,2,opt,name=to_denom,json=toDenom,proto3" json:"to_denom,omitempty"`
 	AmountCapForToDenom github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,3,opt,name=amount_cap_for_to_denom,json=amountCapForToDenom,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"amount_cap_for_to_denom"`
 	SwapMultiple        github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,4,opt,name=swap_multiple,json=swapMultiple,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"swap_multiple"`
 }
 
-func (m *SwapInit) Reset()      { *m = SwapInit{} }
-func (*SwapInit) ProtoMessage() {}
-func (*SwapInit) Descriptor() ([]byte, []int) {
+func (m *Swap) Reset()      { *m = Swap{} }
+func (*Swap) ProtoMessage() {}
+func (*Swap) Descriptor() ([]byte, []int) {
 	return fileDescriptor_42ca60eaf37a2b67, []int{0}
 }
-func (m *SwapInit) XXX_Unmarshal(b []byte) error {
+func (m *Swap) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SwapInit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Swap) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SwapInit.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Swap.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -52,50 +52,47 @@ func (m *SwapInit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *SwapInit) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SwapInit.Merge(m, src)
+func (m *Swap) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Swap.Merge(m, src)
 }
-func (m *SwapInit) XXX_Size() int {
+func (m *Swap) XXX_Size() int {
 	return m.Size()
 }
-func (m *SwapInit) XXX_DiscardUnknown() {
-	xxx_messageInfo_SwapInit.DiscardUnknown(m)
+func (m *Swap) XXX_DiscardUnknown() {
+	xxx_messageInfo_Swap.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SwapInit proto.InternalMessageInfo
+var xxx_messageInfo_Swap proto.InternalMessageInfo
 
-func (m *SwapInit) GetFromDenom() string {
+func (m *Swap) GetFromDenom() string {
 	if m != nil {
 		return m.FromDenom
 	}
 	return ""
 }
 
-func (m *SwapInit) GetToDenom() string {
+func (m *Swap) GetToDenom() string {
 	if m != nil {
 		return m.ToDenom
 	}
 	return ""
 }
 
-// From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
-type SwapInitProposal struct {
-	Title       string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description string   `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	SwapInit    SwapInit `protobuf:"bytes,3,opt,name=swap_init,json=swapInit,proto3" json:"swap_init"`
+type SwapStats struct {
+	SwapCount int32 `protobuf:"varint,1,opt,name=swap_count,json=swapCount,proto3" json:"swap_count,omitempty"`
 }
 
-func (m *SwapInitProposal) Reset()      { *m = SwapInitProposal{} }
-func (*SwapInitProposal) ProtoMessage() {}
-func (*SwapInitProposal) Descriptor() ([]byte, []int) {
+func (m *SwapStats) Reset()      { *m = SwapStats{} }
+func (*SwapStats) ProtoMessage() {}
+func (*SwapStats) Descriptor() ([]byte, []int) {
 	return fileDescriptor_42ca60eaf37a2b67, []int{1}
 }
-func (m *SwapInitProposal) XXX_Unmarshal(b []byte) error {
+func (m *SwapStats) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SwapInitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SwapStats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SwapInitProposal.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SwapStats.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -105,37 +102,83 @@ func (m *SwapInitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *SwapInitProposal) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SwapInitProposal.Merge(m, src)
+func (m *SwapStats) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SwapStats.Merge(m, src)
 }
-func (m *SwapInitProposal) XXX_Size() int {
+func (m *SwapStats) XXX_Size() int {
 	return m.Size()
 }
-func (m *SwapInitProposal) XXX_DiscardUnknown() {
-	xxx_messageInfo_SwapInitProposal.DiscardUnknown(m)
+func (m *SwapStats) XXX_DiscardUnknown() {
+	xxx_messageInfo_SwapStats.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SwapInitProposal proto.InternalMessageInfo
+var xxx_messageInfo_SwapStats proto.InternalMessageInfo
 
-func (m *SwapInitProposal) GetTitle() string {
+func (m *SwapStats) GetSwapCount() int32 {
+	if m != nil {
+		return m.SwapCount
+	}
+	return 0
+}
+
+// From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+type SwapProposal struct {
+	Title       string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Swap        Swap   `protobuf:"bytes,3,opt,name=swap,proto3" json:"swap"`
+}
+
+func (m *SwapProposal) Reset()      { *m = SwapProposal{} }
+func (*SwapProposal) ProtoMessage() {}
+func (*SwapProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42ca60eaf37a2b67, []int{2}
+}
+func (m *SwapProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SwapProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SwapProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SwapProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SwapProposal.Merge(m, src)
+}
+func (m *SwapProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *SwapProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_SwapProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SwapProposal proto.InternalMessageInfo
+
+func (m *SwapProposal) GetTitle() string {
 	if m != nil {
 		return m.Title
 	}
 	return ""
 }
 
-func (m *SwapInitProposal) GetDescription() string {
+func (m *SwapProposal) GetDescription() string {
 	if m != nil {
 		return m.Description
 	}
 	return ""
 }
 
-func (m *SwapInitProposal) GetSwapInit() SwapInit {
+func (m *SwapProposal) GetSwap() Swap {
 	if m != nil {
-		return m.SwapInit
+		return m.Swap
 	}
-	return SwapInit{}
+	return Swap{}
 }
 
 type Swapped struct {
@@ -146,7 +189,7 @@ type Swapped struct {
 func (m *Swapped) Reset()      { *m = Swapped{} }
 func (*Swapped) ProtoMessage() {}
 func (*Swapped) Descriptor() ([]byte, []int) {
-	return fileDescriptor_42ca60eaf37a2b67, []int{2}
+	return fileDescriptor_42ca60eaf37a2b67, []int{3}
 }
 func (m *Swapped) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -190,55 +233,57 @@ func (m *Swapped) GetToCoinAmount() types.Coin {
 }
 
 func init() {
-	proto.RegisterType((*SwapInit)(nil), "lbm.fswap.v1.SwapInit")
-	proto.RegisterType((*SwapInitProposal)(nil), "lbm.fswap.v1.SwapInitProposal")
+	proto.RegisterType((*Swap)(nil), "lbm.fswap.v1.Swap")
+	proto.RegisterType((*SwapStats)(nil), "lbm.fswap.v1.SwapStats")
+	proto.RegisterType((*SwapProposal)(nil), "lbm.fswap.v1.SwapProposal")
 	proto.RegisterType((*Swapped)(nil), "lbm.fswap.v1.Swapped")
 }
 
 func init() { proto.RegisterFile("lbm/fswap/v1/fswap.proto", fileDescriptor_42ca60eaf37a2b67) }
 
 var fileDescriptor_42ca60eaf37a2b67 = []byte{
-	// 465 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x53, 0x3d, 0x6f, 0x13, 0x41,
-	0x10, 0xf5, 0x19, 0x43, 0xec, 0xb5, 0x89, 0xa2, 0x23, 0x02, 0x27, 0x12, 0x77, 0x51, 0x2a, 0x04,
-	0x62, 0x57, 0x76, 0x2a, 0xd2, 0xe1, 0xa0, 0x88, 0x14, 0x48, 0xc8, 0x20, 0x21, 0xd1, 0x9c, 0xf6,
-	0xce, 0x67, 0x7b, 0xc5, 0xdd, 0xce, 0xea, 0x76, 0xec, 0x84, 0x5f, 0x01, 0x74, 0x94, 0xa9, 0xf9,
-	0x25, 0x29, 0x53, 0x22, 0x8a, 0x80, 0xec, 0x86, 0x7f, 0x01, 0xda, 0x8f, 0x80, 0xa9, 0x40, 0x48,
-	0xe9, 0x66, 0xe7, 0xcd, 0xbd, 0x37, 0xfb, 0xde, 0x2d, 0xe9, 0x16, 0x69, 0xc9, 0xc6, 0xfa, 0x98,
-	0x2b, 0x36, 0xef, 0xb9, 0x82, 0xaa, 0x0a, 0x10, 0xc2, 0x4e, 0x91, 0x96, 0xd4, 0x35, 0xe6, 0xbd,
-	0xed, 0xcd, 0x09, 0x4c, 0xc0, 0x02, 0xcc, 0x54, 0x6e, 0x66, 0x3b, 0xca, 0x40, 0x97, 0xa0, 0x59,
-	0xca, 0x75, 0xce, 0xe6, 0xbd, 0x34, 0x47, 0xde, 0x63, 0x19, 0x08, 0xe9, 0xf0, 0xdd, 0x0f, 0x75,
-	0xd2, 0x7c, 0x71, 0xcc, 0xd5, 0x91, 0x14, 0x18, 0xde, 0x25, 0x64, 0x5c, 0x41, 0x99, 0x8c, 0x72,
-	0x09, 0x65, 0x37, 0xd8, 0x09, 0xee, 0xb5, 0x86, 0x2d, 0xd3, 0x79, 0x62, 0x1a, 0xe1, 0x16, 0x69,
-	0x22, 0x78, 0xb0, 0x6e, 0xc1, 0x35, 0x04, 0x07, 0x4d, 0xc9, 0x1d, 0x5e, 0xc2, 0x4c, 0x62, 0x92,
-	0x71, 0x95, 0x8c, 0xa1, 0x4a, 0x7e, 0x4d, 0x5e, 0x33, 0x93, 0x83, 0xfe, 0xd9, 0x45, 0x5c, 0xfb,
-	0x72, 0x11, 0xdf, 0x9f, 0x08, 0x9c, 0xce, 0x52, 0x9a, 0x41, 0xc9, 0x0e, 0x85, 0xd4, 0xd9, 0x54,
-	0x70, 0x36, 0xf6, 0xc5, 0x43, 0x3d, 0x7a, 0xc3, 0xf0, 0xad, 0xca, 0x35, 0x3d, 0x92, 0x38, 0xbc,
-	0xe5, 0x28, 0x0f, 0xb8, 0x3a, 0x84, 0xea, 0xa5, 0x57, 0x7a, 0x45, 0x6e, 0x9a, 0x1b, 0x27, 0xe5,
-	0xac, 0x40, 0xa1, 0x8a, 0xbc, 0xdb, 0xf8, 0x6f, 0xfe, 0x8e, 0x21, 0x7a, 0xe6, 0x79, 0xf6, 0x9b,
-	0x1f, 0x4f, 0xe3, 0xda, 0xf7, 0xd3, 0x38, 0xd8, 0x7d, 0x17, 0x90, 0x8d, 0x4b, 0x4f, 0x9e, 0x57,
-	0xa0, 0x40, 0xf3, 0x22, 0xdc, 0x24, 0xd7, 0x51, 0x60, 0x91, 0x7b, 0x5b, 0xdc, 0x21, 0xdc, 0x21,
-	0xed, 0x51, 0xae, 0xb3, 0x4a, 0x28, 0x14, 0x20, 0xbd, 0x2b, 0xab, 0xad, 0xf0, 0x11, 0x69, 0xd9,
-	0x7d, 0x85, 0x14, 0x68, 0xbd, 0x68, 0xf7, 0x6f, 0xd3, 0xd5, 0xe0, 0xe8, 0xa5, 0xd4, 0xa0, 0x61,
-	0xee, 0x30, 0x6c, 0x6a, 0x7f, 0x5e, 0xd9, 0xe8, 0x47, 0x40, 0xd6, 0xcc, 0x98, 0xca, 0x47, 0xe1,
-	0x09, 0xd9, 0xb0, 0x21, 0x99, 0x10, 0x13, 0xe7, 0x90, 0xdd, 0xa9, 0xdd, 0xdf, 0xa2, 0x2e, 0x6c,
-	0x6a, 0xc2, 0xa6, 0x3e, 0x6c, 0x7a, 0x00, 0x42, 0x0e, 0xf6, 0x0c, 0xf5, 0xa7, 0xaf, 0xf1, 0x83,
-	0x7f, 0xb4, 0xc7, 0x7c, 0x34, 0x5c, 0x37, 0x3a, 0xa6, 0x7a, 0x6c, 0x55, 0x42, 0x24, 0xeb, 0x08,
-	0x7f, 0xe8, 0xd6, 0xaf, 0x44, 0xb7, 0x83, 0xf0, 0x5b, 0x75, 0xbf, 0x61, 0x5c, 0x18, 0x3c, 0x3d,
-	0x5b, 0x44, 0xc1, 0xf9, 0x22, 0x0a, 0xbe, 0x2d, 0xa2, 0xe0, 0xfd, 0x32, 0xaa, 0x9d, 0x2f, 0xa3,
-	0xda, 0xe7, 0x65, 0x54, 0x7b, 0x4d, 0xff, 0x4a, 0x7d, 0xe2, 0x9f, 0x8f, 0x95, 0x48, 0x6f, 0xd8,
-	0x1f, 0x7f, 0xef, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0x7f, 0x63, 0xad, 0x91, 0x58, 0x03, 0x00,
-	0x00,
+	// 483 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x53, 0x4f, 0x6f, 0xd3, 0x4e,
+	0x10, 0xb5, 0xf3, 0x73, 0x7f, 0x6d, 0x36, 0xa1, 0x42, 0x4b, 0x25, 0xd2, 0x4a, 0xd8, 0x55, 0x4f,
+	0x88, 0x3f, 0xbb, 0x4a, 0xca, 0xa9, 0x37, 0x12, 0x54, 0xc1, 0x01, 0x09, 0xb9, 0x48, 0x48, 0x5c,
+	0xac, 0xb5, 0xe3, 0x24, 0x2b, 0x6c, 0xcf, 0xca, 0xbb, 0x49, 0xcb, 0x85, 0x6f, 0x80, 0xc4, 0x91,
+	0x63, 0xcf, 0x7c, 0x92, 0x1e, 0x7b, 0x44, 0x1c, 0x0a, 0x4a, 0x2e, 0x7c, 0x0b, 0xd0, 0xec, 0x5a,
+	0x10, 0x4e, 0x20, 0x24, 0x6e, 0xe3, 0xf7, 0x66, 0xdf, 0xf3, 0xbe, 0x99, 0x25, 0xbd, 0x22, 0x2d,
+	0xf9, 0x44, 0x9f, 0x0a, 0xc5, 0x17, 0x7d, 0x57, 0x30, 0x55, 0x83, 0x01, 0xda, 0x2d, 0xd2, 0x92,
+	0x39, 0x60, 0xd1, 0xdf, 0xdb, 0x99, 0xc2, 0x14, 0x2c, 0xc1, 0xb1, 0x72, 0x3d, 0x7b, 0x61, 0x06,
+	0xba, 0x04, 0xcd, 0x53, 0xa1, 0x73, 0xbe, 0xe8, 0xa7, 0xb9, 0x11, 0x7d, 0x9e, 0x81, 0xac, 0x1c,
+	0x7f, 0xf0, 0xb6, 0x45, 0x82, 0x93, 0x53, 0xa1, 0xe8, 0x2d, 0x42, 0x26, 0x35, 0x94, 0xc9, 0x38,
+	0xaf, 0xa0, 0xec, 0xf9, 0xfb, 0xfe, 0xed, 0x76, 0xdc, 0x46, 0xe4, 0x11, 0x02, 0x74, 0x97, 0x6c,
+	0x19, 0x68, 0xc8, 0x96, 0x25, 0x37, 0x0d, 0x38, 0x6a, 0x46, 0x6e, 0x8a, 0x12, 0xe6, 0x95, 0x49,
+	0x32, 0xa1, 0x92, 0x09, 0xd4, 0xc9, 0x8f, 0xce, 0xff, 0xb0, 0x73, 0x38, 0xb8, 0xb8, 0x8a, 0xbc,
+	0x4f, 0x57, 0xd1, 0x9d, 0xa9, 0x34, 0xb3, 0x79, 0xca, 0x32, 0x28, 0xf9, 0xb1, 0xac, 0x74, 0x36,
+	0x93, 0x82, 0x4f, 0x9a, 0xe2, 0xbe, 0x1e, 0xbf, 0xe2, 0xe6, 0xb5, 0xca, 0x35, 0x7b, 0x52, 0x99,
+	0xf8, 0x86, 0x93, 0x1c, 0x09, 0x75, 0x0c, 0xf5, 0xf3, 0xc6, 0xe9, 0x05, 0xb9, 0x86, 0xb7, 0x4d,
+	0xca, 0x79, 0x61, 0xa4, 0x2a, 0xf2, 0x5e, 0xf0, 0xd7, 0xfa, 0x5d, 0x14, 0x7a, 0xda, 0xe8, 0x1c,
+	0x6d, 0xbd, 0x3f, 0x8f, 0xbc, 0xaf, 0xe7, 0x91, 0x7f, 0xf0, 0x80, 0xb4, 0x31, 0x8e, 0x13, 0x23,
+	0x8c, 0xc6, 0x4c, 0xac, 0x5f, 0x86, 0xbf, 0x62, 0x33, 0xd9, 0x88, 0xdb, 0x88, 0x8c, 0x10, 0x58,
+	0x3b, 0xf5, 0x86, 0x74, 0xf1, 0xd4, 0xb3, 0x1a, 0x14, 0x68, 0x51, 0xd0, 0x1d, 0xb2, 0x61, 0xa4,
+	0x29, 0xf2, 0x26, 0x47, 0xf7, 0x41, 0xf7, 0x49, 0x67, 0x9c, 0xeb, 0xac, 0x96, 0xca, 0x48, 0xa8,
+	0x9a, 0x18, 0xd7, 0x21, 0x7a, 0x8f, 0x04, 0x28, 0x6f, 0x73, 0xeb, 0x0c, 0x28, 0x5b, 0x1f, 0x30,
+	0x43, 0x87, 0x61, 0x80, 0x77, 0x8d, 0x6d, 0xd7, 0x9a, 0xff, 0x37, 0x9f, 0x6c, 0x22, 0xad, 0xf2,
+	0x31, 0x3d, 0x23, 0xd7, 0xed, 0x20, 0x71, 0xc8, 0x89, 0x4b, 0xd1, 0xfe, 0x46, 0x67, 0xb0, 0xcb,
+	0xdc, 0x32, 0x30, 0x5c, 0x06, 0xd6, 0x2c, 0x03, 0x1b, 0x81, 0xac, 0x86, 0x87, 0x28, 0xfb, 0xe1,
+	0x73, 0x74, 0xf7, 0x0f, 0x23, 0xc4, 0x43, 0xf1, 0x36, 0xfa, 0x60, 0xf5, 0xd0, 0xba, 0x50, 0x43,
+	0xb6, 0x0d, 0xfc, 0xe2, 0xdb, 0xfa, 0x27, 0xbe, 0x5d, 0x03, 0x3f, 0x5d, 0x8f, 0x02, 0x4c, 0x61,
+	0xf8, 0xf8, 0x62, 0x19, 0xfa, 0x97, 0xcb, 0xd0, 0xff, 0xb2, 0x0c, 0xfd, 0x77, 0xab, 0xd0, 0xbb,
+	0x5c, 0x85, 0xde, 0xc7, 0x55, 0xe8, 0xbd, 0x64, 0xbf, 0x95, 0x3e, 0x6b, 0x9e, 0x97, 0xb5, 0x48,
+	0xff, 0xb7, 0x0f, 0xe3, 0xf0, 0x7b, 0x00, 0x00, 0x00, 0xff, 0xff, 0x9a, 0x24, 0xaa, 0x02, 0x78,
+	0x03, 0x00, 0x00,
 }
 
-func (this *SwapInit) Equal(that interface{}) bool {
+func (this *Swap) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*SwapInit)
+	that1, ok := that.(*Swap)
 	if !ok {
-		that2, ok := that.(SwapInit)
+		that2, ok := that.(Swap)
 		if ok {
 			that1 = &that2
 		} else {
@@ -264,14 +309,38 @@ func (this *SwapInit) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *SwapInitProposal) Equal(that interface{}) bool {
+func (this *SwapStats) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*SwapInitProposal)
+	that1, ok := that.(*SwapStats)
 	if !ok {
-		that2, ok := that.(SwapInitProposal)
+		that2, ok := that.(SwapStats)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.SwapCount != that1.SwapCount {
+		return false
+	}
+	return true
+}
+func (this *SwapProposal) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SwapProposal)
+	if !ok {
+		that2, ok := that.(SwapProposal)
 		if ok {
 			that1 = &that2
 		} else {
@@ -289,12 +358,12 @@ func (this *SwapInitProposal) Equal(that interface{}) bool {
 	if this.Description != that1.Description {
 		return false
 	}
-	if !this.SwapInit.Equal(&that1.SwapInit) {
+	if !this.Swap.Equal(&that1.Swap) {
 		return false
 	}
 	return true
 }
-func (m *SwapInit) Marshal() (dAtA []byte, err error) {
+func (m *Swap) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -304,12 +373,12 @@ func (m *SwapInit) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SwapInit) MarshalTo(dAtA []byte) (int, error) {
+func (m *Swap) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SwapInit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Swap) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -351,7 +420,7 @@ func (m *SwapInit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SwapInitProposal) Marshal() (dAtA []byte, err error) {
+func (m *SwapStats) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -361,18 +430,46 @@ func (m *SwapInitProposal) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SwapInitProposal) MarshalTo(dAtA []byte) (int, error) {
+func (m *SwapStats) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SwapInitProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SwapStats) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.SwapCount != 0 {
+		i = encodeVarintFswap(dAtA, i, uint64(m.SwapCount))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SwapProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SwapProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SwapProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.SwapInit.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Swap.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -452,7 +549,7 @@ func encodeVarintFswap(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *SwapInit) Size() (n int) {
+func (m *Swap) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -473,7 +570,19 @@ func (m *SwapInit) Size() (n int) {
 	return n
 }
 
-func (m *SwapInitProposal) Size() (n int) {
+func (m *SwapStats) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.SwapCount != 0 {
+		n += 1 + sovFswap(uint64(m.SwapCount))
+	}
+	return n
+}
+
+func (m *SwapProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -487,7 +596,7 @@ func (m *SwapInitProposal) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovFswap(uint64(l))
 	}
-	l = m.SwapInit.Size()
+	l = m.Swap.Size()
 	n += 1 + l + sovFswap(uint64(l))
 	return n
 }
@@ -511,7 +620,7 @@ func sovFswap(x uint64) (n int) {
 func sozFswap(x uint64) (n int) {
 	return sovFswap(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *SwapInit) Unmarshal(dAtA []byte) error {
+func (m *Swap) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -534,10 +643,10 @@ func (m *SwapInit) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SwapInit: wiretype end group for non-group")
+			return fmt.Errorf("proto: Swap: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SwapInit: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Swap: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -693,7 +802,7 @@ func (m *SwapInit) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SwapInitProposal) Unmarshal(dAtA []byte) error {
+func (m *SwapStats) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -716,10 +825,79 @@ func (m *SwapInitProposal) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SwapInitProposal: wiretype end group for non-group")
+			return fmt.Errorf("proto: SwapStats: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SwapInitProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SwapStats: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SwapCount", wireType)
+			}
+			m.SwapCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.SwapCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipFswap(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SwapProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowFswap
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SwapProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SwapProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -788,7 +966,7 @@ func (m *SwapInitProposal) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SwapInit", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Swap", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -815,7 +993,7 @@ func (m *SwapInitProposal) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.SwapInit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Swap.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

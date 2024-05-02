@@ -326,9 +326,7 @@ func NewSimApp(
 	app.ClassKeeper = classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.ClassKeeper)
 	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], app.ClassKeeper)
-
-	/****  Phase 1 ****/
-	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper)
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswaptypes.DefaultConfig(), app.AccountKeeper, app.BankKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -345,7 +343,7 @@ func NewSimApp(
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper)).
-		AddRoute(fswaptypes.RouterKey, fswap.NewSwapInitHandler(app.FswapKeeper))
+		AddRoute(fswaptypes.RouterKey, fswap.NewSwapHandler(app.FswapKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,

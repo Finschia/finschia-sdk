@@ -17,16 +17,24 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
 
+	config types.Config
+
 	AccountKeeper
 	BankKeeper
+
+	swaps        []types.Swap
+	swappedSlice []types.Swapped
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, ak AccountKeeper, bk BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, ak AccountKeeper, bk BankKeeper) Keeper {
 	return Keeper{
-		cdc:           cdc,
-		storeKey:      storeKey,
-		AccountKeeper: ak,
-		BankKeeper:    bk,
+		cdc,
+		storeKey,
+		config,
+		ak,
+		bk,
+		make([]types.Swap, config.MaxSwaps),
+		make([]types.Swapped, config.MaxSwaps),
 	}
 }
 
@@ -34,49 +42,72 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) SwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
-	if err := swapInit.ValidateBasic(); err != nil {
+func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
+	if err := swap.ValidateBasic(); err != nil {
 		return err
 	}
-	if k.hasBeenInitialized(ctx) {
-		return types.ErrSwapCanNotBeInitializedTwice
+
+	isNewSwap := true
+	if _, err := k.getSwap(ctx, swap.ToDenom, swap.FromDenom); err == nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("there is already a swap in reverse way, only one way swap allowed")
 	}
-	if err := k.setSwapInit(ctx, swapInit); err != nil {
+
+	if _, err := k.getSwap(ctx, swap.FromDenom, swap.ToDenom); err == nil {
+		isNewSwap = false
+	}
+
+	if !isNewSwap && !k.config.UpdateAllowed {
+		return sdkerrors.ErrInvalidRequest.Wrap("update existing swap not allowed")
+	}
+
+	if err := k.increaseSwapCount(ctx); err != nil {
 		return err
 	}
-	swapped := types.Swapped{
-		FromCoinAmount: sdk.Coin{
-			Denom:  swapInit.GetFromDenom(),
-			Amount: sdk.ZeroInt(),
-		},
-		ToCoinAmount: sdk.Coin{
-			Denom:  swapInit.GetToDenom(),
-			Amount: sdk.ZeroInt(),
-		},
-	}
-	if err := k.setSwapped(ctx, swapped); err != nil {
+
+	key := swapKey(swap.FromDenom, swap.ToDenom)
+	bz, err := k.cdc.Marshal(&swap)
+	if err != nil {
 		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(key, bz)
+
+	if isNewSwap {
+		swapped := types.Swapped{
+			FromCoinAmount: sdk.Coin{
+				Denom:  swap.GetFromDenom(),
+				Amount: sdk.ZeroInt(),
+			},
+			ToCoinAmount: sdk.Coin{
+				Denom:  swap.GetToDenom(),
+				Amount: sdk.ZeroInt(),
+			},
+		}
+		if err := k.setSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom(), swapped); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Coin, toDenom string) error {
-	swapInit, err := k.swapInit(ctx)
+	swap, err := k.getSwap(ctx, fromCoinAmount.Denom, toDenom)
 	if err != nil {
 		return err
 	}
 
-	if swapInit.GetFromDenom() != fromCoinAmount.GetDenom() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swapInit.GetFromDenom(), fromCoinAmount.Denom)
+	if swap.GetFromDenom() != fromCoinAmount.GetDenom() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swap.GetFromDenom(), fromCoinAmount.Denom)
 	}
 
-	if swapInit.GetToDenom() != toDenom {
-		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swapInit.GetToDenom(), toDenom)
+	if swap.GetToDenom() != toDenom {
+		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swap.GetToDenom(), toDenom)
 	}
 
-	newAmount := fromCoinAmount.Amount.Mul(swapInit.SwapMultiple)
+	newAmount := fromCoinAmount.Amount.Mul(swap.SwapMultiple)
 	newCoinAmount := sdk.NewCoin(toDenom, newAmount)
-	if err := k.checkSwapCap(ctx, newCoinAmount); err != nil {
+	if err := k.checkSwapCap(ctx, swap, newCoinAmount); err != nil {
 		return err
 	}
 
@@ -122,23 +153,17 @@ func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress, fromDenom, toDenom
 	return nil
 }
 
-func (k Keeper) setSwapInit(ctx sdk.Context, swapInit types.SwapInit) error {
-	store := ctx.KVStore(k.storeKey)
-	bz, err := k.cdc.Marshal(&swapInit)
-	if err != nil {
-		return err
-	}
-	store.Set(swapInitKey(swapInit.ToDenom), bz)
-	return nil
-}
-
 func (k Keeper) getAllSwapped(ctx sdk.Context) []types.Swapped {
-	swappedSlice := make([]types.Swapped, 0) // TODO(bjs)
+	idx := 0
 	k.iterateAllSwapped(ctx, func(swapped types.Swapped) bool {
-		swappedSlice = append(swappedSlice, swapped)
+		k.swappedSlice[idx] = swapped
+		idx++
 		return false
 	})
-	return swappedSlice
+	if idx == 0 {
+		return []types.Swapped{}
+	}
+	return k.swappedSlice
 }
 
 func (k Keeper) iterateAllSwapped(ctx sdk.Context, cb func(swapped types.Swapped) (stop bool)) {
@@ -157,14 +182,9 @@ func (k Keeper) iterateAllSwapped(ctx sdk.Context, cb func(swapped types.Swapped
 	}
 }
 
-func (k Keeper) getSwapped(ctx sdk.Context) (types.Swapped, error) {
-	toDenom, err := k.toDenom(ctx)
-	if err != nil {
-		return types.Swapped{}, err
-	}
-
+func (k Keeper) getSwapped(ctx sdk.Context, fromDenom, toDenom string) (types.Swapped, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := swappedKey(toDenom)
+	key := swappedKey(fromDenom, toDenom)
 	bz := store.Get(key)
 	if bz == nil {
 		return types.Swapped{}, types.ErrSwappedNotFound
@@ -177,108 +197,81 @@ func (k Keeper) getSwapped(ctx sdk.Context) (types.Swapped, error) {
 	return swapped, nil
 }
 
-func (k Keeper) setSwapped(ctx sdk.Context, swapped types.Swapped) error {
-	store := ctx.KVStore(k.storeKey)
-	key := swappedKey(swapped.ToCoinAmount.Denom)
+func (k Keeper) setSwapped(ctx sdk.Context, fromDenom, toDenom string, swapped types.Swapped) error {
+	key := swappedKey(fromDenom, toDenom)
 	bz, err := k.cdc.Marshal(&swapped)
 	if err != nil {
 		return err
 	}
 
+	store := ctx.KVStore(k.storeKey)
 	store.Set(key, bz)
 	return nil
 }
 
-func (k Keeper) getAllSwapInits(ctx sdk.Context) []types.SwapInit {
-	swapInits := make([]types.SwapInit, 0)
-	k.iterateAllSwapInits(ctx, func(swapInit types.SwapInit) bool {
-		swapInits = append(swapInits, swapInit)
+func (k Keeper) getAllSwaps(ctx sdk.Context) []types.Swap {
+	idx := 0
+	k.iterateAllSwaps(ctx, func(swap types.Swap) bool {
+		k.swaps[idx] = swap
+		idx++
 		return false
 	})
-	return swapInits
+	if idx == 0 {
+		return []types.Swap{}
+	}
+	return k.swaps
 }
 
-func (k Keeper) iterateAllSwapInits(ctx sdk.Context, cb func(swapped types.SwapInit) (stop bool)) {
+func (k Keeper) iterateAllSwaps(ctx sdk.Context, cb func(swapped types.Swap) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	swapInitDataStore := prefix.NewStore(store, swapInitPrefix)
+	swapDataStore := prefix.NewStore(store, swapPrefix)
 
-	iterator := swapInitDataStore.Iterator(nil, nil)
+	iterator := swapDataStore.Iterator(nil, nil)
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		swapInit := types.SwapInit{}
-		k.cdc.MustUnmarshal(iterator.Value(), &swapInit)
-		if cb(swapInit) {
+		swap := types.Swap{}
+		k.cdc.MustUnmarshal(iterator.Value(), &swap)
+		if cb(swap) {
 			break
 		}
 	}
 }
 
-func (k Keeper) getSwappableNewCoinAmount(ctx sdk.Context) (sdk.Coin, error) {
-	swapCap, err := k.swapCap(ctx)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-	swapped, err := k.getSwapped(ctx)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-	denom, err := k.toDenom(ctx)
+func (k Keeper) getSwappableNewCoinAmount(ctx sdk.Context, fromDenom, toDenom string) (sdk.Coin, error) {
+	swap, err := k.getSwap(ctx, fromDenom, toDenom)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
+	swapped, err := k.getSwapped(ctx, fromDenom, toDenom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	swapCap := swap.AmountCapForToDenom
 	remainingAmount := swapCap.Sub(swapped.GetToCoinAmount().Amount)
 
-	return sdk.NewCoin(denom, remainingAmount), nil
+	return sdk.NewCoin(toDenom, remainingAmount), nil
 }
 
-func (k Keeper) fromDenom(ctx sdk.Context) (string, error) {
-	swapInit, err := k.swapInit(ctx)
-	if err != nil {
-		return "", err
+func (k Keeper) getSwap(ctx sdk.Context, fromDenom, toDenom string) (types.Swap, error) {
+	store := ctx.KVStore(k.storeKey)
+	key := swapKey(fromDenom, toDenom)
+	bz := store.Get(key)
+	if bz == nil {
+		return types.Swap{}, sdkerrors.ErrNotFound.Wrap("swap not found")
 	}
 
-	return swapInit.FromDenom, nil
-}
-
-func (k Keeper) toDenom(ctx sdk.Context) (string, error) {
-	swapInit, err := k.swapInit(ctx)
-	if err != nil {
-		return "", err
+	swap := types.Swap{}
+	if err := k.cdc.Unmarshal(bz, &swap); err != nil {
+		return types.Swap{}, err
 	}
 
-	return swapInit.GetToDenom(), nil
-}
-
-func (k Keeper) swapMultiple(ctx sdk.Context) (sdk.Int, error) {
-	swapInit, err := k.swapInit(ctx)
-	if err != nil {
-		return sdk.Int{}, err
-	}
-
-	return swapInit.SwapMultiple, nil
-}
-
-func (k Keeper) swapCap(ctx sdk.Context) (sdk.Int, error) {
-	swapInit, err := k.swapInit(ctx)
-	if err != nil {
-		return sdk.Int{}, err
-	}
-
-	return swapInit.AmountCapForToDenom, nil
-}
-
-func (k Keeper) swapInit(ctx sdk.Context) (types.SwapInit, error) {
-	swapInits := k.getAllSwapInits(ctx)
-	if len(swapInits) == 0 {
-		return types.SwapInit{}, types.ErrSwapNotInitialized
-	}
-
-	return swapInits[0], nil
+	return swap, nil
 }
 
 func (k Keeper) updateSwapped(ctx sdk.Context, fromAmount, toAmount sdk.Coin) error {
-	prevSwapped, err := k.getSwapped(ctx)
+	prevSwapped, err := k.getSwapped(ctx, fromAmount.Denom, toAmount.Denom)
 	if err != nil {
 		return err
 	}
@@ -287,35 +280,71 @@ func (k Keeper) updateSwapped(ctx sdk.Context, fromAmount, toAmount sdk.Coin) er
 		FromCoinAmount: fromAmount.Add(prevSwapped.FromCoinAmount),
 		ToCoinAmount:   toAmount.Add(prevSwapped.ToCoinAmount),
 	}
-	store := ctx.KVStore(k.storeKey)
+
+	key := swappedKey(fromAmount.Denom, toAmount.Denom)
 	bz, err := k.cdc.Marshal(updatedSwapped)
 	if err != nil {
 		return err
 	}
 
-	key := swappedKey(toAmount.Denom)
+	store := ctx.KVStore(k.storeKey)
 	store.Set(key, bz)
 	return nil
 }
 
-func (k Keeper) checkSwapCap(ctx sdk.Context, newCoinAmount sdk.Coin) error {
-	swapped, err := k.getSwapped(ctx)
+func (k Keeper) checkSwapCap(ctx sdk.Context, swap types.Swap, newCoinAmount sdk.Coin) error {
+	swapped, err := k.getSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom())
 	if err != nil {
 		return err
 	}
 
-	swapCap, err := k.swapCap(ctx)
-	if err != nil {
-		return err
-	}
-
+	swapCap := swap.AmountCapForToDenom
 	if swapCap.LT(swapped.ToCoinAmount.Add(newCoinAmount).Amount) {
 		return types.ErrExceedSwappableToCoinAmount
 	}
 	return nil
 }
 
-func (k Keeper) hasBeenInitialized(ctx sdk.Context) bool {
-	inits := k.getAllSwapInits(ctx)
-	return len(inits) > 0
+func (k Keeper) increaseSwapCount(ctx sdk.Context) error {
+	stats, err := k.getSwapStats(ctx)
+	if err != nil {
+		return err
+	}
+
+	prev := stats.SwapCount
+	stats.SwapCount += 1
+	if stats.SwapCount < prev {
+		return types.ErrInvalidState.Wrap("overflow detected")
+	}
+
+	if err := k.setSwapStats(ctx, stats); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k Keeper) getSwapStats(ctx sdk.Context) (types.SwapStats, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(swapStatsKey)
+	if bz == nil {
+		return types.SwapStats{}, nil
+	}
+
+	stats := types.SwapStats{}
+	err := k.cdc.Unmarshal(bz, &stats)
+	if err != nil {
+		return types.SwapStats{}, err
+	}
+	return stats, nil
+}
+
+func (k Keeper) setSwapStats(ctx sdk.Context, stats types.SwapStats) error {
+	bz, err := k.cdc.Marshal(&stats)
+	if err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(swapStatsKey, bz)
+	return nil
 }

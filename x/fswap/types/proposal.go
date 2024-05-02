@@ -7,38 +7,38 @@ import (
 )
 
 const (
-	ProposalTypeSwapInit string = "SwapInit"
+	ProposalTypeSwap string = "Swap"
 )
 
-// NewSwapInitProposal creates a new SwapInitProposal instance.
+// NewSwapProposal creates a new SwapProposal instance.
 // Deprecated: this proposal is considered legacy and is deprecated in favor of
-// Msg-based gov proposals. See MsgSwapInit.
-func NewSwapInitProposal(title, description string, swapInit SwapInit) *SwapInitProposal {
-	return &SwapInitProposal{title, description, swapInit}
+// Msg-based gov proposals. See MsgSwap.
+func NewSwapProposal(title, description string, swap Swap) *SwapProposal {
+	return &SwapProposal{title, description, swap}
 }
 
 // Implements Proposal Interface
-var _ gov.Content = &SwapInitProposal{}
+var _ gov.Content = &SwapProposal{}
 
 func init() {
-	gov.RegisterProposalType(ProposalTypeSwapInit)
+	gov.RegisterProposalType(ProposalTypeSwap)
 }
 
 // ProposalRoute gets the proposal's router key
-func (m *SwapInitProposal) ProposalRoute() string { return RouterKey }
+func (m *SwapProposal) ProposalRoute() string { return RouterKey }
 
-// ProposalType is "SwapInit"
-func (m *SwapInitProposal) ProposalType() string { return ProposalTypeSwapInit }
+// ProposalType is "Swap"
+func (m *SwapProposal) ProposalType() string { return ProposalTypeSwap }
 
 // String implements the Stringer interface.
-func (m *SwapInitProposal) String() string {
+func (m *SwapProposal) String() string {
 	out, _ := yaml.Marshal(m)
 	return string(out)
 }
 
 // ValidateBasic validates the proposal
-func (m *SwapInitProposal) ValidateBasic() error {
-	if err := m.SwapInit.ValidateBasic(); err != nil {
+func (m *SwapProposal) ValidateBasic() error {
+	if err := m.Swap.ValidateBasic(); err != nil {
 		return err
 	}
 	return gov.ValidateAbstract(m)

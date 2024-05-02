@@ -19,10 +19,10 @@ func NewQueryServer(keeper Keeper) *QueryServer {
 	}
 }
 
-func (s QueryServer) Swapped(ctx context.Context, _ *types.QuerySwappedRequest) (*types.QuerySwappedResponse, error) {
+func (s QueryServer) Swapped(ctx context.Context, req *types.QuerySwappedRequest) (*types.QuerySwappedResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
 
-	swapped, err := s.Keeper.getSwapped(c)
+	swapped, err := s.Keeper.getSwapped(c, req.GetFromDenom(), req.GetToDenom())
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +33,10 @@ func (s QueryServer) Swapped(ctx context.Context, _ *types.QuerySwappedRequest) 
 	}, nil
 }
 
-func (s QueryServer) TotalSwappableToCoinAmount(ctx context.Context, _ *types.QueryTotalSwappableToCoinAmountRequest) (*types.QueryTotalSwappableToCoinAmountResponse, error) {
+func (s QueryServer) TotalSwappableToCoinAmount(ctx context.Context, req *types.QueryTotalSwappableToCoinAmountRequest) (*types.QueryTotalSwappableToCoinAmountResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
 
-	amount, err := s.Keeper.getSwappableNewCoinAmount(c)
+	amount, err := s.Keeper.getSwappableNewCoinAmount(c, req.GetFromDenom(), req.GetToDenom())
 	if err != nil {
 		return &types.QueryTotalSwappableToCoinAmountResponse{}, err
 	}

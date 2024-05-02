@@ -1,16 +1,19 @@
 package keeper
 
 var (
-	swapInitPrefix   = []byte{0x01}
-	swappedKeyPrefix = []byte{0x02}
+	swapPrefix       = []byte{0x01}
+	swapStatsKey     = []byte{0x02}
+	swappedKeyPrefix = []byte{0x03}
 )
 
-// swapInitKey key(prefix + toDenom)
-func swapInitKey(toDenom string) []byte {
-	return append(swapInitPrefix, toDenom...)
+// swapKey key(prefix + fromDenom + toDenom)
+func swapKey(fromDenom, toDenom string) []byte {
+	key := append(swapPrefix, fromDenom...)
+	return append(key, toDenom...)
 }
 
-// swappedKey key(prefix + toDenom)
-func swappedKey(toDenom string) []byte {
-	return append(swappedKeyPrefix, toDenom...)
+// swappedKey key(prefix + fromDenom + toDenom)
+func swappedKey(fromDenom, toDenom string) []byte {
+	key := append(swappedKeyPrefix, fromDenom...)
+	return append(key, toDenom...)
 }

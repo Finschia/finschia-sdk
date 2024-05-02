@@ -16,8 +16,8 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 		"swap some": {
 			&types.MsgSwap{
 				FromAddress:    s.accWithFromCoin.String(),
-				FromCoinAmount: sdk.NewCoin(s.swapInit.GetFromDenom(), sdk.NewInt(100)),
-				ToDenom:        s.swapInit.GetToDenom(),
+				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
+				ToDenom:        s.swap.GetToDenom(),
 			},
 			sdk.NewInt(100),
 			false,
@@ -26,8 +26,8 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 		"swap all the balance": {
 			&types.MsgSwap{
 				FromAddress:    s.accWithFromCoin.String(),
-				FromCoinAmount: sdk.NewCoin(s.swapInit.GetFromDenom(), s.initBalance),
-				ToDenom:        s.swapInit.GetToDenom(),
+				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), s.initBalance),
+				ToDenom:        s.swap.GetToDenom(),
 			},
 			s.initBalance,
 			false,
@@ -36,8 +36,8 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 		"account holding new coin only": {
 			&types.MsgSwap{
 				FromAddress:    s.accWithToCoin.String(),
-				FromCoinAmount: sdk.NewCoin(s.swapInit.GetFromDenom(), sdk.NewInt(100)),
-				ToDenom:        s.swapInit.GetToDenom(),
+				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
+				ToDenom:        s.swap.GetToDenom(),
 			},
 			s.initBalance,
 			true,
@@ -47,7 +47,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.SwapInit(ctx, s.swapInit)
+			err := s.keeper.MakeSwap(ctx, s.swap)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.Swap(sdk.WrapSDKContext(ctx), tc.request)
@@ -61,7 +61,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 			from, err := sdk.AccAddressFromBech32(tc.request.FromAddress)
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swapInit.SwapMultiple)
+			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swap.SwapMultiple)
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}
@@ -77,8 +77,8 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 		"swapAll": {
 			&types.MsgSwapAll{
 				FromAddress: s.accWithFromCoin.String(),
-				FromDenom:   s.swapInit.GetFromDenom(),
-				ToDenom:     s.swapInit.GetToDenom(),
+				FromDenom:   s.swap.GetFromDenom(),
+				ToDenom:     s.swap.GetToDenom(),
 			},
 			s.initBalance,
 			false,
@@ -87,8 +87,8 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 		"account holding new coin only": {
 			&types.MsgSwapAll{
 				FromAddress: s.accWithToCoin.String(),
-				FromDenom:   s.swapInit.GetFromDenom(),
-				ToDenom:     s.swapInit.GetToDenom(),
+				FromDenom:   s.swap.GetFromDenom(),
+				ToDenom:     s.swap.GetToDenom(),
 			},
 			s.initBalance,
 			true,
@@ -98,7 +98,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.SwapInit(ctx, s.swapInit)
+			err := s.keeper.MakeSwap(ctx, s.swap)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.SwapAll(sdk.WrapSDKContext(ctx), tc.request)
@@ -112,7 +112,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 			from, err := sdk.AccAddressFromBech32(tc.request.FromAddress)
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
-			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swapInit.SwapMultiple)
+			expectedAmount := tc.expectedBalanceWithoutMultiply.Mul(s.swap.SwapMultiple)
 			s.Require().Equal(expectedAmount, actualAmount)
 		})
 	}

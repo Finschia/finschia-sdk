@@ -7,29 +7,45 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error {
-	if len(genState.GetSwapInit()) > 1 {
-		return types.ErrSwapCanNotBeInitializedTwice.Wrap("cannot initialize genesis state, there are more than 1 swapInit")
+	if err := genState.Validate(); err != nil {
+		return err
 	}
-	if len(genState.GetSwapped()) > 1 {
-		return types.ErrSwapCanNotBeInitializedTwice.Wrap("cannot initialize genesis state, there are more than 1 swapped")
+
+	if len(genState.GetSwaps()) > k.config.MaxSwaps && !k.isUnlimited() {
+		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swapInits", k.config.MaxSwaps)
 	}
-	for _, swapInit := range genState.GetSwapInit() {
-		if err := k.setSwapInit(ctx, swapInit); err != nil {
+
+	if len(genState.GetSwappeds()) > k.config.MaxSwaps && !k.isUnlimited() {
+		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swapped", k.config.MaxSwaps)
+	}
+
+	for _, swap := range genState.GetSwaps() {
+		if err := k.MakeSwap(ctx, swap); err != nil {
 			panic(err)
 		}
 	}
-	for _, swapped := range genState.GetSwapped() {
-		if err := swapped.Validate(); err != nil {
+
+	for _, swapped := range genState.GetSwappeds() {
+		if err := swapped.ValidateBasic(); err != nil {
 			panic(err)
 		}
 	}
 	return nil
 }
 
+func (k Keeper) isUnlimited() bool {
+	return k.config.MaxSwaps == 0
+}
+
 // ExportGenesis returns the module's exported genesis.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
+	stats, err := k.getSwapStats(ctx)
+	if err != nil {
+		panic(err)
+	}
 	return &types.GenesisState{
-		SwapInit: k.getAllSwapInits(ctx),
-		Swapped:  k.getAllSwapped(ctx),
+		Swaps:     k.getAllSwaps(ctx),
+		SwapStats: stats,
+		Swappeds:  k.getAllSwapped(ctx),
 	}
 }

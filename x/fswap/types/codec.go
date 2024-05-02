@@ -17,7 +17,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&SwapInitProposal{}, "finschia-sdk/FswapInitProposal", nil)
+	cdc.RegisterConcrete(&SwapProposal{}, "finschia-sdk/SwapProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -26,7 +26,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 	registry.RegisterImplementations(
 		(*govtypes.Content)(nil),
-		&SwapInitProposal{},
+		&SwapProposal{},
 	)
 }
 

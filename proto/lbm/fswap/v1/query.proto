@@ -21,7 +21,10 @@ service Query {
   }
 }
 
-message QuerySwappedRequest {}
+message QuerySwappedRequest {
+  string fromDenom = 1;
+  string toDenom   = 2;
+}
 message QuerySwappedResponse {
   cosmos.base.v1beta1.Coin from_coin_amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
@@ -29,7 +32,10 @@ message QuerySwappedResponse {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
 
-message QueryTotalSwappableToCoinAmountRequest {}
+message QueryTotalSwappableToCoinAmountRequest {
+  string fromDenom = 1;
+  string toDenom   = 2;
+}
 message QueryTotalSwappableToCoinAmountResponse {
   cosmos.base.v1beta1.Coin swappable_amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
