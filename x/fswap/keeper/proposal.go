@@ -8,10 +8,6 @@ import (
 )
 
 func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
-	if err := swap.ValidateBasic(); err != nil {
-		return err
-	}
-
 	isNewSwap := true
 	if _, err := k.getSwap(ctx, swap.FromDenom, swap.ToDenom); err == nil {
 		isNewSwap = false
