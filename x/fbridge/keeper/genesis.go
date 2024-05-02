@@ -6,9 +6,15 @@ import (
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
+	k.setNextSequence(ctx, gs.SendingState.NextSeq)
+
 	return nil
 }
 
 func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
-	return nil
+	return &types.GenesisState{
+		SendingState: types.SendingState{
+			NextSeq: k.GetNextSequence(ctx),
+		},
+	}
 }
