@@ -22,6 +22,8 @@ message GenesisState {
   repeated Vote votes = 6 [(gogoproto.nullable) = false];
   // role_metadata defines all the role metadata present at genesis.
   RoleMetadata role_metadata = 7 [(gogoproto.nullable) = false];
+  // roles defines all addresses assigned roles at genesis.
+  repeated RolePair roles = 8 [(gogoproto.nullable) = false];
 }
 
 message SendingState {

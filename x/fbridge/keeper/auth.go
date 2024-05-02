@@ -157,7 +157,21 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	return types.VoteOption(binary.BigEndian.Uint32(bz)), nil
 }
 
-func (k Keeper) setRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
+func (k Keeper) GetVotes(ctx sdk.Context, proposalID uint64) []types.VoteOption {
+	store := ctx.KVStore(k.storeKey)
+
+	votes := make([]types.VoteOption, 0)
+	iterator := sdk.KVStorePrefixIterator(store, types.VotesKey(proposalID))
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		v := types.VoteOption(binary.BigEndian.Uint32(iterator.Value()))
+		votes = append(votes, v)
+	}
+
+	return votes
+}
+
+func (k Keeper) SetRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	bz := make([]byte, 4)
 	binary.BigEndian.PutUint32(bz, uint32(role))
@@ -174,7 +188,26 @@ func (k Keeper) GetRole(ctx sdk.Context, addr sdk.AccAddress) types.Role {
 	return types.Role(binary.BigEndian.Uint32(bz))
 }
 
-func (k Keeper) setRoleMetadata(ctx sdk.Context, data types.RoleMetadata) {
+func (k Keeper) GetRolePairs(ctx sdk.Context) []types.RolePair {
+	store := ctx.KVStore(k.storeKey)
+
+	pairs := make([]types.RolePair, 0)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyRolePrefix)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		assignee := types.SplitRoleKey(iterator.Key())
+		pairs = append(pairs, types.RolePair{Address: assignee.String(), Role: types.Role(binary.BigEndian.Uint32(iterator.Value()))})
+	}
+
+	return pairs
+}
+
+func (k Keeper) DeleteRole(ctx sdk.Context, addr sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.RoleKey(addr))
+}
+
+func (k Keeper) SetRoleMetadata(ctx sdk.Context, data types.RoleMetadata) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&data)
 	store.Set(types.KeyRoleMetadata, bz)

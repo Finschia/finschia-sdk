@@ -68,3 +68,9 @@ func SplitVoterVoteKey(key []byte) (uint64, sdk.AccAddress) {
 func RoleKey(target sdk.AccAddress) []byte {
 	return append(KeyRolePrefix, address.MustLengthPrefix(target.Bytes())...)
 }
+
+// SplitRoleKey split the role key and returns the address
+func SplitRoleKey(key []byte) sdk.AccAddress {
+	kv.AssertKeyAtLeastLength(key, 3)
+	return key[2:]
+}

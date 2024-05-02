@@ -60,6 +60,11 @@ enum Role {
   JUDGE       = 3 [(gogoproto.enumvalue_customname) = "RoleJudge"];
 }
 
+message RolePair {
+  string address = 1;
+  Role   role    = 2;
+}
+
 message RoleProposal {
   uint64 id = 1;
   // the proposer address

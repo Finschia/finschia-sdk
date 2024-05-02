@@ -760,6 +760,7 @@
     - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
     - [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus)
     - [RoleMetadata](#lbm.fbridge.v1.RoleMetadata)
+    - [RolePair](#lbm.fbridge.v1.RolePair)
     - [RoleProposal](#lbm.fbridge.v1.RoleProposal)
     - [Vote](#lbm.fbridge.v1.Vote)
   
@@ -11482,6 +11483,22 @@ RoleMetadata defines the metadata of the role.
 
 
 
+<a name="lbm.fbridge.v1.RolePair"></a>
+
+### RolePair
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.RoleProposal"></a>
 
 ### RoleProposal
@@ -11743,6 +11760,7 @@ GenesisState defines the fbridge module's genesis state.
 | `role_proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated | role_proposals defines all the role proposals present at genesis. |
 | `votes` | [Vote](#lbm.fbridge.v1.Vote) | repeated | votes defines all the votes present for role proposals at genesis. |
 | `role_metadata` | [RoleMetadata](#lbm.fbridge.v1.RoleMetadata) |  | role_metadata defines all the role metadata present at genesis. |
+| `roles` | [RolePair](#lbm.fbridge.v1.RolePair) | repeated | roles defines all addresses assigned roles at genesis. |
 
 
 

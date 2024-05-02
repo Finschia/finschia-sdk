@@ -9,12 +9,21 @@ import (
 func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
 	k.SetParams(ctx, gs.Params)
 	k.setNextSequence(ctx, gs.SendingState.NextSeq)
-	k.setNextProposalID(ctx, gs.NextRoleProposalId)
-	k.setRoleMetadata(ctx, gs.RoleMetadata)
 
+	k.setNextProposalID(ctx, gs.NextRoleProposalId)
 	for _, proposal := range gs.RoleProposals {
 		k.setRoleProposal(ctx, proposal)
 	}
+
+	for _, vote := range gs.Votes {
+		k.setVote(ctx, vote.ProposalId, sdk.MustAccAddressFromBech32(vote.Voter), vote.Option)
+	}
+
+	k.SetRoleMetadata(ctx, gs.RoleMetadata)
+	for _, pair := range gs.Roles {
+		k.SetRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
+	}
+
 	// TODO: we initialize the appropriate genesis parameters whenever the feature is added
 
 	return nil
@@ -27,9 +36,10 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 			NextSeq: k.GetNextSequence(ctx),
 		},
 		NextRoleProposalId: k.GetNextProposalID(ctx),
-		RoleMetadata:       k.GetRoleMetadata(ctx),
 		RoleProposals:      k.GetProposals(ctx),
 		Votes:              k.GetAllVotes(ctx),
+		RoleMetadata:       k.GetRoleMetadata(ctx),
+		Roles:              k.GetRolePairs(ctx),
 	}
 }
 
@@ -43,7 +53,6 @@ func (k Keeper) IterateVotes(ctx sdk.Context, cb func(proposal types.Vote) (stop
 		id, voter := types.SplitVoterVoteKey(iterator.Key())
 		opt := types.VoteOption(binary.BigEndian.Uint32(iterator.Value()))
 		v := types.Vote{ProposalId: id, Voter: voter.String(), Option: opt}
-		k.cdc.MustUnmarshal(iterator.Value(), &v)
 		if cb(v) {
 			break
 		}

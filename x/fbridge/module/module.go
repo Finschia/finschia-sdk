@@ -24,9 +24,10 @@ const (
 )
 
 var (
-	_ module.AppModuleBasic   = AppModuleBasic{}
-	_ module.AppModuleGenesis = AppModule{}
-	_ module.AppModule        = AppModule{}
+	_ module.AppModuleBasic    = AppModuleBasic{}
+	_ module.AppModuleGenesis  = AppModule{}
+	_ module.AppModule         = AppModule{}
+	_ module.EndBlockAppModule = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the fbridge module.
@@ -120,6 +121,13 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return consensusVersion }
+
+// EndBlock returns the end blocker for the fbridge module.
+// It returns no validator updates.
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.keeper)
+	return []abci.ValidatorUpdate{}
+}
 
 // RegisterInvariants does nothing, there are no invariants to enforce
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
