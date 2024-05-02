@@ -20,7 +20,7 @@ func CheckTrustLevelThreshold(total, current uint64, trustLevel Fraction) bool {
 	}
 
 	if total*trustLevel.Numerator <= current*trustLevel.Denominator &&
-		total != 0 && current != 0 &&
+		total > 0 && current >= 0 &&
 		current <= total {
 		return true
 	}
