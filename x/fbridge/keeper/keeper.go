@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -38,8 +37,8 @@ func NewKeeper(
 		panic(errors.New("fbridge module account has not been set"))
 	}
 
-	if strings.TrimSpace(authority) == "" {
-		panic(errors.New("authority address cannot be empty"))
+	if authority != types.DefaultAuthority().String() {
+		panic(errors.New("authority must be gov module"))
 	}
 
 	return Keeper{

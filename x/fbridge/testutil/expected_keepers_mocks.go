@@ -8,7 +8,6 @@ import (
 	reflect "reflect"
 
 	types "github.com/Finschia/finschia-sdk/types"
-	types0 "github.com/Finschia/finschia-sdk/x/auth/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -33,20 +32,6 @@ func NewMockAccountKeeper(ctrl *gomock.Controller) *MockAccountKeeper {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAccountKeeper) EXPECT() *MockAccountKeeperMockRecorder {
 	return m.recorder
-}
-
-// GetModuleAccount mocks base method.
-func (m *MockAccountKeeper) GetModuleAccount(ctx types.Context, moduleName string) types0.ModuleAccountI {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetModuleAccount", ctx, moduleName)
-	ret0, _ := ret[0].(types0.ModuleAccountI)
-	return ret0
-}
-
-// GetModuleAccount indicates an expected call of GetModuleAccount.
-func (mr *MockAccountKeeperMockRecorder) GetModuleAccount(ctx, moduleName interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModuleAccount", reflect.TypeOf((*MockAccountKeeper)(nil).GetModuleAccount), ctx, moduleName)
 }
 
 // GetModuleAddress mocks base method.
@@ -100,32 +85,23 @@ func (mr *MockBankKeeperMockRecorder) BurnCoins(ctx, moduleName, amt interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BurnCoins", reflect.TypeOf((*MockBankKeeper)(nil).BurnCoins), ctx, moduleName, amt)
 }
 
-// GetBalance mocks base method.
-func (m *MockBankKeeper) GetBalance(ctx types.Context, addr types.AccAddress, denom string) types.Coin {
+// IsSendEnabledCoins mocks base method.
+func (m *MockBankKeeper) IsSendEnabledCoins(ctx types.Context, coins ...types.Coin) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetBalance", ctx, addr, denom)
-	ret0, _ := ret[0].(types.Coin)
+	varargs := []interface{}{ctx}
+	for _, a := range coins {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "IsSendEnabledCoins", varargs...)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// GetBalance indicates an expected call of GetBalance.
-func (mr *MockBankKeeperMockRecorder) GetBalance(ctx, addr, denom interface{}) *gomock.Call {
+// IsSendEnabledCoins indicates an expected call of IsSendEnabledCoins.
+func (mr *MockBankKeeperMockRecorder) IsSendEnabledCoins(ctx interface{}, coins ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBalance", reflect.TypeOf((*MockBankKeeper)(nil).GetBalance), ctx, addr, denom)
-}
-
-// IsSendEnabledCoin mocks base method.
-func (m *MockBankKeeper) IsSendEnabledCoin(ctx types.Context, coin types.Coin) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsSendEnabledCoin", ctx, coin)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsSendEnabledCoin indicates an expected call of IsSendEnabledCoin.
-func (mr *MockBankKeeperMockRecorder) IsSendEnabledCoin(ctx, coin interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsSendEnabledCoin", reflect.TypeOf((*MockBankKeeper)(nil).IsSendEnabledCoin), ctx, coin)
+	varargs := append([]interface{}{ctx}, coins...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsSendEnabledCoins", reflect.TypeOf((*MockBankKeeper)(nil).IsSendEnabledCoins), varargs...)
 }
 
 // SendCoinsFromAccountToModule mocks base method.

@@ -23,11 +23,11 @@ func (m msgServer) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*typ
 
 	from, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
-	if !IsValidEthereumAddress(msg.Receiver) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid recipient address (%s)", msg.Receiver)
+	if err := IsValidEthereumAddress(msg.Receiver); err != nil {
+		return nil, sdkerrors.Wrap(err, "invalid receiver address")
 	}
 
 	seq, err := m.handleBridgeTransfer(ctx, from, msg.Amount)

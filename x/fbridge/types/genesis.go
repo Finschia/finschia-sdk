@@ -1,6 +1,12 @@
 package types
 
-import "errors"
+import (
+	"errors"
+
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+)
 
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
@@ -17,4 +23,8 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	return nil
+}
+
+func DefaultAuthority() sdk.AccAddress {
+	return authtypes.NewModuleAddress(govtypes.ModuleName)
 }

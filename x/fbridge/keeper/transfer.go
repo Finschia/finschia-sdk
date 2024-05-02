@@ -12,11 +12,16 @@ import (
 	"golang.org/x/crypto/sha3"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
 func (k Keeper) handleBridgeTransfer(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Int) (uint64, error) {
 	token := sdk.Coins{sdk.Coin{Denom: k.targetDenom, Amount: amount}}
+	if err := k.bankKeeper.IsSendEnabledCoins(ctx, token...); err != nil {
+		return 0, err
+	}
+
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token); err != nil {
 		panic(err)
 	}
@@ -48,10 +53,10 @@ func (k Keeper) setNextSequence(ctx sdk.Context, seq uint64) {
 	store.Set(types.KeyNextSeqSend, bz)
 }
 
-func IsValidEthereumAddress(address string) bool {
+func IsValidEthereumAddress(address string) error {
 	matched, err := regexp.MatchString(`^0x[a-fA-F0-9]{40}$`, address)
 	if err != nil || !matched {
-		return false
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid eth address: %s", address)
 	}
 
 	address = address[2:]
@@ -65,7 +70,7 @@ func IsValidEthereumAddress(address string) bool {
 	for i := 0; i < len(addressLower); i++ {
 		c, err := strconv.ParseUint(string(addressHash[i]), 16, 4)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if c < 8 {
 			checksumAddress += string(addressLower[i])
@@ -74,5 +79,9 @@ func IsValidEthereumAddress(address string) bool {
 		}
 	}
 
-	return address == checksumAddress
+	if address != checksumAddress {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid checksum for eth address: %s", address)
+	}
+
+	return nil
 }
