@@ -97,14 +97,6 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 		return err
 	}
 
-	if swap.GetFromDenom() != fromCoinAmount.GetDenom() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swap.GetFromDenom(), fromCoinAmount.Denom)
-	}
-
-	if swap.GetToDenom() != toDenom {
-		return sdkerrors.ErrInvalidRequest.Wrapf("denom mismatch, expected %s, got %s", swap.GetToDenom(), toDenom)
-	}
-
 	newAmount := fromCoinAmount.Amount.Mul(swap.SwapMultiple)
 	newCoinAmount := sdk.NewCoin(toDenom, newAmount)
 	if err := k.checkSwapCap(ctx, swap, newCoinAmount); err != nil {
