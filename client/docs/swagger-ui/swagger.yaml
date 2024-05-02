@@ -30313,90 +30313,7 @@ paths:
                       format: byte
       tags:
         - Query
-  '/lbm/fbridge/v1/provision/{seq}':
-    get:
-      summary: ConfirmedProvision queries a particular sequence of confirmed provisions
-      operationId: ConfirmedProvision
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  seq:
-                    type: string
-                    format: uint64
-                    title: the sequence number of the bridge request
-                  amount:
-                    type: string
-                    title: the amount of token to be claimed
-                  sender:
-                    type: string
-                    title: the sender address on the source chain
-                  receiver:
-                    type: string
-                    title: the recipient address on the destination chain
-                description: Provision is a struct that represents a provision internally.
-              status:
-                type: object
-                properties:
-                  timelock_end:
-                    type: string
-                    format: uint64
-                    title: >-
-                      the unix timestamp the provision will be able to be
-                      claimed (unix timestamp)
-                  confirm_counts:
-                    type: integer
-                    format: int32
-                    title: >-
-                      a value that tells how many operators have submitted this
-                      provision
-                  is_claimed:
-                    type: boolean
-                    format: boolean
-                    title: whether the provision has been claimed
-                description: >-
-                  ProvisionStatus is a struct that represents the status of a
-                  provision.
-
-                  To optimize computational cost, we have collected frequently
-                  changing values from provision.
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: seq
-          description: the sequence number of the bridge request
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  /lbm/fbridge/v1/role/proposals:
+  /lbm/fbridge/v1/proposals:
     get:
       summary: Proposals queries a list of SuggestRole Proposals
       operationId: FBridgeProposals
@@ -30444,10 +30361,28 @@ paths:
                         judge.
                     expired_at:
                       type: string
-                      format: uint64
+                      format: date-time
                       title: >-
                         the unix timestamp the proposal will be expired (unix
                         timestamp)
+              pagination:
+                description: pagination defines an pagination for the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
         default:
           description: An unexpected error response
           schema:
@@ -30531,7 +30466,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/fbridge/v1/role/proposals/{proposal_id}':
+  '/lbm/fbridge/v1/proposals/{proposal_id}':
     get:
       summary: Proposal queries a SuggestRole Proposal
       operationId: FBridgeProposal
@@ -30572,7 +30507,7 @@ paths:
                       judge.
                   expired_at:
                     type: string
-                    format: uint64
+                    format: date-time
                     title: >-
                       the unix timestamp the proposal will be expired (unix
                       timestamp)
@@ -30604,6 +30539,226 @@ paths:
           in: path
           required: true
           type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/proposals/{proposal_id}/votes':
+    get:
+      summary: Votes queries votes of a given proposal.
+      operationId: FBridgeVotes
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              votes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    proposal_id:
+                      type: string
+                      format: uint64
+                    voter:
+                      type: string
+                    option:
+                      type: string
+                      enum:
+                        - VOTE_OPTION_UNSPECIFIED
+                        - VOTE_OPTION_YES
+                        - VOTE_OPTION_NO
+                      default: VOTE_OPTION_UNSPECIFIED
+                      description: >-
+                        VoteOption enumerates the valid vote options for a given
+                        role proposal.
+
+                         - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                         - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                         - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                  description: Vote defines a vote on a role proposal.
+                description: votes defined the queried votes.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: proposal_id
+          description: proposal_id defines the unique id of the proposal.
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}':
+    get:
+      summary: 'Vote queries voted information based on proposalID, voterAddr.'
+      operationId: FBridgeVote
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              vote:
+                type: object
+                properties:
+                  proposal_id:
+                    type: string
+                    format: uint64
+                  voter:
+                    type: string
+                  option:
+                    type: string
+                    enum:
+                      - VOTE_OPTION_UNSPECIFIED
+                      - VOTE_OPTION_YES
+                      - VOTE_OPTION_NO
+                    default: VOTE_OPTION_UNSPECIFIED
+                    description: >-
+                      VoteOption enumerates the valid vote options for a given
+                      role proposal.
+
+                       - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                       - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                       - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                description: Vote defines a vote on a role proposal.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: proposal_id
+          description: proposal_id defines the unique id of the proposal.
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: voter
+          description: voter defines the oter address for the proposals.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/fbridge/v1/provision/{seq}':
+    get:
+      summary: ConfirmedProvision queries a particular sequence of confirmed provisions
+      operationId: ConfirmedProvision
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  seq:
+                    type: string
+                    format: uint64
+                    title: the sequence number of the bridge request
+                  amount:
+                    type: string
+                    title: the amount of token to be claimed
+                  sender:
+                    type: string
+                    title: the sender address on the source chain
+                  receiver:
+                    type: string
+                    title: the recipient address on the destination chain
+                description: Provision is a struct that represents a provision internally.
+              status:
+                type: object
+                properties:
+                  timelock_end:
+                    type: string
+                    format: uint64
+                    title: >-
+                      the unix timestamp the provision will be able to be
+                      claimed (unix timestamp)
+                  confirm_counts:
+                    type: integer
+                    format: int32
+                    title: >-
+                      a value that tells how many operators have submitted this
+                      provision
+                  is_claimed:
+                    type: boolean
+                    format: boolean
+                    title: whether the provision has been claimed
+                description: >-
+                  ProvisionStatus is a struct that represents the status of a
+                  provision.
+
+                  To optimize computational cost, we have collected frequently
+                  changing values from provision.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
 definitions:
@@ -50417,7 +50572,7 @@ definitions:
             description: 'Role defines the role of the operator, guardian, and judge.'
           expired_at:
             type: string
-            format: uint64
+            format: date-time
             title: the unix timestamp the proposal will be expired (unix timestamp)
   lbm.fbridge.v1.QueryProposalsResponse:
     type: object
@@ -50453,8 +50608,26 @@ definitions:
               description: 'Role defines the role of the operator, guardian, and judge.'
             expired_at:
               type: string
-              format: uint64
+              format: date-time
               title: the unix timestamp the proposal will be expired (unix timestamp)
+      pagination:
+        description: pagination defines an pagination for the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
   lbm.fbridge.v1.QuerySubmittedProvisionResponse:
     type: object
     properties:
@@ -50499,6 +50672,61 @@ definitions:
 
           To optimize computational cost, we have collected frequently changing
           values from provision.
+  lbm.fbridge.v1.QueryVoteResponse:
+    type: object
+    properties:
+      vote:
+        type: object
+        properties:
+          proposal_id:
+            type: string
+            format: uint64
+          voter:
+            type: string
+          option:
+            type: string
+            enum:
+              - VOTE_OPTION_UNSPECIFIED
+              - VOTE_OPTION_YES
+              - VOTE_OPTION_NO
+            default: VOTE_OPTION_UNSPECIFIED
+            description: >-
+              VoteOption enumerates the valid vote options for a given role
+              proposal.
+
+               - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+               - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+               - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+        description: Vote defines a vote on a role proposal.
+  lbm.fbridge.v1.QueryVotesResponse:
+    type: object
+    properties:
+      votes:
+        type: array
+        items:
+          type: object
+          properties:
+            proposal_id:
+              type: string
+              format: uint64
+            voter:
+              type: string
+            option:
+              type: string
+              enum:
+                - VOTE_OPTION_UNSPECIFIED
+                - VOTE_OPTION_YES
+                - VOTE_OPTION_NO
+              default: VOTE_OPTION_UNSPECIFIED
+              description: >-
+                VoteOption enumerates the valid vote options for a given role
+                proposal.
+
+                 - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                 - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                 - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+          description: Vote defines a vote on a role proposal.
+        description: votes defined the queried votes.
   lbm.fbridge.v1.Role:
     type: string
     enum:
@@ -50537,5 +50765,41 @@ definitions:
         description: 'Role defines the role of the operator, guardian, and judge.'
       expired_at:
         type: string
-        format: uint64
+        format: date-time
         title: the unix timestamp the proposal will be expired (unix timestamp)
+  lbm.fbridge.v1.Vote:
+    type: object
+    properties:
+      proposal_id:
+        type: string
+        format: uint64
+      voter:
+        type: string
+      option:
+        type: string
+        enum:
+          - VOTE_OPTION_UNSPECIFIED
+          - VOTE_OPTION_YES
+          - VOTE_OPTION_NO
+        default: VOTE_OPTION_UNSPECIFIED
+        description: >-
+          VoteOption enumerates the valid vote options for a given role
+          proposal.
+
+           - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+           - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+           - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+    description: Vote defines a vote on a role proposal.
+  lbm.fbridge.v1.VoteOption:
+    type: string
+    enum:
+      - VOTE_OPTION_UNSPECIFIED
+      - VOTE_OPTION_YES
+      - VOTE_OPTION_NO
+    default: VOTE_OPTION_UNSPECIFIED
+    description: |-
+      VoteOption enumerates the valid vote options for a given role proposal.
+
+       - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+       - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+       - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.

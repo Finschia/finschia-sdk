@@ -175,7 +175,9 @@
           "Operators": "FBridgeOperators",
           "Judges": "FBridgeJudges",
           "Proposals": "FBridgeProposals",
-          "Proposal": "FBridgeProposal"
+          "Proposal": "FBridgeProposal",
+          "Votes": "FBridgeVotes",
+          "Vote": "FBridgeVote"
         }
       }
     }

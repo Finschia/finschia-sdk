@@ -131,8 +131,8 @@ func (k Keeper) IterateProposals(ctx sdk.Context, cb func(proposal types.RolePro
 	}
 }
 
-// GetProposals returns all the role proposals from store
-func (k Keeper) GetProposals(ctx sdk.Context) (proposals []types.RoleProposal) {
+// GetRoleProposals returns all the role proposals from store
+func (k Keeper) GetRoleProposals(ctx sdk.Context) (proposals []types.RoleProposal) {
 	k.IterateProposals(ctx, func(proposal types.RoleProposal) bool {
 		proposals = append(proposals, proposal)
 		return false
@@ -157,14 +157,19 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	return types.VoteOption(binary.BigEndian.Uint32(bz)), nil
 }
 
-func (k Keeper) GetVotes(ctx sdk.Context, proposalID uint64) []types.VoteOption {
+func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) []types.Vote {
 	store := ctx.KVStore(k.storeKey)
 
-	votes := make([]types.VoteOption, 0)
+	votes := make([]types.Vote, 0)
 	iterator := sdk.KVStorePrefixIterator(store, types.VotesKey(proposalID))
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		v := types.VoteOption(binary.BigEndian.Uint32(iterator.Value()))
+		_, voter := types.SplitVoterVoteKey(iterator.Key())
+		v := types.Vote{
+			ProposalId: proposalID,
+			Voter:      voter.String(),
+			Option:     types.VoteOption(binary.BigEndian.Uint32(iterator.Value())),
+		}
 		votes = append(votes, v)
 	}
 

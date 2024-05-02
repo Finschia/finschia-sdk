@@ -36,7 +36,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 			NextSeq: k.GetNextSequence(ctx),
 		},
 		NextRoleProposalId: k.GetNextProposalID(ctx),
-		RoleProposals:      k.GetProposals(ctx),
+		RoleProposals:      k.GetRoleProposals(ctx),
 		Votes:              k.GetAllVotes(ctx),
 		RoleMetadata:       k.GetRoleMetadata(ctx),
 		Roles:              k.GetRolePairs(ctx),
@@ -47,7 +47,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 func (k Keeper) IterateVotes(ctx sdk.Context, cb func(proposal types.Vote) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.KeyProposalPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyProposalVotePrefix)
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		id, voter := types.SplitVoterVoteKey(iterator.Key())

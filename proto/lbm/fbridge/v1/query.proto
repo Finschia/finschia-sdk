@@ -70,12 +70,22 @@ service Query {
 
   // Proposals queries a list of SuggestRole Proposals
   rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/role/proposals";
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals";
   }
 
   // Proposal queries a SuggestRole Proposal
   rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/role/proposals/{proposal_id}";
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}";
+  }
+
+  // Vote queries voted information based on proposalID, voterAddr.
+  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}";
+  }
+
+  // Votes queries votes of a given proposal.
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes";
   }
 }
 
@@ -172,14 +182,40 @@ message QueryProposalsRequest {
 }
 
 message QueryProposalsResponse {
-  repeated RoleProposal proposals = 1;
+  repeated RoleProposal proposals = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines an pagination for the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryProposalRequest {
   // the proposal id
-  string proposal_id = 1;
+  uint64 proposal_id = 1;
 }
 
 message QueryProposalResponse {
-  RoleProposal proposal = 1;
+  RoleProposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryVoteRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+
+  // voter defines the oter address for the proposals.
+  string voter = 2;
+}
+
+message QueryVoteResponse {
+  // vote defined the queried vote.
+  Vote vote = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryVotesRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+message QueryVotesResponse {
+  // votes defined the queried votes.
+  repeated Vote votes = 1 [(gogoproto.nullable) = false];
 }

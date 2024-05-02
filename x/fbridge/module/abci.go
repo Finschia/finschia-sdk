@@ -9,18 +9,18 @@ import (
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	guardianTrustLevel := k.GetParams(ctx).GuardianTrustLevel
-	proposals := k.GetProposals(ctx)
+	proposals := k.GetRoleProposals(ctx)
 	for _, proposal := range proposals {
 		if ctx.BlockTime().After(proposal.ExpiredAt) {
 			k.DeleteRoleProposal(ctx, proposal.Id)
 			continue
 		}
 
-		votes := k.GetVotes(ctx, proposal.Id)
+		votes := k.GetProposalVotes(ctx, proposal.Id)
 
 		voteYes := 0
 		for _, vote := range votes {
-			if vote == types.OptionYes {
+			if vote.Option == types.OptionYes {
 				voteYes++
 			}
 		}

@@ -812,6 +812,10 @@
     - [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse)
     - [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest)
     - [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse)
+    - [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest)
+    - [QueryVoteResponse](#lbm.fbridge.v1.QueryVoteResponse)
+    - [QueryVotesRequest](#lbm.fbridge.v1.QueryVotesRequest)
+    - [QueryVotesResponse](#lbm.fbridge.v1.QueryVotesResponse)
   
     - [Query](#lbm.fbridge.v1.Query)
   
@@ -12133,7 +12137,7 @@ GenesisState defines the fbridge module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `proposal_id` | [string](#string) |  | the proposal id |
+| `proposal_id` | [uint64](#uint64) |  | the proposal id |
 
 
 
@@ -12179,6 +12183,7 @@ GenesisState defines the fbridge module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
 
 
 
@@ -12216,6 +12221,67 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
+
+<a name="lbm.fbridge.v1.QueryVoteRequest"></a>
+
+### QueryVoteRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id defines the unique id of the proposal. |
+| `voter` | [string](#string) |  | voter defines the oter address for the proposals. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVoteResponse"></a>
+
+### QueryVoteResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vote` | [Vote](#lbm.fbridge.v1.Vote) |  | vote defined the queried vote. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVotesRequest"></a>
+
+### QueryVotesRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id defines the unique id of the proposal. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVotesResponse"></a>
+
+### QueryVotesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `votes` | [Vote](#lbm.fbridge.v1.Vote) | repeated | votes defined the queried votes. |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -12241,8 +12307,10 @@ GenesisState defines the fbridge module's genesis state.
 | `Guardians` | [QueryGuardiansRequest](#lbm.fbridge.v1.QueryGuardiansRequest) | [QueryGuardiansResponse](#lbm.fbridge.v1.QueryGuardiansResponse) | Guardians queries a list of Guardians registered on the bridge | GET|/lbm/fbridge/v1/guardians|
 | `Operators` | [QueryOperatorsRequest](#lbm.fbridge.v1.QueryOperatorsRequest) | [QueryOperatorsResponse](#lbm.fbridge.v1.QueryOperatorsResponse) | Operators queries a list of Operators registered on the bridge | GET|/lbm/fbridge/v1/operators|
 | `Judges` | [QueryJudgesRequest](#lbm.fbridge.v1.QueryJudgesRequest) | [QueryJudgesResponse](#lbm.fbridge.v1.QueryJudgesResponse) | Judges queries a list of Judges registered on the bridge | GET|/lbm/fbridge/v1/judges|
-| `Proposals` | [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse) | Proposals queries a list of SuggestRole Proposals | GET|/lbm/fbridge/v1/role/proposals|
-| `Proposal` | [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse) | Proposal queries a SuggestRole Proposal | GET|/lbm/fbridge/v1/role/proposals/{proposal_id}|
+| `Proposals` | [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse) | Proposals queries a list of SuggestRole Proposals | GET|/lbm/fbridge/v1/proposals|
+| `Proposal` | [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse) | Proposal queries a SuggestRole Proposal | GET|/lbm/fbridge/v1/proposals/{proposal_id}|
+| `Vote` | [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.fbridge.v1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}|
+| `Votes` | [QueryVotesRequest](#lbm.fbridge.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.fbridge.v1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes|
 
  <!-- end services -->
 
