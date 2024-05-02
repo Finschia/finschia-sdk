@@ -139,8 +139,8 @@ func (k Keeper) getSwapped(ctx sdk.Context, fromDenom, toDenom string) (types.Sw
 	return swapped, nil
 }
 
-func (k Keeper) setSwapped(ctx sdk.Context, fromDenom, toDenom string, swapped types.Swapped) error {
-	key := swappedKey(fromDenom, toDenom)
+func (k Keeper) setSwapped(ctx sdk.Context, swapped types.Swapped) error {
+	key := swappedKey(swapped.FromCoinAmount.Denom, swapped.ToCoinAmount.Denom)
 	bz, err := k.cdc.Marshal(&swapped)
 	if err != nil {
 		return err

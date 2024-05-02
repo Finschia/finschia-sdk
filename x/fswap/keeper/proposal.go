@@ -27,15 +27,6 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
 		}
 	}
 
-	key := swapKey(swap.FromDenom, swap.ToDenom)
-	bz, err := k.cdc.Marshal(&swap)
-	if err != nil {
-		return err
-	}
-
-	store := ctx.KVStore(k.storeKey)
-	store.Set(key, bz)
-
 	if isNewSwap {
 		swapped := types.Swapped{
 			FromCoinAmount: sdk.Coin{
@@ -47,9 +38,14 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
 				Amount: sdk.ZeroInt(),
 			},
 		}
-		if err := k.setSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom(), swapped); err != nil {
+		if err := k.setSwapped(ctx, swapped); err != nil {
 			return err
 		}
+	}
+
+	err := k.setSwap(ctx, swap)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -69,6 +65,18 @@ func (k Keeper) increaseSwapCount(ctx sdk.Context) error {
 	if err := k.setSwapStats(ctx, stats); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (k Keeper) setSwap(ctx sdk.Context, swap types.Swap) error {
+	key := swapKey(swap.FromDenom, swap.ToDenom)
+	bz, err := k.cdc.Marshal(&swap)
+	if err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(key, bz)
 	return nil
 }
 

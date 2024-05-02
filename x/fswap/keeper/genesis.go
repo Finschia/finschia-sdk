@@ -19,22 +19,23 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error
 		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swapped", k.config.MaxSwaps)
 	}
 
-	// SwapCount starts from 0, and get increased inside k.MakeSwap(ctx, swap)
-	if err := k.setSwapStats(ctx, types.SwapStats{SwapCount: 0}); err != nil {
+	if err := k.setSwapStats(ctx, genState.GetSwapStats()); err != nil {
 		return err
 	}
 
 	for _, swap := range genState.GetSwaps() {
-		if err := k.MakeSwap(ctx, swap); err != nil {
+		if err := k.setSwap(ctx, swap); err != nil {
 			panic(err)
 		}
 	}
 
 	for _, swapped := range genState.GetSwappeds() {
-		if err := swapped.ValidateBasic(); err != nil {
-			panic(err)
+		err := k.setSwapped(ctx, swapped)
+		if err != nil {
+			return err
 		}
 	}
+
 	return nil
 }
 

@@ -26,5 +26,14 @@ func (gs *GenesisState) Validate() error {
 			return err
 		}
 	}
+
+	if len(gs.GetSwaps()) != len(gs.GetSwappeds()) {
+		return ErrInvalidState.Wrap("number of swaps does not match number of Swappeds")
+	}
+
+	if len(gs.GetSwaps()) != int(gs.GetSwapStats().SwapCount) {
+		return ErrInvalidState.Wrap("number of swaps does not match swap count in SwapStats")
+	}
+
 	return nil
 }
