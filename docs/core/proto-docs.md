@@ -952,6 +952,8 @@
 - [lbm/fswap/v1/query.proto](#lbm/fswap/v1/query.proto)
     - [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest)
     - [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse)
+    - [QuerySwapsRequest](#lbm.fswap.v1.QuerySwapsRequest)
+    - [QuerySwapsResponse](#lbm.fswap.v1.QuerySwapsResponse)
     - [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest)
     - [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse)
   
@@ -14067,6 +14069,37 @@ GenesisState defines the fswap module's genesis state.
 
 
 
+<a name="lbm.fswap.v1.QuerySwapsRequest"></a>
+
+### QuerySwapsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QuerySwapsResponse"></a>
+
+### QuerySwapsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swaps` | [Swap](#lbm.fswap.v1.Swap) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
 <a name="lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest"></a>
 
 ### QueryTotalSwappableToCoinAmountRequest
@@ -14113,6 +14146,7 @@ GenesisState defines the fswap module's genesis state.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of to-coin. | GET|/lbm/fswap/v1/swapped|
 | `TotalSwappableToCoinAmount` | [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest) | [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse) | TotalSwappableToCoinAmount queries the current swappable amount for to-coin. | GET|/lbm/fswap/v1/total_swappable_to_coin_amount|
+| `Swaps` | [QuerySwapsRequest](#lbm.fswap.v1.QuerySwapsRequest) | [QuerySwapsResponse](#lbm.fswap.v1.QuerySwapsResponse) | Swaps queries all the swap that registered | GET|/lbm/fswap/v1/swaps|
 
  <!-- end services -->
 

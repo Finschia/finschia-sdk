@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	types "github.com/Finschia/finschia-sdk/types"
+	query "github.com/Finschia/finschia-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -234,47 +235,152 @@ func (m *QueryTotalSwappableToCoinAmountResponse) GetSwappableAmount() types.Coi
 	return types.Coin{}
 }
 
+type QuerySwapsRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QuerySwapsRequest) Reset()         { *m = QuerySwapsRequest{} }
+func (m *QuerySwapsRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySwapsRequest) ProtoMessage()    {}
+func (*QuerySwapsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01deae9da7816d6a, []int{4}
+}
+func (m *QuerySwapsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySwapsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySwapsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySwapsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySwapsRequest.Merge(m, src)
+}
+func (m *QuerySwapsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySwapsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySwapsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySwapsRequest proto.InternalMessageInfo
+
+func (m *QuerySwapsRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QuerySwapsResponse struct {
+	Swaps      []Swap              `protobuf:"bytes,1,rep,name=swaps,proto3" json:"swaps"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QuerySwapsResponse) Reset()         { *m = QuerySwapsResponse{} }
+func (m *QuerySwapsResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySwapsResponse) ProtoMessage()    {}
+func (*QuerySwapsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01deae9da7816d6a, []int{5}
+}
+func (m *QuerySwapsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySwapsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySwapsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySwapsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySwapsResponse.Merge(m, src)
+}
+func (m *QuerySwapsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySwapsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySwapsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySwapsResponse proto.InternalMessageInfo
+
+func (m *QuerySwapsResponse) GetSwaps() []Swap {
+	if m != nil {
+		return m.Swaps
+	}
+	return nil
+}
+
+func (m *QuerySwapsResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QuerySwappedRequest)(nil), "lbm.fswap.v1.QuerySwappedRequest")
 	proto.RegisterType((*QuerySwappedResponse)(nil), "lbm.fswap.v1.QuerySwappedResponse")
 	proto.RegisterType((*QueryTotalSwappableToCoinAmountRequest)(nil), "lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest")
 	proto.RegisterType((*QueryTotalSwappableToCoinAmountResponse)(nil), "lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse")
+	proto.RegisterType((*QuerySwapsRequest)(nil), "lbm.fswap.v1.QuerySwapsRequest")
+	proto.RegisterType((*QuerySwapsResponse)(nil), "lbm.fswap.v1.QuerySwapsResponse")
 }
 
 func init() { proto.RegisterFile("lbm/fswap/v1/query.proto", fileDescriptor_01deae9da7816d6a) }
 
 var fileDescriptor_01deae9da7816d6a = []byte{
-	// 473 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x93, 0x31, 0x6f, 0xd3, 0x40,
-	0x14, 0xc7, 0x6d, 0x4b, 0x50, 0xf5, 0xa8, 0x4a, 0x75, 0x14, 0x11, 0xac, 0xe2, 0x82, 0x07, 0x40,
-	0x02, 0xee, 0xe4, 0xb6, 0x7c, 0x00, 0x0a, 0x42, 0x2c, 0x0c, 0x84, 0x4e, 0x2c, 0xe1, 0xec, 0x5e,
-	0x5c, 0x0b, 0xfb, 0x9e, 0x9b, 0x3b, 0xa7, 0xcd, 0xca, 0xc0, 0x8c, 0xc4, 0x57, 0x60, 0xe2, 0x23,
-	0xb0, 0xb0, 0x76, 0x8c, 0xc4, 0xc2, 0x04, 0x28, 0xe1, 0x83, 0xa0, 0x3b, 0x5f, 0x48, 0x2c, 0x05,
-	0x22, 0x54, 0x65, 0x7b, 0xbe, 0xf7, 0xde, 0xfd, 0xfe, 0xfe, 0xbf, 0x77, 0xa8, 0x95, 0xc7, 0x05,
-	0xed, 0xca, 0x13, 0x56, 0xd2, 0x7e, 0x44, 0x8f, 0x2b, 0xde, 0x1b, 0x90, 0xb2, 0x07, 0x0a, 0xf0,
-	0x5a, 0x1e, 0x17, 0xc4, 0x64, 0x48, 0x3f, 0xf2, 0xb7, 0x52, 0x80, 0x34, 0xe7, 0x94, 0x95, 0x19,
-	0x65, 0x42, 0x80, 0x62, 0x2a, 0x03, 0x21, 0xeb, 0x5a, 0x7f, 0x33, 0x85, 0x14, 0x4c, 0x48, 0x75,
-	0x64, 0x4f, 0x83, 0x04, 0x64, 0x01, 0x92, 0xc6, 0x4c, 0x72, 0xda, 0x8f, 0x62, 0xae, 0x58, 0x44,
-	0x13, 0xc8, 0x84, 0xcd, 0x37, 0xd9, 0x35, 0xca, 0x64, 0xc2, 0xe7, 0xe8, 0xca, 0x0b, 0x2d, 0xe5,
-	0xe5, 0x09, 0x2b, 0x4b, 0x7e, 0xd8, 0xe6, 0xc7, 0x15, 0x97, 0x0a, 0x6f, 0xa1, 0xd5, 0x6e, 0x0f,
-	0x8a, 0x27, 0x5c, 0x40, 0xd1, 0x72, 0x6f, 0xba, 0x77, 0x57, 0xdb, 0xd3, 0x03, 0xdc, 0x42, 0x2b,
-	0x0a, 0xea, 0x9c, 0x67, 0x72, 0x93, 0xcf, 0xf0, 0x9d, 0x87, 0x36, 0x9b, 0xf7, 0xc9, 0x12, 0x84,
-	0xe4, 0xf8, 0x14, 0x6d, 0xe8, 0xfe, 0x8e, 0x16, 0xd5, 0x61, 0x05, 0x54, 0x42, 0x99, 0x7b, 0x2f,
-	0xed, 0x5c, 0x27, 0xb5, 0x78, 0xa2, 0xc5, 0x13, 0x2b, 0x9e, 0x3c, 0x86, 0x4c, 0xec, 0xef, 0x9e,
-	0x7d, 0xdf, 0x76, 0x3e, 0xfd, 0xd8, 0xbe, 0x97, 0x66, 0xea, 0xa8, 0x8a, 0x49, 0x02, 0x05, 0x7d,
-	0x9a, 0x09, 0x99, 0x1c, 0x65, 0x8c, 0x76, 0x6d, 0xf0, 0x40, 0x1e, 0xbe, 0xa1, 0x6a, 0x50, 0x72,
-	0x69, 0x9a, 0xda, 0xeb, 0x9a, 0xa3, 0xa3, 0x47, 0x86, 0x82, 0x15, 0x5a, 0x57, 0xd0, 0xe0, 0x7a,
-	0x4b, 0xe1, 0xae, 0x29, 0x98, 0x52, 0xc3, 0xd7, 0xe8, 0xb6, 0xf1, 0xe1, 0x00, 0x14, 0xcb, 0x8d,
-	0x19, 0x2c, 0xce, 0xf9, 0xc1, 0x4c, 0xc9, 0x79, 0xad, 0xfe, 0xe8, 0xa2, 0x3b, 0x0b, 0x11, 0xd6,
-	0xfd, 0x01, 0xda, 0x90, 0x93, 0x82, 0xe5, 0xba, 0x7f, 0xf9, 0x0f, 0xa7, 0x96, 0xb0, 0xf3, 0xd9,
-	0x43, 0x17, 0x8c, 0x4c, 0x0c, 0x68, 0xc5, 0x6e, 0x05, 0xbe, 0x45, 0x66, 0x57, 0x9e, 0xcc, 0xd9,
-	0x40, 0x3f, 0xfc, 0x57, 0x49, 0xfd, 0x5b, 0xe1, 0x8d, 0xb7, 0x5f, 0x7f, 0x7d, 0xf0, 0xae, 0xe1,
-	0xab, 0xb4, 0xb1, 0xdf, 0xd2, 0x52, 0xbe, 0xb8, 0xc8, 0xff, 0xbb, 0x39, 0x78, 0x6f, 0x0e, 0x61,
-	0xe1, 0xb8, 0xfc, 0x87, 0xff, 0xd9, 0x65, 0xa5, 0xee, 0x19, 0xa9, 0x04, 0xdf, 0x6f, 0x4a, 0x55,
-	0xba, 0xb3, 0x33, 0x9d, 0x4d, 0x73, 0x53, 0xf7, 0x9f, 0x9d, 0x8d, 0x02, 0x77, 0x38, 0x0a, 0xdc,
-	0x9f, 0xa3, 0xc0, 0x7d, 0x3f, 0x0e, 0x9c, 0xe1, 0x38, 0x70, 0xbe, 0x8d, 0x03, 0xe7, 0x15, 0x59,
-	0x38, 0x94, 0x53, 0x4b, 0x31, 0xc3, 0x89, 0x2f, 0x9a, 0xe7, 0xbe, 0xfb, 0x3b, 0x00, 0x00, 0xff,
-	0xff, 0x4e, 0x71, 0x07, 0xdd, 0x86, 0x04, 0x00, 0x00,
+	// 590 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0xcf, 0x6e, 0xd3, 0x4e,
+	0x10, 0xc7, 0xe3, 0xf4, 0xd7, 0x5f, 0xd5, 0x6d, 0x55, 0xca, 0xb6, 0x15, 0xc1, 0x14, 0x27, 0xf8,
+	0xd0, 0x56, 0xfc, 0xd9, 0x55, 0xd2, 0xf2, 0x00, 0x04, 0x54, 0xb8, 0x20, 0x41, 0xe8, 0x09, 0x0e,
+	0x61, 0x9d, 0x6e, 0x5c, 0x8b, 0xd8, 0xe3, 0x66, 0x37, 0x69, 0x73, 0xe5, 0xc0, 0x0d, 0x09, 0x89,
+	0x47, 0x80, 0x13, 0x2f, 0xc1, 0xb5, 0xc7, 0x4a, 0x5c, 0x38, 0x01, 0x4a, 0x78, 0x10, 0xb4, 0xeb,
+	0x75, 0x63, 0x8b, 0x86, 0x08, 0xa1, 0xde, 0x36, 0x3b, 0xdf, 0x99, 0xef, 0x67, 0x27, 0x33, 0x46,
+	0xa5, 0x8e, 0x17, 0xd2, 0xb6, 0x38, 0x62, 0x31, 0xed, 0x57, 0xe9, 0x61, 0x8f, 0x77, 0x07, 0x24,
+	0xee, 0x82, 0x04, 0xbc, 0xd8, 0xf1, 0x42, 0xa2, 0x23, 0xa4, 0x5f, 0xb5, 0xd7, 0x7d, 0x00, 0xbf,
+	0xc3, 0x29, 0x8b, 0x03, 0xca, 0xa2, 0x08, 0x24, 0x93, 0x01, 0x44, 0x22, 0xd1, 0xda, 0xab, 0x3e,
+	0xf8, 0xa0, 0x8f, 0x54, 0x9d, 0xcc, 0xed, 0xcd, 0x16, 0x88, 0x10, 0x04, 0xf5, 0x98, 0xe0, 0x49,
+	0x69, 0xda, 0xaf, 0x7a, 0x5c, 0xb2, 0x2a, 0x8d, 0x99, 0x1f, 0x44, 0xba, 0x84, 0xd1, 0x3a, 0x59,
+	0x6d, 0xaa, 0x6a, 0x41, 0x90, 0xc6, 0xf3, 0x9c, 0x09, 0x96, 0x8e, 0xb8, 0x8f, 0xd1, 0xca, 0x53,
+	0x55, 0xfb, 0xd9, 0x11, 0x8b, 0x63, 0xbe, 0xdf, 0xe0, 0x87, 0x3d, 0x2e, 0x24, 0x5e, 0x47, 0xf3,
+	0xed, 0x2e, 0x84, 0x0f, 0x78, 0x04, 0x61, 0xc9, 0xaa, 0x58, 0x5b, 0xf3, 0x8d, 0xf1, 0x05, 0x2e,
+	0xa1, 0x39, 0x09, 0x49, 0xac, 0xa8, 0x63, 0xe9, 0x4f, 0xf7, 0x4d, 0x11, 0xad, 0xe6, 0xeb, 0x89,
+	0x18, 0x22, 0xc1, 0xf1, 0x31, 0x5a, 0x56, 0xf9, 0x4d, 0x05, 0xd5, 0x64, 0x21, 0xf4, 0x22, 0xa9,
+	0xeb, 0x2e, 0xd4, 0xae, 0x92, 0x04, 0x9e, 0x28, 0x78, 0x62, 0xe0, 0xc9, 0x7d, 0x08, 0xa2, 0xfa,
+	0xf6, 0xc9, 0xb7, 0x72, 0xe1, 0xd3, 0xf7, 0xf2, 0x2d, 0x3f, 0x90, 0x07, 0x3d, 0x8f, 0xb4, 0x20,
+	0xa4, 0xbb, 0x41, 0x24, 0x5a, 0x07, 0x01, 0xa3, 0x6d, 0x73, 0xb8, 0x23, 0xf6, 0x5f, 0x51, 0x39,
+	0x88, 0xb9, 0xd0, 0x49, 0x8d, 0x25, 0xe5, 0xa3, 0x4e, 0xf7, 0xb4, 0x0b, 0x96, 0x68, 0x49, 0x42,
+	0xce, 0xb7, 0x78, 0x21, 0xbe, 0x8b, 0x12, 0xc6, 0xae, 0xee, 0x4b, 0xb4, 0xa1, 0xfb, 0xb0, 0x07,
+	0x92, 0x75, 0x74, 0x33, 0x98, 0xd7, 0xe1, 0x7b, 0x19, 0xc9, 0xbf, 0xb6, 0xfa, 0xa3, 0x85, 0x36,
+	0xa7, 0x5a, 0x98, 0xee, 0x0f, 0xd0, 0xb2, 0x48, 0x05, 0x17, 0xdb, 0xfd, 0x4b, 0x67, 0x3e, 0xa6,
+	0x11, 0x2f, 0xd0, 0xe5, 0xb3, 0x81, 0x10, 0xe9, 0x9b, 0x77, 0x11, 0x1a, 0xcf, 0xb0, 0x21, 0xd9,
+	0xc8, 0x91, 0x24, 0xbb, 0x94, 0xf2, 0x3c, 0x61, 0x3e, 0x37, 0xb9, 0x8d, 0x4c, 0xa6, 0xfb, 0xd6,
+	0x42, 0x38, 0x5b, 0xdd, 0x3c, 0x97, 0xa0, 0x59, 0x85, 0x21, 0x4a, 0x56, 0x65, 0x66, 0x6b, 0xa1,
+	0x86, 0x49, 0x76, 0x19, 0x89, 0xd2, 0xd6, 0xff, 0x53, 0x8f, 0x6b, 0x24, 0x32, 0xfc, 0x30, 0x87,
+	0x93, 0x8c, 0xc7, 0xe6, 0x54, 0x9c, 0xc4, 0x2c, 0xcb, 0x53, 0xfb, 0x30, 0x83, 0x66, 0x35, 0x0f,
+	0x06, 0x34, 0x67, 0x56, 0x00, 0xdf, 0xc8, 0xdb, 0x9f, 0xb3, 0x6e, 0xb6, 0xfb, 0x27, 0x49, 0xe2,
+	0xe3, 0x5e, 0x7f, 0xfd, 0xe5, 0xe7, 0xfb, 0xe2, 0x15, 0xbc, 0x46, 0x73, 0xcb, 0x2c, 0x8c, 0xcb,
+	0x67, 0x0b, 0xd9, 0x93, 0x27, 0x01, 0xef, 0x9c, 0xe3, 0x30, 0x75, 0x36, 0xed, 0xbb, 0x7f, 0x99,
+	0x65, 0x50, 0x77, 0x34, 0x2a, 0xc1, 0xb7, 0xf3, 0xa8, 0x52, 0x65, 0x36, 0xc7, 0x83, 0x98, 0x5f,
+	0x4b, 0xec, 0xa3, 0x59, 0xfd, 0x37, 0xe2, 0xf2, 0x84, 0x6e, 0xa4, 0xe3, 0x63, 0x57, 0x26, 0x0b,
+	0x0c, 0xc1, 0x35, 0x4d, 0xb0, 0x86, 0x57, 0x7e, 0x6f, 0x96, 0xa8, 0x3f, 0x3a, 0x19, 0x3a, 0xd6,
+	0xe9, 0xd0, 0xb1, 0x7e, 0x0c, 0x1d, 0xeb, 0xdd, 0xc8, 0x29, 0x9c, 0x8e, 0x9c, 0xc2, 0xd7, 0x91,
+	0x53, 0x78, 0x4e, 0xa6, 0x8e, 0xfa, 0xb1, 0x29, 0xa6, 0x47, 0xde, 0xfb, 0x5f, 0x7f, 0x44, 0xb7,
+	0x7f, 0x05, 0x00, 0x00, 0xff, 0xff, 0x4e, 0x87, 0x53, 0x1d, 0x08, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -294,6 +400,8 @@ type QueryClient interface {
 	Swapped(ctx context.Context, in *QuerySwappedRequest, opts ...grpc.CallOption) (*QuerySwappedResponse, error)
 	// TotalSwappableToCoinAmount queries the current swappable amount for to-coin.
 	TotalSwappableToCoinAmount(ctx context.Context, in *QueryTotalSwappableToCoinAmountRequest, opts ...grpc.CallOption) (*QueryTotalSwappableToCoinAmountResponse, error)
+	// Swaps queries all the swap that registered
+	Swaps(ctx context.Context, in *QuerySwapsRequest, opts ...grpc.CallOption) (*QuerySwapsResponse, error)
 }
 
 type queryClient struct {
@@ -322,6 +430,15 @@ func (c *queryClient) TotalSwappableToCoinAmount(ctx context.Context, in *QueryT
 	return out, nil
 }
 
+func (c *queryClient) Swaps(ctx context.Context, in *QuerySwapsRequest, opts ...grpc.CallOption) (*QuerySwapsResponse, error) {
+	out := new(QuerySwapsResponse)
+	err := c.cc.Invoke(ctx, "/lbm.fswap.v1.Query/Swaps", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of
@@ -329,6 +446,8 @@ type QueryServer interface {
 	Swapped(context.Context, *QuerySwappedRequest) (*QuerySwappedResponse, error)
 	// TotalSwappableToCoinAmount queries the current swappable amount for to-coin.
 	TotalSwappableToCoinAmount(context.Context, *QueryTotalSwappableToCoinAmountRequest) (*QueryTotalSwappableToCoinAmountResponse, error)
+	// Swaps queries all the swap that registered
+	Swaps(context.Context, *QuerySwapsRequest) (*QuerySwapsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -340,6 +459,9 @@ func (*UnimplementedQueryServer) Swapped(ctx context.Context, req *QuerySwappedR
 }
 func (*UnimplementedQueryServer) TotalSwappableToCoinAmount(ctx context.Context, req *QueryTotalSwappableToCoinAmountRequest) (*QueryTotalSwappableToCoinAmountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TotalSwappableToCoinAmount not implemented")
+}
+func (*UnimplementedQueryServer) Swaps(ctx context.Context, req *QuerySwapsRequest) (*QuerySwapsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Swaps not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -382,6 +504,24 @@ func _Query_TotalSwappableToCoinAmount_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Swaps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySwapsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Swaps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lbm.fswap.v1.Query/Swaps",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Swaps(ctx, req.(*QuerySwapsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "lbm.fswap.v1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -393,6 +533,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TotalSwappableToCoinAmount",
 			Handler:    _Query_TotalSwappableToCoinAmount_Handler,
+		},
+		{
+			MethodName: "Swaps",
+			Handler:    _Query_Swaps_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -549,6 +693,90 @@ func (m *QueryTotalSwappableToCoinAmountResponse) MarshalToSizedBuffer(dAtA []by
 	return len(dAtA) - i, nil
 }
 
+func (m *QuerySwapsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySwapsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySwapsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySwapsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySwapsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySwapsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Swaps) > 0 {
+		for iNdEx := len(m.Swaps) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Swaps[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -615,6 +843,38 @@ func (m *QueryTotalSwappableToCoinAmountResponse) Size() (n int) {
 	_ = l
 	l = m.SwappableAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QuerySwapsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QuerySwapsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Swaps) > 0 {
+		for _, e := range m.Swaps {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -1027,6 +1287,212 @@ func (m *QueryTotalSwappableToCoinAmountResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.SwappableAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySwapsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySwapsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySwapsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySwapsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySwapsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySwapsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Swaps", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Swaps = append(m.Swaps, Swap{})
+			if err := m.Swaps[len(m.Swaps)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

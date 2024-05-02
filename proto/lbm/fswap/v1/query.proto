@@ -5,6 +5,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "lbm/fswap/v1/fswap.proto";
 
@@ -18,6 +19,10 @@ service Query {
   rpc TotalSwappableToCoinAmount(QueryTotalSwappableToCoinAmountRequest)
       returns (QueryTotalSwappableToCoinAmountResponse) {
     option (google.api.http).get = "/lbm/fswap/v1/total_swappable_to_coin_amount";
+  }
+  // Swaps queries all the swap that registered
+  rpc Swaps(QuerySwapsRequest) returns (QuerySwapsResponse) {
+    option (google.api.http).get = "/lbm/fswap/v1/swaps";
   }
 }
 
@@ -39,4 +44,12 @@ message QueryTotalSwappableToCoinAmountRequest {
 message QueryTotalSwappableToCoinAmountResponse {
   cosmos.base.v1beta1.Coin swappable_amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}
+
+message QuerySwapsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+message QuerySwapsResponse {
+  repeated Swap                          swaps      = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
