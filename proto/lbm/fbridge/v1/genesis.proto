@@ -14,6 +14,14 @@ message GenesisState {
   SendingState sending_state = 2 [(gogoproto.nullable) = false];
   // receiving_state defines status saved when receiving tokens from a counterpart chain
   ReceivingState receiving_state = 3 [(gogoproto.nullable) = false];
+  // next_role_proposal_id is the next role proposal ID to be used.
+  uint64 next_role_proposal_id = 4;
+  // role_proposals defines all the role proposals present at genesis.
+  repeated RoleProposal role_proposals = 5 [(gogoproto.nullable) = false];
+  // votes defines all the votes present for role proposals at genesis.
+  repeated Vote votes = 6 [(gogoproto.nullable) = false];
+  // role_metadata defines all the role metadata present at genesis.
+  RoleMetadata role_metadata = 7 [(gogoproto.nullable) = false];
 }
 
 message SendingState {

@@ -145,9 +145,7 @@ message MsgAddVoteForRole {
   // the proposal ID
   uint64 proposal_id = 2;
   // the vote option
-  // - yes : true
-  // - no : false
-  bool option = 3;
+  VoteOption option = 3;
 }
 
 message MsgAddVoteForRoleResponse {}

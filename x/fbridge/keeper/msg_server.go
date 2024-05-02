@@ -71,11 +71,38 @@ func (m msgServer) Claim(ctx context.Context, msg *types.MsgClaim) (*types.MsgCl
 	panic("implement me")
 }
 
-func (m msgServer) SuggestRole(ctx context.Context, msg *types.MsgSuggestRole) (*types.MsgSuggestRoleResponse, error) {
-	panic("implement me")
+func (m msgServer) SuggestRole(goCtx context.Context, msg *types.MsgSuggestRole) (*types.MsgSuggestRoleResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	proposer, err := sdk.AccAddressFromBech32(msg.From)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid proposer address (%s)", err)
+	}
+
+	target, err := sdk.AccAddressFromBech32(msg.Target)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid target address (%s)", err)
+	}
+
+	if err := m.IsValidRole(msg.Role); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
+	proposal, err := m.RegisterRoleProposal(ctx, proposer, target, msg.Role)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventSuggestRole{
+		Proposal: proposal,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &types.MsgSuggestRoleResponse{}, nil
 }
 
-func (m msgServer) AddVoteForRole(ctx context.Context, msg *types.MsgAddVoteForRole) (*types.MsgAddVoteForRoleResponse, error) {
+func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteForRole) (*types.MsgAddVoteForRoleResponse, error) {
 	panic("implement me")
 }
 

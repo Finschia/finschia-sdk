@@ -754,20 +754,24 @@
   
     - [Msg](#lbm.collection.v1.Msg)
   
-- [lbm/fbridge/v1/event.proto](#lbm/fbridge/v1/event.proto)
-    - [EventClaim](#lbm.fbridge.v1.EventClaim)
-    - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
-    - [EventProvision](#lbm.fbridge.v1.EventProvision)
-    - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
-  
 - [lbm/fbridge/v1/fbridge.proto](#lbm/fbridge/v1/fbridge.proto)
     - [Fraction](#lbm.fbridge.v1.Fraction)
     - [Params](#lbm.fbridge.v1.Params)
     - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
     - [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus)
+    - [RoleMetadata](#lbm.fbridge.v1.RoleMetadata)
     - [RoleProposal](#lbm.fbridge.v1.RoleProposal)
+    - [Vote](#lbm.fbridge.v1.Vote)
   
     - [Role](#lbm.fbridge.v1.Role)
+    - [VoteOption](#lbm.fbridge.v1.VoteOption)
+  
+- [lbm/fbridge/v1/event.proto](#lbm/fbridge/v1/event.proto)
+    - [EventClaim](#lbm.fbridge.v1.EventClaim)
+    - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
+    - [EventProvision](#lbm.fbridge.v1.EventProvision)
+    - [EventSuggestRole](#lbm.fbridge.v1.EventSuggestRole)
+    - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
   
 - [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
     - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
@@ -11381,92 +11385,6 @@ Msg defines the collection Msg service.
 
 
 
-<a name="lbm/fbridge/v1/event.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/fbridge/v1/event.proto
-
-
-
-<a name="lbm.fbridge.v1.EventClaim"></a>
-
-### EventClaim
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
-| `sender` | [string](#string) |  | the sender address on the source chain |
-| `receiver` | [string](#string) |  | the recipient address on the destination chain |
-| `amount` | [string](#string) |  | the amount of token to be claimed |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.EventConfirmProvision"></a>
-
-### EventConfirmProvision
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.EventProvision"></a>
-
-### EventProvision
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
-| `sender` | [string](#string) |  | the sender address on the source chain |
-| `receiver` | [string](#string) |  | the recipient address on the destination chain |
-| `amount` | [string](#string) |  | the amount of token to be claimed |
-| `operator` | [string](#string) |  | the address of the operator |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.EventTransfer"></a>
-
-### EventTransfer
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
-| `sender` | [string](#string) |  | the sender address on the source chain |
-| `receiver` | [string](#string) |  | the recipient address on the destination chain |
-| `amount` | [string](#string) |  | the amount of token to be transferred |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/fbridge/v1/fbridge.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -11546,6 +11464,23 @@ To optimize computational cost, we have collected frequently changing values fro
 
 
 
+<a name="lbm.fbridge.v1.RoleMetadata"></a>
+
+### RoleMetadata
+RoleMetadata defines the metadata of the role.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [uint32](#uint32) |  | the number of registered guardians |
+| `operator` | [uint32](#uint32) |  | the number of the operators |
+| `judge` | [uint32](#uint32) |  | the number of the judges |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.RoleProposal"></a>
 
 ### RoleProposal
@@ -11558,7 +11493,24 @@ To optimize computational cost, we have collected frequently changing values fro
 | `proposer` | [string](#string) |  | the proposer address |
 | `target` | [string](#string) |  | the address to update the role |
 | `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
-| `expired_at` | [uint64](#uint64) |  | the unix timestamp the proposal will be expired (unix timestamp) |
+| `expired_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | the unix timestamp the proposal will be expired (unix timestamp) |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Vote"></a>
+
+### Vote
+Vote defines a vote on a role proposal.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  |  |
+| `voter` | [string](#string) |  |  |
+| `option` | [VoteOption](#lbm.fbridge.v1.VoteOption) |  |  |
 
 
 
@@ -11579,6 +11531,120 @@ Role defines the role of the operator, guardian, and judge.
 | OPERATOR | 2 |  |
 | JUDGE | 3 |  |
 
+
+
+<a name="lbm.fbridge.v1.VoteOption"></a>
+
+### VoteOption
+VoteOption enumerates the valid vote options for a given role proposal.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| VOTE_OPTION_UNSPECIFIED | 0 | VOTE_OPTION_UNSPECIFIED defines a no-op vote option. |
+| VOTE_OPTION_YES | 1 | VOTE_OPTION_YES defines a yes vote option. |
+| VOTE_OPTION_NO | 2 | VOTE_OPTION_NO defines a no vote option. |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/event.proto
+
+
+
+<a name="lbm.fbridge.v1.EventClaim"></a>
+
+### EventClaim
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventConfirmProvision"></a>
+
+### EventConfirmProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventProvision"></a>
+
+### EventProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+| `operator` | [string](#string) |  | the address of the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventSuggestRole"></a>
+
+### EventSuggestRole
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventTransfer"></a>
+
+### EventTransfer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+ <!-- end messages -->
 
  <!-- end enums -->
 
@@ -11655,6 +11721,10 @@ GenesisState defines the fbridge module's genesis state.
 | `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines all the parameters of the module. |
 | `sending_state` | [SendingState](#lbm.fbridge.v1.SendingState) |  | sending_state defines status saved when sending tokens to a counterpart chain |
 | `receiving_state` | [ReceivingState](#lbm.fbridge.v1.ReceivingState) |  | receiving_state defines status saved when receiving tokens from a counterpart chain |
+| `next_role_proposal_id` | [uint64](#uint64) |  | next_role_proposal_id is the next role proposal ID to be used. |
+| `role_proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated | role_proposals defines all the role proposals present at genesis. |
+| `votes` | [Vote](#lbm.fbridge.v1.Vote) | repeated | votes defines all the votes present for role proposals at genesis. |
+| `role_metadata` | [RoleMetadata](#lbm.fbridge.v1.RoleMetadata) |  | role_metadata defines all the role metadata present at genesis. |
 
 
 
@@ -12159,7 +12229,7 @@ GenesisState defines the fbridge module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `from` | [string](#string) |  | the guardian address |
 | `proposal_id` | [uint64](#uint64) |  | the proposal ID |
-| `option` | [bool](#bool) |  | the vote option - yes : true - no : false |
+| `option` | [VoteOption](#lbm.fbridge.v1.VoteOption) |  | the vote option |
 
 
 
