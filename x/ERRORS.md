@@ -177,9 +177,10 @@
 
 |Error Name|Codespace|Code|Description|
 |:-|:-|:-|:-|
-|ErrFswapInitNotFound|fswap|1100|fswap init does not exist|
-|ErrSwappedNotFound|fswap|1101|swapped does not exist|
-|ErrExceedSwappable|fswap|1102|exceed swappable coin amount|
+|ErrInvalidState|fswap|2|swap module invalid state|
+|ErrCanNotHaveMoreSwap|fswap|3|no more swap allowed|
+|ErrSwappedNotFound|fswap|4|swapped does not exist|
+|ErrExceedSwappableToCoinAmount|fswap|5|exceed swappable to-coin amount|
 
 >You can also find detailed information in the following Errors.go files:
   * [fswap/types/errors.go](fswap/types/errors.go)
