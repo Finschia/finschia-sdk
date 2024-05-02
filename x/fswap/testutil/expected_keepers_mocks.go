@@ -7,8 +7,9 @@ package testutil
 import (
 	reflect "reflect"
 
-	types "github.com/Finschia/finschia-sdk/types"
-	types0 "github.com/Finschia/finschia-sdk/x/bank/types"
+	types "github.com/Finschia/finschia-sdk/snapshots/types"
+	types0 "github.com/Finschia/finschia-sdk/types"
+	types1 "github.com/Finschia/finschia-sdk/x/bank/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,7 +37,7 @@ func (m *MockBankKeeper) EXPECT() *MockBankKeeperMockRecorder {
 }
 
 // BurnCoins mocks base method.
-func (m *MockBankKeeper) BurnCoins(ctx types.Context, moduleName string, amt types.Coins) error {
+func (m *MockBankKeeper) BurnCoins(ctx types0.Context, moduleName string, amt types0.Coins) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "BurnCoins", ctx, moduleName, amt)
 	ret0, _ := ret[0].(error)
@@ -50,10 +51,10 @@ func (mr *MockBankKeeperMockRecorder) BurnCoins(ctx, moduleName, amt interface{}
 }
 
 // GetBalance mocks base method.
-func (m *MockBankKeeper) GetBalance(ctx types.Context, addr types.AccAddress, denom string) types.Coin {
+func (m *MockBankKeeper) GetBalance(ctx types0.Context, addr types0.AccAddress, denom string) types0.Coin {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetBalance", ctx, addr, denom)
-	ret0, _ := ret[0].(types.Coin)
+	ret0, _ := ret[0].(types0.Coin)
 	return ret0
 }
 
@@ -63,8 +64,23 @@ func (mr *MockBankKeeperMockRecorder) GetBalance(ctx, addr, denom interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBalance", reflect.TypeOf((*MockBankKeeper)(nil).GetBalance), ctx, addr, denom)
 }
 
+// GetDenomMetaData mocks base method.
+func (m *MockBankKeeper) GetDenomMetaData(ctx types0.Context, denom string) (types.Metadata, bool) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDenomMetaData", ctx, denom)
+	ret0, _ := ret[0].(types.Metadata)
+	ret1, _ := ret[1].(bool)
+	return ret0, ret1
+}
+
+// GetDenomMetaData indicates an expected call of GetDenomMetaData.
+func (mr *MockBankKeeperMockRecorder) GetDenomMetaData(ctx, denom interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDenomMetaData", reflect.TypeOf((*MockBankKeeper)(nil).GetDenomMetaData), ctx, denom)
+}
+
 // IsSendEnabledCoins mocks base method.
-func (m *MockBankKeeper) IsSendEnabledCoins(ctx types.Context, coins ...types.Coin) error {
+func (m *MockBankKeeper) IsSendEnabledCoins(ctx types0.Context, coins ...types0.Coin) error {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx}
 	for _, a := range coins {
@@ -83,7 +99,7 @@ func (mr *MockBankKeeperMockRecorder) IsSendEnabledCoins(ctx interface{}, coins 
 }
 
 // MintCoins mocks base method.
-func (m *MockBankKeeper) MintCoins(ctx types.Context, moduleName string, amt types.Coins) error {
+func (m *MockBankKeeper) MintCoins(ctx types0.Context, moduleName string, amt types0.Coins) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "MintCoins", ctx, moduleName, amt)
 	ret0, _ := ret[0].(error)
@@ -97,7 +113,7 @@ func (mr *MockBankKeeperMockRecorder) MintCoins(ctx, moduleName, amt interface{}
 }
 
 // SendCoinsFromAccountToModule mocks base method.
-func (m *MockBankKeeper) SendCoinsFromAccountToModule(ctx types.Context, senderAddr types.AccAddress, recipientModule string, amt types.Coins) error {
+func (m *MockBankKeeper) SendCoinsFromAccountToModule(ctx types0.Context, senderAddr types0.AccAddress, recipientModule string, amt types0.Coins) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SendCoinsFromAccountToModule", ctx, senderAddr, recipientModule, amt)
 	ret0, _ := ret[0].(error)
@@ -111,7 +127,7 @@ func (mr *MockBankKeeperMockRecorder) SendCoinsFromAccountToModule(ctx, senderAd
 }
 
 // SendCoinsFromModuleToAccount mocks base method.
-func (m *MockBankKeeper) SendCoinsFromModuleToAccount(ctx types.Context, senderModule string, recipientAddr types.AccAddress, amt types.Coins) error {
+func (m *MockBankKeeper) SendCoinsFromModuleToAccount(ctx types0.Context, senderModule string, recipientAddr types0.AccAddress, amt types0.Coins) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SendCoinsFromModuleToAccount", ctx, senderModule, recipientAddr, amt)
 	ret0, _ := ret[0].(error)
@@ -125,7 +141,7 @@ func (mr *MockBankKeeperMockRecorder) SendCoinsFromModuleToAccount(ctx, senderMo
 }
 
 // SetDenomMetaData mocks base method.
-func (m *MockBankKeeper) SetDenomMetaData(ctx types.Context, denomMetaData types0.Metadata) {
+func (m *MockBankKeeper) SetDenomMetaData(ctx types0.Context, denomMetaData types1.Metadata) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SetDenomMetaData", ctx, denomMetaData)
 }

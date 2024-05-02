@@ -45,8 +45,43 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 		return err
 	}
 
-	k.SetDenomMetaData(ctx, toDenomMetadata)
+	existingMetadata, ok := k.GetDenomMetaData(ctx, swap.ToDenom)
+	if !ok {
+		k.SetDenomMetaData(ctx, toDenomMetadata)
+		return nil
+	}
+	if !denomMetadataEqual(existingMetadata, toDenomMetadata) {
+		return errors.ErrInvalidRequest.Wrap("changing existing metadata not allowed")
+	}
+
 	return nil
+}
+
+func denomMetadataEqual(metadata bank.Metadata, otherMetadata bank.Metadata) bool {
+	if metadata.Description != otherMetadata.Description {
+		return false
+	}
+	if len(metadata.DenomUnits) != len(otherMetadata.DenomUnits) {
+		return false
+	}
+	for i, unit := range metadata.DenomUnits {
+		if unit.Denom != otherMetadata.DenomUnits[i].Denom {
+			return false
+		}
+	}
+	if metadata.Base != otherMetadata.Base {
+		return false
+	}
+	if metadata.Display != otherMetadata.Display {
+		return false
+	}
+	if metadata.Name != otherMetadata.Name {
+		return false
+	}
+	if metadata.Symbol != otherMetadata.Symbol {
+		return false
+	}
+	return true
 }
 
 func (k Keeper) increaseSwapCount(ctx sdk.Context) error {
