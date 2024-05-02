@@ -17,7 +17,7 @@ func NewSwapHandler(k keeper.Keeper) govtypes.Handler {
 			return handleMakeSwapProposal(ctx, k, c)
 
 		default:
-			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized sawp proposal content type: %T", c)
+			return sdkerrors.ErrUnknownRequest.Wrapf("unrecognized sawp proposal content type: %T", c)
 		}
 	}
 }

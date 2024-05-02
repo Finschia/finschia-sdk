@@ -6,7 +6,7 @@ import (
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error {
+func (k Keeper) InitGenesis(_ sdk.Context, genState *types.GenesisState) error {
 	if err := genState.Validate(); err != nil {
 		return err
 	}
@@ -17,18 +17,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error
 
 	if len(genState.GetSwappeds()) > k.config.MaxSwaps && !k.isUnlimited() {
 		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swapped", k.config.MaxSwaps)
-	}
-
-	for _, swap := range genState.GetSwaps() {
-		if err := k.MakeSwap(ctx, swap); err != nil {
-			panic(err)
-		}
-	}
-
-	for _, swapped := range genState.GetSwappeds() {
-		if err := swapped.ValidateBasic(); err != nil {
-			panic(err)
-		}
 	}
 	return nil
 }

@@ -19,16 +19,14 @@ type Keeper struct {
 
 	config types.Config
 
-	AccountKeeper
 	BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, ak AccountKeeper, bk BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, bk BankKeeper) Keeper {
 	return Keeper{
 		cdc,
 		storeKey,
 		config,
-		ak,
 		bk,
 	}
 }
@@ -45,7 +43,17 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 
 	newAmount := fromCoinAmount.Amount.Mul(swap.SwapMultiple)
 	newCoinAmount := sdk.NewCoin(toDenom, newAmount)
-	if err := k.checkSwapCap(ctx, swap, newCoinAmount); err != nil {
+	swapped, err := k.getSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom())
+	if err != nil {
+		return err
+	}
+
+	updateSwapped, err := k.updateSwapped(ctx, swapped, fromCoinAmount, newCoinAmount)
+	if err != nil {
+		return err
+	}
+
+	if err := k.checkSwapCap(swap, updateSwapped); err != nil {
 		return err
 	}
 
@@ -62,10 +70,6 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 	}
 
 	if err := k.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(newCoinAmount)); err != nil {
-		return err
-	}
-
-	if err := k.updateSwapped(ctx, fromCoinAmount, newCoinAmount); err != nil {
 		return err
 	}
 
@@ -160,36 +164,26 @@ func (k Keeper) getSwappableNewCoinAmount(ctx sdk.Context, fromDenom, toDenom st
 	return sdk.NewCoin(toDenom, remainingAmount), nil
 }
 
-func (k Keeper) updateSwapped(ctx sdk.Context, fromAmount, toAmount sdk.Coin) error {
-	prevSwapped, err := k.getSwapped(ctx, fromAmount.Denom, toAmount.Denom)
-	if err != nil {
-		return err
-	}
-
-	updatedSwapped := &types.Swapped{
-		FromCoinAmount: fromAmount.Add(prevSwapped.FromCoinAmount),
-		ToCoinAmount:   toAmount.Add(prevSwapped.ToCoinAmount),
+func (k Keeper) updateSwapped(ctx sdk.Context, curSwapped types.Swapped, fromAmount, toAmount sdk.Coin) (types.Swapped, error) {
+	updatedSwapped := types.Swapped{
+		FromCoinAmount: fromAmount.Add(curSwapped.FromCoinAmount),
+		ToCoinAmount:   toAmount.Add(curSwapped.ToCoinAmount),
 	}
 
 	key := swappedKey(fromAmount.Denom, toAmount.Denom)
-	bz, err := k.cdc.Marshal(updatedSwapped)
+	bz, err := k.cdc.Marshal(&updatedSwapped)
 	if err != nil {
-		return err
+		return types.Swapped{}, err
 	}
 
 	store := ctx.KVStore(k.storeKey)
 	store.Set(key, bz)
-	return nil
+	return updatedSwapped, nil
 }
 
-func (k Keeper) checkSwapCap(ctx sdk.Context, swap types.Swap, newCoinAmount sdk.Coin) error {
-	swapped, err := k.getSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom())
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) checkSwapCap(swap types.Swap, swapped types.Swapped) error {
 	swapCap := swap.AmountCapForToDenom
-	if swapCap.LT(swapped.ToCoinAmount.Add(newCoinAmount).Amount) {
+	if swapCap.LT(swapped.ToCoinAmount.Amount) {
 		return types.ErrExceedSwappableToCoinAmount
 	}
 	return nil
