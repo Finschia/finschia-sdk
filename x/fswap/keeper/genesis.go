@@ -12,7 +12,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) error
 	}
 
 	if len(genState.GetSwaps()) > k.config.MaxSwaps && !k.isUnlimited() {
-		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swapInits", k.config.MaxSwaps)
+		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swaps", k.config.MaxSwaps)
 	}
 
 	if len(genState.GetSwappeds()) > k.config.MaxSwaps && !k.isUnlimited() {

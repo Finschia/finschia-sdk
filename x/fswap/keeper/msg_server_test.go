@@ -33,7 +33,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 			false,
 			nil,
 		},
-		"account holding new coin only": {
+		"account holding to-coin only": {
 			&types.MsgSwap{
 				FromAddress:    s.accWithToCoin.String(),
 				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
@@ -84,7 +84,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 			false,
 			nil,
 		},
-		"account holding new coin only": {
+		"account holding to-coin only": {
 			&types.MsgSwapAll{
 				FromAddress: s.accWithToCoin.String(),
 				FromDenom:   s.swap.GetFromDenom(),

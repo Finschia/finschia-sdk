@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -44,7 +45,16 @@ func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAll) (*types.M
 		return nil, err
 	}
 
-	if err := s.keeper.SwapAll(c, from, req.GetFromDenom(), req.GetToDenom()); err != nil {
+	balance := s.keeper.GetBalance(c, from, req.FromDenom)
+	if balance.IsZero() {
+		return nil, sdkerrors.ErrInsufficientFunds
+	}
+
+	if err := s.keeper.IsSendEnabledCoins(c, balance); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.Swap(c, from, balance, req.GetToDenom()); err != nil {
 		return nil, err
 	}
 

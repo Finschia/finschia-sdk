@@ -23,7 +23,7 @@ func (m *MsgSwap) ValidateBasic() error {
 	}
 
 	if len(m.GetToDenom()) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid denom (%s)", m.GetToDenom())
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
 	}
 
 	return nil
@@ -48,11 +48,11 @@ func (m *MsgSwapAll) ValidateBasic() error {
 	}
 
 	if len(m.GetFromDenom()) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid denom (%s)", m.GetFromDenom())
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
 	}
 
 	if len(m.GetToDenom()) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid denom (%s)", m.GetFromDenom())
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
 	}
 
 	return nil

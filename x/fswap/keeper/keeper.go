@@ -9,7 +9,6 @@ import (
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -78,22 +77,6 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 		FromCoinAmount: fromCoinAmount,
 		ToCoinAmount:   newCoinAmount,
 	}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (k Keeper) SwapAll(ctx sdk.Context, addr sdk.AccAddress, fromDenom, toDenom string) error {
-	balance := k.GetBalance(ctx, addr, fromDenom)
-	if balance.IsZero() {
-		return sdkerrors.ErrInsufficientFunds
-	}
-
-	if err := k.IsSendEnabledCoins(ctx, balance); err != nil {
-		return err
-	}
-
-	if err := k.Swap(ctx, addr, balance, toDenom); err != nil {
 		return err
 	}
 	return nil
