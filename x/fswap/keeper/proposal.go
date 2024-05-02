@@ -4,10 +4,11 @@ import (
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/errors"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
+func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.Metadata) error {
 	isNewSwap := true
 	if _, err := k.getSwap(ctx, swap.FromDenom, swap.ToDenom); err == nil {
 		isNewSwap = false
@@ -43,6 +44,8 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap) error {
 	if err != nil {
 		return err
 	}
+
+	k.SetDenomMetaData(ctx, toDenomMetadata)
 	return nil
 }
 

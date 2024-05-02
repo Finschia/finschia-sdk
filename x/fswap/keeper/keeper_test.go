@@ -12,6 +12,7 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
@@ -30,7 +31,8 @@ type KeeperTestSuite struct {
 	accWithToCoin   sdk.AccAddress
 	initBalance     sdk.Int
 
-	swap types.Swap
+	swap            types.Swap
+	toDenomMetadata bank.Metadata
 }
 
 func (s *KeeperTestSuite) createRandomAccounts(n int) []sdk.AccAddress {
@@ -69,6 +71,16 @@ func (s *KeeperTestSuite) SetupTest() {
 		ToDenom:             "todenom",
 		AmountCapForToDenom: s.initBalance.Mul(sdk.NewInt(1000).Mul(sdk.NewInt(numAcc))),
 		SwapMultiple:        sdk.NewInt(1000),
+	}
+	s.toDenomMetadata = bank.Metadata{
+		Description: "This is metadata for to-coin",
+		DenomUnits: []*bank.DenomUnit{
+			{Denom: s.swap.ToDenom, Exponent: 0},
+		},
+		Base:    "dummy",
+		Display: "dummycoin",
+		Name:    "DUMMY",
+		Symbol:  "DUM",
 	}
 	s.createAccountsWithInitBalance(app)
 	app.AccountKeeper.GetModuleAccount(s.ctx, types.ModuleName)
@@ -141,7 +153,8 @@ func (s *KeeperTestSuite) TestSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.MakeSwap(ctx, s.swap)
+			dontCareForThisTest := bank.Metadata{Base: "dummy"}
+			err := s.keeper.MakeSwap(ctx, s.swap, dontCareForThisTest)
 			s.Require().NoError(err)
 
 			err = s.keeper.Swap(ctx, tc.from, tc.amountToSwap, tc.toDenom)

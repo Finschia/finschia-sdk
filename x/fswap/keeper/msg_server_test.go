@@ -3,6 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -47,7 +48,8 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.MakeSwap(ctx, s.swap)
+			dontCareForThisTestCase := bank.Metadata{Base: "dummy"}
+			err := s.keeper.MakeSwap(ctx, s.swap, dontCareForThisTestCase)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.Swap(sdk.WrapSDKContext(ctx), tc.request)
@@ -98,7 +100,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.MakeSwap(ctx, s.swap)
+			err := s.keeper.MakeSwap(ctx, s.swap, s.toDenomMetadata)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.SwapAll(sdk.WrapSDKContext(ctx), tc.request)

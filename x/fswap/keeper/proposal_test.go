@@ -8,11 +8,41 @@ import (
 
 func (s *KeeperTestSuite) TestMakeSwapProposal() {
 	testCases := map[string]struct {
-		req              types.Swap
+		swap             types.Swap
 		shouldThrowError bool
 		expectedError    error
 	}{
-		"valid getSwap": {
+		"valid": {
+			types.Swap{
+				FromDenom:           "fromD",
+				ToDenom:             "toD",
+				AmountCapForToDenom: sdk.OneInt(),
+				SwapMultiple:        sdk.OneInt(),
+			},
+			false,
+			nil,
+		},
+	}
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+			err := s.keeper.MakeSwap(ctx, tc.swap, s.toDenomMetadata)
+			if tc.shouldThrowError {
+				s.Require().ErrorIs(err, tc.expectedError)
+				return
+			}
+			s.Require().NoError(err)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestSwapValidateBasic() {
+	testCases := map[string]struct {
+		swap             types.Swap
+		shouldThrowError bool
+		expectedError    error
+	}{
+		"valid": {
 			types.Swap{
 				FromDenom:           "fromD",
 				ToDenom:             "toD",
@@ -52,7 +82,7 @@ func (s *KeeperTestSuite) TestMakeSwapProposal() {
 			true,
 			sdkerrors.ErrInvalidRequest,
 		},
-		"invalid zero swap-rate": {
+		"invalid zero swap-multiple": {
 			types.Swap{
 				FromDenom:           "fromD",
 				ToDenom:             "toD",
@@ -75,8 +105,7 @@ func (s *KeeperTestSuite) TestMakeSwapProposal() {
 	}
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.MakeSwap(ctx, tc.req)
+			err := tc.swap.ValidateBasic()
 			if tc.shouldThrowError {
 				s.Require().ErrorIs(err, tc.expectedError)
 				return

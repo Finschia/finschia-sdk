@@ -5,6 +5,7 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
 
 message Swap {
   option (gogoproto.equal)            = true;
@@ -27,12 +28,13 @@ message SwapStats {
 
 // From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
 message MakeSwapProposal {
-  option (gogoproto.equal)            = true;
   option (gogoproto.goproto_stringer) = false;
 
-  string title       = 1;
-  string description = 2;
-  Swap   swap        = 3 [(gogoproto.nullable) = false];
+  string                       title             = 1;
+  string                       description       = 2;
+  Swap                         swap              = 3 [(gogoproto.nullable) = false];
+  cosmos.bank.v1beta1.Metadata to_denom_metadata = 4
+      [(gogoproto.moretags) = "yaml:\"denom_metadata\"", (gogoproto.nullable) = false];
 }
 
 message Swapped {

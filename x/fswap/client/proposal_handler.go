@@ -5,4 +5,4 @@ import (
 	govclient "github.com/Finschia/finschia-sdk/x/gov/client"
 )
 
-var ProposalHandler = govclient.NewProposalHandler(cli.NewCmdSwapInitProposal)
+var ProposalHandler = govclient.NewProposalHandler(cli.NewCmdMakeSwapProposal)

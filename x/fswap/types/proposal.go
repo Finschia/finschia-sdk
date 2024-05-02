@@ -3,6 +3,7 @@ package types
 import (
 	"gopkg.in/yaml.v2"
 
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	gov "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
@@ -13,8 +14,8 @@ const (
 // NewMakeSwapProposal creates a new SwapProposal instance.
 // Deprecated: this proposal is considered legacy and is deprecated in favor of
 // Msg-based gov proposals. See MsgSwap.
-func NewMakeSwapProposal(title, description string, swap Swap) *MakeSwapProposal {
-	return &MakeSwapProposal{title, description, swap}
+func NewMakeSwapProposal(title, description string, swap Swap, toDenomMetadata bank.Metadata) *MakeSwapProposal {
+	return &MakeSwapProposal{title, description, swap, toDenomMetadata}
 }
 
 // Implements Proposal Interface

@@ -8,12 +8,13 @@ import (
 
 	"github.com/Finschia/finschia-sdk/simapp"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 func testProposal(swap types.Swap) *types.MakeSwapProposal {
-	return types.NewMakeSwapProposal("Test", "description", swap)
+	return types.NewMakeSwapProposal("Test", "description", swap, bank.Metadata{Base: "DUM"})
 }
 
 func TestProposalHandlerPassed(t *testing.T) {

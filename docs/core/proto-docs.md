@@ -13930,6 +13930,7 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
 | `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+| `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
 
 
 

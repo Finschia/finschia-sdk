@@ -23,5 +23,5 @@ func NewSwapHandler(k keeper.Keeper) govtypes.Handler {
 }
 
 func handleMakeSwapProposal(ctx sdk.Context, k keeper.Keeper, p *types.MakeSwapProposal) error {
-	return k.MakeSwap(ctx, p.Swap)
+	return k.MakeSwap(ctx, p.Swap, p.ToDenomMetadata)
 }

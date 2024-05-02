@@ -1,28 +1,28 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
+	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
-	"github.com/Finschia/finschia-sdk/x/gov/client/cli"
+	govcli "github.com/Finschia/finschia-sdk/x/gov/client/cli"
 	gov "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 const (
-	FlagFromDenom   = "from-denom"
-	FlagToDenom     = "to-denom"
-	FlagAmountLimit = "amount-limit"
-	FlagSwapRate    = "swap-rate"
+	FlagFromDenom           = "from-denom"
+	FlagToDenom             = "to-denom"
+	FlagAmountCapForToDenom = "to-coin-amount-cap"
+	FlagSwapMultiple        = "swap-multiple"
 )
-
-var DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
 
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
@@ -43,26 +43,31 @@ func GetTxCmd() *cobra.Command {
 
 func CmdTxMsgSwap() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swap [address] [fnsa_amount]",
-		Short: "swap amounts of old coin to new coin. Note, the'--from' flag is ignored as it is implied from [address].",
-		Args:  cobra.ExactArgs(2),
+		Use:   "swap [from] [from_coin_amount] [to_denom]",
+		Short: "swap amount of from-coin to to-coin",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmd.Flags().Set(flags.FlagFrom, args[0]); err != nil {
+			from := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, from); err != nil {
 				return err
 			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			coin, err := sdk.ParseCoinNormalized(args[2])
+			amount, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
 
+			toDenom := args[2]
+
 			msg := &types.MsgSwap{
-				FromAddress:    clientCtx.GetFromAddress().String(),
-				FromCoinAmount: coin,
+				FromAddress:    from,
+				FromCoinAmount: amount,
+				ToDenom:        toDenom,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -77,24 +82,31 @@ func CmdTxMsgSwap() *cobra.Command {
 
 func CmdTxMsgSwapAll() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swap-all [address]",
-		Short: "swap all the old coins. Note, the'--from' flag is ignored as it is implied from [address].",
-		Args:  cobra.ExactArgs(1),
+		Use:   "swap-all [from_address] [from_denom] [to_denom]",
+		Short: "swap all the from-coin to to-coin",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmd.Flags().Set(flags.FlagFrom, args[0]); err != nil {
+			from := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, from); err != nil {
 				return err
 			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			fromDenom := args[1]
+			toDenom := args[2]
 			msg := &types.MsgSwapAll{
 				FromAddress: clientCtx.GetFromAddress().String(),
+				FromDenom:   fromDenom,
+				ToDenom:     toDenom,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
+
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -103,27 +115,95 @@ func CmdTxMsgSwapAll() *cobra.Command {
 	return cmd
 }
 
-// NewCmdSwapInitProposal implements a command handler for submitting a swap init proposal transaction.
-func NewCmdSwapInitProposal() *cobra.Command {
+// NewCmdMakeSwapProposal implements a command handler for submitting a swap init proposal transaction.
+func NewCmdMakeSwapProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swap-init [flags]",
-		Args:  cobra.ExactArgs(0),
+		Use:   "make-swap [messages-json]",
+		Args:  cobra.ExactArgs(1),
 		Short: "todo",
-		Long:  "todo",
+		Long: `
+Parameters:
+    messages-json: messages in json format that will be executed if the proposal is accepted.
+
+Example of the content of messages-json:
+
+{
+  "metadata": {
+    "description": "the base coin of Finschia mainnet",
+    "denom_units": [
+      {
+        "denom": "cony",
+        "exponent": 0,
+        "aliases": [
+          "microfinschia"
+        ]
+      },
+      {
+        "denom": "finschia",
+        "exponent": 6,
+        "aliases": []
+      }
+    ],
+    "base": "cony",
+    "display": "finschia",
+    "name": "FINSCHIA",
+    "symbol": "FNSA"
+  }
+}
+`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			// need confirm parse with flags or parse with args
-			contents, err := parseArgsToContent(cmd)
 			if err != nil {
 				return err
 			}
 
 			from := clientCtx.GetFromAddress()
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			title, err := cmd.Flags().GetString(govcli.FlagTitle)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(govcli.FlagDescription)
+			if err != nil {
+				return err
+			}
+
+			fromDenom, err := cmd.Flags().GetString(FlagFromDenom)
+			if err != nil {
+				return err
+			}
+
+			toDenom, err := cmd.Flags().GetString(FlagToDenom)
+			if err != nil {
+				return err
+			}
+
+			amountCap, err := cmd.Flags().GetInt64(FlagAmountCapForToDenom)
+			if err != nil {
+				return err
+			}
+
+			swapMultiple, err := cmd.Flags().GetInt64(FlagSwapMultiple)
+			if err != nil {
+				return err
+			}
+
+			swap := types.Swap{
+				FromDenom:           fromDenom,
+				ToDenom:             toDenom,
+				AmountCapForToDenom: sdk.NewInt(amountCap),
+				SwapMultiple:        sdk.NewInt(swapMultiple),
+			}
+
+			toDenomMetadata, err := parseToDenomMetadata(clientCtx.Codec, args[0])
+			if err != nil {
+				return err
+			}
+
+			content := types.NewMakeSwapProposal(title, description, swap, toDenomMetadata)
+
+			depositStr, err := cmd.Flags().GetString(govcli.FlagDeposit)
 			if err != nil {
 				return err
 			}
@@ -132,7 +212,7 @@ func NewCmdSwapInitProposal() *cobra.Command {
 				return err
 			}
 
-			msg, err := gov.NewMsgSubmitProposal(contents, deposit, from)
+			msg, err := gov.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err
 			}
@@ -141,55 +221,27 @@ func NewCmdSwapInitProposal() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")
+	cmd.Flags().String(govcli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(govcli.FlagDeposit, "", "deposit of proposal")
 	cmd.Flags().String(FlagFromDenom, "", "cony")
 	cmd.Flags().String(FlagToDenom, "", "PDT")
-	cmd.Flags().Int64(FlagAmountLimit, 0, "tbd")
-	cmd.Flags().Int64(FlagSwapRate, 0, "tbd")
+	cmd.Flags().Int64(FlagAmountCapForToDenom, 0, "tbd")
+	cmd.Flags().Int64(FlagSwapMultiple, 0, "tbd")
 
 	return cmd
 }
 
-func parseArgsToContent(cmd *cobra.Command) (gov.Content, error) {
-	title, err := cmd.Flags().GetString(cli.FlagTitle)
+func parseToDenomMetadata(cdc codec.Codec, jsonDenomMetadata string) (bank.Metadata, error) {
+	cliMsg := json.RawMessage{}
+	if err := json.Unmarshal([]byte(jsonDenomMetadata), &cliMsg); err != nil {
+		return bank.Metadata{}, err
+	}
+
+	metadata := bank.Metadata{}
+	err := cdc.UnmarshalInterfaceJSON(cliMsg, &metadata)
 	if err != nil {
-		return nil, err
+		return bank.Metadata{}, err
 	}
-
-	description, err := cmd.Flags().GetString(cli.FlagDescription)
-	if err != nil {
-		return nil, err
-	}
-
-	from_denom, err := cmd.Flags().GetString(FlagFromDenom)
-	if err != nil {
-		return nil, err
-	}
-
-	to_denom, err := cmd.Flags().GetString(FlagToDenom)
-	if err != nil {
-		return nil, err
-	}
-
-	amount_limit, err := cmd.Flags().GetInt64(FlagAmountLimit)
-	if err != nil {
-		return nil, err
-	}
-
-	swap_rate, err := cmd.Flags().GetInt64(FlagSwapRate)
-	if err != nil {
-		return nil, err
-	}
-
-	swapInit := types.Swap{
-		FromDenom:           from_denom,
-		ToDenom:             to_denom,
-		AmountCapForToDenom: sdk.NewInt(amount_limit),
-		SwapMultiple:        sdk.NewInt(swap_rate),
-	}
-
-	content := types.NewMakeSwapProposal(title, description, swapInit)
-	return content, nil
+	return metadata, nil
 }
