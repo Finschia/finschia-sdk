@@ -65,6 +65,9 @@ import (
 	"github.com/Finschia/finschia-sdk/x/evidence"
 	evidencekeeper "github.com/Finschia/finschia-sdk/x/evidence/keeper"
 	evidencetypes "github.com/Finschia/finschia-sdk/x/evidence/types"
+	fbridgekeeper "github.com/Finschia/finschia-sdk/x/fbridge/keeper"
+	fbridgemodule "github.com/Finschia/finschia-sdk/x/fbridge/module"
+	fbridgetypes "github.com/Finschia/finschia-sdk/x/fbridge/types"
 	"github.com/Finschia/finschia-sdk/x/feegrant"
 	feegrantkeeper "github.com/Finschia/finschia-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/Finschia/finschia-sdk/x/feegrant/module"
@@ -144,6 +147,7 @@ var (
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
 		fswap.AppModuleBasic{},
+		fbridgemodule.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -156,12 +160,14 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
+		fbridgetypes.ModuleName:        {authtypes.Burner},
 		fswaptypes.ModuleName:          {authtypes.Burner, authtypes.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		// govtypes.ModuleName: true, // TODO: uncomment it when authority is ready
+		fbridgetypes.ModuleName: true,
 	}
 )
 
@@ -205,6 +211,7 @@ type SimApp struct {
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
 	FswapKeeper      fswapkeeper.Keeper
+	FbridgeKeeper    fbridgekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -259,6 +266,7 @@ func NewSimApp(
 		collection.StoreKey,
 		authzkeeper.StoreKey,
 		fswaptypes.StoreKey,
+		fbridgetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
@@ -326,7 +334,6 @@ func NewSimApp(
 	app.ClassKeeper = classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.ClassKeeper)
 	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], app.ClassKeeper)
-	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswaptypes.DefaultConfig(), app.BankKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -363,6 +370,12 @@ func NewSimApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	/****  Phase 1 ****/
+	fswapConfig := fswaptypes.DefaultConfig()
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswapConfig, app.BankKeeper)
+
+	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], app.AccountKeeper, app.BankKeeper, "stake", authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -395,6 +408,7 @@ func NewSimApp(
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		fswap.NewAppModule(appCodec, app.FswapKeeper, app.BankKeeper),
+		fbridgemodule.NewAppModule(appCodec, app.FbridgeKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -423,6 +437,7 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		fswaptypes.ModuleName,
+		fbridgetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -445,6 +460,7 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		fswaptypes.ModuleName,
+		fbridgetypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -473,6 +489,7 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		fswaptypes.ModuleName,
+		fbridgetypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
