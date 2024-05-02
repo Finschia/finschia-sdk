@@ -103,7 +103,30 @@ func (m msgServer) SuggestRole(goCtx context.Context, msg *types.MsgSuggestRole)
 }
 
 func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteForRole) (*types.MsgAddVoteForRoleResponse, error) {
-	panic("implement me")
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	voter, err := sdk.AccAddressFromBech32(msg.From)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid proposer address (%s)", err)
+	}
+
+	if err := m.IsValidVoteOption(msg.Option); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
+	if err := m.addVote(ctx, msg.ProposalId, voter, msg.Option); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventAddVoteForRole{
+		Voter:      msg.From,
+		ProposalId: msg.ProposalId,
+		Option:     msg.Option,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &types.MsgAddVoteForRoleResponse{}, nil
 }
 
 func (m msgServer) Halt(ctx context.Context, msg *types.MsgHalt) (*types.MsgHaltResponse, error) {

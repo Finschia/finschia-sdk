@@ -36,6 +36,25 @@ func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAd
 	return proposal, nil
 }
 
+func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress, option types.VoteOption) error {
+	proposal, found := k.GetRoleProposal(ctx, proposalID)
+	if !found {
+		return types.ErrUnknownProposal.Wrapf("#%d not found", proposalID)
+	}
+
+	if ctx.BlockTime().After(proposal.ExpiredAt) {
+		return types.ErrInactiveProposal.Wrapf("#%d already expired", proposalID)
+	}
+
+	if err := k.IsValidVoteOption(option); err != nil {
+		return err
+	}
+
+	k.setVote(ctx, proposalID, voter, option)
+
+	return nil
+}
+
 func (k Keeper) IsValidRole(role types.Role) error {
 	switch role {
 	case types.RoleGuardian, types.RoleOperator, types.RoleJudge:
@@ -43,6 +62,15 @@ func (k Keeper) IsValidRole(role types.Role) error {
 	}
 
 	return errors.New("unsupported role")
+}
+
+func (k Keeper) IsValidVoteOption(option types.VoteOption) error {
+	switch option {
+	case types.OptionYes, types.OptionNo:
+		return nil
+	}
+
+	return errors.New("unsupported vote option")
 }
 
 func (k Keeper) setNextProposalID(ctx sdk.Context, seq uint64) {
@@ -112,9 +140,25 @@ func (k Keeper) GetProposals(ctx sdk.Context) (proposals []types.RoleProposal) {
 	return
 }
 
+func (k Keeper) setVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress, option types.VoteOption) {
+	store := ctx.KVStore(k.storeKey)
+	bz := make([]byte, 4)
+	binary.BigEndian.PutUint32(bz, uint32(option))
+	store.Set(types.VoterVoteKey(proposalID, voter), bz)
+}
+
+func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) (types.VoteOption, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.VoterVoteKey(proposalID, voter))
+	if bz == nil {
+		return types.OptionEmpty, types.ErrUnknownVote
+	}
+
+	return types.VoteOption(binary.BigEndian.Uint32(bz)), nil
+}
+
 func (k Keeper) setRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-
 	bz := make([]byte, 4)
 	binary.BigEndian.PutUint32(bz, uint32(role))
 	store.Set(types.RoleKey(addr), bz)
@@ -122,7 +166,6 @@ func (k Keeper) setRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
 
 func (k Keeper) GetRole(ctx sdk.Context, addr sdk.AccAddress) types.Role {
 	store := ctx.KVStore(k.storeKey)
-
 	bz := store.Get(types.RoleKey(addr))
 	if bz == nil {
 		return types.RoleEmpty

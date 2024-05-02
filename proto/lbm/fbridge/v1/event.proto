@@ -21,6 +21,15 @@ message EventSuggestRole {
   RoleProposal proposal = 1 [(gogoproto.nullable) = false];
 }
 
+message EventAddVoteForRole {
+  // the voter address
+  string voter = 1;
+  // the role proposal id
+  uint64 proposal_id = 2;
+  // the vote option
+  VoteOption option = 3;
+}
+
 message EventProvision {
   // the sequence number of the bridge request
   uint64 seq = 1;

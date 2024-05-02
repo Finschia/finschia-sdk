@@ -767,6 +767,7 @@
     - [VoteOption](#lbm.fbridge.v1.VoteOption)
   
 - [lbm/fbridge/v1/event.proto](#lbm/fbridge/v1/event.proto)
+    - [EventAddVoteForRole](#lbm.fbridge.v1.EventAddVoteForRole)
     - [EventClaim](#lbm.fbridge.v1.EventClaim)
     - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
     - [EventProvision](#lbm.fbridge.v1.EventProvision)
@@ -11557,6 +11558,23 @@ VoteOption enumerates the valid vote options for a given role proposal.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/fbridge/v1/event.proto
+
+
+
+<a name="lbm.fbridge.v1.EventAddVoteForRole"></a>
+
+### EventAddVoteForRole
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `voter` | [string](#string) |  | the voter address |
+| `proposal_id` | [uint64](#uint64) |  | the role proposal id |
+| `option` | [VoteOption](#lbm.fbridge.v1.VoteOption) |  | the vote option |
+
+
+
 
 
 

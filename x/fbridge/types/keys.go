@@ -46,13 +46,6 @@ func ProposalKey(proposalID uint64) []byte {
 	return append(KeyProposalPrefix, GetProposalIDBytes(proposalID)...)
 }
 
-// SplitProposalKey split the proposal key and returns the proposal id
-func SplitProposalKey(key []byte) (proposalID uint64) {
-	kv.AssertKeyLength(key[1:], 8)
-
-	return binary.BigEndian.Uint64(key[1:])
-}
-
 // VotesKey gets the first part of the votes key based on the proposalID
 func VotesKey(proposalID uint64) []byte {
 	return append(KeyProposalVotePrefix, GetProposalIDBytes(proposalID)...)
@@ -61,6 +54,14 @@ func VotesKey(proposalID uint64) []byte {
 // VoterVoteKey key of a specific vote from the store
 func VoterVoteKey(proposalID uint64, voterAddr sdk.AccAddress) []byte {
 	return append(VotesKey(proposalID), address.MustLengthPrefix(voterAddr.Bytes())...)
+}
+
+// SplitVoterVoteKey split the voter key and returns the proposal id and voter address
+func SplitVoterVoteKey(key []byte) (uint64, sdk.AccAddress) {
+	kv.AssertKeyAtLeastLength(key, 11)
+	proposalID := binary.BigEndian.Uint64(key[1:9])
+	voter := sdk.AccAddress(key[10:])
+	return proposalID, voter
 }
 
 // RoleKey key of a specific role of the address from the store
