@@ -9,6 +9,7 @@ func DefaultGenesisState() *GenesisState {
 	dummyGuardian := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().String())
 
 	return &GenesisState{
+		Params: DefaultParams(),
 		SendingState: SendingState{
 			NextSeq: 1,
 		},
