@@ -1,0 +1,44 @@
+syntax = "proto3";
+package lbm.fbridge.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
+
+message EventTransfer {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be transferred
+  string amount = 4;
+}
+
+message EventProvision {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be claimed
+  string amount = 4;
+  // the address of the operator
+  string operator = 5;
+}
+
+message EventConfirmProvision {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message EventClaim {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be claimed
+  string amount = 4;
+}
