@@ -809,6 +809,8 @@
     - [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse)
     - [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest)
     - [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse)
+    - [QuerySeqToBlocknumsRequest](#lbm.fbridge.v1.QuerySeqToBlocknumsRequest)
+    - [QuerySeqToBlocknumsResponse](#lbm.fbridge.v1.QuerySeqToBlocknumsResponse)
     - [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest)
     - [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse)
     - [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest)
@@ -12183,6 +12185,36 @@ GenesisState defines the fbridge module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySeqToBlocknumsRequest"></a>
+
+### QuerySeqToBlocknumsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seqs` | [uint64](#uint64) | repeated | list of sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySeqToBlocknumsResponse"></a>
+
+### QuerySeqToBlocknumsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `blocknums` | [uint64](#uint64) | repeated |  |
 
 
 

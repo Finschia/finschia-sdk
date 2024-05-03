@@ -274,7 +274,7 @@ func (k Keeper) GetBridgeSwitches(ctx sdk.Context) []types.BridgeSwitch {
 	store := ctx.KVStore(k.storeKey)
 
 	bws := make([]types.BridgeSwitch, 0)
-	iterator := sdk.KVStorePrefixIterator(store, types.KeyBridgeSwitch)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyBridgeSwitchPrefix)
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		addr := types.SplitBridgeSwitchKey(iterator.Key())

@@ -19,7 +19,8 @@ const (
 )
 
 // - 0x01: params
-// - 0x02: next sequence number for bridge send
+// - 0x02: next sequence number for bridge sending
+// - 0x03<sequence (8-byte)>: block number of sequence
 //
 // - 0x10: next proposal ID
 // 	 0x11<proposalID (8-byte)>: proposal
@@ -31,19 +32,26 @@ const (
 // - 0xF1: role metadata
 
 var (
-	KeyParams      = []byte{0x01} // key for fbridge module params
-	KeyNextSeqSend = []byte{0x02} // key for the next bridge send sequence
+	KeyParams              = []byte{0x01} // key for fbridge module params
+	KeyNextSeqSend         = []byte{0x02} // key for the next bridge send sequence
+	KeySeqToBlocknumPrefix = []byte{0x03} // key prefix for the sequence to block number mapping
 
 	KeyNextProposalID     = []byte{0x10} // key for the next role proposal ID
 	KeyProposalPrefix     = []byte{0x11} // key prefix for the role proposal
 	KeyProposalVotePrefix = []byte{0x12} // key prefix for the role proposal vote
 	KeyRolePrefix         = []byte{0x13} // key prefix for the role of an address
-	KeyBridgeSwitch       = []byte{0x14} // key for the switch to halt
+	KeyBridgeSwitchPrefix = []byte{0x14} // key for the switch to halt
 
 	KeyMemInitialized  = []byte{0xF0}
 	KeyMemRoleMetadata = []byte{0xF1} // key for the role metadata
 	KeyMemBridgeStatus = []byte{0xF2} // key for the bridge status
 )
+
+func SeqToBlocknumKey(seq uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, seq)
+	return append(KeySeqToBlocknumPrefix, bz...)
+}
 
 // GetProposalIDBytes returns the byte representation of the proposalID
 func GetProposalIDBytes(proposalID uint64) []byte {
@@ -87,7 +95,7 @@ func SplitRoleKey(key []byte) sdk.AccAddress {
 }
 
 func BridgeSwitchKey(guardian sdk.AccAddress) []byte {
-	return append(KeyBridgeSwitch, address.MustLengthPrefix(guardian.Bytes())...)
+	return append(KeyBridgeSwitchPrefix, address.MustLengthPrefix(guardian.Bytes())...)
 }
 
 // SplitBridgeSwitchKey split the bridge switch key and returns the guardian address

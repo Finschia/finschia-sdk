@@ -29799,90 +29799,6 @@ paths:
                       format: byte
       tags:
         - Service
-  '/lbm/fbridge/v1/commitments/{seq}':
-    get:
-      summary: Commitments queries commitments of a specific sequence number
-      operationId: FBridgeCommitments
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              commitments:
-                type: array
-                items:
-                  type: string
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: seq
-          description: the sequence number of the bridge request
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  /lbm/fbridge/v1/greatest_confirmed_seq:
-    get:
-      summary: >-
-        GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence
-        number confirmed by n-of-m operators
-      operationId: GreatestConsecutiveConfirmedSeq
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              seq:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
   /lbm/fbridge/v1/members:
     get:
       summary: Members queries the members of spcific group registered on the bridge
@@ -29924,239 +29840,6 @@ paths:
           description: 'the role name (guardian, operator, judge).'
           in: query
           required: false
-          type: string
-      tags:
-        - Query
-  /lbm/fbridge/v1/nextseq_send:
-    get:
-      summary: NextSeqSend queries the sequence of next bridge request
-      operationId: NextSeqSend
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              seq:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  '/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs':
-    get:
-      summary: >-
-        NeededSubmissionSeqs queries a list of sequence numbers that need to be
-        submitted by a particular operator
-
-        The search scope is [greatest_consecutive_seq_by_operator,
-        min(greatest_consecutive_seq_by_operator + range,
-
-        greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be
-        replaced with greatest_consecutive_seq if
-
-        the operator is newly added
-      operationId: NeededSubmissionSeqs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              seqs:
-                type: array
-                items:
-                  type: string
-                  format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: operator
-          description: the address of the operator
-          in: path
-          required: true
-          type: string
-        - name: range
-          description: range specifies the size of the range to search.
-          in: query
-          required: false
-          type: string
-          format: uint64
-      tags:
-        - Query
-  '/lbm/fbridge/v1/operators/{operator}/provision/{seq}':
-    get:
-      summary: >-
-        SubmittedProvision queries a provision submitted by a particular
-        operator
-      operationId: SubmittedProvision
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  seq:
-                    type: string
-                    format: uint64
-                    title: the sequence number of the bridge request
-                  amount:
-                    type: string
-                    title: the amount of token to be claimed
-                  sender:
-                    type: string
-                    title: the sender address on the source chain
-                  receiver:
-                    type: string
-                    title: the recipient address on the destination chain
-                description: Provision is a struct that represents a provision internally.
-              status:
-                type: object
-                properties:
-                  timelock_end:
-                    type: string
-                    format: uint64
-                    title: >-
-                      the unix timestamp the provision will be able to be
-                      claimed (unix timestamp)
-                  confirm_counts:
-                    type: integer
-                    format: int32
-                    title: >-
-                      a value that tells how many operators have submitted this
-                      provision
-                  is_claimed:
-                    type: boolean
-                    format: boolean
-                    title: whether the provision has been claimed
-                description: >-
-                  ProvisionStatus is a struct that represents the status of a
-                  provision.
-
-                  To optimize computational cost, we have collected frequently
-                  changing values from provision.
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: operator
-          description: the address of the operator
-          in: path
-          required: true
-          type: string
-        - name: seq
-          description: the sequence number of the bridge request
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  '/lbm/fbridge/v1/operators/{operator}/seq':
-    get:
-      summary: >-
-        GreatestSeqByOperator queries a greatest sequence number confirmed by a
-        particular operator
-      operationId: GreatestSeqByOperator
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              seq:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: operator
-          description: the address of the operator
-          in: path
-          required: true
           type: string
       tags:
         - Query
@@ -30608,7 +30291,287 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/fbridge/v1/provision/{seq}':
+  '/lbm/fbridge/v1/receiving/commitments/{seq}':
+    get:
+      summary: Commitments queries commitments of a specific sequence number
+      operationId: FBridgeCommitments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              commitments:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /lbm/fbridge/v1/receiving/greatest_confirmed_seq:
+    get:
+      summary: >-
+        GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence
+        number confirmed by n-of-m operators
+      operationId: GreatestConsecutiveConfirmedSeq
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  '/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs':
+    get:
+      summary: >-
+        NeededSubmissionSeqs queries a list of sequence numbers that need to be
+        submitted by a particular operator
+
+        The search scope is [greatest_consecutive_seq_by_operator,
+        min(greatest_consecutive_seq_by_operator + range,
+
+        greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be
+        replaced with greatest_consecutive_seq if
+
+        the operator is newly added
+      operationId: NeededSubmissionSeqs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seqs:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+        - name: range
+          description: range specifies the size of the range to search.
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}':
+    get:
+      summary: >-
+        SubmittedProvision queries a provision submitted by a particular
+        operator
+      operationId: SubmittedProvision
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  seq:
+                    type: string
+                    format: uint64
+                    title: the sequence number of the bridge request
+                  amount:
+                    type: string
+                    title: the amount of token to be claimed
+                  sender:
+                    type: string
+                    title: the sender address on the source chain
+                  receiver:
+                    type: string
+                    title: the recipient address on the destination chain
+                description: Provision is a struct that represents a provision internally.
+              status:
+                type: object
+                properties:
+                  timelock_end:
+                    type: string
+                    format: uint64
+                    title: >-
+                      the unix timestamp the provision will be able to be
+                      claimed (unix timestamp)
+                  confirm_counts:
+                    type: integer
+                    format: int32
+                    title: >-
+                      a value that tells how many operators have submitted this
+                      provision
+                  is_claimed:
+                    type: boolean
+                    format: boolean
+                    title: whether the provision has been claimed
+                description: >-
+                  ProvisionStatus is a struct that represents the status of a
+                  provision.
+
+                  To optimize computational cost, we have collected frequently
+                  changing values from provision.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/lbm/fbridge/v1/receiving/operators/{operator}/seq':
+    get:
+      summary: >-
+        GreatestSeqByOperator queries a greatest sequence number confirmed by a
+        particular operator
+      operationId: GreatestSeqByOperator
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: operator
+          description: the address of the operator
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/fbridge/v1/receiving/provision/{seq}':
     get:
       summary: ConfirmedProvision queries a particular sequence of confirmed provisions
       operationId: ConfirmedProvision
@@ -30689,6 +30652,94 @@ paths:
           required: true
           type: string
           format: uint64
+      tags:
+        - Query
+  /lbm/fbridge/v1/sending/blocknums:
+    get:
+      summary: >-
+        BlocknumToSeqs queries a list of block numbers for which each sequence
+        has been confirmed.
+      operationId: SeqToBlocknums
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              blocknums:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seqs
+          description: list of sequence number of the bridge request.
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+      tags:
+        - Query
+  /lbm/fbridge/v1/sending/nextseq:
+    get:
+      summary: NextSeqSend queries the sequence of next bridge request
+      operationId: NextSeqSend
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
       tags:
         - Query
 definitions:
@@ -50544,6 +50595,14 @@ definitions:
               PageRequest.count_total
 
               was set, its value is undefined otherwise
+  lbm.fbridge.v1.QuerySeqToBlocknumsResponse:
+    type: object
+    properties:
+      blocknums:
+        type: array
+        items:
+          type: string
+          format: uint64
   lbm.fbridge.v1.QuerySubmittedProvisionResponse:
     type: object
     properties:

@@ -37,6 +37,9 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	require.Equal(t, targetSeq, handledSeq)
 	afterSeq := k.GetNextSequence(ctx)
 	require.Equal(t, targetSeq+1, afterSeq)
+	h, err := k.GetSeqToBlocknum(ctx, handledSeq)
+	require.NoError(t, err)
+	require.Equal(t, uint64(ctx.BlockHeight()), h)
 }
 
 func TestIsValidEthereumAddress(t *testing.T) {

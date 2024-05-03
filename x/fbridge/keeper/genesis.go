@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
@@ -10,6 +11,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
 
 	k.SetParams(ctx, gs.Params)
 	k.setNextSequence(ctx, gs.SendingState.NextSeq)
+	for _, info := range gs.SendingState.SeqToBlocknum {
+		k.setSeqToBlocknum(ctx, info.Seq, info.Blocknum)
+	}
 
 	for _, pair := range gs.Roles {
 		k.setRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
@@ -41,13 +45,30 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
 		Params: k.GetParams(ctx),
 		SendingState: types.SendingState{
-			NextSeq: k.GetNextSequence(ctx),
+			NextSeq:       k.GetNextSequence(ctx),
+			SeqToBlocknum: k.getAllSeqToBlocknums(ctx),
 		},
 		NextRoleProposalId: k.GetNextProposalID(ctx),
 		RoleProposals:      k.GetRoleProposals(ctx),
 		Votes:              k.GetAllVotes(ctx),
 		Roles:              k.GetRolePairs(ctx),
 	}
+}
+
+func (k Keeper) getAllSeqToBlocknums(ctx sdk.Context) []types.BlockSeqInfo {
+	infos := make([]types.BlockSeqInfo, 0)
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeySeqToBlocknumPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		seq := binary.BigEndian.Uint64(iterator.Key()[1:])
+		v := binary.BigEndian.Uint64(iterator.Value())
+		info := types.BlockSeqInfo{Seq: seq, Blocknum: v}
+		infos = append(infos, info)
+	}
+
+	return infos
 }
 
 // IterateVotes iterates over the all the votes for role proposals and performs a callback function
