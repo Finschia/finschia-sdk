@@ -84,7 +84,7 @@ func (m msgServer) SuggestRole(goCtx context.Context, msg *types.MsgSuggestRole)
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid target address (%s)", err)
 	}
 
-	if err := m.IsValidRole(msg.Role); err != nil {
+	if err := types.IsValidRole(msg.Role); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
@@ -110,7 +110,7 @@ func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteFo
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid proposer address (%s)", err)
 	}
 
-	if err := m.IsValidVoteOption(msg.Option); err != nil {
+	if err := types.IsValidVoteOption(msg.Option); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
@@ -129,10 +129,10 @@ func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteFo
 	return &types.MsgAddVoteForRoleResponse{}, nil
 }
 
-func (m msgServer) Halt(ctx context.Context, msg *types.MsgHalt) (*types.MsgHaltResponse, error) {
+func (m msgServer) Halt(goCtx context.Context, msg *types.MsgHalt) (*types.MsgHaltResponse, error) {
 	panic("implement me")
 }
 
-func (m msgServer) Resume(ctx context.Context, resume *types.MsgResume) (*types.MsgResumeResponse, error) {
+func (m msgServer) Resume(goCtx context.Context, resume *types.MsgResume) (*types.MsgResumeResponse, error) {
 	panic("implement me")
 }
