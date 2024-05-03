@@ -10,6 +10,7 @@ import (
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	govcli "github.com/Finschia/finschia-sdk/x/gov/client/cli"
@@ -181,9 +182,9 @@ Example of the content of messages-json:
 			if err != nil {
 				return err
 			}
-			amountCap, err := sdk.NewDecFromStr(amountCapStr)
-			if err != nil {
-				return err
+			amountCap, ok := sdk.NewIntFromString(amountCapStr)
+			if !ok {
+				return sdkerrors.ErrInvalidRequest.Wrapf("failed to parse %s %s", FlagAmountCapForToDenom, amountCap.String())
 			}
 
 			swapRate, err := cmd.Flags().GetString(FlagSwapRate)
@@ -197,7 +198,7 @@ Example of the content of messages-json:
 			swap := types.Swap{
 				FromDenom:           fromDenom,
 				ToDenom:             toDenom,
-				AmountCapForToDenom: amountCap.TruncateInt(),
+				AmountCapForToDenom: amountCap,
 				SwapRate:            swapRateDec,
 			}
 
