@@ -3,27 +3,60 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
-type msgServer struct {
-	Keeper
+var _ types.MsgServer = MsgServer{}
+
+type MsgServer struct {
+	keeper Keeper
 }
 
-// NewMsgServerImpl returns an implementation of the MsgServer interface
-// for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper) types.MsgServer {
-	return &msgServer{Keeper: keeper}
+func NewMsgServer(keeper Keeper) *MsgServer {
+	return &MsgServer{keeper}
 }
 
-var _ types.MsgServer = msgServer{}
+func (s MsgServer) Swap(ctx context.Context, req *types.MsgSwap) (*types.MsgSwapResponse, error) {
+	c := sdk.UnwrapSDKContext(ctx)
 
-// Swap implements types.MsgServer.
-func (m msgServer) Swap(context.Context, *types.MsgSwapRequest) (*types.MsgSwapResponse, error) {
-	panic("unimplemented")
+	from, err := sdk.AccAddressFromBech32(req.FromAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.IsSendEnabledCoins(c, req.GetFromCoinAmount()); err != nil {
+		return &types.MsgSwapResponse{}, err
+	}
+
+	if err := s.keeper.Swap(c, from, req.GetFromCoinAmount(), req.GetToDenom()); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSwapResponse{}, nil
 }
 
-// SwapAll implements types.MsgServer.
-func (m msgServer) SwapAll(context.Context, *types.MsgSwapAllRequest) (*types.MsgSwapAllResponse, error) {
-	panic("unimplemented")
+func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAll) (*types.MsgSwapAllResponse, error) {
+	c := sdk.UnwrapSDKContext(ctx)
+
+	from, err := sdk.AccAddressFromBech32(req.FromAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	balance := s.keeper.GetBalance(c, from, req.FromDenom)
+	if balance.IsZero() {
+		return nil, sdkerrors.ErrInsufficientFunds
+	}
+
+	if err := s.keeper.IsSendEnabledCoins(c, balance); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.Swap(c, from, balance, req.GetToDenom()); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSwapAllResponse{}, nil
 }
