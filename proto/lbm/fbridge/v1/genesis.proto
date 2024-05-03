@@ -22,7 +22,7 @@ message SendingState {
   // the next sequence number of the bridge request (greatest sequence number + 1)
   uint64 next_seq = 1;
   // sequence-per-block number mapping
-  repeated BlockSeqInfo seq_to_blocknum = 2;
+  repeated BlockSeqInfo seq_to_blocknum = 2 [(gogoproto.nullable) = false];
 }
 
 message BlockSeqInfo {
