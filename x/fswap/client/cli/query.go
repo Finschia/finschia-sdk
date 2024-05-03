@@ -24,6 +24,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(
 		CmdQuerySwapped(),
 		CmdQueryTotalSwappableAmount(),
+		CmdQuerySwaps(),
 	)
 	return cmd
 }
@@ -66,6 +67,31 @@ func CmdQueryTotalSwappableAmount() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.TotalSwappableToCoinAmount(cmd.Context(), &types.QueryTotalSwappableToCoinAmountRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQuerySwaps() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "swaps",
+		Short: "shows the all the swaps that proposed",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Swaps(cmd.Context(), &types.QuerySwapsRequest{})
 			if err != nil {
 				return err
 			}
