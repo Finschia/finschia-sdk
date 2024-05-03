@@ -27,7 +27,6 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 
 		var total uint32 = 0
 		roleMeta := k.GetRoleMetadata(ctx)
-		previousRole := k.GetRole(ctx, sdk.MustAccAddressFromBech32(proposal.Target))
 		switch proposal.Role {
 		case types.RoleGuardian:
 			total = roleMeta.Guardian
@@ -40,31 +39,43 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		}
 
 		if types.CheckTrustLevelThreshold(uint64(total), uint64(voteYes), guardianTrustLevel) {
-			if proposal.Role == types.RoleEmpty {
-				k.DeleteRole(ctx, sdk.MustAccAddressFromBech32(proposal.Target))
-			} else {
-				k.SetRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target))
+			if err := k.UpdateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
+				panic(err)
 			}
-
-			switch proposal.Role {
-			case types.RoleGuardian:
-				roleMeta.Guardian++
-			case types.RoleOperator:
-				roleMeta.Operator++
-			case types.RoleJudge:
-				roleMeta.Judge++
-			}
-			switch previousRole {
-			case types.RoleGuardian:
-				roleMeta.Guardian--
-			case types.RoleOperator:
-				roleMeta.Operator--
-			case types.RoleJudge:
-				roleMeta.Judge--
-			}
-			k.SetRoleMetadata(ctx, roleMeta)
 
 			k.DeleteRoleProposal(ctx, proposal.Id)
 		}
+	}
+}
+
+// RegisterInvariants registers all staking invariants
+func RegisterInvariants(ir sdk.InvariantRegistry, k keeper.Keeper) {
+	ir.RegisterRoute(types.ModuleName, "role-metadata", RoleMeatadataInvariant(k))
+}
+
+func RoleMeatadataInvariant(k keeper.Keeper) sdk.Invariant {
+	return func(ctx sdk.Context) (string, bool) {
+		actualRoleMeta := k.GetRoleMetadata(ctx)
+		expectedRoleMeta := types.RoleMetadata{}
+		for _, pair := range k.GetRolePairs(ctx) {
+			k.SetRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
+			switch pair.Role {
+			case types.RoleGuardian:
+				expectedRoleMeta.Guardian++
+			case types.RoleOperator:
+				expectedRoleMeta.Operator++
+			case types.RoleJudge:
+				expectedRoleMeta.Judge++
+			}
+		}
+
+		broken := expectedRoleMeta.Guardian != actualRoleMeta.Guardian ||
+			expectedRoleMeta.Operator != actualRoleMeta.Operator ||
+			expectedRoleMeta.Judge != actualRoleMeta.Judge
+
+		return sdk.FormatInvariant(types.ModuleName, "registered members and role metadata", fmt.Sprintf(
+			"Saved Role Metadata: %+v"+
+				"Calculated Role Metadata: %+v",
+			actualRoleMeta, expectedRoleMeta)), broken
 	}
 }

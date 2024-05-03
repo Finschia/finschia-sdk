@@ -131,7 +131,7 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 
 // RegisterInvariants does nothing, there are no invariants to enforce
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
-	_ = ir
+	RegisterInvariants(ir, am.keeper)
 }
 
 // Deprecated: Route does nothing.
