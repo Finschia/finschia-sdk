@@ -91,8 +91,8 @@ func (k Keeper) Members(goCtx context.Context, req *types.QueryMembersRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	role := types.QueryParamToRole[req.Role]
-	if role == 0 {
+	role, found := types.QueryParamToRole[req.Role]
+	if !found {
 		return nil, status.Error(codes.InvalidArgument, "invalid role")
 	}
 

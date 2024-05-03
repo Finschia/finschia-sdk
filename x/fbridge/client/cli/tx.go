@@ -1,7 +1,10 @@
 package cli
 
 import (
+	"fmt"
+	"github.com/Finschia/finschia-sdk/version"
 	"github.com/spf13/cobra"
+	"strconv"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -23,6 +26,10 @@ func NewTxCmd() *cobra.Command {
 
 	TxCmd.AddCommand(
 		NewTransferTxCmd(),
+		NewSuggestRoleTxCmd(),
+		NewAddVoteForRoleTxCmd(),
+		NewHaltTxCmd(),
+		NewResumeTxCmd(),
 	)
 
 	return TxCmd
@@ -30,9 +37,10 @@ func NewTxCmd() *cobra.Command {
 
 func NewTransferTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer [to_address] [amount]",
-		Short: `Transfer token from current chain to counterparty chain`,
-		Args:  cobra.ExactArgs(2),
+		Use:     "transfer [to_address] [amount]",
+		Short:   `Transfer token from current chain to counterparty chain`,
+		Example: fmt.Sprintf("%s tx %s transfer link1... 1000cony --from mykey", version.AppName, types.ModuleName),
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -55,6 +63,144 @@ func NewTransferTxCmd() *cobra.Command {
 				Sender:   fromAddr,
 				Receiver: toAddr,
 				Amount:   coins[0].Amount,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewSuggestRoleTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "suggest-role [target_address] [role]",
+		Short:   `Suggest a role to a specific address (unspecified|guardian|operator|judge)`,
+		Args:    cobra.ExactArgs(2),
+		Example: fmt.Sprintf("%s tx %s suggest-role link1... guardian --from guardiankey", version.AppName, types.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			from := clientCtx.GetFromAddress().String()
+			if _, err := sdk.AccAddressFromBech32(from); err != nil {
+				return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", from)
+			}
+			target := args[0]
+			role, found := types.QueryParamToRole[args[1]]
+			if !found {
+				return sdkerrors.ErrInvalidRequest.Wrapf("invalid role: %s", args[1])
+			}
+
+			msg := types.MsgSuggestRole{
+				From:   from,
+				Target: target,
+				Role:   role,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewAddVoteForRoleTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "add-vote-for-role [proposal_id] [option]",
+		Short:   `Vote for a role proposal (yes|no)`,
+		Args:    cobra.ExactArgs(2),
+		Example: fmt.Sprintf("%s tx %s add-vote-for-role 1 yes --from guardiankey", version.AppName, types.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			from := clientCtx.GetFromAddress().String()
+			if _, err := sdk.AccAddressFromBech32(from); err != nil {
+				return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", from)
+			}
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return sdkerrors.ErrInvalidRequest.Wrapf("invalid proposal ID: %s", args[0])
+			}
+
+			voteOpts := map[string]types.VoteOption{
+				"yes": types.OptionYes,
+				"no":  types.OptionNo,
+			}
+			option, found := voteOpts[args[1]]
+			if !found {
+				return sdkerrors.ErrInvalidRequest.Wrapf("invalid vote option: %s", args[1])
+			}
+
+			msg := types.MsgAddVoteForRole{
+				From:       from,
+				ProposalId: proposalID,
+				Option:     option,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewHaltTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "halt",
+		Short:   `Activate sender's halting switch for the bridge module`,
+		Args:    cobra.NoArgs,
+		Example: fmt.Sprintf("%s tx %s halt --from guardiankey", version.AppName, types.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			from := clientCtx.GetFromAddress().String()
+			if _, err := sdk.AccAddressFromBech32(from); err != nil {
+				return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", from)
+			}
+
+			msg := types.MsgHalt{
+				Guardian: from,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewResumeTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "resume",
+		Short:   `Activate sender's resuming switch for the bridge module`,
+		Args:    cobra.NoArgs,
+		Example: fmt.Sprintf("%s tx %s resume --from guardiankey", version.AppName, types.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			from := clientCtx.GetFromAddress().String()
+			if _, err := sdk.AccAddressFromBech32(from); err != nil {
+				return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", from)
+			}
+
+			msg := types.MsgResume{
+				Guardian: from,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

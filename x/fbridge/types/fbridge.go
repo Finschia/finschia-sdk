@@ -5,9 +5,10 @@ import (
 )
 
 var QueryParamToRole = map[string]Role{
-	"guardian": 1,
-	"operator": 2,
-	"judge":    3,
+	"unspecified": 0,
+	"guardian":    1,
+	"operator":    2,
+	"judge":       3,
 }
 
 func IsValidRole(role Role) error {
