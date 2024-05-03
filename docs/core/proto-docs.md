@@ -755,6 +755,7 @@
     - [Msg](#lbm.collection.v1.Msg)
   
 - [lbm/fbridge/v1/fbridge.proto](#lbm/fbridge/v1/fbridge.proto)
+    - [BridgeStatusMetadata](#lbm.fbridge.v1.BridgeStatusMetadata)
     - [Fraction](#lbm.fbridge.v1.Fraction)
     - [Params](#lbm.fbridge.v1.Params)
     - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
@@ -764,6 +765,7 @@
     - [RoleProposal](#lbm.fbridge.v1.RoleProposal)
     - [Vote](#lbm.fbridge.v1.Vote)
   
+    - [BridgeStatus](#lbm.fbridge.v1.BridgeStatus)
     - [Role](#lbm.fbridge.v1.Role)
     - [VoteOption](#lbm.fbridge.v1.VoteOption)
   
@@ -777,6 +779,7 @@
   
 - [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
     - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
+    - [BridgeSwitch](#lbm.fbridge.v1.BridgeSwitch)
     - [Commitment](#lbm.fbridge.v1.Commitment)
     - [ConfirmedProvision](#lbm.fbridge.v1.ConfirmedProvision)
     - [GenesisState](#lbm.fbridge.v1.GenesisState)
@@ -11398,6 +11401,22 @@ Msg defines the collection Msg service.
 
 
 
+<a name="lbm.fbridge.v1.BridgeStatusMetadata"></a>
+
+### BridgeStatusMetadata
+BridgeStatusMetadata defines the metadata of the bridge status.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `inactive` | [uint64](#uint64) |  | the number of inactived bridge switch |
+| `active` | [uint64](#uint64) |  | the number of activated bridge switch |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.Fraction"></a>
 
 ### Fraction
@@ -11478,9 +11497,9 @@ RoleMetadata defines the metadata of the role.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `guardian` | [uint32](#uint32) |  | the number of registered guardians |
-| `operator` | [uint32](#uint32) |  | the number of the operators |
-| `judge` | [uint32](#uint32) |  | the number of the judges |
+| `guardian` | [uint64](#uint64) |  | the number of registered guardians |
+| `operator` | [uint64](#uint64) |  | the number of the operators |
+| `judge` | [uint64](#uint64) |  | the number of the judges |
 
 
 
@@ -11539,6 +11558,19 @@ Vote defines a vote on a role proposal.
 
 
  <!-- end messages -->
+
+
+<a name="lbm.fbridge.v1.BridgeStatus"></a>
+
+### BridgeStatus
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| BRIDGE_STATUS_UNSPECIFIED | 0 | BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status. |
+| BRIDGE_STATUS_ACTIVE | 1 | BRIDGE_STATUS_ACTIVE defines an active bridge status. |
+| BRIDGE_STATUS_INACTIVE | 2 | BRIDGE_STATUS_INACTIVE defines an inactive bridge status. |
+
 
 
 <a name="lbm.fbridge.v1.Role"></a>
@@ -11716,6 +11748,22 @@ VoteOption enumerates the valid vote options for a given role proposal.
 
 
 
+<a name="lbm.fbridge.v1.BridgeSwitch"></a>
+
+### BridgeSwitch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.Commitment"></a>
 
 ### Commitment
@@ -11763,8 +11811,8 @@ GenesisState defines the fbridge module's genesis state.
 | `next_role_proposal_id` | [uint64](#uint64) |  | next_role_proposal_id is the next role proposal ID to be used. |
 | `role_proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated | role_proposals defines all the role proposals present at genesis. |
 | `votes` | [Vote](#lbm.fbridge.v1.Vote) | repeated | votes defines all the votes present for role proposals at genesis. |
-| `role_metadata` | [RoleMetadata](#lbm.fbridge.v1.RoleMetadata) |  | role_metadata defines all the role metadata present at genesis. |
 | `roles` | [RolePair](#lbm.fbridge.v1.RolePair) | repeated | roles defines all addresses assigned roles at genesis. |
+| `bridge_switches` | [BridgeSwitch](#lbm.fbridge.v1.BridgeSwitch) | repeated | bridge_switches defines the status of whether each guardian has allowed the bridge to operate. |
 
 
 
@@ -12542,7 +12590,7 @@ MsgResume is input values required for resuming the bridge module
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `from` | [string](#string) |  | the guardian address |
+| `guardian` | [string](#string) |  | the guardian address |
 
 
 

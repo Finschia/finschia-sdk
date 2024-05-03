@@ -13,7 +13,7 @@ import (
 )
 
 func TestHandleBridgeTransfer(t *testing.T) {
-	key, ctx, encCfg, authKeeper, bankKeeper := testutil.PrepareFbridgeTest(t)
+	key, memKey, ctx, encCfg, authKeeper, bankKeeper := testutil.PrepareFbridgeTest(t)
 
 	sender := sdk.AccAddress("test")
 	amt := sdk.NewInt(1000000)
@@ -26,7 +26,7 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(nil)
 	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(nil)
 
-	k := NewKeeper(encCfg.Codec, key, authKeeper, bankKeeper, denom, authtypes.NewModuleAddress("gov").String())
+	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, denom)
 	targetSeq := uint64(2)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, targetSeq)

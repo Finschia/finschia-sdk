@@ -119,7 +119,7 @@ func (m MsgHalt) GetSignBytes() []byte {
 func (m MsgResume) ValidateBasic() error { return nil }
 
 func (m MsgResume) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.From)}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Guardian)}
 }
 
 func (m MsgResume) GetSignBytes() []byte {

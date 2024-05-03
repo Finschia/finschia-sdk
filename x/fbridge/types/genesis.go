@@ -1,11 +1,5 @@
 package types
 
-import (
-	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-)
-
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		SendingState: SendingState{
@@ -13,7 +7,8 @@ func DefaultGenesisState() *GenesisState {
 		},
 		ReceivingState:     ReceivingState{},
 		NextRoleProposalId: 1,
-		RoleMetadata:       RoleMetadata{Guardian: 0, Operator: 0, Judge: 0},
+		Roles:              []RolePair{{Role: RoleGuardian, Address: "<first guardian address>"}},
+		BridgeSwitches:     []BridgeSwitch{{Guardian: "<first guardian address>", Status: StatusActive}},
 	}
 }
 
@@ -26,13 +21,5 @@ func ValidateGenesis(data GenesisState) error {
 		panic("next role proposal ID must be positive")
 	}
 
-	if data.RoleMetadata.Guardian < 0 || data.RoleMetadata.Operator < 0 || data.RoleMetadata.Judge < 0 {
-		panic("length of each group must be positive")
-	}
-
 	return nil
-}
-
-func DefaultAuthority() sdk.AccAddress {
-	return authtypes.NewModuleAddress(govtypes.ModuleName)
 }

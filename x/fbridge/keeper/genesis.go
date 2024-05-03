@@ -7,8 +7,19 @@ import (
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
+
 	k.SetParams(ctx, gs.Params)
 	k.setNextSequence(ctx, gs.SendingState.NextSeq)
+
+	for _, pair := range gs.Roles {
+		k.setRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
+	}
+
+	for _, sw := range gs.BridgeSwitches {
+		if err := k.setBridgeSwitch(ctx, sdk.MustAccAddressFromBech32(sw.Guardian), sw.Status); err != nil {
+			panic(err)
+		}
+	}
 
 	k.setNextProposalID(ctx, gs.NextRoleProposalId)
 	for _, proposal := range gs.RoleProposals {
@@ -19,12 +30,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
 		k.setVote(ctx, vote.ProposalId, sdk.MustAccAddressFromBech32(vote.Voter), vote.Option)
 	}
 
-	for _, pair := range gs.Roles {
-		k.setRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
-	}
-	k.SetRoleMetadata(ctx, gs.RoleMetadata)
-
 	// TODO: we initialize the appropriate genesis parameters whenever the feature is added
+
+	k.InitMemStore(ctx)
 
 	return nil
 }
@@ -38,7 +46,6 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		NextRoleProposalId: k.GetNextProposalID(ctx),
 		RoleProposals:      k.GetRoleProposals(ctx),
 		Votes:              k.GetAllVotes(ctx),
-		RoleMetadata:       k.GetRoleMetadata(ctx),
 		Roles:              k.GetRolePairs(ctx),
 	}
 }

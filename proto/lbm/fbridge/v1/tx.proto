@@ -161,7 +161,7 @@ message MsgHaltResponse {}
 // MsgResume is input values required for resuming the bridge module
 message MsgResume {
   // the guardian address
-  string from = 1;
+  string guardian = 1;
 }
 
 message MsgResumeResponse {}

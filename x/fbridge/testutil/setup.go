@@ -60,16 +60,17 @@ func MakeTestEncodingConfig() TestEncodingConfig {
 	return encCfg
 }
 
-func PrepareFbridgeTest(tb testing.TB) (*sdk.KVStoreKey, sdk.Context, TestEncodingConfig, *MockAccountKeeper, *MockBankKeeper) {
+func PrepareFbridgeTest(tb testing.TB) (*sdk.KVStoreKey, *sdk.MemoryStoreKey, sdk.Context, TestEncodingConfig, *MockAccountKeeper, *MockBankKeeper) {
 	tb.Helper()
 
 	ctrl := gomock.NewController(tb)
 	key := storetypes.NewKVStoreKey(types.StoreKey)
+	memKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 	ctx := DefaultContextWithDB(tb, key, sdk.NewTransientStoreKey("transient_test"))
 	encCfg := MakeTestEncodingConfig()
 
 	authKeeper := NewMockAccountKeeper(ctrl)
 	bankKeeper := NewMockBankKeeper(ctrl)
 
-	return key, ctx, encCfg, authKeeper, bankKeeper
+	return key, memKey, ctx, encCfg, authKeeper, bankKeeper
 }

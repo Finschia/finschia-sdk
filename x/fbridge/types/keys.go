@@ -11,8 +11,11 @@ const (
 	// ModuleName is the module name constant used in many places
 	ModuleName = "fbridge"
 
-	// StoreKey is the store key string for distribution
+	// StoreKey is the store key string for fbridge
 	StoreKey = ModuleName
+
+	// MemStoreKey is the in-memory store key string for fbridge
+	MemStoreKey = "mem_" + StoreKey
 )
 
 // - 0x01: params
@@ -22,6 +25,10 @@ const (
 // 	 0x11<proposalID (8-byte)>: proposal
 //   0x12<proposalID (8-byte)><voterAddrLen (1-byte)><voterAddr>: vote
 // - 0x13<addrLen (1-byte)><targetAddr>: role
+// - 0x14<addrLen (1-byte)><guardianAddr>: bridge switch
+//
+// - 0xF0: memstore initialized
+// - 0xF1: role metadata
 
 var (
 	KeyParams      = []byte{0x01} // key for fbridge module params
@@ -31,7 +38,11 @@ var (
 	KeyProposalPrefix     = []byte{0x11} // key prefix for the role proposal
 	KeyProposalVotePrefix = []byte{0x12} // key prefix for the role proposal vote
 	KeyRolePrefix         = []byte{0x13} // key prefix for the role of an address
-	KeyRoleMetadata       = []byte{0x14}
+	KeyBridgeSwitch       = []byte{0x14} // key for the switch to halt
+
+	KeyMemInitialized  = []byte{0xF0}
+	KeyMemRoleMetadata = []byte{0xF1} // key for the role metadata
+	KeyMemBridgeStatus = []byte{0xF2} // key for the bridge status
 )
 
 // GetProposalIDBytes returns the byte representation of the proposalID
@@ -71,6 +82,16 @@ func RoleKey(target sdk.AccAddress) []byte {
 
 // SplitRoleKey split the role key and returns the address
 func SplitRoleKey(key []byte) sdk.AccAddress {
+	kv.AssertKeyAtLeastLength(key, 3)
+	return key[2:]
+}
+
+func BridgeSwitchKey(guardian sdk.AccAddress) []byte {
+	return append(KeyBridgeSwitch, address.MustLengthPrefix(guardian.Bytes())...)
+}
+
+// SplitBridgeSwitchKey split the bridge switch key and returns the guardian address
+func SplitBridgeSwitchKey(key []byte) sdk.AccAddress {
 	kv.AssertKeyAtLeastLength(key, 3)
 	return key[2:]
 }

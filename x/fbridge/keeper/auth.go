@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"encoding/binary"
-	"errors"
 	"fmt"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -11,9 +10,7 @@ import (
 )
 
 func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAddress, role types.Role) (types.RoleProposal, error) {
-	if k.GetRoleMetadata(ctx).Guardian < 1 && k.authority != proposer.String() {
-		return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrapf("only %s can submit a role proposal if there are no guardians", k.authority)
-	} else if k.GetRole(ctx, proposer) != types.RoleGuardian {
+	if k.GetRole(ctx, proposer) != types.RoleGuardian {
 		return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrap("only guardian can submit a role proposal")
 	}
 
@@ -37,16 +34,12 @@ func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAd
 }
 
 func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress, option types.VoteOption) error {
-	proposal, found := k.GetRoleProposal(ctx, proposalID)
+	_, found := k.GetRoleProposal(ctx, proposalID)
 	if !found {
 		return types.ErrUnknownProposal.Wrapf("#%d not found", proposalID)
 	}
 
-	if ctx.BlockTime().After(proposal.ExpiredAt) {
-		return types.ErrInactiveProposal.Wrapf("#%d already expired", proposalID)
-	}
-
-	if err := k.IsValidVoteOption(option); err != nil {
+	if err := types.IsValidVoteOption(option); err != nil {
 		return err
 	}
 
@@ -61,15 +54,28 @@ func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 		return sdkerrors.ErrInvalidRequest.Wrap("target already has same role")
 	}
 
-	metadata := k.GetRoleMetadata(ctx)
+	roleMeta := k.GetRoleMetadata(ctx)
+	bsMeta := k.GetBridgeStatusMetadata(ctx)
 
 	switch previousRole {
 	case types.RoleGuardian:
-		metadata.Guardian--
+		roleMeta.Guardian--
+
+		sw, err := k.GetBridgeSwitch(ctx, addr)
+		if err != nil {
+			panic(err)
+		}
+
+		if sw.Status == types.StatusActive {
+			bsMeta.Active--
+		} else {
+			bsMeta.Inactive--
+		}
+
 	case types.RoleOperator:
-		metadata.Operator--
+		roleMeta.Operator--
 	case types.RoleJudge:
-		metadata.Judge--
+		roleMeta.Judge--
 	}
 
 	if role == types.RoleEmpty {
@@ -81,34 +87,18 @@ func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 
 	switch role {
 	case types.RoleGuardian:
-		metadata.Guardian++
+		roleMeta.Guardian++
+		bsMeta.Active++
 	case types.RoleOperator:
-		metadata.Operator++
+		roleMeta.Operator++
 	case types.RoleJudge:
-		metadata.Judge++
+		roleMeta.Judge++
 	}
 
-	k.SetRoleMetadata(ctx, metadata)
+	k.setRoleMetadata(ctx, roleMeta)
+	k.setBridgeStatusMetadata(ctx, bsMeta)
 
 	return nil
-}
-
-func (k Keeper) IsValidRole(role types.Role) error {
-	switch role {
-	case types.RoleGuardian, types.RoleOperator, types.RoleJudge:
-		return nil
-	}
-
-	return errors.New("unsupported role")
-}
-
-func (k Keeper) IsValidVoteOption(option types.VoteOption) error {
-	switch option {
-	case types.OptionYes, types.OptionNo:
-		return nil
-	}
-
-	return errors.New("unsupported vote option")
 }
 
 func (k Keeper) setNextProposalID(ctx sdk.Context, seq uint64) {
@@ -250,20 +240,43 @@ func (k Keeper) deleteRole(ctx sdk.Context, addr sdk.AccAddress) {
 	store.Delete(types.RoleKey(addr))
 }
 
-func (k Keeper) SetRoleMetadata(ctx sdk.Context, data types.RoleMetadata) {
+func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
+	if k.GetRole(ctx, guardian) != types.RoleGuardian {
+		return sdkerrors.ErrUnauthorized.Wrap("only guardian can set bridge switch")
+	}
+
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&data)
-	store.Set(types.KeyRoleMetadata, bz)
+	bz := make([]byte, 4)
+	binary.BigEndian.PutUint32(bz, uint32(status))
+	store.Set(types.BridgeSwitchKey(guardian), bz)
+
+	return nil
 }
 
-func (k Keeper) GetRoleMetadata(ctx sdk.Context) types.RoleMetadata {
+func (k Keeper) GetBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) (types.BridgeSwitch, error) {
+	if k.GetRole(ctx, guardian) != types.RoleGuardian {
+		return types.BridgeSwitch{}, sdkerrors.ErrUnauthorized.Wrap("only guardian can set bridge switch")
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.BridgeSwitchKey(guardian))
+	if bz == nil {
+		panic("bridge switch must be set at genesis")
+	}
+
+	return types.BridgeSwitch{Guardian: guardian.String(), Status: types.BridgeStatus(binary.BigEndian.Uint32(bz))}, nil
+}
+
+func (k Keeper) GetBridgeSwitches(ctx sdk.Context) []types.BridgeSwitch {
 	store := ctx.KVStore(k.storeKey)
 
-	data := types.RoleMetadata{}
-	bz := store.Get(types.KeyRoleMetadata)
-	if bz == nil {
-		panic("role metadata must be set at genesis")
+	bws := make([]types.BridgeSwitch, 0)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyBridgeSwitch)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		addr := types.SplitBridgeSwitchKey(iterator.Key())
+		bws = append(bws, types.BridgeSwitch{Guardian: addr.String(), Status: types.BridgeStatus(binary.BigEndian.Uint32(iterator.Value()))})
 	}
-	k.cdc.MustUnmarshal(bz, &data)
-	return data
+
+	return bws
 }

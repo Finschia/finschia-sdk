@@ -21,6 +21,10 @@ func NewMsgServer(k Keeper) types.MsgServer {
 func (m msgServer) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*types.MsgTransferResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if m.IsBridgeHalted(ctx) {
+		return nil, types.ErrInactiveBridge
+	}
+
 	from, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
@@ -130,9 +134,31 @@ func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteFo
 }
 
 func (m msgServer) Halt(goCtx context.Context, msg *types.MsgHalt) (*types.MsgHaltResponse, error) {
-	panic("implement me")
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr, err := sdk.AccAddressFromBech32(msg.Guardian)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
+	}
+
+	if err := m.setBridgeSwitch(ctx, addr, types.StatusInactive); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgHaltResponse{}, nil
 }
 
-func (m msgServer) Resume(goCtx context.Context, resume *types.MsgResume) (*types.MsgResumeResponse, error) {
-	panic("implement me")
+func (m msgServer) Resume(goCtx context.Context, msg *types.MsgResume) (*types.MsgResumeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr, err := sdk.AccAddressFromBech32(msg.Guardian)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
+	}
+
+	if err := m.setBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgResumeResponse{}, nil
 }

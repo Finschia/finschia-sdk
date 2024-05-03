@@ -8,6 +8,8 @@ import (
 )
 
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
+	k.InitMemStore(ctx)
+
 	proposals := k.GetRoleProposals(ctx)
 	for _, proposal := range proposals {
 		if ctx.BlockTime().After(proposal.ExpiredAt) {
@@ -22,14 +24,14 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	for _, proposal := range proposals {
 		votes := k.GetProposalVotes(ctx, proposal.Id)
 
-		voteYes := 0
+		var voteYes uint64 = 0
 		for _, vote := range votes {
 			if vote.Option == types.OptionYes {
 				voteYes++
 			}
 		}
 
-		var total uint32 = 0
+		var total uint64 = 0
 		roleMeta := k.GetRoleMetadata(ctx)
 		switch proposal.Role {
 		case types.RoleGuardian:
@@ -42,7 +44,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 			panic(fmt.Sprintf("invalid role: %s\n", proposal.Role))
 		}
 
-		if types.CheckTrustLevelThreshold(uint64(total), uint64(voteYes), guardianTrustLevel) {
+		if types.CheckTrustLevelThreshold(total, voteYes, guardianTrustLevel) {
 			if err := k.UpdateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
 				panic(err)
 			}
@@ -52,7 +54,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	}
 }
 
-// RegisterInvariants registers all staking invariants
+// RegisterInvariants registers all fbridge invariants
 func RegisterInvariants(ir sdk.InvariantRegistry, k keeper.Keeper) {
 	ir.RegisterRoute(types.ModuleName, "role-metadata", RoleMeatadataInvariant(k))
 }
