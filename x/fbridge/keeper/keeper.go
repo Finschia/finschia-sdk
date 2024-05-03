@@ -59,8 +59,6 @@ func (k Keeper) InitMemStore(ctx sdk.Context) {
 
 	roleMetadata := types.RoleMetadata{}
 	if !k.IsInitialized(noGasCtx) {
-		memStore := noGasCtx.KVStore(k.memKey)
-
 		for _, pair := range k.GetRolePairs(noGasCtx) {
 			switch pair.Role {
 			case types.RoleGuardian:
@@ -71,7 +69,7 @@ func (k Keeper) InitMemStore(ctx sdk.Context) {
 				roleMetadata.Judge++
 			}
 		}
-		memStore.Set(types.KeyMemRoleMetadata, k.cdc.MustMarshal(&roleMetadata))
+		k.setRoleMetadata(noGasCtx, roleMetadata)
 
 		bsMeta := types.BridgeStatusMetadata{Inactive: 0, Active: 0}
 		for _, bs := range k.GetBridgeSwitches(noGasCtx) {
@@ -86,6 +84,7 @@ func (k Keeper) InitMemStore(ctx sdk.Context) {
 		}
 		k.setBridgeStatusMetadata(noGasCtx, types.BridgeStatusMetadata{})
 
+		memStore := noGasCtx.KVStore(k.memKey)
 		memStore.Set(types.KeyMemInitialized, []byte{1})
 	}
 }
@@ -111,7 +110,7 @@ func (k Keeper) GetRoleMetadata(ctx sdk.Context) types.RoleMetadata {
 	data := types.RoleMetadata{}
 	bz := memStore.Get(types.KeyMemRoleMetadata)
 	if bz == nil {
-		panic("role metadata must be set at genesis")
+		return types.RoleMetadata{}
 	}
 	k.cdc.MustUnmarshal(bz, &data)
 	return data
