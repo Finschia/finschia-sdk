@@ -20,12 +20,12 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
 		SendingState: types.SendingState{
 			NextSeq:       k.GetNextSequence(ctx),
-			SeqToBlocknum: k.GetAllSeqToBlocknums(ctx),
+			SeqToBlocknum: k.getAllSeqToBlocknums(ctx),
 		},
 	}
 }
 
-func (k Keeper) GetAllSeqToBlocknums(ctx sdk.Context) []types.BlockSeqInfo {
+func (k Keeper) getAllSeqToBlocknums(ctx sdk.Context) []types.BlockSeqInfo {
 	infos := make([]types.BlockSeqInfo, 0)
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeySeqToBlocknumPrefix)
