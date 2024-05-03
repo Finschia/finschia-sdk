@@ -52,6 +52,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		RoleProposals:      k.GetRoleProposals(ctx),
 		Votes:              k.GetAllVotes(ctx),
 		Roles:              k.GetRolePairs(ctx),
+		BridgeSwitches:     k.GetBridgeSwitches(ctx),
 	}
 }
 

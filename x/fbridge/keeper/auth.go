@@ -76,6 +76,8 @@ func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 			bsMeta.Inactive--
 		}
 
+		k.deleteBridgeSwitch(ctx, addr)
+
 	case types.RoleOperator:
 		roleMeta.Operator--
 	case types.RoleJudge:
@@ -92,6 +94,9 @@ func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	switch role {
 	case types.RoleGuardian:
 		roleMeta.Guardian++
+		if err := k.setBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
+			panic(err)
+		}
 		bsMeta.Active++
 	case types.RoleOperator:
 		roleMeta.Operator++
@@ -254,6 +259,11 @@ func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status
 	store.Set(types.BridgeSwitchKey(guardian), bz)
 
 	return nil
+}
+
+func (k Keeper) deleteBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.BridgeSwitchKey(guardian))
 }
 
 func (k Keeper) GetBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) (types.BridgeSwitch, error) {
