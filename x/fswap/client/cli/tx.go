@@ -177,8 +177,11 @@ Example of the content of messages-json:
 			if err != nil {
 				return err
 			}
-
-			amountCap, err := cmd.Flags().GetInt64(FlagAmountCapForToDenom)
+			amountCapStr, err := cmd.Flags().GetString(FlagAmountCapForToDenom)
+			if err != nil {
+				return err
+			}
+			amountCap, err := sdk.NewDecFromStr(amountCapStr)
 			if err != nil {
 				return err
 			}
@@ -194,7 +197,7 @@ Example of the content of messages-json:
 			swap := types.Swap{
 				FromDenom:           fromDenom,
 				ToDenom:             toDenom,
-				AmountCapForToDenom: sdk.NewInt(amountCap),
+				AmountCapForToDenom: amountCap.TruncateInt(),
 				SwapRate:            swapRateDec,
 			}
 
@@ -228,7 +231,7 @@ Example of the content of messages-json:
 	cmd.Flags().String(govcli.FlagDeposit, "", "deposit of proposal")
 	cmd.Flags().String(FlagFromDenom, "", "cony")
 	cmd.Flags().String(FlagToDenom, "", "PDT")
-	cmd.Flags().Int64(FlagAmountCapForToDenom, 0, "tbd")
+	cmd.Flags().String(FlagAmountCapForToDenom, "0", "tbd")
 	cmd.Flags().String(FlagSwapRate, "0", "tbd")
 
 	return cmd
