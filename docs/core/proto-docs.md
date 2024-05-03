@@ -804,6 +804,8 @@
     - [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse)
     - [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest)
     - [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse)
+    - [QuerySeqToBlocknumsRequest](#lbm.fbridge.v1.QuerySeqToBlocknumsRequest)
+    - [QuerySeqToBlocknumsResponse](#lbm.fbridge.v1.QuerySeqToBlocknumsResponse)
     - [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest)
     - [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse)
   
@@ -12081,6 +12083,36 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
+<a name="lbm.fbridge.v1.QuerySeqToBlocknumsRequest"></a>
+
+### QuerySeqToBlocknumsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seqs` | [uint64](#uint64) | repeated | list of sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySeqToBlocknumsResponse"></a>
+
+### QuerySeqToBlocknumsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `blocknums` | [uint64](#uint64) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.QuerySubmittedProvisionRequest"></a>
 
 ### QuerySubmittedProvisionRequest
@@ -12127,13 +12159,14 @@ GenesisState defines the fbridge module's genesis state.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse) | Params queries the parameters of x/fbridge module. | GET|/lbm/fbridge/v1/params|
-| `NextSeqSend` | [QueryNextSeqSendRequest](#lbm.fbridge.v1.QueryNextSeqSendRequest) | [QueryNextSeqSendResponse](#lbm.fbridge.v1.QueryNextSeqSendResponse) | NextSeqSend queries the sequence of next bridge request | GET|/lbm/fbridge/v1/nextseq_send|
-| `GreatestSeqByOperator` | [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest) | [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse) | GreatestSeqByOperator queries a greatest sequence number confirmed by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/seq|
-| `GreatestConsecutiveConfirmedSeq` | [QueryGreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest) | [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse) | GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence number confirmed by n-of-m operators | GET|/lbm/fbridge/v1/greatest_confirmed_seq|
-| `SubmittedProvision` | [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest) | [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse) | SubmittedProvision queries a provision submitted by a particular operator | GET|/lbm/fbridge/v1/operators/{operator}/provision/{seq}|
-| `ConfirmedProvision` | [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest) | [QueryConfirmedProvisionResponse](#lbm.fbridge.v1.QueryConfirmedProvisionResponse) | ConfirmedProvision queries a particular sequence of confirmed provisions | GET|/lbm/fbridge/v1/provision/{seq}|
-| `NeededSubmissionSeqs` | [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest) | [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse) | NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs|
-| `Commitments` | [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest) | [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse) | Commitments queries commitments of a specific sequence number | GET|/lbm/fbridge/v1/commitments/{seq}|
+| `NextSeqSend` | [QueryNextSeqSendRequest](#lbm.fbridge.v1.QueryNextSeqSendRequest) | [QueryNextSeqSendResponse](#lbm.fbridge.v1.QueryNextSeqSendResponse) | NextSeqSend queries the sequence of next bridge request | GET|/lbm/fbridge/v1/sending/nextseq|
+| `SeqToBlocknums` | [QuerySeqToBlocknumsRequest](#lbm.fbridge.v1.QuerySeqToBlocknumsRequest) | [QuerySeqToBlocknumsResponse](#lbm.fbridge.v1.QuerySeqToBlocknumsResponse) | BlocknumToSeqs queries a list of block numbers for which each sequence has been confirmed. | GET|/lbm/fbridge/v1/sending/blocknums|
+| `GreatestSeqByOperator` | [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest) | [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse) | GreatestSeqByOperator queries a greatest sequence number confirmed by a particular operator | GET|/lbm/fbridge/v1/receiving/operators/{operator}/seq|
+| `GreatestConsecutiveConfirmedSeq` | [QueryGreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest) | [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse) | GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence number confirmed by n-of-m operators | GET|/lbm/fbridge/v1/receiving/greatest_confirmed_seq|
+| `SubmittedProvision` | [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest) | [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse) | SubmittedProvision queries a provision submitted by a particular operator | GET|/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}|
+| `ConfirmedProvision` | [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest) | [QueryConfirmedProvisionResponse](#lbm.fbridge.v1.QueryConfirmedProvisionResponse) | ConfirmedProvision queries a particular sequence of confirmed provisions | GET|/lbm/fbridge/v1/receiving/provision/{seq}|
+| `NeededSubmissionSeqs` | [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest) | [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse) | NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs|
+| `Commitments` | [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest) | [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse) | Commitments queries commitments of a specific sequence number | GET|/lbm/fbridge/v1/receiving/commitments/{seq}|
 | `Guardians` | [QueryGuardiansRequest](#lbm.fbridge.v1.QueryGuardiansRequest) | [QueryGuardiansResponse](#lbm.fbridge.v1.QueryGuardiansResponse) | Guardians queries a list of Guardians registered on the bridge | GET|/lbm/fbridge/v1/guardians|
 | `Operators` | [QueryOperatorsRequest](#lbm.fbridge.v1.QueryOperatorsRequest) | [QueryOperatorsResponse](#lbm.fbridge.v1.QueryOperatorsResponse) | Operators queries a list of Operators registered on the bridge | GET|/lbm/fbridge/v1/operators|
 | `Judges` | [QueryJudgesRequest](#lbm.fbridge.v1.QueryJudgesRequest) | [QueryJudgesResponse](#lbm.fbridge.v1.QueryJudgesResponse) | Judges queries a list of Judges registered on the bridge | GET|/lbm/fbridge/v1/judges|

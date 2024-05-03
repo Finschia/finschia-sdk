@@ -29799,90 +29799,6 @@ paths:
                       format: byte
       tags:
         - Service
-  '/lbm/fbridge/v1/commitments/{seq}':
-    get:
-      summary: Commitments queries commitments of a specific sequence number
-      operationId: FBridgeCommitments
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              commitments:
-                type: array
-                items:
-                  type: string
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: seq
-          description: the sequence number of the bridge request
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  /lbm/fbridge/v1/greatest_confirmed_seq:
-    get:
-      summary: >-
-        GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence
-        number confirmed by n-of-m operators
-      operationId: GreatestConsecutiveConfirmedSeq
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              seq:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
   /lbm/fbridge/v1/guardians:
     get:
       summary: Guardians queries a list of Guardians registered on the bridge
@@ -29959,43 +29875,6 @@ paths:
                       format: byte
       tags:
         - Query
-  /lbm/fbridge/v1/nextseq_send:
-    get:
-      summary: NextSeqSend queries the sequence of next bridge request
-      operationId: NextSeqSend
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              seq:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
   /lbm/fbridge/v1/operators:
     get:
       summary: Operators queries a list of Operators registered on the bridge
@@ -30034,7 +29913,174 @@ paths:
                       format: byte
       tags:
         - Query
-  '/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs':
+  /lbm/fbridge/v1/params:
+    get:
+      summary: Params queries the parameters of x/fbridge module.
+      operationId: FBridgeParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  operator_trust_level:
+                    description: >-
+                      ratio of how many operators' confirmations are needed to
+                      be valid.
+                    type: object
+                    properties:
+                      numerator:
+                        type: string
+                        format: uint64
+                      denominator:
+                        type: string
+                        format: uint64
+                  guardian_trust_level:
+                    description: >-
+                      ratio of how many guardians' confirmations are needed to
+                      be valid.
+                    type: object
+                    properties:
+                      numerator:
+                        type: string
+                        format: uint64
+                      denominator:
+                        type: string
+                        format: uint64
+                  judge_trust_level:
+                    description: >-
+                      ratio of how many judges' confirmations are needed to be
+                      valid.
+                    type: object
+                    properties:
+                      numerator:
+                        type: string
+                        format: uint64
+                      denominator:
+                        type: string
+                        format: uint64
+                  timelock_period:
+                    type: string
+                    format: uint64
+                    title: >-
+                      default timelock period for each provision (unix
+                      timestamp)
+                  proposal_period:
+                    type: string
+                    format: uint64
+                    title: default period of the proposal to update the role
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  '/lbm/fbridge/v1/receiving/commitments/{seq}':
+    get:
+      summary: Commitments queries commitments of a specific sequence number
+      operationId: FBridgeCommitments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              commitments:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seq
+          description: the sequence number of the bridge request
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /lbm/fbridge/v1/receiving/greatest_confirmed_seq:
+    get:
+      summary: >-
+        GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence
+        number confirmed by n-of-m operators
+      operationId: GreatestConsecutiveConfirmedSeq
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  '/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs':
     get:
       summary: >-
         NeededSubmissionSeqs queries a list of sequence numbers that need to be
@@ -30095,7 +30141,7 @@ paths:
           format: uint64
       tags:
         - Query
-  '/lbm/fbridge/v1/operators/{operator}/provision/{seq}':
+  '/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}':
     get:
       summary: >-
         SubmittedProvision queries a provision submitted by a particular
@@ -30185,7 +30231,7 @@ paths:
           format: uint64
       tags:
         - Query
-  '/lbm/fbridge/v1/operators/{operator}/seq':
+  '/lbm/fbridge/v1/receiving/operators/{operator}/seq':
     get:
       summary: >-
         GreatestSeqByOperator queries a greatest sequence number confirmed by a
@@ -30230,90 +30276,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/fbridge/v1/params:
-    get:
-      summary: Params queries the parameters of x/fbridge module.
-      operationId: FBridgeParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                type: object
-                properties:
-                  operator_trust_level:
-                    description: >-
-                      ratio of how many operators' confirmations are needed to
-                      be valid.
-                    type: object
-                    properties:
-                      numerator:
-                        type: string
-                        format: uint64
-                      denominator:
-                        type: string
-                        format: uint64
-                  guardian_trust_level:
-                    description: >-
-                      ratio of how many guardians' confirmations are needed to
-                      be valid.
-                    type: object
-                    properties:
-                      numerator:
-                        type: string
-                        format: uint64
-                      denominator:
-                        type: string
-                        format: uint64
-                  judge_trust_level:
-                    description: >-
-                      ratio of how many judges' confirmations are needed to be
-                      valid.
-                    type: object
-                    properties:
-                      numerator:
-                        type: string
-                        format: uint64
-                      denominator:
-                        type: string
-                        format: uint64
-                  timelock_period:
-                    type: string
-                    format: uint64
-                    title: >-
-                      default timelock period for each provision (unix
-                      timestamp)
-                  proposal_period:
-                    type: string
-                    format: uint64
-                    title: default period of the proposal to update the role
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  '/lbm/fbridge/v1/provision/{seq}':
+  '/lbm/fbridge/v1/receiving/provision/{seq}':
     get:
       summary: ConfirmedProvision queries a particular sequence of confirmed provisions
       operationId: ConfirmedProvision
@@ -30604,6 +30567,94 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
+  /lbm/fbridge/v1/sending/blocknums:
+    get:
+      summary: >-
+        BlocknumToSeqs queries a list of block numbers for which each sequence
+        has been confirmed.
+      operationId: SeqToBlocknums
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              blocknums:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: seqs
+          description: list of sequence number of the bridge request.
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+      tags:
+        - Query
+  /lbm/fbridge/v1/sending/nextseq:
+    get:
+      summary: NextSeqSend queries the sequence of next bridge request
+      operationId: NextSeqSend
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              seq:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
       tags:
         - Query
 definitions:
@@ -50455,6 +50506,14 @@ definitions:
               type: string
               format: uint64
               title: the unix timestamp the proposal will be expired (unix timestamp)
+  lbm.fbridge.v1.QuerySeqToBlocknumsResponse:
+    type: object
+    properties:
+      blocknums:
+        type: array
+        items:
+          type: string
+          format: uint64
   lbm.fbridge.v1.QuerySubmittedProvisionResponse:
     type: object
     properties:
