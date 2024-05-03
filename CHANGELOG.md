@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fswap) [\#1339](https://github.com/Finschia/finschia-sdk/pull/1339) Implement fswap module's genesis
 * (x/fbridge) [\#1340](https://github.com/Finschia/finschia-sdk/pull/1340) Initialize fbridge module
 * (x/fbridge) [\#1347](https://github.com/Finschia/finschia-sdk/pull/1347) Implement bridge transfer feature (sending side)
+* (x/fbridge) [\#1351](https://github.com/Finschia/finschia-sdk/pull/1351) Map a sequence to block number for every bridge request (sending side)
 
 ### Improvements
 * (docs) [\#1120](https://github.com/Finschia/finschia-sdk/pull/1120) Update links in x/foundation README.md
