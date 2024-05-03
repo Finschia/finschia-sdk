@@ -3,6 +3,7 @@ package types
 import (
 	"gopkg.in/yaml.v2"
 
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	gov "github.com/Finschia/finschia-sdk/x/gov/types"
 )
@@ -45,5 +46,9 @@ func (m *MakeSwapProposal) ValidateBasic() error {
 	if err := m.ToDenomMetadata.Validate(); err != nil {
 		return err
 	}
+	if m.Swap.ToDenom != m.ToDenomMetadata.Base {
+		return sdkerrors.ErrInvalidRequest.Wrapf("denomination does not match %s != %s", m.Swap.ToDenom, m.ToDenomMetadata.Base)
+	}
+
 	return gov.ValidateAbstract(m)
 }
