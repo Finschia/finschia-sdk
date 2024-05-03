@@ -114,6 +114,9 @@ func (k Keeper) Member(goCtx context.Context, req *types.QueryMemberRequest) (*t
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	r := k.GetRole(ctx, sdk.MustAccAddressFromBech32(req.Address))
+	if r == types.RoleEmpty {
+		return nil, status.Error(codes.NotFound, "role not found")
+	}
 
 	return &types.QueryMemberResponse{Role: types.Role_name[int32(r)]}, nil
 }
