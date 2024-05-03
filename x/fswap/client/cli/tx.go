@@ -9,7 +9,6 @@ import (
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/client/tx"
-	"github.com/Finschia/finschia-sdk/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
@@ -199,7 +198,7 @@ Example of the content of messages-json:
 				SwapRate:            swapRateDec,
 			}
 
-			toDenomMetadata, err := parseToDenomMetadata(clientCtx.Codec, args[0])
+			toDenomMetadata, err := parseToDenomMetadata(args[0])
 			if err != nil {
 				return err
 			}
@@ -230,21 +229,23 @@ Example of the content of messages-json:
 	cmd.Flags().String(FlagFromDenom, "", "cony")
 	cmd.Flags().String(FlagToDenom, "", "PDT")
 	cmd.Flags().Int64(FlagAmountCapForToDenom, 0, "tbd")
-	cmd.Flags().Int64(FlagSwapRate, 0, "tbd")
+	cmd.Flags().String(FlagSwapRate, "0", "tbd")
 
 	return cmd
 }
 
-func parseToDenomMetadata(cdc codec.Codec, jsonDenomMetadata string) (bank.Metadata, error) {
-	cliMsg := json.RawMessage{}
-	if err := json.Unmarshal([]byte(jsonDenomMetadata), &cliMsg); err != nil {
+func parseToDenomMetadata(jsonDenomMetadata string) (bank.Metadata, error) {
+	type toDenomMeta struct {
+		Metadata bank.Metadata `json:"metadata"`
+	}
+	denomMeta := toDenomMeta{}
+	if err := json.Unmarshal([]byte(jsonDenomMetadata), &denomMeta); err != nil {
 		return bank.Metadata{}, err
 	}
 
-	metadata := bank.Metadata{}
-	err := cdc.UnmarshalInterfaceJSON(cliMsg, &metadata)
-	if err != nil {
+	if err := denomMeta.Metadata.Validate(); err != nil {
 		return bank.Metadata{}, err
 	}
-	return metadata, nil
+
+	return denomMeta.Metadata, nil
 }

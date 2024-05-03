@@ -8,12 +8,12 @@ import (
 )
 
 const (
-	ProposalTypeSwap string = "Swap"
+	ProposalTypeMakeSwap string = "MakeSwap"
 )
 
 // NewMakeSwapProposal creates a new SwapProposal instance.
 // Deprecated: this proposal is considered legacy and is deprecated in favor of
-// Msg-based gov proposals. See MsgSwap.
+// Msg-based gov proposals. See MakeSwapProposal.
 func NewMakeSwapProposal(title, description string, swap Swap, toDenomMetadata bank.Metadata) *MakeSwapProposal {
 	return &MakeSwapProposal{title, description, swap, toDenomMetadata}
 }
@@ -22,14 +22,14 @@ func NewMakeSwapProposal(title, description string, swap Swap, toDenomMetadata b
 var _ gov.Content = &MakeSwapProposal{}
 
 func init() {
-	gov.RegisterProposalType(ProposalTypeSwap)
+	gov.RegisterProposalType(ProposalTypeMakeSwap)
 }
 
 // ProposalRoute gets the proposal's router key
 func (m *MakeSwapProposal) ProposalRoute() string { return RouterKey }
 
 // ProposalType is "Swap"
-func (m *MakeSwapProposal) ProposalType() string { return ProposalTypeSwap }
+func (m *MakeSwapProposal) ProposalType() string { return ProposalTypeMakeSwap }
 
 // String implements the Stringer interface.
 func (m *MakeSwapProposal) String() string {
