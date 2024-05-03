@@ -63,6 +63,11 @@ service Query {
     option (google.api.http).get = "/lbm/fbridge/v1/members";
   }
 
+  // Member queries the role of a specific member
+  rpc Member(QueryMemberRequest) returns (QueryMemberResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/members/{address}";
+  }
+
   // Proposals queries a list of SuggestRole Proposals
   rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
     option (google.api.http).get = "/lbm/fbridge/v1/proposals";
@@ -169,6 +174,14 @@ message QueryMembersRequest {
 
 message QueryMembersResponse {
   repeated string members = 1;
+}
+
+message QueryMemberRequest {
+  string address = 1;
+}
+
+message QueryMemberResponse {
+  string role = 1;
 }
 
 message QueryProposalsRequest {

@@ -172,6 +172,7 @@
           "Params": "FBridgeParams",
           "Commitments": "FBridgeCommitments",
           "Members": "FBridgeMembers",
+          "Member": "FBridgeMember",
           "Proposals": "FBridgeProposals",
           "Proposal": "FBridgeProposal",
           "Votes": "FBridgeVotes",

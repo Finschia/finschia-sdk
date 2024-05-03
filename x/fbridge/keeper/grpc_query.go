@@ -107,6 +107,17 @@ func (k Keeper) Members(goCtx context.Context, req *types.QueryMembersRequest) (
 	return &types.QueryMembersResponse{Members: members}, nil
 }
 
+func (k Keeper) Member(goCtx context.Context, req *types.QueryMemberRequest) (*types.QueryMemberResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	r := k.GetRole(ctx, sdk.MustAccAddressFromBech32(req.Address))
+
+	return &types.QueryMemberResponse{Role: types.Role_name[int32(r)]}, nil
+}
+
 func (k Keeper) Proposals(goCtx context.Context, req *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")

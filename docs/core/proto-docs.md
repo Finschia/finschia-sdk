@@ -797,6 +797,8 @@
     - [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse)
     - [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest)
     - [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse)
+    - [QueryMemberRequest](#lbm.fbridge.v1.QueryMemberRequest)
+    - [QueryMemberResponse](#lbm.fbridge.v1.QueryMemberResponse)
     - [QueryMembersRequest](#lbm.fbridge.v1.QueryMembersRequest)
     - [QueryMembersResponse](#lbm.fbridge.v1.QueryMembersResponse)
     - [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest)
@@ -12021,6 +12023,36 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
+<a name="lbm.fbridge.v1.QueryMemberRequest"></a>
+
+### QueryMemberRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryMemberResponse"></a>
+
+### QueryMemberResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `role` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.QueryMembersRequest"></a>
 
 ### QueryMembersRequest
@@ -12339,6 +12371,7 @@ GenesisState defines the fbridge module's genesis state.
 | `NeededSubmissionSeqs` | [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest) | [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse) | NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs|
 | `Commitments` | [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest) | [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse) | Commitments queries commitments of a specific sequence number | GET|/lbm/fbridge/v1/receiving/commitments/{seq}|
 | `Members` | [QueryMembersRequest](#lbm.fbridge.v1.QueryMembersRequest) | [QueryMembersResponse](#lbm.fbridge.v1.QueryMembersResponse) | Members queries the members of spcific group registered on the bridge | GET|/lbm/fbridge/v1/members|
+| `Member` | [QueryMemberRequest](#lbm.fbridge.v1.QueryMemberRequest) | [QueryMemberResponse](#lbm.fbridge.v1.QueryMemberResponse) | Member queries the role of a specific member | GET|/lbm/fbridge/v1/members/{address}|
 | `Proposals` | [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse) | Proposals queries a list of SuggestRole Proposals | GET|/lbm/fbridge/v1/proposals|
 | `Proposal` | [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse) | Proposal queries a SuggestRole Proposal | GET|/lbm/fbridge/v1/proposals/{proposal_id}|
 | `Vote` | [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.fbridge.v1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}|

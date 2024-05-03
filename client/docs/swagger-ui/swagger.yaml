@@ -29843,6 +29843,47 @@ paths:
           type: string
       tags:
         - Query
+  '/lbm/fbridge/v1/members/{address}':
+    get:
+      summary: Member queries the role of a specific member
+      operationId: FBridgeMember
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              role:
+                type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /lbm/fbridge/v1/params:
     get:
       summary: Params queries the parameters of x/fbridge module.
@@ -50442,6 +50483,11 @@ definitions:
       seq:
         type: string
         format: uint64
+  lbm.fbridge.v1.QueryMemberResponse:
+    type: object
+    properties:
+      role:
+        type: string
   lbm.fbridge.v1.QueryMembersResponse:
     type: object
     properties:
