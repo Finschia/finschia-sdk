@@ -14,7 +14,7 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 		return err
 	}
 	if int(stats.SwapCount) >= k.config.MaxSwaps && !k.isUnlimited() {
-		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot initialize genesis state, there are more than %d swaps", k.config.MaxSwaps)
+		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot make more swaps, max swaps is %d", k.config.MaxSwaps)
 	}
 	isNewSwap := true
 	if _, err := k.getSwap(ctx, swap.FromDenom, swap.ToDenom); err == nil {
@@ -47,8 +47,7 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 		}
 	}
 
-	err := k.setSwap(ctx, swap)
-	if err != nil {
+	if err := k.setSwap(ctx, swap); err != nil {
 		return err
 	}
 
