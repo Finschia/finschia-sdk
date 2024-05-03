@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/fswap/codec"
 )
 
 var _ sdk.Msg = &MsgSwap{}
@@ -38,6 +39,11 @@ func (m *MsgSwap) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from}
 }
 
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m *MsgSwap) GetSignBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
+}
+
 var _ sdk.Msg = &MsgSwapAll{}
 
 // ValidateBasic Implements Msg.
@@ -65,4 +71,9 @@ func (m *MsgSwapAll) GetSigners() []sdk.AccAddress {
 		panic(err)
 	}
 	return []sdk.AccAddress{from}
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m *MsgSwapAll) GetSignBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
 }
