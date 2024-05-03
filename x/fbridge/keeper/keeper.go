@@ -35,8 +35,11 @@ func NewKeeper(
 		panic(errors.New("fbridge module account has not been set"))
 	}
 
-	if authority != types.DefaultAuthority().String() {
-		panic("x/bridge authority must be the gov module account")
+	for _, addr := range types.AuthorityCandiates() {
+		if authority == addr.String() {
+			break
+		}
+		panic("x/bridge authority must be the gov or foundation module account")
 	}
 
 	return Keeper{

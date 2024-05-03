@@ -4,6 +4,7 @@ import (
 	"errors"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	foundationtypes "github.com/Finschia/finschia-sdk/x/foundation"
 	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
@@ -20,6 +21,13 @@ func DefaultGenesisState() *GenesisState {
 
 func DefaultAuthority() sdk.AccAddress {
 	return authtypes.NewModuleAddress(govtypes.ModuleName)
+}
+
+func AuthorityCandiates() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+		authtypes.NewModuleAddress(foundationtypes.ModuleName),
+	}
 }
 
 func ValidateGenesis(data GenesisState) error {
