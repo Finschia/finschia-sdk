@@ -7,15 +7,19 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
-func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
-	guardianTrustLevel := k.GetParams(ctx).GuardianTrustLevel
+func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	proposals := k.GetRoleProposals(ctx)
 	for _, proposal := range proposals {
 		if ctx.BlockTime().After(proposal.ExpiredAt) {
 			k.DeleteRoleProposal(ctx, proposal.Id)
-			continue
 		}
+	}
+}
 
+func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
+	guardianTrustLevel := k.GetParams(ctx).GuardianTrustLevel
+	proposals := k.GetRoleProposals(ctx)
+	for _, proposal := range proposals {
 		votes := k.GetProposalVotes(ctx, proposal.Id)
 
 		voteYes := 0
@@ -58,7 +62,6 @@ func RoleMeatadataInvariant(k keeper.Keeper) sdk.Invariant {
 		actualRoleMeta := k.GetRoleMetadata(ctx)
 		expectedRoleMeta := types.RoleMetadata{}
 		for _, pair := range k.GetRolePairs(ctx) {
-			k.SetRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
 			switch pair.Role {
 			case types.RoleGuardian:
 				expectedRoleMeta.Guardian++
