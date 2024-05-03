@@ -31,20 +31,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 			}
 		}
 
-		var total uint64 = 0
-		roleMeta := k.GetRoleMetadata(ctx)
-		switch proposal.Role {
-		case types.RoleGuardian:
-			total = roleMeta.Guardian
-		case types.RoleOperator:
-			total = roleMeta.Operator
-		case types.RoleJudge:
-			total = roleMeta.Judge
-		default:
-			panic(fmt.Sprintf("invalid role: %s\n", proposal.Role))
-		}
-
-		if types.CheckTrustLevelThreshold(total, voteYes, guardianTrustLevel) {
+		if types.CheckTrustLevelThreshold(k.GetRoleMetadata(ctx).Guardian, voteYes, guardianTrustLevel) {
 			if err := k.UpdateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
 				panic(err)
 			}

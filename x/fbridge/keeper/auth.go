@@ -34,6 +34,10 @@ func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAd
 }
 
 func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress, option types.VoteOption) error {
+	if k.GetRole(ctx, voter) != types.RoleGuardian {
+		return sdkerrors.ErrUnauthorized.Wrap("only guardian can vote for a role proposal")
+	}
+
 	_, found := k.GetRoleProposal(ctx, proposalID)
 	if !found {
 		return types.ErrUnknownProposal.Wrapf("#%d not found", proposalID)
@@ -223,7 +227,6 @@ func (k Keeper) GetRole(ctx sdk.Context, addr sdk.AccAddress) types.Role {
 
 func (k Keeper) GetRolePairs(ctx sdk.Context) []types.RolePair {
 	store := ctx.KVStore(k.storeKey)
-
 	pairs := make([]types.RolePair, 0)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyRolePrefix)
 	defer iterator.Close()
