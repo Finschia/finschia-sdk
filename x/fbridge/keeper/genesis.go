@@ -8,7 +8,6 @@ import (
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
-
 	k.SetParams(ctx, gs.Params)
 	k.setNextSequence(ctx, gs.SendingState.NextSeq)
 	for _, info := range gs.SendingState.SeqToBlocknum {
@@ -48,6 +47,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 			NextSeq:       k.GetNextSequence(ctx),
 			SeqToBlocknum: k.getAllSeqToBlocknums(ctx),
 		},
+		ReceivingState:     types.ReceivingState{},
 		NextRoleProposalId: k.GetNextProposalID(ctx),
 		RoleProposals:      k.GetRoleProposals(ctx),
 		Votes:              k.GetAllVotes(ctx),

@@ -27,12 +27,58 @@ func ValidateGenesis(data GenesisState) error {
 		return err
 	}
 
-	if data.SendingState.NextSeq < 1 {
-		return errors.New("next sequence must be positive")
+	if err := validateSendingState(data.SendingState); err != nil {
+		return err
 	}
 
 	if data.NextRoleProposalId < 1 {
 		return errors.New("next role proposal ID must be positive")
+	}
+
+	for _, v := range data.RoleProposals {
+		if v.Id < 1 {
+			return errors.New("role proposal ID must be positive")
+		}
+		sdk.MustAccAddressFromBech32(v.Proposer)
+		sdk.MustAccAddressFromBech32(v.Target)
+	}
+
+	for _, v := range data.Votes {
+		if v.ProposalId < 1 {
+			return errors.New("role proposal ID must be positive")
+		}
+		sdk.MustAccAddressFromBech32(v.Voter)
+		if v.Option == OptionEmpty {
+			return errors.New("invalid voting option")
+		}
+	}
+
+	for _, v := range data.Roles {
+		sdk.MustAccAddressFromBech32(v.Address)
+		if v.Role == RoleEmpty {
+			return errors.New("invalid role")
+		}
+	}
+
+	for _, v := range data.BridgeSwitches {
+		sdk.MustAccAddressFromBech32(v.Guardian)
+		if v.Status == StatusEmpty {
+			return errors.New("invalid bridge switch status")
+		}
+	}
+
+	return nil
+}
+
+func validateSendingState(state SendingState) error {
+	if state.NextSeq < 1 {
+		return errors.New("next sequence must be positive")
+	}
+
+	for _, v := range state.SeqToBlocknum {
+		if v.Blocknum < 1 || v.Seq < 1 {
+			return errors.New("blocknum and seq must be positive")
+		}
 	}
 
 	return nil
