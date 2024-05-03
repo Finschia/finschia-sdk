@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -30,6 +31,12 @@ func (k Keeper) NextSeqSend(goCtx context.Context, req *types.QueryNextSeqSendRe
 func (k Keeper) SeqToBlocknums(goCtx context.Context, req *types.QuerySeqToBlocknumsRequest) (*types.QuerySeqToBlocknumsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	const lowerBound int = 1
+	const upperBound int = 1000
+	if len(req.Seqs) < lowerBound || len(req.Seqs) > upperBound {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("The number of seqs requested must be between %d and %d", lowerBound, upperBound))
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
