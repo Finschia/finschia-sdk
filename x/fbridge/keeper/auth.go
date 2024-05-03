@@ -55,6 +55,44 @@ func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	return nil
 }
 
+func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
+	previousRole := k.GetRole(ctx, addr)
+	if previousRole == role {
+		return sdkerrors.ErrInvalidRequest.Wrap("target already has same role")
+	}
+
+	metadata := k.GetRoleMetadata(ctx)
+
+	switch previousRole {
+	case types.RoleGuardian:
+		metadata.Guardian--
+	case types.RoleOperator:
+		metadata.Operator--
+	case types.RoleJudge:
+		metadata.Judge--
+	}
+
+	if role == types.RoleEmpty {
+		k.deleteRole(ctx, addr)
+		return nil
+	} else {
+		k.setRole(ctx, role, addr)
+	}
+
+	switch role {
+	case types.RoleGuardian:
+		metadata.Guardian++
+	case types.RoleOperator:
+		metadata.Operator++
+	case types.RoleJudge:
+		metadata.Judge++
+	}
+
+	k.SetRoleMetadata(ctx, metadata)
+
+	return nil
+}
+
 func (k Keeper) IsValidRole(role types.Role) error {
 	switch role {
 	case types.RoleGuardian, types.RoleOperator, types.RoleJudge:
@@ -176,7 +214,7 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) []types.Vot
 	return votes
 }
 
-func (k Keeper) SetRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
+func (k Keeper) setRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	bz := make([]byte, 4)
 	binary.BigEndian.PutUint32(bz, uint32(role))
@@ -207,7 +245,7 @@ func (k Keeper) GetRolePairs(ctx sdk.Context) []types.RolePair {
 	return pairs
 }
 
-func (k Keeper) DeleteRole(ctx sdk.Context, addr sdk.AccAddress) {
+func (k Keeper) deleteRole(ctx sdk.Context, addr sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.RoleKey(addr))
 }
@@ -216,44 +254,6 @@ func (k Keeper) SetRoleMetadata(ctx sdk.Context, data types.RoleMetadata) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&data)
 	store.Set(types.KeyRoleMetadata, bz)
-}
-
-func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
-	previousRole := k.GetRole(ctx, addr)
-	if previousRole == role {
-		return sdkerrors.ErrUnauthorized.Wrap("target already has same role")
-	}
-
-	metadata := k.GetRoleMetadata(ctx)
-
-	switch previousRole {
-	case types.RoleGuardian:
-		metadata.Guardian--
-	case types.RoleOperator:
-		metadata.Operator--
-	case types.RoleJudge:
-		metadata.Judge--
-	}
-
-	if role == types.RoleEmpty {
-		k.DeleteRole(ctx, addr)
-		return nil
-	} else {
-		k.SetRole(ctx, role, addr)
-	}
-
-	switch role {
-	case types.RoleGuardian:
-		metadata.Guardian++
-	case types.RoleOperator:
-		metadata.Operator++
-	case types.RoleJudge:
-		metadata.Judge++
-	}
-
-	k.SetRoleMetadata(ctx, metadata)
-
-	return nil
 }
 
 func (k Keeper) GetRoleMetadata(ctx sdk.Context) types.RoleMetadata {

@@ -20,7 +20,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
 	}
 
 	for _, pair := range gs.Roles {
-		k.SetRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
+		k.setRole(ctx, pair.Role, sdk.MustAccAddressFromBech32(pair.Address))
 	}
 	k.SetRoleMetadata(ctx, gs.RoleMetadata)
 
