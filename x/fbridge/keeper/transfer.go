@@ -32,8 +32,26 @@ func (k Keeper) handleBridgeTransfer(ctx sdk.Context, sender sdk.AccAddress, amo
 
 	seq := k.GetNextSequence(ctx)
 	k.setNextSequence(ctx, seq+1)
+	k.setSeqToBlocknum(ctx, seq, uint64(ctx.BlockHeight()))
 
 	return seq, nil
+}
+
+func (k Keeper) setSeqToBlocknum(ctx sdk.Context, seq, height uint64) {
+	store := ctx.KVStore(k.storeKey)
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, height)
+	store.Set(types.SeqToBlocknumKey(seq), bz)
+}
+
+func (k Keeper) GetSeqToBlocknum(ctx sdk.Context, seq uint64) (uint64, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.SeqToBlocknumKey(seq))
+	if len(bz) == 0 {
+		return 0, sdkerrors.ErrNotFound.Wrapf("sequence %d not found", seq)
+	}
+
+	return binary.BigEndian.Uint64(bz), nil
 }
 
 func (k Keeper) GetNextSequence(ctx sdk.Context) uint64 {

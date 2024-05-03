@@ -16,28 +16,33 @@ service Query {
 
   // NextSeqSend queries the sequence of next bridge request
   rpc NextSeqSend(QueryNextSeqSendRequest) returns (QueryNextSeqSendResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/nextseq_send";
+    option (google.api.http).get = "/lbm/fbridge/v1/sending/nextseq";
+  }
+
+  // BlocknumToSeqs queries a list of block numbers for which each sequence has been confirmed.
+  rpc SeqToBlocknums(QuerySeqToBlocknumsRequest) returns (QuerySeqToBlocknumsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/sending/blocknums";
   }
 
   // GreatestSeqByOperator queries a greatest sequence number confirmed by a particular operator
   rpc GreatestSeqByOperator(QueryGreatestSeqByOperatorRequest) returns (QueryGreatestSeqByOperatorResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/operators/{operator}/seq";
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/operators/{operator}/seq";
   }
 
   // GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence number confirmed by n-of-m operators
   rpc GreatestConsecutiveConfirmedSeq(QueryGreatestConsecutiveConfirmedSeqRequest)
       returns (QueryGreatestConsecutiveConfirmedSeqResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/greatest_confirmed_seq";
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/greatest_confirmed_seq";
   }
 
   // SubmittedProvision queries a provision submitted by a particular operator
   rpc SubmittedProvision(QuerySubmittedProvisionRequest) returns (QuerySubmittedProvisionResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/operators/{operator}/provision/{seq}";
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}";
   }
 
   // ConfirmedProvision queries a particular sequence of confirmed provisions
   rpc ConfirmedProvision(QueryConfirmedProvisionRequest) returns (QueryConfirmedProvisionResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/provision/{seq}";
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/provision/{seq}";
   }
 
   // NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator
@@ -45,12 +50,12 @@ service Query {
   // greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if
   // the operator is newly added
   rpc NeededSubmissionSeqs(QueryNeededSubmissionSeqsRequest) returns (QueryNeededSubmissionSeqsResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/operators/{operator}/needed_submission_seqs";
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs";
   }
 
   // Commitments queries commitments of a specific sequence number
   rpc Commitments(QueryCommitmentsRequest) returns (QueryCommitmentsResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/commitments/{seq}";
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/commitments/{seq}";
   }
 
   // Guardians queries a list of Guardians registered on the bridge
@@ -89,6 +94,15 @@ message QueryNextSeqSendRequest {}
 
 message QueryNextSeqSendResponse {
   uint64 seq = 1;
+}
+
+message QuerySeqToBlocknumsRequest {
+  // list of sequence number of the bridge request
+  repeated uint64 seqs = 1;
+}
+
+message QuerySeqToBlocknumsResponse {
+  repeated uint64 blocknums = 1;
 }
 
 message QueryGreatestSeqByOperatorRequest {
