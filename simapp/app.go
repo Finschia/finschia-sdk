@@ -370,7 +370,7 @@ func NewSimApp(
 	fswapConfig := fswaptypes.DefaultConfig()
 	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], app.AccountKeeper, app.BankKeeper, fswapConfig)
 
-	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], memKeys[fbridgetypes.MemStoreKey], app.AccountKeeper, app.BankKeeper, "stake")
+	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], memKeys[fbridgetypes.MemStoreKey], app.AccountKeeper, app.BankKeeper, "stake", fbridgetypes.DefaultAuthority().String())
 
 	/****  Module Options ****/
 

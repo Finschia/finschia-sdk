@@ -30,7 +30,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 			}
 		}
 
-		if types.CheckTrustLevelThreshold(k.GetRoleMetadata(ctx).Guardian, voteYes, guardianTrustLevel) {
+		if types.CheckTrustLevelThreshold(k.GetRoleMetadata(ctx).Guardian, voteYes, guardianTrustLevel) || proposal.Proposer == k.GetAuthority() {
 			if err := k.UpdateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
 				panic(err)
 			}

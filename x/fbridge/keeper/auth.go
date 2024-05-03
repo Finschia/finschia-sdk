@@ -10,8 +10,8 @@ import (
 )
 
 func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAddress, role types.Role) (types.RoleProposal, error) {
-	if k.GetRole(ctx, proposer) != types.RoleGuardian {
-		return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrap("only guardian can submit a role proposal")
+	if k.GetRole(ctx, proposer) != types.RoleGuardian || proposer.String() != k.authority {
+		return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrapf("only guardian or %s can execute this action", k.authority)
 	}
 
 	if k.GetRole(ctx, target) == role {
@@ -35,7 +35,7 @@ func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAd
 
 func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress, option types.VoteOption) error {
 	if k.GetRole(ctx, voter) != types.RoleGuardian {
-		return sdkerrors.ErrUnauthorized.Wrap("only guardian can vote for a role proposal")
+		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
 	}
 
 	_, found := k.GetRoleProposal(ctx, proposalID)
@@ -250,7 +250,7 @@ func (k Keeper) deleteRole(ctx sdk.Context, addr sdk.AccAddress) {
 
 func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
 	if k.GetRole(ctx, guardian) != types.RoleGuardian {
-		return sdkerrors.ErrUnauthorized.Wrap("only guardian can set bridge switch")
+		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
 	}
 
 	store := ctx.KVStore(k.storeKey)
@@ -268,7 +268,7 @@ func (k Keeper) deleteBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) {
 
 func (k Keeper) GetBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) (types.BridgeSwitch, error) {
 	if k.GetRole(ctx, guardian) != types.RoleGuardian {
-		return types.BridgeSwitch{}, sdkerrors.ErrUnauthorized.Wrap("only guardian can set bridge switch")
+		return types.BridgeSwitch{}, sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
 	}
 
 	store := ctx.KVStore(k.storeKey)

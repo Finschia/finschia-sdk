@@ -3,7 +3,6 @@ package keeper
 import (
 	"errors"
 	"fmt"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -20,6 +19,9 @@ type Keeper struct {
 
 	// the target denom for the bridge
 	targetDenom string
+
+	// address that can have the same rights as a Guardian when the guardian is not registered yet
+	authority string
 }
 
 func NewKeeper(
@@ -27,10 +29,14 @@ func NewKeeper(
 	key, memKey sdk.StoreKey,
 	authKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	targetDenom string,
+	targetDenom, authority string,
 ) Keeper {
 	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(errors.New("fbridge module account has not been set"))
+	}
+
+	if authority != types.DefaultAuthority().String() {
+		panic("x/bridge authority must be the gov module account")
 	}
 
 	return Keeper{
@@ -40,6 +46,7 @@ func NewKeeper(
 		authKeeper:  authKeeper,
 		bankKeeper:  bankKeeper,
 		targetDenom: targetDenom,
+		authority:   authority,
 	}
 }
 
@@ -95,6 +102,10 @@ func (k Keeper) IsInitialized(ctx sdk.Context) bool {
 	return memStore.Get(types.KeyMemInitialized) != nil
 }
 
+func (k Keeper) GetAuthority() string {
+	return k.authority
+}
+
 func (k Keeper) IsBridgeHalted(ctx sdk.Context) bool {
 	return k.GetBridgeStatus(ctx) == types.StatusInactive
 }
@@ -138,6 +149,9 @@ func (k Keeper) GetBridgeStatusMetadata(ctx sdk.Context) types.BridgeStatusMetad
 	memStore := ctx.KVStore(k.memKey)
 	bsMeta := types.BridgeStatusMetadata{}
 	bz := memStore.Get(types.KeyMemBridgeStatus)
+	if bz == nil {
+		return types.BridgeStatusMetadata{}
+	}
 	k.cdc.MustUnmarshal(bz, &bsMeta)
 	return bsMeta
 }

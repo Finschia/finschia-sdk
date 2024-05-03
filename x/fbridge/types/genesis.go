@@ -1,7 +1,11 @@
 package types
 
-// For testing purposes, you must not use the DummyGuardian address in production
-const DummyGuardian = "link1zmm9v8wucqecl75q22hddz0qypdgyvdpgg9a6d"
+import (
+	"errors"
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
+)
 
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
@@ -11,20 +15,24 @@ func DefaultGenesisState() *GenesisState {
 		},
 		ReceivingState:     ReceivingState{},
 		NextRoleProposalId: 1,
-		// WARN: you must set your own guardian address in production
-		Roles: []RolePair{{Role: RoleGuardian, Address: DummyGuardian}},
-		// WARN: you must set your own guardian address in production
-		BridgeSwitches: []BridgeSwitch{{Guardian: DummyGuardian, Status: StatusActive}},
 	}
 }
 
+func DefaultAuthority() sdk.AccAddress {
+	return authtypes.NewModuleAddress(govtypes.ModuleName)
+}
+
 func ValidateGenesis(data GenesisState) error {
+	if err := ValidateParams(data.Params); err != nil {
+		return err
+	}
+
 	if data.SendingState.NextSeq < 1 {
-		panic("next sequence must be positive")
+		return errors.New("next sequence must be positive")
 	}
 
 	if data.NextRoleProposalId < 1 {
-		panic("next role proposal ID must be positive")
+		return errors.New("next role proposal ID must be positive")
 	}
 
 	return nil
