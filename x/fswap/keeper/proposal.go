@@ -13,7 +13,7 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 	if err != nil {
 		return err
 	}
-	if int(stats.SwapCount) >= k.config.MaxSwaps && !k.isUnlimited() {
+	if int(stats.SwapCount) > k.config.MaxSwaps && !k.isUnlimited() {
 		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot make more swaps, max swaps is %d", k.config.MaxSwaps)
 	}
 	isNewSwap := true
