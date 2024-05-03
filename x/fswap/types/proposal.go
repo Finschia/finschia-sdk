@@ -42,5 +42,8 @@ func (m *MakeSwapProposal) ValidateBasic() error {
 	if err := m.Swap.ValidateBasic(); err != nil {
 		return err
 	}
+	if err := m.ToDenomMetadata.Validate(); err != nil {
+		return err
+	}
 	return gov.ValidateAbstract(m)
 }
