@@ -29883,17 +29883,17 @@ paths:
                       format: byte
       tags:
         - Query
-  /lbm/fbridge/v1/guardians:
+  /lbm/fbridge/v1/members:
     get:
-      summary: Guardians queries a list of Guardians registered on the bridge
-      operationId: FBridgeGuardians
+      summary: Members queries the members of spcific group registered on the bridge
+      operationId: FBridgeMembers
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              guardians:
+              members:
                 type: array
                 items:
                   type: string
@@ -29919,44 +29919,12 @@ paths:
                     value:
                       type: string
                       format: byte
-      tags:
-        - Query
-  /lbm/fbridge/v1/judges:
-    get:
-      summary: Judges queries a list of Judges registered on the bridge
-      operationId: FBridgeJudges
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              judges:
-                type: array
-                items:
-                  type: string
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
+      parameters:
+        - name: role
+          description: 'the role name (guardian, operator, judge).'
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /lbm/fbridge/v1/nextseq_send:
@@ -29972,44 +29940,6 @@ paths:
               seq:
                 type: string
                 format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /lbm/fbridge/v1/operators:
-    get:
-      summary: Operators queries a list of Operators registered on the bridge
-      operationId: FBridgeOperators
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              operators:
-                type: array
-                items:
-                  type: string
         default:
           description: An unexpected error response
           schema:
@@ -50461,17 +50391,10 @@ definitions:
       seq:
         type: string
         format: uint64
-  lbm.fbridge.v1.QueryGuardiansResponse:
+  lbm.fbridge.v1.QueryMembersResponse:
     type: object
     properties:
-      guardians:
-        type: array
-        items:
-          type: string
-  lbm.fbridge.v1.QueryJudgesResponse:
-    type: object
-    properties:
-      judges:
+      members:
         type: array
         items:
           type: string
@@ -50489,13 +50412,6 @@ definitions:
       seq:
         type: string
         format: uint64
-  lbm.fbridge.v1.QueryOperatorsResponse:
-    type: object
-    properties:
-      operators:
-        type: array
-        items:
-          type: string
   lbm.fbridge.v1.QueryParamsResponse:
     type: object
     properties:

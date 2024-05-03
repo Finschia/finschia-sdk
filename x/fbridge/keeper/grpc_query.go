@@ -61,55 +61,26 @@ func (k Keeper) Commitments(ctx context.Context, request *types.QueryCommitments
 	panic("implement me")
 }
 
-func (k Keeper) Guardians(goCtx context.Context, req *types.QueryGuardiansRequest) (*types.QueryGuardiansResponse, error) {
+func (k Keeper) Members(goCtx context.Context, req *types.QueryMembersRequest) (*types.QueryMembersResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	guardians := make([]string, 0)
+	role := types.QueryParamToRole[req.Role]
+	if role == 0 {
+		return nil, status.Error(codes.InvalidArgument, "invalid role")
+	}
+
+	members := make([]string, 0)
 	roles := k.GetRolePairs(ctx)
 	for _, pair := range roles {
-		if pair.Role == types.RoleGuardian {
-			guardians = append(guardians, pair.Address)
+		if pair.Role == role {
+			members = append(members, pair.Address)
 		}
 	}
 
-	return &types.QueryGuardiansResponse{Guardians: guardians}, nil
-}
-
-func (k Keeper) Operators(goCtx context.Context, req *types.QueryOperatorsRequest) (*types.QueryOperatorsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	operators := make([]string, 0)
-	roles := k.GetRolePairs(ctx)
-	for _, pair := range roles {
-		if pair.Role == types.RoleOperator {
-			operators = append(operators, pair.Address)
-		}
-	}
-
-	return &types.QueryOperatorsResponse{Operators: operators}, nil
-}
-
-func (k Keeper) Judges(goCtx context.Context, req *types.QueryJudgesRequest) (*types.QueryJudgesResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	judges := make([]string, 0)
-	roles := k.GetRolePairs(ctx)
-	for _, pair := range roles {
-		if pair.Role == types.RoleJudge {
-			judges = append(judges, pair.Address)
-		}
-	}
-
-	return &types.QueryJudgesResponse{Judges: judges}, nil
+	return &types.QueryMembersResponse{Members: members}, nil
 }
 
 func (k Keeper) Proposals(goCtx context.Context, req *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {

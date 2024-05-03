@@ -53,19 +53,9 @@ service Query {
     option (google.api.http).get = "/lbm/fbridge/v1/commitments/{seq}";
   }
 
-  // Guardians queries a list of Guardians registered on the bridge
-  rpc Guardians(QueryGuardiansRequest) returns (QueryGuardiansResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/guardians";
-  }
-
-  // Operators queries a list of Operators registered on the bridge
-  rpc Operators(QueryOperatorsRequest) returns (QueryOperatorsResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/operators";
-  }
-
-  // Judges queries a list of Judges registered on the bridge
-  rpc Judges(QueryJudgesRequest) returns (QueryJudgesResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/judges";
+  // Members queries the members of spcific group registered on the bridge
+  rpc Members(QueryMembersRequest) returns (QueryMembersResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/members";
   }
 
   // Proposals queries a list of SuggestRole Proposals
@@ -158,22 +148,13 @@ message QueryCommitmentsResponse {
   repeated string commitments = 1;
 }
 
-message QueryGuardiansRequest {}
-
-message QueryGuardiansResponse {
-  repeated string guardians = 1;
+message QueryMembersRequest {
+  // the role name (guardian, operator, judge)
+  string role = 1;
 }
 
-message QueryOperatorsRequest {}
-
-message QueryOperatorsResponse {
-  repeated string operators = 1;
-}
-
-message QueryJudgesRequest {}
-
-message QueryJudgesResponse {
-  repeated string judges = 1;
+message QueryMembersResponse {
+  repeated string members = 1;
 }
 
 message QueryProposalsRequest {

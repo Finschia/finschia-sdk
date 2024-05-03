@@ -171,9 +171,7 @@
         "rename": {
           "Params": "FBridgeParams",
           "Commitments": "FBridgeCommitments",
-          "Guardians": "FBridgeGuardians",
-          "Operators": "FBridgeOperators",
-          "Judges": "FBridgeJudges",
+          "Members": "FBridgeMembers",
           "Proposals": "FBridgeProposals",
           "Proposal": "FBridgeProposal",
           "Votes": "FBridgeVotes",
