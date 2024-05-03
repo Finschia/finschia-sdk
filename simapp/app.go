@@ -67,6 +67,9 @@ import (
 	"github.com/Finschia/finschia-sdk/x/evidence"
 	evidencekeeper "github.com/Finschia/finschia-sdk/x/evidence/keeper"
 	evidencetypes "github.com/Finschia/finschia-sdk/x/evidence/types"
+	fbridgekeeper "github.com/Finschia/finschia-sdk/x/fbridge/keeper"
+	fbridgemodule "github.com/Finschia/finschia-sdk/x/fbridge/module"
+	fbridgetypes "github.com/Finschia/finschia-sdk/x/fbridge/types"
 	"github.com/Finschia/finschia-sdk/x/feegrant"
 	feegrantkeeper "github.com/Finschia/finschia-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/Finschia/finschia-sdk/x/feegrant/module"
@@ -74,6 +77,10 @@ import (
 	foundationclient "github.com/Finschia/finschia-sdk/x/foundation/client"
 	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
+	"github.com/Finschia/finschia-sdk/x/fswap"
+	fswapclient "github.com/Finschia/finschia-sdk/x/fswap/client"
+	fswapkeeper "github.com/Finschia/finschia-sdk/x/fswap/keeper"
+	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/Finschia/finschia-sdk/x/genutil"
 	genutiltypes "github.com/Finschia/finschia-sdk/x/genutil/types"
 	"github.com/Finschia/finschia-sdk/x/gov"
@@ -132,6 +139,7 @@ var (
 			upgradeclient.ProposalHandler,
 			upgradeclient.CancelProposalHandler,
 			foundationclient.ProposalHandler,
+			fswapclient.ProposalHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -143,6 +151,8 @@ var (
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
 		collectionmodule.AppModuleBasic{},
+		fswap.AppModuleBasic{},
+		fbridgemodule.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -155,11 +165,14 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
+		fbridgetypes.ModuleName:        {authtypes.Burner},
+		fswaptypes.ModuleName:          {authtypes.Burner, authtypes.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		// govtypes.ModuleName: true, // TODO: uncomment it when authority is ready
+		fbridgetypes.ModuleName: true,
 	}
 )
 
@@ -202,6 +215,8 @@ type SimApp struct {
 	ClassKeeper      classkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
+	FswapKeeper      fswapkeeper.Keeper
+	FbridgeKeeper    fbridgekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -255,6 +270,8 @@ func NewSimApp(
 		token.StoreKey,
 		collection.StoreKey,
 		authzkeeper.StoreKey,
+		fswaptypes.StoreKey,
+		fbridgetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
@@ -331,13 +348,17 @@ func NewSimApp(
 
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 
+	fswapConfig := fswaptypes.DefaultConfig()
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswapConfig, app.BankKeeper)
+
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
+		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper)).
+		AddRoute(fswaptypes.RouterKey, fswap.NewSwapHandler(app.FswapKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -356,6 +377,8 @@ func NewSimApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
+
+	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], app.AccountKeeper, app.BankKeeper, "stake", authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
 	/****  Module Options ****/
 
@@ -388,6 +411,8 @@ func NewSimApp(
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		fswap.NewAppModule(appCodec, app.FswapKeeper, app.BankKeeper),
+		fbridgemodule.NewAppModule(appCodec, app.FbridgeKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -415,6 +440,8 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		fswaptypes.ModuleName,
+		fbridgetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -436,6 +463,8 @@ func NewSimApp(
 		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		fswaptypes.ModuleName,
+		fbridgetypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -463,6 +492,8 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
+		fswaptypes.ModuleName,
+		fbridgetypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.

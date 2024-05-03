@@ -190,6 +190,20 @@
           "GetBlockWithTxs": "GetBlockWithTxs2"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/fbridge/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "FBridgeParams",
+          "Commitments": "FBridgeCommitments",
+          "Guardians": "FBridgeGuardians",
+          "Operators": "FBridgeOperators",
+          "Judges": "FBridgeJudges",
+          "Proposals": "FBridgeProposals",
+          "Proposal": "FBridgeProposal"
+        }
+      }
     }
   ]
 }

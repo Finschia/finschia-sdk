@@ -39,6 +39,12 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.48.1...HEAD)
 
 ### Features
+* (x/fswap) [\#1336](https://github.com/Finschia/finschia-sdk/pull/1336) Initialize fswap module
+* (x/fswap) [\#1339](https://github.com/Finschia/finschia-sdk/pull/1339) Implement fswap module's genesis
+* (x/fbridge) [\#1340](https://github.com/Finschia/finschia-sdk/pull/1340) Initialize fbridge module
+* (x/fbridge) [\#1347](https://github.com/Finschia/finschia-sdk/pull/1347) Implement bridge transfer feature (sending side)
+* (x/fbridge) [\#1351](https://github.com/Finschia/finschia-sdk/pull/1351) Map a sequence to block number for every bridge request (sending side)
+* (x/fswap) [\#1345](https://github.com/Finschia/finschia-sdk/pull/1345) Implement fswap's basic functionality(MsgSwap, MsgSwapAll, Query, Proposal)
 
 ### Improvements
 * (types) [\#1314](https://github.com/Finschia/finschia-sdk/pull/1314) replace IsEqual with Equal
@@ -50,13 +56,13 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#1290](https://github.com/Finschia/finschia-sdk/pull/1290) export x/collection params into genesis (backport #1268)
 * (x/foundation) [\#1295](https://github.com/Finschia/finschia-sdk/pull/1295) add missing error handling for migration
 * (sec) [\#1302](https://github.com/Finschia/finschia-sdk/pull/1302) remove map iteration non-determinism with keys + sorting
-* (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx 
+* (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx
 * (types) [\#1299](https://github.com/Finschia/finschia-sdk/pull/1299) add missing nil checks
 * (x/staking) [\#1301](https://github.com/Finschia/finschia-sdk/pull/1301) Use bytes instead of string comparison in delete validator queue (backport cosmos/cosmos-sdk#12303)
 * (client/keys) [#1312](https://github.com/Finschia/finschia-sdk/pull/1312) ignore error when key not found in `keys delete`
 * (store) [\#1310](https://github.com/Finschia/finschia-sdk/pull/1310) fix app-hash mismatch if upgrade migration commit is interrupted(backport cosmos/cosmos-sdk#13530)
 * (types) [\#1313](https://github.com/Finschia/finschia-sdk/pull/1313) fix correctly coalesce coins even with repeated denominations(backport cosmos/cosmos-sdk#13265)
-* (x/crypto) [\#1316](https://github.com/Finschia/finschia-sdk/pull/1316) error if incorrect ledger public key (backport cosmos/cosmos-sdk#14460, cosmos/cosmos-sdk#19691) 
+* (x/crypto) [\#1316](https://github.com/Finschia/finschia-sdk/pull/1316) error if incorrect ledger public key (backport cosmos/cosmos-sdk#14460, cosmos/cosmos-sdk#19691)
 * (x/auth) [#1319](https://github.com/Finschia/finschia-sdk/pull/1319) prevent signing from wrong key in multisig
 * (x/mint, x/slashing) [\#1323](https://github.com/Finschia/finschia-sdk/pull/1323) add missing nil check for params validation
 * (x/server) [\#1337](https://github.com/Finschia/finschia-sdk/pull/1337) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
