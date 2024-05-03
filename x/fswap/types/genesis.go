@@ -1,29 +1,39 @@
 package types
 
-// NewGenesis creates a new genesis state
-func NewGenesisState(params Params, swapped Swapped) *GenesisState {
-	return &GenesisState{
-		Params:  params,
-		Swapped: swapped,
-	}
-}
-
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
-	return NewGenesisState(DefaultParams(), DefaultSwapped())
+	return &GenesisState{
+		Swaps:     []Swap{},
+		SwapStats: SwapStats{},
+		Swappeds:  []Swapped{},
+	}
 }
 
-// Validate performs basic genesis state validation returning an error upon any
-// failure.
-func (gs GenesisState) Validate() error {
-	if err := gs.Params.Validate(); err != nil {
+// Validate performs basic genesis state validation returning an error upon any failure.
+func (gs *GenesisState) Validate() error {
+	for _, swap := range gs.GetSwaps() {
+		if err := swap.ValidateBasic(); err != nil {
+			return err
+		}
+	}
+
+	if err := gs.SwapStats.ValidateBasic(); err != nil {
 		return err
 	}
-	if err := gs.Swapped.Validate(); err != nil {
-		return err
+
+	for _, swapped := range gs.GetSwappeds() {
+		if err := swapped.ValidateBasic(); err != nil {
+			return err
+		}
 	}
-	if gs.Params.SwappableNewCoinAmount.LT(gs.Swapped.NewCoinAmount) {
-		return ErrExceedSwappable
+
+	if len(gs.GetSwaps()) != len(gs.GetSwappeds()) {
+		return ErrInvalidState.Wrap("number of swaps does not match number of Swappeds")
 	}
+
+	if len(gs.GetSwaps()) != int(gs.GetSwapStats().SwapCount) {
+		return ErrInvalidState.Wrap("number of swaps does not match swap count in SwapStats")
+	}
+
 	return nil
 }

@@ -29,25 +29,26 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgSwapRequest struct {
+type MsgSwap struct {
 	// holder's address
 	FromAddress string `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
-	// amount of old currency
-	Amount types.Coin `protobuf:"bytes,2,opt,name=amount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"amount"`
+	// from-coin amount
+	FromCoinAmount types.Coin `protobuf:"bytes,2,opt,name=from_coin_amount,json=fromCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"from_coin_amount"`
+	ToDenom        string     `protobuf:"bytes,3,opt,name=to_denom,json=toDenom,proto3" json:"to_denom,omitempty"`
 }
 
-func (m *MsgSwapRequest) Reset()         { *m = MsgSwapRequest{} }
-func (m *MsgSwapRequest) String() string { return proto.CompactTextString(m) }
-func (*MsgSwapRequest) ProtoMessage()    {}
-func (*MsgSwapRequest) Descriptor() ([]byte, []int) {
+func (m *MsgSwap) Reset()         { *m = MsgSwap{} }
+func (m *MsgSwap) String() string { return proto.CompactTextString(m) }
+func (*MsgSwap) ProtoMessage()    {}
+func (*MsgSwap) Descriptor() ([]byte, []int) {
 	return fileDescriptor_65c77cf1d9b67323, []int{0}
 }
-func (m *MsgSwapRequest) XXX_Unmarshal(b []byte) error {
+func (m *MsgSwap) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgSwapRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSwap) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgSwapRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSwap.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -57,30 +58,37 @@ func (m *MsgSwapRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *MsgSwapRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSwapRequest.Merge(m, src)
+func (m *MsgSwap) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSwap.Merge(m, src)
 }
-func (m *MsgSwapRequest) XXX_Size() int {
+func (m *MsgSwap) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgSwapRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSwapRequest.DiscardUnknown(m)
+func (m *MsgSwap) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSwap.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgSwapRequest proto.InternalMessageInfo
+var xxx_messageInfo_MsgSwap proto.InternalMessageInfo
 
-func (m *MsgSwapRequest) GetFromAddress() string {
+func (m *MsgSwap) GetFromAddress() string {
 	if m != nil {
 		return m.FromAddress
 	}
 	return ""
 }
 
-func (m *MsgSwapRequest) GetAmount() types.Coin {
+func (m *MsgSwap) GetFromCoinAmount() types.Coin {
 	if m != nil {
-		return m.Amount
+		return m.FromCoinAmount
 	}
 	return types.Coin{}
+}
+
+func (m *MsgSwap) GetToDenom() string {
+	if m != nil {
+		return m.ToDenom
+	}
+	return ""
 }
 
 type MsgSwapResponse struct {
@@ -119,23 +127,25 @@ func (m *MsgSwapResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgSwapResponse proto.InternalMessageInfo
 
-type MsgSwapAllRequest struct {
+type MsgSwapAll struct {
 	// holder's address
 	FromAddress string `protobuf:"bytes,1,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
+	FromDenom   string `protobuf:"bytes,2,opt,name=from_denom,json=fromDenom,proto3" json:"from_denom,omitempty"`
+	ToDenom     string `protobuf:"bytes,3,opt,name=to_denom,json=toDenom,proto3" json:"to_denom,omitempty"`
 }
 
-func (m *MsgSwapAllRequest) Reset()         { *m = MsgSwapAllRequest{} }
-func (m *MsgSwapAllRequest) String() string { return proto.CompactTextString(m) }
-func (*MsgSwapAllRequest) ProtoMessage()    {}
-func (*MsgSwapAllRequest) Descriptor() ([]byte, []int) {
+func (m *MsgSwapAll) Reset()         { *m = MsgSwapAll{} }
+func (m *MsgSwapAll) String() string { return proto.CompactTextString(m) }
+func (*MsgSwapAll) ProtoMessage()    {}
+func (*MsgSwapAll) Descriptor() ([]byte, []int) {
 	return fileDescriptor_65c77cf1d9b67323, []int{2}
 }
-func (m *MsgSwapAllRequest) XXX_Unmarshal(b []byte) error {
+func (m *MsgSwapAll) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgSwapAllRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSwapAll) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgSwapAllRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSwapAll.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -145,21 +155,35 @@ func (m *MsgSwapAllRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgSwapAllRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSwapAllRequest.Merge(m, src)
+func (m *MsgSwapAll) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSwapAll.Merge(m, src)
 }
-func (m *MsgSwapAllRequest) XXX_Size() int {
+func (m *MsgSwapAll) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgSwapAllRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSwapAllRequest.DiscardUnknown(m)
+func (m *MsgSwapAll) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSwapAll.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgSwapAllRequest proto.InternalMessageInfo
+var xxx_messageInfo_MsgSwapAll proto.InternalMessageInfo
 
-func (m *MsgSwapAllRequest) GetFromAddress() string {
+func (m *MsgSwapAll) GetFromAddress() string {
 	if m != nil {
 		return m.FromAddress
+	}
+	return ""
+}
+
+func (m *MsgSwapAll) GetFromDenom() string {
+	if m != nil {
+		return m.FromDenom
+	}
+	return ""
+}
+
+func (m *MsgSwapAll) GetToDenom() string {
+	if m != nil {
+		return m.ToDenom
 	}
 	return ""
 }
@@ -201,38 +225,41 @@ func (m *MsgSwapAllResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSwapAllResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgSwapRequest)(nil), "lbm.fswap.v1.MsgSwapRequest")
+	proto.RegisterType((*MsgSwap)(nil), "lbm.fswap.v1.MsgSwap")
 	proto.RegisterType((*MsgSwapResponse)(nil), "lbm.fswap.v1.MsgSwapResponse")
-	proto.RegisterType((*MsgSwapAllRequest)(nil), "lbm.fswap.v1.MsgSwapAllRequest")
+	proto.RegisterType((*MsgSwapAll)(nil), "lbm.fswap.v1.MsgSwapAll")
 	proto.RegisterType((*MsgSwapAllResponse)(nil), "lbm.fswap.v1.MsgSwapAllResponse")
 }
 
 func init() { proto.RegisterFile("lbm/fswap/v1/tx.proto", fileDescriptor_65c77cf1d9b67323) }
 
 var fileDescriptor_65c77cf1d9b67323 = []byte{
-	// 348 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0xcd, 0x4a, 0xf3, 0x40,
-	0x14, 0xcd, 0x7c, 0x9f, 0x54, 0x9c, 0x16, 0xa5, 0x43, 0x85, 0x1a, 0x34, 0xad, 0x59, 0x15, 0xc4,
-	0x19, 0xd2, 0x82, 0xfb, 0xb6, 0x20, 0x2e, 0xec, 0xa6, 0xee, 0xdc, 0x48, 0x92, 0x4e, 0xd2, 0x60,
-	0x92, 0x89, 0xbd, 0xd3, 0x1f, 0xdf, 0xc2, 0xa5, 0xe0, 0x1b, 0xf8, 0x24, 0x5d, 0x76, 0xe9, 0x4a,
-	0xa5, 0x7d, 0x11, 0x49, 0x26, 0x68, 0x05, 0x8b, 0xee, 0x2e, 0xe7, 0xdc, 0x7b, 0xce, 0xe1, 0xcc,
-	0xe0, 0xfd, 0xd0, 0x89, 0x98, 0x07, 0x53, 0x3b, 0x61, 0x13, 0x8b, 0xc9, 0x19, 0x4d, 0x46, 0x42,
-	0x0a, 0x52, 0x0a, 0x9d, 0x88, 0x66, 0x30, 0x9d, 0x58, 0x7a, 0xc5, 0x17, 0xbe, 0xc8, 0x08, 0x96,
-	0x4e, 0x6a, 0x47, 0x37, 0x5c, 0x01, 0x91, 0x00, 0xe6, 0xd8, 0xc0, 0xd9, 0xc4, 0x72, 0xb8, 0xb4,
-	0x2d, 0xe6, 0x8a, 0x20, 0x56, 0xbc, 0xf9, 0x84, 0xf0, 0x6e, 0x0f, 0xfc, 0xab, 0xa9, 0x9d, 0xf4,
-	0xf9, 0xdd, 0x98, 0x83, 0x24, 0xc7, 0xb8, 0xe4, 0x8d, 0x44, 0x74, 0x63, 0x0f, 0x06, 0x23, 0x0e,
-	0x50, 0x45, 0x75, 0xd4, 0xd8, 0xe9, 0x17, 0x53, 0xac, 0xad, 0x20, 0xe2, 0xe1, 0x82, 0x1d, 0x89,
-	0x71, 0x2c, 0xab, 0xff, 0xea, 0xa8, 0x51, 0x6c, 0x1e, 0x50, 0x65, 0x43, 0x53, 0x1b, 0x9a, 0xdb,
-	0xd0, 0xae, 0x08, 0xe2, 0x4e, 0x6b, 0xfe, 0x5a, 0xd3, 0x9e, 0xdf, 0x6a, 0x27, 0x7e, 0x20, 0x87,
-	0x63, 0x87, 0xba, 0x22, 0x62, 0xe7, 0x41, 0x0c, 0xee, 0x30, 0xb0, 0x99, 0x97, 0x0f, 0xa7, 0x30,
-	0xb8, 0x65, 0xf2, 0x3e, 0xe1, 0x90, 0x1d, 0xf5, 0x73, 0x75, 0xb3, 0x8c, 0xf7, 0x3e, 0xc3, 0x41,
-	0x22, 0x62, 0xe0, 0xe6, 0x19, 0x2e, 0xe7, 0x50, 0x3b, 0x0c, 0xff, 0x1e, 0xd9, 0xac, 0x60, 0xb2,
-	0x7e, 0xa7, 0xd4, 0x9a, 0x8f, 0x08, 0xff, 0xef, 0x81, 0x4f, 0xba, 0x78, 0x2b, 0xa5, 0xc8, 0x21,
-	0x5d, 0xef, 0x94, 0x7e, 0x6f, 0x46, 0x3f, 0xda, 0xc0, 0x2a, 0x31, 0x72, 0x89, 0xb7, 0x73, 0x7d,
-	0x52, 0xfb, 0x71, 0xf3, 0x2b, 0xb1, 0x5e, 0xdf, 0xbc, 0xa0, 0xd4, 0x3a, 0x17, 0xf3, 0xa5, 0x81,
-	0x16, 0x4b, 0x03, 0xbd, 0x2f, 0x0d, 0xf4, 0xb0, 0x32, 0xb4, 0xc5, 0xca, 0xd0, 0x5e, 0x56, 0x86,
-	0x76, 0x4d, 0x7f, 0xad, 0x72, 0x96, 0xff, 0x96, 0xac, 0x52, 0xa7, 0x90, 0x3d, 0x75, 0xeb, 0x23,
-	0x00, 0x00, 0xff, 0xff, 0xf1, 0x37, 0x1c, 0xc2, 0x47, 0x02, 0x00, 0x00,
+	// 387 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xbd, 0x6e, 0xe2, 0x40,
+	0x10, 0xc7, 0xbd, 0x70, 0x3a, 0x8e, 0x05, 0xdd, 0x87, 0x05, 0x92, 0xb1, 0x84, 0xe1, 0xa8, 0x90,
+	0x4e, 0xb7, 0x2b, 0x43, 0x7b, 0x8d, 0xb9, 0xbb, 0x28, 0x0d, 0x0d, 0xe9, 0xd2, 0x20, 0x7f, 0x61,
+	0xac, 0xd8, 0x1e, 0x8b, 0x5d, 0x3e, 0xf2, 0x0a, 0xa9, 0xf2, 0x1c, 0x79, 0x8b, 0x74, 0x94, 0x94,
+	0xa9, 0x92, 0x08, 0x5e, 0x24, 0xda, 0xb5, 0xad, 0xa4, 0x20, 0x1f, 0xdd, 0xf8, 0x3f, 0xff, 0x9d,
+	0xdf, 0x8c, 0x67, 0x70, 0x33, 0x72, 0x62, 0x3a, 0x63, 0x6b, 0x3b, 0xa5, 0x2b, 0x93, 0xf2, 0x0d,
+	0x49, 0x17, 0xc0, 0x41, 0xad, 0x47, 0x4e, 0x4c, 0xa4, 0x4c, 0x56, 0xa6, 0xde, 0x08, 0x20, 0x00,
+	0x99, 0xa0, 0x22, 0xca, 0x3c, 0xba, 0xe1, 0x02, 0x8b, 0x81, 0x51, 0xc7, 0x66, 0x3e, 0x5d, 0x99,
+	0x8e, 0xcf, 0x6d, 0x93, 0xba, 0x10, 0x26, 0x59, 0xbe, 0x77, 0x8b, 0x70, 0x65, 0xcc, 0x82, 0xb3,
+	0xb5, 0x9d, 0xaa, 0x3f, 0x71, 0x7d, 0xb6, 0x80, 0x78, 0x6a, 0x7b, 0xde, 0xc2, 0x67, 0x4c, 0x43,
+	0x5d, 0xd4, 0xaf, 0x4e, 0x6a, 0x42, 0xb3, 0x32, 0x49, 0xdd, 0xe0, 0xef, 0xd2, 0x22, 0x2a, 0x4c,
+	0xed, 0x18, 0x96, 0x09, 0xd7, 0x4a, 0x5d, 0xd4, 0xaf, 0x0d, 0x5a, 0x24, 0x23, 0x11, 0x41, 0x22,
+	0x39, 0x89, 0xfc, 0x85, 0x30, 0x19, 0x0d, 0xb7, 0xf7, 0x1d, 0xe5, 0xe6, 0xa1, 0xf3, 0x2b, 0x08,
+	0xf9, 0x7c, 0xe9, 0x10, 0x17, 0x62, 0x7a, 0x12, 0x26, 0xcc, 0x9d, 0x87, 0x36, 0x9d, 0xe5, 0xc1,
+	0x6f, 0xe6, 0x5d, 0x50, 0x7e, 0x99, 0xfa, 0x4c, 0x3e, 0x9a, 0x7c, 0x15, 0x1c, 0x11, 0x59, 0x92,
+	0xa2, 0xb6, 0xf0, 0x17, 0x0e, 0x53, 0xcf, 0x4f, 0x20, 0xd6, 0xca, 0xb2, 0xb1, 0x0a, 0x87, 0x7f,
+	0xe2, 0xb3, 0xf7, 0x03, 0x7f, 0xcb, 0x47, 0x98, 0xf8, 0x2c, 0x85, 0x84, 0xf9, 0xbd, 0x10, 0xe3,
+	0x5c, 0xb2, 0xa2, 0xe8, 0x23, 0x83, 0xb5, 0x31, 0x96, 0x96, 0x0c, 0x50, 0x92, 0x86, 0xaa, 0x50,
+	0x24, 0xe2, 0x2d, 0x7a, 0x03, 0xab, 0xcf, 0xa8, 0xa2, 0x81, 0xc1, 0x15, 0xc2, 0xe5, 0x31, 0x0b,
+	0xd4, 0x3f, 0xf8, 0x93, 0xfc, 0xb7, 0x4d, 0xf2, 0x72, 0x59, 0x24, 0x7f, 0xa1, 0xb7, 0x8f, 0xca,
+	0x45, 0x15, 0xf5, 0x3f, 0xae, 0x14, 0x33, 0x68, 0x47, 0x9d, 0x56, 0x14, 0xe9, 0xdd, 0xd7, 0x32,
+	0x45, 0x99, 0xd1, 0xe9, 0x76, 0x6f, 0xa0, 0xdd, 0xde, 0x40, 0x8f, 0x7b, 0x03, 0x5d, 0x1f, 0x0c,
+	0x65, 0x77, 0x30, 0x94, 0xbb, 0x83, 0xa1, 0x9c, 0x93, 0x77, 0x57, 0xb2, 0xc9, 0x0f, 0x4f, 0xae,
+	0xc6, 0xf9, 0x2c, 0xaf, 0x66, 0xf8, 0x14, 0x00, 0x00, 0xff, 0xff, 0xb0, 0x18, 0x17, 0xb0, 0x92,
+	0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -247,8 +274,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	Swap(ctx context.Context, in *MsgSwapRequest, opts ...grpc.CallOption) (*MsgSwapResponse, error)
-	SwapAll(ctx context.Context, in *MsgSwapAllRequest, opts ...grpc.CallOption) (*MsgSwapAllResponse, error)
+	Swap(ctx context.Context, in *MsgSwap, opts ...grpc.CallOption) (*MsgSwapResponse, error)
+	SwapAll(ctx context.Context, in *MsgSwapAll, opts ...grpc.CallOption) (*MsgSwapAllResponse, error)
 }
 
 type msgClient struct {
@@ -259,7 +286,7 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) Swap(ctx context.Context, in *MsgSwapRequest, opts ...grpc.CallOption) (*MsgSwapResponse, error) {
+func (c *msgClient) Swap(ctx context.Context, in *MsgSwap, opts ...grpc.CallOption) (*MsgSwapResponse, error) {
 	out := new(MsgSwapResponse)
 	err := c.cc.Invoke(ctx, "/lbm.fswap.v1.Msg/Swap", in, out, opts...)
 	if err != nil {
@@ -268,7 +295,7 @@ func (c *msgClient) Swap(ctx context.Context, in *MsgSwapRequest, opts ...grpc.C
 	return out, nil
 }
 
-func (c *msgClient) SwapAll(ctx context.Context, in *MsgSwapAllRequest, opts ...grpc.CallOption) (*MsgSwapAllResponse, error) {
+func (c *msgClient) SwapAll(ctx context.Context, in *MsgSwapAll, opts ...grpc.CallOption) (*MsgSwapAllResponse, error) {
 	out := new(MsgSwapAllResponse)
 	err := c.cc.Invoke(ctx, "/lbm.fswap.v1.Msg/SwapAll", in, out, opts...)
 	if err != nil {
@@ -279,18 +306,18 @@ func (c *msgClient) SwapAll(ctx context.Context, in *MsgSwapAllRequest, opts ...
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	Swap(context.Context, *MsgSwapRequest) (*MsgSwapResponse, error)
-	SwapAll(context.Context, *MsgSwapAllRequest) (*MsgSwapAllResponse, error)
+	Swap(context.Context, *MsgSwap) (*MsgSwapResponse, error)
+	SwapAll(context.Context, *MsgSwapAll) (*MsgSwapAllResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) Swap(ctx context.Context, req *MsgSwapRequest) (*MsgSwapResponse, error) {
+func (*UnimplementedMsgServer) Swap(ctx context.Context, req *MsgSwap) (*MsgSwapResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Swap not implemented")
 }
-func (*UnimplementedMsgServer) SwapAll(ctx context.Context, req *MsgSwapAllRequest) (*MsgSwapAllResponse, error) {
+func (*UnimplementedMsgServer) SwapAll(ctx context.Context, req *MsgSwapAll) (*MsgSwapAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SwapAll not implemented")
 }
 
@@ -299,7 +326,7 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 }
 
 func _Msg_Swap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSwapRequest)
+	in := new(MsgSwap)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -311,13 +338,13 @@ func _Msg_Swap_Handler(srv interface{}, ctx context.Context, dec func(interface{
 		FullMethod: "/lbm.fswap.v1.Msg/Swap",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Swap(ctx, req.(*MsgSwapRequest))
+		return srv.(MsgServer).Swap(ctx, req.(*MsgSwap))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_SwapAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSwapAllRequest)
+	in := new(MsgSwapAll)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -329,7 +356,7 @@ func _Msg_SwapAll_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/lbm.fswap.v1.Msg/SwapAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SwapAll(ctx, req.(*MsgSwapAllRequest))
+		return srv.(MsgServer).SwapAll(ctx, req.(*MsgSwapAll))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -351,7 +378,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "lbm/fswap/v1/tx.proto",
 }
 
-func (m *MsgSwapRequest) Marshal() (dAtA []byte, err error) {
+func (m *MsgSwap) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -361,18 +388,25 @@ func (m *MsgSwapRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgSwapRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSwap) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgSwapRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSwap) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.ToDenom) > 0 {
+		i -= len(m.ToDenom)
+		copy(dAtA[i:], m.ToDenom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ToDenom)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	{
-		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.FromCoinAmount.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -414,7 +448,7 @@ func (m *MsgSwapResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgSwapAllRequest) Marshal() (dAtA []byte, err error) {
+func (m *MsgSwapAll) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -424,16 +458,30 @@ func (m *MsgSwapAllRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgSwapAllRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSwapAll) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgSwapAllRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSwapAll) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.ToDenom) > 0 {
+		i -= len(m.ToDenom)
+		copy(dAtA[i:], m.ToDenom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ToDenom)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.FromDenom) > 0 {
+		i -= len(m.FromDenom)
+		copy(dAtA[i:], m.FromDenom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.FromDenom)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.FromAddress) > 0 {
 		i -= len(m.FromAddress)
 		copy(dAtA[i:], m.FromAddress)
@@ -478,7 +526,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgSwapRequest) Size() (n int) {
+func (m *MsgSwap) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -488,8 +536,12 @@ func (m *MsgSwapRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = m.Amount.Size()
+	l = m.FromCoinAmount.Size()
 	n += 1 + l + sovTx(uint64(l))
+	l = len(m.ToDenom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -502,13 +554,21 @@ func (m *MsgSwapResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgSwapAllRequest) Size() (n int) {
+func (m *MsgSwapAll) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
 	l = len(m.FromAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.FromDenom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ToDenom)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -530,7 +590,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgSwapRequest) Unmarshal(dAtA []byte) error {
+func (m *MsgSwap) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -553,10 +613,10 @@ func (m *MsgSwapRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSwapRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSwap: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSwapRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSwap: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -593,7 +653,7 @@ func (m *MsgSwapRequest) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field FromCoinAmount", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -620,9 +680,41 @@ func (m *MsgSwapRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.FromCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ToDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -695,7 +787,7 @@ func (m *MsgSwapResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgSwapAllRequest) Unmarshal(dAtA []byte) error {
+func (m *MsgSwapAll) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -718,10 +810,10 @@ func (m *MsgSwapAllRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSwapAllRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSwapAll: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSwapAllRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSwapAll: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -755,6 +847,70 @@ func (m *MsgSwapAllRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.FromAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ToDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

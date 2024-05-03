@@ -12,16 +12,4 @@ const (
 
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
-
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_fswap"
 )
-
-var (
-	ParamsKey  = byte(0x00)
-	SwappedKey = byte(0x01)
-)
-
-func KeyPrefix(p string) []byte {
-	return []byte(p)
-}

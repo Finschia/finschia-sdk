@@ -3,68 +3,77 @@ package types
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/fswap/codec"
 )
 
-var _ sdk.Msg = &MsgSwapRequest{}
-
-// NewMsgSwapRequest - construct a msg to swap amounts of old coin to new coin
-//
-//nolint:interfacer
-func NewMsgSwapRequest(fromAddr, toAddr sdk.AccAddress, amount sdk.Coin) *MsgSwapRequest {
-	return &MsgSwapRequest{FromAddress: fromAddr.String(), Amount: amount}
-}
+var _ sdk.Msg = &MsgSwap{}
 
 // ValidateBasic Implements Msg.
-func (msg MsgSwapRequest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwap) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("Invalid address (%s)", err)
 	}
 
-	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+	if !m.FromCoinAmount.IsValid() {
+		return sdkerrors.ErrInvalidCoins.Wrap(m.FromCoinAmount.String())
 	}
 
-	if !msg.Amount.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+	if !m.FromCoinAmount.IsPositive() {
+		return sdkerrors.ErrInvalidCoins.Wrap(m.FromCoinAmount.String())
+	}
+
+	if len(m.GetToDenom()) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
 	}
 
 	return nil
 }
 
 // GetSigners Implements Msg.
-func (msg MsgSwapRequest) GetSigners() []sdk.AccAddress {
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwap) GetSigners() []sdk.AccAddress {
+	from, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
 		panic(err)
 	}
 	return []sdk.AccAddress{from}
 }
 
-var _ sdk.Msg = &MsgSwapAllRequest{}
-
-// NewMsgSwapRequest - construct a msg to swap all old coin to new coin
-//
-//nolint:interfacer
-func NewMsgSwapAllRequest(fromAddr, toAddr sdk.AccAddress) *MsgSwapAllRequest {
-	return &MsgSwapAllRequest{FromAddress: fromAddr.String()}
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m *MsgSwap) GetSignBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
 }
 
+var _ sdk.Msg = &MsgSwapAll{}
+
 // ValidateBasic Implements Msg.
-func (msg MsgSwapAllRequest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwapAll) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("Invalid address (%s)", err)
+	}
+
+	if len(m.GetFromDenom()) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
+	}
+
+	if len(m.GetToDenom()) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
 	}
 
 	return nil
 }
 
 // GetSigners Implements Msg.
-func (msg MsgSwapAllRequest) GetSigners() []sdk.AccAddress {
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+func (m *MsgSwapAll) GetSigners() []sdk.AccAddress {
+	from, err := sdk.AccAddressFromBech32(m.FromAddress)
 	if err != nil {
 		panic(err)
 	}
 	return []sdk.AccAddress{from}
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m *MsgSwapAll) GetSignBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
 }

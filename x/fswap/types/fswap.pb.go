@@ -6,6 +6,8 @@ package types
 import (
 	fmt "fmt"
 	github_com_Finschia_finschia_sdk_types "github.com/Finschia/finschia-sdk/types"
+	types1 "github.com/Finschia/finschia-sdk/types"
+	types "github.com/Finschia/finschia-sdk/x/bank/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -24,15 +26,179 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type Swap struct {
+	FromDenom           string                                     `protobuf:"bytes,1,opt,name=from_denom,json=fromDenom,proto3" json:"from_denom,omitempty"`
+	ToDenom             string                                     `protobuf:"bytes,2,opt,name=to_denom,json=toDenom,proto3" json:"to_denom,omitempty"`
+	AmountCapForToDenom github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,3,opt,name=amount_cap_for_to_denom,json=amountCapForToDenom,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"amount_cap_for_to_denom"`
+	SwapRate            github_com_Finschia_finschia_sdk_types.Dec `protobuf:"bytes,4,opt,name=swap_rate,json=swapRate,proto3,customtype=github.com/Finschia/finschia-sdk/types.Dec" json:"swap_rate"`
+}
+
+func (m *Swap) Reset()      { *m = Swap{} }
+func (*Swap) ProtoMessage() {}
+func (*Swap) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42ca60eaf37a2b67, []int{0}
+}
+func (m *Swap) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Swap) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Swap.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Swap) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Swap.Merge(m, src)
+}
+func (m *Swap) XXX_Size() int {
+	return m.Size()
+}
+func (m *Swap) XXX_DiscardUnknown() {
+	xxx_messageInfo_Swap.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Swap proto.InternalMessageInfo
+
+func (m *Swap) GetFromDenom() string {
+	if m != nil {
+		return m.FromDenom
+	}
+	return ""
+}
+
+func (m *Swap) GetToDenom() string {
+	if m != nil {
+		return m.ToDenom
+	}
+	return ""
+}
+
+type SwapStats struct {
+	SwapCount int32 `protobuf:"varint,1,opt,name=swap_count,json=swapCount,proto3" json:"swap_count,omitempty"`
+}
+
+func (m *SwapStats) Reset()      { *m = SwapStats{} }
+func (*SwapStats) ProtoMessage() {}
+func (*SwapStats) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42ca60eaf37a2b67, []int{1}
+}
+func (m *SwapStats) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SwapStats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SwapStats.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SwapStats) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SwapStats.Merge(m, src)
+}
+func (m *SwapStats) XXX_Size() int {
+	return m.Size()
+}
+func (m *SwapStats) XXX_DiscardUnknown() {
+	xxx_messageInfo_SwapStats.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SwapStats proto.InternalMessageInfo
+
+func (m *SwapStats) GetSwapCount() int32 {
+	if m != nil {
+		return m.SwapCount
+	}
+	return 0
+}
+
+// From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+type MakeSwapProposal struct {
+	Title           string         `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description     string         `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Swap            Swap           `protobuf:"bytes,3,opt,name=swap,proto3" json:"swap"`
+	ToDenomMetadata types.Metadata `protobuf:"bytes,4,opt,name=to_denom_metadata,json=toDenomMetadata,proto3" json:"to_denom_metadata" yaml:"denom_metadata"`
+}
+
+func (m *MakeSwapProposal) Reset()      { *m = MakeSwapProposal{} }
+func (*MakeSwapProposal) ProtoMessage() {}
+func (*MakeSwapProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42ca60eaf37a2b67, []int{2}
+}
+func (m *MakeSwapProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MakeSwapProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MakeSwapProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MakeSwapProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MakeSwapProposal.Merge(m, src)
+}
+func (m *MakeSwapProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *MakeSwapProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_MakeSwapProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MakeSwapProposal proto.InternalMessageInfo
+
+func (m *MakeSwapProposal) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *MakeSwapProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MakeSwapProposal) GetSwap() Swap {
+	if m != nil {
+		return m.Swap
+	}
+	return Swap{}
+}
+
+func (m *MakeSwapProposal) GetToDenomMetadata() types.Metadata {
+	if m != nil {
+		return m.ToDenomMetadata
+	}
+	return types.Metadata{}
+}
+
 type Swapped struct {
-	OldCoinAmount github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,1,opt,name=old_coin_amount,json=oldCoinAmount,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"old_coin_amount"`
-	NewCoinAmount github_com_Finschia_finschia_sdk_types.Int `protobuf:"bytes,2,opt,name=new_coin_amount,json=newCoinAmount,proto3,customtype=github.com/Finschia/finschia-sdk/types.Int" json:"new_coin_amount"`
+	FromCoinAmount types1.Coin `protobuf:"bytes,1,opt,name=from_coin_amount,json=fromCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"from_coin_amount"`
+	ToCoinAmount   types1.Coin `protobuf:"bytes,2,opt,name=to_coin_amount,json=toCoinAmount,proto3,castrepeated=github.com/Finschia/finschia-sdk/types.Coin" json:"to_coin_amount"`
 }
 
 func (m *Swapped) Reset()      { *m = Swapped{} }
 func (*Swapped) ProtoMessage() {}
 func (*Swapped) Descriptor() ([]byte, []int) {
-	return fileDescriptor_42ca60eaf37a2b67, []int{0}
+	return fileDescriptor_42ca60eaf37a2b67, []int{3}
 }
 func (m *Swapped) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -61,29 +227,264 @@ func (m *Swapped) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Swapped proto.InternalMessageInfo
 
+func (m *Swapped) GetFromCoinAmount() types1.Coin {
+	if m != nil {
+		return m.FromCoinAmount
+	}
+	return types1.Coin{}
+}
+
+func (m *Swapped) GetToCoinAmount() types1.Coin {
+	if m != nil {
+		return m.ToCoinAmount
+	}
+	return types1.Coin{}
+}
+
 func init() {
+	proto.RegisterType((*Swap)(nil), "lbm.fswap.v1.Swap")
+	proto.RegisterType((*SwapStats)(nil), "lbm.fswap.v1.SwapStats")
+	proto.RegisterType((*MakeSwapProposal)(nil), "lbm.fswap.v1.MakeSwapProposal")
 	proto.RegisterType((*Swapped)(nil), "lbm.fswap.v1.Swapped")
 }
 
 func init() { proto.RegisterFile("lbm/fswap/v1/fswap.proto", fileDescriptor_42ca60eaf37a2b67) }
 
 var fileDescriptor_42ca60eaf37a2b67 = []byte{
-	// 230 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc8, 0x49, 0xca, 0xd5,
-	0x4f, 0x2b, 0x2e, 0x4f, 0x2c, 0xd0, 0x2f, 0x33, 0x84, 0x30, 0xf4, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2,
-	0x85, 0x78, 0x72, 0x92, 0x72, 0xf5, 0x20, 0x02, 0x65, 0x86, 0x52, 0x22, 0xe9, 0xf9, 0xe9, 0xf9,
-	0x60, 0x09, 0x7d, 0x10, 0x0b, 0xa2, 0x46, 0xe9, 0x38, 0x23, 0x17, 0x7b, 0x70, 0x79, 0x62, 0x41,
-	0x41, 0x6a, 0x8a, 0x50, 0x14, 0x17, 0x7f, 0x7e, 0x4e, 0x4a, 0x7c, 0x72, 0x7e, 0x66, 0x5e, 0x7c,
-	0x62, 0x6e, 0x7e, 0x69, 0x5e, 0x89, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0xa7, 0x93, 0xd1, 0x89, 0x7b,
-	0xf2, 0x0c, 0xb7, 0xee, 0xc9, 0x6b, 0xa5, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7,
-	0xea, 0xbb, 0x65, 0xe6, 0x15, 0x27, 0x67, 0x64, 0x26, 0xea, 0xa7, 0x41, 0x19, 0xba, 0xc5, 0x29,
-	0xd9, 0xfa, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x7a, 0x9e, 0x79, 0x25, 0x41, 0xbc, 0xf9, 0x39, 0x29,
-	0xce, 0xf9, 0x99, 0x79, 0x8e, 0x60, 0x83, 0x40, 0x66, 0xe7, 0xa5, 0x96, 0xa3, 0x98, 0xcd, 0x44,
-	0xbe, 0xd9, 0x79, 0xa9, 0xe5, 0x08, 0xb3, 0xad, 0x58, 0x66, 0x2c, 0x90, 0x67, 0x70, 0xf2, 0x38,
-	0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63,
-	0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0x3d, 0x82, 0x46, 0x57, 0x40, 0x03,
-	0x10, 0x6c, 0x45, 0x12, 0x1b, 0x38, 0x68, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x82, 0xb7,
-	0x84, 0x0e, 0x5a, 0x01, 0x00, 0x00,
+	// 539 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x93, 0xbf, 0x6f, 0xd3, 0x40,
+	0x14, 0xc7, 0xe3, 0x92, 0xd2, 0xe4, 0x52, 0x95, 0x62, 0x8a, 0x48, 0x2b, 0xc5, 0xae, 0x32, 0x21,
+	0x7e, 0xd8, 0x4a, 0xca, 0x94, 0x8d, 0xa4, 0xaa, 0x60, 0xa8, 0x40, 0x2e, 0x13, 0x8b, 0x75, 0x76,
+	0x2e, 0x89, 0x15, 0xdb, 0xcf, 0xf2, 0xbd, 0xa6, 0xed, 0x1f, 0xc0, 0xce, 0xc8, 0xd8, 0x99, 0xbf,
+	0xa4, 0x63, 0x47, 0xc4, 0x10, 0x50, 0xb2, 0x74, 0xe6, 0x1f, 0x00, 0xbd, 0x3b, 0x37, 0x4d, 0xc5,
+	0x00, 0x42, 0x62, 0x7b, 0xf7, 0xde, 0xbb, 0xf7, 0xb9, 0xfb, 0x7e, 0xef, 0x58, 0x3d, 0x0e, 0x12,
+	0x77, 0x20, 0x4f, 0x78, 0xe6, 0x4e, 0x5a, 0x3a, 0x70, 0xb2, 0x1c, 0x10, 0xcc, 0xf5, 0x38, 0x48,
+	0x1c, 0x9d, 0x98, 0xb4, 0x76, 0xb6, 0x86, 0x30, 0x04, 0x55, 0x70, 0x29, 0xd2, 0x3d, 0x3b, 0x56,
+	0x08, 0x32, 0x01, 0xe9, 0x06, 0x5c, 0x0a, 0x77, 0xd2, 0x0a, 0x04, 0xf2, 0x96, 0x1b, 0x42, 0x94,
+	0xfe, 0x56, 0x4f, 0xc7, 0x8b, 0x3a, 0x2d, 0x74, 0xbd, 0xf9, 0x61, 0x85, 0x95, 0x8f, 0x4e, 0x78,
+	0x66, 0x36, 0x18, 0x1b, 0xe4, 0x90, 0xf8, 0x7d, 0x91, 0x42, 0x52, 0x37, 0x76, 0x8d, 0xc7, 0x55,
+	0xaf, 0x4a, 0x99, 0x7d, 0x4a, 0x98, 0xdb, 0xac, 0x82, 0x50, 0x14, 0x57, 0x54, 0x71, 0x0d, 0x41,
+	0x97, 0x46, 0xec, 0x11, 0x4f, 0xe0, 0x38, 0x45, 0x3f, 0xe4, 0x99, 0x3f, 0x80, 0xdc, 0x5f, 0x74,
+	0xde, 0xa1, 0xce, 0x6e, 0xfb, 0x62, 0x6a, 0x97, 0xbe, 0x4e, 0xed, 0x27, 0xc3, 0x08, 0x47, 0xc7,
+	0x81, 0x13, 0x42, 0xe2, 0x1e, 0x44, 0xa9, 0x0c, 0x47, 0x11, 0x77, 0x07, 0x45, 0xf0, 0x5c, 0xf6,
+	0xc7, 0x2e, 0x9e, 0x65, 0x42, 0x3a, 0xaf, 0x53, 0xf4, 0x1e, 0xe8, 0x91, 0x3d, 0x9e, 0x1d, 0x40,
+	0xfe, 0xae, 0x20, 0xbd, 0x61, 0x55, 0x52, 0xc3, 0xcf, 0x39, 0x8a, 0x7a, 0xf9, 0x9f, 0x66, 0xef,
+	0x8b, 0xd0, 0xab, 0xd0, 0x10, 0x8f, 0xa3, 0xe8, 0x54, 0x3e, 0x9d, 0xdb, 0xa5, 0xab, 0x73, 0xdb,
+	0x68, 0xbe, 0x60, 0x55, 0x92, 0xe1, 0x08, 0x39, 0x4a, 0xd2, 0x42, 0x71, 0x42, 0x3a, 0x82, 0xd2,
+	0x62, 0xd5, 0x53, 0xe4, 0x1e, 0x25, 0x96, 0x76, 0x5d, 0x19, 0x6c, 0xf3, 0x90, 0x8f, 0x05, 0x6d,
+	0x7d, 0x9b, 0x43, 0x06, 0x92, 0xc7, 0xe6, 0x16, 0x5b, 0xc5, 0x08, 0x63, 0x51, 0x88, 0xa8, 0x17,
+	0xe6, 0x2e, 0xab, 0xf5, 0x85, 0x0c, 0xf3, 0x28, 0xc3, 0x08, 0xd2, 0x42, 0xc3, 0xe5, 0x94, 0xf9,
+	0x8c, 0x95, 0x89, 0xa1, 0x44, 0xab, 0xb5, 0x4d, 0x67, 0xd9, 0x7d, 0x87, 0x08, 0xdd, 0x32, 0x5d,
+	0xd6, 0x53, 0x5d, 0xe6, 0x88, 0xdd, 0xbf, 0x96, 0xd9, 0x4f, 0x04, 0xf2, 0x3e, 0x47, 0xae, 0x34,
+	0xa9, 0xb5, 0x1b, 0x8e, 0x36, 0xdd, 0x51, 0x3e, 0x17, 0xa6, 0x3b, 0x87, 0x45, 0x53, 0xb7, 0x41,
+	0x53, 0x7e, 0x4c, 0xed, 0x87, 0x67, 0x3c, 0x89, 0x3b, 0xcd, 0xdb, 0x23, 0x9a, 0xde, 0xbd, 0xc2,
+	0xd7, 0xeb, 0xfe, 0x4e, 0x99, 0xae, 0xdb, 0xfc, 0x69, 0xb0, 0x35, 0x3a, 0x44, 0x26, 0xfa, 0xe6,
+	0x29, 0xdb, 0x54, 0x6f, 0x85, 0xde, 0x99, 0xaf, 0x8d, 0x52, 0x97, 0xad, 0xb5, 0xb7, 0x6f, 0xd0,
+	0x52, 0x2c, 0xd0, 0x3d, 0x88, 0xd2, 0xee, 0x1e, 0x61, 0x3f, 0x7f, 0xb3, 0x9f, 0xfe, 0xa5, 0x53,
+	0xb4, 0xc9, 0xdb, 0x20, 0x0e, 0x45, 0x2f, 0x15, 0xc5, 0x44, 0xb6, 0x81, 0x70, 0x8b, 0xbb, 0xf2,
+	0x5f, 0xb8, 0xeb, 0x08, 0x37, 0x54, 0xad, 0x40, 0xf7, 0xd5, 0xc5, 0xcc, 0x32, 0x2e, 0x67, 0x96,
+	0xf1, 0x7d, 0x66, 0x19, 0x1f, 0xe7, 0x56, 0xe9, 0x72, 0x6e, 0x95, 0xbe, 0xcc, 0xad, 0xd2, 0x7b,
+	0xe7, 0x8f, 0xa3, 0x4f, 0x8b, 0x1f, 0xae, 0x10, 0xc1, 0x5d, 0xf5, 0xf7, 0xf6, 0x7e, 0x05, 0x00,
+	0x00, 0xff, 0xff, 0x9d, 0x2f, 0x11, 0xda, 0xfb, 0x03, 0x00, 0x00,
+}
+
+func (this *Swap) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Swap)
+	if !ok {
+		that2, ok := that.(Swap)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.FromDenom != that1.FromDenom {
+		return false
+	}
+	if this.ToDenom != that1.ToDenom {
+		return false
+	}
+	if !this.AmountCapForToDenom.Equal(that1.AmountCapForToDenom) {
+		return false
+	}
+	if !this.SwapRate.Equal(that1.SwapRate) {
+		return false
+	}
+	return true
+}
+func (this *SwapStats) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SwapStats)
+	if !ok {
+		that2, ok := that.(SwapStats)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.SwapCount != that1.SwapCount {
+		return false
+	}
+	return true
+}
+func (m *Swap) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Swap) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Swap) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.SwapRate.Size()
+		i -= size
+		if _, err := m.SwapRate.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintFswap(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size := m.AmountCapForToDenom.Size()
+		i -= size
+		if _, err := m.AmountCapForToDenom.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintFswap(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.ToDenom) > 0 {
+		i -= len(m.ToDenom)
+		copy(dAtA[i:], m.ToDenom)
+		i = encodeVarintFswap(dAtA, i, uint64(len(m.ToDenom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FromDenom) > 0 {
+		i -= len(m.FromDenom)
+		copy(dAtA[i:], m.FromDenom)
+		i = encodeVarintFswap(dAtA, i, uint64(len(m.FromDenom)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SwapStats) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SwapStats) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SwapStats) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.SwapCount != 0 {
+		i = encodeVarintFswap(dAtA, i, uint64(m.SwapCount))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MakeSwapProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MakeSwapProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MakeSwapProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.ToDenomMetadata.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintFswap(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size, err := m.Swap.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintFswap(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintFswap(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintFswap(dAtA, i, uint64(len(m.Title)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Swapped) Marshal() (dAtA []byte, err error) {
@@ -107,21 +508,21 @@ func (m *Swapped) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size := m.NewCoinAmount.Size()
-		i -= size
-		if _, err := m.NewCoinAmount.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.ToCoinAmount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
+		i -= size
 		i = encodeVarintFswap(dAtA, i, uint64(size))
 	}
 	i--
 	dAtA[i] = 0x12
 	{
-		size := m.OldCoinAmount.Size()
-		i -= size
-		if _, err := m.OldCoinAmount.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.FromCoinAmount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
+		i -= size
 		i = encodeVarintFswap(dAtA, i, uint64(size))
 	}
 	i--
@@ -140,15 +541,69 @@ func encodeVarintFswap(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *Swap) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.FromDenom)
+	if l > 0 {
+		n += 1 + l + sovFswap(uint64(l))
+	}
+	l = len(m.ToDenom)
+	if l > 0 {
+		n += 1 + l + sovFswap(uint64(l))
+	}
+	l = m.AmountCapForToDenom.Size()
+	n += 1 + l + sovFswap(uint64(l))
+	l = m.SwapRate.Size()
+	n += 1 + l + sovFswap(uint64(l))
+	return n
+}
+
+func (m *SwapStats) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.SwapCount != 0 {
+		n += 1 + sovFswap(uint64(m.SwapCount))
+	}
+	return n
+}
+
+func (m *MakeSwapProposal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovFswap(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovFswap(uint64(l))
+	}
+	l = m.Swap.Size()
+	n += 1 + l + sovFswap(uint64(l))
+	l = m.ToDenomMetadata.Size()
+	n += 1 + l + sovFswap(uint64(l))
+	return n
+}
+
 func (m *Swapped) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.OldCoinAmount.Size()
+	l = m.FromCoinAmount.Size()
 	n += 1 + l + sovFswap(uint64(l))
-	l = m.NewCoinAmount.Size()
+	l = m.ToCoinAmount.Size()
 	n += 1 + l + sovFswap(uint64(l))
 	return n
 }
@@ -158,6 +613,437 @@ func sovFswap(x uint64) (n int) {
 }
 func sozFswap(x uint64) (n int) {
 	return sovFswap(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *Swap) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowFswap
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Swap: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Swap: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ToDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AmountCapForToDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.AmountCapForToDenom.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SwapRate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.SwapRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipFswap(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SwapStats) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowFswap
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SwapStats: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SwapStats: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SwapCount", wireType)
+			}
+			m.SwapCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.SwapCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipFswap(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MakeSwapProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowFswap
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MakeSwapProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MakeSwapProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Swap", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Swap.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToDenomMetadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFswap
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthFswap
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ToDenomMetadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipFswap(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthFswap
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *Swapped) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -190,9 +1076,9 @@ func (m *Swapped) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OldCoinAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field FromCoinAmount", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFswap
@@ -202,31 +1088,30 @@ func (m *Swapped) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthFswap
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthFswap
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.OldCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.FromCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NewCoinAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ToCoinAmount", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFswap
@@ -236,23 +1121,22 @@ func (m *Swapped) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthFswap
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthFswap
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.NewCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.ToCoinAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
