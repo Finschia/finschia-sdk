@@ -20,7 +20,7 @@ type Keeper struct {
 	// the target denom for the bridge
 	targetDenom string
 
-	// address that can have the same rights as a Guardian when the guardian is not registered yet
+	// authority can give a role to a specific address like guardian
 	authority string
 }
 

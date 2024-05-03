@@ -30,6 +30,7 @@ const (
 //
 // - 0xF0: memstore initialized
 // - 0xF1: role metadata
+// - 0xF2: bridge status
 
 var (
 	KeyParams              = []byte{0x01} // key for fbridge module params
