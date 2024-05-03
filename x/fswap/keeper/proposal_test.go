@@ -41,7 +41,7 @@ func (s *KeeperTestSuite) TestMakeSwapProposal() {
 				Symbol:      s.toDenomMetadata.Symbol,
 			},
 			true,
-			sdkerrors.ErrInvalidRequest,
+			types.ErrCanNotHaveMoreSwap, // TODO(bjs) check with maxSwap(2)
 		},
 	}
 	for name, tc := range testCases {
