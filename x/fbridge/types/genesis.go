@@ -1,13 +1,9 @@
 package types
 
-import (
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	sdk "github.com/Finschia/finschia-sdk/types"
-)
+// For testing purposes, you must not use the DummyGuardian address in production
+const DummyGuardian = "link1zmm9v8wucqecl75q22hddz0qypdgyvdpgg9a6d"
 
 func DefaultGenesisState() *GenesisState {
-	dummyGuardian := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().String())
-
 	return &GenesisState{
 		Params: DefaultParams(),
 		SendingState: SendingState{
@@ -16,9 +12,9 @@ func DefaultGenesisState() *GenesisState {
 		ReceivingState:     ReceivingState{},
 		NextRoleProposalId: 1,
 		// WARN: you must set your own guardian address in production
-		Roles: []RolePair{{Role: RoleGuardian, Address: dummyGuardian.String()}},
+		Roles: []RolePair{{Role: RoleGuardian, Address: DummyGuardian}},
 		// WARN: you must set your own guardian address in production
-		BridgeSwitches: []BridgeSwitch{{Guardian: dummyGuardian.String(), Status: StatusActive}},
+		BridgeSwitches: []BridgeSwitch{{Guardian: DummyGuardian, Status: StatusActive}},
 	}
 }
 
