@@ -40,9 +40,8 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 		return err
 	}
 
-	multipliedAmountDec := swap.SwapRate.Mul(sdk.NewDecFromBigInt(fromCoinAmount.Amount.BigInt()))
-	multipliedAmountInt := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
-	newCoinAmount := sdk.NewCoin(toDenom, multipliedAmountInt)
+	newCoinAmountInt := k.CalcSwap(swap.SwapRate, fromCoinAmount.Amount)
+	newCoinAmount := sdk.NewCoin(toDenom, newCoinAmountInt)
 	swapped, err := k.getSwapped(ctx, swap.GetFromDenom(), swap.GetToDenom())
 	if err != nil {
 		return err
@@ -81,6 +80,12 @@ func (k Keeper) Swap(ctx sdk.Context, addr sdk.AccAddress, fromCoinAmount sdk.Co
 		return err
 	}
 	return nil
+}
+
+func (k Keeper) CalcSwap(swapRate sdk.Dec, fromCoinAmount sdk.Int) sdk.Int {
+	multipliedAmountDec := swapRate.Mul(sdk.NewDecFromBigInt(fromCoinAmount.BigInt())).TruncateInt()
+	multipliedAmountInt := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
+	return multipliedAmountInt
 }
 
 func (k Keeper) getAllSwapped(ctx sdk.Context) []types.Swapped {

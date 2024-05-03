@@ -57,7 +57,7 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 	return nil
 }
 
-func denomMetadataEqual(metadata bank.Metadata, otherMetadata bank.Metadata) bool {
+func denomMetadataEqual(metadata, otherMetadata bank.Metadata) bool {
 	if metadata.Description != otherMetadata.Description {
 		return false
 	}

@@ -3,24 +3,39 @@ package keeper_test
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 func (s *KeeperTestSuite) TestMsgSwap() {
+	swap2ExpectedAmount, ok := sdk.NewIntFromString("296159312000000")
+	s.Require().True(ok)
+	swap100ExpectedAmount, ok := sdk.NewIntFromString("14807965600000000")
+	s.Require().True(ok)
+	swapAllExpectedBalance, ok := sdk.NewIntFromString("18281438845984584000000")
+	s.Require().True(ok)
 	testCases := map[string]struct {
-		request                        *types.MsgSwap
-		expectedBalanceWithoutMultiply sdk.Int
-		shouldThrowError               bool
-		expectedError                  error
+		request          *types.MsgSwap
+		expectedAmount   sdk.Int
+		shouldThrowError bool
+		expectedError    error
 	}{
+		"swap 2 from-denom": {
+			&types.MsgSwap{
+				FromAddress:    s.accWithFromCoin.String(),
+				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(2)),
+				ToDenom:        s.swap.GetToDenom(),
+			},
+			swap2ExpectedAmount,
+			false,
+			nil,
+		},
 		"swap some": {
 			&types.MsgSwap{
 				FromAddress:    s.accWithFromCoin.String(),
 				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
 				ToDenom:        s.swap.GetToDenom(),
 			},
-			sdk.NewInt(100),
+			swap100ExpectedAmount,
 			false,
 			nil,
 		},
@@ -30,7 +45,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), s.initBalance),
 				ToDenom:        s.swap.GetToDenom(),
 			},
-			s.initBalance,
+			swapAllExpectedBalance,
 			false,
 			nil,
 		},
@@ -40,7 +55,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 				FromCoinAmount: sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
 				ToDenom:        s.swap.GetToDenom(),
 			},
-			s.initBalance,
+			sdk.ZeroInt(),
 			true,
 			sdkerrors.ErrInsufficientFunds,
 		},
@@ -48,8 +63,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			dontCareForThisTestCase := bank.Metadata{Base: "dummy"}
-			err := s.keeper.MakeSwap(ctx, s.swap, dontCareForThisTestCase)
+			err := s.keeper.MakeSwap(ctx, s.swap, s.toDenomMetadata)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.Swap(sdk.WrapSDKContext(ctx), tc.request)
@@ -63,19 +77,19 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 			from, err := sdk.AccAddressFromBech32(tc.request.FromAddress)
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
-			multipliedAmountDec := s.swap.SwapRate.Mul(sdk.NewDecFromBigInt(tc.expectedBalanceWithoutMultiply.BigInt()))
-			expectedAmount := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
-			s.Require().Equal(expectedAmount, actualAmount)
+			s.Require().Equal(tc.expectedAmount, actualAmount)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgSwapAll() {
+	swapAllExpectedBalance, ok := sdk.NewIntFromString("18281438845984584000000")
+	s.Require().True(ok)
 	testCases := map[string]struct {
-		request                        *types.MsgSwapAll
-		expectedBalanceWithoutMultiply sdk.Int
-		shouldThrowError               bool
-		expectedError                  error
+		request          *types.MsgSwapAll
+		expectedAmount   sdk.Int
+		shouldThrowError bool
+		expectedError    error
 	}{
 		"swapAll": {
 			&types.MsgSwapAll{
@@ -83,7 +97,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 				FromDenom:   s.swap.GetFromDenom(),
 				ToDenom:     s.swap.GetToDenom(),
 			},
-			s.initBalance,
+			swapAllExpectedBalance,
 			false,
 			nil,
 		},
@@ -115,9 +129,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 			from, err := sdk.AccAddressFromBech32(tc.request.FromAddress)
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
-			multipliedAmountDec := s.swap.SwapRate.Mul(sdk.NewDecFromBigInt(tc.expectedBalanceWithoutMultiply.BigInt()))
-			expectedAmount := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
-			s.Require().Equal(expectedAmount, actualAmount)
+			s.Require().Equal(tc.expectedAmount, actualAmount)
 		})
 	}
 }

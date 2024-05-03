@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -66,16 +67,16 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	numAcc := int64(2)
 	s.initBalance = sdk.NewInt(123456789)
-	swapRateForCony, err := sdk.NewDecFromStr("148079656000000")
+	pebSwapRateForCony, err := sdk.NewDecFromStr("148079656000000")
 	s.Require().NoError(err)
-	swapCap := sdk.NewIntFromBigInt(swapRateForCony.Mul(s.initBalance.ToDec()).BigInt())
+	swapCap := sdk.NewIntFromBigInt(pebSwapRateForCony.Mul(s.initBalance.ToDec()).BigInt())
 	swapCap = swapCap.Mul(sdk.NewInt(numAcc))
 	s.Require().NoError(err)
 	s.swap = types.Swap{
 		FromDenom:           "fromdenom",
 		ToDenom:             "todenom",
 		AmountCapForToDenom: swapCap,
-		SwapRate:            swapRateForCony,
+		SwapRate:            pebSwapRateForCony,
 	}
 	s.toDenomMetadata = bank.Metadata{
 		Description: "This is metadata for to-coin",
@@ -114,19 +115,33 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) TestSwap() {
+	swap2ExpectedAmount, ok := sdk.NewIntFromString("296159312000000")
+	s.Require().True(ok)
+	swap100ExpectedAmount, ok := sdk.NewIntFromString("14807965600000000")
+	s.Require().True(ok)
+	swapAllExpectedBalance, ok := sdk.NewIntFromString("18281438845984584000000")
+	s.Require().True(ok)
 	testCases := map[string]struct {
-		from                           sdk.AccAddress
-		amountToSwap                   sdk.Coin
-		toDenom                        string
-		expectedBalanceWithoutMultiply sdk.Int
-		shouldThrowError               bool
-		expectedError                  error
+		from             sdk.AccAddress
+		amountToSwap     sdk.Coin
+		toDenom          string
+		expectedAmount   sdk.Int
+		shouldThrowError bool
+		expectedError    error
 	}{
+		"swap 2 from-denom": {
+			s.accWithFromCoin,
+			sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(2)),
+			s.swap.GetToDenom(),
+			swap2ExpectedAmount,
+			false,
+			nil,
+		},
 		"swap some": {
 			s.accWithFromCoin,
 			sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
 			s.swap.GetToDenom(),
-			sdk.NewInt(100),
+			swap100ExpectedAmount,
 			false,
 			nil,
 		},
@@ -134,7 +149,7 @@ func (s *KeeperTestSuite) TestSwap() {
 			s.accWithFromCoin,
 			sdk.NewCoin(s.swap.GetFromDenom(), s.initBalance),
 			s.swap.GetToDenom(),
-			s.initBalance,
+			swapAllExpectedBalance,
 			false,
 			nil,
 		},
@@ -169,9 +184,62 @@ func (s *KeeperTestSuite) TestSwap() {
 			s.Require().NoError(err)
 
 			actualAmount := s.keeper.GetBalance(ctx, tc.from, s.swap.GetToDenom()).Amount
-			multipliedAmountDec := s.swap.SwapRate.Mul(sdk.NewDecFromBigInt(tc.expectedBalanceWithoutMultiply.BigInt()))
-			expectedAmount := sdk.NewIntFromBigInt(multipliedAmountDec.BigInt())
-			s.Require().Equal(expectedAmount, actualAmount)
+			s.Require().Equal(tc.expectedAmount, actualAmount)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestCalcSwap() {
+	rateDot5, err := sdk.NewDecFromStr("0.5")
+	s.Require().NoError(err)
+	rateDot3maxPrecision, err := sdk.NewDecFromStr("0.333333333333333333")
+	s.Require().NoError(err)
+
+	finschiaSwapRate, err := sdk.NewDecFromStr("148.079656")
+	s.Require().NoError(err)
+	conySwapRate := finschiaSwapRate.Mul(sdk.NewDec(1000000))
+	pebSwapRateForCony, err := sdk.NewDecFromStr("148079656000000")
+	s.Require().NoError(err)
+	testCases := map[string]struct {
+		fromAmount     sdk.Int
+		expectedAmount sdk.Int
+		swapRate       sdk.Dec
+	}{
+		"swapRate 0.5": {
+			fromAmount:     sdk.ZeroInt(),
+			swapRate:       rateDot5,
+			expectedAmount: sdk.ZeroInt(),
+		},
+		"swapRate 0.333333333333333333": {
+			fromAmount:     sdk.NewInt(3),
+			swapRate:       rateDot3maxPrecision,
+			expectedAmount: sdk.ZeroInt(),
+		},
+		"swapRate conySwapRate(148.079656 * 10^6) fromAmount(1)": {
+			fromAmount:     sdk.NewInt(1),
+			swapRate:       conySwapRate,
+			expectedAmount: sdk.NewInt(148079656),
+		},
+		"swapRate conySwapRate(148.079656 * 10^6) fromAmount(3)": {
+			fromAmount:     sdk.NewInt(3),
+			swapRate:       conySwapRate,
+			expectedAmount: sdk.NewInt(444238968),
+		},
+		"pebSwapRateForCony pebSwapRateForCony(148.079656 * 10^12) fromAmount(1)": {
+			fromAmount:     sdk.NewInt(1),
+			swapRate:       pebSwapRateForCony,
+			expectedAmount: sdk.NewInt(148079656000000),
+		},
+		"pebSwapRateForCony pebSwapRateForCony(148.079656 * 10^12) fromAmount(3)": {
+			fromAmount:     sdk.NewInt(3),
+			swapRate:       pebSwapRateForCony,
+			expectedAmount: sdk.NewInt(444238968000000),
+		},
+	}
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			actualAmount := s.keeper.CalcSwap(tc.swapRate, tc.fromAmount)
+			s.Require().Equal(tc.expectedAmount, actualAmount, fmt.Sprintf("tc.expectedAmount = %v, actualAmount = %v", tc.expectedAmount, actualAmount))
 		})
 	}
 }
