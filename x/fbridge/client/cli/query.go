@@ -59,7 +59,7 @@ func NewQuerySeqToBlocknumsCmd() *cobra.Command {
 		Use:     "seq-to-blocknums",
 		Short:   "Query the block number for given sequence numbers",
 		Args:    cobra.NoArgs,
-		Example: fmt.Sprintf("%s query %s sending seq-to-blocknums --sequences=1,2,3", version.AppName, types.ModuleName),
+		Example: fmt.Sprintf("%s query %s seq-to-blocknums --sequences=1,2,3", version.AppName, types.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
