@@ -31,17 +31,20 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 func CmdQuerySwapped() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swapped",
+		Use:   "swapped [from_denom] [to_denom]",
 		Short: "shows the current swap status, including both old and new coin amount",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.Swapped(cmd.Context(), &types.QuerySwappedRequest{})
+			req := &types.QuerySwappedRequest{
+				FromDenom: args[0],
+				ToDenom:   args[1],
+			}
+			res, err := queryClient.Swapped(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -56,9 +59,9 @@ func CmdQuerySwapped() *cobra.Command {
 
 func CmdQueryTotalSwappableAmount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "total-swappable-amount",
+		Use:   "total-swappable-amount [from_denom] [to_denom]",
 		Short: "shows the current total amount of new coin that're swappable",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -66,7 +69,11 @@ func CmdQueryTotalSwappableAmount() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.TotalSwappableToCoinAmount(cmd.Context(), &types.QueryTotalSwappableToCoinAmountRequest{})
+			req := &types.QueryTotalSwappableToCoinAmountRequest{
+				FromDenom: args[0],
+				ToDenom:   args[1],
+			}
+			res, err := queryClient.TotalSwappableToCoinAmount(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
