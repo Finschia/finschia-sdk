@@ -91,16 +91,23 @@ func (k Keeper) Members(goCtx context.Context, req *types.QueryMembersRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	role, found := types.QueryParamToRole[req.Role]
-	if !found {
-		return nil, status.Error(codes.InvalidArgument, "invalid role")
-	}
-
-	members := make([]string, 0)
 	roles := k.GetRolePairs(ctx)
-	for _, pair := range roles {
-		if pair.Role == role {
+	members := make([]string, 0)
+
+	if req.Role == "" {
+		for _, pair := range roles {
 			members = append(members, pair.Address)
+		}
+	} else {
+		role, found := types.QueryParamToRole[req.Role]
+		if !found {
+			return nil, status.Error(codes.InvalidArgument, "invalid role")
+		}
+
+		for _, pair := range roles {
+			if pair.Role == role {
+				members = append(members, pair.Address)
+			}
 		}
 	}
 
