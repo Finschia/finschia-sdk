@@ -30783,6 +30783,65 @@ paths:
                       format: byte
       tags:
         - Query
+  /lbm/fbridge/v1/status:
+    get:
+      summary: BridgeStatus queries the status of the bridge
+      operationId: BridgeStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                  - BRIDGE_STATUS_UNSPECIFIED
+                  - BRIDGE_STATUS_ACTIVE
+                  - BRIDGE_STATUS_INACTIVE
+                default: BRIDGE_STATUS_UNSPECIFIED
+                description: |2-
+                   - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
+                   - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
+                   - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
+              metadata:
+                type: object
+                properties:
+                  inactive:
+                    type: string
+                    format: uint64
+                    title: the number of inactived bridge switch
+                  active:
+                    type: string
+                    format: uint64
+                    title: the number of activated bridge switch
+                description: >-
+                  BridgeStatusMetadata defines the metadata of the bridge
+                  status.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.Params:
     type: object
@@ -50328,6 +50387,29 @@ definitions:
       minimum_gas_price:
         type: string
     description: ConfigResponse defines the response structure for the Config gRPC query.
+  lbm.fbridge.v1.BridgeStatus:
+    type: string
+    enum:
+      - BRIDGE_STATUS_UNSPECIFIED
+      - BRIDGE_STATUS_ACTIVE
+      - BRIDGE_STATUS_INACTIVE
+    default: BRIDGE_STATUS_UNSPECIFIED
+    description: |2-
+       - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
+       - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
+       - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
+  lbm.fbridge.v1.BridgeStatusMetadata:
+    type: object
+    properties:
+      inactive:
+        type: string
+        format: uint64
+        title: the number of inactived bridge switch
+      active:
+        type: string
+        format: uint64
+        title: the number of activated bridge switch
+    description: BridgeStatusMetadata defines the metadata of the bridge status.
   lbm.fbridge.v1.Fraction:
     type: object
     properties:
@@ -50420,6 +50502,32 @@ definitions:
 
       To optimize computational cost, we have collected frequently changing
       values from provision.
+  lbm.fbridge.v1.QueryBridgeStatusResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        enum:
+          - BRIDGE_STATUS_UNSPECIFIED
+          - BRIDGE_STATUS_ACTIVE
+          - BRIDGE_STATUS_INACTIVE
+        default: BRIDGE_STATUS_UNSPECIFIED
+        description: |2-
+           - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
+           - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
+           - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
+      metadata:
+        type: object
+        properties:
+          inactive:
+            type: string
+            format: uint64
+            title: the number of inactived bridge switch
+          active:
+            type: string
+            format: uint64
+            title: the number of activated bridge switch
+        description: BridgeStatusMetadata defines the metadata of the bridge status.
   lbm.fbridge.v1.QueryCommitmentsResponse:
     type: object
     properties:

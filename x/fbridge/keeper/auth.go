@@ -253,6 +253,12 @@ func (k Keeper) UpdateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, sta
 		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
 	}
 
+	if sw, err := k.GetBridgeSwitch(ctx, guardian); err == nil && sw.Status == status {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s already set %s", guardian, status)
+	} else if err != nil {
+		return err
+	}
+
 	bsMeta := k.GetBridgeStatusMetadata(ctx)
 	switch status {
 	case types.StatusActive:

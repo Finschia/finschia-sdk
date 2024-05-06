@@ -29,10 +29,11 @@ func NewQueryCmd() *cobra.Command {
 		NewQuerySeqToBlocknumsCmd(),
 		NewQueryMembersCmd(),
 		NewQueryMemberCmd(),
-		NewProposalsCmd(),
-		NewProposalCmd(),
-		NewVotesCmd(),
-		NewVoteCmd(),
+		NewQueryProposalsCmd(),
+		NewQueryProposalCmd(),
+		NewQueryVotesCmd(),
+		NewQueryVoteCmd(),
+		NewQueryBridgeStatusCmd(),
 	)
 
 	return cmd
@@ -175,7 +176,7 @@ func NewQueryMemberCmd() *cobra.Command {
 	return cmd
 }
 
-func NewProposalsCmd() *cobra.Command {
+func NewQueryProposalsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "proposals",
 		Short:   "Query all role proposals",
@@ -206,7 +207,7 @@ func NewProposalsCmd() *cobra.Command {
 	return cmd
 }
 
-func NewProposalCmd() *cobra.Command {
+func NewQueryProposalCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "proposal [proposal_id]",
 		Short:   "Query a specific role proposal",
@@ -237,7 +238,7 @@ func NewProposalCmd() *cobra.Command {
 	return cmd
 }
 
-func NewVotesCmd() *cobra.Command {
+func NewQueryVotesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "votes [proposal_id]",
 		Short:   "Query all votes for a specific role proposal",
@@ -268,7 +269,7 @@ func NewVotesCmd() *cobra.Command {
 	return cmd
 }
 
-func NewVoteCmd() *cobra.Command {
+func NewQueryVoteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "vote [proposal_id] [voter]",
 		Short:   "Query a specific vote for a role proposal",
@@ -291,6 +292,29 @@ func NewVoteCmd() *cobra.Command {
 				return err
 			}
 
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryBridgeStatusCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "status",
+		Short: "Query the current status of the bridge",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			qc := types.NewQueryClient(clientCtx)
+			res, err := qc.BridgeStatus(cmd.Context(), &types.QueryBridgeStatusRequest{})
+			if err != nil {
+				return err
+			}
 			return clientCtx.PrintProto(res)
 		},
 	}

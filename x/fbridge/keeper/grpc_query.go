@@ -186,3 +186,12 @@ func (k Keeper) Vote(goCtx context.Context, req *types.QueryVoteRequest) (*types
 
 	return &types.QueryVoteResponse{Vote: types.Vote{ProposalId: req.ProposalId, Voter: req.Voter, Option: opt}}, nil
 }
+
+func (k Keeper) BridgeStatus(goCtx context.Context, req *types.QueryBridgeStatusRequest) (*types.QueryBridgeStatusResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.QueryBridgeStatusResponse{Status: k.GetBridgeStatus(ctx), Metadata: k.GetBridgeStatusMetadata(ctx)}, nil
+}

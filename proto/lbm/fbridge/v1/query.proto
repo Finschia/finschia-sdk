@@ -87,6 +87,11 @@ service Query {
   rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
     option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes";
   }
+
+  // BridgeStatus queries the status of the bridge
+  rpc BridgeStatus(QueryBridgeStatusRequest) returns (QueryBridgeStatusResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/status";
+  }
 }
 
 message QueryParamsRequest {}
@@ -226,4 +231,11 @@ message QueryVotesRequest {
 message QueryVotesResponse {
   // votes defined the queried votes.
   repeated Vote votes = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBridgeStatusRequest {}
+
+message QueryBridgeStatusResponse {
+  BridgeStatus         status   = 1;
+  BridgeStatusMetadata metadata = 2 [(gogoproto.nullable) = false];
 }

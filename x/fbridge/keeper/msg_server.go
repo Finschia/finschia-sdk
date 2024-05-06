@@ -133,7 +133,7 @@ func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteFo
 	return &types.MsgAddVoteForRoleResponse{}, nil
 }
 
-func (m msgServer) Halt(goCtx context.Context, msg *types.MsgHalt) (*types.MsgHaltResponse, error) {
+func (m msgServer) SetBridgeStatus(goCtx context.Context, msg *types.MsgSetBridgeStatus) (*types.MsgSetBridgeStatusResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	addr, err := sdk.AccAddressFromBech32(msg.Guardian)
@@ -141,24 +141,9 @@ func (m msgServer) Halt(goCtx context.Context, msg *types.MsgHalt) (*types.MsgHa
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
 	}
 
-	if err := m.UpdateBridgeSwitch(ctx, addr, types.StatusInactive); err != nil {
+	if err := m.UpdateBridgeSwitch(ctx, addr, msg.Status); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgHaltResponse{}, nil
-}
-
-func (m msgServer) Resume(goCtx context.Context, msg *types.MsgResume) (*types.MsgResumeResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	addr, err := sdk.AccAddressFromBech32(msg.Guardian)
-	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
-	}
-
-	if err := m.UpdateBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgResumeResponse{}, nil
+	return &types.MsgSetBridgeStatusResponse{}, nil
 }

@@ -28,8 +28,7 @@ func NewTxCmd() *cobra.Command {
 		NewTransferTxCmd(),
 		NewSuggestRoleTxCmd(),
 		NewAddVoteForRoleTxCmd(),
-		NewHaltTxCmd(),
-		NewResumeTxCmd(),
+		NewSetBridgeStatusTxCmd(),
 	)
 
 	return TxCmd
@@ -154,12 +153,13 @@ func NewAddVoteForRoleTxCmd() *cobra.Command {
 	return cmd
 }
 
-func NewHaltTxCmd() *cobra.Command {
+func NewSetBridgeStatusTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "halt",
-		Short:   `Activate sender's halting switch for the bridge module`,
-		Args:    cobra.NoArgs,
-		Example: fmt.Sprintf("%s tx %s halt --from guardiankey", version.AppName, types.ModuleName),
+		Use:   "set-bridge-status [status]",
+		Short: `Set sender's bridge switch for halting/resuming the bridge module. Each guardian has their own switch. (halt|resume)`,
+		Args:  cobra.ExactArgs(1),
+		Example: fmt.Sprintf("%s tx %s set-bridge-status halt --from guardiankey\n"+
+			"%s tx %s set-bridge-status resume --from guardiankey\n", version.AppName, types.ModuleName, version.AppName, types.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -170,37 +170,14 @@ func NewHaltTxCmd() *cobra.Command {
 				return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", from)
 			}
 
-			msg := types.MsgHalt{
+			conv := map[string]types.BridgeStatus{
+				"halt":   types.StatusInactive,
+				"resume": types.StatusActive,
+			}
+
+			msg := types.MsgSetBridgeStatus{
 				Guardian: from,
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func NewResumeTxCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "resume",
-		Short:   `Activate sender's resuming switch for the bridge module`,
-		Args:    cobra.NoArgs,
-		Example: fmt.Sprintf("%s tx %s resume --from guardiankey", version.AppName, types.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			from := clientCtx.GetFromAddress().String()
-			if _, err := sdk.AccAddressFromBech32(from); err != nil {
-				return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", from)
-			}
-
-			msg := types.MsgResume{
-				Guardian: from,
+				Status:   conv[args[0]],
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

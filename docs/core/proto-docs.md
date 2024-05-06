@@ -789,6 +789,8 @@
     - [SendingState](#lbm.fbridge.v1.SendingState)
   
 - [lbm/fbridge/v1/query.proto](#lbm/fbridge/v1/query.proto)
+    - [QueryBridgeStatusRequest](#lbm.fbridge.v1.QueryBridgeStatusRequest)
+    - [QueryBridgeStatusResponse](#lbm.fbridge.v1.QueryBridgeStatusResponse)
     - [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest)
     - [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse)
     - [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest)
@@ -829,8 +831,6 @@
     - [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch)
     - [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse)
     - [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse)
-    - [MsgHalt](#lbm.fbridge.v1.MsgHalt)
-    - [MsgHaltResponse](#lbm.fbridge.v1.MsgHaltResponse)
     - [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer)
     - [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse)
     - [MsgProvision](#lbm.fbridge.v1.MsgProvision)
@@ -839,8 +839,8 @@
     - [MsgReleaseTransferResponse](#lbm.fbridge.v1.MsgReleaseTransferResponse)
     - [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision)
     - [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse)
-    - [MsgResume](#lbm.fbridge.v1.MsgResume)
-    - [MsgResumeResponse](#lbm.fbridge.v1.MsgResumeResponse)
+    - [MsgSetBridgeStatus](#lbm.fbridge.v1.MsgSetBridgeStatus)
+    - [MsgSetBridgeStatusResponse](#lbm.fbridge.v1.MsgSetBridgeStatusResponse)
     - [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole)
     - [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse)
     - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
@@ -11907,6 +11907,32 @@ GenesisState defines the fbridge module's genesis state.
 
 
 
+<a name="lbm.fbridge.v1.QueryBridgeStatusRequest"></a>
+
+### QueryBridgeStatusRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryBridgeStatusResponse"></a>
+
+### QueryBridgeStatusResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  |  |
+| `metadata` | [BridgeStatusMetadata](#lbm.fbridge.v1.BridgeStatusMetadata) |  |  |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.QueryCommitmentsRequest"></a>
 
 ### QueryCommitmentsRequest
@@ -12376,6 +12402,7 @@ GenesisState defines the fbridge module's genesis state.
 | `Proposal` | [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse) | Proposal queries a SuggestRole Proposal | GET|/lbm/fbridge/v1/proposals/{proposal_id}|
 | `Vote` | [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.fbridge.v1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}|
 | `Votes` | [QueryVotesRequest](#lbm.fbridge.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.fbridge.v1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes|
+| `BridgeStatus` | [QueryBridgeStatusRequest](#lbm.fbridge.v1.QueryBridgeStatusRequest) | [QueryBridgeStatusResponse](#lbm.fbridge.v1.QueryBridgeStatusResponse) | BridgeStatus queries the status of the bridge | GET|/lbm/fbridge/v1/status|
 
  <!-- end services -->
 
@@ -12460,31 +12487,6 @@ MsgClaimBatch is input values required for claiming multiple claimable provision
 <a name="lbm.fbridge.v1.MsgClaimResponse"></a>
 
 ### MsgClaimResponse
-
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.MsgHalt"></a>
-
-### MsgHalt
-MsgHalt is input values required for halting the bridge module
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `guardian` | [string](#string) |  | the guardian address |
-
-
-
-
-
-
-<a name="lbm.fbridge.v1.MsgHaltResponse"></a>
-
-### MsgHaltResponse
 
 
 
@@ -12599,24 +12601,25 @@ MsgRemoveProvision is input values required for removing a specific confirmed pr
 
 
 
-<a name="lbm.fbridge.v1.MsgResume"></a>
+<a name="lbm.fbridge.v1.MsgSetBridgeStatus"></a>
 
-### MsgResume
-MsgResume is input values required for resuming the bridge module
+### MsgSetBridgeStatus
+MsgSetBridgeStatus is input values required for setting the status of the bridge module
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `guardian` | [string](#string) |  | the guardian address |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  |  |
 
 
 
 
 
 
-<a name="lbm.fbridge.v1.MsgResumeResponse"></a>
+<a name="lbm.fbridge.v1.MsgSetBridgeStatusResponse"></a>
 
-### MsgResumeResponse
+### MsgSetBridgeStatusResponse
 
 
 
@@ -12700,8 +12703,7 @@ MsgTransfer is input values required for bridge transfer
 | `Claim` | [MsgClaim](#lbm.fbridge.v1.MsgClaim) | [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
 | `SuggestRole` | [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole) | [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse) | SuggestRole suggests updating the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. The proposal will be passed only with the consent of +2/3 Guardian members. | |
 | `AddVoteForRole` | [MsgAddVoteForRole](#lbm.fbridge.v1.MsgAddVoteForRole) | [MsgAddVoteForRoleResponse](#lbm.fbridge.v1.MsgAddVoteForRoleResponse) | AddVoteForRole adds a vote for a role change proposal. | |
-| `Halt` | [MsgHalt](#lbm.fbridge.v1.MsgHalt) | [MsgHaltResponse](#lbm.fbridge.v1.MsgHaltResponse) | Halt the bridge module. | |
-| `Resume` | [MsgResume](#lbm.fbridge.v1.MsgResume) | [MsgResumeResponse](#lbm.fbridge.v1.MsgResumeResponse) | Resume the bridge module. | |
+| `SetBridgeStatus` | [MsgSetBridgeStatus](#lbm.fbridge.v1.MsgSetBridgeStatus) | [MsgSetBridgeStatusResponse](#lbm.fbridge.v1.MsgSetBridgeStatusResponse) | SetBridgeStatus operates a switch to halt/resume the bridge module. If the ratio of active bridge switches does not exceed TrustLevel, the bridge module halts. | |
 
  <!-- end services -->
 

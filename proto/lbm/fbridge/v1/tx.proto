@@ -36,11 +36,9 @@ service Msg {
   // AddVoteForRole adds a vote for a role change proposal.
   rpc AddVoteForRole(MsgAddVoteForRole) returns (MsgAddVoteForRoleResponse);
 
-  // Halt the bridge module.
-  rpc Halt(MsgHalt) returns (MsgHaltResponse);
-
-  // Resume the bridge module.
-  rpc Resume(MsgResume) returns (MsgResumeResponse);
+  // SetBridgeStatus operates a switch to halt/resume the bridge module.
+  // If the ratio of active bridge switches does not exceed TrustLevel, the bridge module halts.
+  rpc SetBridgeStatus(MsgSetBridgeStatus) returns (MsgSetBridgeStatusResponse);
 }
 
 // MsgTransfer is input values required for bridge transfer
@@ -150,18 +148,12 @@ message MsgAddVoteForRole {
 
 message MsgAddVoteForRoleResponse {}
 
-// MsgHalt is input values required for halting the bridge module
-message MsgHalt {
+// MsgSetBridgeStatus is input values required for setting the status of the bridge module
+message MsgSetBridgeStatus {
   // the guardian address
   string guardian = 1;
+
+  BridgeStatus status = 2;
 }
 
-message MsgHaltResponse {}
-
-// MsgResume is input values required for resuming the bridge module
-message MsgResume {
-  // the guardian address
-  string guardian = 1;
-}
-
-message MsgResumeResponse {}
+message MsgSetBridgeStatusResponse {}
