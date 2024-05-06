@@ -59,15 +59,15 @@ func TestBridgeHaltAndResume(t *testing.T) {
 	}
 
 	require.Equal(t, types.StatusActive, k.GetBridgeStatus(ctx), "bridge status must be active (3/3)")
-	err = k.UpdateBridgeSwitch(ctx, addrs[0], types.StatusInactive)
+	err = k.updateBridgeSwitch(ctx, addrs[0], types.StatusInactive)
 	require.NoError(t, err)
 	require.Equal(t, types.StatusActive, k.GetBridgeStatus(ctx), "bridge status must be active (2/3)")
 
-	err = k.UpdateBridgeSwitch(ctx, addrs[1], types.StatusInactive)
+	err = k.updateBridgeSwitch(ctx, addrs[1], types.StatusInactive)
 	require.NoError(t, err)
 	require.Equal(t, types.StatusInactive, k.GetBridgeStatus(ctx), "bridge status must be inactive (1/3)")
 
-	err = k.UpdateBridgeSwitch(ctx, addrs[0], types.StatusActive)
+	err = k.updateBridgeSwitch(ctx, addrs[0], types.StatusActive)
 	require.NoError(t, err)
 	require.Equal(t, types.StatusActive, k.GetBridgeStatus(ctx), "bridge status must be active (2/3)")
 }

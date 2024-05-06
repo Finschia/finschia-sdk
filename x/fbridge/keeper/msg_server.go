@@ -141,7 +141,7 @@ func (m msgServer) SetBridgeStatus(goCtx context.Context, msg *types.MsgSetBridg
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
 	}
 
-	if err := m.UpdateBridgeSwitch(ctx, addr, msg.Status); err != nil {
+	if err := m.updateBridgeSwitch(ctx, addr, msg.Status); err != nil {
 		return nil, err
 	}
 

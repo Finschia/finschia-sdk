@@ -111,6 +111,35 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	return nil
 }
 
+func (k Keeper) updateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
+	if k.GetRole(ctx, guardian) != types.RoleGuardian {
+		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
+	}
+
+	if sw, err := k.GetBridgeSwitch(ctx, guardian); err == nil && sw.Status == status {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s already set %s", guardian, status)
+	} else if err != nil {
+		return err
+	}
+
+	bsMeta := k.GetBridgeStatusMetadata(ctx)
+	switch status {
+	case types.StatusActive:
+		bsMeta.Active++
+	case types.StatusInactive:
+		bsMeta.Inactive++
+	default:
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
+	}
+	k.setBridgeStatusMetadata(ctx, bsMeta)
+
+	if err := k.setBridgeSwitch(ctx, guardian, status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) setNextProposalID(ctx sdk.Context, seq uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := make([]byte, 8)
@@ -247,35 +276,6 @@ func (k Keeper) GetRolePairs(ctx sdk.Context) []types.RolePair {
 func (k Keeper) deleteRole(ctx sdk.Context, addr sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.RoleKey(addr))
-}
-
-func (k Keeper) UpdateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
-	if k.GetRole(ctx, guardian) != types.RoleGuardian {
-		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
-	}
-
-	if sw, err := k.GetBridgeSwitch(ctx, guardian); err == nil && sw.Status == status {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s already set %s", guardian, status)
-	} else if err != nil {
-		return err
-	}
-
-	bsMeta := k.GetBridgeStatusMetadata(ctx)
-	switch status {
-	case types.StatusActive:
-		bsMeta.Active++
-	case types.StatusInactive:
-		bsMeta.Inactive++
-	default:
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
-	}
-	k.setBridgeStatusMetadata(ctx, bsMeta)
-
-	if err := k.setBridgeSwitch(ctx, guardian, status); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
