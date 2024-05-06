@@ -141,7 +141,7 @@ func (m msgServer) Halt(goCtx context.Context, msg *types.MsgHalt) (*types.MsgHa
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
 	}
 
-	if err := m.setBridgeSwitch(ctx, addr, types.StatusInactive); err != nil {
+	if err := m.UpdateBridgeSwitch(ctx, addr, types.StatusInactive); err != nil {
 		return nil, err
 	}
 
@@ -156,7 +156,7 @@ func (m msgServer) Resume(goCtx context.Context, msg *types.MsgResume) (*types.M
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid guardian address (%s)", err)
 	}
 
-	if err := m.setBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
+	if err := m.UpdateBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
 		return nil, err
 	}
 

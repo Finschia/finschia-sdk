@@ -1,24 +1,23 @@
-package module
+package keeper
 
 import (
 	"fmt"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/fbridge/keeper"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
-func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
+func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	k.InitMemStore(ctx)
 
 	proposals := k.GetRoleProposals(ctx)
 	for _, proposal := range proposals {
 		if ctx.BlockTime().After(proposal.ExpiredAt) {
-			k.DeleteRoleProposal(ctx, proposal.Id)
+			k.deleteRoleProposal(ctx, proposal.Id)
 		}
 	}
 }
 
-func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
+func (k Keeper) EndBlocker(ctx sdk.Context) {
 	guardianTrustLevel := k.GetParams(ctx).GuardianTrustLevel
 	proposals := k.GetRoleProposals(ctx)
 	for _, proposal := range proposals {
@@ -32,21 +31,21 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		}
 
 		if types.CheckTrustLevelThreshold(k.GetRoleMetadata(ctx).Guardian, voteYes, guardianTrustLevel) || proposal.Proposer == k.GetAuthority() {
-			if err := k.UpdateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
+			if err := k.updateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
 				panic(err)
 			}
 
-			k.DeleteRoleProposal(ctx, proposal.Id)
+			k.deleteRoleProposal(ctx, proposal.Id)
 		}
 	}
 }
 
 // RegisterInvariants registers the fbridge module invariants
-func RegisterInvariants(ir sdk.InvariantRegistry, k keeper.Keeper) {
+func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 	ir.RegisterRoute(types.ModuleName, "guardian-invariant", GuardianInvariant(k))
 }
 
-func GuardianInvariant(k keeper.Keeper) sdk.Invariant {
+func GuardianInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 
 		numGuardian := 0

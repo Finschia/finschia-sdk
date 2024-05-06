@@ -89,7 +89,7 @@ type AppModule struct {
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
+func NewAppModule(_ codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
 		keeper: keeper,
 	}
@@ -125,19 +125,19 @@ func (AppModule) ConsensusVersion() uint64 { return consensusVersion }
 
 // BeginBlock returns the begin blocker for the fbridge module.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
-	BeginBlocker(ctx, am.keeper)
+	am.keeper.BeginBlocker(ctx)
 }
 
 // EndBlock returns the end blocker for the fbridge module.
 // It returns no validator updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.keeper)
+	am.keeper.EndBlocker(ctx)
 	return []abci.ValidatorUpdate{}
 }
 
 // RegisterInvariants does nothing, there are no invariants to enforce
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
-	RegisterInvariants(ir, am.keeper)
+	keeper.RegisterInvariants(ir, am.keeper)
 }
 
 // Deprecated: Route does nothing.

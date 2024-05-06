@@ -1,6 +1,8 @@
 package testutil
 
 import (
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -20,11 +22,12 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
-func DefaultContextWithDB(tb testing.TB, key, tkey storetypes.StoreKey) sdk.Context {
+func DefaultContextWithDB(tb testing.TB, key, mkey, tkey storetypes.StoreKey) sdk.Context {
 	tb.Helper()
 	db := dbm.NewMemDB()
 	cms := store.NewCommitMultiStore(db)
 	cms.MountStoreWithDB(key, storetypes.StoreTypeIAVL, db)
+	cms.MountStoreWithDB(mkey, storetypes.StoreTypeMemory, db)
 	cms.MountStoreWithDB(tkey, storetypes.StoreTypeTransient, db)
 	err := cms.LoadLatestVersion()
 	assert.NoError(tb, err)
@@ -60,17 +63,23 @@ func MakeTestEncodingConfig() TestEncodingConfig {
 	return encCfg
 }
 
-func PrepareFbridgeTest(tb testing.TB) (*sdk.KVStoreKey, *sdk.MemoryStoreKey, sdk.Context, TestEncodingConfig, *MockAccountKeeper, *MockBankKeeper) {
+func PrepareFbridgeTest(tb testing.TB, n int) (*sdk.KVStoreKey, *sdk.MemoryStoreKey, sdk.Context, TestEncodingConfig, *MockAccountKeeper, *MockBankKeeper, []sdk.AccAddress) {
 	tb.Helper()
 
 	ctrl := gomock.NewController(tb)
 	key := storetypes.NewKVStoreKey(types.StoreKey)
 	memKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
-	ctx := DefaultContextWithDB(tb, key, sdk.NewTransientStoreKey("transient_test"))
+	ctx := DefaultContextWithDB(tb, key, memKey, sdk.NewTransientStoreKey("transient_test"))
 	encCfg := MakeTestEncodingConfig()
 
 	authKeeper := NewMockAccountKeeper(ctrl)
+	authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewEmptyModuleAccount("fbridge").GetAddress()).AnyTimes()
 	bankKeeper := NewMockBankKeeper(ctrl)
 
-	return key, memKey, ctx, encCfg, authKeeper, bankKeeper
+	addrs := make([]sdk.AccAddress, n)
+	for i := 0; i < n; i++ {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	return key, memKey, ctx, encCfg, authKeeper, bankKeeper, addrs
 }

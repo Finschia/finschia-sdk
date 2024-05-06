@@ -10,7 +10,7 @@ import (
 )
 
 func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAddress, role types.Role) (types.RoleProposal, error) {
-	if k.GetRole(ctx, proposer) != types.RoleGuardian || proposer.String() != k.authority {
+	if k.GetRole(ctx, proposer) != types.RoleGuardian && proposer.String() != k.authority {
 		return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrapf("only guardian or %s can execute this action", k.authority)
 	}
 
@@ -52,7 +52,7 @@ func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	return nil
 }
 
-func (k Keeper) UpdateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
+func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
 	previousRole := k.GetRole(ctx, addr)
 	if previousRole == role {
 		return sdkerrors.ErrInvalidRequest.Wrap("target already has same role")
@@ -144,7 +144,7 @@ func (k Keeper) GetRoleProposal(ctx sdk.Context, id uint64) (proposal types.Role
 	return proposal, true
 }
 
-func (k Keeper) DeleteRoleProposal(ctx sdk.Context, id uint64) {
+func (k Keeper) deleteRoleProposal(ctx sdk.Context, id uint64) {
 	store := ctx.KVStore(k.storeKey)
 	if _, found := k.GetRoleProposal(ctx, id); !found {
 		panic(fmt.Sprintf("role proposal #%d not found", id))
@@ -248,16 +248,34 @@ func (k Keeper) deleteRole(ctx sdk.Context, addr sdk.AccAddress) {
 	store.Delete(types.RoleKey(addr))
 }
 
-func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
+func (k Keeper) UpdateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
 	if k.GetRole(ctx, guardian) != types.RoleGuardian {
 		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
 	}
 
+	bsMeta := k.GetBridgeStatusMetadata(ctx)
+	switch status {
+	case types.StatusActive:
+		bsMeta.Active++
+	case types.StatusInactive:
+		bsMeta.Inactive++
+	default:
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
+	}
+	k.setBridgeStatusMetadata(ctx, bsMeta)
+
+	if err := k.setBridgeSwitch(ctx, guardian, status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
 	store := ctx.KVStore(k.storeKey)
 	bz := make([]byte, 4)
 	binary.BigEndian.PutUint32(bz, uint32(status))
 	store.Set(types.BridgeSwitchKey(guardian), bz)
-
 	return nil
 }
 
@@ -268,7 +286,7 @@ func (k Keeper) deleteBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) {
 
 func (k Keeper) GetBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) (types.BridgeSwitch, error) {
 	if k.GetRole(ctx, guardian) != types.RoleGuardian {
-		return types.BridgeSwitch{}, sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
+		return types.BridgeSwitch{}, sdkerrors.ErrUnauthorized.Wrap("only guardian has bridge switch")
 	}
 
 	store := ctx.KVStore(k.storeKey)
