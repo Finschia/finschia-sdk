@@ -3,10 +3,11 @@ package keeper
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
-	"time"
 )
 
 func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAddress, role types.Role) (types.RoleProposal, error) {

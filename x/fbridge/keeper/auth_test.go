@@ -19,6 +19,7 @@ func TestAssignRole(t *testing.T) {
 	// 1. Bridge authority assigns an address to a guardian role
 	p, err := k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleGuardian)
 	require.Error(t, err, "role proposal must not be passed without authority")
+	require.Equal(t, types.RoleProposal{}, p)
 	p, err = k.RegisterRoleProposal(ctx, auth, addrs[0], types.RoleGuardian)
 	require.NoError(t, err)
 	require.EqualValues(t, 1, p.Id)
@@ -36,6 +37,7 @@ func TestAssignRole(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, types.OptionYes, opt)
 	err = k.updateRole(ctx, types.RoleGuardian, addrs[1])
+	require.NoError(t, err)
 
 	require.Equal(t, types.RoleMetadata{Guardian: 2, Operator: 0, Judge: 0}, k.GetRoleMetadata(ctx))
 	sws := k.GetBridgeSwitches(ctx)

@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	foundationtypes "github.com/Finschia/finschia-sdk/x/foundation"

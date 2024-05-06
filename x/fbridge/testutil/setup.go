@@ -1,8 +1,6 @@
 package testutil
 
 import (
-	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -14,11 +12,13 @@ import (
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/std"
 	"github.com/Finschia/finschia-sdk/store"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/auth/tx"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 

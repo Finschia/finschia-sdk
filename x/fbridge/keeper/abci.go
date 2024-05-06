@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
@@ -47,7 +48,6 @@ func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 
 func GuardianInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-
 		numGuardian := 0
 		for _, p := range k.GetRolePairs(ctx) {
 			if p.Role == types.RoleGuardian {

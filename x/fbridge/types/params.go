@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"time"
+
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
 func DefaultParams() Params {
@@ -37,7 +38,6 @@ func ValidateParams(params Params) error {
 	}
 
 	return nil
-
 }
 
 func CheckTrustLevelThreshold(total, current uint64, trustLevel Fraction) bool {
@@ -46,7 +46,7 @@ func CheckTrustLevelThreshold(total, current uint64, trustLevel Fraction) bool {
 	}
 
 	if total*trustLevel.Numerator <= current*trustLevel.Denominator &&
-		total > 0 && current >= 0 &&
+		total > 0 &&
 		current <= total {
 		return true
 	}
