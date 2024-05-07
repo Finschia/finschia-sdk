@@ -28,6 +28,8 @@ func TestAssignRole(t *testing.T) {
 	require.Equal(t, types.RoleGuardian, k.GetRole(ctx, addrs[0]))
 
 	// 2. Guardian assigns an address to a guardian role
+	_, err = k.RegisterRoleProposal(ctx, auth, addrs[1], types.RoleGuardian)
+	require.Error(t, err, "role proposal must be passed with guardian role after guardian group is formed")
 	p, err = k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleGuardian)
 	require.NoError(t, err, "role proposal must be passed with guardian role")
 	require.EqualValues(t, 2, p.Id)

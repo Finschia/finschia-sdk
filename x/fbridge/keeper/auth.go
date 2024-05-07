@@ -11,8 +11,14 @@ import (
 )
 
 func (k Keeper) RegisterRoleProposal(ctx sdk.Context, proposer, target sdk.AccAddress, role types.Role) (types.RoleProposal, error) {
-	if k.GetRole(ctx, proposer) != types.RoleGuardian && proposer.String() != k.authority {
-		return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrapf("only guardian or %s can execute this action", k.authority)
+	if k.GetRoleMetadata(ctx).Guardian > 0 {
+		if k.GetRole(ctx, proposer) != types.RoleGuardian {
+			return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrapf("only guardian can execute this action")
+		}
+	} else {
+		if proposer.String() != k.authority {
+			return types.RoleProposal{}, sdkerrors.ErrUnauthorized.Wrapf("only %s can execute this action", k.authority)
+		}
 	}
 
 	if k.GetRole(ctx, target) == role {
@@ -71,10 +77,13 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 			panic(err)
 		}
 
-		if sw.Status == types.StatusActive {
-			bsMeta.Active--
-		} else {
-			bsMeta.Inactive--
+		switch sw.Status {
+		case types.StatusActive:
+			bsMeta.Active++
+		case types.StatusInactive:
+			bsMeta.Inactive++
+		default:
+			return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
 		}
 
 		k.deleteBridgeSwitch(ctx, addr)
@@ -112,10 +121,6 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 }
 
 func (k Keeper) updateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
-	if k.GetRole(ctx, guardian) != types.RoleGuardian {
-		return sdkerrors.ErrUnauthorized.Wrap("only guardian can execute this action")
-	}
-
 	if sw, err := k.GetBridgeSwitch(ctx, guardian); err == nil && sw.Status == status {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s already set %s", guardian, status)
 	} else if err != nil {
@@ -126,8 +131,10 @@ func (k Keeper) updateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, sta
 	switch status {
 	case types.StatusActive:
 		bsMeta.Active++
+		bsMeta.Inactive--
 	case types.StatusInactive:
 		bsMeta.Inactive++
+		bsMeta.Active--
 	default:
 		return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
 	}

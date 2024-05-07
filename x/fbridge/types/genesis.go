@@ -50,6 +50,9 @@ func ValidateGenesis(data GenesisState) error {
 		}
 		sdk.MustAccAddressFromBech32(v.Proposer)
 		sdk.MustAccAddressFromBech32(v.Target)
+		if err := IsValidRole(v.Role); err != nil {
+			return err
+		}
 	}
 
 	for _, v := range data.Votes {
@@ -57,22 +60,22 @@ func ValidateGenesis(data GenesisState) error {
 			return errors.New("role proposal ID must be positive")
 		}
 		sdk.MustAccAddressFromBech32(v.Voter)
-		if v.Option == OptionEmpty {
-			return errors.New("invalid voting option")
+		if err := IsValidVoteOption(v.Option); err != nil {
+			return err
 		}
 	}
 
 	for _, v := range data.Roles {
 		sdk.MustAccAddressFromBech32(v.Address)
-		if v.Role == RoleEmpty {
-			return errors.New("invalid role")
+		if err := IsValidRole(v.Role); err != nil {
+			return err
 		}
 	}
 
 	for _, v := range data.BridgeSwitches {
 		sdk.MustAccAddressFromBech32(v.Guardian)
-		if v.Status == StatusEmpty {
-			return errors.New("invalid bridge switch status")
+		if err := IsValidBridgeStatus(v.Status); err != nil {
+			return err
 		}
 	}
 

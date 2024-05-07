@@ -28,3 +28,12 @@ func IsValidVoteOption(option VoteOption) error {
 
 	return errors.New("unsupported vote option")
 }
+
+func IsValidBridgeStatus(status BridgeStatus) error {
+	switch status {
+	case StatusActive, StatusInactive:
+		return nil
+	}
+
+	return errors.New("unsupported bridge status")
+}
