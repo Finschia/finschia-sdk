@@ -7,14 +7,24 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/Finschia/finschia-sdk/store/prefix"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/types/query"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) Params(ctx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	panic("implement me")
+func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := k.GetParams(ctx)
+
+	return &types.QueryParamsResponse{Params: params}, nil
 }
 
 func (k Keeper) NextSeqSend(goCtx context.Context, req *types.QueryNextSeqSendRequest) (*types.QueryNextSeqSendResponse, error) {
@@ -53,45 +63,136 @@ func (k Keeper) SeqToBlocknums(goCtx context.Context, req *types.QuerySeqToBlock
 }
 
 func (k Keeper) GreatestSeqByOperator(ctx context.Context, request *types.QueryGreatestSeqByOperatorRequest) (*types.QueryGreatestSeqByOperatorResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) GreatestConsecutiveConfirmedSeq(ctx context.Context, request *types.QueryGreatestConsecutiveConfirmedSeqRequest) (*types.QueryGreatestConsecutiveConfirmedSeqResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) SubmittedProvision(ctx context.Context, request *types.QuerySubmittedProvisionRequest) (*types.QuerySubmittedProvisionResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) ConfirmedProvision(ctx context.Context, request *types.QueryConfirmedProvisionRequest) (*types.QueryConfirmedProvisionResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) NeededSubmissionSeqs(ctx context.Context, request *types.QueryNeededSubmissionSeqsRequest) (*types.QueryNeededSubmissionSeqsResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) Commitments(ctx context.Context, request *types.QueryCommitmentsRequest) (*types.QueryCommitmentsResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
-func (k Keeper) Guardians(ctx context.Context, request *types.QueryGuardiansRequest) (*types.QueryGuardiansResponse, error) {
-	panic("implement me")
+func (k Keeper) Members(goCtx context.Context, req *types.QueryMembersRequest) (*types.QueryMembersResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	roles := k.GetRolePairs(ctx)
+	members := make([]string, 0)
+
+	if req.Role == "" {
+		for _, pair := range roles {
+			members = append(members, pair.Address)
+		}
+	} else {
+		role, found := types.QueryParamToRole[req.Role]
+		if !found {
+			return nil, status.Error(codes.InvalidArgument, "invalid role")
+		}
+
+		for _, pair := range roles {
+			if pair.Role == role {
+				members = append(members, pair.Address)
+			}
+		}
+	}
+
+	return &types.QueryMembersResponse{Members: members}, nil
 }
 
-func (k Keeper) Operators(ctx context.Context, request *types.QueryOperatorsRequest) (*types.QueryOperatorsResponse, error) {
-	panic("implement me")
+func (k Keeper) Member(goCtx context.Context, req *types.QueryMemberRequest) (*types.QueryMemberResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	r := k.GetRole(ctx, sdk.MustAccAddressFromBech32(req.Address))
+	if r == types.RoleEmpty {
+		return nil, status.Error(codes.NotFound, "role not found")
+	}
+
+	return &types.QueryMemberResponse{Role: types.Role_name[int32(r)]}, nil
 }
 
-func (k Keeper) Judges(ctx context.Context, request *types.QueryJudgesRequest) (*types.QueryJudgesResponse, error) {
-	panic("implement me")
+func (k Keeper) Proposals(goCtx context.Context, req *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyProposalPrefix)
+	proposals := make([]types.RoleProposal, 0)
+	pageRes, err := query.Paginate(store, req.Pagination, func(_, value []byte) error {
+		var proposal types.RoleProposal
+		k.cdc.MustUnmarshal(value, &proposal)
+		proposals = append(proposals, proposal)
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryProposalsResponse{Proposals: proposals, Pagination: pageRes}, nil
 }
 
-func (k Keeper) Proposals(ctx context.Context, request *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
-	panic("implement me")
+func (k Keeper) Proposal(goCtx context.Context, req *types.QueryProposalRequest) (*types.QueryProposalResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	proposal, found := k.GetRoleProposal(ctx, req.ProposalId)
+	if !found {
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("role proposal %d", req.ProposalId))
+	}
+
+	return &types.QueryProposalResponse{Proposal: proposal}, nil
 }
 
-func (k Keeper) Proposal(ctx context.Context, request *types.QueryProposalRequest) (*types.QueryProposalResponse, error) {
-	panic("implement me")
+func (k Keeper) Votes(goCtx context.Context, req *types.QueryVotesRequest) (*types.QueryVotesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	votes := k.GetProposalVotes(ctx, req.ProposalId)
+	return &types.QueryVotesResponse{Votes: votes}, nil
+}
+
+func (k Keeper) Vote(goCtx context.Context, req *types.QueryVoteRequest) (*types.QueryVoteResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	opt, err := k.GetVote(ctx, req.ProposalId, sdk.MustAccAddressFromBech32(req.Voter))
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	return &types.QueryVoteResponse{Vote: types.Vote{ProposalId: req.ProposalId, Voter: req.Voter, Option: opt}}, nil
+}
+
+func (k Keeper) BridgeStatus(goCtx context.Context, req *types.QueryBridgeStatusRequest) (*types.QueryBridgeStatusResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.QueryBridgeStatusResponse{Status: k.GetBridgeStatus(ctx), Metadata: k.GetBridgeStatusMetadata(ctx)}, nil
 }
