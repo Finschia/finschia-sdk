@@ -471,6 +471,7 @@ func NewSimApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		fbridgetypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -488,7 +489,6 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		fswaptypes.ModuleName,
-		fbridgetypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
