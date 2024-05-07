@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -62,27 +63,27 @@ func (k Keeper) SeqToBlocknums(goCtx context.Context, req *types.QuerySeqToBlock
 }
 
 func (k Keeper) GreatestSeqByOperator(ctx context.Context, request *types.QueryGreatestSeqByOperatorRequest) (*types.QueryGreatestSeqByOperatorResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) GreatestConsecutiveConfirmedSeq(ctx context.Context, request *types.QueryGreatestConsecutiveConfirmedSeqRequest) (*types.QueryGreatestConsecutiveConfirmedSeqResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) SubmittedProvision(ctx context.Context, request *types.QuerySubmittedProvisionRequest) (*types.QuerySubmittedProvisionResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) ConfirmedProvision(ctx context.Context, request *types.QueryConfirmedProvisionRequest) (*types.QueryConfirmedProvisionResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) NeededSubmissionSeqs(ctx context.Context, request *types.QueryNeededSubmissionSeqsRequest) (*types.QueryNeededSubmissionSeqsResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) Commitments(ctx context.Context, request *types.QueryCommitmentsRequest) (*types.QueryCommitmentsResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (k Keeper) Members(goCtx context.Context, req *types.QueryMembersRequest) (*types.QueryMembersResponse, error) {

@@ -52,27 +52,27 @@ func (m msgServer) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*typ
 }
 
 func (m msgServer) Provision(ctx context.Context, msg *types.MsgProvision) (*types.MsgProvisionResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (m msgServer) HoldTransfer(ctx context.Context, msg *types.MsgHoldTransfer) (*types.MsgHoldTransferResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (m msgServer) ReleaseTransfer(ctx context.Context, msg *types.MsgReleaseTransfer) (*types.MsgReleaseTransferResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (m msgServer) RemoveProvision(ctx context.Context, msg *types.MsgRemoveProvision) (*types.MsgRemoveProvisionResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (m msgServer) ClaimBatch(ctx context.Context, msg *types.MsgClaimBatch) (*types.MsgClaimBatchResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (m msgServer) Claim(ctx context.Context, msg *types.MsgClaim) (*types.MsgClaimResponse, error) {
-	panic("implement me")
+	panic(sdkerrors.ErrNotSupported)
 }
 
 func (m msgServer) SuggestRole(goCtx context.Context, msg *types.MsgSuggestRole) (*types.MsgSuggestRoleResponse, error) {
