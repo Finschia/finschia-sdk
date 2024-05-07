@@ -79,9 +79,9 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 
 		switch sw.Status {
 		case types.StatusActive:
-			bsMeta.Active++
+			bsMeta.Active--
 		case types.StatusInactive:
-			bsMeta.Inactive++
+			bsMeta.Inactive--
 		default:
 			return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
 		}

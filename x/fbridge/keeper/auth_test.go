@@ -26,6 +26,7 @@ func TestAssignRole(t *testing.T) {
 	err = k.updateRole(ctx, types.RoleGuardian, addrs[0])
 	require.NoError(t, err)
 	require.Equal(t, types.RoleGuardian, k.GetRole(ctx, addrs[0]))
+	require.Equal(t, types.RoleMetadata{Guardian: 1, Operator: 0, Judge: 0}, k.GetRoleMetadata(ctx))
 
 	// 2. Guardian assigns an address to a guardian role
 	_, err = k.RegisterRoleProposal(ctx, auth, addrs[1], types.RoleGuardian)
@@ -40,13 +41,21 @@ func TestAssignRole(t *testing.T) {
 	require.Equal(t, types.OptionYes, opt)
 	err = k.updateRole(ctx, types.RoleGuardian, addrs[1])
 	require.NoError(t, err)
-
 	require.Equal(t, types.RoleMetadata{Guardian: 2, Operator: 0, Judge: 0}, k.GetRoleMetadata(ctx))
 	sws := k.GetBridgeSwitches(ctx)
 	require.Len(t, sws, 2)
 	for _, sw := range sws {
 		require.Equal(t, types.StatusActive, sw.Status)
 	}
+
+	// 3. Guardian assigns an address to an operator role
+	err = k.updateRole(ctx, types.RoleOperator, addrs[1])
+	require.NoError(t, err)
+	require.Equal(t, types.RoleMetadata{Guardian: 1, Operator: 1, Judge: 0}, k.GetRoleMetadata(ctx))
+
+	// 4. Guardian assigns an address to a same role
+	err = k.updateRole(ctx, types.RoleOperator, addrs[1])
+	require.Error(t, err, "role must not be updated to the same role")
 }
 
 func TestBridgeHaltAndResume(t *testing.T) {
