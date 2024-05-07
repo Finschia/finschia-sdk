@@ -45,6 +45,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fbridge) [\#1347](https://github.com/Finschia/finschia-sdk/pull/1347) Implement bridge transfer feature (sending side)
 * (x/fbridge) [\#1351](https://github.com/Finschia/finschia-sdk/pull/1351) Map a sequence to block number for every bridge request (sending side)
 * (x/fswap) [\#1345](https://github.com/Finschia/finschia-sdk/pull/1345) Implement fswap's basic functionality(MsgSwap, MsgSwapAll, Query, Proposal)
+* (x/fbridge) [\#1350](https://github.com/Finschia/finschia-sdk/pull/1350) Add Role-based Access Control
 
 ### Improvements
 * (types) [\#1314](https://github.com/Finschia/finschia-sdk/pull/1314) replace IsEqual with Equal
