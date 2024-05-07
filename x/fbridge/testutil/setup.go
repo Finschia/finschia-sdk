@@ -3,9 +3,9 @@ package testutil
 import (
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 

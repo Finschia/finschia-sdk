@@ -99,7 +99,7 @@ func (k Keeper) increaseSwapCount(ctx sdk.Context) error {
 	}
 
 	prev := stats.SwapCount
-	stats.SwapCount += 1
+	stats.SwapCount++
 	if stats.SwapCount < prev {
 		return types.ErrInvalidState.Wrap("overflow detected")
 	}
