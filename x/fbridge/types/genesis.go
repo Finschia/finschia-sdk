@@ -90,10 +90,18 @@ func validateSendingState(state SendingState) error {
 	if state.NextSeq-1 != uint64(len(state.SeqToBlocknum)) {
 		return errors.New("sequence to blocknum mapping is invalid")
 	}
+
+	chkSeq := make(map[uint64]struct{})
 	for _, v := range state.SeqToBlocknum {
-		if v.Blocknum < 1 || v.Seq < 1 {
+		if v.Blocknum == 0 || v.Seq == 0 {
 			return errors.New("blocknum and seq must be positive")
 		}
+
+		if _, ok := chkSeq[v.Seq]; ok {
+			return errors.New("duplicate sequence")
+		}
+
+		chkSeq[v.Seq] = struct{}{}
 	}
 
 	return nil
