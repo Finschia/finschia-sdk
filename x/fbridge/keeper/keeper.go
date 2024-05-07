@@ -129,12 +129,16 @@ func (k Keeper) GetRoleMetadata(ctx sdk.Context) types.RoleMetadata {
 
 func (k Keeper) GetBridgeStatus(ctx sdk.Context) types.BridgeStatus {
 	roleMeta := k.GetRoleMetadata(ctx)
-	bsMeta := k.GetBridgeStatusMetadata(ctx)
-	if types.CheckTrustLevelThreshold(roleMeta.Guardian, bsMeta.Inactive, k.GetParams(ctx).GuardianTrustLevel) {
-		return types.StatusInactive
+	if roleMeta.Guardian != 0 {
+		bsMeta := k.GetBridgeStatusMetadata(ctx)
+		if types.CheckTrustLevelThreshold(roleMeta.Guardian, bsMeta.Inactive, k.GetParams(ctx).GuardianTrustLevel) {
+			return types.StatusInactive
+		}
+
+		return types.StatusActive
 	}
 
-	return types.StatusActive
+	return types.StatusInactive
 }
 
 func (k Keeper) setBridgeInactiveCounter(ctx sdk.Context, nInactive uint64) {
