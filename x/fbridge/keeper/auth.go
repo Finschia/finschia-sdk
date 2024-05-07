@@ -92,10 +92,8 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	if role == types.RoleEmpty {
 		k.deleteRole(ctx, addr)
 		return nil
-	} else {
-		if err := k.setRole(ctx, role, addr); err != nil {
-			return err
-		}
+	} else if err := k.setRole(ctx, role, addr); err != nil {
+		return err
 	}
 
 	switch role {
