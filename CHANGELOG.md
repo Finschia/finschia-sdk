@@ -39,10 +39,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.48.1...HEAD)
 
 ### Features
-<<<<<<< HEAD
-=======
-* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
->>>>>>> 1c272c99f (feat: add role-based access control for bridge (#1358))
 * (x/fswap) [\#1336](https://github.com/Finschia/finschia-sdk/pull/1336) Initialize fswap module
 * (x/fswap) [\#1339](https://github.com/Finschia/finschia-sdk/pull/1339) Implement fswap module's genesis
 * (x/fbridge) [\#1340](https://github.com/Finschia/finschia-sdk/pull/1340) Initialize fbridge module
