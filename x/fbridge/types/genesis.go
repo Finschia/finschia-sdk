@@ -87,10 +87,16 @@ func validateSendingState(state SendingState) error {
 		return errors.New("next sequence must be positive")
 	}
 
+	seq := uint64(1)
 	for _, v := range state.SeqToBlocknum {
 		if v.Blocknum < 1 || v.Seq < 1 {
 			return errors.New("blocknum and seq must be positive")
 		}
+
+		if v.Seq != seq {
+			panic("sequence number is not in order")
+		}
+		seq++
 	}
 
 	return nil
