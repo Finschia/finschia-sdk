@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
@@ -124,7 +125,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 func (AppModule) ConsensusVersion() uint64 { return consensusVersion }
 
 // BeginBlock returns the begin blocker for the fbridge module.
-func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(ctx sdk.Context, _ ocabci.RequestBeginBlock) {
 	am.keeper.BeginBlocker(ctx)
 }
 
