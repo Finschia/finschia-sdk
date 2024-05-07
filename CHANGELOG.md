@@ -40,7 +40,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 * (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
-* (x/fswap) [\#1336](https://github.com/Finschia/finschia-sdk/pull/1336) Initialize fswap module 
+* (x/fswap) [\#1336](https://github.com/Finschia/finschia-sdk/pull/1336) Initialize fswap module
 * (x/fswap) [\#1339](https://github.com/Finschia/finschia-sdk/pull/1339) Implement fswap module's genesis
 * (x/fbridge) [\#1340](https://github.com/Finschia/finschia-sdk/pull/1340) Initialize fbridge module
 * (x/fbridge) [\#1347](https://github.com/Finschia/finschia-sdk/pull/1347) Implement bridge transfer feature (sending side)
@@ -80,6 +80,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/crypto) [\#1316](https://github.com/Finschia/finschia-sdk/pull/1316) error if incorrect ledger public key (backport cosmos/cosmos-sdk#14460, cosmos/cosmos-sdk#19691) 
 * (x/auth) [#1319](https://github.com/Finschia/finschia-sdk/pull/1319) prevent signing from wrong key in multisig
 * (x/mint, x/slashing) [\#1323](https://github.com/Finschia/finschia-sdk/pull/1323) add missing nil check for params validation
+* (x/server) [\#1337](https://github.com/Finschia/finschia-sdk/pull/1337) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
 
 ### Removed
 
@@ -94,6 +95,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#1078](https://github.com/Finschia/finschia-sdk/pull/1078) fix tag comments in github actions workflow docker.yml
 * (repo) [\#1157](https://github.com/Finschia/finschia-sdk/pull/1157) setup CODEOWNERS and backport action
 * (ci) [\#1160](https://github.com/Finschia/finschia-sdk/pull/1160) remove autopr ci
+* (repo) [\#1356](https://github.com/Finschia/finschia-sdk/pull/1356) add v0.49.x for backport action
 
 ### Document Updates
 * (docs) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
