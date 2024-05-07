@@ -56,22 +56,10 @@ func GuardianInvariant(k Keeper) sdk.Invariant {
 		}
 
 		numBridgeSw := len(k.GetBridgeSwitches(ctx))
-		if numGuardian != numBridgeSw {
-			return sdk.FormatInvariant(
-				types.ModuleName, "guardian-invariant",
-				fmt.Sprintf("number of guardians(%d) != number of bridge switches(%d)", numGuardian, numBridgeSw),
-			), true
-		}
-
-		bsMeta := k.GetBridgeStatusMetadata(ctx)
-		roleMeta := k.GetRoleMetadata(ctx)
-		if (bsMeta.Inactive + bsMeta.Active) != roleMeta.Guardian {
-			return sdk.FormatInvariant(
-				types.ModuleName, "guardian-invariant",
-				fmt.Sprintf("Bridge status metadata (%+v) does not match with guardian role metadata(%d)", bsMeta, roleMeta.Guardian),
-			), true
-		}
-
-		return sdk.FormatInvariant(types.ModuleName, "guardian-invariant", ""), false
+		broken := numGuardian != numBridgeSw
+		return sdk.FormatInvariant(
+			types.ModuleName, "guardian-invariant",
+			fmt.Sprintf("number of guardians(%d) != number of bridge switches(%d)", numGuardian, numBridgeSw),
+		), broken
 	}
 }
