@@ -14,6 +14,16 @@ message GenesisState {
   SendingState sending_state = 2 [(gogoproto.nullable) = false];
   // receiving_state defines status saved when receiving tokens from a counterpart chain
   ReceivingState receiving_state = 3 [(gogoproto.nullable) = false];
+  // next_role_proposal_id is the next role proposal ID to be used.
+  uint64 next_role_proposal_id = 4;
+  // role_proposals defines all the role proposals present at genesis.
+  repeated RoleProposal role_proposals = 5 [(gogoproto.nullable) = false];
+  // votes defines all the votes present for role proposals at genesis.
+  repeated Vote votes = 6 [(gogoproto.nullable) = false];
+  // roles defines all addresses assigned roles at genesis.
+  repeated RolePair roles = 7 [(gogoproto.nullable) = false];
+  // bridge_switches defines the status of whether each guardian has allowed the bridge to operate.
+  repeated BridgeSwitch bridge_switches = 8 [(gogoproto.nullable) = false];
 }
 
 message SendingState {
@@ -78,4 +88,10 @@ message ConfirmedProvision {
 
   // commitment is the hash value of a provision
   string commitment = 2;
+}
+
+message BridgeSwitch {
+  // the guardian address
+  string       guardian = 1;
+  BridgeStatus status   = 2;
 }

@@ -58,29 +58,39 @@ service Query {
     option (google.api.http).get = "/lbm/fbridge/v1/receiving/commitments/{seq}";
   }
 
-  // Guardians queries a list of Guardians registered on the bridge
-  rpc Guardians(QueryGuardiansRequest) returns (QueryGuardiansResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/guardians";
+  // Members queries the members of spcific group registered on the bridge
+  rpc Members(QueryMembersRequest) returns (QueryMembersResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/members";
   }
 
-  // Operators queries a list of Operators registered on the bridge
-  rpc Operators(QueryOperatorsRequest) returns (QueryOperatorsResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/operators";
-  }
-
-  // Judges queries a list of Judges registered on the bridge
-  rpc Judges(QueryJudgesRequest) returns (QueryJudgesResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/judges";
+  // Member queries the role of a specific member
+  rpc Member(QueryMemberRequest) returns (QueryMemberResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/members/{address}";
   }
 
   // Proposals queries a list of SuggestRole Proposals
   rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/role/proposals";
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals";
   }
 
   // Proposal queries a SuggestRole Proposal
   rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
-    option (google.api.http).get = "/lbm/fbridge/v1/role/proposals/{proposal_id}";
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}";
+  }
+
+  // Vote queries voted information based on proposalID, voterAddr.
+  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}";
+  }
+
+  // Votes queries votes of a given proposal.
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes";
+  }
+
+  // BridgeStatus queries the status of the bridge
+  rpc BridgeStatus(QueryBridgeStatusRequest) returns (QueryBridgeStatusResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/status";
   }
 }
 
@@ -162,22 +172,21 @@ message QueryCommitmentsResponse {
   repeated string commitments = 1;
 }
 
-message QueryGuardiansRequest {}
-
-message QueryGuardiansResponse {
-  repeated string guardians = 1;
+message QueryMembersRequest {
+  // the role name (guardian, operator, judge)
+  string role = 1;
 }
 
-message QueryOperatorsRequest {}
-
-message QueryOperatorsResponse {
-  repeated string operators = 1;
+message QueryMembersResponse {
+  repeated string members = 1;
 }
 
-message QueryJudgesRequest {}
+message QueryMemberRequest {
+  string address = 1;
+}
 
-message QueryJudgesResponse {
-  repeated string judges = 1;
+message QueryMemberResponse {
+  string role = 1;
 }
 
 message QueryProposalsRequest {
@@ -186,14 +195,47 @@ message QueryProposalsRequest {
 }
 
 message QueryProposalsResponse {
-  repeated RoleProposal proposals = 1;
+  repeated RoleProposal proposals = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines an pagination for the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryProposalRequest {
   // the proposal id
-  string proposal_id = 1;
+  uint64 proposal_id = 1;
 }
 
 message QueryProposalResponse {
-  RoleProposal proposal = 1;
+  RoleProposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryVoteRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+
+  // voter defines the oter address for the proposals.
+  string voter = 2;
+}
+
+message QueryVoteResponse {
+  // vote defined the queried vote.
+  Vote vote = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryVotesRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+message QueryVotesResponse {
+  // votes defined the queried votes.
+  repeated Vote votes = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBridgeStatusRequest {}
+
+message QueryBridgeStatusResponse {
+  BridgeStatus         status   = 1;
+  BridgeStatusMetadata metadata = 2 [(gogoproto.nullable) = false];
 }

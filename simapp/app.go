@@ -271,7 +271,7 @@ func NewSimApp(
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
 	// not include this key.
-	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testingkey")
+	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, fbridgetypes.MemStoreKey, "testingkey")
 
 	// configure state listening capabilities using AppOptions
 	// we are doing nothing with the returned streamingServices and waitGroup in this case
@@ -373,7 +373,7 @@ func NewSimApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], app.AccountKeeper, app.BankKeeper, "stake", authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], memKeys[fbridgetypes.MemStoreKey], app.AccountKeeper, app.BankKeeper, "stake", fbridgetypes.DefaultAuthority().String())
 
 	/****  Module Options ****/
 
@@ -471,6 +471,7 @@ func NewSimApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		fbridgetypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -488,7 +489,6 @@ func NewSimApp(
 		token.ModuleName,
 		collection.ModuleName,
 		fswaptypes.ModuleName,
-		fbridgetypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
