@@ -83,7 +83,12 @@ func (k Keeper) InitMemStore(ctx sdk.Context) {
 		}
 		k.setRoleMetadata(noGasCtx, roleMetadata)
 
-		nInactive := k.GetBridgeInactiveCounter(noGasCtx)
+		nInactive := uint64(0)
+		for _, bs := range k.GetBridgeSwitches(ctx) {
+			if bs.Status == types.StatusInactive {
+				nInactive++
+			}
+		}
 		k.setBridgeInactiveCounter(noGasCtx, nInactive)
 
 		memStore := noGasCtx.KVStore(k.memKey)
@@ -143,13 +148,7 @@ func (k Keeper) GetBridgeInactiveCounter(ctx sdk.Context) uint64 {
 	memStore := ctx.KVStore(k.memKey)
 	bz := memStore.Get(types.KeyMemBridgeInactiveCounter)
 	if bz == nil {
-		n := uint64(0)
-		for _, bs := range k.GetBridgeSwitches(ctx) {
-			if bs.Status == types.StatusInactive {
-				n++
-			}
-		}
-		return n
+		panic("bridge inactive counter must be set at initialization")
 	}
 
 	return binary.BigEndian.Uint64(bz)
