@@ -1,0 +1,46 @@
+syntax = "proto3";
+package lbm.fswap.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+
+message Swap {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  string from_denom              = 1;
+  string to_denom                = 2;
+  string amount_cap_for_to_denom = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+  string swap_rate = 4
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message SwapStats {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  int32 swap_count = 1;
+}
+
+// From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+message MakeSwapProposal {
+  option (gogoproto.goproto_stringer) = false;
+
+  string                       title             = 1;
+  string                       description       = 2;
+  Swap                         swap              = 3 [(gogoproto.nullable) = false];
+  cosmos.bank.v1beta1.Metadata to_denom_metadata = 4
+      [(gogoproto.moretags) = "yaml:\"denom_metadata\"", (gogoproto.nullable) = false];
+}
+
+message Swapped {
+  option (gogoproto.goproto_stringer)       = false;
+  cosmos.base.v1beta1.Coin from_coin_amount = 1
+      [(gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin to_coin_amount = 2
+      [(gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin", (gogoproto.nullable) = false];
+}
