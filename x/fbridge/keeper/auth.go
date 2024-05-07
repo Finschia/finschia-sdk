@@ -51,7 +51,7 @@ func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	}
 
 	if err := types.IsValidVoteOption(option); err != nil {
-		return err
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
 	}
 
 	k.setVote(ctx, proposalID, voter, option)
@@ -66,24 +66,19 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	}
 
 	roleMeta := k.GetRoleMetadata(ctx)
-	bsMeta := k.GetBridgeStatusMetadata(ctx)
+	nInactive := k.GetBridgeInactiveCounter(ctx)
 
 	switch previousRole {
 	case types.RoleGuardian:
 		roleMeta.Guardian--
 
-		sw, err := k.GetBridgeSwitch(ctx, addr)
+		bs, err := k.GetBridgeSwitch(ctx, addr)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
-		switch sw.Status {
-		case types.StatusActive:
-			bsMeta.Active--
-		case types.StatusInactive:
-			bsMeta.Inactive--
-		default:
-			return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
+		if bs.Status == types.StatusInactive {
+			nInactive--
 		}
 
 		k.deleteBridgeSwitch(ctx, addr)
@@ -98,7 +93,9 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 		k.deleteRole(ctx, addr)
 		return nil
 	} else {
-		k.setRole(ctx, role, addr)
+		if err := k.setRole(ctx, role, addr); err != nil {
+			return err
+		}
 	}
 
 	switch role {
@@ -107,7 +104,6 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 		if err := k.setBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
 			panic(err)
 		}
-		bsMeta.Active++
 	case types.RoleOperator:
 		roleMeta.Operator++
 	case types.RoleJudge:
@@ -115,7 +111,7 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	}
 
 	k.setRoleMetadata(ctx, roleMeta)
-	k.setBridgeStatusMetadata(ctx, bsMeta)
+	k.setBridgeInactiveCounter(ctx, nInactive)
 
 	return nil
 }
@@ -127,18 +123,16 @@ func (k Keeper) updateBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, sta
 		return err
 	}
 
-	bsMeta := k.GetBridgeStatusMetadata(ctx)
+	nInactive := k.GetBridgeInactiveCounter(ctx)
 	switch status {
 	case types.StatusActive:
-		bsMeta.Active++
-		bsMeta.Inactive--
+		nInactive--
 	case types.StatusInactive:
-		bsMeta.Inactive++
-		bsMeta.Active--
+		nInactive++
 	default:
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid bridge switch status")
+		return sdkerrors.ErrInvalidRequest.Wrapf("unknown bridge status: %d", status)
 	}
-	k.setBridgeStatusMetadata(ctx, bsMeta)
+	k.setBridgeInactiveCounter(ctx, nInactive)
 
 	if err := k.setBridgeSwitch(ctx, guardian, status); err != nil {
 		return err
@@ -250,11 +244,17 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) []types.Vot
 	return votes
 }
 
-func (k Keeper) setRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) {
+func (k Keeper) setRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
+	if err := types.IsValidRole(role); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	bz := make([]byte, 4)
 	binary.BigEndian.PutUint32(bz, uint32(role))
 	store.Set(types.RoleKey(addr), bz)
+
+	return nil
 }
 
 func (k Keeper) GetRole(ctx sdk.Context, addr sdk.AccAddress) types.Role {
@@ -286,6 +286,10 @@ func (k Keeper) deleteRole(ctx sdk.Context, addr sdk.AccAddress) {
 }
 
 func (k Keeper) setBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress, status types.BridgeStatus) error {
+	if err := types.IsValidBridgeStatus(status); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	bz := make([]byte, 4)
 	binary.BigEndian.PutUint32(bz, uint32(status))

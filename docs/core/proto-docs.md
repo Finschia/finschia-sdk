@@ -12703,7 +12703,7 @@ MsgTransfer is input values required for bridge transfer
 | `Claim` | [MsgClaim](#lbm.fbridge.v1.MsgClaim) | [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
 | `SuggestRole` | [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole) | [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse) | SuggestRole suggests updating the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. The proposal will be passed only with the consent of +2/3 Guardian members. | |
 | `AddVoteForRole` | [MsgAddVoteForRole](#lbm.fbridge.v1.MsgAddVoteForRole) | [MsgAddVoteForRoleResponse](#lbm.fbridge.v1.MsgAddVoteForRoleResponse) | AddVoteForRole adds a vote for a role change proposal. | |
-| `SetBridgeStatus` | [MsgSetBridgeStatus](#lbm.fbridge.v1.MsgSetBridgeStatus) | [MsgSetBridgeStatusResponse](#lbm.fbridge.v1.MsgSetBridgeStatusResponse) | SetBridgeStatus operates a switch to halt/resume the bridge module. If the ratio of active bridge switches does not exceed TrustLevel, the bridge module halts. | |
+| `SetBridgeStatus` | [MsgSetBridgeStatus](#lbm.fbridge.v1.MsgSetBridgeStatus) | [MsgSetBridgeStatusResponse](#lbm.fbridge.v1.MsgSetBridgeStatusResponse) | SetBridgeStatus operates a switch to halt/resume the bridge module. If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts. | |
 
  <!-- end services -->
 

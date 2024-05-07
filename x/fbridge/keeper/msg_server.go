@@ -114,10 +114,6 @@ func (m msgServer) AddVoteForRole(goCtx context.Context, msg *types.MsgAddVoteFo
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid proposer address (%s)", err)
 	}
 
-	if err := types.IsValidVoteOption(msg.Option); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
-	}
-
 	if err := m.addVote(ctx, msg.ProposalId, voter, msg.Option); err != nil {
 		return nil, err
 	}

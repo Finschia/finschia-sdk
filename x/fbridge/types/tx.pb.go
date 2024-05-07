@@ -1090,7 +1090,7 @@ type MsgClient interface {
 	// AddVoteForRole adds a vote for a role change proposal.
 	AddVoteForRole(ctx context.Context, in *MsgAddVoteForRole, opts ...grpc.CallOption) (*MsgAddVoteForRoleResponse, error)
 	// SetBridgeStatus operates a switch to halt/resume the bridge module.
-	// If the ratio of active bridge switches does not exceed TrustLevel, the bridge module halts.
+	// If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts.
 	SetBridgeStatus(ctx context.Context, in *MsgSetBridgeStatus, opts ...grpc.CallOption) (*MsgSetBridgeStatusResponse, error)
 }
 
@@ -1215,7 +1215,7 @@ type MsgServer interface {
 	// AddVoteForRole adds a vote for a role change proposal.
 	AddVoteForRole(context.Context, *MsgAddVoteForRole) (*MsgAddVoteForRoleResponse, error)
 	// SetBridgeStatus operates a switch to halt/resume the bridge module.
-	// If the ratio of active bridge switches does not exceed TrustLevel, the bridge module halts.
+	// If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts.
 	SetBridgeStatus(context.Context, *MsgSetBridgeStatus) (*MsgSetBridgeStatusResponse, error)
 }
 

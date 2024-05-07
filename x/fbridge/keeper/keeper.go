@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 
@@ -82,18 +83,8 @@ func (k Keeper) InitMemStore(ctx sdk.Context) {
 		}
 		k.setRoleMetadata(noGasCtx, roleMetadata)
 
-		bsMeta := types.BridgeStatusMetadata{Inactive: 0, Active: 0}
-		for _, bs := range k.GetBridgeSwitches(noGasCtx) {
-			switch bs.Status {
-			case types.StatusInactive:
-				bsMeta.Inactive++
-			case types.StatusActive:
-				bsMeta.Active++
-			default:
-				panic("invalid bridge switch status")
-			}
-		}
-		k.setBridgeStatusMetadata(noGasCtx, types.BridgeStatusMetadata{})
+		nInactive := k.GetBridgeInactiveCounter(noGasCtx)
+		k.setBridgeInactiveCounter(noGasCtx, nInactive)
 
 		memStore := noGasCtx.KVStore(k.memKey)
 		memStore.Set(types.KeyMemInitialized, []byte{1})
@@ -132,30 +123,41 @@ func (k Keeper) GetRoleMetadata(ctx sdk.Context) types.RoleMetadata {
 }
 
 func (k Keeper) GetBridgeStatus(ctx sdk.Context) types.BridgeStatus {
-	memStore := ctx.KVStore(k.memKey)
-	bsMeta := types.BridgeStatusMetadata{}
-	bz := memStore.Get(types.KeyMemBridgeStatus)
-	k.cdc.MustUnmarshal(bz, &bsMeta)
-
-	if types.CheckTrustLevelThreshold(bsMeta.Active+bsMeta.Inactive, bsMeta.Active, k.GetParams(ctx).GuardianTrustLevel) {
-		return types.StatusActive
+	roleMeta := k.GetRoleMetadata(ctx)
+	bsMeta := k.GetBridgeStatusMetadata(ctx)
+	if types.CheckTrustLevelThreshold(roleMeta.Guardian, bsMeta.Inactive, k.GetParams(ctx).GuardianTrustLevel) {
+		return types.StatusInactive
 	}
 
-	return types.StatusInactive
+	return types.StatusActive
 }
 
-func (k Keeper) setBridgeStatusMetadata(ctx sdk.Context, status types.BridgeStatusMetadata) {
+func (k Keeper) setBridgeInactiveCounter(ctx sdk.Context, nInactive uint64) {
 	memStore := ctx.KVStore(k.memKey)
-	memStore.Set(types.KeyMemBridgeStatus, k.cdc.MustMarshal(&status))
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, nInactive)
+	memStore.Set(types.KeyMemBridgeInactiveCounter, bz)
+}
+
+func (k Keeper) GetBridgeInactiveCounter(ctx sdk.Context) uint64 {
+	memStore := ctx.KVStore(k.memKey)
+	bz := memStore.Get(types.KeyMemBridgeInactiveCounter)
+	if bz == nil {
+		n := uint64(0)
+		for _, bs := range k.GetBridgeSwitches(ctx) {
+			if bs.Status == types.StatusInactive {
+				n++
+			}
+		}
+		return n
+	}
+
+	return binary.BigEndian.Uint64(bz)
 }
 
 func (k Keeper) GetBridgeStatusMetadata(ctx sdk.Context) types.BridgeStatusMetadata {
-	memStore := ctx.KVStore(k.memKey)
 	bsMeta := types.BridgeStatusMetadata{}
-	bz := memStore.Get(types.KeyMemBridgeStatus)
-	if bz == nil {
-		return types.BridgeStatusMetadata{}
-	}
-	k.cdc.MustUnmarshal(bz, &bsMeta)
+	bsMeta.Inactive = k.GetBridgeInactiveCounter(ctx)
+	bsMeta.Active = k.GetRoleMetadata(ctx).Guardian - bsMeta.Inactive
 	return bsMeta
 }

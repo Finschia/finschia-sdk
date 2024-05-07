@@ -118,6 +118,7 @@ enum BridgeStatus {
 
   // BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
   BRIDGE_STATUS_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "StatusEmpty"];
+
   // BRIDGE_STATUS_ACTIVE defines an active bridge status.
   BRIDGE_STATUS_ACTIVE = 1 [(gogoproto.enumvalue_customname) = "StatusActive"];
   // BRIDGE_STATUS_INACTIVE defines an inactive bridge status.

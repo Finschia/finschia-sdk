@@ -44,9 +44,9 @@ var (
 	KeyRolePrefix         = []byte{0x13} // key prefix for the role of an address
 	KeyBridgeSwitchPrefix = []byte{0x14} // key for the switch to halt
 
-	KeyMemInitialized  = []byte{0xF0}
-	KeyMemRoleMetadata = []byte{0xF1} // key for the role metadata
-	KeyMemBridgeStatus = []byte{0xF2} // key for the bridge status
+	KeyMemInitialized           = []byte{0xF0}
+	KeyMemRoleMetadata          = []byte{0xF1} // key for the role metadata
+	KeyMemBridgeInactiveCounter = []byte{0xF2} // key for the bridge inactive status
 )
 
 func SeqToBlocknumKey(seq uint64) []byte {
