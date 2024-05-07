@@ -3,13 +3,13 @@ package keeper
 import (
 	"context"
 	"fmt"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/types/query"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
