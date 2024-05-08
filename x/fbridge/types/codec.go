@@ -13,6 +13,7 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "lbm-sdk/fbridge/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgTransfer{}, "lbm-sdk/MsgTransfer")
 	legacy.RegisterAminoMsg(cdc, &MsgProvision{}, "lbm-sdk/MsgProvision")
 	legacy.RegisterAminoMsg(cdc, &MsgHoldTransfer{}, "lbm-sdk/MsgHoldTransfer")
@@ -28,6 +29,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registrar types.InterfaceRegistry) {
 	registrar.RegisterImplementations(
 		(*sdk.Msg)(nil),
+		&MsgUpdateParams{},
 		&MsgTransfer{},
 		&MsgProvision{},
 		&MsgHoldTransfer{},

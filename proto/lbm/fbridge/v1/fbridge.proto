@@ -17,6 +17,8 @@ message Params {
   uint64 timelock_period = 4;
   // default period of the proposal to update the role
   uint64 proposal_period = 5;
+  // target denom of the bridge module. This is the base denom of Finschia normally.
+  string target_denom = 6;
 }
 
 // Provision is a struct that represents a provision internally.

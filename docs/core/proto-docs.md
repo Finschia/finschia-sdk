@@ -799,6 +799,7 @@
     - [EventProvision](#lbm.fbridge.v1.EventProvision)
     - [EventSuggestRole](#lbm.fbridge.v1.EventSuggestRole)
     - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
+    - [EventUpdateParams](#lbm.fbridge.v1.EventUpdateParams)
   
 - [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
     - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
@@ -868,6 +869,8 @@
     - [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse)
     - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
     - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
+    - [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse)
   
     - [Msg](#lbm.fbridge.v1.Msg)
   
@@ -11812,6 +11815,7 @@ supports positive values.
 | `judge_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many judges' confirmations are needed to be valid. |
 | `timelock_period` | [uint64](#uint64) |  | default timelock period for each provision (unix timestamp) |
 | `proposal_period` | [uint64](#uint64) |  | default period of the proposal to update the role |
+| `target_denom` | [string](#string) |  | target denom of the bridge module. This is the base denom of Finschia normally. |
 
 
 
@@ -12075,6 +12079,21 @@ VoteOption enumerates the valid vote options for a given role proposal.
 | `sender` | [string](#string) |  | the sender address on the source chain |
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
 | `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  |  |
 
 
 
@@ -13043,6 +13062,34 @@ MsgTransfer is input values required for bridge transfer
 
 
 
+
+<a name="lbm.fbridge.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | the authority address |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines the x/fbridge parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -13057,6 +13104,7 @@ MsgTransfer is input values required for bridge transfer
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse) | UpdateParams updates the x/fbridge parameters. | |
 | `Transfer` | [MsgTransfer](#lbm.fbridge.v1.MsgTransfer) | [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse) | Submit a transfer request to the bridge module. | |
 | `Provision` | [MsgProvision](#lbm.fbridge.v1.MsgProvision) | [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse) | Submit a provision to the bridge module. | |
 | `HoldTransfer` | [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer) | [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
