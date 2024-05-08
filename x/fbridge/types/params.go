@@ -39,8 +39,8 @@ func (p Params) ValidateParams() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("timelock period cannot be 0")
 	}
 
-	if p.TargetDenom == "" {
-		return sdkerrors.ErrInvalidRequest.Wrap("target denom cannot be empty")
+	if err := sdktypes.ValidateDenom(p.TargetDenom); err != nil {
+		return err
 	}
 
 	return nil
