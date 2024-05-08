@@ -58,6 +58,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server) [\#1175](https://github.com/Finschia/finschia-sdk/pull/1175) Use go embed for swagger
 * (x/collection) [\#1287](https://github.com/Finschia/finschia-sdk/pull/1287) add nft id validation to MsgSendNFT
 * (types) [\#1314](https://github.com/Finschia/finschia-sdk/pull/1314) replace IsEqual with Equal
+* (x/fswap) [\#1363](https://github.com/Finschia/finschia-sdk/pull/1363) introduce new event for MakeSwapProposal
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
