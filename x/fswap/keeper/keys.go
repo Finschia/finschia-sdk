@@ -1,5 +1,10 @@
 package keeper
 
+import (
+	"github.com/Finschia/finschia-sdk/types/address"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+)
+
 var (
 	swapPrefix       = []byte{0x01}
 	swapStatsKey     = []byte{0x02}
@@ -19,18 +24,13 @@ func swappedKey(fromDenom, toDenom string) []byte {
 }
 
 func combineDenoms(fromDenom, toDenom string) []byte {
-	lengthPrefixedFromDenom := lengthPrefix([]byte(fromDenom))
-	lengthPrefixedToDenom := lengthPrefix([]byte(toDenom))
-	return append(lengthPrefixedFromDenom, lengthPrefixedToDenom...)
-}
-
-// lengthPrefix prefixes the address bytes with its length, this is used
-// for example for variable-length components in store keys.
-func lengthPrefix(bz []byte) []byte {
-	bzLen := len(bz)
-	if bzLen == 0 {
-		return bz
+	lengthPrefixedFromDenom, err := address.LengthPrefix([]byte(fromDenom))
+	if err != nil {
+		panic(sdkerrors.ErrInvalidRequest.Wrapf("fromDenom length should be max %d bytes, got %d", address.MaxAddrLen, len(fromDenom)))
 	}
-
-	return append([]byte{byte(bzLen)}, bz...)
+	lengthPrefixedToDenom, err := address.LengthPrefix([]byte(toDenom))
+	if err != nil {
+		panic(sdkerrors.ErrInvalidRequest.Wrapf("toDenom length should be max %d bytes, got %d", address.MaxAddrLen, len(toDenom)))
+	}
+	return append(lengthPrefixedFromDenom, lengthPrefixedToDenom...)
 }
