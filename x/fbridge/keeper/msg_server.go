@@ -164,5 +164,12 @@ func (m msgServer) SetBridgeStatus(goCtx context.Context, msg *types.MsgSetBridg
 		return nil, err
 	}
 
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventSetBridgeStatus{
+		Guardian: msg.Guardian,
+		Status:   msg.Status,
+	}); err != nil {
+		panic(err)
+	}
+
 	return &types.MsgSetBridgeStatusResponse{}, nil
 }
