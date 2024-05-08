@@ -5,7 +5,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
+func (k Keeper) setParams(ctx sdk.Context, params types.Params) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&params)
 	store.Set(types.KeyParams, bz)

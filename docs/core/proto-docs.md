@@ -11451,6 +11451,7 @@ supports positive values.
 | `judge_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many judges' confirmations are needed to be valid. |
 | `timelock_period` | [uint64](#uint64) |  | default timelock period for each provision (unix timestamp) |
 | `proposal_period` | [uint64](#uint64) |  | default period of the proposal to update the role |
+| `target_denom` | [string](#string) |  | target denom of the bridge module. This is the base denom of Finschia normally. |
 
 
 
