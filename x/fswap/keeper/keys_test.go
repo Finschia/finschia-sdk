@@ -18,7 +18,7 @@ func TestSwapKey(t *testing.T) {
 			fromDenom:   "cony",
 			toDenom:     "peb",
 			expectedKey: []byte{0x1, 0x4, 0x63, 0x6f, 0x6e, 0x79, 0x3, 0x70, 0x65, 0x62},
-			//expectedKey: append(swapPrefix, append(append([]byte{byte(len("cony"))}, []byte("cony")...), append([]byte{byte(len("peb"))}, []byte("peb")...)...)...),
+			// expectedKey: append(swapPrefix, append(append([]byte{byte(len("cony"))}, []byte("cony")...), append([]byte{byte(len("peb"))}, []byte("peb")...)...)...),
 		},
 	}
 	for _, tc := range tests {
@@ -41,7 +41,7 @@ func TestSwappedKey(t *testing.T) {
 			fromDenom:   "cony",
 			toDenom:     "peb",
 			expectedKey: []byte{0x3, 0x4, 0x63, 0x6f, 0x6e, 0x79, 0x3, 0x70, 0x65, 0x62},
-			//expectedKey: append(swappedKeyPrefix, append(append([]byte{byte(len("cony"))}, []byte("cony")...), append([]byte{byte(len("peb"))}, []byte("peb")...)...)...),
+			// expectedKey: append(swappedKeyPrefix, append(append([]byte{byte(len("cony"))}, []byte("cony")...), append([]byte{byte(len("peb"))}, []byte("peb")...)...)...),
 		},
 	}
 	for _, tc := range tests {
