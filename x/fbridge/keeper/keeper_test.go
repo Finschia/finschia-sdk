@@ -22,14 +22,14 @@ func TestNewKeeper(t *testing.T) {
 		malleate func()
 		isPanic  bool
 	}{
-		"fbrdige module account has not been set": {
+		"fbridge module account has not been set": {
 			malleate: func() {
 				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(nil).Times(1)
 				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", types.DefaultAuthority().String())
 			},
 			isPanic: true,
 		},
-		"x/bridge authority must be the gov or foundation module account": {
+		"fbridge authority must be the gov or foundation module account": {
 			malleate: func() {
 				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
 				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", authtypes.NewModuleAddress("invalid").String())
