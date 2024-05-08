@@ -1,17 +1,17 @@
 package keeper_test
 
 import (
-	"github.com/Finschia/finschia-sdk/x/foundation"
-	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
-	"github.com/stretchr/testify/require"
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/keeper"
 	"github.com/Finschia/finschia-sdk/x/fbridge/testutil"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 func TestNewKeeper(t *testing.T) {
