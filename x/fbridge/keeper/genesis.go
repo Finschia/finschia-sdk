@@ -8,7 +8,10 @@ import (
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
-	k.SetParams(ctx, gs.Params)
+	if err := k.SetParams(ctx, gs.Params); err != nil {
+		return err
+	}
+
 	k.setNextSequence(ctx, gs.SendingState.NextSeq)
 	for _, info := range gs.SendingState.SeqToBlocknum {
 		k.setSeqToBlocknum(ctx, info.Seq, info.Blocknum)

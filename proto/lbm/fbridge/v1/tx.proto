@@ -7,6 +7,9 @@ import "gogoproto/gogo.proto";
 import "lbm/fbridge/v1/fbridge.proto";
 
 service Msg {
+  // UpdateParams updates the x/fbridge parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
   // Submit a transfer request to the bridge module.
   rpc Transfer(MsgTransfer) returns (MsgTransferResponse);
 
@@ -40,6 +43,18 @@ service Msg {
   // If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts.
   rpc SetBridgeStatus(MsgSetBridgeStatus) returns (MsgSetBridgeStatusResponse);
 }
+
+message MsgUpdateParams {
+  // the authority address
+  string authority = 1;
+
+  // params defines the x/fbridge parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}
 
 // MsgTransfer is input values required for bridge transfer
 message MsgTransfer {

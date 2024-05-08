@@ -23,7 +23,11 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(nil)
 	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(nil)
 
-	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, denom, types.DefaultAuthority().String())
+	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, types.DefaultAuthority().String())
+	params := types.DefaultParams()
+	params.TargetDenom = denom
+	err := k.SetParams(ctx, params)
+	require.NoError(t, err)
 	targetSeq := uint64(2)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, targetSeq)

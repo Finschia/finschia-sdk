@@ -12,7 +12,7 @@ import (
 func TestAssignRole(t *testing.T) {
 	key, memKey, ctx, encCfg, authKeeper, bankKeeper, addrs := testutil.PrepareFbridgeTest(t, 3)
 	auth := types.DefaultAuthority()
-	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", auth.String())
+	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, auth.String())
 	err := k.InitGenesis(ctx, types.DefaultGenesisState())
 	require.NoError(t, err)
 
@@ -61,7 +61,7 @@ func TestAssignRole(t *testing.T) {
 func TestBridgeHaltAndResume(t *testing.T) {
 	key, memKey, ctx, encCfg, authKeeper, bankKeeper, addrs := testutil.PrepareFbridgeTest(t, 3)
 	auth := types.DefaultAuthority()
-	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", auth.String())
+	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, auth.String())
 	err := k.InitGenesis(ctx, types.DefaultGenesisState())
 	require.NoError(t, err)
 	for _, addr := range addrs {

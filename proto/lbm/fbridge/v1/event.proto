@@ -6,6 +6,10 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
 import "gogoproto/gogo.proto";
 import "lbm/fbridge/v1/fbridge.proto";
 
+message EventUpdateParams {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
 message EventTransfer {
   // the sequence number of the bridge request
   uint64 seq = 1;
