@@ -776,6 +776,7 @@
     - [EventProvision](#lbm.fbridge.v1.EventProvision)
     - [EventSuggestRole](#lbm.fbridge.v1.EventSuggestRole)
     - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
+    - [EventUpdateParams](#lbm.fbridge.v1.EventUpdateParams)
   
 - [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
     - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
@@ -11717,6 +11718,21 @@ VoteOption enumerates the valid vote options for a given role proposal.
 | `sender` | [string](#string) |  | the sender address on the source chain |
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
 | `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  |  |
 
 
 
