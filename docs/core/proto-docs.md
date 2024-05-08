@@ -774,6 +774,7 @@
     - [EventClaim](#lbm.fbridge.v1.EventClaim)
     - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
     - [EventProvision](#lbm.fbridge.v1.EventProvision)
+    - [EventSetBridgeStatus](#lbm.fbridge.v1.EventSetBridgeStatus)
     - [EventSuggestRole](#lbm.fbridge.v1.EventSuggestRole)
     - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
     - [EventUpdateParams](#lbm.fbridge.v1.EventUpdateParams)
@@ -11685,6 +11686,22 @@ VoteOption enumerates the valid vote options for a given role proposal.
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
 | `amount` | [string](#string) |  | the amount of token to be claimed |
 | `operator` | [string](#string) |  | the address of the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventSetBridgeStatus"></a>
+
+### EventSetBridgeStatus
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address who modifies the bridge status (a.k.a. bridge switch) |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  | the new status of the guardian's bridge switch |
 
 
 

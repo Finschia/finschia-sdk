@@ -62,3 +62,10 @@ message EventClaim {
   // the amount of token to be claimed
   string amount = 4;
 }
+
+message EventSetBridgeStatus {
+  // the guardian address who modifies the bridge status (a.k.a. bridge switch)
+  string guardian = 1;
+  // the new status of the guardian's bridge switch
+  BridgeStatus status = 2;
+}
