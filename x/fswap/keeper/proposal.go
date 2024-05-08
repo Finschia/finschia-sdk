@@ -49,19 +49,25 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 		}
 	}
 
+	eventManager := ctx.EventManager()
 	if err := k.setSwap(ctx, swap); err != nil {
 		return err
+	}
+	if err := eventManager.EmitTypedEvent(&types.EventMakeSwap{Swap: swap}); err != nil {
+		panic(err)
 	}
 
 	existingMetadata, ok := k.GetDenomMetaData(ctx, swap.ToDenom)
 	if !ok {
 		k.SetDenomMetaData(ctx, toDenomMetadata)
+		if err := eventManager.EmitTypedEvent(&(types.EventAddDenomMetadata{Metadata: toDenomMetadata})); err != nil {
+			panic(err)
+		}
 		return nil
 	}
 	if !denomMetadataEqual(existingMetadata, toDenomMetadata) {
 		return errors.ErrInvalidRequest.Wrap("changing existing metadata not allowed")
 	}
-
 	return nil
 }
 
