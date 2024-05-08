@@ -3,6 +3,7 @@ package types
 import sdk "github.com/Finschia/finschia-sdk/types"
 
 var (
+	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgTransfer{}
 	_ sdk.Msg = &MsgProvision{}
 	_ sdk.Msg = &MsgHoldTransfer{}
@@ -14,6 +15,16 @@ var (
 	_ sdk.Msg = &MsgAddVoteForRole{}
 	_ sdk.Msg = &MsgSetBridgeStatus{}
 )
+
+func (m MsgUpdateParams) ValidateBasic() error { return nil }
+
+func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Authority)}
+}
+
+func (m MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
 
 func (m MsgTransfer) ValidateBasic() error { return nil }
 

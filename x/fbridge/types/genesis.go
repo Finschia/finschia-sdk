@@ -32,7 +32,7 @@ func AuthorityCandiates() []sdk.AccAddress {
 }
 
 func ValidateGenesis(data GenesisState) error {
-	if err := ValidateParams(data.Params); err != nil {
+	if err := data.Params.ValidateParams(); err != nil {
 		return err
 	}
 

@@ -3,6 +3,7 @@ package types
 import (
 	"time"
 
+	sdktypes "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
@@ -13,28 +14,33 @@ func DefaultParams() Params {
 		JudgeTrustLevel:    Fraction{Numerator: 1, Denominator: 1},
 		ProposalPeriod:     uint64(time.Minute * 60),
 		TimelockPeriod:     uint64(time.Hour * 24),
+		TargetDenom:        sdktypes.DefaultBondDenom,
 	}
 }
 
-func ValidateParams(params Params) error {
-	if err := ValidateTrustLevel(params.GuardianTrustLevel); err != nil {
+func (p Params) ValidateParams() error {
+	if err := ValidateTrustLevel(p.GuardianTrustLevel); err != nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("guardian trust level: " + err.Error())
 	}
 
-	if err := ValidateTrustLevel(params.OperatorTrustLevel); err != nil {
+	if err := ValidateTrustLevel(p.OperatorTrustLevel); err != nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("operator trust level: " + err.Error())
 	}
 
-	if err := ValidateTrustLevel(params.JudgeTrustLevel); err != nil {
+	if err := ValidateTrustLevel(p.JudgeTrustLevel); err != nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("judge trust level: " + err.Error())
 	}
 
-	if params.ProposalPeriod == 0 {
+	if p.ProposalPeriod == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("proposal period cannot be 0")
 	}
 
-	if params.TimelockPeriod == 0 {
+	if p.TimelockPeriod == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("timelock period cannot be 0")
+	}
+
+	if err := sdktypes.ValidateDenom(p.TargetDenom); err != nil {
+		return err
 	}
 
 	return nil

@@ -373,7 +373,7 @@ func NewSimApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], memKeys[fbridgetypes.MemStoreKey], app.AccountKeeper, app.BankKeeper, "stake", fbridgetypes.DefaultAuthority().String())
+	app.FbridgeKeeper = fbridgekeeper.NewKeeper(appCodec, keys[fbridgetypes.StoreKey], memKeys[fbridgetypes.MemStoreKey], app.AccountKeeper, app.BankKeeper, fbridgetypes.DefaultAuthority().String())
 
 	/****  Module Options ****/
 

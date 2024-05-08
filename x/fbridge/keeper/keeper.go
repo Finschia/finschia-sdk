@@ -19,9 +19,6 @@ type Keeper struct {
 	authKeeper types.AccountKeeper
 	bankKeeper types.BankKeeper
 
-	// the target denom for the bridge
-	targetDenom string
-
 	// authority can give a role to a specific address like guardian
 	authority string
 }
@@ -31,7 +28,7 @@ func NewKeeper(
 	key, memKey sdk.StoreKey,
 	authKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	targetDenom, authority string,
+	authority string,
 ) Keeper {
 	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(errors.New("fbridge module account has not been set"))
@@ -50,13 +47,12 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		storeKey:    key,
-		memKey:      memKey,
-		cdc:         cdc,
-		authKeeper:  authKeeper,
-		bankKeeper:  bankKeeper,
-		targetDenom: targetDenom,
-		authority:   authority,
+		storeKey:   key,
+		memKey:     memKey,
+		cdc:        cdc,
+		authKeeper: authKeeper,
+		bankKeeper: bankKeeper,
+		authority:  authority,
 	}
 }
 
