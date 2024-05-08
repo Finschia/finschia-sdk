@@ -26,7 +26,8 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, types.DefaultAuthority().String())
 	params := types.DefaultParams()
 	params.TargetDenom = denom
-	k.setParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	require.NoError(t, err)
 	targetSeq := uint64(2)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, targetSeq)

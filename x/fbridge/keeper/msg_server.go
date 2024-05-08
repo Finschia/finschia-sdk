@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -16,6 +17,22 @@ var _ types.MsgServer = msgServer{}
 
 func NewMsgServer(k Keeper) types.MsgServer {
 	return &msgServer{k}
+}
+
+func (m msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.Authority != m.Keeper.GetAuthority() {
+		return nil, fmt.Errorf(
+			"invalid authority; expected %s, got %s",
+			m.Keeper.GetAuthority(), msg.Authority)
+	}
+
+	if err := m.Keeper.SetParams(ctx, msg.Params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }
 
 func (m msgServer) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*types.MsgTransferResponse, error) {

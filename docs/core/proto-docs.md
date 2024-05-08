@@ -845,6 +845,8 @@
     - [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse)
     - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
     - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
+    - [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse)
   
     - [Msg](#lbm.fbridge.v1.Msg)
   
@@ -12683,6 +12685,34 @@ MsgTransfer is input values required for bridge transfer
 
 
 
+
+<a name="lbm.fbridge.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | the authority address |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines the x/fbridge parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -12697,6 +12727,7 @@ MsgTransfer is input values required for bridge transfer
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse) | UpdateParams updates the x/fbridge parameters. | |
 | `Transfer` | [MsgTransfer](#lbm.fbridge.v1.MsgTransfer) | [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse) | Submit a transfer request to the bridge module. | |
 | `Provision` | [MsgProvision](#lbm.fbridge.v1.MsgProvision) | [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse) | Submit a provision to the bridge module. | |
 | `HoldTransfer` | [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer) | [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
