@@ -19,8 +19,11 @@ message EventSwapCoins {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
 
-message EventMakeSwapProposal {
-  Swap                         swap              = 1 [(gogoproto.nullable) = false];
-  cosmos.bank.v1beta1.Metadata to_denom_metadata = 2
+message EventMakeSwap {
+  Swap swap = 1 [(gogoproto.nullable) = false];
+}
+
+message EventAddDenomMetadata {
+  cosmos.bank.v1beta1.Metadata metadata = 1
       [(gogoproto.moretags) = "yaml:\"denom_metadata\"", (gogoproto.nullable) = false];
 }
