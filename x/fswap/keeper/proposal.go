@@ -56,6 +56,7 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 	existingMetadata, ok := k.GetDenomMetaData(ctx, swap.ToDenom)
 	if !ok {
 		k.SetDenomMetaData(ctx, toDenomMetadata)
+		emitMakeSwapProposalEvent(ctx, swap, toDenomMetadata)
 		return nil
 	}
 	if !denomMetadataEqual(existingMetadata, toDenomMetadata) {
@@ -63,6 +64,15 @@ func (k Keeper) MakeSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.
 	}
 
 	return nil
+}
+
+func emitMakeSwapProposalEvent(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.Metadata) {
+	if err := ctx.EventManager().EmitTypedEvent(&(types.EventMakeSwapProposal{
+		Swap:            swap,
+		ToDenomMetadata: toDenomMetadata,
+	})); err != nil {
+		panic(err)
+	}
 }
 
 func denomMetadataEqual(metadata, otherMetadata bank.Metadata) bool {
