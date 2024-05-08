@@ -950,14 +950,16 @@
   
     - [Msg](#lbm.foundation.v1.Msg)
   
-- [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
-    - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
-  
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
     - [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal)
     - [Swap](#lbm.fswap.v1.Swap)
     - [SwapStats](#lbm.fswap.v1.SwapStats)
     - [Swapped](#lbm.fswap.v1.Swapped)
+  
+- [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
+    - [EventAddDenomMetadata](#lbm.fswap.v1.EventAddDenomMetadata)
+    - [EventMakeSwap](#lbm.fswap.v1.EventMakeSwap)
+    - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
     - [GenesisState](#lbm.fswap.v1.GenesisState)
@@ -14120,39 +14122,6 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm/fswap/v1/event.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/fswap/v1/event.proto
-
-
-
-<a name="lbm.fswap.v1.EventSwapCoins"></a>
-
-### EventSwapCoins
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | holder's address |
-| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
-| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | to-coin amount |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/fswap/v1/fswap.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -14221,6 +14190,69 @@ From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk base
 | ----- | ---- | ----- | ----------- |
 | `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/event.proto
+
+
+
+<a name="lbm.fswap.v1.EventAddDenomMetadata"></a>
+
+### EventAddDenomMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.EventMakeSwap"></a>
+
+### EventMakeSwap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.EventSwapCoins"></a>
+
+### EventSwapCoins
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | holder's address |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | to-coin amount |
 
 
 
