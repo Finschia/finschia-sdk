@@ -3,6 +3,7 @@ package types
 import sdk "github.com/Finschia/finschia-sdk/types"
 
 var (
+	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgTransfer{}
 	_ sdk.Msg = &MsgProvision{}
 	_ sdk.Msg = &MsgHoldTransfer{}
@@ -12,9 +13,18 @@ var (
 	_ sdk.Msg = &MsgClaim{}
 	_ sdk.Msg = &MsgSuggestRole{}
 	_ sdk.Msg = &MsgAddVoteForRole{}
-	_ sdk.Msg = &MsgHalt{}
-	_ sdk.Msg = &MsgResume{}
+	_ sdk.Msg = &MsgSetBridgeStatus{}
 )
+
+func (m MsgUpdateParams) ValidateBasic() error { return nil }
+
+func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Authority)}
+}
+
+func (m MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
 
 func (m MsgTransfer) ValidateBasic() error { return nil }
 
@@ -106,22 +116,12 @@ func (m MsgAddVoteForRole) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-func (m MsgHalt) ValidateBasic() error { return nil }
+func (m MsgSetBridgeStatus) ValidateBasic() error { return nil }
 
-func (m MsgHalt) GetSigners() []sdk.AccAddress {
+func (m MsgSetBridgeStatus) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Guardian)}
 }
 
-func (m MsgHalt) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
-func (m MsgResume) ValidateBasic() error { return nil }
-
-func (m MsgResume) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.From)}
-}
-
-func (m MsgResume) GetSignBytes() []byte {
+func (m MsgSetBridgeStatus) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
