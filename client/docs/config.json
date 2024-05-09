@@ -171,11 +171,12 @@
         "rename": {
           "Params": "FBridgeParams",
           "Commitments": "FBridgeCommitments",
-          "Guardians": "FBridgeGuardians",
-          "Operators": "FBridgeOperators",
-          "Judges": "FBridgeJudges",
+          "Members": "FBridgeMembers",
+          "Member": "FBridgeMember",
           "Proposals": "FBridgeProposals",
-          "Proposal": "FBridgeProposal"
+          "Proposal": "FBridgeProposal",
+          "Votes": "FBridgeVotes",
+          "Vote": "FBridgeVote"
         }
       }
     }

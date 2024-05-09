@@ -8,12 +8,29 @@ var (
 
 // swapKey key(prefix + fromDenom + toDenom)
 func swapKey(fromDenom, toDenom string) []byte {
-	key := append(swapPrefix, fromDenom...)
-	return append(key, toDenom...)
+	denoms := combineDenoms(fromDenom, toDenom)
+	return append(swapPrefix, denoms...)
 }
 
-// swappedKey key(prefix + fromDenom + toDenom)
+// swappedKey key(prefix + (lengthPrefixed+)fromDenom + (lengthPrefixed+)toDenom)
 func swappedKey(fromDenom, toDenom string) []byte {
-	key := append(swappedKeyPrefix, fromDenom...)
-	return append(key, toDenom...)
+	denoms := combineDenoms(fromDenom, toDenom)
+	return append(swappedKeyPrefix, denoms...)
+}
+
+func combineDenoms(fromDenom, toDenom string) []byte {
+	lengthPrefixedFromDenom := lengthPrefix([]byte(fromDenom))
+	lengthPrefixedToDenom := lengthPrefix([]byte(toDenom))
+	return append(lengthPrefixedFromDenom, lengthPrefixedToDenom...)
+}
+
+// lengthPrefix prefixes the address bytes with its length, this is used
+// for example for variable-length components in store keys.
+func lengthPrefix(bz []byte) []byte {
+	bzLen := len(bz)
+	if bzLen == 0 {
+		return bz
+	}
+
+	return append([]byte{byte(bzLen)}, bz...)
 }
