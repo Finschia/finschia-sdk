@@ -78,7 +78,6 @@ import (
 	foundationkeeper "github.com/Finschia/finschia-sdk/x/foundation/keeper"
 	foundationmodule "github.com/Finschia/finschia-sdk/x/foundation/module"
 	"github.com/Finschia/finschia-sdk/x/fswap"
-	fswapclient "github.com/Finschia/finschia-sdk/x/fswap/client"
 	fswapkeeper "github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
 	"github.com/Finschia/finschia-sdk/x/genutil"
@@ -139,7 +138,6 @@ var (
 			upgradeclient.ProposalHandler,
 			upgradeclient.CancelProposalHandler,
 			foundationclient.ProposalHandler,
-			fswapclient.ProposalHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -349,7 +347,7 @@ func NewSimApp(
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 
 	fswapConfig := fswaptypes.DefaultConfig()
-	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswapConfig, app.BankKeeper)
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswapConfig, fswaptypes.DefaultAuthority().String(), app.BankKeeper)
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
@@ -357,8 +355,7 @@ func NewSimApp(
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper)).
-		AddRoute(fswaptypes.RouterKey, fswap.NewSwapHandler(app.FswapKeeper))
+		AddRoute(foundation.RouterKey, foundationkeeper.NewFoundationProposalsHandler(app.FoundationKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,

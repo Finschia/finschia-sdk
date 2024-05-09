@@ -3,10 +3,13 @@ package types
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/fswap/codec"
 )
 
-var _ sdk.Msg = &MsgSwap{}
+var (
+	_ sdk.Msg = &MsgSwap{}
+	_ sdk.Msg = &MsgSwapAll{}
+	_ sdk.Msg = &MsgSetSwap{}
+)
 
 // ValidateBasic Implements Msg.
 func (m *MsgSwap) ValidateBasic() error {
@@ -41,10 +44,8 @@ func (m *MsgSwap) GetSigners() []sdk.AccAddress {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m *MsgSwap) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
 }
-
-var _ sdk.Msg = &MsgSwapAll{}
 
 // ValidateBasic Implements Msg.
 func (m *MsgSwapAll) ValidateBasic() error {
@@ -75,5 +76,33 @@ func (m *MsgSwapAll) GetSigners() []sdk.AccAddress {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m *MsgSwapAll) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgSetSwap) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
+	}
+
+	if err := m.Swap.ValidateBasic(); err != nil {
+		return err
+	}
+	if err := m.ToDenomMetadata.Validate(); err != nil {
+		return err
+	}
+	if m.Swap.ToDenom != m.ToDenomMetadata.Base {
+		return sdkerrors.ErrInvalidRequest.Wrapf("denomination does not match %s != %s", m.Swap.ToDenom, m.ToDenomMetadata.Base)
+	}
+
+	return nil
+}
+
+func (m *MsgSetSwap) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m *MsgSetSwap) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
 }
