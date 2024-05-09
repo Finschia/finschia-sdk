@@ -63,7 +63,7 @@ func (s *KeeperTestSuite) TestMsgSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.MakeSwap(ctx, s.swap, s.toDenomMetadata)
+			err := s.keeper.SetSwap(ctx, s.swap, s.toDenomMetadata)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.Swap(sdk.WrapSDKContext(ctx), tc.request)
@@ -115,7 +115,7 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.MakeSwap(ctx, s.swap, s.toDenomMetadata)
+			err := s.keeper.SetSwap(ctx, s.swap, s.toDenomMetadata)
 			s.Require().NoError(err)
 
 			swapResponse, err := s.msgServer.SwapAll(sdk.WrapSDKContext(ctx), tc.request)

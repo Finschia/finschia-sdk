@@ -1,8 +1,6 @@
 package types
 
 import (
-	"gopkg.in/yaml.v2"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
@@ -32,21 +30,12 @@ func (s *Swap) ValidateBasic() error {
 	return nil
 }
 
-func (s *Swap) String() string {
-	out, _ := yaml.Marshal(s)
-	return string(out)
-}
-
+// ValidateBasic validates the set of SwapStats
 func (s *SwapStats) ValidateBasic() error {
 	if s.SwapCount < 0 {
 		return ErrInvalidState.Wrap("swap count cannot be negative")
 	}
 	return nil
-}
-
-func (s *SwapStats) String() string {
-	out, _ := yaml.Marshal(s)
-	return string(out)
 }
 
 // ValidateBasic validates the set of Swapped
@@ -72,10 +61,4 @@ func validateCoinAmount(i interface{}) error {
 		return sdkerrors.ErrInvalidCoins.Wrap(err.Error())
 	}
 	return nil
-}
-
-// String implements the Stringer interface.
-func (s *Swapped) String() string {
-	out, _ := yaml.Marshal(s)
-	return string(out)
 }
