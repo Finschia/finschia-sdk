@@ -68,7 +68,7 @@ func (s MsgServer) SetSwap(ctx context.Context, req *types.MsgSetSwap) (*types.M
 		return nil, err
 	}
 
-	if err := s.keeper.MakeSwap(c, req.GetSwap(), req.GetToDenomMetadata()); err != nil {
+	if err := s.keeper.SetSwap(c, req.GetSwap(), req.GetToDenomMetadata()); err != nil {
 		return nil, err
 	}
 

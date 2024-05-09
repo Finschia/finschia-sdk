@@ -34,7 +34,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdTxMsgSwap(),
 		CmdTxMsgSwapAll(),
-		CmdMsgMakeSwapProposal(),
+		CmdMsgSetSwap(),
 	)
 
 	return cmd
@@ -114,12 +114,12 @@ func CmdTxMsgSwapAll() *cobra.Command {
 	return cmd
 }
 
-// CmdMsgMakeSwapProposal implements a command handler for submitting a swap init proposal transaction.
-func CmdMsgMakeSwapProposal() *cobra.Command {
+// CmdMsgSetSwap implements a command handler for submitting a swap init proposal transaction.
+func CmdMsgSetSwap() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "make-swap-proposal [authority] [metadata-json]",
+		Use:   "set-swap [authority] [metadata-json]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Make swap proposal",
+		Short: "Set a swap",
 		Long: `
 Parameters:
     metadata-json: messages in json format that will be executed if the proposal is accepted.
@@ -211,10 +211,10 @@ Example of the content of metadata-json:
 		},
 	}
 
-	cmd.Flags().String(FlagFromDenom, "", "cony")
-	cmd.Flags().String(FlagToDenom, "", "PDT")
-	cmd.Flags().String(FlagAmountCapForToDenom, "0", "tbd")
-	cmd.Flags().String(FlagSwapRate, "0", "tbd")
+	cmd.Flags().String(FlagFromDenom, "", "set fromDenom string, ex) cony")
+	cmd.Flags().String(FlagToDenom, "", "set toDenom string, ex) peb")
+	cmd.Flags().String(FlagAmountCapForToDenom, "0", "set integer value for limit cap for the amount to swap to to-denom, ex 1000000000")
+	cmd.Flags().String(FlagSwapRate, "0", "set swap rate for swap from fromDenom to toDenom, ex(rate for cony to peb)  148079656000000")
 
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
