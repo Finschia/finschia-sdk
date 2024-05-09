@@ -5,10 +5,13 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+import "lbm/fswap/v1/fswap.proto";
 
 service Msg {
   rpc Swap(MsgSwap) returns (MsgSwapResponse);
   rpc SwapAll(MsgSwapAll) returns (MsgSwapAllResponse);
+  rpc SetSwap(MsgSetSwap) returns (MsgSetSwapResponse);
 }
 
 message MsgSwap {
@@ -30,3 +33,13 @@ message MsgSwapAll {
 }
 
 message MsgSwapAllResponse {}
+
+message MsgSetSwap {
+  // authority is the address of the privileged account.
+  string  authority = 1;
+  Swap                         swap              = 2 [(gogoproto.nullable) = false];
+  cosmos.bank.v1beta1.Metadata to_denom_metadata = 3
+  [(gogoproto.moretags) = "yaml:\"denom_metadata\"", (gogoproto.nullable) = false];
+}
+
+message MsgSetSwapResponse {}

@@ -978,7 +978,6 @@
     - [Msg](#lbm.foundation.v1.Msg)
   
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
-    - [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal)
     - [Swap](#lbm.fswap.v1.Swap)
     - [SwapStats](#lbm.fswap.v1.SwapStats)
     - [Swapped](#lbm.fswap.v1.Swapped)
@@ -1002,6 +1001,8 @@
     - [Query](#lbm.fswap.v1.Query)
   
 - [lbm/fswap/v1/tx.proto](#lbm/fswap/v1/tx.proto)
+    - [MsgSetSwap](#lbm.fswap.v1.MsgSetSwap)
+    - [MsgSetSwapResponse](#lbm.fswap.v1.MsgSetSwapResponse)
     - [MsgSwap](#lbm.fswap.v1.MsgSwap)
     - [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll)
     - [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse)
@@ -14555,24 +14556,6 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.MakeSwapProposal"></a>
-
-### MakeSwapProposal
-From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
-| `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
-
-
-
-
-
-
 <a name="lbm.fswap.v1.Swap"></a>
 
 ### Swap
@@ -14856,6 +14839,33 @@ GenesisState defines the fswap module's genesis state.
 
 
 
+<a name="lbm.fswap.v1.MsgSetSwap"></a>
+
+### MsgSetSwap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+| `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSetSwapResponse"></a>
+
+### MsgSetSwapResponse
+
+
+
+
+
+
+
 <a name="lbm.fswap.v1.MsgSwap"></a>
 
 ### MsgSwap
@@ -14925,6 +14935,7 @@ GenesisState defines the fswap module's genesis state.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Swap` | [MsgSwap](#lbm.fswap.v1.MsgSwap) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
 | `SwapAll` | [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
+| `SetSwap` | [MsgSetSwap](#lbm.fswap.v1.MsgSetSwap) | [MsgSetSwapResponse](#lbm.fswap.v1.MsgSetSwapResponse) |  | |
 
  <!-- end services -->
 
