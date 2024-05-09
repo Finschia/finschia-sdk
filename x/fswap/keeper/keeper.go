@@ -27,11 +27,6 @@ func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types
 		panic("authority is not a valid acc address")
 	}
 
-	// authority is x/foundation module account for now.
-	if authority != types.DefaultAuthority().String() {
-		panic("x/foundation authority must be the module account")
-	}
-
 	found := false
 	for _, addr := range types.AuthorityCandidates() {
 		if authority == addr.String() {
