@@ -28,14 +28,14 @@ func init() {
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgSwap{}, "lbm-sdk/MsgSwap")
 	legacy.RegisterAminoMsg(cdc, &MsgSwapAll{}, "lbm-sdk/MsgSwapAll")
-	legacy.RegisterAminoMsg(cdc, &MsgMakeSwapProposal{}, "lbm-sdk/MsgMakeSwapProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgSetSwap{}, "lbm-sdk/MsgSetSwap")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSwap{},
 		&MsgSwapAll{},
-		&MsgMakeSwapProposal{},
+		&MsgSetSwap{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

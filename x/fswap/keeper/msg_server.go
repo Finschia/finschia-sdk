@@ -61,16 +61,16 @@ func (s MsgServer) SwapAll(ctx context.Context, req *types.MsgSwapAll) (*types.M
 	return &types.MsgSwapAllResponse{}, nil
 }
 
-func (s MsgServer) MakeSwapProposal(ctx context.Context, req *types.MsgMakeSwapProposal) (*types.MsgMakeSwapProposalResponse, error) {
+func (s MsgServer) SetSwap(ctx context.Context, req *types.MsgSetSwap) (*types.MsgSetSwapResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
 
 	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.MakeSwap(c, req.GetProposal().GetSwap(), req.GetProposal().GetToDenomMetadata()); err != nil {
+	if err := s.keeper.MakeSwap(c, req.GetSwap(), req.GetToDenomMetadata()); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgMakeSwapProposalResponse{}, nil
+	return &types.MsgSetSwapResponse{}, nil
 }

@@ -954,7 +954,6 @@
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
-    - [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal)
     - [Swap](#lbm.fswap.v1.Swap)
     - [SwapStats](#lbm.fswap.v1.SwapStats)
     - [Swapped](#lbm.fswap.v1.Swapped)
@@ -973,8 +972,8 @@
     - [Query](#lbm.fswap.v1.Query)
   
 - [lbm/fswap/v1/tx.proto](#lbm/fswap/v1/tx.proto)
-    - [MsgMakeSwapProposal](#lbm.fswap.v1.MsgMakeSwapProposal)
-    - [MsgMakeSwapProposalResponse](#lbm.fswap.v1.MsgMakeSwapProposalResponse)
+    - [MsgSetSwap](#lbm.fswap.v1.MsgSetSwap)
+    - [MsgSetSwapResponse](#lbm.fswap.v1.MsgSetSwapResponse)
     - [MsgSwap](#lbm.fswap.v1.MsgSwap)
     - [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll)
     - [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse)
@@ -14162,22 +14161,6 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.MakeSwapProposal"></a>
-
-### MakeSwapProposal
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
-| `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
-
-
-
-
-
-
 <a name="lbm.fswap.v1.Swap"></a>
 
 ### Swap
@@ -14398,25 +14381,26 @@ GenesisState defines the fswap module's genesis state.
 
 
 
-<a name="lbm.fswap.v1.MsgMakeSwapProposal"></a>
+<a name="lbm.fswap.v1.MsgSetSwap"></a>
 
-### MsgMakeSwapProposal
+### MsgSetSwap
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `authority` | [string](#string) |  | authority is the address of the privileged account. |
-| `proposal` | [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal) |  |  |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+| `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
 
 
 
 
 
 
-<a name="lbm.fswap.v1.MsgMakeSwapProposalResponse"></a>
+<a name="lbm.fswap.v1.MsgSetSwapResponse"></a>
 
-### MsgMakeSwapProposalResponse
+### MsgSetSwapResponse
 
 
 
@@ -14493,7 +14477,7 @@ GenesisState defines the fswap module's genesis state.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Swap` | [MsgSwap](#lbm.fswap.v1.MsgSwap) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
 | `SwapAll` | [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
-| `MakeSwapProposal` | [MsgMakeSwapProposal](#lbm.fswap.v1.MsgMakeSwapProposal) | [MsgMakeSwapProposalResponse](#lbm.fswap.v1.MsgMakeSwapProposalResponse) |  | |
+| `SetSwap` | [MsgSetSwap](#lbm.fswap.v1.MsgSetSwap) | [MsgSetSwapResponse](#lbm.fswap.v1.MsgSetSwapResponse) |  | |
 
  <!-- end services -->
 

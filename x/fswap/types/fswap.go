@@ -73,22 +73,3 @@ func (s *Swapped) String() string {
 	out, _ := yaml.Marshal(s)
 	return string(out)
 }
-
-func (s *MakeSwapProposalTmp) ValidateBasic() error {
-	if err := s.Swap.ValidateBasic(); err != nil {
-		return err
-	}
-	if err := s.ToDenomMetadata.Validate(); err != nil {
-		return err
-	}
-	if s.Swap.ToDenom != s.ToDenomMetadata.Base {
-		return sdkerrors.ErrInvalidRequest.Wrapf("denomination does not match %s != %s", s.Swap.ToDenom, s.ToDenomMetadata.Base)
-	}
-
-	return nil
-}
-
-func (s *MakeSwapProposalTmp) String() string {
-	out, _ := yaml.Marshal(s)
-	return string(out)
-}

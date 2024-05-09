@@ -201,12 +201,10 @@ Example of the content of metadata-json:
 				return err
 			}
 
-			msg := types.MsgMakeSwapProposal{
-				Authority: authority,
-				Proposal: &types.MakeSwapProposalTmp{
-					Swap:            swap,
-					ToDenomMetadata: toDenomMetadata,
-				},
+			msg := types.MsgSetSwap{
+				Authority:       authority,
+				Swap:            swap,
+				ToDenomMetadata: toDenomMetadata,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
