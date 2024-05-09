@@ -27,7 +27,11 @@ jobs:
             **/**.go
             go.mod
             go.sum
+<<<<<<< HEAD
       - uses: golangci/golangci-lint-action@v3
+=======
+      - uses: golangci/golangci-lint-action@v6
+>>>>>>> 0b15618fa (chore(deps): Bump golangci/golangci-lint-action from 4 to 6 (#1355))
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
           version: v1.51
