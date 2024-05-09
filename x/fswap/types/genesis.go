@@ -4,6 +4,7 @@ import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 // DefaultGenesis returns the default Capability genesis state
@@ -17,6 +18,13 @@ func DefaultGenesis() *GenesisState {
 
 func DefaultAuthority() sdk.AccAddress {
 	return authtypes.NewModuleAddress(foundation.ModuleName)
+}
+
+func AuthorityCandidates() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+		authtypes.NewModuleAddress(foundation.ModuleName),
+	}
 }
 
 // Validate performs basic genesis state validation returning an error upon any failure.

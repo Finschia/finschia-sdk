@@ -32,6 +32,18 @@ func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types
 		panic("x/foundation authority must be the module account")
 	}
 
+	found := false
+	for _, addr := range types.AuthorityCandidates() {
+		if authority == addr.String() {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		panic("x/fswap authority must be ether gov or foundation module account")
+	}
+
 	return Keeper{
 		cdc,
 		storeKey,
