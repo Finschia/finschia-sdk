@@ -3,6 +3,7 @@ package lbm.fbridge.v1;
 
 option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
 
+import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
 message Params {
@@ -16,6 +17,8 @@ message Params {
   uint64 timelock_period = 4;
   // default period of the proposal to update the role
   uint64 proposal_period = 5;
+  // target denom of the bridge module. This is the base denom of Finschia normally.
+  string target_denom = 6;
 }
 
 // Provision is a struct that represents a provision internally.
@@ -51,10 +54,17 @@ message Fraction {
 
 // Role defines the role of the operator, guardian, and judge.
 enum Role {
-  UNSPECIFIED = 0;
-  GUARDIAN    = 1;
-  OPERATOR    = 2;
-  JUDGE       = 3;
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "RoleEmpty"];
+  GUARDIAN    = 1 [(gogoproto.enumvalue_customname) = "RoleGuardian"];
+  OPERATOR    = 2 [(gogoproto.enumvalue_customname) = "RoleOperator"];
+  JUDGE       = 3 [(gogoproto.enumvalue_customname) = "RoleJudge"];
+}
+
+message RolePair {
+  string address = 1;
+  Role   role    = 2;
 }
 
 message RoleProposal {
@@ -71,5 +81,56 @@ message RoleProposal {
   Role role = 4;
 
   // the unix timestamp the proposal will be expired (unix timestamp)
-  uint64 expired_at = 5;
+  google.protobuf.Timestamp expired_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+// VoteOption enumerates the valid vote options for a given role proposal.
+enum VoteOption {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+  VOTE_OPTION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "OptionEmpty"];
+  // VOTE_OPTION_YES defines a yes vote option.
+  VOTE_OPTION_YES = 1 [(gogoproto.enumvalue_customname) = "OptionYes"];
+  // VOTE_OPTION_NO defines a no vote option.
+  VOTE_OPTION_NO = 2 [(gogoproto.enumvalue_customname) = "OptionNo"];
+}
+
+// Vote defines a vote on a role proposal.
+message Vote {
+  option (gogoproto.equal) = false;
+
+  uint64     proposal_id = 1;
+  string     voter       = 2;
+  VoteOption option      = 3;
+}
+
+// RoleMetadata defines the metadata of the role.
+message RoleMetadata {
+  // the number of registered guardians
+  uint64 guardian = 1;
+  // the number of the operators
+  uint64 operator = 2;
+  // the number of the judges
+  uint64 judge = 3;
+}
+
+enum BridgeStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
+  BRIDGE_STATUS_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "StatusEmpty"];
+
+  // BRIDGE_STATUS_ACTIVE defines an active bridge status.
+  BRIDGE_STATUS_ACTIVE = 1 [(gogoproto.enumvalue_customname) = "StatusActive"];
+  // BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
+  BRIDGE_STATUS_INACTIVE = 2 [(gogoproto.enumvalue_customname) = "StatusInactive"];
+}
+
+// BridgeStatusMetadata defines the metadata of the bridge status.
+message BridgeStatusMetadata {
+  // the number of inactived bridge switch
+  uint64 inactive = 1;
+  // the number of activated bridge switch
+  uint64 active = 2;
 }

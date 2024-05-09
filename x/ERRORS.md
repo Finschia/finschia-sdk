@@ -7,6 +7,7 @@
   * [Crisis](#crisis)
   * [Distribution](#distribution)
   * [Evidence](#evidence)
+  * [Fbridge](#fbridge)
   * [Feegrant](#feegrant)
   * [Foundation](#foundation)
   * [Fswap](#fswap)
@@ -150,6 +151,17 @@
 
 >You can also find detailed information in the following Errors.go files:
   * [evidence/types/errors.go](evidence/types/errors.go)
+
+## Fbridge
+
+|Error Name|Codespace|Code|Description|
+|:-|:-|:-|:-|
+|ErrUnknownProposal|fbridge|2|unknown proposal|
+|ErrUnknownVote|fbridge|3|unknown vote|
+|ErrInactiveBridge|fbridge|4|the bridge has halted|
+
+>You can also find detailed information in the following Errors.go files:
+  * [fbridge/types/errors.go](fbridge/types/errors.go)
 
 ## Feegrant
 

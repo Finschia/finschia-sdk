@@ -17,7 +17,7 @@ import (
 )
 
 func (k Keeper) handleBridgeTransfer(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Int) (uint64, error) {
-	token := sdk.Coins{sdk.Coin{Denom: k.targetDenom, Amount: amount}}
+	token := sdk.Coins{sdk.Coin{Denom: k.GetParams(ctx).TargetDenom, Amount: amount}}
 	if err := k.bankKeeper.IsSendEnabledCoins(ctx, token...); err != nil {
 		return 0, err
 	}

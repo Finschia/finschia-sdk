@@ -5,6 +5,7 @@ import (
 
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/types/query"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
@@ -23,6 +24,12 @@ func NewQueryServer(keeper Keeper) *QueryServer {
 
 func (s QueryServer) Swapped(ctx context.Context, req *types.QuerySwappedRequest) (*types.QuerySwappedResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
+	if err := sdk.ValidateDenom(req.GetFromDenom()); err != nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap(err.Error())
+	}
+	if err := sdk.ValidateDenom(req.GetToDenom()); err != nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap(err.Error())
+	}
 
 	swapped, err := s.Keeper.getSwapped(c, req.GetFromDenom(), req.GetToDenom())
 	if err != nil {
@@ -37,6 +44,12 @@ func (s QueryServer) Swapped(ctx context.Context, req *types.QuerySwappedRequest
 
 func (s QueryServer) TotalSwappableToCoinAmount(ctx context.Context, req *types.QueryTotalSwappableToCoinAmountRequest) (*types.QueryTotalSwappableToCoinAmountResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
+	if err := sdk.ValidateDenom(req.GetFromDenom()); err != nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap(err.Error())
+	}
+	if err := sdk.ValidateDenom(req.GetToDenom()); err != nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap(err.Error())
+	}
 
 	amount, err := s.Keeper.getSwappableNewCoinAmount(c, req.GetFromDenom(), req.GetToDenom())
 	if err != nil {

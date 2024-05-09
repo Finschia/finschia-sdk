@@ -13,6 +13,7 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "lbm-sdk/fbridge/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgTransfer{}, "lbm-sdk/MsgTransfer")
 	legacy.RegisterAminoMsg(cdc, &MsgProvision{}, "lbm-sdk/MsgProvision")
 	legacy.RegisterAminoMsg(cdc, &MsgHoldTransfer{}, "lbm-sdk/MsgHoldTransfer")
@@ -22,13 +23,13 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgClaim{}, "lbm-sdk/MsgClaim")
 	legacy.RegisterAminoMsg(cdc, &MsgSuggestRole{}, "lbm-sdk/MsgSuggestRole")
 	legacy.RegisterAminoMsg(cdc, &MsgAddVoteForRole{}, "lbm-sdk/MsgAddVoteForRole")
-	legacy.RegisterAminoMsg(cdc, &MsgHalt{}, "lbm-sdk/MsgHalt")
-	legacy.RegisterAminoMsg(cdc, &MsgResume{}, "lbm-sdk/MsgResume")
+	legacy.RegisterAminoMsg(cdc, &MsgSetBridgeStatus{}, "lbm-sdk/MsgSetBridgeStatus")
 }
 
 func RegisterInterfaces(registrar types.InterfaceRegistry) {
 	registrar.RegisterImplementations(
 		(*sdk.Msg)(nil),
+		&MsgUpdateParams{},
 		&MsgTransfer{},
 		&MsgProvision{},
 		&MsgHoldTransfer{},
@@ -38,8 +39,7 @@ func RegisterInterfaces(registrar types.InterfaceRegistry) {
 		&MsgClaim{},
 		&MsgSuggestRole{},
 		&MsgAddVoteForRole{},
-		&MsgHalt{},
-		&MsgResume{},
+		&MsgSetBridgeStatus{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registrar, &_Msg_serviceDesc)
