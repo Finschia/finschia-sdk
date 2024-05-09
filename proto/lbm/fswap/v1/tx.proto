@@ -35,8 +35,6 @@ message MsgSwapAll {
 message MsgSwapAllResponse {}
 
 message MsgSetSwap {
-  option (gogoproto.goproto_stringer) = false;
-
   // authority is the address of the privileged account.
   string  authority = 1;
   Swap                         swap              = 2 [(gogoproto.nullable) = false];

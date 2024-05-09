@@ -1,8 +1,6 @@
 package types
 
 import (
-	"gopkg.in/yaml.v2"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
@@ -105,9 +103,4 @@ func (m *MsgSetSwap) GetSigners() []sdk.AccAddress {
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m *MsgSetSwap) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
-}
-
-func (m *MsgSetSwap) String() string {
-	out, _ := yaml.Marshal(m)
-	return string(out)
 }
