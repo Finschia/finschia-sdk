@@ -85,7 +85,9 @@ func validateMinSignedPerWindow(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
-
+	if v.IsNil() {
+		return fmt.Errorf("min signed per window cannot be nil: %s", v)
+	}
 	if v.IsNegative() {
 		return fmt.Errorf("min signed per window cannot be negative: %s", v)
 	}
@@ -114,7 +116,9 @@ func validateSlashFractionDoubleSign(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
-
+	if v.IsNil() {
+		return fmt.Errorf("double sign slash fraction cannot be nil: %s", v)
+	}
 	if v.IsNegative() {
 		return fmt.Errorf("double sign slash fraction cannot be negative: %s", v)
 	}
@@ -130,7 +134,9 @@ func validateSlashFractionDowntime(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
-
+	if v.IsNil() {
+		return fmt.Errorf("downtime slash fraction cannot be nil: %s", v)
+	}
 	if v.IsNegative() {
 		return fmt.Errorf("downtime slash fraction cannot be negative: %s", v)
 	}

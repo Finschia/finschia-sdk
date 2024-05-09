@@ -1,0 +1,97 @@
+syntax = "proto3";
+package lbm.fbridge.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
+
+import "gogoproto/gogo.proto";
+import "lbm/fbridge/v1/fbridge.proto";
+
+// GenesisState defines the fbridge module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [(gogoproto.nullable) = false];
+  // sending_state defines status saved when sending tokens to a counterpart chain
+  SendingState sending_state = 2 [(gogoproto.nullable) = false];
+  // receiving_state defines status saved when receiving tokens from a counterpart chain
+  ReceivingState receiving_state = 3 [(gogoproto.nullable) = false];
+  // next_role_proposal_id is the next role proposal ID to be used.
+  uint64 next_role_proposal_id = 4;
+  // role_proposals defines all the role proposals present at genesis.
+  repeated RoleProposal role_proposals = 5 [(gogoproto.nullable) = false];
+  // votes defines all the votes present for role proposals at genesis.
+  repeated Vote votes = 6 [(gogoproto.nullable) = false];
+  // roles defines all addresses assigned roles at genesis.
+  repeated RolePair roles = 7 [(gogoproto.nullable) = false];
+  // bridge_switches defines the status of whether each guardian has allowed the bridge to operate.
+  repeated BridgeSwitch bridge_switches = 8 [(gogoproto.nullable) = false];
+}
+
+message SendingState {
+  option (gogoproto.goproto_getters) = false;
+
+  // the next sequence number of the bridge request (greatest sequence number + 1)
+  uint64 next_seq = 1;
+  // sequence-per-block number mapping
+  repeated BlockSeqInfo seq_to_blocknum = 2 [(gogoproto.nullable) = false];
+}
+
+message BlockSeqInfo {
+  uint64 seq      = 1;
+  uint64 blocknum = 2;
+}
+
+message ReceivingState {
+  option (gogoproto.goproto_getters) = false;
+
+  // the greatest consecutive sequence number confirmed by each operator
+  repeated OperatorSeqInfo greatest_consecutive_seq_by_operator = 1;
+  // the greatest sequence number confirmed by each operator
+  repeated OperatorSeqInfo greatest_seq_by_operator = 2;
+  // the greatest consecutive sequence numbers confirmed by n-of-m operators
+  // consecutiveness is judged starting from the number closest to 0.
+  uint64 greatest_consecutive_seq = 3;
+  // the set of sequence numbers to be claimed
+  repeated uint64 pending_claim_seqs = 4;
+  // commitment is the hash value of a specific provision.
+  repeated Commitment commitments = 6;
+  // provision associated with a specific commitment.
+  repeated Provision provisions = 7;
+  // map the sequence number confirmed by n-of-m operators with commitment
+  repeated ConfirmedProvision confirmed_seq_to_commitment = 8;
+}
+
+message OperatorSeqInfo {
+  // the operator address
+  string operator = 1;
+  // the sequence number
+  uint64 seq = 2;
+}
+
+message Commitment {
+  // the operator address
+  string operator = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+  // commitment is the hash value of a provision
+  string commitment = 3;
+}
+
+message Provision {
+  string          commitment = 1;
+  ProvisionData   data       = 2;
+  ProvisionStatus status     = 3;
+}
+
+message ConfirmedProvision {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+
+  // commitment is the hash value of a provision
+  string commitment = 2;
+}
+
+message BridgeSwitch {
+  // the guardian address
+  string       guardian = 1;
+  BridgeStatus status   = 2;
+}

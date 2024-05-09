@@ -46,8 +46,8 @@ func validateAmount(amount sdk.Int) error {
 }
 
 // deprecated
-func validateCoins(amount []Coin) error {
-	return validateCoinsWithIDValidator(amount, ValidateTokenID)
+func validateFTCoins(amount []Coin) error {
+	return validateCoinsWithIDValidator(amount, ValidateFTID)
 }
 
 // deprecated
@@ -247,7 +247,7 @@ func (m MsgSendFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -293,7 +293,7 @@ func (m MsgOperatorSendFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -340,7 +340,7 @@ func (m MsgSendNFT) ValidateBasic() error {
 		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
-		if err := ValidateTokenID(id); err != nil {
+		if err := ValidateNFTID(id); err != nil {
 			return err
 		}
 	}
@@ -428,14 +428,17 @@ func (m MsgAuthorizeOperator) ValidateBasic() error {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+	holderAcc, err := sdk.AccAddressFromBech32(m.Holder)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+
+	operatorAcc, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	if m.Operator == m.Holder {
+	if holderAcc.Equals(operatorAcc) {
 		return ErrApproverProxySame
 	}
 
@@ -471,14 +474,17 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+	holderAcc, err := sdk.AccAddressFromBech32(m.Holder)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+
+	operatorAcc, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	if m.Operator == m.Holder {
+	if holderAcc.Equals(operatorAcc) {
 		return ErrApproverProxySame
 	}
 
@@ -669,7 +675,7 @@ func (m MsgMintFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -769,7 +775,7 @@ func (m MsgBurnFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 
@@ -812,7 +818,7 @@ func (m MsgOperatorBurnFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if err := validateCoins(m.Amount); err != nil {
+	if err := validateFTCoins(m.Amount); err != nil {
 		return err
 	}
 

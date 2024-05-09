@@ -85,6 +85,15 @@ func TestMsgSendFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidTokenID,
 		},
+		"nft id": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			to:         addrs[1],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -185,6 +194,16 @@ func TestMsgOperatorSendFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidTokenID,
 		},
+		"nft id": {
+			contractID: "deadbeef",
+			operator:   addrs[0],
+			from:       addrs[1],
+			to:         addrs[2],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -258,6 +277,13 @@ func TestMsgSendNFT(t *testing.T) {
 			to:         addrs[1],
 			ids:        []string{""},
 			err:        collection.ErrInvalidTokenID,
+		},
+		"FT ids": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			to:         addrs[1],
+			ids:        []string{collection.NewFTID("deadbeef")},
+			err:        sdkerrors.ErrInvalidRequest.Wrapf("invalid id: %s", collection.NewFTID("deadbeef")),
 		},
 	}
 
@@ -369,15 +395,15 @@ func TestMsgOperatorSendNFT(t *testing.T) {
 }
 
 func TestMsgAuthorizeOperator(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
+	addrs := make([]string, 2)
 	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()).String()
 	}
 
 	testCases := map[string]struct {
 		contractID string
-		holder     sdk.AccAddress
-		operator   sdk.AccAddress
+		holder     string
+		operator   string
 		err        error
 	}{
 		"valid msg": {
@@ -399,6 +425,18 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 			contractID: "deadbeef",
 			holder:     addrs[0],
 			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"proxy and approver should be different": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   addrs[0],
+			err:        collection.ErrApproverProxySame,
+		},
+		"proxy and approver should be different (uppercase)": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   strings.ToUpper(addrs[0]),
+			err:        collection.ErrApproverProxySame,
 		},
 	}
 
@@ -406,8 +444,8 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			msg := collection.MsgAuthorizeOperator{
 				ContractId: tc.contractID,
-				Holder:     tc.holder.String(),
-				Operator:   tc.operator.String(),
+				Holder:     tc.holder,
+				Operator:   tc.operator,
 			}
 
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
@@ -415,21 +453,21 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{sdk.MustAccAddressFromBech32(tc.holder)}, msg.GetSigners())
 		})
 	}
 }
 
 func TestMsgRevokeOperator(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
+	addrs := make([]string, 2)
 	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()).String()
 	}
 
 	testCases := map[string]struct {
 		contractID string
-		holder     sdk.AccAddress
-		operator   sdk.AccAddress
+		holder     string
+		operator   string
 		err        error
 	}{
 		"valid msg": {
@@ -452,14 +490,26 @@ func TestMsgRevokeOperator(t *testing.T) {
 			holder:     addrs[0],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
+		"proxy and approver should be different": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   addrs[0],
+			err:        collection.ErrApproverProxySame,
+		},
+		"proxy and approver should be different (uppercase)": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   strings.ToUpper(addrs[0]),
+			err:        collection.ErrApproverProxySame,
+		},
 	}
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			msg := collection.MsgRevokeOperator{
 				ContractId: tc.contractID,
-				Holder:     tc.holder.String(),
-				Operator:   tc.operator.String(),
+				Holder:     tc.holder,
+				Operator:   tc.operator,
 			}
 
 			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
@@ -467,7 +517,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{sdk.MustAccAddressFromBech32(tc.holder)}, msg.GetSigners())
 		})
 	}
 }
@@ -817,6 +867,15 @@ func TestMsgMintFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidTokenID,
 		},
+		"nft id": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -999,6 +1058,14 @@ func TestMsgBurnFT(t *testing.T) {
 			}},
 			err: collection.ErrInvalidAmount,
 		},
+		"nft id": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -1078,6 +1145,15 @@ func TestMsgOperatorBurnFT(t *testing.T) {
 				Amount:  sdk.ZeroInt(),
 			}},
 			err: collection.ErrInvalidAmount,
+		},
+		"nft id": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			from:       addrs[1],
+			amount: []collection.Coin{
+				collection.NewNFTCoin("deadbeef", 42),
+			},
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
