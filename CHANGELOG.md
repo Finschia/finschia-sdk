@@ -58,6 +58,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server) [\#1175](https://github.com/Finschia/finschia-sdk/pull/1175) Use go embed for swagger
 * (x/collection) [\#1287](https://github.com/Finschia/finschia-sdk/pull/1287) add nft id validation to MsgSendNFT
 * (types) [\#1314](https://github.com/Finschia/finschia-sdk/pull/1314) replace IsEqual with Equal
+* (x/fswap) [\#1363](https://github.com/Finschia/finschia-sdk/pull/1363) introduce new event for MakeSwapProposal
+* (x/fbridge) [\#1366](https://github.com/Finschia/finschia-sdk/pull/1366) Set target denom as module parameters
+* (x/fbridge) [\#1369](https://github.com/Finschia/finschia-sdk/pull/1369) Add the event of `SetBridgeStatus`
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
@@ -82,6 +85,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/mint, x/slashing) [\#1323](https://github.com/Finschia/finschia-sdk/pull/1323) add missing nil check for params validation
 * (x/server) [\#1337](https://github.com/Finschia/finschia-sdk/pull/1337) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
 * (x/fbridge) [\#1361](https://github.com/Finschia/finschia-sdk/pull/1361) Fixes fbridge auth checking bug
+* (x/fswap) [\#1365](https://github.com/Finschia/finschia-sdk/pull/1365) fix update swap keys for possibly overlapped keys(`(hello,world) should be different to (hel,loworld)`)
 
 ### Removed
 

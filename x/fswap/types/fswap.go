@@ -7,21 +7,26 @@ import (
 
 // ValidateBasic validates the set of Swap
 func (s *Swap) ValidateBasic() error {
-	if s.FromDenom == "" {
-		return sdkerrors.ErrInvalidRequest.Wrap("from denomination cannot be empty")
+	if err := sdk.ValidateDenom(s.FromDenom); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
 	}
-	if s.ToDenom == "" {
-		return sdkerrors.ErrInvalidRequest.Wrap("to denomination cannot be empty")
+
+	if err := sdk.ValidateDenom(s.ToDenom); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
 	}
+
 	if s.FromDenom == s.ToDenom {
 		return sdkerrors.ErrInvalidRequest.Wrap("from denomination cannot be equal to to denomination")
 	}
+
 	if s.AmountCapForToDenom.LT(sdk.OneInt()) {
 		return sdkerrors.ErrInvalidRequest.Wrap("amount cannot be less than one")
 	}
+
 	if s.SwapRate.IsZero() {
 		return sdkerrors.ErrInvalidRequest.Wrap("swap rate cannot be zero")
 	}
+
 	return nil
 }
 

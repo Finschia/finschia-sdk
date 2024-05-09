@@ -25,28 +25,28 @@ func TestNewKeeper(t *testing.T) {
 		"fbridge module account has not been set": {
 			malleate: func() {
 				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(nil).Times(1)
-				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", types.DefaultAuthority().String())
+				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, types.DefaultAuthority().String())
 			},
 			isPanic: true,
 		},
 		"fbridge authority must be the gov or foundation module account": {
 			malleate: func() {
 				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
-				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", authtypes.NewModuleAddress("invalid").String())
+				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, authtypes.NewModuleAddress("invalid").String())
 			},
 			isPanic: true,
 		},
 		"success - gov authority": {
 			malleate: func() {
 				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
-				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", authtypes.NewModuleAddress(govtypes.ModuleName).String())
+				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 			},
 			isPanic: false,
 		},
 		"success - foundation authority": {
 			malleate: func() {
 				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
-				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, "stake", authtypes.NewModuleAddress(foundation.ModuleName).String())
+				keeper.NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, authtypes.NewModuleAddress(foundation.ModuleName).String())
 			},
 			isPanic: false,
 		},

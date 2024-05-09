@@ -24,8 +24,8 @@ func (m *MsgSwap) ValidateBasic() error {
 		return sdkerrors.ErrInvalidCoins.Wrap(m.FromCoinAmount.String())
 	}
 
-	if len(m.GetToDenom()) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
+	if err := sdk.ValidateDenom(m.GetToDenom()); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
 	}
 
 	return nil
@@ -52,12 +52,12 @@ func (m *MsgSwapAll) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("Invalid address (%s)", err)
 	}
 
-	if len(m.GetFromDenom()) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
+	if err := sdk.ValidateDenom(m.FromDenom); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
 	}
 
-	if len(m.GetToDenom()) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid denom (empty denom)")
+	if err := sdk.ValidateDenom(m.ToDenom); err != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap(err.Error())
 	}
 
 	return nil

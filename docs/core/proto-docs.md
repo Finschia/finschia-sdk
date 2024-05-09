@@ -774,8 +774,10 @@
     - [EventClaim](#lbm.fbridge.v1.EventClaim)
     - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
     - [EventProvision](#lbm.fbridge.v1.EventProvision)
+    - [EventSetBridgeStatus](#lbm.fbridge.v1.EventSetBridgeStatus)
     - [EventSuggestRole](#lbm.fbridge.v1.EventSuggestRole)
     - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
+    - [EventUpdateParams](#lbm.fbridge.v1.EventUpdateParams)
   
 - [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
     - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
@@ -845,6 +847,8 @@
     - [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse)
     - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
     - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
+    - [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse)
   
     - [Msg](#lbm.fbridge.v1.Msg)
   
@@ -950,13 +954,15 @@
   
     - [Msg](#lbm.foundation.v1.Msg)
   
-- [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
-    - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
-  
 - [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
     - [Swap](#lbm.fswap.v1.Swap)
     - [SwapStats](#lbm.fswap.v1.SwapStats)
     - [Swapped](#lbm.fswap.v1.Swapped)
+  
+- [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
+    - [EventAddDenomMetadata](#lbm.fswap.v1.EventAddDenomMetadata)
+    - [EventMakeSwap](#lbm.fswap.v1.EventMakeSwap)
+    - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
     - [GenesisState](#lbm.fswap.v1.GenesisState)
@@ -11450,6 +11456,7 @@ supports positive values.
 | `judge_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many judges' confirmations are needed to be valid. |
 | `timelock_period` | [uint64](#uint64) |  | default timelock period for each provision (unix timestamp) |
 | `proposal_period` | [uint64](#uint64) |  | default period of the proposal to update the role |
+| `target_denom` | [string](#string) |  | target denom of the bridge module. This is the base denom of Finschia normally. |
 
 
 
@@ -11686,6 +11693,22 @@ VoteOption enumerates the valid vote options for a given role proposal.
 
 
 
+<a name="lbm.fbridge.v1.EventSetBridgeStatus"></a>
+
+### EventSetBridgeStatus
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address who modifies the bridge status (a.k.a. bridge switch) |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  | the new status of the guardian's bridge switch |
+
+
+
+
+
+
 <a name="lbm.fbridge.v1.EventSuggestRole"></a>
 
 ### EventSuggestRole
@@ -11713,6 +11736,21 @@ VoteOption enumerates the valid vote options for a given role proposal.
 | `sender` | [string](#string) |  | the sender address on the source chain |
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
 | `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  |  |
 
 
 
@@ -12681,6 +12719,34 @@ MsgTransfer is input values required for bridge transfer
 
 
 
+
+<a name="lbm.fbridge.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | the authority address |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines the x/fbridge parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -12695,6 +12761,7 @@ MsgTransfer is input values required for bridge transfer
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse) | UpdateParams updates the x/fbridge parameters. | |
 | `Transfer` | [MsgTransfer](#lbm.fbridge.v1.MsgTransfer) | [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse) | Submit a transfer request to the bridge module. | |
 | `Provision` | [MsgProvision](#lbm.fbridge.v1.MsgProvision) | [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse) | Submit a provision to the bridge module. | |
 | `HoldTransfer` | [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer) | [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
@@ -14121,39 +14188,6 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm/fswap/v1/event.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/fswap/v1/event.proto
-
-
-
-<a name="lbm.fswap.v1.EventSwapCoins"></a>
-
-### EventSwapCoins
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | holder's address |
-| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
-| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | to-coin amount |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/fswap/v1/fswap.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -14204,6 +14238,69 @@ Msg defines the foundation Msg service.
 | ----- | ---- | ----- | ----------- |
 | `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/event.proto
+
+
+
+<a name="lbm.fswap.v1.EventAddDenomMetadata"></a>
+
+### EventAddDenomMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.EventMakeSwap"></a>
+
+### EventMakeSwap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.EventSwapCoins"></a>
+
+### EventSwapCoins
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | holder's address |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | to-coin amount |
 
 
 
