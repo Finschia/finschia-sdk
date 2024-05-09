@@ -9,23 +9,33 @@ import (
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
 type Keeper struct {
-	cdc      codec.BinaryCodec
-	storeKey storetypes.StoreKey
-
-	config types.Config
-
+	cdc       codec.BinaryCodec
+	storeKey  storetypes.StoreKey
+	config    types.Config
+	authority string
 	BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, bk BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, authority string, bk BankKeeper) Keeper {
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic("authority is not a valid acc address")
+	}
+
+	// authority is x/foundation module account for now.
+	if authority != types.DefaultAuthority().String() {
+		panic("x/foundation authority must be the module account")
+	}
+
 	return Keeper{
 		cdc,
 		storeKey,
 		config,
+		authority,
 		bk,
 	}
 }
@@ -199,5 +209,13 @@ func (k Keeper) setSwapStats(ctx sdk.Context, stats types.SwapStats) error {
 
 	store := ctx.KVStore(k.storeKey)
 	store.Set(swapStatsKey, bz)
+	return nil
+}
+
+func (k Keeper) validateAuthority(authority string) error {
+	if authority != k.authority {
+		return sdkerrors.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", k.authority, authority)
+	}
+
 	return nil
 }

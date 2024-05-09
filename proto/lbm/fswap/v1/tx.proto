@@ -5,10 +5,12 @@ option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "lbm/fswap/v1/fswap.proto";
 
 service Msg {
   rpc Swap(MsgSwap) returns (MsgSwapResponse);
   rpc SwapAll(MsgSwapAll) returns (MsgSwapAllResponse);
+  rpc MakeSwapProposal(MsgMakeSwapProposal) returns (MsgMakeSwapProposalResponse);
 }
 
 message MsgSwap {
@@ -30,3 +32,11 @@ message MsgSwapAll {
 }
 
 message MsgSwapAllResponse {}
+
+message MsgMakeSwapProposal {
+  // authority is the address of the privileged account.
+  string   authority = 1;
+  MakeSwapProposal proposal = 2;
+}
+
+message MsgMakeSwapProposalResponse {}

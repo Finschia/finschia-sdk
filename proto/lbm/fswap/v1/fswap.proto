@@ -26,14 +26,11 @@ message SwapStats {
   int32 swap_count = 1;
 }
 
-// From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
 message MakeSwapProposal {
   option (gogoproto.goproto_stringer) = false;
 
-  string                       title             = 1;
-  string                       description       = 2;
-  Swap                         swap              = 3 [(gogoproto.nullable) = false];
-  cosmos.bank.v1beta1.Metadata to_denom_metadata = 4
+  Swap                         swap              = 1 [(gogoproto.nullable) = false];
+  cosmos.bank.v1beta1.Metadata to_denom_metadata = 2
       [(gogoproto.moretags) = "yaml:\"denom_metadata\"", (gogoproto.nullable) = false];
 }
 

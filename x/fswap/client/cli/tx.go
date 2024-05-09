@@ -13,8 +13,6 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
-	govcli "github.com/Finschia/finschia-sdk/x/gov/client/cli"
-	gov "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 const (
@@ -36,6 +34,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdTxMsgSwap(),
 		CmdTxMsgSwapAll(),
+		CmdMsgMakeSwapProposal(),
 	)
 
 	return cmd
@@ -115,21 +114,21 @@ func CmdTxMsgSwapAll() *cobra.Command {
 	return cmd
 }
 
-// NewCmdMakeSwapProposal implements a command handler for submitting a swap init proposal transaction.
-func NewCmdMakeSwapProposal() *cobra.Command {
+// CmdMsgMakeSwapProposal implements a command handler for submitting a swap init proposal transaction.
+func CmdMsgMakeSwapProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "make-swap [messages-json]",
-		Args:  cobra.ExactArgs(1),
-		Short: "todo",
+		Use:   "make-swap-proposal [authority] [metadata-json]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Make swap proposal",
 		Long: `
 Parameters:
-    messages-json: messages in json format that will be executed if the proposal is accepted.
+    metadata-json: messages in json format that will be executed if the proposal is accepted.
 
-Example of the content of messages-json:
+Example of the content of metadata-json:
 
 {
   "metadata": {
-    "description": "the base coin of Finschia mainnet",
+    "description": "example of to-denom is finschia cony",
     "denom_units": [
       {
         "denom": "cony",
@@ -152,19 +151,11 @@ Example of the content of messages-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := validateGenerateOnly(cmd); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			from := clientCtx.GetFromAddress()
-
-			title, err := cmd.Flags().GetString(govcli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			description, err := cmd.Flags().GetString(govcli.FlagDescription)
 			if err != nil {
 				return err
 			}
@@ -178,10 +169,12 @@ Example of the content of messages-json:
 			if err != nil {
 				return err
 			}
+
 			amountCapStr, err := cmd.Flags().GetString(FlagAmountCapForToDenom)
 			if err != nil {
 				return err
 			}
+
 			amountCap, ok := sdk.NewIntFromString(amountCapStr)
 			if !ok {
 				return sdkerrors.ErrInvalidRequest.Wrapf("failed to parse %s %s", FlagAmountCapForToDenom, amountCap.String())
@@ -202,40 +195,42 @@ Example of the content of messages-json:
 				SwapRate:            swapRateDec,
 			}
 
-			toDenomMetadata, err := parseToDenomMetadata(args[0])
+			authority := args[0]
+			toDenomMetadata, err := parseToDenomMetadata(args[1])
 			if err != nil {
 				return err
 			}
 
-			content := types.NewMakeSwapProposal(title, description, swap, toDenomMetadata)
-
-			depositStr, err := cmd.Flags().GetString(govcli.FlagDeposit)
-			if err != nil {
-				return err
-			}
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
+			msg := types.MsgMakeSwapProposal{
+				Authority: authority,
+				Proposal: &types.MakeSwapProposalTmp{
+					Swap:            swap,
+					ToDenomMetadata: toDenomMetadata,
+				},
 			}
 
-			msg, err := gov.NewMsgSubmitProposal(content, deposit, from)
-			if err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
-	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(govcli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(govcli.FlagDeposit, "", "deposit of proposal")
 	cmd.Flags().String(FlagFromDenom, "", "cony")
 	cmd.Flags().String(FlagToDenom, "", "PDT")
 	cmd.Flags().String(FlagAmountCapForToDenom, "0", "tbd")
 	cmd.Flags().String(FlagSwapRate, "0", "tbd")
 
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
+}
+
+func validateGenerateOnly(cmd *cobra.Command) error {
+	generateOnly, err := cmd.Flags().GetBool(flags.FlagGenerateOnly)
+	if err != nil {
+		return err
+	}
+	if !generateOnly {
+		return fmt.Errorf("you must use it with the flag --%s", flags.FlagGenerateOnly)
+	}
+	return nil
 }
 
 func parseToDenomMetadata(jsonDenomMetadata string) (bank.Metadata, error) {

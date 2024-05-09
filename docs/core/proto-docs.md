@@ -973,6 +973,8 @@
     - [Query](#lbm.fswap.v1.Query)
   
 - [lbm/fswap/v1/tx.proto](#lbm/fswap/v1/tx.proto)
+    - [MsgMakeSwapProposal](#lbm.fswap.v1.MsgMakeSwapProposal)
+    - [MsgMakeSwapProposalResponse](#lbm.fswap.v1.MsgMakeSwapProposalResponse)
     - [MsgSwap](#lbm.fswap.v1.MsgSwap)
     - [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll)
     - [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse)
@@ -14163,13 +14165,11 @@ Msg defines the foundation Msg service.
 <a name="lbm.fswap.v1.MakeSwapProposal"></a>
 
 ### MakeSwapProposal
-From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
 | `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
 | `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
 
@@ -14398,6 +14398,32 @@ GenesisState defines the fswap module's genesis state.
 
 
 
+<a name="lbm.fswap.v1.MsgMakeSwapProposal"></a>
+
+### MsgMakeSwapProposal
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
+| `proposal` | [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgMakeSwapProposalResponse"></a>
+
+### MsgMakeSwapProposalResponse
+
+
+
+
+
+
+
 <a name="lbm.fswap.v1.MsgSwap"></a>
 
 ### MsgSwap
@@ -14467,6 +14493,7 @@ GenesisState defines the fswap module's genesis state.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Swap` | [MsgSwap](#lbm.fswap.v1.MsgSwap) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
 | `SwapAll` | [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
+| `MakeSwapProposal` | [MsgMakeSwapProposal](#lbm.fswap.v1.MsgMakeSwapProposal) | [MsgMakeSwapProposalResponse](#lbm.fswap.v1.MsgMakeSwapProposalResponse) |  | |
 
  <!-- end services -->
 

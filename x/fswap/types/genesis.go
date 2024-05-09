@@ -1,5 +1,11 @@
 package types
 
+import (
+	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+)
+
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
@@ -7,6 +13,10 @@ func DefaultGenesis() *GenesisState {
 		SwapStats: SwapStats{},
 		Swappeds:  []Swapped{},
 	}
+}
+
+func DefaultAuthority() sdk.AccAddress {
+	return authtypes.NewModuleAddress(foundation.ModuleName)
 }
 
 // Validate performs basic genesis state validation returning an error upon any failure.

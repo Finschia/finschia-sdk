@@ -3,10 +3,11 @@ package types
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
-	"github.com/Finschia/finschia-sdk/x/fswap/codec"
 )
 
 var _ sdk.Msg = &MsgSwap{}
+var _ sdk.Msg = &MsgSwapAll{}
+var _ sdk.Msg = &MsgMakeSwapProposal{}
 
 // ValidateBasic Implements Msg.
 func (m *MsgSwap) ValidateBasic() error {
@@ -41,10 +42,8 @@ func (m *MsgSwap) GetSigners() []sdk.AccAddress {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m *MsgSwap) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
 }
-
-var _ sdk.Msg = &MsgSwapAll{}
 
 // ValidateBasic Implements Msg.
 func (m *MsgSwapAll) ValidateBasic() error {
@@ -75,5 +74,27 @@ func (m *MsgSwapAll) GetSigners() []sdk.AccAddress {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m *MsgSwapAll) GetSignBytes() []byte {
-	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
+}
+
+func (m *MsgMakeSwapProposal) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
+	}
+
+	if err := m.GetProposal().ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *MsgMakeSwapProposal) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m *MsgMakeSwapProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
 }
