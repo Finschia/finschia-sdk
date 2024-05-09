@@ -1,0 +1,71 @@
+syntax = "proto3";
+package lbm.fbridge.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
+
+import "gogoproto/gogo.proto";
+import "lbm/fbridge/v1/fbridge.proto";
+
+message EventUpdateParams {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message EventTransfer {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be transferred
+  string amount = 4;
+}
+
+message EventSuggestRole {
+  RoleProposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+message EventAddVoteForRole {
+  // the voter address
+  string voter = 1;
+  // the role proposal id
+  uint64 proposal_id = 2;
+  // the vote option
+  VoteOption option = 3;
+}
+
+message EventProvision {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be claimed
+  string amount = 4;
+  // the address of the operator
+  string operator = 5;
+}
+
+message EventConfirmProvision {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message EventClaim {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+  // the sender address on the source chain
+  string sender = 2;
+  // the recipient address on the destination chain
+  string receiver = 3;
+  // the amount of token to be claimed
+  string amount = 4;
+}
+
+message EventSetBridgeStatus {
+  // the guardian address who modifies the bridge status (a.k.a. bridge switch)
+  string guardian = 1;
+  // the new status of the guardian's bridge switch
+  BridgeStatus status = 2;
+}

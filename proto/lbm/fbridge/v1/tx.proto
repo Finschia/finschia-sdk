@@ -1,0 +1,174 @@
+syntax = "proto3";
+package lbm.fbridge.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
+
+import "gogoproto/gogo.proto";
+import "lbm/fbridge/v1/fbridge.proto";
+
+service Msg {
+  // UpdateParams updates the x/fbridge parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // Submit a transfer request to the bridge module.
+  rpc Transfer(MsgTransfer) returns (MsgTransferResponse);
+
+  // Submit a provision to the bridge module.
+  rpc Provision(MsgProvision) returns (MsgProvisionResponse);
+
+  // Set the time lock value from default value to uint64.max for specific confirmed provision.
+  rpc HoldTransfer(MsgHoldTransfer) returns (MsgHoldTransferResponse);
+
+  // Set the time lock value to 0 for specific confirmed provision.
+  rpc ReleaseTransfer(MsgReleaseTransfer) returns (MsgReleaseTransferResponse);
+
+  // Remove a specific confirmed provision (reset for specific sequence number).
+  rpc RemoveProvision(MsgRemoveProvision) returns (MsgRemoveProvisionResponse);
+
+  // ClaimBatch processes the claiming of multiple claimable provisions in a single operation
+  rpc ClaimBatch(MsgClaimBatch) returns (MsgClaimBatchResponse);
+
+  // Claim processes the claiming of a provision with a specific sequence number
+  rpc Claim(MsgClaim) returns (MsgClaimResponse);
+
+  // SuggestRole suggests updating the role of an address in the bridge module.
+  // The role can be one of the following: guardian, operator, judge.
+  // The proposal will be passed only with the consent of +2/3 Guardian members.
+  rpc SuggestRole(MsgSuggestRole) returns (MsgSuggestRoleResponse);
+
+  // AddVoteForRole adds a vote for a role change proposal.
+  rpc AddVoteForRole(MsgAddVoteForRole) returns (MsgAddVoteForRoleResponse);
+
+  // SetBridgeStatus operates a switch to halt/resume the bridge module.
+  // If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts.
+  rpc SetBridgeStatus(MsgSetBridgeStatus) returns (MsgSetBridgeStatusResponse);
+}
+
+message MsgUpdateParams {
+  // the authority address
+  string authority = 1;
+
+  // params defines the x/fbridge parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}
+
+// MsgTransfer is input values required for bridge transfer
+message MsgTransfer {
+  // the sender address on the source chain
+  string sender = 1;
+  // the recipient address on the destination chain
+  string receiver = 2;
+  // the amount of token to be transferred
+  string amount = 3
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+message MsgTransferResponse {}
+
+// MsgProvision is input values required for provisioning
+message MsgProvision {
+  // the operator address
+  string from = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+  // the sender address on the source chain
+  string sender = 3;
+  // the recipient address on the destination chain
+  string receiver = 4;
+  // the amount of token to be claimed
+  string amount = 5
+      [(gogoproto.customtype) = "github.com/Finschia/finschia-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+message MsgProvisionResponse {}
+
+// MsgHoldTransfer is input values required for holding transfer
+message MsgHoldTransfer {
+  // the judge address
+  string from = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+}
+
+message MsgHoldTransferResponse {}
+
+// MsgReleaseTransfer is input values required for releasing a held transfer by time lock
+message MsgReleaseTransfer {
+  // the guardian address
+  string from = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+}
+
+message MsgReleaseTransferResponse {}
+
+// MsgRemoveProvision is input values required for removing a specific confirmed provision
+message MsgRemoveProvision {
+  // the judge address
+  string from = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+}
+
+message MsgRemoveProvisionResponse {}
+
+// MsgClaimBatch is input values required for claiming multiple claimable provisions
+message MsgClaimBatch {
+  // the claimer address
+  string from = 1;
+  // the maximum number of claims to be made at once
+  uint64 max_claims = 2;
+}
+
+message MsgClaimBatchResponse {}
+
+// MsgClaim is input values required for claiming a provision
+message MsgClaim {
+  // the claimer address
+  string from = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+}
+
+message MsgClaimResponse {}
+
+// MsgUpdateRole is input values required for updating the role of an address
+message MsgSuggestRole {
+  // the guardian address
+  string from = 1;
+  // the address to update the role
+  string target = 2;
+  // the role to be updated
+  // - unspecified : 0, used to remove the address from a group
+  // - guardian : 1
+  // - operator : 2
+  // - judge : 3
+  Role role = 3;
+}
+
+message MsgSuggestRoleResponse {}
+
+message MsgAddVoteForRole {
+  // the guardian address
+  string from = 1;
+  // the proposal ID
+  uint64 proposal_id = 2;
+  // the vote option
+  VoteOption option = 3;
+}
+
+message MsgAddVoteForRoleResponse {}
+
+// MsgSetBridgeStatus is input values required for setting the status of the bridge module
+message MsgSetBridgeStatus {
+  // the guardian address
+  string guardian = 1;
+
+  BridgeStatus status = 2;
+}
+
+message MsgSetBridgeStatusResponse {}

@@ -29,7 +29,7 @@ jobs:
       - name: install tparse
         run: |
           go install github.com/mfridman/tparse@v0.8.3
-      - uses: actions/cache@v4.0.0
+      - uses: actions/cache@v4.0.2
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-tparse-binary
@@ -187,7 +187,7 @@ jobs:
             sed -i.bak "/$(echo $filename | sed 's/\//\\\//g')/d" coverage.txt
           done
         if: env.GIT_DIFF
-      - uses: codecov/codecov-action@v3.1.5
+      - uses: codecov/codecov-action@v4.1.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.txt

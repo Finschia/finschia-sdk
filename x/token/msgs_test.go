@@ -162,15 +162,15 @@ func TestMsgOperatorSend(t *testing.T) {
 }
 
 func TestMsgRevokeOperator(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
+	addrs := make([]string, 2)
 	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()).String()
 	}
 
 	testCases := map[string]struct {
 		contractID string
-		holder     sdk.AccAddress
-		operator   sdk.AccAddress
+		holder     string
+		operator   string
 		err        error
 	}{
 		"valid msg": {
@@ -199,14 +199,20 @@ func TestMsgRevokeOperator(t *testing.T) {
 			operator:   addrs[0],
 			err:        token.ErrApproverProxySame,
 		},
+		"operator and holder should be different (uppercase)": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   strings.ToUpper(addrs[0]),
+			err:        token.ErrApproverProxySame,
+		},
 	}
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			msg := token.MsgRevokeOperator{
 				ContractId: tc.contractID,
-				Holder:     tc.holder.String(),
-				Operator:   tc.operator.String(),
+				Holder:     tc.holder,
+				Operator:   tc.operator,
 			}
 
 			err := msg.ValidateBasic()
@@ -215,21 +221,21 @@ func TestMsgRevokeOperator(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{sdk.MustAccAddressFromBech32(tc.holder)}, msg.GetSigners())
 		})
 	}
 }
 
 func TestMsgAuthorizeOperator(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 2)
+	addrs := make([]string, 2)
 	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()).String()
 	}
 
 	testCases := map[string]struct {
 		contractID string
-		holder     sdk.AccAddress
-		operator   sdk.AccAddress
+		holder     string
+		operator   string
 		err        error
 	}{
 		"valid msg": {
@@ -258,14 +264,20 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 			operator:   addrs[0],
 			err:        token.ErrApproverProxySame,
 		},
+		"proxy and approver should be different (uppercase)": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   strings.ToUpper(addrs[0]),
+			err:        token.ErrApproverProxySame,
+		},
 	}
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			msg := token.MsgAuthorizeOperator{
 				ContractId: tc.contractID,
-				Holder:     tc.holder.String(),
-				Operator:   tc.operator.String(),
+				Holder:     tc.holder,
+				Operator:   tc.operator,
 			}
 
 			err := msg.ValidateBasic()
@@ -274,7 +286,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{sdk.MustAccAddressFromBech32(tc.holder)}, msg.GetSigners())
 		})
 	}
 }

@@ -1,0 +1,29 @@
+syntax = "proto3";
+package lbm.fswap.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fswap/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+import "lbm/fswap/v1/fswap.proto";
+
+message EventSwapCoins {
+  // holder's address
+  string address = 1;
+  // from-coin amount
+  cosmos.base.v1beta1.Coin from_coin_amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+  // to-coin amount
+  cosmos.base.v1beta1.Coin to_coin_amount = 3
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}
+
+message EventMakeSwap {
+  Swap swap = 1 [(gogoproto.nullable) = false];
+}
+
+message EventAddDenomMetadata {
+  cosmos.bank.v1beta1.Metadata metadata = 1
+      [(gogoproto.moretags) = "yaml:\"denom_metadata\"", (gogoproto.nullable) = false];
+}

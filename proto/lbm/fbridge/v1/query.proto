@@ -1,0 +1,241 @@
+syntax = "proto3";
+package lbm.fbridge.v1;
+
+option go_package = "github.com/Finschia/finschia-sdk/x/fbridge/types";
+
+import "google/api/annotations.proto";
+import "gogoproto/gogo.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "lbm/fbridge/v1/fbridge.proto";
+
+service Query {
+  // Params queries the parameters of x/fbridge module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/params";
+  }
+
+  // NextSeqSend queries the sequence of next bridge request
+  rpc NextSeqSend(QueryNextSeqSendRequest) returns (QueryNextSeqSendResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/sending/nextseq";
+  }
+
+  // BlocknumToSeqs queries a list of block numbers for which each sequence has been confirmed.
+  rpc SeqToBlocknums(QuerySeqToBlocknumsRequest) returns (QuerySeqToBlocknumsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/sending/blocknums";
+  }
+
+  // GreatestSeqByOperator queries a greatest sequence number confirmed by a particular operator
+  rpc GreatestSeqByOperator(QueryGreatestSeqByOperatorRequest) returns (QueryGreatestSeqByOperatorResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/operators/{operator}/seq";
+  }
+
+  // GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence number confirmed by n-of-m operators
+  rpc GreatestConsecutiveConfirmedSeq(QueryGreatestConsecutiveConfirmedSeqRequest)
+      returns (QueryGreatestConsecutiveConfirmedSeqResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/greatest_confirmed_seq";
+  }
+
+  // SubmittedProvision queries a provision submitted by a particular operator
+  rpc SubmittedProvision(QuerySubmittedProvisionRequest) returns (QuerySubmittedProvisionResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}";
+  }
+
+  // ConfirmedProvision queries a particular sequence of confirmed provisions
+  rpc ConfirmedProvision(QueryConfirmedProvisionRequest) returns (QueryConfirmedProvisionResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/provision/{seq}";
+  }
+
+  // NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator
+  // The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range,
+  // greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if
+  // the operator is newly added
+  rpc NeededSubmissionSeqs(QueryNeededSubmissionSeqsRequest) returns (QueryNeededSubmissionSeqsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs";
+  }
+
+  // Commitments queries commitments of a specific sequence number
+  rpc Commitments(QueryCommitmentsRequest) returns (QueryCommitmentsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/receiving/commitments/{seq}";
+  }
+
+  // Members queries the members of spcific group registered on the bridge
+  rpc Members(QueryMembersRequest) returns (QueryMembersResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/members";
+  }
+
+  // Member queries the role of a specific member
+  rpc Member(QueryMemberRequest) returns (QueryMemberResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/members/{address}";
+  }
+
+  // Proposals queries a list of SuggestRole Proposals
+  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals";
+  }
+
+  // Proposal queries a SuggestRole Proposal
+  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}";
+  }
+
+  // Vote queries voted information based on proposalID, voterAddr.
+  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}";
+  }
+
+  // Votes queries votes of a given proposal.
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/proposals/{proposal_id}/votes";
+  }
+
+  // BridgeStatus queries the status of the bridge
+  rpc BridgeStatus(QueryBridgeStatusRequest) returns (QueryBridgeStatusResponse) {
+    option (google.api.http).get = "/lbm/fbridge/v1/status";
+  }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryNextSeqSendRequest {}
+
+message QueryNextSeqSendResponse {
+  uint64 seq = 1;
+}
+
+message QuerySeqToBlocknumsRequest {
+  // list of sequence number of the bridge request
+  repeated uint64 seqs = 1;
+}
+
+message QuerySeqToBlocknumsResponse {
+  repeated uint64 blocknums = 1;
+}
+
+message QueryGreatestSeqByOperatorRequest {
+  // the address of the operator
+  string operator = 1;
+}
+
+message QueryGreatestSeqByOperatorResponse {
+  uint64 seq = 1;
+}
+
+message QueryGreatestConsecutiveConfirmedSeqRequest {}
+
+message QueryGreatestConsecutiveConfirmedSeqResponse {
+  uint64 seq = 1;
+}
+
+message QuerySubmittedProvisionRequest {
+  // the address of the operator
+  string operator = 1;
+  // the sequence number of the bridge request
+  uint64 seq = 2;
+}
+
+message QuerySubmittedProvisionResponse {
+  ProvisionData   data   = 1 [(gogoproto.nullable) = false];
+  ProvisionStatus status = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryNeededSubmissionSeqsRequest {
+  // the address of the operator
+  string operator = 1;
+  // range specifies the size of the range to search
+  uint64 range = 2;
+}
+
+message QueryNeededSubmissionSeqsResponse {
+  repeated uint64 seqs = 1;
+}
+
+message QueryConfirmedProvisionRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message QueryConfirmedProvisionResponse {
+  ProvisionData   data   = 1 [(gogoproto.nullable) = false];
+  ProvisionStatus status = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryCommitmentsRequest {
+  // the sequence number of the bridge request
+  uint64 seq = 1;
+}
+
+message QueryCommitmentsResponse {
+  repeated string commitments = 1;
+}
+
+message QueryMembersRequest {
+  // the role name (guardian, operator, judge)
+  string role = 1;
+}
+
+message QueryMembersResponse {
+  repeated string members = 1;
+}
+
+message QueryMemberRequest {
+  string address = 1;
+}
+
+message QueryMemberResponse {
+  string role = 1;
+}
+
+message QueryProposalsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryProposalsResponse {
+  repeated RoleProposal proposals = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines an pagination for the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryProposalRequest {
+  // the proposal id
+  uint64 proposal_id = 1;
+}
+
+message QueryProposalResponse {
+  RoleProposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryVoteRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+
+  // voter defines the oter address for the proposals.
+  string voter = 2;
+}
+
+message QueryVoteResponse {
+  // vote defined the queried vote.
+  Vote vote = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryVotesRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+message QueryVotesResponse {
+  // votes defined the queried votes.
+  repeated Vote votes = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBridgeStatusRequest {}
+
+message QueryBridgeStatusResponse {
+  BridgeStatus         status   = 1;
+  BridgeStatusMetadata metadata = 2 [(gogoproto.nullable) = false];
+}
