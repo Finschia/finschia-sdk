@@ -7,6 +7,9 @@ import "gogoproto/gogo.proto";
 import "lbm/fbridge/v1/fbridge.proto";
 
 service Msg {
+  // UpdateParams updates the x/fbridge parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
   // Submit a transfer request to the bridge module.
   rpc Transfer(MsgTransfer) returns (MsgTransferResponse);
 
@@ -36,12 +39,22 @@ service Msg {
   // AddVoteForRole adds a vote for a role change proposal.
   rpc AddVoteForRole(MsgAddVoteForRole) returns (MsgAddVoteForRoleResponse);
 
-  // Halt the bridge module.
-  rpc Halt(MsgHalt) returns (MsgHaltResponse);
-
-  // Resume the bridge module.
-  rpc Resume(MsgResume) returns (MsgResumeResponse);
+  // SetBridgeStatus operates a switch to halt/resume the bridge module.
+  // If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts.
+  rpc SetBridgeStatus(MsgSetBridgeStatus) returns (MsgSetBridgeStatusResponse);
 }
+
+message MsgUpdateParams {
+  // the authority address
+  string authority = 1;
+
+  // params defines the x/fbridge parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}
 
 // MsgTransfer is input values required for bridge transfer
 message MsgTransfer {
@@ -145,25 +158,17 @@ message MsgAddVoteForRole {
   // the proposal ID
   uint64 proposal_id = 2;
   // the vote option
-  // - yes : true
-  // - no : false
-  bool option = 3;
+  VoteOption option = 3;
 }
 
 message MsgAddVoteForRoleResponse {}
 
-// MsgHalt is input values required for halting the bridge module
-message MsgHalt {
+// MsgSetBridgeStatus is input values required for setting the status of the bridge module
+message MsgSetBridgeStatus {
   // the guardian address
   string guardian = 1;
+
+  BridgeStatus status = 2;
 }
 
-message MsgHaltResponse {}
-
-// MsgResume is input values required for resuming the bridge module
-message MsgResume {
-  // the guardian address
-  string from = 1;
-}
-
-message MsgResumeResponse {}
+message MsgSetBridgeStatusResponse {}

@@ -7,26 +7,27 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
-	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/testutil"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
 func TestHandleBridgeTransfer(t *testing.T) {
-	key, ctx, encCfg, authKeeper, bankKeeper := testutil.PrepareFbridgeTest(t)
+	key, memKey, ctx, encCfg, authKeeper, bankKeeper, _ := testutil.PrepareFbridgeTest(t, 0)
 
 	sender := sdk.AccAddress("test")
 	amt := sdk.NewInt(1000000)
 	denom := "stake"
 	token := sdk.Coins{sdk.Coin{Denom: denom, Amount: amt}}
 
-	bridge := authtypes.NewEmptyModuleAccount("fbridge")
-	authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(bridge.GetAddress()).AnyTimes()
 	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil)
 	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(nil)
 	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(nil)
 
-	k := NewKeeper(encCfg.Codec, key, authKeeper, bankKeeper, denom, authtypes.NewModuleAddress("gov").String())
+	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, types.DefaultAuthority().String())
+	params := types.DefaultParams()
+	params.TargetDenom = denom
+	err := k.SetParams(ctx, params)
+	require.NoError(t, err)
 	targetSeq := uint64(2)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, targetSeq)
