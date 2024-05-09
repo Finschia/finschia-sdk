@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"fmt"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -48,6 +50,13 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 
 	k.SetPool(ctx, data.Pool)
 
+	// init module accounts just in case
+	if acc := k.authKeeper.GetModuleAccount(ctx, foundation.ModuleName); acc == nil {
+		panic(fmt.Sprintf("failed to create module account=%s", foundation.ModuleName))
+	}
+	if acc := k.authKeeper.GetModuleAccount(ctx, foundation.TreasuryName); acc == nil {
+		panic(fmt.Sprintf("failed to create module account=%s", foundation.TreasuryName))
+	}
 	return nil
 }
 

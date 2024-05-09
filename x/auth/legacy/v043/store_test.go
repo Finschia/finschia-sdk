@@ -595,8 +595,8 @@ func trackingCorrected(t *testing.T, ctx sdk.Context, ak authkeeper.AccountKeepe
 	vDA, ok := baseAccount.(exported.VestingAccount)
 	require.True(t, ok)
 
-	vestedOk := expDelVesting.IsEqual(vDA.GetDelegatedVesting())
-	freeOk := expDelFree.IsEqual(vDA.GetDelegatedFree())
+	vestedOk := expDelVesting.Equal(vDA.GetDelegatedVesting())
+	freeOk := expDelFree.Equal(vDA.GetDelegatedFree())
 	require.True(t, vestedOk, vDA.GetDelegatedVesting().String())
 	require.True(t, freeOk, vDA.GetDelegatedFree().String())
 }

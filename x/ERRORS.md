@@ -7,8 +7,10 @@
   * [Crisis](#crisis)
   * [Distribution](#distribution)
   * [Evidence](#evidence)
+  * [Fbridge](#fbridge)
   * [Feegrant](#feegrant)
   * [Foundation](#foundation)
+  * [Fswap](#fswap)
   * [Gov](#gov)
   * [Params](#params)
   * [Slashing](#slashing)
@@ -150,6 +152,17 @@
 >You can also find detailed information in the following Errors.go files:
   * [evidence/types/errors.go](evidence/types/errors.go)
 
+## Fbridge
+
+|Error Name|Codespace|Code|Description|
+|:-|:-|:-|:-|
+|ErrUnknownProposal|fbridge|2|unknown proposal|
+|ErrUnknownVote|fbridge|3|unknown vote|
+|ErrInactiveBridge|fbridge|4|the bridge has halted|
+
+>You can also find detailed information in the following Errors.go files:
+  * [fbridge/types/errors.go](fbridge/types/errors.go)
+
 ## Feegrant
 
 |Error Name|Codespace|Code|Description|
@@ -171,6 +184,18 @@
 
 >You can also find detailed information in the following Errors.go files:
   * [foundation/errors.go](foundation/errors.go)
+
+## Fswap
+
+|Error Name|Codespace|Code|Description|
+|:-|:-|:-|:-|
+|ErrInvalidState|fswap|2|swap module invalid state|
+|ErrCanNotHaveMoreSwap|fswap|3|no more swap allowed|
+|ErrSwappedNotFound|fswap|4|swapped does not exist|
+|ErrExceedSwappableToCoinAmount|fswap|5|exceed swappable to-coin amount|
+
+>You can also find detailed information in the following Errors.go files:
+  * [fswap/types/errors.go](fswap/types/errors.go)
 
 ## Gov
 

@@ -754,6 +754,104 @@
   
     - [Msg](#lbm.collection.v1.Msg)
   
+- [lbm/fbridge/v1/fbridge.proto](#lbm/fbridge/v1/fbridge.proto)
+    - [BridgeStatusMetadata](#lbm.fbridge.v1.BridgeStatusMetadata)
+    - [Fraction](#lbm.fbridge.v1.Fraction)
+    - [Params](#lbm.fbridge.v1.Params)
+    - [ProvisionData](#lbm.fbridge.v1.ProvisionData)
+    - [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus)
+    - [RoleMetadata](#lbm.fbridge.v1.RoleMetadata)
+    - [RolePair](#lbm.fbridge.v1.RolePair)
+    - [RoleProposal](#lbm.fbridge.v1.RoleProposal)
+    - [Vote](#lbm.fbridge.v1.Vote)
+  
+    - [BridgeStatus](#lbm.fbridge.v1.BridgeStatus)
+    - [Role](#lbm.fbridge.v1.Role)
+    - [VoteOption](#lbm.fbridge.v1.VoteOption)
+  
+- [lbm/fbridge/v1/event.proto](#lbm/fbridge/v1/event.proto)
+    - [EventAddVoteForRole](#lbm.fbridge.v1.EventAddVoteForRole)
+    - [EventClaim](#lbm.fbridge.v1.EventClaim)
+    - [EventConfirmProvision](#lbm.fbridge.v1.EventConfirmProvision)
+    - [EventProvision](#lbm.fbridge.v1.EventProvision)
+    - [EventSetBridgeStatus](#lbm.fbridge.v1.EventSetBridgeStatus)
+    - [EventSuggestRole](#lbm.fbridge.v1.EventSuggestRole)
+    - [EventTransfer](#lbm.fbridge.v1.EventTransfer)
+    - [EventUpdateParams](#lbm.fbridge.v1.EventUpdateParams)
+  
+- [lbm/fbridge/v1/genesis.proto](#lbm/fbridge/v1/genesis.proto)
+    - [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo)
+    - [BridgeSwitch](#lbm.fbridge.v1.BridgeSwitch)
+    - [Commitment](#lbm.fbridge.v1.Commitment)
+    - [ConfirmedProvision](#lbm.fbridge.v1.ConfirmedProvision)
+    - [GenesisState](#lbm.fbridge.v1.GenesisState)
+    - [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo)
+    - [Provision](#lbm.fbridge.v1.Provision)
+    - [ReceivingState](#lbm.fbridge.v1.ReceivingState)
+    - [SendingState](#lbm.fbridge.v1.SendingState)
+  
+- [lbm/fbridge/v1/query.proto](#lbm/fbridge/v1/query.proto)
+    - [QueryBridgeStatusRequest](#lbm.fbridge.v1.QueryBridgeStatusRequest)
+    - [QueryBridgeStatusResponse](#lbm.fbridge.v1.QueryBridgeStatusResponse)
+    - [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest)
+    - [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse)
+    - [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest)
+    - [QueryConfirmedProvisionResponse](#lbm.fbridge.v1.QueryConfirmedProvisionResponse)
+    - [QueryGreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest)
+    - [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse)
+    - [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest)
+    - [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse)
+    - [QueryMemberRequest](#lbm.fbridge.v1.QueryMemberRequest)
+    - [QueryMemberResponse](#lbm.fbridge.v1.QueryMemberResponse)
+    - [QueryMembersRequest](#lbm.fbridge.v1.QueryMembersRequest)
+    - [QueryMembersResponse](#lbm.fbridge.v1.QueryMembersResponse)
+    - [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest)
+    - [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse)
+    - [QueryNextSeqSendRequest](#lbm.fbridge.v1.QueryNextSeqSendRequest)
+    - [QueryNextSeqSendResponse](#lbm.fbridge.v1.QueryNextSeqSendResponse)
+    - [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse)
+    - [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest)
+    - [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse)
+    - [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest)
+    - [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse)
+    - [QuerySeqToBlocknumsRequest](#lbm.fbridge.v1.QuerySeqToBlocknumsRequest)
+    - [QuerySeqToBlocknumsResponse](#lbm.fbridge.v1.QuerySeqToBlocknumsResponse)
+    - [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest)
+    - [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse)
+    - [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest)
+    - [QueryVoteResponse](#lbm.fbridge.v1.QueryVoteResponse)
+    - [QueryVotesRequest](#lbm.fbridge.v1.QueryVotesRequest)
+    - [QueryVotesResponse](#lbm.fbridge.v1.QueryVotesResponse)
+  
+    - [Query](#lbm.fbridge.v1.Query)
+  
+- [lbm/fbridge/v1/tx.proto](#lbm/fbridge/v1/tx.proto)
+    - [MsgAddVoteForRole](#lbm.fbridge.v1.MsgAddVoteForRole)
+    - [MsgAddVoteForRoleResponse](#lbm.fbridge.v1.MsgAddVoteForRoleResponse)
+    - [MsgClaim](#lbm.fbridge.v1.MsgClaim)
+    - [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch)
+    - [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse)
+    - [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse)
+    - [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer)
+    - [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse)
+    - [MsgProvision](#lbm.fbridge.v1.MsgProvision)
+    - [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse)
+    - [MsgReleaseTransfer](#lbm.fbridge.v1.MsgReleaseTransfer)
+    - [MsgReleaseTransferResponse](#lbm.fbridge.v1.MsgReleaseTransferResponse)
+    - [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision)
+    - [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse)
+    - [MsgSetBridgeStatus](#lbm.fbridge.v1.MsgSetBridgeStatus)
+    - [MsgSetBridgeStatusResponse](#lbm.fbridge.v1.MsgSetBridgeStatusResponse)
+    - [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole)
+    - [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse)
+    - [MsgTransfer](#lbm.fbridge.v1.MsgTransfer)
+    - [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse)
+    - [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse)
+  
+    - [Msg](#lbm.fbridge.v1.Msg)
+  
 - [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
     - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
@@ -855,6 +953,38 @@
     - [Exec](#lbm.foundation.v1.Exec)
   
     - [Msg](#lbm.foundation.v1.Msg)
+  
+- [lbm/fswap/v1/fswap.proto](#lbm/fswap/v1/fswap.proto)
+    - [MakeSwapProposal](#lbm.fswap.v1.MakeSwapProposal)
+    - [Swap](#lbm.fswap.v1.Swap)
+    - [SwapStats](#lbm.fswap.v1.SwapStats)
+    - [Swapped](#lbm.fswap.v1.Swapped)
+  
+- [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
+    - [EventAddDenomMetadata](#lbm.fswap.v1.EventAddDenomMetadata)
+    - [EventMakeSwap](#lbm.fswap.v1.EventMakeSwap)
+    - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
+  
+- [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
+    - [GenesisState](#lbm.fswap.v1.GenesisState)
+  
+- [lbm/fswap/v1/query.proto](#lbm/fswap/v1/query.proto)
+    - [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest)
+    - [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse)
+    - [QuerySwapsRequest](#lbm.fswap.v1.QuerySwapsRequest)
+    - [QuerySwapsResponse](#lbm.fswap.v1.QuerySwapsResponse)
+    - [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest)
+    - [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse)
+  
+    - [Query](#lbm.fswap.v1.Query)
+  
+- [lbm/fswap/v1/tx.proto](#lbm/fswap/v1/tx.proto)
+    - [MsgSwap](#lbm.fswap.v1.MsgSwap)
+    - [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll)
+    - [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse)
+    - [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse)
+  
+    - [Msg](#lbm.fswap.v1.Msg)
   
 - [lbm/stakingplus/v1/authz.proto](#lbm/stakingplus/v1/authz.proto)
     - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
@@ -11272,6 +11402,1380 @@ Msg defines the collection Msg service.
 
 
 
+<a name="lbm/fbridge/v1/fbridge.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/fbridge.proto
+
+
+
+<a name="lbm.fbridge.v1.BridgeStatusMetadata"></a>
+
+### BridgeStatusMetadata
+BridgeStatusMetadata defines the metadata of the bridge status.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `inactive` | [uint64](#uint64) |  | the number of inactived bridge switch |
+| `active` | [uint64](#uint64) |  | the number of activated bridge switch |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Fraction"></a>
+
+### Fraction
+Fraction defines the protobuf message type for tmmath.Fraction that only
+supports positive values.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `numerator` | [uint64](#uint64) |  |  |
+| `denominator` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many operators' confirmations are needed to be valid. |
+| `guardian_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many guardians' confirmations are needed to be valid. |
+| `judge_trust_level` | [Fraction](#lbm.fbridge.v1.Fraction) |  | ratio of how many judges' confirmations are needed to be valid. |
+| `timelock_period` | [uint64](#uint64) |  | default timelock period for each provision (unix timestamp) |
+| `proposal_period` | [uint64](#uint64) |  | default period of the proposal to update the role |
+| `target_denom` | [string](#string) |  | target denom of the bridge module. This is the base denom of Finschia normally. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ProvisionData"></a>
+
+### ProvisionData
+Provision is a struct that represents a provision internally.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ProvisionStatus"></a>
+
+### ProvisionStatus
+ProvisionStatus is a struct that represents the status of a provision.
+To optimize computational cost, we have collected frequently changing values from provision.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `timelock_end` | [uint64](#uint64) |  | the unix timestamp the provision will be able to be claimed (unix timestamp) |
+| `confirm_counts` | [int32](#int32) |  | a value that tells how many operators have submitted this provision |
+| `is_claimed` | [bool](#bool) |  | whether the provision has been claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RoleMetadata"></a>
+
+### RoleMetadata
+RoleMetadata defines the metadata of the role.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [uint64](#uint64) |  | the number of registered guardians |
+| `operator` | [uint64](#uint64) |  | the number of the operators |
+| `judge` | [uint64](#uint64) |  | the number of the judges |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RolePair"></a>
+
+### RolePair
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.RoleProposal"></a>
+
+### RoleProposal
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `proposer` | [string](#string) |  | the proposer address |
+| `target` | [string](#string) |  | the address to update the role |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
+| `expired_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | the unix timestamp the proposal will be expired (unix timestamp) |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Vote"></a>
+
+### Vote
+Vote defines a vote on a role proposal.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  |  |
+| `voter` | [string](#string) |  |  |
+| `option` | [VoteOption](#lbm.fbridge.v1.VoteOption) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="lbm.fbridge.v1.BridgeStatus"></a>
+
+### BridgeStatus
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| BRIDGE_STATUS_UNSPECIFIED | 0 | BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status. |
+| BRIDGE_STATUS_ACTIVE | 1 | BRIDGE_STATUS_ACTIVE defines an active bridge status. |
+| BRIDGE_STATUS_INACTIVE | 2 | BRIDGE_STATUS_INACTIVE defines an inactive bridge status. |
+
+
+
+<a name="lbm.fbridge.v1.Role"></a>
+
+### Role
+Role defines the role of the operator, guardian, and judge.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UNSPECIFIED | 0 |  |
+| GUARDIAN | 1 |  |
+| OPERATOR | 2 |  |
+| JUDGE | 3 |  |
+
+
+
+<a name="lbm.fbridge.v1.VoteOption"></a>
+
+### VoteOption
+VoteOption enumerates the valid vote options for a given role proposal.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| VOTE_OPTION_UNSPECIFIED | 0 | VOTE_OPTION_UNSPECIFIED defines a no-op vote option. |
+| VOTE_OPTION_YES | 1 | VOTE_OPTION_YES defines a yes vote option. |
+| VOTE_OPTION_NO | 2 | VOTE_OPTION_NO defines a no vote option. |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/event.proto
+
+
+
+<a name="lbm.fbridge.v1.EventAddVoteForRole"></a>
+
+### EventAddVoteForRole
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `voter` | [string](#string) |  | the voter address |
+| `proposal_id` | [uint64](#uint64) |  | the role proposal id |
+| `option` | [VoteOption](#lbm.fbridge.v1.VoteOption) |  | the vote option |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventClaim"></a>
+
+### EventClaim
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventConfirmProvision"></a>
+
+### EventConfirmProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventProvision"></a>
+
+### EventProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+| `operator` | [string](#string) |  | the address of the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventSetBridgeStatus"></a>
+
+### EventSetBridgeStatus
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address who modifies the bridge status (a.k.a. bridge switch) |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  | the new status of the guardian's bridge switch |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventSuggestRole"></a>
+
+### EventSuggestRole
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventTransfer"></a>
+
+### EventTransfer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/genesis.proto
+
+
+
+<a name="lbm.fbridge.v1.BlockSeqInfo"></a>
+
+### BlockSeqInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+| `blocknum` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.BridgeSwitch"></a>
+
+### BridgeSwitch
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Commitment"></a>
+
+### Commitment
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the operator address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `commitment` | [string](#string) |  | commitment is the hash value of a provision |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ConfirmedProvision"></a>
+
+### ConfirmedProvision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `commitment` | [string](#string) |  | commitment is the hash value of a provision |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the fbridge module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines all the parameters of the module. |
+| `sending_state` | [SendingState](#lbm.fbridge.v1.SendingState) |  | sending_state defines status saved when sending tokens to a counterpart chain |
+| `receiving_state` | [ReceivingState](#lbm.fbridge.v1.ReceivingState) |  | receiving_state defines status saved when receiving tokens from a counterpart chain |
+| `next_role_proposal_id` | [uint64](#uint64) |  | next_role_proposal_id is the next role proposal ID to be used. |
+| `role_proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated | role_proposals defines all the role proposals present at genesis. |
+| `votes` | [Vote](#lbm.fbridge.v1.Vote) | repeated | votes defines all the votes present for role proposals at genesis. |
+| `roles` | [RolePair](#lbm.fbridge.v1.RolePair) | repeated | roles defines all addresses assigned roles at genesis. |
+| `bridge_switches` | [BridgeSwitch](#lbm.fbridge.v1.BridgeSwitch) | repeated | bridge_switches defines the status of whether each guardian has allowed the bridge to operate. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.OperatorSeqInfo"></a>
+
+### OperatorSeqInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the operator address |
+| `seq` | [uint64](#uint64) |  | the sequence number |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.Provision"></a>
+
+### Provision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commitment` | [string](#string) |  |  |
+| `data` | [ProvisionData](#lbm.fbridge.v1.ProvisionData) |  |  |
+| `status` | [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.ReceivingState"></a>
+
+### ReceivingState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `greatest_consecutive_seq_by_operator` | [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo) | repeated | the greatest consecutive sequence number confirmed by each operator |
+| `greatest_seq_by_operator` | [OperatorSeqInfo](#lbm.fbridge.v1.OperatorSeqInfo) | repeated | the greatest sequence number confirmed by each operator |
+| `greatest_consecutive_seq` | [uint64](#uint64) |  | the greatest consecutive sequence numbers confirmed by n-of-m operators consecutiveness is judged starting from the number closest to 0. |
+| `pending_claim_seqs` | [uint64](#uint64) | repeated | the set of sequence numbers to be claimed |
+| `commitments` | [Commitment](#lbm.fbridge.v1.Commitment) | repeated | commitment is the hash value of a specific provision. |
+| `provisions` | [Provision](#lbm.fbridge.v1.Provision) | repeated | provision associated with a specific commitment. |
+| `confirmed_seq_to_commitment` | [ConfirmedProvision](#lbm.fbridge.v1.ConfirmedProvision) | repeated | map the sequence number confirmed by n-of-m operators with commitment |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.SendingState"></a>
+
+### SendingState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `next_seq` | [uint64](#uint64) |  | the next sequence number of the bridge request (greatest sequence number + 1) |
+| `seq_to_blocknum` | [BlockSeqInfo](#lbm.fbridge.v1.BlockSeqInfo) | repeated | sequence-per-block number mapping |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/query.proto
+
+
+
+<a name="lbm.fbridge.v1.QueryBridgeStatusRequest"></a>
+
+### QueryBridgeStatusRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryBridgeStatusResponse"></a>
+
+### QueryBridgeStatusResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  |  |
+| `metadata` | [BridgeStatusMetadata](#lbm.fbridge.v1.BridgeStatusMetadata) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryCommitmentsRequest"></a>
+
+### QueryCommitmentsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryCommitmentsResponse"></a>
+
+### QueryCommitmentsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commitments` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryConfirmedProvisionRequest"></a>
+
+### QueryConfirmedProvisionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryConfirmedProvisionResponse"></a>
+
+### QueryConfirmedProvisionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [ProvisionData](#lbm.fbridge.v1.ProvisionData) |  |  |
+| `status` | [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest"></a>
+
+### QueryGreatestConsecutiveConfirmedSeqRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse"></a>
+
+### QueryGreatestConsecutiveConfirmedSeqResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest"></a>
+
+### QueryGreatestSeqByOperatorRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the address of the operator |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse"></a>
+
+### QueryGreatestSeqByOperatorResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryMemberRequest"></a>
+
+### QueryMemberRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryMemberResponse"></a>
+
+### QueryMemberResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `role` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryMembersRequest"></a>
+
+### QueryMembersRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `role` | [string](#string) |  | the role name (guardian, operator, judge) |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryMembersResponse"></a>
+
+### QueryMembersResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `members` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest"></a>
+
+### QueryNeededSubmissionSeqsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the address of the operator |
+| `range` | [uint64](#uint64) |  | range specifies the size of the range to search |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse"></a>
+
+### QueryNeededSubmissionSeqsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seqs` | [uint64](#uint64) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryNextSeqSendRequest"></a>
+
+### QueryNextSeqSendRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryNextSeqSendResponse"></a>
+
+### QueryNextSeqSendResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seq` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalRequest"></a>
+
+### QueryProposalRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | the proposal id |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalResponse"></a>
+
+### QueryProposalResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalsRequest"></a>
+
+### QueryProposalsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryProposalsResponse"></a>
+
+### QueryProposalsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposals` | [RoleProposal](#lbm.fbridge.v1.RoleProposal) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySeqToBlocknumsRequest"></a>
+
+### QuerySeqToBlocknumsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `seqs` | [uint64](#uint64) | repeated | list of sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySeqToBlocknumsResponse"></a>
+
+### QuerySeqToBlocknumsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `blocknums` | [uint64](#uint64) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySubmittedProvisionRequest"></a>
+
+### QuerySubmittedProvisionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | the address of the operator |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QuerySubmittedProvisionResponse"></a>
+
+### QuerySubmittedProvisionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [ProvisionData](#lbm.fbridge.v1.ProvisionData) |  |  |
+| `status` | [ProvisionStatus](#lbm.fbridge.v1.ProvisionStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVoteRequest"></a>
+
+### QueryVoteRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id defines the unique id of the proposal. |
+| `voter` | [string](#string) |  | voter defines the oter address for the proposals. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVoteResponse"></a>
+
+### QueryVoteResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vote` | [Vote](#lbm.fbridge.v1.Vote) |  | vote defined the queried vote. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVotesRequest"></a>
+
+### QueryVotesRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id defines the unique id of the proposal. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.QueryVotesResponse"></a>
+
+### QueryVotesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `votes` | [Vote](#lbm.fbridge.v1.Vote) | repeated | votes defined the queried votes. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fbridge.v1.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#lbm.fbridge.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.fbridge.v1.QueryParamsResponse) | Params queries the parameters of x/fbridge module. | GET|/lbm/fbridge/v1/params|
+| `NextSeqSend` | [QueryNextSeqSendRequest](#lbm.fbridge.v1.QueryNextSeqSendRequest) | [QueryNextSeqSendResponse](#lbm.fbridge.v1.QueryNextSeqSendResponse) | NextSeqSend queries the sequence of next bridge request | GET|/lbm/fbridge/v1/sending/nextseq|
+| `SeqToBlocknums` | [QuerySeqToBlocknumsRequest](#lbm.fbridge.v1.QuerySeqToBlocknumsRequest) | [QuerySeqToBlocknumsResponse](#lbm.fbridge.v1.QuerySeqToBlocknumsResponse) | BlocknumToSeqs queries a list of block numbers for which each sequence has been confirmed. | GET|/lbm/fbridge/v1/sending/blocknums|
+| `GreatestSeqByOperator` | [QueryGreatestSeqByOperatorRequest](#lbm.fbridge.v1.QueryGreatestSeqByOperatorRequest) | [QueryGreatestSeqByOperatorResponse](#lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse) | GreatestSeqByOperator queries a greatest sequence number confirmed by a particular operator | GET|/lbm/fbridge/v1/receiving/operators/{operator}/seq|
+| `GreatestConsecutiveConfirmedSeq` | [QueryGreatestConsecutiveConfirmedSeqRequest](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqRequest) | [QueryGreatestConsecutiveConfirmedSeqResponse](#lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse) | GreatestConsecutiveConfirmedSeq queries a greatest consecutive sequence number confirmed by n-of-m operators | GET|/lbm/fbridge/v1/receiving/greatest_confirmed_seq|
+| `SubmittedProvision` | [QuerySubmittedProvisionRequest](#lbm.fbridge.v1.QuerySubmittedProvisionRequest) | [QuerySubmittedProvisionResponse](#lbm.fbridge.v1.QuerySubmittedProvisionResponse) | SubmittedProvision queries a provision submitted by a particular operator | GET|/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}|
+| `ConfirmedProvision` | [QueryConfirmedProvisionRequest](#lbm.fbridge.v1.QueryConfirmedProvisionRequest) | [QueryConfirmedProvisionResponse](#lbm.fbridge.v1.QueryConfirmedProvisionResponse) | ConfirmedProvision queries a particular sequence of confirmed provisions | GET|/lbm/fbridge/v1/receiving/provision/{seq}|
+| `NeededSubmissionSeqs` | [QueryNeededSubmissionSeqsRequest](#lbm.fbridge.v1.QueryNeededSubmissionSeqsRequest) | [QueryNeededSubmissionSeqsResponse](#lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse) | NeededSubmissionSeqs queries a list of sequence numbers that need to be submitted by a particular operator The search scope is [greatest_consecutive_seq_by_operator, min(greatest_consecutive_seq_by_operator + range, greatest_seq_by_operator)] greatest_consecutive_seq_by_operator can be replaced with greatest_consecutive_seq if the operator is newly added | GET|/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs|
+| `Commitments` | [QueryCommitmentsRequest](#lbm.fbridge.v1.QueryCommitmentsRequest) | [QueryCommitmentsResponse](#lbm.fbridge.v1.QueryCommitmentsResponse) | Commitments queries commitments of a specific sequence number | GET|/lbm/fbridge/v1/receiving/commitments/{seq}|
+| `Members` | [QueryMembersRequest](#lbm.fbridge.v1.QueryMembersRequest) | [QueryMembersResponse](#lbm.fbridge.v1.QueryMembersResponse) | Members queries the members of spcific group registered on the bridge | GET|/lbm/fbridge/v1/members|
+| `Member` | [QueryMemberRequest](#lbm.fbridge.v1.QueryMemberRequest) | [QueryMemberResponse](#lbm.fbridge.v1.QueryMemberResponse) | Member queries the role of a specific member | GET|/lbm/fbridge/v1/members/{address}|
+| `Proposals` | [QueryProposalsRequest](#lbm.fbridge.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.fbridge.v1.QueryProposalsResponse) | Proposals queries a list of SuggestRole Proposals | GET|/lbm/fbridge/v1/proposals|
+| `Proposal` | [QueryProposalRequest](#lbm.fbridge.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.fbridge.v1.QueryProposalResponse) | Proposal queries a SuggestRole Proposal | GET|/lbm/fbridge/v1/proposals/{proposal_id}|
+| `Vote` | [QueryVoteRequest](#lbm.fbridge.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.fbridge.v1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}|
+| `Votes` | [QueryVotesRequest](#lbm.fbridge.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.fbridge.v1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/lbm/fbridge/v1/proposals/{proposal_id}/votes|
+| `BridgeStatus` | [QueryBridgeStatusRequest](#lbm.fbridge.v1.QueryBridgeStatusRequest) | [QueryBridgeStatusResponse](#lbm.fbridge.v1.QueryBridgeStatusResponse) | BridgeStatus queries the status of the bridge | GET|/lbm/fbridge/v1/status|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fbridge/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fbridge/v1/tx.proto
+
+
+
+<a name="lbm.fbridge.v1.MsgAddVoteForRole"></a>
+
+### MsgAddVoteForRole
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
+| `proposal_id` | [uint64](#uint64) |  | the proposal ID |
+| `option` | [VoteOption](#lbm.fbridge.v1.VoteOption) |  | the vote option |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgAddVoteForRoleResponse"></a>
+
+### MsgAddVoteForRoleResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgClaim"></a>
+
+### MsgClaim
+MsgClaim is input values required for claiming a provision
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the claimer address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgClaimBatch"></a>
+
+### MsgClaimBatch
+MsgClaimBatch is input values required for claiming multiple claimable provisions
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the claimer address |
+| `max_claims` | [uint64](#uint64) |  | the maximum number of claims to be made at once |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgClaimBatchResponse"></a>
+
+### MsgClaimBatchResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgClaimResponse"></a>
+
+### MsgClaimResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgHoldTransfer"></a>
+
+### MsgHoldTransfer
+MsgHoldTransfer is input values required for holding transfer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the judge address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgHoldTransferResponse"></a>
+
+### MsgHoldTransferResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgProvision"></a>
+
+### MsgProvision
+MsgProvision is input values required for provisioning
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the operator address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be claimed |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgProvisionResponse"></a>
+
+### MsgProvisionResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgReleaseTransfer"></a>
+
+### MsgReleaseTransfer
+MsgReleaseTransfer is input values required for releasing a held transfer by time lock
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgReleaseTransferResponse"></a>
+
+### MsgReleaseTransferResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgRemoveProvision"></a>
+
+### MsgRemoveProvision
+MsgRemoveProvision is input values required for removing a specific confirmed provision
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the judge address |
+| `seq` | [uint64](#uint64) |  | the sequence number of the bridge request |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgRemoveProvisionResponse"></a>
+
+### MsgRemoveProvisionResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgSetBridgeStatus"></a>
+
+### MsgSetBridgeStatus
+MsgSetBridgeStatus is input values required for setting the status of the bridge module
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `guardian` | [string](#string) |  | the guardian address |
+| `status` | [BridgeStatus](#lbm.fbridge.v1.BridgeStatus) |  |  |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgSetBridgeStatusResponse"></a>
+
+### MsgSetBridgeStatusResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgSuggestRole"></a>
+
+### MsgSuggestRole
+MsgUpdateRole is input values required for updating the role of an address
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  | the guardian address |
+| `target` | [string](#string) |  | the address to update the role |
+| `role` | [Role](#lbm.fbridge.v1.Role) |  | the role to be updated - unspecified : 0, used to remove the address from a group - guardian : 1 - operator : 2 - judge : 3 |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgSuggestRoleResponse"></a>
+
+### MsgSuggestRoleResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgTransfer"></a>
+
+### MsgTransfer
+MsgTransfer is input values required for bridge transfer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | the sender address on the source chain |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+| `amount` | [string](#string) |  | the amount of token to be transferred |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgTransferResponse"></a>
+
+### MsgTransferResponse
+
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | the authority address |
+| `params` | [Params](#lbm.fbridge.v1.Params) |  | params defines the x/fbridge parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.fbridge.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fbridge.v1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#lbm.fbridge.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.fbridge.v1.MsgUpdateParamsResponse) | UpdateParams updates the x/fbridge parameters. | |
+| `Transfer` | [MsgTransfer](#lbm.fbridge.v1.MsgTransfer) | [MsgTransferResponse](#lbm.fbridge.v1.MsgTransferResponse) | Submit a transfer request to the bridge module. | |
+| `Provision` | [MsgProvision](#lbm.fbridge.v1.MsgProvision) | [MsgProvisionResponse](#lbm.fbridge.v1.MsgProvisionResponse) | Submit a provision to the bridge module. | |
+| `HoldTransfer` | [MsgHoldTransfer](#lbm.fbridge.v1.MsgHoldTransfer) | [MsgHoldTransferResponse](#lbm.fbridge.v1.MsgHoldTransferResponse) | Set the time lock value from default value to uint64.max for specific confirmed provision. | |
+| `ReleaseTransfer` | [MsgReleaseTransfer](#lbm.fbridge.v1.MsgReleaseTransfer) | [MsgReleaseTransferResponse](#lbm.fbridge.v1.MsgReleaseTransferResponse) | Set the time lock value to 0 for specific confirmed provision. | |
+| `RemoveProvision` | [MsgRemoveProvision](#lbm.fbridge.v1.MsgRemoveProvision) | [MsgRemoveProvisionResponse](#lbm.fbridge.v1.MsgRemoveProvisionResponse) | Remove a specific confirmed provision (reset for specific sequence number). | |
+| `ClaimBatch` | [MsgClaimBatch](#lbm.fbridge.v1.MsgClaimBatch) | [MsgClaimBatchResponse](#lbm.fbridge.v1.MsgClaimBatchResponse) | ClaimBatch processes the claiming of multiple claimable provisions in a single operation | |
+| `Claim` | [MsgClaim](#lbm.fbridge.v1.MsgClaim) | [MsgClaimResponse](#lbm.fbridge.v1.MsgClaimResponse) | Claim processes the claiming of a provision with a specific sequence number | |
+| `SuggestRole` | [MsgSuggestRole](#lbm.fbridge.v1.MsgSuggestRole) | [MsgSuggestRoleResponse](#lbm.fbridge.v1.MsgSuggestRoleResponse) | SuggestRole suggests updating the role of an address in the bridge module. The role can be one of the following: guardian, operator, judge. The proposal will be passed only with the consent of +2/3 Guardian members. | |
+| `AddVoteForRole` | [MsgAddVoteForRole](#lbm.fbridge.v1.MsgAddVoteForRole) | [MsgAddVoteForRoleResponse](#lbm.fbridge.v1.MsgAddVoteForRoleResponse) | AddVoteForRole adds a vote for a role change proposal. | |
+| `SetBridgeStatus` | [MsgSetBridgeStatus](#lbm.fbridge.v1.MsgSetBridgeStatus) | [MsgSetBridgeStatusResponse](#lbm.fbridge.v1.MsgSetBridgeStatusResponse) | SetBridgeStatus operates a switch to halt/resume the bridge module. If the ratio of inactive bridge switches exceed TrustLevel, the bridge module halts. | |
+
+ <!-- end services -->
+
+
+
 <a name="lbm/foundation/v1/authz.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -12678,6 +14182,388 @@ Msg defines the foundation Msg service.
 | `UpdateCensorship` | [MsgUpdateCensorship](#lbm.foundation.v1.MsgUpdateCensorship) | [MsgUpdateCensorshipResponse](#lbm.foundation.v1.MsgUpdateCensorshipResponse) | UpdateCensorship updates censorship information. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/fswap.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/fswap.proto
+
+
+
+<a name="lbm.fswap.v1.MakeSwapProposal"></a>
+
+### MakeSwapProposal
+From cosmos-sdk 0.46.0 they deprecated this way, but currently finschia-sdk based on 0.45.10
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+| `to_denom_metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.Swap"></a>
+
+### Swap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
+| `amount_cap_for_to_denom` | [string](#string) |  |  |
+| `swap_rate` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.SwapStats"></a>
+
+### SwapStats
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swap_count` | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.Swapped"></a>
+
+### Swapped
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/event.proto
+
+
+
+<a name="lbm.fswap.v1.EventAddDenomMetadata"></a>
+
+### EventAddDenomMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.EventMakeSwap"></a>
+
+### EventMakeSwap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.EventSwapCoins"></a>
+
+### EventSwapCoins
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | holder's address |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | to-coin amount |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/genesis.proto
+
+
+
+<a name="lbm.fswap.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the fswap module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swaps` | [Swap](#lbm.fswap.v1.Swap) | repeated |  |
+| `swap_stats` | [SwapStats](#lbm.fswap.v1.SwapStats) |  |  |
+| `swappeds` | [Swapped](#lbm.fswap.v1.Swapped) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/query.proto
+
+
+
+<a name="lbm.fswap.v1.QuerySwappedRequest"></a>
+
+### QuerySwappedRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fromDenom` | [string](#string) |  |  |
+| `toDenom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QuerySwappedResponse"></a>
+
+### QuerySwappedResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `to_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QuerySwapsRequest"></a>
+
+### QuerySwapsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QuerySwapsResponse"></a>
+
+### QuerySwapsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swaps` | [Swap](#lbm.fswap.v1.Swap) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest"></a>
+
+### QueryTotalSwappableToCoinAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fromDenom` | [string](#string) |  |  |
+| `toDenom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse"></a>
+
+### QueryTotalSwappableToCoinAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swappable_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fswap.v1.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of to-coin. | GET|/lbm/fswap/v1/swapped|
+| `TotalSwappableToCoinAmount` | [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest) | [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse) | TotalSwappableToCoinAmount queries the current swappable amount for to-coin. | GET|/lbm/fswap/v1/total_swappable_to_coin_amount|
+| `Swaps` | [QuerySwapsRequest](#lbm.fswap.v1.QuerySwapsRequest) | [QuerySwapsResponse](#lbm.fswap.v1.QuerySwapsResponse) | Swaps queries all the swap that registered | GET|/lbm/fswap/v1/swaps|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/fswap/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/fswap/v1/tx.proto
+
+
+
+<a name="lbm.fswap.v1.MsgSwap"></a>
+
+### MsgSwap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  | holder's address |
+| `from_coin_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | from-coin amount |
+| `to_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapAll"></a>
+
+### MsgSwapAll
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  | holder's address |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapAllResponse"></a>
+
+### MsgSwapAllResponse
+
+
+
+
+
+
+
+<a name="lbm.fswap.v1.MsgSwapResponse"></a>
+
+### MsgSwapResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.fswap.v1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Swap` | [MsgSwap](#lbm.fswap.v1.MsgSwap) | [MsgSwapResponse](#lbm.fswap.v1.MsgSwapResponse) |  | |
+| `SwapAll` | [MsgSwapAll](#lbm.fswap.v1.MsgSwapAll) | [MsgSwapAllResponse](#lbm.fswap.v1.MsgSwapAllResponse) |  | |
 
  <!-- end services -->
 
