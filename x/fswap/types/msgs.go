@@ -5,9 +5,11 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )
 
-var _ sdk.Msg = &MsgSwap{}
-var _ sdk.Msg = &MsgSwapAll{}
-var _ sdk.Msg = &MsgSetSwap{}
+var (
+	_ sdk.Msg = &MsgSwap{}
+	_ sdk.Msg = &MsgSwapAll{}
+	_ sdk.Msg = &MsgSetSwap{}
+)
 
 // ValidateBasic Implements Msg.
 func (m *MsgSwap) ValidateBasic() error {
