@@ -13,6 +13,7 @@ type (
 		IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
 		GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool)
 		SetDenomMetaData(ctx sdk.Context, denomMetaData banktypes.Metadata)
+		HasSupply(ctx sdk.Context, denom string) bool
 		MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 		BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	}

@@ -4,9 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -14,8 +11,12 @@ import (
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
+	"github.com/Finschia/finschia-sdk/x/fswap/testutil"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 type KeeperTestSuite struct {
@@ -82,8 +83,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		DenomUnits: []*bank.DenomUnit{
 			{Denom: s.swap.ToDenom, Exponent: 0},
 		},
-		Base:    "dummy",
-		Display: "dummycoin",
+		Base:    "todenom",
+		Display: "todenomcoin",
 		Name:    "DUMMY",
 		Symbol:  "DUM",
 	}
@@ -189,27 +190,56 @@ func (s *KeeperTestSuite) TestSwap() {
 }
 
 func (s *KeeperTestSuite) TestSetSwap() {
+	ctrl := gomock.NewController(s.T())
+	defer ctrl.Finish()
+
+	bankKeeper := testutil.NewMockBankKeeper(ctrl)
+	bankKeeper.EXPECT().HasSupply(gomock.Any(), "fromdenom").Return(true).AnyTimes()
+	bankKeeper.EXPECT().HasSupply(gomock.Any(), gomock.Any()).Return(false).AnyTimes()
+	bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "todenom").Return(bank.Metadata{}, false).AnyTimes()
+	bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), gomock.Any()).Return(s.toDenomMetadata, true).AnyTimes()
+	bankKeeper.EXPECT().SetDenomMetaData(gomock.Any(), s.toDenomMetadata).Times(1)
+	s.keeper.BankKeeper = bankKeeper
+
 	testCases := map[string]struct {
-		swap             types.Swap
-		toDenomMeta      bank.Metadata
-		existingMetadata bool
-		expectedError    error
+		swap          types.Swap
+		toDenomMeta   bank.Metadata
+		expectedError error
 	}{
 		"valid": {
 			types.Swap{
-				FromDenom:           "fromD",
-				ToDenom:             "toD",
+				FromDenom:           "fromdenom",
+				ToDenom:             "todenom",
 				AmountCapForToDenom: sdk.OneInt(),
 				SwapRate:            sdk.OneDec(),
 			},
 			s.toDenomMetadata,
-			false,
 			nil,
+		},
+		"from-denom does not exist": {
+			types.Swap{
+				FromDenom:           "fakedenom",
+				ToDenom:             "todenom",
+				AmountCapForToDenom: sdk.OneInt(),
+				SwapRate:            sdk.OneDec(),
+			},
+			s.toDenomMetadata,
+			sdkerrors.ErrInvalidRequest,
+		},
+		"to-denom does not equal with metadata": {
+			types.Swap{
+				FromDenom:           "fromdenom",
+				ToDenom:             "fakedenom",
+				AmountCapForToDenom: sdk.OneInt(),
+				SwapRate:            sdk.OneDec(),
+			},
+			s.toDenomMetadata,
+			sdkerrors.ErrInvalidRequest,
 		},
 		"to-denom metadata change not allowed": {
 			types.Swap{
-				FromDenom:           "fromD",
-				ToDenom:             "toD",
+				FromDenom:           "fromdenom",
+				ToDenom:             "change",
 				AmountCapForToDenom: sdk.OneInt(),
 				SwapRate:            sdk.OneDec(),
 			},
@@ -221,7 +251,6 @@ func (s *KeeperTestSuite) TestSetSwap() {
 				Name:        s.toDenomMetadata.Name,
 				Symbol:      s.toDenomMetadata.Symbol,
 			},
-			true,
 			sdkerrors.ErrInvalidRequest,
 		},
 	}
@@ -229,12 +258,7 @@ func (s *KeeperTestSuite) TestSetSwap() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 			err := s.keeper.SetSwap(ctx, tc.swap, s.toDenomMetadata)
-			if tc.existingMetadata {
-				err := s.keeper.SetSwap(ctx, tc.swap, s.toDenomMetadata)
-				s.Require().ErrorIs(err, tc.expectedError)
-			} else {
-				s.Require().ErrorIs(err, tc.expectedError)
-			}
+			s.Require().ErrorIs(err, tc.expectedError)
 		})
 	}
 }
