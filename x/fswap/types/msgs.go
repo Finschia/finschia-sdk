@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	"github.com/Finschia/finschia-sdk/x/foundation/codec"
 )
 
 var (
@@ -47,6 +48,20 @@ func (m *MsgSwap) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m *MsgSwap) Type() string {
+	return sdk.MsgTypeURL(m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m *MsgSwap) Route() string {
+	return sdk.MsgTypeURL(m)
+}
+
+func (m *MsgSwap) GetSignerBytes() []byte {
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(m))
+}
+
 // ValidateBasic Implements Msg.
 func (m *MsgSwapAll) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(m.FromAddress)
@@ -72,6 +87,16 @@ func (m *MsgSwapAll) GetSigners() []sdk.AccAddress {
 		panic(err)
 	}
 	return []sdk.AccAddress{from}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m *MsgSwapAll) Type() string {
+	return sdk.MsgTypeURL(m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m *MsgSwapAll) Route() string {
+	return sdk.MsgTypeURL(m)
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -100,6 +125,16 @@ func (m *MsgSetSwap) ValidateBasic() error {
 func (m *MsgSetSwap) GetSigners() []sdk.AccAddress {
 	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m *MsgSetSwap) Type() string {
+	return sdk.MsgTypeURL(m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m *MsgSetSwap) Route() string {
+	return sdk.MsgTypeURL(m)
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.

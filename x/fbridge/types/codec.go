@@ -51,6 +51,7 @@ var (
 )
 
 func init() {
+	RegisterLegacyAminoCodec(Amino)
 	cryptocodec.RegisterCrypto(Amino)
 	codec.RegisterEvidences(Amino)
 	sdk.RegisterLegacyAminoCodec(Amino)
