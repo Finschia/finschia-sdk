@@ -26,6 +26,16 @@ func (m MsgUpdateParams) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgUpdateParams) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgUpdateParams) Route() string {
+	return RouterKey
+}
+
 func (m MsgTransfer) ValidateBasic() error { return nil }
 
 func (m MsgTransfer) GetSigners() []sdk.AccAddress {
@@ -44,7 +54,7 @@ func (m MsgTransfer) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgTransfer) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgProvision) ValidateBasic() error { return nil }
@@ -65,7 +75,7 @@ func (m MsgProvision) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgProvision) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgHoldTransfer) ValidateBasic() error { return nil }
@@ -86,7 +96,7 @@ func (m MsgHoldTransfer) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgHoldTransfer) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgReleaseTransfer) ValidateBasic() error { return nil }
@@ -107,7 +117,7 @@ func (m MsgReleaseTransfer) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgReleaseTransfer) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgRemoveProvision) ValidateBasic() error { return nil }
@@ -128,7 +138,7 @@ func (m MsgRemoveProvision) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgRemoveProvision) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgClaimBatch) ValidateBasic() error { return nil }
@@ -149,7 +159,7 @@ func (m MsgClaimBatch) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgClaimBatch) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgClaim) ValidateBasic() error { return nil }
@@ -170,7 +180,7 @@ func (m MsgClaim) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgClaim) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgSuggestRole) ValidateBasic() error { return nil }
@@ -191,7 +201,7 @@ func (m MsgSuggestRole) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgSuggestRole) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgAddVoteForRole) ValidateBasic() error { return nil }
@@ -212,7 +222,7 @@ func (m MsgAddVoteForRole) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgAddVoteForRole) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 func (m MsgSetBridgeStatus) ValidateBasic() error { return nil }
@@ -233,5 +243,5 @@ func (m MsgSetBridgeStatus) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgSetBridgeStatus) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }

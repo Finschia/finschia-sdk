@@ -55,7 +55,7 @@ func (m *MsgSwap) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m *MsgSwap) Route() string {
-	return sdk.MsgTypeURL(m)
+	return RouterKey
 }
 
 func (m *MsgSwap) GetSignerBytes() []byte {
@@ -96,7 +96,7 @@ func (m *MsgSwapAll) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m *MsgSwapAll) Route() string {
-	return sdk.MsgTypeURL(m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -134,7 +134,7 @@ func (m *MsgSetSwap) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m *MsgSetSwap) Route() string {
-	return sdk.MsgTypeURL(m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
