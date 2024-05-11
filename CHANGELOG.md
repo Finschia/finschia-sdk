@@ -87,6 +87,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/server) [\#1337](https://github.com/Finschia/finschia-sdk/pull/1337) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
 * (x/fbridge) [\#1361](https://github.com/Finschia/finschia-sdk/pull/1361) Fixes fbridge auth checking bug
 * (x/fswap) [\#1365](https://github.com/Finschia/finschia-sdk/pull/1365) fix update swap keys for possibly overlapped keys(`(hello,world) should be different to (hel,loworld)`)
+* (x/fswap, x/fbridge) [\#1378](https://github.com/Finschia/finschia-sdk/pull/1378) Fix bug where amino is not supported in fswap and fbridge
 
 ### Removed
 
