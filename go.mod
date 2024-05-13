@@ -28,7 +28,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/hdevalence/ed25519consensus v0.1.0
 	github.com/improbable-eng/grpc-web v0.15.0
-	github.com/jhump/protoreflect v1.12.1-0.20220721211354-060cc04fc18b
+	github.com/jhump/protoreflect v1.15.3
 	github.com/magiconair/properties v1.8.7
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.19
@@ -61,7 +61,7 @@ require (
 	github.com/Finschia/r2ishiguro_vrf v0.1.2 // indirect
 	github.com/Workiva/go-datastructures v1.1.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
+	github.com/cenkalti/backoff/v4 v4.1.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
@@ -101,7 +101,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230110094441-db37f07504ce // indirect
-	github.com/onsi/gomega v1.27.6 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect

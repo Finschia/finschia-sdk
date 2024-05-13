@@ -33998,6 +33998,272 @@ paths:
                       format: byte
       tags:
         - Service
+  '/lbm/tx/v1beta1/txs/block/{height}':
+    get:
+      summary: GetBlockWithTxs fetches a block with decoded txs.
+      description: 'Since: finschia-sdk 0.47.0'
+      operationId: GetBlockWithTxs2
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/lbm.tx.v1beta1.GetBlockWithTxsResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: height
+          description: height is the height of the block to query.
+          in: path
+          required: true
+          type: string
+          format: int64
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Service
   /lbm/fbridge/v1/members:
     get:
       summary: Members queries the members of spcific group registered on the bridge
@@ -35046,272 +35312,6 @@ paths:
                       format: byte
       tags:
         - Query
-  '/lbm/tx/v1beta1/txs/block/{height}':
-    get:
-      summary: GetBlockWithTxs fetches a block with decoded txs.
-      description: 'Since: finschia-sdk 0.47.0'
-      operationId: GetBlockWithTxs2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/lbm.tx.v1beta1.GetBlockWithTxsResponse'
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: height
-          description: height is the height of the block to query.
-          in: path
-          required: true
-          type: string
-          format: int64
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Service
 definitions:
   cosmos.auth.v1beta1.Params:
     type: object
@@ -58419,156 +58419,10 @@ definitions:
       minimum_gas_price:
         type: string
     description: ConfigResponse defines the response structure for the Config gRPC query.
-  lbm.fbridge.v1.BridgeStatus:
-    type: string
-    enum:
-      - BRIDGE_STATUS_UNSPECIFIED
-      - BRIDGE_STATUS_ACTIVE
-      - BRIDGE_STATUS_INACTIVE
-    default: BRIDGE_STATUS_UNSPECIFIED
-    description: |2-
-       - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
-       - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
-       - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
-  lbm.fbridge.v1.BridgeStatusMetadata:
+  lbm.tx.v1beta1.GetBlockWithTxsResponse:
     type: object
     properties:
-      inactive:
-        type: string
-        format: uint64
-        title: the number of inactived bridge switch
-      active:
-        type: string
-        format: uint64
-        title: the number of activated bridge switch
-    description: BridgeStatusMetadata defines the metadata of the bridge status.
-  lbm.fbridge.v1.Fraction:
-    type: object
-    properties:
-      numerator:
-        type: string
-        format: uint64
-      denominator:
-        type: string
-        format: uint64
-    description: |-
-      Fraction defines the protobuf message type for tmmath.Fraction that only
-      supports positive values.
-  lbm.fbridge.v1.Params:
-    type: object
-    properties:
-      operator_trust_level:
-        description: ratio of how many operators' confirmations are needed to be valid.
-        type: object
-        properties:
-          numerator:
-            type: string
-            format: uint64
-          denominator:
-            type: string
-            format: uint64
-      guardian_trust_level:
-        description: ratio of how many guardians' confirmations are needed to be valid.
-        type: object
-        properties:
-          numerator:
-            type: string
-            format: uint64
-          denominator:
-            type: string
-            format: uint64
-      judge_trust_level:
-        description: ratio of how many judges' confirmations are needed to be valid.
-        type: object
-        properties:
-          numerator:
-            type: string
-            format: uint64
-          denominator:
-            type: string
-            format: uint64
-      timelock_period:
-        type: string
-        format: uint64
-        title: default timelock period for each provision (unix timestamp)
-      proposal_period:
-        type: string
-        format: uint64
-        title: default period of the proposal to update the role
-      target_denom:
-        type: string
-        description: >-
-          target denom of the bridge module. This is the base denom of Finschia
-          normally.
-  lbm.fbridge.v1.ProvisionData:
-    type: object
-    properties:
-      seq:
-        type: string
-        format: uint64
-        title: the sequence number of the bridge request
-      amount:
-        type: string
-        title: the amount of token to be claimed
-      sender:
-        type: string
-        title: the sender address on the source chain
-      receiver:
-        type: string
-        title: the recipient address on the destination chain
-    description: Provision is a struct that represents a provision internally.
-  lbm.fbridge.v1.ProvisionStatus:
-    type: object
-    properties:
-      timelock_end:
-        type: string
-        format: uint64
-        title: >-
-          the unix timestamp the provision will be able to be claimed (unix
-          timestamp)
-      confirm_counts:
-        type: integer
-        format: int32
-        title: a value that tells how many operators have submitted this provision
-      is_claimed:
-        type: boolean
-        format: boolean
-        title: whether the provision has been claimed
-    description: >-
-      ProvisionStatus is a struct that represents the status of a provision.
-
-      To optimize computational cost, we have collected frequently changing
-      values from provision.
-  lbm.fbridge.v1.QueryBridgeStatusResponse:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - BRIDGE_STATUS_UNSPECIFIED
-          - BRIDGE_STATUS_ACTIVE
-          - BRIDGE_STATUS_INACTIVE
-        default: BRIDGE_STATUS_UNSPECIFIED
-        description: |2-
-           - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
-           - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
-           - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
-      metadata:
-        type: object
-        properties:
-          inactive:
-            type: string
-            format: uint64
-            title: the number of inactived bridge switch
-          active:
-            type: string
-            format: uint64
-            title: the number of activated bridge switch
-        description: BridgeStatusMetadata defines the metadata of the bridge status.
-  lbm.fbridge.v1.QueryCommitmentsResponse:
-    type: object
-    properties:
-      commitments:
+      txs:
         type: array
         items:
           $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
@@ -58593,73 +58447,7 @@ definitions:
       block:
         type: object
         properties:
-          timelock_end:
-            type: string
-            format: uint64
-            title: >-
-              the unix timestamp the provision will be able to be claimed (unix
-              timestamp)
-          confirm_counts:
-            type: integer
-            format: int32
-            title: >-
-              a value that tells how many operators have submitted this
-              provision
-          is_claimed:
-            type: boolean
-            format: boolean
-            title: whether the provision has been claimed
-        description: >-
-          ProvisionStatus is a struct that represents the status of a provision.
-
-          To optimize computational cost, we have collected frequently changing
-          values from provision.
-  lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse:
-    type: object
-    properties:
-      seq:
-        type: string
-        format: uint64
-  lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse:
-    type: object
-    properties:
-      seq:
-        type: string
-        format: uint64
-  lbm.fbridge.v1.QueryMemberResponse:
-    type: object
-    properties:
-      role:
-        type: string
-  lbm.fbridge.v1.QueryMembersResponse:
-    type: object
-    properties:
-      members:
-        type: array
-        items:
-          type: string
-  lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse:
-    type: object
-    properties:
-      seqs:
-        type: array
-        items:
-          type: string
-          format: uint64
-  lbm.fbridge.v1.QueryNextSeqSendResponse:
-    type: object
-    properties:
-      seq:
-        type: string
-        format: uint64
-  lbm.fbridge.v1.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        type: object
-        properties:
-          operator_trust_level:
-            description: ratio of how many operators' confirmations are needed to be valid.
+          header:
             type: object
             properties:
               version:
@@ -59193,11 +58981,301 @@ definitions:
                 format: int32
               proof:
                 type: string
-<<<<<<< HEAD
                 format: byte
       pagination:
         description: pagination defines a pagination for the response.
-=======
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    description: >-
+      GetBlockWithTxsResponse is the response type for the
+      Service.GetBlockWithTxs method.
+
+
+      Since: finschia-sdk 0.47.0
+  lbm.fbridge.v1.BridgeStatus:
+    type: string
+    enum:
+      - BRIDGE_STATUS_UNSPECIFIED
+      - BRIDGE_STATUS_ACTIVE
+      - BRIDGE_STATUS_INACTIVE
+    default: BRIDGE_STATUS_UNSPECIFIED
+    description: |2-
+       - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
+       - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
+       - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
+  lbm.fbridge.v1.BridgeStatusMetadata:
+    type: object
+    properties:
+      inactive:
+        type: string
+        format: uint64
+        title: the number of inactived bridge switch
+      active:
+        type: string
+        format: uint64
+        title: the number of activated bridge switch
+    description: BridgeStatusMetadata defines the metadata of the bridge status.
+  lbm.fbridge.v1.Fraction:
+    type: object
+    properties:
+      numerator:
+        type: string
+        format: uint64
+      denominator:
+        type: string
+        format: uint64
+    description: |-
+      Fraction defines the protobuf message type for tmmath.Fraction that only
+      supports positive values.
+  lbm.fbridge.v1.Params:
+    type: object
+    properties:
+      operator_trust_level:
+        description: ratio of how many operators' confirmations are needed to be valid.
+        type: object
+        properties:
+          numerator:
+            type: string
+            format: uint64
+          denominator:
+            type: string
+            format: uint64
+      guardian_trust_level:
+        description: ratio of how many guardians' confirmations are needed to be valid.
+        type: object
+        properties:
+          numerator:
+            type: string
+            format: uint64
+          denominator:
+            type: string
+            format: uint64
+      judge_trust_level:
+        description: ratio of how many judges' confirmations are needed to be valid.
+        type: object
+        properties:
+          numerator:
+            type: string
+            format: uint64
+          denominator:
+            type: string
+            format: uint64
+      timelock_period:
+        type: string
+        format: uint64
+        title: default timelock period for each provision (unix timestamp)
+      proposal_period:
+        type: string
+        format: uint64
+        title: default period of the proposal to update the role
+      target_denom:
+        type: string
+        description: >-
+          target denom of the bridge module. This is the base denom of Finschia
+          normally.
+  lbm.fbridge.v1.ProvisionData:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+        title: the sequence number of the bridge request
+      amount:
+        type: string
+        title: the amount of token to be claimed
+      sender:
+        type: string
+        title: the sender address on the source chain
+      receiver:
+        type: string
+        title: the recipient address on the destination chain
+    description: Provision is a struct that represents a provision internally.
+  lbm.fbridge.v1.ProvisionStatus:
+    type: object
+    properties:
+      timelock_end:
+        type: string
+        format: uint64
+        title: >-
+          the unix timestamp the provision will be able to be claimed (unix
+          timestamp)
+      confirm_counts:
+        type: integer
+        format: int32
+        title: a value that tells how many operators have submitted this provision
+      is_claimed:
+        type: boolean
+        format: boolean
+        title: whether the provision has been claimed
+    description: >-
+      ProvisionStatus is a struct that represents the status of a provision.
+
+      To optimize computational cost, we have collected frequently changing
+      values from provision.
+  lbm.fbridge.v1.QueryBridgeStatusResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        enum:
+          - BRIDGE_STATUS_UNSPECIFIED
+          - BRIDGE_STATUS_ACTIVE
+          - BRIDGE_STATUS_INACTIVE
+        default: BRIDGE_STATUS_UNSPECIFIED
+        description: |2-
+           - BRIDGE_STATUS_UNSPECIFIED: BRIDGE_STATUS_UNSPECIFIED defines an unspecified bridge status.
+           - BRIDGE_STATUS_ACTIVE: BRIDGE_STATUS_ACTIVE defines an active bridge status.
+           - BRIDGE_STATUS_INACTIVE: BRIDGE_STATUS_INACTIVE defines an inactive bridge status.
+      metadata:
+        type: object
+        properties:
+          inactive:
+            type: string
+            format: uint64
+            title: the number of inactived bridge switch
+          active:
+            type: string
+            format: uint64
+            title: the number of activated bridge switch
+        description: BridgeStatusMetadata defines the metadata of the bridge status.
+  lbm.fbridge.v1.QueryCommitmentsResponse:
+    type: object
+    properties:
+      commitments:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.QueryConfirmedProvisionResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          seq:
+            type: string
+            format: uint64
+            title: the sequence number of the bridge request
+          amount:
+            type: string
+            title: the amount of token to be claimed
+          sender:
+            type: string
+            title: the sender address on the source chain
+          receiver:
+            type: string
+            title: the recipient address on the destination chain
+        description: Provision is a struct that represents a provision internally.
+      status:
+        type: object
+        properties:
+          timelock_end:
+            type: string
+            format: uint64
+            title: >-
+              the unix timestamp the provision will be able to be claimed (unix
+              timestamp)
+          confirm_counts:
+            type: integer
+            format: int32
+            title: >-
+              a value that tells how many operators have submitted this
+              provision
+          is_claimed:
+            type: boolean
+            format: boolean
+            title: whether the provision has been claimed
+        description: >-
+          ProvisionStatus is a struct that represents the status of a provision.
+
+          To optimize computational cost, we have collected frequently changing
+          values from provision.
+  lbm.fbridge.v1.QueryGreatestConsecutiveConfirmedSeqResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+  lbm.fbridge.v1.QueryGreatestSeqByOperatorResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+  lbm.fbridge.v1.QueryMemberResponse:
+    type: object
+    properties:
+      role:
+        type: string
+  lbm.fbridge.v1.QueryMembersResponse:
+    type: object
+    properties:
+      members:
+        type: array
+        items:
+          type: string
+  lbm.fbridge.v1.QueryNeededSubmissionSeqsResponse:
+    type: object
+    properties:
+      seqs:
+        type: array
+        items:
+          type: string
+          format: uint64
+  lbm.fbridge.v1.QueryNextSeqSendResponse:
+    type: object
+    properties:
+      seq:
+        type: string
+        format: uint64
+  lbm.fbridge.v1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          operator_trust_level:
+            description: ratio of how many operators' confirmations are needed to be valid.
+            type: object
+            properties:
+              numerator:
+                type: string
+                format: uint64
+              denominator:
+                type: string
+                format: uint64
+          guardian_trust_level:
+            description: ratio of how many guardians' confirmations are needed to be valid.
+            type: object
+            properties:
+              numerator:
+                type: string
+                format: uint64
+              denominator:
+                type: string
+                format: uint64
+          judge_trust_level:
+            description: ratio of how many judges' confirmations are needed to be valid.
+            type: object
+            properties:
+              numerator:
+                type: string
+                format: uint64
+              denominator:
+                type: string
                 format: uint64
           timelock_period:
             type: string
@@ -59216,16 +59294,24 @@ definitions:
     type: object
     properties:
       proposal:
->>>>>>> ed74ee8a8 (Fix bug where amino is not supported in fswap and fbridge (#1378))
         type: object
         properties:
-          next_key:
+          id:
             type: string
-            format: byte
+            format: uint64
+          proposer:
+            type: string
+            title: the proposer address
+          target:
+            type: string
+            title: the address to update the role
+          role:
             title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
+              the role to be updated
+              - unspecified : 0, used to remove the address from a group
+              - guardian : 1
+              - operator : 2
+              - judge : 3
             type: string
             enum:
               - UNSPECIFIED
@@ -59327,8 +59413,20 @@ definitions:
             type: string
             format: uint64
             title: >-
-              total is total number of results available if
-              PageRequest.count_total
+              the unix timestamp the provision will be able to be claimed (unix
+              timestamp)
+          confirm_counts:
+            type: integer
+            format: int32
+            title: >-
+              a value that tells how many operators have submitted this
+              provision
+          is_claimed:
+            type: boolean
+            format: boolean
+            title: whether the provision has been claimed
+        description: >-
+          ProvisionStatus is a struct that represents the status of a provision.
 
           To optimize computational cost, we have collected frequently changing
           values from provision.
