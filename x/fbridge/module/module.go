@@ -142,10 +142,10 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 }
 
 // Deprecated: Route does nothing.
-func (am AppModule) Route() sdk.Route { return sdk.NewRoute("", nil) }
+func (am AppModule) Route() sdk.Route { return sdk.NewRoute(types.RouterKey, nil) }
 
 // Deprecated: QuerierRoute does nothing.
-func (am AppModule) QuerierRoute() string { return "" }
+func (am AppModule) QuerierRoute() string { return types.QuerierRoute }
 
 // Deprecated: LegacyQuerierHandler does nothing.
 func (am AppModule) LegacyQuerierHandler(*codec.LegacyAmino) sdk.Querier { return nil }
