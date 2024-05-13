@@ -29,20 +29,8 @@ func AuthorityCandidates() []sdk.AccAddress {
 
 // Validate performs basic genesis state validation returning an error upon any failure.
 func (gs *GenesisState) Validate() error {
-	for _, swap := range gs.GetSwaps() {
-		if err := swap.ValidateBasic(); err != nil {
-			return err
-		}
-	}
-
 	if err := gs.SwapStats.ValidateBasic(); err != nil {
 		return err
-	}
-
-	for _, swapped := range gs.GetSwappeds() {
-		if err := swapped.ValidateBasic(); err != nil {
-			return err
-		}
 	}
 
 	if len(gs.GetSwaps()) != len(gs.GetSwappeds()) {
@@ -53,5 +41,24 @@ func (gs *GenesisState) Validate() error {
 		return ErrInvalidState.Wrap("number of swaps does not match swap count in SwapStats")
 	}
 
+	swappeds := gs.GetSwappeds()
+	for i, swap := range gs.GetSwaps() {
+		swapped := swappeds[i]
+		if err := swap.ValidateBasic(); err != nil {
+			return err
+		}
+		if err := swapped.ValidateBasic(); err != nil {
+			return err
+		}
+		if swap.FromDenom != swapped.FromCoinAmount.Denom {
+			return ErrInvalidState.Wrap("FromCoin in swap and swapped do not correspond")
+		}
+		if swap.ToDenom != swapped.ToCoinAmount.Denom {
+			return ErrInvalidState.Wrap("ToCoin in swap and swapped do not correspond")
+		}
+		if swap.AmountCapForToDenom.LT(swapped.ToCoinAmount.Amount) {
+			return ErrInvalidState.Wrap("AmountCapForToDenom cannot be exceeded")
+		}
+	}
 	return nil
 }
