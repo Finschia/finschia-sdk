@@ -62,6 +62,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fbridge) [\#1366](https://github.com/Finschia/finschia-sdk/pull/1366) Set target denom as module parameters
 * (x/fbridge) [\#1369](https://github.com/Finschia/finschia-sdk/pull/1369) Add the event of `SetBridgeStatus`
 * (x/fswap) [\#1372](https://github.com/Finschia/finschia-sdk/pull/1372) support message based proposals
+* (x/fswap) [\#1382](https://github.com/Finschia/finschia-sdk/pull/1382) add validation & unit tests in fswap module 
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
