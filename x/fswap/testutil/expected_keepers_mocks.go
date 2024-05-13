@@ -12,6 +12,43 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
+// MockAccountKeeper is a mock of AccountKeeper interface.
+type MockAccountKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockAccountKeeperMockRecorder
+}
+
+// MockAccountKeeperMockRecorder is the mock recorder for MockAccountKeeper.
+type MockAccountKeeperMockRecorder struct {
+	mock *MockAccountKeeper
+}
+
+// NewMockAccountKeeper creates a new mock instance.
+func NewMockAccountKeeper(ctrl *gomock.Controller) *MockAccountKeeper {
+	mock := &MockAccountKeeper{ctrl: ctrl}
+	mock.recorder = &MockAccountKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAccountKeeper) EXPECT() *MockAccountKeeperMockRecorder {
+	return m.recorder
+}
+
+// GetModuleAddress mocks base method.
+func (m *MockAccountKeeper) GetModuleAddress(moduleName string) types.AccAddress {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetModuleAddress", moduleName)
+	ret0, _ := ret[0].(types.AccAddress)
+	return ret0
+}
+
+// GetModuleAddress indicates an expected call of GetModuleAddress.
+func (mr *MockAccountKeeperMockRecorder) GetModuleAddress(moduleName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModuleAddress", reflect.TypeOf((*MockAccountKeeper)(nil).GetModuleAddress), moduleName)
+}
+
 // MockBankKeeper is a mock of BankKeeper interface.
 type MockBankKeeper struct {
 	ctrl     *gomock.Controller

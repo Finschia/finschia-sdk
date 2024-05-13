@@ -15,16 +15,21 @@ import (
 )
 
 type Keeper struct {
-	cdc       codec.BinaryCodec
-	storeKey  storetypes.StoreKey
-	config    types.Config
-	authority string
+	cdc        codec.BinaryCodec
+	storeKey   storetypes.StoreKey
+	config     types.Config
+	authority  string
+	authkeeper AccountKeeper
 	BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, authority string, bk BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, authority string, ak AccountKeeper, bk BankKeeper) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic("authority is not a valid acc address")
+	}
+
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
+		panic("fbridge module account has not been set")
 	}
 
 	found := false
@@ -44,6 +49,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types
 		storeKey,
 		config,
 		authority,
+		ak,
 		bk,
 	}
 }

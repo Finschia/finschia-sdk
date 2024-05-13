@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -13,10 +14,13 @@ import (
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	bank "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	"github.com/Finschia/finschia-sdk/x/fswap/testutil"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
@@ -113,6 +117,56 @@ func (s *KeeperTestSuite) createAccountsWithInitBalance(app *simapp.SimApp) {
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, &KeeperTestSuite{})
+}
+
+func TestNewKeeper(t *testing.T) {
+	app := simapp.Setup(false)
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	authKeeper := testutil.NewMockAccountKeeper(ctrl)
+	testCases := map[string]struct {
+		malleate func()
+		isPanic  bool
+	}{
+		"fswap module account has not been set": {
+			malleate: func() {
+				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(nil).Times(1)
+				keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(types.StoreKey), types.DefaultConfig(), types.DefaultAuthority().String(), authKeeper, app.BankKeeper)
+			},
+			isPanic: true,
+		},
+		"fswap authority must be the gov or foundation module account": {
+			malleate: func() {
+				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
+				keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(types.StoreKey), types.DefaultConfig(), authtypes.NewModuleAddress("invalid").String(), authKeeper, app.BankKeeper)
+			},
+			isPanic: true,
+		},
+		"success - gov authority": {
+			malleate: func() {
+				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
+				keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(types.StoreKey), types.DefaultConfig(), authtypes.NewModuleAddress(govtypes.ModuleName).String(), authKeeper, app.BankKeeper)
+			},
+			isPanic: false,
+		},
+		"success - foundation authority": {
+			malleate: func() {
+				authKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(authtypes.NewModuleAddress(types.ModuleName)).Times(1)
+				keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(types.StoreKey), types.DefaultConfig(), authtypes.NewModuleAddress(foundation.ModuleName).String(), authKeeper, app.BankKeeper)
+			},
+			isPanic: false,
+		},
+	}
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			if tc.isPanic {
+				require.Panics(t, tc.malleate)
+			} else {
+				tc.malleate()
+			}
+		})
+	}
 }
 
 func (s *KeeperTestSuite) TestSwap() {
