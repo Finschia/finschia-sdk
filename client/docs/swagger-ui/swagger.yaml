@@ -29943,6 +29943,11 @@ paths:
                     type: string
                     format: uint64
                     title: default period of the proposal to update the role
+                  target_denom:
+                    type: string
+                    description: >-
+                      target denom of the bridge module. This is the base denom
+                      of Finschia normally.
         default:
           description: An unexpected error response
           schema:
@@ -50463,6 +50468,11 @@ definitions:
         type: string
         format: uint64
         title: default period of the proposal to update the role
+      target_denom:
+        type: string
+        description: >-
+          target denom of the bridge module. This is the base denom of Finschia
+          normally.
   lbm.fbridge.v1.ProvisionData:
     type: object
     properties:
@@ -50661,6 +50671,11 @@ definitions:
             type: string
             format: uint64
             title: default period of the proposal to update the role
+          target_denom:
+            type: string
+            description: >-
+              target denom of the bridge module. This is the base denom of
+              Finschia normally.
   lbm.fbridge.v1.QueryProposalResponse:
     type: object
     properties:
