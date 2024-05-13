@@ -15,6 +15,12 @@ const (
 	// StoreKey is the store key string for fbridge
 	StoreKey = ModuleName
 
+	// RouterKey is the message route for fbridge
+	RouterKey = ModuleName
+
+	// QuerierRoute defines the module's query routing key
+	QuerierRoute = ModuleName
+
 	// MemStoreKey is the in-memory store key string for fbridge
 	MemStoreKey = "mem_" + StoreKey
 )

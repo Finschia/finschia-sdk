@@ -34142,6 +34142,11 @@ paths:
                     type: string
                     format: uint64
                     title: default period of the proposal to update the role
+                  target_denom:
+                    type: string
+                    description: >-
+                      target denom of the bridge module. This is the base denom
+                      of Finschia normally.
         default:
           description: An unexpected error response
           schema:
@@ -58490,6 +58495,11 @@ definitions:
         type: string
         format: uint64
         title: default period of the proposal to update the role
+      target_denom:
+        type: string
+        description: >-
+          target denom of the bridge module. This is the base denom of Finschia
+          normally.
   lbm.fbridge.v1.ProvisionData:
     type: object
     properties:
@@ -59183,9 +59193,30 @@ definitions:
                 format: int32
               proof:
                 type: string
+<<<<<<< HEAD
                 format: byte
       pagination:
         description: pagination defines a pagination for the response.
+=======
+                format: uint64
+          timelock_period:
+            type: string
+            format: uint64
+            title: default timelock period for each provision (unix timestamp)
+          proposal_period:
+            type: string
+            format: uint64
+            title: default period of the proposal to update the role
+          target_denom:
+            type: string
+            description: >-
+              target denom of the bridge module. This is the base denom of
+              Finschia normally.
+  lbm.fbridge.v1.QueryProposalResponse:
+    type: object
+    properties:
+      proposal:
+>>>>>>> ed74ee8a8 (Fix bug where amino is not supported in fswap and fbridge (#1378))
         type: object
         properties:
           next_key:
