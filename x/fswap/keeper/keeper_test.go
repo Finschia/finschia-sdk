@@ -4,6 +4,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/simapp"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -14,9 +18,6 @@ import (
 	"github.com/Finschia/finschia-sdk/x/fswap/testutil"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 type KeeperTestSuite struct {
