@@ -29,7 +29,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types
 	}
 
 	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
-		panic("fbridge module account has not been set")
+		panic("fswap module account has not been set")
 	}
 
 	found := false
@@ -129,10 +129,6 @@ func (k Keeper) SetSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.M
 
 	if int(stats.SwapCount) > k.config.MaxSwaps && !k.isUnlimited() {
 		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot make more swaps, max swaps is %d", k.config.MaxSwaps)
-	}
-
-	if swap.ToDenom != toDenomMetadata.Base {
-		return sdkerrors.ErrInvalidRequest.Wrap("toDenom should be existed in metadata")
 	}
 
 	if !k.HasSupply(ctx, swap.FromDenom) {

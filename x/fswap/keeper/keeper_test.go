@@ -281,16 +281,6 @@ func (s *KeeperTestSuite) TestSetSwap() {
 			s.toDenomMetadata,
 			sdkerrors.ErrInvalidRequest,
 		},
-		"to-denom does not equal with metadata": {
-			types.Swap{
-				FromDenom:           "fromdenom",
-				ToDenom:             "fakedenom",
-				AmountCapForToDenom: sdk.OneInt(),
-				SwapRate:            sdk.OneDec(),
-			},
-			s.toDenomMetadata,
-			sdkerrors.ErrInvalidRequest,
-		},
 		"to-denom metadata change not allowed": {
 			types.Swap{
 				FromDenom:           "fromdenom",
@@ -312,7 +302,7 @@ func (s *KeeperTestSuite) TestSetSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
-			err := s.keeper.SetSwap(ctx, tc.swap, s.toDenomMetadata)
+			err := s.keeper.SetSwap(ctx, tc.swap, tc.toDenomMeta)
 			s.Require().ErrorIs(err, tc.expectedError)
 		})
 	}
