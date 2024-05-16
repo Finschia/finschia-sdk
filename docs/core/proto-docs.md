@@ -961,7 +961,7 @@
   
 - [lbm/fswap/v1/event.proto](#lbm/fswap/v1/event.proto)
     - [EventAddDenomMetadata](#lbm.fswap.v1.EventAddDenomMetadata)
-    - [EventMakeSwap](#lbm.fswap.v1.EventMakeSwap)
+    - [EventSetSwap](#lbm.fswap.v1.EventSetSwap)
     - [EventSwapCoins](#lbm.fswap.v1.EventSwapCoins)
   
 - [lbm/fswap/v1/genesis.proto](#lbm/fswap/v1/genesis.proto)
@@ -14275,9 +14275,9 @@ Msg defines the foundation Msg service.
 
 
 
-<a name="lbm.fswap.v1.EventMakeSwap"></a>
+<a name="lbm.fswap.v1.EventSetSwap"></a>
 
-### EventMakeSwap
+### EventSetSwap
 
 
 

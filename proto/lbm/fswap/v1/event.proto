@@ -19,7 +19,7 @@ message EventSwapCoins {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
 }
 
-message EventMakeSwap {
+message EventSetSwap {
   Swap swap = 1 [(gogoproto.nullable) = false];
 }
 
