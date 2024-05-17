@@ -3,6 +3,9 @@ package keeper
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/Finschia/finschia-sdk/store/prefix"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -57,6 +60,20 @@ func (s QueryServer) TotalSwappableToCoinAmount(ctx context.Context, req *types.
 	}
 
 	return &types.QueryTotalSwappableToCoinAmountResponse{SwappableAmount: amount}, nil
+}
+
+func (s QueryServer) Swap(ctx context.Context, req *types.QuerySwapRequest) (*types.QuerySwapResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	c := sdk.UnwrapSDKContext(ctx)
+	swap, err := s.Keeper.getSwap(c, req.GetFromDenom(), req.GetToDenom())
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	return &types.QuerySwapResponse{swap}, nil
 }
 
 func (s QueryServer) Swaps(ctx context.Context, req *types.QuerySwapsRequest) (*types.QuerySwapsResponse, error) {
