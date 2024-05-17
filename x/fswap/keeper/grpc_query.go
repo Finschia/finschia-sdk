@@ -73,7 +73,7 @@ func (s QueryServer) Swap(ctx context.Context, req *types.QuerySwapRequest) (*ty
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
-	return &types.QuerySwapResponse{swap}, nil
+	return &types.QuerySwapResponse{Swap: swap}, nil
 }
 
 func (s QueryServer) Swaps(ctx context.Context, req *types.QuerySwapsRequest) (*types.QuerySwapsResponse, error) {
