@@ -115,20 +115,6 @@ func (mr *MockBankKeeperMockRecorder) GetDenomMetaData(ctx, denom interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDenomMetaData", reflect.TypeOf((*MockBankKeeper)(nil).GetDenomMetaData), ctx, denom)
 }
 
-// HasSupply mocks base method.
-func (m *MockBankKeeper) HasSupply(ctx types.Context, denom string) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HasSupply", ctx, denom)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// HasSupply indicates an expected call of HasSupply.
-func (mr *MockBankKeeperMockRecorder) HasSupply(ctx, denom interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasSupply", reflect.TypeOf((*MockBankKeeper)(nil).HasSupply), ctx, denom)
-}
-
 // IsSendEnabledCoins mocks base method.
 func (m *MockBankKeeper) IsSendEnabledCoins(ctx types.Context, coins ...types.Coin) error {
 	m.ctrl.T.Helper()

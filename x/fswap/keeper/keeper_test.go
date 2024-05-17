@@ -248,18 +248,12 @@ func (s *KeeperTestSuite) TestSwap() {
 func (s *KeeperTestSuite) TestSetSwap() {
 	ctrl := gomock.NewController(s.T())
 	defer ctrl.Finish()
-
 	bankKeeper := testutil.NewMockBankKeeper(ctrl)
-	bankKeeper.EXPECT().HasSupply(gomock.Any(), "fromdenom").Return(true).AnyTimes()
-	bankKeeper.EXPECT().HasSupply(gomock.Any(), gomock.Any()).Return(false).AnyTimes()
-	bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "todenom").Return(bank.Metadata{}, false).AnyTimes()
-	bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), gomock.Any()).Return(s.toDenomMetadata, true).AnyTimes()
-	bankKeeper.EXPECT().SetDenomMetaData(gomock.Any(), s.toDenomMetadata).Times(1)
-	s.keeper.BankKeeper = bankKeeper
 
 	testCases := map[string]struct {
 		swap           types.Swap
 		toDenomMeta    bank.Metadata
+		malleate       func()
 		expectedError  error
 		expectedEvents sdk.Events
 	}{
@@ -271,6 +265,11 @@ func (s *KeeperTestSuite) TestSetSwap() {
 				SwapRate:            sdk.OneDec(),
 			},
 			s.toDenomMetadata,
+			func() {
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "fromdenom").Return(bank.Metadata{}, true).Times(1)
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "todenom").Return(bank.Metadata{}, false).Times(1)
+				bankKeeper.EXPECT().SetDenomMetaData(gomock.Any(), s.toDenomMetadata).Times(1)
+			},
 			nil,
 			sdk.Events{
 				sdk.Event{
@@ -295,6 +294,32 @@ func (s *KeeperTestSuite) TestSetSwap() {
 				},
 			},
 		},
+		"to-denom metadata has been stored": {
+			types.Swap{
+				FromDenom:           "fromdenom",
+				ToDenom:             "todenom",
+				AmountCapForToDenom: sdk.OneInt(),
+				SwapRate:            sdk.OneDec(),
+			},
+			s.toDenomMetadata,
+			func() {
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "fromdenom").Return(bank.Metadata{}, true).Times(1)
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "todenom").Return(s.toDenomMetadata, true).Times(1)
+			},
+			nil,
+			sdk.Events{
+				sdk.Event{
+					Type: "lbm.fswap.v1.EventSetSwap",
+					Attributes: []abci.EventAttribute{
+						{
+							Key:   []byte("swap"),
+							Value: []uint8{0x7b, 0x22, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x3a, 0x22, 0x66, 0x72, 0x6f, 0x6d, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x2c, 0x22, 0x74, 0x6f, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x3a, 0x22, 0x74, 0x6f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x2c, 0x22, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x63, 0x61, 0x70, 0x5f, 0x66, 0x6f, 0x72, 0x5f, 0x74, 0x6f, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x3a, 0x22, 0x31, 0x22, 0x2c, 0x22, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x22, 0x3a, 0x22, 0x31, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x22, 0x7d},
+							Index: false,
+						},
+					},
+				},
+			},
+		},
 		"from-denom does not exist": {
 			types.Swap{
 				FromDenom:           "fakedenom",
@@ -303,6 +328,9 @@ func (s *KeeperTestSuite) TestSetSwap() {
 				SwapRate:            sdk.OneDec(),
 			},
 			s.toDenomMetadata,
+			func() {
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "fakedenom").Return(bank.Metadata{}, false).Times(1)
+			},
 			sdkerrors.ErrInvalidRequest,
 			sdk.Events{},
 		},
@@ -321,6 +349,10 @@ func (s *KeeperTestSuite) TestSetSwap() {
 				Name:        s.toDenomMetadata.Name,
 				Symbol:      s.toDenomMetadata.Symbol,
 			},
+			func() {
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "fromdenom").Return(bank.Metadata{}, true).Times(1)
+				bankKeeper.EXPECT().GetDenomMetaData(gomock.Any(), "change").Return(s.toDenomMetadata, true).Times(1)
+			},
 			sdkerrors.ErrInvalidRequest,
 			sdk.Events{},
 		},
@@ -328,6 +360,9 @@ func (s *KeeperTestSuite) TestSetSwap() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			tc.malleate()
+			s.keeper.BankKeeper = bankKeeper
+
 			err := s.keeper.SetSwap(ctx, tc.swap, tc.toDenomMeta)
 			if tc.expectedError != nil {
 				s.Require().ErrorIs(err, tc.expectedError)

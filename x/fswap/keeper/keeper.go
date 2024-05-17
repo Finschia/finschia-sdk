@@ -131,7 +131,7 @@ func (k Keeper) SetSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.M
 		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot make more swaps, max swaps is %d", k.config.MaxSwaps)
 	}
 
-	if !k.HasSupply(ctx, swap.FromDenom) {
+	if _, ok := k.GetDenomMetaData(ctx, swap.FromDenom); !ok {
 		return sdkerrors.ErrInvalidRequest.Wrap("fromDenom should be existed in chain")
 	}
 
