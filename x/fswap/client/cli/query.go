@@ -98,7 +98,15 @@ func CmdQuerySwaps() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Swaps(cmd.Context(), &types.QuerySwapsRequest{})
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			req := &types.QuerySwapsRequest{
+				Pagination: pageReq,
+			}
+			res, err := queryClient.Swaps(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
