@@ -94,6 +94,17 @@ func (s *KeeperTestSuite) SetupTest() {
 		Name:    "DUMMY",
 		Symbol:  "DUM",
 	}
+	fromDenom := bank.Metadata{
+		Description: "This is metadata for from-coin",
+		DenomUnits: []*bank.DenomUnit{
+			{Denom: "fromdenom", Exponent: 0},
+		},
+		Base:    "fromdenom",
+		Display: "fromdenomcoin",
+		Name:    "DUMMY",
+		Symbol:  "DUM",
+	}
+	app.BankKeeper.SetDenomMetaData(s.ctx, fromDenom)
 	s.createAccountsWithInitBalance(app)
 	app.AccountKeeper.GetModuleAccount(s.ctx, types.ModuleName)
 }
