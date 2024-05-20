@@ -147,17 +147,17 @@ func (m *MsgSetSwap) GetSignBytes() []byte {
 
 func (m *QuerySwapRequest) Validate() error {
 	if m == nil {
-		return status.Error(codes.InvalidArgument, codes.InvalidArgument.String())
+		return status.Error(codes.InvalidArgument, "empty QuerySwapRequest is not allowed")
 	}
 	if m.GetFromDenom() == m.GetToDenom() {
-		return status.Error(codes.InvalidArgument, codes.InvalidArgument.String())
+		return status.Error(codes.InvalidArgument, "fromDenom and toDenom cannot be the same")
 	}
 
 	if m.GetFromDenom() == "" {
-		return status.Error(codes.InvalidArgument, codes.InvalidArgument.String())
+		return status.Error(codes.InvalidArgument, "from denom is empty")
 	}
 	if m.GetToDenom() == "" {
-		return status.Error(codes.InvalidArgument, codes.InvalidArgument.String())
+		return status.Error(codes.InvalidArgument, "to denom is empty")
 	}
 	return nil
 }
