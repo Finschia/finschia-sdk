@@ -403,7 +403,7 @@ func NewSimApp(
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		fswap.NewAppModule(appCodec, app.FswapKeeper, app.AccountKeeper, app.BankKeeper),
+		fswap.NewAppModule(appCodec, app.FswapKeeper, app.BankKeeper),
 		fbridgemodule.NewAppModule(appCodec, app.FbridgeKeeper),
 	)
 
