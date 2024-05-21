@@ -1,6 +1,9 @@
 package types
 
 import (
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/foundation/codec"
@@ -140,4 +143,21 @@ func (m *MsgSetSwap) Route() string {
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m *MsgSetSwap) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(m))
+}
+
+func (m *QuerySwapRequest) Validate() error {
+	if m == nil {
+		return status.Error(codes.InvalidArgument, "empty QuerySwapRequest is not allowed")
+	}
+	if m.GetFromDenom() == m.GetToDenom() {
+		return status.Error(codes.InvalidArgument, "fromDenom and toDenom cannot be the same")
+	}
+
+	if m.GetFromDenom() == "" {
+		return status.Error(codes.InvalidArgument, "from denom is empty")
+	}
+	if m.GetToDenom() == "" {
+		return status.Error(codes.InvalidArgument, "to denom is empty")
+	}
+	return nil
 }

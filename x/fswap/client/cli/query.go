@@ -24,6 +24,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(
 		CmdQuerySwapped(),
 		CmdQueryTotalSwappableAmount(),
+		CmdQuerySwap(),
 		CmdQuerySwaps(),
 	)
 	return cmd
@@ -86,10 +87,40 @@ func CmdQueryTotalSwappableAmount() *cobra.Command {
 	return cmd
 }
 
+func CmdQuerySwap() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "swap [from_denom] [to_denom]",
+		Short: "shows a swap",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QuerySwapRequest{
+				FromDenom: args[0],
+				ToDenom:   args[1],
+			}
+
+			res, err := queryClient.Swap(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
 func CmdQuerySwaps() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "swaps",
-		Short: "shows the all the swaps that proposed",
+		Short: "shows the all the swaps",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -98,7 +129,15 @@ func CmdQuerySwaps() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Swaps(cmd.Context(), &types.QuerySwapsRequest{})
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			req := &types.QuerySwapsRequest{
+				Pagination: pageReq,
+			}
+			res, err := queryClient.Swaps(cmd.Context(), req)
 			if err != nil {
 				return err
 			}

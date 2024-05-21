@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
@@ -80,6 +82,56 @@ func TestAminoJSON(t *testing.T) {
 			require.Equal(t, fswaptypes.RouterKey, tc.msg.Route())
 			require.Equal(t, tc.expectedType, tc.msg.Type())
 			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
+		})
+	}
+}
+
+func TestQuerySwapRequestValidate(t *testing.T) {
+	tests := []struct {
+		name             string
+		FromDenom        string
+		ToDenom          string
+		wantErr          bool
+		expectedGrpcCode codes.Code
+	}{
+		{
+			name:             "valid",
+			FromDenom:        "cony",
+			ToDenom:          "peb",
+			wantErr:          false,
+			expectedGrpcCode: codes.OK,
+		},
+		{
+			name:             "invalid: empty fromDenom",
+			FromDenom:        "",
+			ToDenom:          "peb",
+			wantErr:          true,
+			expectedGrpcCode: codes.InvalidArgument,
+		},
+		{
+			name:             "invalid: empty toDenom",
+			FromDenom:        "cony",
+			ToDenom:          "",
+			wantErr:          true,
+			expectedGrpcCode: codes.InvalidArgument,
+		},
+		{
+			name:             "invalid: the same fromDenom and toDenom",
+			FromDenom:        "cony",
+			ToDenom:          "cony",
+			wantErr:          true,
+			expectedGrpcCode: codes.InvalidArgument,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m := &fswaptypes.QuerySwapRequest{
+				FromDenom: tc.FromDenom,
+				ToDenom:   tc.ToDenom,
+			}
+			err := m.Validate()
+			actualGrpcCode := status.Code(err)
+			require.Equal(t, tc.expectedGrpcCode, actualGrpcCode)
 		})
 	}
 }

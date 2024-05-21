@@ -968,6 +968,8 @@
     - [GenesisState](#lbm.fswap.v1.GenesisState)
   
 - [lbm/fswap/v1/query.proto](#lbm/fswap/v1/query.proto)
+    - [QuerySwapRequest](#lbm.fswap.v1.QuerySwapRequest)
+    - [QuerySwapResponse](#lbm.fswap.v1.QuerySwapResponse)
     - [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest)
     - [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse)
     - [QuerySwapsRequest](#lbm.fswap.v1.QuerySwapsRequest)
@@ -14356,6 +14358,37 @@ GenesisState defines the fswap module's genesis state.
 
 
 
+<a name="lbm.fswap.v1.QuerySwapRequest"></a>
+
+### QuerySwapRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fromDenom` | [string](#string) |  |  |
+| `toDenom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.fswap.v1.QuerySwapResponse"></a>
+
+### QuerySwapResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `swap` | [Swap](#lbm.fswap.v1.Swap) |  |  |
+
+
+
+
+
+
 <a name="lbm.fswap.v1.QuerySwappedRequest"></a>
 
 ### QuerySwappedRequest
@@ -14465,6 +14498,7 @@ GenesisState defines the fswap module's genesis state.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Swapped` | [QuerySwappedRequest](#lbm.fswap.v1.QuerySwappedRequest) | [QuerySwappedResponse](#lbm.fswap.v1.QuerySwappedResponse) | Swapped queries the current swapped status that includes a burnt amount of from-coin and a minted amount of to-coin. | GET|/lbm/fswap/v1/swapped|
 | `TotalSwappableToCoinAmount` | [QueryTotalSwappableToCoinAmountRequest](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountRequest) | [QueryTotalSwappableToCoinAmountResponse](#lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse) | TotalSwappableToCoinAmount queries the current swappable amount for to-coin. | GET|/lbm/fswap/v1/total_swappable_to_coin_amount|
+| `Swap` | [QuerySwapRequest](#lbm.fswap.v1.QuerySwapRequest) | [QuerySwapResponse](#lbm.fswap.v1.QuerySwapResponse) | Swap queries a swap | GET|/lbm/fswap/v1/swap|
 | `Swaps` | [QuerySwapsRequest](#lbm.fswap.v1.QuerySwapsRequest) | [QuerySwapsResponse](#lbm.fswap.v1.QuerySwapsResponse) | Swaps queries all the swap that registered | GET|/lbm/fswap/v1/swaps|
 
  <!-- end services -->
