@@ -15,11 +15,10 @@ import (
 )
 
 type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	config     types.Config
-	authority  string
-	authkeeper AccountKeeper
+	cdc       codec.BinaryCodec
+	storeKey  storetypes.StoreKey
+	config    types.Config
+	authority string
 	BankKeeper
 }
 
@@ -49,7 +48,6 @@ func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types
 		storeKey,
 		config,
 		authority,
-		ak,
 		bk,
 	}
 }
