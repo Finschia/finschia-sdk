@@ -65,6 +65,17 @@ func (s *FSwapQueryTestSuite) SetupTest() {
 		Symbol:  "DUM",
 	}
 
+	fromDenom := bank.Metadata{
+		Description: "This is metadata for from-coin",
+		DenomUnits: []*bank.DenomUnit{
+			{Denom: s.fromDenom, Exponent: 0},
+		},
+		Base:    s.fromDenom,
+		Display: "fromcoin",
+		Name:    "FROM",
+		Symbol:  "FROM",
+	}
+	s.app.BankKeeper.SetDenomMetaData(s.ctx, fromDenom)
 	err = s.keeper.SetSwap(s.ctx, s.swap, s.toDenomMetadata)
 	s.Require().NoError(err)
 }

@@ -342,7 +342,7 @@ func NewSimApp(
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 
 	fswapConfig := fswaptypes.DefaultConfig()
-	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswapConfig, fswaptypes.DefaultAuthority().String(), app.BankKeeper)
+	app.FswapKeeper = fswapkeeper.NewKeeper(appCodec, keys[fswaptypes.StoreKey], fswapConfig, fswaptypes.DefaultAuthority().String(), app.AccountKeeper, app.BankKeeper)
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
