@@ -22,9 +22,13 @@ type Keeper struct {
 	BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, authority string, bk BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeKey storetypes.StoreKey, config types.Config, authority string, ak AccountKeeper, bk BankKeeper) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic("authority is not a valid acc address")
+	}
+
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
+		panic("fswap module account has not been set")
 	}
 
 	found := false
@@ -123,6 +127,10 @@ func (k Keeper) SetSwap(ctx sdk.Context, swap types.Swap, toDenomMetadata bank.M
 
 	if int(stats.SwapCount) > k.config.MaxSwaps && !k.isUnlimited() {
 		return types.ErrCanNotHaveMoreSwap.Wrapf("cannot make more swaps, max swaps is %d", k.config.MaxSwaps)
+	}
+
+	if _, ok := k.GetDenomMetaData(ctx, swap.FromDenom); !ok {
+		return sdkerrors.ErrInvalidRequest.Wrap("fromDenom should be existed in chain")
 	}
 
 	if isNewSwap {
