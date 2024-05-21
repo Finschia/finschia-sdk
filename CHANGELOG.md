@@ -53,6 +53,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fbridge) [\#1366](https://github.com/Finschia/finschia-sdk/pull/1366) Set target denom as module parameters
 * (x/fbridge) [\#1369](https://github.com/Finschia/finschia-sdk/pull/1369) Add the event of `SetBridgeStatus`
 * (x/fswap) [\#1372](https://github.com/Finschia/finschia-sdk/pull/1372) support message based proposals
+* (x/fswap) [\#1387](https://github.com/Finschia/finschia-sdk/pull/1387) add new Swap query to get a single swap
 
 ### Bug Fixes
 * (x/auth) [#1281](https://github.com/Finschia/finschia-sdk/pull/1281) `ModuleAccount.Validate` now reports a nil `.BaseAccount` instead of panicking. (backport #1274)

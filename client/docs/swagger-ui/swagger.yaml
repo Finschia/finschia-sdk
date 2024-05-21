@@ -35312,6 +35312,330 @@ paths:
                       format: byte
       tags:
         - Query
+  /lbm/fswap/v1/swap:
+    get:
+      summary: Swap queries a swap
+      operationId: Swap
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              swap:
+                type: object
+                properties:
+                  from_denom:
+                    type: string
+                  to_denom:
+                    type: string
+                  amount_cap_for_to_denom:
+                    type: string
+                  swap_rate:
+                    type: string
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: fromDenom
+          in: query
+          required: false
+          type: string
+        - name: toDenom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /lbm/fswap/v1/swapped:
+    get:
+      summary: >-
+        Swapped queries the current swapped status that includes a burnt amount
+        of from-coin and a minted amount of
+
+        to-coin.
+      operationId: Swapped
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              from_coin_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              to_coin_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: fromDenom
+          in: query
+          required: false
+          type: string
+        - name: toDenom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /lbm/fswap/v1/swaps:
+    get:
+      summary: Swaps queries all the swap that registered
+      operationId: Swaps
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              swaps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    from_denom:
+                      type: string
+                    to_denom:
+                      type: string
+                    amount_cap_for_to_denom:
+                      type: string
+                    swap_rate:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  /lbm/fswap/v1/total_swappable_to_coin_amount:
+    get:
+      summary: >-
+        TotalSwappableToCoinAmount queries the current swappable amount for
+        to-coin.
+      operationId: TotalSwappableToCoinAmount
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              swappable_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: fromDenom
+          in: query
+          required: false
+          type: string
+        - name: toDenom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.Params:
     type: object
@@ -59561,3 +59885,111 @@ definitions:
        - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
        - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+  lbm.fswap.v1.QuerySwapResponse:
+    type: object
+    properties:
+      swap:
+        type: object
+        properties:
+          from_denom:
+            type: string
+          to_denom:
+            type: string
+          amount_cap_for_to_denom:
+            type: string
+          swap_rate:
+            type: string
+  lbm.fswap.v1.QuerySwappedResponse:
+    type: object
+    properties:
+      from_coin_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      to_coin_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  lbm.fswap.v1.QuerySwapsResponse:
+    type: object
+    properties:
+      swaps:
+        type: array
+        items:
+          type: object
+          properties:
+            from_denom:
+              type: string
+            to_denom:
+              type: string
+            amount_cap_for_to_denom:
+              type: string
+            swap_rate:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  lbm.fswap.v1.QueryTotalSwappableToCoinAmountResponse:
+    type: object
+    properties:
+      swappable_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  lbm.fswap.v1.Swap:
+    type: object
+    properties:
+      from_denom:
+        type: string
+      to_denom:
+        type: string
+      amount_cap_for_to_denom:
+        type: string
+      swap_rate:
+        type: string
