@@ -10,6 +10,35 @@ import (
 )
 
 func TestGenesisStateValidate(t *testing.T) {
+	exampleGenesis := func() *types.GenesisState {
+		testSwapRate, _ := sdk.NewDecFromStr("1234567890")
+		return &types.GenesisState{
+			Swaps: []types.Swap{
+				{
+					FromDenom:           "aaa",
+					ToDenom:             "bbb",
+					AmountCapForToDenom: sdk.NewInt(1234567890000),
+					SwapRate:            testSwapRate,
+				},
+			},
+			SwapStats: types.SwapStats{
+				SwapCount: 1,
+			},
+			Swappeds: []types.Swapped{
+				{
+					FromCoinAmount: sdk.Coin{
+						Denom:  "aaa",
+						Amount: sdk.ZeroInt(),
+					},
+					ToCoinAmount: sdk.Coin{
+						Denom:  "bbb",
+						Amount: sdk.ZeroInt(),
+					},
+				},
+			},
+		}
+	}
+
 	for _, tc := range []struct {
 		desc     string
 		genState *types.GenesisState
@@ -23,12 +52,12 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "example is valid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			valid:    true,
 		},
 		{
 			desc:     "SwapCount is nagative in SwapStats is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.SwapStats.SwapCount = -1
 			},
@@ -36,7 +65,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "number of swaps does not match number of Swappeds",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swaps = append(gs.Swaps, types.Swap{})
 			},
@@ -44,7 +73,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "number of swaps does not match number of Swappeds",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swaps = append(gs.Swaps, types.Swap{})
 				gs.Swappeds = append(gs.Swappeds, types.Swapped{})
@@ -53,7 +82,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "fromDenom=toDenom in Swap is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swaps[0].ToDenom = "aaa"
 			},
@@ -61,7 +90,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "AmountCapForToDenom=0 in Swap is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swaps[0].AmountCapForToDenom = sdk.ZeroInt()
 			},
@@ -69,7 +98,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "SwapRate=0 in Swap is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swaps[0].SwapRate = sdk.ZeroDec()
 			},
@@ -77,7 +106,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "FromCoinAmount is nagative in Swappeds is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swappeds[0].FromCoinAmount.Amount = sdk.NewInt(-1)
 			},
@@ -85,7 +114,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "ToCoinAmount is nagative in Swappeds is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swappeds[0].ToCoinAmount.Amount = sdk.NewInt(-1)
 			},
@@ -93,7 +122,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "Swap in Swaps is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swaps[0].FromDenom = ""
 			},
@@ -101,7 +130,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "Swapped in Swappeds is invalide ",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swappeds[0].FromCoinAmount.Denom = ""
 			},
@@ -109,7 +138,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "FromCoin in swap and swapped do not correspond",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swappeds[0].FromCoinAmount.Denom = "ccc"
 			},
@@ -117,7 +146,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "ToCoin in swap and swapped do not correspond",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swappeds[0].ToCoinAmount.Denom = "ccc"
 			},
@@ -125,7 +154,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		},
 		{
 			desc:     "AmountCapForToDenom has been exceeded is invalid",
-			genState: newExampleGenesis(),
+			genState: exampleGenesis(),
 			modify: func(gs *types.GenesisState) {
 				gs.Swappeds[0].ToCoinAmount.Amount = sdk.NewInt(12345678900000000)
 			},
@@ -143,34 +172,5 @@ func TestGenesisStateValidate(t *testing.T) {
 				require.Error(t, err)
 			}
 		})
-	}
-}
-
-func newExampleGenesis() *types.GenesisState {
-	testSwapRate, _ := sdk.NewDecFromStr("1234567890")
-	return &types.GenesisState{
-		Swaps: []types.Swap{
-			{
-				FromDenom:           "aaa",
-				ToDenom:             "bbb",
-				AmountCapForToDenom: sdk.NewInt(1234567890000),
-				SwapRate:            testSwapRate,
-			},
-		},
-		SwapStats: types.SwapStats{
-			SwapCount: 1,
-		},
-		Swappeds: []types.Swapped{
-			{
-				FromCoinAmount: sdk.Coin{
-					Denom:  "aaa",
-					Amount: sdk.ZeroInt(),
-				},
-				ToCoinAmount: sdk.Coin{
-					Denom:  "bbb",
-					Amount: sdk.ZeroInt(),
-				},
-			},
-		},
 	}
 }
