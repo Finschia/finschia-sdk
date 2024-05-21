@@ -89,21 +89,27 @@ func (s *KeeperTestSuite) SetupTest() {
 		DenomUnits: []*bank.DenomUnit{
 			{Denom: s.swap.ToDenom, Exponent: 0},
 		},
-		Base:    "todenom",
-		Display: "todenomcoin",
+		Base:    s.swap.ToDenom,
+		Display: s.swap.ToDenom,
 		Name:    "DUMMY",
 		Symbol:  "DUM",
 	}
+	err = s.toDenomMetadata.Validate()
+	s.Require().NoError(err)
+
 	fromDenom := bank.Metadata{
 		Description: "This is metadata for from-coin",
 		DenomUnits: []*bank.DenomUnit{
-			{Denom: "fromdenom", Exponent: 0},
+			{Denom: s.swap.FromDenom, Exponent: 0},
 		},
-		Base:    "fromdenom",
-		Display: "fromdenomcoin",
-		Name:    "DUMMY",
-		Symbol:  "DUM",
+		Base:    s.swap.FromDenom,
+		Display: s.swap.FromDenom,
+		Name:    "FROM",
+		Symbol:  "FROM",
 	}
+	err = fromDenom.Validate()
+	s.Require().NoError(err)
+
 	app.BankKeeper.SetDenomMetaData(s.ctx, fromDenom)
 	s.createAccountsWithInitBalance(app)
 	app.AccountKeeper.GetModuleAccount(s.ctx, types.ModuleName)
@@ -356,7 +362,7 @@ func (s *KeeperTestSuite) TestSetSwap() {
 				Description: s.toDenomMetadata.Description,
 				DenomUnits:  s.toDenomMetadata.DenomUnits,
 				Base:        "change",
-				Display:     s.toDenomMetadata.Display,
+				Display:     "change",
 				Name:        s.toDenomMetadata.Name,
 				Symbol:      s.toDenomMetadata.Symbol,
 			},
