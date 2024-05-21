@@ -20,6 +20,10 @@ service Query {
       returns (QueryTotalSwappableToCoinAmountResponse) {
     option (google.api.http).get = "/lbm/fswap/v1/total_swappable_to_coin_amount";
   }
+  // Swap queries a swap
+  rpc Swap(QuerySwapRequest) returns (QuerySwapResponse) {
+    option (google.api.http).get = "/lbm/fswap/v1/swap";
+  }
   // Swaps queries all the swap that registered
   rpc Swaps(QuerySwapsRequest) returns (QuerySwapsResponse) {
     option (google.api.http).get = "/lbm/fswap/v1/swaps";
@@ -44,6 +48,14 @@ message QueryTotalSwappableToCoinAmountRequest {
 message QueryTotalSwappableToCoinAmountResponse {
   cosmos.base.v1beta1.Coin swappable_amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/Finschia/finschia-sdk/types.Coin"];
+}
+
+message QuerySwapRequest {
+  string fromDenom = 1;
+  string toDenom   = 2;
+}
+message QuerySwapResponse {
+  Swap swap = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySwapsRequest {

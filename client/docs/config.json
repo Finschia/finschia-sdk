@@ -179,6 +179,9 @@
           "Vote": "FBridgeVote"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/fswap/v1/query.swagger.json"
     }
   ]
 }
