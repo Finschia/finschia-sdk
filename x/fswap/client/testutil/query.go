@@ -1,12 +1,13 @@
 package testutil
 
 import (
+	"github.com/gogo/protobuf/proto"
+
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/query"
 	"github.com/Finschia/finschia-sdk/x/fswap/client/cli"
 	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
-	"github.com/gogo/protobuf/proto"
 )
 
 func (s *IntegrationTestSuite) TestCmdQuerySwapped() {

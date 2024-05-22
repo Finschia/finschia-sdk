@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/gogo/protobuf/proto"
+
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/fswap/client/cli"
-	"github.com/gogo/protobuf/proto"
 )
 
 func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
@@ -261,7 +262,7 @@ func (s *IntegrationTestSuite) TestMsgSetSwap() {
 
 	testCases := []struct {
 		name string
-		//modify    func(args []string) []string
+
 		args      []string
 		expectErr bool
 	}{

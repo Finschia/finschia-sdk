@@ -1,11 +1,12 @@
 package testutil
 
 import (
+	"github.com/stretchr/testify/suite"
+
 	"github.com/Finschia/finschia-sdk/testutil/network"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
-	"github.com/stretchr/testify/suite"
 )
 
 type IntegrationTestSuite struct {
