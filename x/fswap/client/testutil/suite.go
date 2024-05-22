@@ -9,6 +9,8 @@ import (
 	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
+const jsonOutputFormat string = "JSON"
+
 type IntegrationTestSuite struct {
 	suite.Suite
 

@@ -17,7 +17,7 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	testCases := []struct {
 		name         string
@@ -138,7 +138,7 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	testCases := []struct {
 		name         string
@@ -245,7 +245,7 @@ func (s *IntegrationTestSuite) TestMsgSetSwap() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	denomMeta := cli.ToDenomMeta{
 		Metadata: s.toDenom,

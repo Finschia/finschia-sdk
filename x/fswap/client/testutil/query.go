@@ -14,7 +14,7 @@ func (s *IntegrationTestSuite) TestCmdQuerySwapped() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	fromDenom := s.cfg.BondDenom
 	toDenom := s.toDenom.Base
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) TestCmdQueryTotalSwappableAmount() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	fromDenom := s.cfg.BondDenom
 	toDenom := s.toDenom.Base
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) TestCmdQuerySwap() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	fromDenom := s.cfg.BondDenom
 	toDenom := s.toDenom.Base
@@ -201,7 +201,7 @@ func (s *IntegrationTestSuite) TestCmdQuerySwaps() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
-	clientCtx.OutputFormat = "JSON"
+	clientCtx.OutputFormat = jsonOutputFormat
 
 	testCases := []struct {
 		name      string
