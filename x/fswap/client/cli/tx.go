@@ -22,6 +22,10 @@ const (
 	FlagSwapRate            = "swap-rate"
 )
 
+type ToDenomMeta struct {
+	Metadata bank.Metadata `json:"metadata"`
+}
+
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -232,10 +236,7 @@ func validateGenerateOnly(cmd *cobra.Command) error {
 }
 
 func parseToDenomMetadata(jsonDenomMetadata string) (bank.Metadata, error) {
-	type toDenomMeta struct {
-		Metadata bank.Metadata `json:"metadata"`
-	}
-	denomMeta := toDenomMeta{}
+	denomMeta := ToDenomMeta{}
 	if err := json.Unmarshal([]byte(jsonDenomMetadata), &denomMeta); err != nil {
 		return bank.Metadata{}, err
 	}

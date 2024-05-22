@@ -14,6 +14,7 @@ type IntegrationTestSuite struct {
 	cfg     network.Config
 	network *network.Network
 
+	authority sdk.AccAddress
 	toDenom   banktypes.Metadata
 	dummySwap fswaptypes.Swap
 }
@@ -40,7 +41,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 			},
 		},
 		Base:    "dummy",
-		Display: "Dummy",
+		Display: "dummy",
 	}
 	bankGenesis.DenomMetadata = []banktypes.Metadata{s.toDenom}
 	bankDataBz, err := s.cfg.Codec.MarshalJSON(&bankGenesis)
@@ -80,6 +81,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.cfg.GenesisState = genesisState
 
 	s.network = network.New(s.T(), s.cfg)
+	s.authority = fswaptypes.DefaultAuthority()
 
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
