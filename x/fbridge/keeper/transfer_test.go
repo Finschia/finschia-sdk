@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,10 +19,9 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	amt := sdk.NewInt(1000000)
 	denom := "stake"
 	token := sdk.Coins{sdk.Coin{Denom: denom, Amount: amt}}
-
-	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil)
-	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(nil)
-	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(nil)
+	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil).Times(1)
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(nil).Times(1)
+	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(nil).Times(1)
 
 	k := NewKeeper(encCfg.Codec, key, memKey, authKeeper, bankKeeper, types.DefaultAuthority().String())
 	params := types.DefaultParams()
@@ -41,6 +41,17 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	h, err := k.GetSeqToBlocknum(ctx, handledSeq)
 	require.NoError(t, err)
 	require.Equal(t, uint64(ctx.BlockHeight()), h)
+
+	// test error cases
+	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil).Times(1)
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(errors.New("insufficient funds")).Times(1)
+	handledSeq, err = k.handleBridgeTransfer(ctx, sender, amt)
+	require.Error(t, err)
+
+	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil).Times(1)
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(nil).Times(1)
+	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, token).Return(errors.New("failed to burn coins")).Times(1)
+	require.Panics(t, func() { _, _ = k.handleBridgeTransfer(ctx, sender, amt) }, "cannot burn coins after a successful send to a module account: failed to burn coins")
 }
 
 func TestIsValidEthereumAddress(t *testing.T) {

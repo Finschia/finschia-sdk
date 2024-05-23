@@ -23,7 +23,7 @@ func (k Keeper) handleBridgeTransfer(ctx sdk.Context, sender sdk.AccAddress, amo
 	}
 
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token); err != nil {
-		panic(err)
+		return 0, err
 	}
 
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, token); err != nil {
