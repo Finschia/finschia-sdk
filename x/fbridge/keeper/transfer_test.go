@@ -45,7 +45,7 @@ func TestHandleBridgeTransfer(t *testing.T) {
 	// test error cases
 	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil).Times(1)
 	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token).Return(errors.New("insufficient funds")).Times(1)
-	handledSeq, err = k.handleBridgeTransfer(ctx, sender, amt)
+	_, err = k.handleBridgeTransfer(ctx, sender, amt)
 	require.Error(t, err)
 
 	bankKeeper.EXPECT().IsSendEnabledCoins(ctx, token).Return(nil).Times(1)
