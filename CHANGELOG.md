@@ -92,6 +92,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fswap, x/fbridge) [\#1378](https://github.com/Finschia/finschia-sdk/pull/1378) Fix bug where amino is not supported in fswap and fbridge
 * (x/fswap) [\#1379](https://github.com/Finschia/finschia-sdk/pull/1379) add missing router registration
 * (x/fswap) [\#1385](https://github.com/Finschia/finschia-sdk/pull/1385) add accidentally deleted event emissions(EventSetSwap, EventAddDenomMetadata)
+* (x/fswap) [\#1392](https://github.com/Finschia/finschia-sdk/pull/1392) fix dummy denom coin data for test in fswap
 
 ### Removed
 
