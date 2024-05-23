@@ -64,6 +64,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fswap) [\#1372](https://github.com/Finschia/finschia-sdk/pull/1372) support message based proposals
 * (x/fswap) [\#1387](https://github.com/Finschia/finschia-sdk/pull/1387) add new Swap query to get a single swap
 * (x/fswap) [\#1382](https://github.com/Finschia/finschia-sdk/pull/1382) add validation & unit tests in fswap module 
+* (x/fbridge) [\#1395](https://github.com/Finschia/finschia-sdk/pull/1395) Return error instead of panic for insufficient balance during bridge transfer
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
