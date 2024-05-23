@@ -65,13 +65,13 @@ func TestAminoJSON(t *testing.T) {
 						},
 					},
 					Base:    "kaia",
-					Display: "KAIA",
+					Display: "kaia",
 					Name:    "Kaia",
 					Symbol:  "KAIA",
 				},
 			},
 			"/lbm.fswap.v1.MsgSetSwap",
-			"{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSetSwap\",\"value\":{\"authority\":\"link15sdc7wdajsps42fky3j6mnvr4tj9fv6w3hkqkj\",\"swap\":{\"amount_cap_for_to_denom\":\"1000000000000000\",\"from_denom\":\"cony\",\"swap_rate\":\"148.079656000000000000\",\"to_denom\":\"pdt\"},\"to_denom_metadata\":{\"base\":\"kaia\",\"denom_units\":[{\"denom\":\"kaia\"}],\"description\":\"test\",\"display\":\"KAIA\",\"name\":\"Kaia\",\"symbol\":\"KAIA\"}}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}",
+			"{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSetSwap\",\"value\":{\"authority\":\"link15sdc7wdajsps42fky3j6mnvr4tj9fv6w3hkqkj\",\"swap\":{\"amount_cap_for_to_denom\":\"1000000000000000\",\"from_denom\":\"cony\",\"swap_rate\":\"148.079656000000000000\",\"to_denom\":\"pdt\"},\"to_denom_metadata\":{\"base\":\"kaia\",\"denom_units\":[{\"denom\":\"kaia\"}],\"description\":\"test\",\"display\":\"kaia\",\"name\":\"Kaia\",\"symbol\":\"KAIA\"}}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}",
 		},
 	}
 
