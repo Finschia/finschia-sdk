@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"encoding/binary"
-	"fmt"
 	"time"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -62,7 +61,7 @@ func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
 	previousRole := k.GetRole(ctx, addr)
 	if previousRole == role {
-		return sdkerrors.ErrInvalidRequest.Wrap("target already has same role")
+		return nil
 	}
 
 	roleMeta := k.GetRoleMetadata(ctx)
@@ -175,12 +174,14 @@ func (k Keeper) GetRoleProposal(ctx sdk.Context, id uint64) (proposal types.Role
 	return proposal, true
 }
 
-func (k Keeper) deleteRoleProposal(ctx sdk.Context, id uint64) {
+func (k Keeper) deleteRoleProposal(ctx sdk.Context, id uint64) error {
 	store := ctx.KVStore(k.storeKey)
 	if _, found := k.GetRoleProposal(ctx, id); !found {
-		panic(fmt.Sprintf("role proposal #%d not found", id))
+		return sdkerrors.ErrNotFound.Wrapf("role proposal #%d not found", id)
 	}
+
 	store.Delete(types.ProposalKey(id))
+	return nil
 }
 
 // IterateProposals iterates over the all the role proposals and performs a callback function
