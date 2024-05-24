@@ -25,7 +25,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, gs *types.GenesisState) error {
 
 	for _, sw := range gs.BridgeSwitches {
 		if err := k.setBridgeSwitch(ctx, sdk.MustAccAddressFromBech32(sw.Guardian), sw.Status); err != nil {
-			panic(err)
+			return err
 		}
 	}
 
