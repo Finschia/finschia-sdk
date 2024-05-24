@@ -61,10 +61,6 @@ func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 
 func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
 	previousRole := k.GetRole(ctx, addr)
-	if previousRole == role {
-		return sdkerrors.ErrInvalidRequest.Wrap("target already has same role")
-	}
-
 	roleMeta := k.GetRoleMetadata(ctx)
 	nInactive := k.GetBridgeInactiveCounter(ctx)
 
@@ -102,7 +98,7 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	case types.RoleGuardian:
 		roleMeta.Guardian++
 		if err := k.setBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
-			panic(err)
+			return err
 		}
 	case types.RoleOperator:
 		roleMeta.Operator++
