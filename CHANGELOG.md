@@ -65,6 +65,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fswap) [\#1387](https://github.com/Finschia/finschia-sdk/pull/1387) add new Swap query to get a single swap
 * (x/fswap) [\#1382](https://github.com/Finschia/finschia-sdk/pull/1382) add validation & unit tests in fswap module
 * (x/fswap) [\#1396](https://github.com/Finschia/finschia-sdk/pull/1396) refactor to use snake_case in proto
+* (x/fswap) [\#1391](https://github.com/Finschia/finschia-sdk/pull/1391) add cli_test for fswap module
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
