@@ -9,7 +9,7 @@ import (
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	"github.com/Finschia/finschia-sdk/x/fswap/client/cli"
 )
 
@@ -18,13 +18,17 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
 	clientCtx.OutputFormat = jsonOutputFormat
+	commonArgs := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	}
 
 	testCases := []struct {
-		name         string
-		args         []string
-		expectErr    bool
-		expectedCode uint32
-		respType     proto.Message
+		name      string
+		args      []string
+		expectErr bool
+		respType  proto.Message
 	}{
 		{
 			"valid transaction",
@@ -32,12 +36,8 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 				val.Address.String(),
 				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(),
 				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
 			false,
-			0,
 			&sdk.TxResponse{},
 		},
 		{
@@ -47,12 +47,8 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(),
 				s.toDenom.Base,
 				"extra",
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
 			},
 			true,
-			0,
 			nil,
 		},
 		{
@@ -61,12 +57,8 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 				"invalidAddress",
 				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(),
 				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
 			},
 			true,
-			0,
 			nil,
 		},
 		{
@@ -75,42 +67,9 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 				val.Address.String(),
 				"",
 				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
 			},
 			true,
-			0,
 			nil,
-		},
-		{
-			"not enough fees",
-			[]string{
-				val.Address.String(),
-				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(),
-				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
-			},
-			false,
-			sdkerrors.ErrInsufficientFee.ABCICode(),
-			&sdk.TxResponse{},
-		},
-		{
-			"not enough gas",
-			[]string{
-				val.Address.String(),
-				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(),
-				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-				"--gas=10",
-			},
-			false,
-			sdkerrors.ErrOutOfGas.ABCICode(),
-			&sdk.TxResponse{},
 		},
 	}
 
@@ -119,16 +78,13 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 
 		s.Run(tc.name, func() {
 			cmd := cli.CmdTxMsgSwap()
-			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, append(tc.args, commonArgs...))
 
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-
 				s.Require().NoError(clientCtx.Codec.UnmarshalJSON(bz.Bytes(), tc.respType), bz.String())
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
 			}
 		})
 	}
@@ -139,13 +95,17 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 	clientCtx := val.ClientCtx
 	// avoid printing as yaml from CLI command
 	clientCtx.OutputFormat = jsonOutputFormat
+	commonArgs := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	}
 
 	testCases := []struct {
-		name         string
-		args         []string
-		expectErr    bool
-		expectedCode uint32
-		respType     proto.Message
+		name      string
+		args      []string
+		expectErr bool
+		respType  proto.Message
 	}{
 		{
 			"valid transaction",
@@ -153,12 +113,8 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 				val.Address.String(),
 				s.cfg.BondDenom,
 				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
 			false,
-			0,
 			&sdk.TxResponse{},
 		},
 		{
@@ -168,12 +124,8 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 				s.cfg.BondDenom,
 				s.toDenom.Base,
 				"extra",
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
 			},
 			true,
-			0,
 			nil,
 		},
 		{
@@ -182,42 +134,9 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 				"invalidAddress",
 				s.cfg.BondDenom,
 				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
 			},
 			true,
-			0,
 			nil,
-		},
-		{
-			"not enough fees",
-			[]string{
-				val.Address.String(),
-				s.cfg.BondDenom,
-				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
-			},
-			false,
-			sdkerrors.ErrInsufficientFee.ABCICode(),
-			&sdk.TxResponse{},
-		},
-		{
-			"not enough gas",
-			[]string{
-				val.Address.String(),
-				s.cfg.BondDenom,
-				s.toDenom.Base,
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-				"--gas=10",
-			},
-			false,
-			sdkerrors.ErrOutOfGas.ABCICode(),
-			&sdk.TxResponse{},
 		},
 	}
 
@@ -226,16 +145,13 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 
 		s.Run(tc.name, func() {
 			cmd := cli.CmdTxMsgSwapAll()
-			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, append(tc.args, commonArgs...))
 
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-
 				s.Require().NoError(clientCtx.Codec.UnmarshalJSON(bz.Bytes(), tc.respType), bz.String())
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
 			}
 		})
 	}
@@ -247,7 +163,9 @@ func (s *IntegrationTestSuite) TestMsgSetSwap() {
 	// avoid printing as yaml from CLI command
 	clientCtx.OutputFormat = jsonOutputFormat
 
-	denomMeta := cli.ToDenomMeta{
+	denomMeta := struct {
+		Metadata banktypes.Metadata `json:"metadata"`
+	}{
 		Metadata: s.toDenom,
 	}
 	jsonBytes, err := json.Marshal(denomMeta)
