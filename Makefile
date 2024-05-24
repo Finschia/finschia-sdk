@@ -402,7 +402,7 @@ proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --rm --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
 		sh ./scripts/protocgen.sh; fi
 	@go mod tidy
 
@@ -413,7 +413,7 @@ proto-gen-any:
 
 proto-swagger-gen:
 	@echo "Generating Protobuf Swagger"
-	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGenSwagger}$$"; then $(DOCKER) start -a $(containerProtoGenSwagger); else $(DOCKER) run --rm --name $(containerProtoGenSwagger) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGenSwagger}$$"; then $(DOCKER) start -a $(containerProtoGenSwagger); else $(DOCKER) run --name $(containerProtoGenSwagger) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
 		sh ./scripts/protoc-swagger-gen.sh; fi
 
 proto-format:
