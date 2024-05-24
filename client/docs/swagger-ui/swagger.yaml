@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: LBM SDK - gRPC Gateway docs
-  description: A REST interface for state queries, legacy transactions
+  description: 'A REST interface for state queries, legacy transactions'
   version: 1.0.0
 paths:
   /cosmos/auth/v1beta1/accounts:
@@ -218,7 +218,7 @@ paths:
 
               Since: cosmos-sdk 0.43
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -453,6 +453,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -463,9 +464,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/auth/v1beta1/accounts/{address}:
+  '/cosmos/auth/v1beta1/accounts/{address}':
     get:
       summary: Account returns account details based on address.
       operationId: Account
@@ -650,7 +652,7 @@ paths:
               QueryAccountResponse is the response type for the Query/Account
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -846,7 +848,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/auth/v1beta1/module_accounts/{name}:
+  '/cosmos/auth/v1beta1/module_accounts/{name}':
     get:
       summary: ModuleAccountByName returns the module account info by module name
       operationId: ModuleAccountByName
@@ -1031,7 +1033,7 @@ paths:
               QueryModuleAccountByNameResponse is the response type for the
               Query/ModuleAccountByName RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -1249,7 +1251,7 @@ paths:
               QueryNextAccountNumberResponse is the response for the
               Query/NextAccountNumber.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -1472,7 +1474,7 @@ paths:
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -1662,7 +1664,7 @@ paths:
                         }
       tags:
         - Query
-  /cosmos/bank/v1beta1/balances/{address}:
+  '/cosmos/bank/v1beta1/balances/{address}':
     get:
       summary: AllBalances queries the balance of all coins for a single account.
       operationId: AllBalances
@@ -1714,7 +1716,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -1787,6 +1789,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -1797,9 +1800,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/bank/v1beta1/balances/{address}/by_denom:
+  '/cosmos/bank/v1beta1/balances/{address}/by_denom':
     get:
       summary: Balance queries the balance of a single coin for a single account.
       operationId: Balance
@@ -1828,7 +1832,7 @@ paths:
               QueryBalanceResponse is the response type for the Query/Balance
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -1974,7 +1978,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -2042,6 +2046,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -2052,9 +2057,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/bank/v1beta1/denoms_metadata/{denom}:
+  '/cosmos/bank/v1beta1/denoms_metadata/{denom}':
     get:
       summary: DenomsMetadata queries the client metadata of a given coin denomination.
       operationId: DenomMetadata
@@ -2141,7 +2147,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -2192,6 +2198,7 @@ paths:
                           type: string
                         enabled:
                           type: boolean
+                          format: boolean
                       description: >-
                         SendEnabled maps coin denom to a send_enabled status
                         (whether a denom is
@@ -2199,12 +2206,13 @@ paths:
                         sendable).
                   default_send_enabled:
                     type: boolean
+                    format: boolean
                 description: Params defines the parameters for the bank module.
             description: >-
               QueryParamsResponse defines the response type for querying x/bank
               parameters.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -2227,7 +2235,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /cosmos/bank/v1beta1/spendable_balances/{address}:
+  '/cosmos/bank/v1beta1/spendable_balances/{address}':
     get:
       summary: |-
         SpendableBalances queries the spenable balance of all coins for a single
@@ -2281,7 +2289,7 @@ paths:
 
               an account's spendable balances.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -2354,6 +2362,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -2364,6 +2373,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /cosmos/bank/v1beta1/supply:
@@ -2421,7 +2431,7 @@ paths:
 
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -2489,6 +2499,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -2499,9 +2510,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/bank/v1beta1/supply/{denom}:
+  '/cosmos/bank/v1beta1/supply/{denom}':
     get:
       summary: SupplyOf queries the supply of a single coin.
       operationId: SupplyOf
@@ -2530,7 +2542,7 @@ paths:
               QuerySupplyOfResponse is the response type for the Query/SupplyOf
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -3127,7 +3139,7 @@ paths:
               GetLatestBlockResponse is the response type for the
               Query/GetLatestBlock RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -3317,7 +3329,7 @@ paths:
                         }
       tags:
         - Service
-  /cosmos/base/tendermint/v1beta1/blocks/{height}:
+  '/cosmos/base/tendermint/v1beta1/blocks/{height}':
     get:
       summary: GetBlockByHeight queries block for given height.
       operationId: GetBlockByHeight
@@ -3885,7 +3897,7 @@ paths:
               GetBlockByHeightResponse is the response type for the
               Query/GetBlockByHeight RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -4164,7 +4176,7 @@ paths:
               GetNodeInfoResponse is the request type for the Query/GetNodeInfo
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -4366,11 +4378,12 @@ paths:
             properties:
               syncing:
                 type: boolean
+                format: boolean
             description: >-
               GetSyncingResponse is the response type for the Query/GetSyncing
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -4786,7 +4799,7 @@ paths:
               GetLatestValidatorSetResponse is the response type for the
               Query/GetValidatorSetByHeight RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5021,6 +5034,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -5031,9 +5045,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Service
-  /cosmos/base/tendermint/v1beta1/validatorsets/{height}:
+  '/cosmos/base/tendermint/v1beta1/validatorsets/{height}':
     get:
       summary: GetValidatorSetByHeight queries validator-set at a given height.
       operationId: GetValidatorSetByHeight
@@ -5259,7 +5274,7 @@ paths:
               GetValidatorSetByHeightResponse is the response type for the
               Query/GetValidatorSetByHeight RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5499,6 +5514,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -5509,6 +5525,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Service
   /cosmos/distribution/v1beta1/community_pool:
@@ -5546,7 +5563,7 @@ paths:
 
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5569,7 +5586,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards:
+  '/cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards':
     get:
       summary: |-
         DelegationTotalRewards queries the total rewards accrued by a each
@@ -5633,7 +5650,7 @@ paths:
               QueryDelegationTotalRewardsResponse is the response type for the
               Query/DelegationTotalRewards RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5662,7 +5679,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}:
+  '/cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}':
     get:
       summary: DelegationRewards queries the total rewards accrued by a delegation.
       operationId: DelegationRewards
@@ -5695,7 +5712,7 @@ paths:
               QueryDelegationRewardsResponse is the response type for the
               Query/DelegationRewards RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5729,7 +5746,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/distribution/v1beta1/delegators/{delegator_address}/validators:
+  '/cosmos/distribution/v1beta1/delegators/{delegator_address}/validators':
     get:
       summary: DelegatorValidators queries the validators of a delegator.
       operationId: DelegatorValidators
@@ -5750,7 +5767,7 @@ paths:
               QueryDelegatorValidatorsResponse is the response type for the
               Query/DelegatorValidators RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5779,7 +5796,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/distribution/v1beta1/delegators/{delegator_address}/withdraw_address:
+  '/cosmos/distribution/v1beta1/delegators/{delegator_address}/withdraw_address':
     get:
       summary: DelegatorWithdrawAddress queries withdraw address of a delegator.
       operationId: DelegatorWithdrawAddress
@@ -5796,7 +5813,7 @@ paths:
               QueryDelegatorWithdrawAddressResponse is the response type for the
               Query/DelegatorWithdrawAddress RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5847,11 +5864,12 @@ paths:
                     type: string
                   withdraw_addr_enabled:
                     type: boolean
+                    format: boolean
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5874,7 +5892,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /cosmos/distribution/v1beta1/validators/{validator_address}/commission:
+  '/cosmos/distribution/v1beta1/validators/{validator_address}/commission':
     get:
       summary: ValidatorCommission queries accumulated commission for a validator.
       operationId: ValidatorCommission
@@ -5910,7 +5928,7 @@ paths:
               QueryValidatorCommissionResponse is the response type for the
               Query/ValidatorCommission RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -5939,7 +5957,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/distribution/v1beta1/validators/{validator_address}/outstanding_rewards:
+  '/cosmos/distribution/v1beta1/validators/{validator_address}/outstanding_rewards':
     get:
       summary: ValidatorOutstandingRewards queries rewards of a validator address.
       operationId: ValidatorOutstandingRewards
@@ -5982,7 +6000,7 @@ paths:
 
               Query/ValidatorOutstandingRewards RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -6011,7 +6029,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/distribution/v1beta1/validators/{validator_address}/slashes:
+  '/cosmos/distribution/v1beta1/validators/{validator_address}/slashes':
     get:
       summary: ValidatorSlashes queries slash events of a validator.
       operationId: ValidatorSlashes
@@ -6064,7 +6082,7 @@ paths:
               QueryValidatorSlashesResponse is the response type for the
               Query/ValidatorSlashes RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -6153,6 +6171,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -6163,6 +6182,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /cosmos/evidence/v1beta1/evidence:
@@ -6377,7 +6397,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -6612,6 +6632,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -6622,9 +6643,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/evidence/v1beta1/evidence/{evidence_hash}:
+  '/cosmos/evidence/v1beta1/evidence/{evidence_hash}':
     get:
       summary: Evidence queries evidence based on evidence hash.
       operationId: Evidence
@@ -6809,7 +6831,7 @@ paths:
               QueryEvidenceResponse is the response type for the Query/Evidence
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -7006,7 +7028,7 @@ paths:
           format: byte
       tags:
         - Query
-  /cosmos/gov/v1beta1/params/{params_type}:
+  '/cosmos/gov/v1beta1/params/{params_type}':
     get:
       summary: Params queries all parameters of the gov module.
       operationId: GovParams
@@ -7079,7 +7101,7 @@ paths:
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -7570,7 +7592,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -7841,6 +7863,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -7851,9 +7874,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/gov/v1beta1/proposals/{proposal_id}:
+  '/cosmos/gov/v1beta1/proposals/{proposal_id}':
     get:
       summary: Proposal queries proposal details based on ProposalID.
       operationId: Proposal
@@ -8119,7 +8143,7 @@ paths:
               QueryProposalResponse is the response type for the Query/Proposal
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -8316,7 +8340,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /cosmos/gov/v1beta1/proposals/{proposal_id}/deposits:
+  '/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits':
     get:
       summary: Deposits queries all deposits of a single proposal.
       operationId: Deposits
@@ -8381,7 +8405,7 @@ paths:
               QueryDepositsResponse is the response type for the Query/Deposits
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -8622,6 +8646,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -8632,9 +8657,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}:
+  '/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}':
     get:
       summary: >-
         Deposit queries single deposit information based proposalID,
@@ -8680,7 +8706,7 @@ paths:
               QueryDepositResponse is the response type for the Query/Deposit
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -8882,7 +8908,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/gov/v1beta1/proposals/{proposal_id}/tally:
+  '/cosmos/gov/v1beta1/proposals/{proposal_id}/tally':
     get:
       summary: TallyResult queries the tally of a proposal vote.
       operationId: TallyResult
@@ -8910,7 +8936,7 @@ paths:
               QueryTallyResultResponse is the response type for the Query/Tally
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9107,7 +9133,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /cosmos/gov/v1beta1/proposals/{proposal_id}/votes:
+  '/cosmos/gov/v1beta1/proposals/{proposal_id}/votes':
     get:
       summary: Votes queries votes of a given proposal.
       operationId: Votes
@@ -9205,7 +9231,7 @@ paths:
               QueryVotesResponse is the response type for the Query/Votes RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9446,6 +9472,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -9456,11 +9483,12 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/gov/v1beta1/proposals/{proposal_id}/votes/{voter}:
+  '/cosmos/gov/v1beta1/proposals/{proposal_id}/votes/{voter}':
     get:
-      summary: Vote queries voted information based on proposalID, voterAddr.
+      summary: 'Vote queries voted information based on proposalID, voterAddr.'
       operationId: Vote
       responses:
         '200':
@@ -9535,7 +9563,7 @@ paths:
               QueryVoteResponse is the response type for the Query/Vote RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9757,7 +9785,7 @@ paths:
               QueryAnnualProvisionsResponse is the response type for the
               Query/AnnualProvisions RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9800,7 +9828,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9860,7 +9888,7 @@ paths:
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9909,7 +9937,7 @@ paths:
               QueryParamsResponse is response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -9977,7 +10005,7 @@ paths:
               QueryParamsResponse is the response type for the Query/Params RPC
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -10043,6 +10071,7 @@ paths:
                         liveness downtime.
                     tombstoned:
                       type: boolean
+                      format: boolean
                       description: >-
                         Whether or not a validator has been tombstoned (killed
                         out of validator set). It is set
@@ -10096,7 +10125,7 @@ paths:
 
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -10164,6 +10193,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -10174,9 +10204,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/slashing/v1beta1/signing_infos/{cons_address}:
+  '/cosmos/slashing/v1beta1/signing_infos/{cons_address}':
     get:
       summary: SigningInfo queries the signing info of given cons address
       operationId: SigningInfo
@@ -10217,6 +10248,7 @@ paths:
                       liveness downtime.
                   tombstoned:
                     type: boolean
+                    format: boolean
                     description: >-
                       Whether or not a validator has been tombstoned (killed out
                       of validator set). It is set
@@ -10245,7 +10277,7 @@ paths:
 
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -10274,7 +10306,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/staking/v1beta1/delegations/{delegator_addr}:
+  '/cosmos/staking/v1beta1/delegations/{delegator_addr}':
     get:
       summary: >-
         DelegatorDelegations queries all delegations of a given delegator
@@ -10361,7 +10393,7 @@ paths:
               QueryDelegatorDelegationsResponse is response type for the
               Query/DelegatorDelegations RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -10601,6 +10633,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -10611,9 +10644,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/staking/v1beta1/delegators/{delegator_addr}/redelegations:
+  '/cosmos/staking/v1beta1/delegators/{delegator_addr}/redelegations':
     get:
       summary: Redelegations queries redelegations of given address.
       operationId: Redelegations
@@ -10760,7 +10794,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -11010,6 +11044,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -11020,9 +11055,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/staking/v1beta1/delegators/{delegator_addr}/unbonding_delegations:
+  '/cosmos/staking/v1beta1/delegators/{delegator_addr}/unbonding_delegations':
     get:
       summary: >-
         DelegatorUnbondingDelegations queries all unbonding delegations of a
@@ -11111,7 +11147,7 @@ paths:
 
               Query/UnbondingDelegatorDelegations RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -11351,6 +11387,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -11361,9 +11398,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/staking/v1beta1/delegators/{delegator_addr}/validators:
+  '/cosmos/staking/v1beta1/delegators/{delegator_addr}/validators':
     get:
       summary: |-
         DelegatorValidators queries all validators info for given delegator
@@ -11564,6 +11602,7 @@ paths:
                             }
                     jailed:
                       type: boolean
+                      format: boolean
                       description: >-
                         jailed defined whether the validator has been jailed
                         from bonded status or not.
@@ -11710,7 +11749,7 @@ paths:
               QueryDelegatorValidatorsResponse is response type for the
               Query/DelegatorValidators RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -11950,6 +11989,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -11960,9 +12000,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/staking/v1beta1/delegators/{delegator_addr}/validators/{validator_addr}:
+  '/cosmos/staking/v1beta1/delegators/{delegator_addr}/validators/{validator_addr}':
     get:
       summary: |-
         DelegatorValidator queries validator info for given delegator validator
@@ -12159,6 +12200,7 @@ paths:
                           }
                   jailed:
                     type: boolean
+                    format: boolean
                     description: >-
                       jailed defined whether the validator has been jailed from
                       bonded status or not.
@@ -12285,7 +12327,7 @@ paths:
               QueryDelegatorValidatorResponse response type for the
               Query/DelegatorValidator RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -12486,7 +12528,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/staking/v1beta1/historical_info/{height}:
+  '/cosmos/staking/v1beta1/historical_info/{height}':
     get:
       summary: HistoricalInfo queries the historical info for given height.
       operationId: HistoricalInfo
@@ -12767,6 +12809,7 @@ paths:
                                 }
                         jailed:
                           type: boolean
+                          format: boolean
                           description: >-
                             jailed defined whether the validator has been jailed
                             from bonded status or not.
@@ -12897,7 +12940,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -13134,7 +13177,7 @@ paths:
               QueryParamsResponse is response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -13344,7 +13387,7 @@ paths:
                     type: string
             description: QueryPoolResponse is response type for the Query/Pool RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -13733,6 +13776,7 @@ paths:
                             }
                     jailed:
                       type: boolean
+                      format: boolean
                       description: >-
                         jailed defined whether the validator has been jailed
                         from bonded status or not.
@@ -13879,7 +13923,7 @@ paths:
               QueryValidatorsResponse is response type for the Query/Validators
               RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -14119,6 +14163,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -14129,9 +14174,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/staking/v1beta1/validators/{validator_addr}:
+  '/cosmos/staking/v1beta1/validators/{validator_addr}':
     get:
       summary: Validator queries validator info for given validator address.
       operationId: Validator
@@ -14326,6 +14372,7 @@ paths:
                           }
                   jailed:
                     type: boolean
+                    format: boolean
                     description: >-
                       jailed defined whether the validator has been jailed from
                       bonded status or not.
@@ -14452,7 +14499,7 @@ paths:
               QueryValidatorResponse is response type for the Query/Validator
               RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -14648,7 +14695,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/staking/v1beta1/validators/{validator_addr}/delegations:
+  '/cosmos/staking/v1beta1/validators/{validator_addr}/delegations':
     get:
       summary: ValidatorDelegations queries delegate info for given validator.
       operationId: ValidatorDelegations
@@ -14730,7 +14777,7 @@ paths:
               QueryValidatorDelegationsResponse is response type for the
               Query/ValidatorDelegations RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -14970,6 +15017,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -14980,9 +15028,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}:
+  '/cosmos/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}':
     get:
       summary: Delegation queries delegate info for given validator delegator pair.
       operationId: Delegation
@@ -15044,7 +15093,7 @@ paths:
               QueryDelegationResponse is response type for the Query/Delegation
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -15245,7 +15294,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}/unbonding_delegation:
+  '/cosmos/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}/unbonding_delegation':
     get:
       summary: |-
         UnbondingDelegation queries unbonding info for given validator delegator
@@ -15310,7 +15359,7 @@ paths:
 
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -15511,7 +15560,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/staking/v1beta1/validators/{validator_addr}/unbonding_delegations:
+  '/cosmos/staking/v1beta1/validators/{validator_addr}/unbonding_delegations':
     get:
       summary: >-
         ValidatorUnbondingDelegations queries unbonding delegations of a
@@ -15598,7 +15647,7 @@ paths:
 
               Query/ValidatorUnbondingDelegations RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -15838,6 +15887,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -15848,6 +15898,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /cosmos/tx/v1beta1/simulate:
@@ -15912,6 +15963,7 @@ paths:
                                 format: byte
                               index:
                                 type: boolean
+                                format: boolean
                             description: >-
                               EventAttribute is a single key-value pair,
                               associated with an event.
@@ -15932,7 +15984,7 @@ paths:
               SimulateResponse is the response type for the
               Service.SimulateRPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -16138,7 +16190,7 @@ paths:
           schema:
             $ref: '#/definitions/cosmos.tx.v1beta1.GetTxsEventResponse'
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -16381,6 +16433,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -16391,6 +16444,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: order_by
           description: |2-
              - ORDER_BY_UNSPECIFIED: ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case.
@@ -16434,7 +16488,7 @@ paths:
                     description: Response code.
                   data:
                     type: string
-                    description: Result bytes, if any.
+                    description: 'Result bytes, if any.'
                   raw_log:
                     type: string
                     description: >-
@@ -16706,6 +16760,7 @@ paths:
                                 format: byte
                               index:
                                 type: boolean
+                                format: boolean
                             description: >-
                               EventAttribute is a single key-value pair,
                               associated with an event.
@@ -16741,7 +16796,7 @@ paths:
               BroadcastTxResponse is the response type for the
               Service.BroadcastTx method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -16965,7 +17020,7 @@ paths:
               RPC method.
       tags:
         - Service
-  /cosmos/tx/v1beta1/txs/block/{height}:
+  '/cosmos/tx/v1beta1/txs/block/{height}':
     get:
       summary: GetBlockWithTxs fetches a block with decoded txs.
       description: 'Since: cosmos-sdk 0.45.2'
@@ -16976,7 +17031,7 @@ paths:
           schema:
             $ref: '#/definitions/cosmos.tx.v1beta1.GetBlockWithTxsResponse'
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -17217,6 +17272,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -17227,9 +17283,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Service
-  /cosmos/tx/v1beta1/txs/{hash}:
+  '/cosmos/tx/v1beta1/txs/{hash}':
     get:
       summary: GetTx fetches a tx by hash.
       operationId: GetTx
@@ -17239,7 +17296,7 @@ paths:
           schema:
             $ref: '#/definitions/cosmos.tx.v1beta1.GetTxResponse'
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -17429,13 +17486,13 @@ paths:
                         }
       parameters:
         - name: hash
-          description: hash is the tx hash to query, encoded as a hex string.
+          description: 'hash is the tx hash to query, encoded as a hex string.'
           in: path
           required: true
           type: string
       tags:
         - Service
-  /cosmos/upgrade/v1beta1/applied_plan/{name}:
+  '/cosmos/upgrade/v1beta1/applied_plan/{name}':
     get:
       summary: AppliedPlan queries a previously applied upgrade plan by its name.
       operationId: AppliedPlan
@@ -17455,7 +17512,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -17892,7 +17949,7 @@ paths:
 
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -18121,7 +18178,7 @@ paths:
 
               Since: cosmos-sdk 0.43
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -18320,7 +18377,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/upgrade/v1beta1/upgraded_consensus_state/{last_height}:
+  '/cosmos/upgrade/v1beta1/upgraded_consensus_state/{last_height}':
     get:
       summary: >-
         UpgradedConsensusState queries the consensus state that will serve
@@ -18351,7 +18408,7 @@ paths:
 
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -18552,7 +18609,7 @@ paths:
         - Query
   /cosmos/authz/v1beta1/grants:
     get:
-      summary: Returns list of `Authorization`, granted to the grantee by the granter.
+      summary: 'Returns list of `Authorization`, granted to the grantee by the granter.'
       operationId: Grants
       responses:
         '200':
@@ -18773,7 +18830,7 @@ paths:
               QueryGrantsResponse is the response type for the
               Query/Authorizations RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -19023,6 +19080,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -19033,9 +19091,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/authz/v1beta1/grants/grantee/{grantee}:
+  '/cosmos/authz/v1beta1/grants/grantee/{grantee}':
     get:
       summary: GranteeGrants returns a list of `GrantAuthorization` by grantee.
       description: 'Since: cosmos-sdk 0.45.2'
@@ -19264,7 +19323,7 @@ paths:
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -19503,6 +19562,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -19513,11 +19573,12 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/authz/v1beta1/grants/granter/{granter}:
+  '/cosmos/authz/v1beta1/grants/granter/{granter}':
     get:
-      summary: GranterGrants returns list of `GrantAuthorization`, granted by granter.
+      summary: 'GranterGrants returns list of `GrantAuthorization`, granted by granter.'
       description: 'Since: cosmos-sdk 0.45.2'
       operationId: GranterGrants
       responses:
@@ -19744,7 +19805,7 @@ paths:
               QueryGranterGrantsResponse is the response type for the
               Query/GranterGrants RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -19983,6 +20044,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -19993,6 +20055,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /lbm/foundation/v1/censorships:
@@ -20046,7 +20109,7 @@ paths:
               QueryCensorshipsResponse is the response type for the
               Query/Censorships RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -20281,6 +20344,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -20291,6 +20355,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /lbm/foundation/v1/foundation_info:
@@ -20503,7 +20568,7 @@ paths:
               QueryFoundationInfoResponse is the Query/FoundationInfo response
               type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -20746,7 +20811,7 @@ paths:
                       was set, its value is undefined otherwise
             description: QueryMembersResponse is the Query/MembersResponse response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -20981,6 +21046,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -20991,9 +21057,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/foundation/v1/foundation_members/{address}:
+  '/lbm/foundation/v1/foundation_members/{address}':
     get:
       summary: Member queries a member of the foundation
       operationId: Member
@@ -21025,7 +21092,7 @@ paths:
                   and metadata.
             description: QueryMemberResponse is the Query/MemberResponse response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -21220,9 +21287,9 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/foundation/v1/grants/{grantee}/{msg_type_url}:
+  '/lbm/foundation/v1/grants/{grantee}/{msg_type_url}':
     get:
-      summary: Returns list of authorizations, granted to the grantee.
+      summary: 'Returns list of authorizations, granted to the grantee.'
       operationId: FoundationGrants
       responses:
         '200':
@@ -21430,7 +21497,7 @@ paths:
               QueryGrantsResponse is the response type for the Query/Grants RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -21676,6 +21743,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -21686,6 +21754,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /lbm/foundation/v1/params:
@@ -21708,7 +21777,7 @@ paths:
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -22223,7 +22292,7 @@ paths:
                       was set, its value is undefined otherwise
             description: QueryProposalsResponse is the Query/Proposals response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -22458,6 +22527,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -22468,9 +22538,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/foundation/v1/proposals/{proposal_id}:
+  '/lbm/foundation/v1/proposals/{proposal_id}':
     get:
       summary: Proposal queries a proposal based on proposal id.
       operationId: FoundationProposal
@@ -22773,7 +22844,7 @@ paths:
                   proposal.
             description: QueryProposalResponse is the Query/Proposal response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -22970,7 +23041,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /lbm/foundation/v1/proposals/{proposal_id}/tally:
+  '/lbm/foundation/v1/proposals/{proposal_id}/tally':
     get:
       summary: TallyResult queries the tally of a proposal votes.
       operationId: FoundationTallyResult
@@ -22998,7 +23069,7 @@ paths:
                     description: no_with_veto_count is the sum of veto.
             description: QueryTallyResultResponse is the Query/TallyResult response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -23195,7 +23266,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /lbm/foundation/v1/proposals/{proposal_id}/votes:
+  '/lbm/foundation/v1/proposals/{proposal_id}/votes':
     get:
       summary: Votes queries a vote by proposal.
       operationId: FoundationVotes
@@ -23260,7 +23331,7 @@ paths:
                       was set, its value is undefined otherwise
             description: QueryVotesResponse is the Query/Votes response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -23501,6 +23572,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -23511,9 +23583,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}:
+  '/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}':
     get:
       summary: Vote queries a vote by proposal id and voter.
       operationId: FoundationVote
@@ -23555,7 +23628,7 @@ paths:
                 description: Vote represents a vote for a proposal.
             description: QueryVoteResponse is the Query/Vote response type.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -23789,7 +23862,7 @@ paths:
               QueryTreasuryResponse is the response type for the
               Query/Treasury RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -23979,7 +24052,7 @@ paths:
                         }
       tags:
         - Query
-  /lbm/token/v1/token_classes/{contract_id}:
+  '/lbm/token/v1/token_classes/{contract_id}':
     get:
       summary: Contract queries an token metadata based on its contract id.
       operationId: TokenContract
@@ -24019,6 +24092,7 @@ paths:
                       the amount by to get its user representation.
                   mintable:
                     type: boolean
+                    format: boolean
                     description: >-
                       mintable represents whether the token is allowed to mint
                       or burn.
@@ -24027,7 +24101,7 @@ paths:
               QueryContractResponse is the response type for the Query/Contract
               RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24056,7 +24130,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/token/v1/token_classes/{contract_id}/balances/{address}:
+  '/lbm/token/v1/token_classes/{contract_id}/balances/{address}':
     get:
       summary: >-
         Balance queries the number of tokens of a given contract owned by the
@@ -24075,7 +24149,7 @@ paths:
               QueryBalanceResponse is the response type for the Query/Balance
               RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24109,7 +24183,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/token/v1/token_classes/{contract_id}/burnt:
+  '/lbm/token/v1/token_classes/{contract_id}/burnt':
     get:
       summary: Burnt queries the number of burnt tokens from the given contract id.
       operationId: TokenBurnt
@@ -24126,7 +24200,7 @@ paths:
               QueryBurntResponse is the response type for the Query/Burnt RPC
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24155,7 +24229,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/token/v1/token_classes/{contract_id}/grants/{grantee}:
+  '/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}':
     get:
       summary: GranteeGrants queries permissions on a given grantee.
       operationId: TokenGranteeGrants
@@ -24206,7 +24280,7 @@ paths:
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24284,6 +24358,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -24294,9 +24369,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/token/v1/token_classes/{contract_id}/minted:
+  '/lbm/token/v1/token_classes/{contract_id}/minted':
     get:
       summary: Minted queries the number of minted tokens from the given contract id.
       operationId: TokenMinted
@@ -24313,7 +24389,7 @@ paths:
               QueryMintedResponse is the response type for the Query/Minted RPC
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24342,7 +24418,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/token/v1/token_classes/{contract_id}/supply:
+  '/lbm/token/v1/token_classes/{contract_id}/supply':
     get:
       summary: Supply queries the number of tokens from the given contract id.
       operationId: TokenSupply
@@ -24359,7 +24435,7 @@ paths:
               QuerySupplyResponse is the response type for the Query/Supply RPC
               method
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24388,7 +24464,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}:
+  '/lbm/collection/v1/contracts/{contract_id}':
     get:
       summary: Contract queries a contract metadata based on its contract id.
       operationId: CollectionContract
@@ -24418,7 +24494,7 @@ paths:
               QueryContractResponse is the response type for the Query/Contract
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24614,7 +24690,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/balances/{address}:
+  '/lbm/collection/v1/contracts/{contract_id}/balances/{address}':
     get:
       summary: >-
         AllBalances queries the balance of all token classes for a single
@@ -24661,7 +24737,7 @@ paths:
               QueryAllBalancesResponse is the response type for the
               Query/AllBalances RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -24906,6 +24982,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -24916,9 +24993,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}:
+  '/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}':
     get:
       summary: >-
         Balance queries the balance of a single token class for a single
@@ -24944,7 +25022,7 @@ paths:
               QueryBalanceResponse is the response type for the Query/Balance
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -25150,7 +25228,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt:
+  '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt':
     get:
       summary: >-
         FTBurnt queries the number of burnt tokens from a given contract id and
@@ -25169,7 +25247,7 @@ paths:
               QueryFTBurntResponse is the response type for the Query/FTBurnt
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -25370,7 +25448,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted:
+  '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted':
     get:
       summary: >-
         FTMinted queries the number of minted tokens from a given contract id
@@ -25389,7 +25467,7 @@ paths:
               QueryFTMintedResponse is the response type for the Query/FTMinted
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -25590,7 +25668,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply:
+  '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply':
     get:
       summary: >-
         FTSupply queries the number of tokens from a given contract id and token
@@ -25609,7 +25687,7 @@ paths:
               QueryFTSupplyResponse is the response type for the Query/FTSupply
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -25810,7 +25888,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/grants/{grantee}:
+  '/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}':
     get:
       summary: GranteeGrants queries all permissions on a given grantee.
       operationId: CollectionGranteeGrants
@@ -25864,7 +25942,7 @@ paths:
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -26109,6 +26187,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -26119,9 +26198,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children:
+  '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children':
     get:
       summary: Children queries the children of a given nft.
       operationId: Children
@@ -26172,7 +26252,7 @@ paths:
               QueryChildrenResponse is the response type for the Query/Children
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -26417,6 +26497,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -26427,9 +26508,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent:
+  '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/has_parent':
     get:
       summary: HasParent queries whether a given nft has its parent.
       operationId: HasParent
@@ -26441,12 +26523,13 @@ paths:
             properties:
               has_parent:
                 type: boolean
+                format: boolean
                 description: whether the token has its parent.
             description: >-
               QueryHasParentResponse is the response type for the
               Query/HasParent RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -26647,7 +26730,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent:
+  '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent':
     get:
       summary: Parent queries the parent of a given nft.
       operationId: Parent
@@ -26677,7 +26760,7 @@ paths:
               QueryParentResponse is the response type for the Query/Parent RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -26878,7 +26961,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root:
+  '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root':
     get:
       summary: Root queries the root of a given nft.
       operationId: Root
@@ -26908,7 +26991,7 @@ paths:
               QueryRootResponse is the response type for the Query/Root RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -27109,7 +27192,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name:
+  '/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name':
     get:
       summary: >-
         TokenClassTypeName queries the fully qualified message type name of a
@@ -27132,7 +27215,7 @@ paths:
 
               Since: 0.46.0 (finschia)
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -27333,7 +27416,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}:
+  '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}':
     get:
       summary: TokenType queries metadata of a token type.
       operationId: TokenType
@@ -27368,7 +27451,7 @@ paths:
               QueryTokenTypeResponse is the response type for the
               Query/TokenType RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -27571,7 +27654,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt:
+  '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt':
     get:
       summary: >-
         NFTBurnt queries the number of burnt tokens from a given contract id and
@@ -27590,7 +27673,7 @@ paths:
               QueryNFTBurntResponse is the response type for the Query/NFTBurnt
               RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -27793,7 +27876,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted:
+  '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted':
     get:
       summary: >-
         NFTMinted queries the number of minted tokens from a given contract id
@@ -27812,7 +27895,7 @@ paths:
               QueryNFTMintedResponse is the response type for the
               Query/NFTMinted RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -28015,7 +28098,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply:
+  '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply':
     get:
       summary: >-
         NFTSupply queries the number of tokens from a given contract id and
@@ -28034,7 +28117,7 @@ paths:
               QueryNFTSupplyResponse is the response type for the
               Query/NFTSupply RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -28237,7 +28320,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}:
+  '/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}':
     get:
       summary: Token queries a metadata of a token from its token id.
       operationId: Token
@@ -28422,7 +28505,7 @@ paths:
               QueryTokenResponse is the response type for the Query/Token RPC
               method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -28623,7 +28706,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/feegrant/v1beta1/allowance/{granter}/{grantee}:
+  '/cosmos/feegrant/v1beta1/allowance/{granter}/{grantee}':
     get:
       summary: Allowance returns fee granted to the grantee by the granter.
       operationId: Allowance
@@ -28722,7 +28805,7 @@ paths:
               QueryAllowanceResponse is the response type for the
               Query/Allowance RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -28927,7 +29010,7 @@ paths:
           type: string
       tags:
         - Query
-  /cosmos/feegrant/v1beta1/allowances/{grantee}:
+  '/cosmos/feegrant/v1beta1/allowances/{grantee}':
     get:
       summary: Allowances returns all the grants for address.
       operationId: Allowances
@@ -29048,7 +29131,7 @@ paths:
               QueryAllowancesResponse is the response type for the
               Query/Allowances RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -29287,6 +29370,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -29297,9 +29381,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /cosmos/feegrant/v1beta1/issued/{granter}:
+  '/cosmos/feegrant/v1beta1/issued/{granter}':
     get:
       summary: |-
         AllowancesByGranter returns all the grants given by an address
@@ -29422,7 +29507,7 @@ paths:
               QueryAllowancesByGranterResponse is the response type for the
               Query/AllowancesByGranter RPC method.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -29661,6 +29746,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -29671,6 +29757,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /cosmos/base/node/v1beta1/config:
@@ -29689,7 +29776,7 @@ paths:
               ConfigResponse defines the response structure for the Config gRPC
               query.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -29727,7 +29814,7 @@ paths:
                 items:
                   type: string
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -29750,13 +29837,13 @@ paths:
                       format: byte
       parameters:
         - name: role
-          description: the role name (guardian, operator, judge).
+          description: 'the role name (guardian, operator, judge).'
           in: query
           required: false
           type: string
       tags:
         - Query
-  /lbm/fbridge/v1/members/{address}:
+  '/lbm/fbridge/v1/members/{address}':
     get:
       summary: Member queries the role of a specific member
       operationId: FBridgeMember
@@ -29769,7 +29856,7 @@ paths:
               role:
                 type: string
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -29862,7 +29949,7 @@ paths:
                       target denom of the bridge module. This is the base denom
                       of Finschia normally.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -29956,7 +30043,7 @@ paths:
 
                       was set, its value is undefined otherwise
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30024,6 +30111,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -30034,9 +30122,10 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
-  /lbm/fbridge/v1/proposals/{proposal_id}:
+  '/lbm/fbridge/v1/proposals/{proposal_id}':
     get:
       summary: Proposal queries a SuggestRole Proposal
       operationId: FBridgeProposal
@@ -30082,7 +30171,7 @@ paths:
                       the unix timestamp the proposal will be expired (unix
                       timestamp)
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30112,7 +30201,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /lbm/fbridge/v1/proposals/{proposal_id}/votes:
+  '/lbm/fbridge/v1/proposals/{proposal_id}/votes':
     get:
       summary: Votes queries votes of a given proposal.
       operationId: FBridgeVotes
@@ -30149,7 +30238,7 @@ paths:
                   description: Vote defines a vote on a role proposal.
                 description: votes defined the queried votes.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30179,9 +30268,9 @@ paths:
           format: uint64
       tags:
         - Query
-  /lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}:
+  '/lbm/fbridge/v1/proposals/{proposal_id}/votes/{voter}':
     get:
-      summary: Vote queries voted information based on proposalID, voterAddr.
+      summary: 'Vote queries voted information based on proposalID, voterAddr.'
       operationId: FBridgeVote
       responses:
         '200':
@@ -30213,7 +30302,7 @@ paths:
                        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
                 description: Vote defines a vote on a role proposal.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30248,7 +30337,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/fbridge/v1/receiving/commitments/{seq}:
+  '/lbm/fbridge/v1/receiving/commitments/{seq}':
     get:
       summary: Commitments queries commitments of a specific sequence number
       operationId: FBridgeCommitments
@@ -30263,7 +30352,7 @@ paths:
                 items:
                   type: string
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30309,7 +30398,7 @@ paths:
                 type: string
                 format: uint64
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30332,7 +30421,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs:
+  '/lbm/fbridge/v1/receiving/operators/{operator}/needed_submission_seqs':
     get:
       summary: >-
         NeededSubmissionSeqs queries a list of sequence numbers that need to be
@@ -30358,7 +30447,7 @@ paths:
                   type: string
                   format: uint64
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30393,7 +30482,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}:
+  '/lbm/fbridge/v1/receiving/operators/{operator}/provision/{seq}':
     get:
       summary: >-
         SubmittedProvision queries a provision submitted by a particular
@@ -30439,6 +30528,7 @@ paths:
                       provision
                   is_claimed:
                     type: boolean
+                    format: boolean
                     title: whether the provision has been claimed
                 description: >-
                   ProvisionStatus is a struct that represents the status of a
@@ -30447,7 +30537,7 @@ paths:
                   To optimize computational cost, we have collected frequently
                   changing values from provision.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30482,7 +30572,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /lbm/fbridge/v1/receiving/operators/{operator}/seq:
+  '/lbm/fbridge/v1/receiving/operators/{operator}/seq':
     get:
       summary: >-
         GreatestSeqByOperator queries a greatest sequence number confirmed by a
@@ -30498,7 +30588,7 @@ paths:
                 type: string
                 format: uint64
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30527,7 +30617,7 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/fbridge/v1/receiving/provision/{seq}:
+  '/lbm/fbridge/v1/receiving/provision/{seq}':
     get:
       summary: ConfirmedProvision queries a particular sequence of confirmed provisions
       operationId: ConfirmedProvision
@@ -30571,6 +30661,7 @@ paths:
                       provision
                   is_claimed:
                     type: boolean
+                    format: boolean
                     title: whether the provision has been claimed
                 description: >-
                   ProvisionStatus is a struct that represents the status of a
@@ -30579,7 +30670,7 @@ paths:
                   To optimize computational cost, we have collected frequently
                   changing values from provision.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30627,7 +30718,7 @@ paths:
                   type: string
                   format: uint64
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30674,7 +30765,7 @@ paths:
                 type: string
                 format: uint64
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30733,7 +30824,7 @@ paths:
                   BridgeStatusMetadata defines the metadata of the bridge
                   status.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30778,7 +30869,7 @@ paths:
                   swap_rate:
                     type: string
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30800,11 +30891,11 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: fromDenom
+        - name: from_denom
           in: query
           required: false
           type: string
-        - name: toDenom
+        - name: to_denom
           in: query
           required: false
           type: string
@@ -30855,7 +30946,7 @@ paths:
 
                   signatures required by gogoproto.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -30877,11 +30968,11 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: fromDenom
+        - name: from_denom
           in: query
           required: false
           type: string
-        - name: toDenom
+        - name: to_denom
           in: query
           required: false
           type: string
@@ -30938,7 +31029,7 @@ paths:
                            PageResponse page = 2;
                    }
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -31006,6 +31097,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
         - name: pagination.reverse
           description: >-
             reverse is set to true if results are to be returned in the
@@ -31016,6 +31108,7 @@ paths:
           in: query
           required: false
           type: boolean
+          format: boolean
       tags:
         - Query
   /lbm/fswap/v1/total_swappable_to_coin_amount:
@@ -31046,7 +31139,7 @@ paths:
 
                   signatures required by gogoproto.
         default:
-          description: An unexpected error response.
+          description: An unexpected error response
           schema:
             type: object
             properties:
@@ -31068,11 +31161,11 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: fromDenom
+        - name: from_denom
           in: query
           required: false
           type: string
-        - name: toDenom
+        - name: to_denom
           in: query
           required: false
           type: string
@@ -31680,6 +31773,7 @@ definitions:
           If left empty it will default to a value to be set by each app.
       count_total:
         type: boolean
+        format: boolean
         description: >-
           count_total is set to true  to indicate that the result set should
           include
@@ -31692,6 +31786,7 @@ definitions:
           is set.
       reverse:
         type: boolean
+        format: boolean
         description: >-
           reverse is set to true if results are to be returned in the descending
           order.
@@ -32164,6 +32259,7 @@ definitions:
               type: string
             enabled:
               type: boolean
+              format: boolean
           description: >-
             SendEnabled maps coin denom to a send_enabled status (whether a
             denom is
@@ -32171,6 +32267,7 @@ definitions:
             sendable).
       default_send_enabled:
         type: boolean
+        format: boolean
     description: Params defines the parameters for the bank module.
   cosmos.bank.v1beta1.QueryAllBalancesResponse:
     type: object
@@ -32417,6 +32514,7 @@ definitions:
                   type: string
                 enabled:
                   type: boolean
+                  format: boolean
               description: >-
                 SendEnabled maps coin denom to a send_enabled status (whether a
                 denom is
@@ -32424,6 +32522,7 @@ definitions:
                 sendable).
           default_send_enabled:
             type: boolean
+            format: boolean
         description: Params defines the parameters for the bank module.
     description: >-
       QueryParamsResponse defines the response type for querying x/bank
@@ -32538,6 +32637,7 @@ definitions:
         type: string
       enabled:
         type: boolean
+        format: boolean
     description: |-
       SendEnabled maps coin denom to a send_enabled status (whether a denom is
       sendable).
@@ -33945,6 +34045,7 @@ definitions:
     properties:
       syncing:
         type: boolean
+        format: boolean
     description: >-
       GetSyncingResponse is the response type for the Query/GetSyncing RPC
       method.
@@ -36810,6 +36911,7 @@ definitions:
         type: string
       withdraw_addr_enabled:
         type: boolean
+        format: boolean
     description: Params defines the set of params for the distribution module.
   cosmos.distribution.v1beta1.QueryCommunityPoolResponse:
     type: object
@@ -36940,6 +37042,7 @@ definitions:
             type: string
           withdraw_addr_enabled:
             type: boolean
+            format: boolean
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
   cosmos.distribution.v1beta1.QueryValidatorCommissionResponse:
     type: object
@@ -38889,6 +38992,7 @@ definitions:
               downtime.
           tombstoned:
             type: boolean
+            format: boolean
             description: >-
               Whether or not a validator has been tombstoned (killed out of
               validator set). It is set
@@ -38947,6 +39051,7 @@ definitions:
                 downtime.
             tombstoned:
               type: boolean
+              format: boolean
               description: >-
                 Whether or not a validator has been tombstoned (killed out of
                 validator set). It is set
@@ -39025,6 +39130,7 @@ definitions:
           downtime.
       tombstoned:
         type: boolean
+        format: boolean
         description: >-
           Whether or not a validator has been tombstoned (killed out of
           validator set). It is set
@@ -39070,7 +39176,7 @@ definitions:
         properties:
           rate:
             type: string
-            description: rate is the commission rate charged to delegators, as a fraction.
+            description: 'rate is the commission rate charged to delegators, as a fraction.'
           max_rate:
             type: string
             description: >-
@@ -39091,7 +39197,7 @@ definitions:
     properties:
       rate:
         type: string
-        description: rate is the commission rate charged to delegators, as a fraction.
+        description: 'rate is the commission rate charged to delegators, as a fraction.'
       max_rate:
         type: string
         description: >-
@@ -39439,6 +39545,7 @@ definitions:
                     }
             jailed:
               type: boolean
+              format: boolean
               description: >-
                 jailed defined whether the validator has been jailed from bonded
                 status or not.
@@ -39973,6 +40080,7 @@ definitions:
                   }
           jailed:
             type: boolean
+            format: boolean
             description: >-
               jailed defined whether the validator has been jailed from bonded
               status or not.
@@ -40270,6 +40378,7 @@ definitions:
                     }
             jailed:
               type: boolean
+              format: boolean
               description: >-
                 jailed defined whether the validator has been jailed from bonded
                 status or not.
@@ -40675,6 +40784,7 @@ definitions:
                         }
                 jailed:
                   type: boolean
+                  format: boolean
                   description: >-
                     jailed defined whether the validator has been jailed from
                     bonded status or not.
@@ -41268,6 +41378,7 @@ definitions:
                   }
           jailed:
             type: boolean
+            format: boolean
             description: >-
               jailed defined whether the validator has been jailed from bonded
               status or not.
@@ -41634,6 +41745,7 @@ definitions:
                     }
             jailed:
               type: boolean
+              format: boolean
               description: >-
                 jailed defined whether the validator has been jailed from bonded
                 status or not.
@@ -42212,6 +42324,7 @@ definitions:
               }
       jailed:
         type: boolean
+        format: boolean
         description: >-
           jailed defined whether the validator has been jailed from bonded
           status or not.
@@ -42414,6 +42527,7 @@ definitions:
                     format: byte
                   index:
                     type: boolean
+                    format: boolean
                 description: >-
                   EventAttribute is a single key-value pair, associated with an
                   event.
@@ -42470,7 +42584,7 @@ definitions:
         description: Response code.
       data:
         type: string
-        description: Result bytes, if any.
+        description: 'Result bytes, if any.'
       raw_log:
         type: string
         description: |-
@@ -42723,6 +42837,7 @@ definitions:
                     format: byte
                   index:
                     type: boolean
+                    format: boolean
                 description: >-
                   EventAttribute is a single key-value pair, associated with an
                   event.
@@ -42946,7 +43061,7 @@ definitions:
             description: Response code.
           data:
             type: string
-            description: Result bytes, if any.
+            description: 'Result bytes, if any.'
           raw_log:
             type: string
             description: |-
@@ -43206,6 +43321,7 @@ definitions:
                         format: byte
                       index:
                         type: boolean
+                        format: boolean
                     description: >-
                       EventAttribute is a single key-value pair, associated with
                       an event.
@@ -43895,7 +44011,7 @@ definitions:
             description: Response code.
           data:
             type: string
-            description: Result bytes, if any.
+            description: 'Result bytes, if any.'
           raw_log:
             type: string
             description: |-
@@ -44155,6 +44271,7 @@ definitions:
                         format: byte
                       index:
                         type: boolean
+                        format: boolean
                     description: >-
                       EventAttribute is a single key-value pair, associated with
                       an event.
@@ -44215,7 +44332,7 @@ definitions:
               description: Response code.
             data:
               type: string
-              description: Result bytes, if any.
+              description: 'Result bytes, if any.'
             raw_log:
               type: string
               description: |-
@@ -44479,6 +44596,7 @@ definitions:
                           format: byte
                         index:
                           type: boolean
+                          format: boolean
                       description: >-
                         EventAttribute is a single key-value pair, associated
                         with an event.
@@ -44929,6 +45047,7 @@ definitions:
                         format: byte
                       index:
                         type: boolean
+                        format: boolean
                     description: >-
                       EventAttribute is a single key-value pair, associated with
                       an event.
@@ -46099,7 +46218,8 @@ definitions:
               format: byte
             index:
               type: boolean
-          description: EventAttribute is a single key-value pair, associated with an event.
+              format: boolean
+          description: 'EventAttribute is a single key-value pair, associated with an event.'
     description: >-
       Event allows application developers to attach additional information to
 
@@ -46118,7 +46238,8 @@ definitions:
         format: byte
       index:
         type: boolean
-    description: EventAttribute is a single key-value pair, associated with an event.
+        format: boolean
+    description: 'EventAttribute is a single key-value pair, associated with an event.'
   cosmos.upgrade.v1beta1.ModuleVersion:
     type: object
     properties:
@@ -49422,6 +49543,7 @@ definitions:
           to get its user representation.
       mintable:
         type: boolean
+        format: boolean
         description: mintable represents whether the token is allowed to mint or burn.
     description: Contract defines token information.
   lbm.token.v1.Grant:
@@ -49502,6 +49624,7 @@ definitions:
               amount by to get its user representation.
           mintable:
             type: boolean
+            format: boolean
             description: mintable represents whether the token is allowed to mint or burn.
         description: Contract defines token information.
     title: >-
@@ -49584,6 +49707,7 @@ definitions:
     properties:
       authorized:
         type: boolean
+        format: boolean
     title: >-
       QueryIsOperatorForResponse is the response type for the
       Query/IsOperatorFor RPC method
@@ -49876,6 +50000,7 @@ definitions:
     properties:
       has_parent:
         type: boolean
+        format: boolean
         description: whether the token has its parent.
     description: >-
       QueryHasParentResponse is the response type for the Query/HasParent RPC
@@ -49913,6 +50038,7 @@ definitions:
     properties:
       authorized:
         type: boolean
+        format: boolean
     description: >-
       QueryIsOperatorForResponse is the response type for the
       Query/IsOperatorFor RPC method.
@@ -50703,6 +50829,7 @@ definitions:
         title: a value that tells how many operators have submitted this provision
       is_claimed:
         type: boolean
+        format: boolean
         title: whether the provision has been claimed
     description: >-
       ProvisionStatus is a struct that represents the status of a provision.
@@ -50779,6 +50906,7 @@ definitions:
               provision
           is_claimed:
             type: boolean
+            format: boolean
             title: whether the provision has been claimed
         description: >-
           ProvisionStatus is a struct that represents the status of a provision.
@@ -50901,7 +51029,7 @@ definitions:
               - OPERATOR
               - JUDGE
             default: UNSPECIFIED
-            description: Role defines the role of the operator, guardian, and judge.
+            description: 'Role defines the role of the operator, guardian, and judge.'
           expired_at:
             type: string
             format: date-time
@@ -50937,7 +51065,7 @@ definitions:
                 - OPERATOR
                 - JUDGE
               default: UNSPECIFIED
-              description: Role defines the role of the operator, guardian, and judge.
+              description: 'Role defines the role of the operator, guardian, and judge.'
             expired_at:
               type: string
               format: date-time
@@ -51005,6 +51133,7 @@ definitions:
               provision
           is_claimed:
             type: boolean
+            format: boolean
             title: whether the provision has been claimed
         description: >-
           ProvisionStatus is a struct that represents the status of a provision.
@@ -51074,7 +51203,7 @@ definitions:
       - OPERATOR
       - JUDGE
     default: UNSPECIFIED
-    description: Role defines the role of the operator, guardian, and judge.
+    description: 'Role defines the role of the operator, guardian, and judge.'
   lbm.fbridge.v1.RoleProposal:
     type: object
     properties:
@@ -51101,7 +51230,7 @@ definitions:
           - OPERATOR
           - JUDGE
         default: UNSPECIFIED
-        description: Role defines the role of the operator, guardian, and judge.
+        description: 'Role defines the role of the operator, guardian, and judge.'
       expired_at:
         type: string
         format: date-time

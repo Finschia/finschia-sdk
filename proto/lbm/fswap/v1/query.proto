@@ -31,8 +31,8 @@ service Query {
 }
 
 message QuerySwappedRequest {
-  string fromDenom = 1;
-  string toDenom   = 2;
+  string from_denom = 1;
+  string to_denom   = 2;
 }
 message QuerySwappedResponse {
   cosmos.base.v1beta1.Coin from_coin_amount = 1
@@ -42,8 +42,8 @@ message QuerySwappedResponse {
 }
 
 message QueryTotalSwappableToCoinAmountRequest {
-  string fromDenom = 1;
-  string toDenom   = 2;
+  string from_denom = 1;
+  string to_denom   = 2;
 }
 message QueryTotalSwappableToCoinAmountResponse {
   cosmos.base.v1beta1.Coin swappable_amount = 1
@@ -51,8 +51,8 @@ message QueryTotalSwappableToCoinAmountResponse {
 }
 
 message QuerySwapRequest {
-  string fromDenom = 1;
-  string toDenom   = 2;
+  string from_denom = 1;
+  string to_denom   = 2;
 }
 message QuerySwapResponse {
   Swap swap = 1 [(gogoproto.nullable) = false];
