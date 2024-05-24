@@ -61,6 +61,10 @@ func (k Keeper) addVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 
 func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress) error {
 	previousRole := k.GetRole(ctx, addr)
+	if previousRole == role {
+		return nil
+	}
+
 	roleMeta := k.GetRoleMetadata(ctx)
 	nInactive := k.GetBridgeInactiveCounter(ctx)
 
