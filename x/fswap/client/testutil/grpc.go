@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwap() {
 	}{
 		{
 			"test query swap with valid query string",
-			fmt.Sprintf("%s/lbm/fswap/v1/swap?fromDenom=stake&toDenom=dummy", baseURL),
+			fmt.Sprintf("%s/lbm/fswap/v1/swap?from_denom=stake&to_denom=dummy", baseURL),
 			false,
 			&fswaptypes.QuerySwapResponse{
 				Swap: s.dummySwap,
@@ -33,19 +33,19 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwap() {
 		},
 		{
 			"test query swap with not existed swap pairs",
-			fmt.Sprintf("%s/lbm/fswap/v1/swap?fromDenom=fake&toDenom=dummy", baseURL),
+			fmt.Sprintf("%s/lbm/fswap/v1/swap?from_denom=fake&to_denom=dummy", baseURL),
 			true,
 			&fswaptypes.QuerySwapResponse{},
 		},
 		{
-			"test query swap with nil toDenom",
-			fmt.Sprintf("%s/lbm/fswap/v1/swap?fromDenom=fake", baseURL),
+			"test query swap with nil to_denom",
+			fmt.Sprintf("%s/lbm/fswap/v1/swap?from_denom=stake", baseURL),
 			true,
 			&fswaptypes.QuerySwapResponse{},
 		},
 		{
-			"test query swap with nil fromDenom",
-			fmt.Sprintf("%s/lbm/fswap/v1/swap?toDenom=fake", baseURL),
+			"test query swap with nil from_denom",
+			fmt.Sprintf("%s/lbm/fswap/v1/swap?to_denom=dummy", baseURL),
 			true,
 			&fswaptypes.QuerySwapResponse{},
 		},
@@ -120,7 +120,7 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwapped() {
 	}{
 		{
 			"test query swapped with valid query string",
-			fmt.Sprintf("%s/lbm/fswap/v1/swapped?fromDenom=stake&toDenom=dummy", baseURL),
+			fmt.Sprintf("%s/lbm/fswap/v1/swapped?from_denom=stake&to_denom=dummy", baseURL),
 			false,
 			&fswaptypes.QuerySwappedResponse{
 				FromCoinAmount: sdk.NewCoin("stake", sdk.ZeroInt()),
@@ -129,19 +129,19 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwapped() {
 		},
 		{
 			"test query swapped with not existed swap pairs",
-			fmt.Sprintf("%s/lbm/fswap/v1/swapped?fromDenom=fake&toDenom=dummy", baseURL),
+			fmt.Sprintf("%s/lbm/fswap/v1/swapped?from_denom=fake&to_denom=dummy", baseURL),
 			true,
 			&fswaptypes.QuerySwappedResponse{},
 		},
 		{
-			"test query swapped with nil toDenom",
-			fmt.Sprintf("%s/lbm/fswap/v1/swapped?fromDenom=fake", baseURL),
+			"test query swapped with nil to_denom",
+			fmt.Sprintf("%s/lbm/fswap/v1/swapped?from_denom=stake", baseURL),
 			true,
 			&fswaptypes.QuerySwappedResponse{},
 		},
 		{
-			"test query swapped with nil fromDenom",
-			fmt.Sprintf("%s/lbm/fswap/v1/swapped?toDenom=fake", baseURL),
+			"test query swapped with nil from_denom",
+			fmt.Sprintf("%s/lbm/fswap/v1/swapped?to_denom=dummy", baseURL),
 			true,
 			&fswaptypes.QuerySwappedResponse{},
 		},
@@ -179,7 +179,7 @@ func (s *IntegrationTestSuite) TestGRPCQueryTotalSwappableAmount() {
 	}{
 		{
 			"test query total_swappable_to_coin_amount with valid query string",
-			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?fromDenom=stake&toDenom=dummy", baseURL),
+			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?from_denom=stake&to_denom=dummy", baseURL),
 			false,
 			&fswaptypes.QueryTotalSwappableToCoinAmountResponse{
 				SwappableAmount: sdk.NewCoin("dummy", s.dummySwap.AmountCapForToDenom),
@@ -187,19 +187,19 @@ func (s *IntegrationTestSuite) TestGRPCQueryTotalSwappableAmount() {
 		},
 		{
 			"test query total_swappable_to_coin_amount with not existed swap pairs",
-			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?fromDenom=fake&toDenom=dummy", baseURL),
+			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?from_denom=fake&to_denom=dummy", baseURL),
 			true,
 			&fswaptypes.QueryTotalSwappableToCoinAmountResponse{},
 		},
 		{
-			"test query total_swappable_to_coin_amount with nil toDenom",
-			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?fromDenom=fake", baseURL),
+			"test query total_swappable_to_coin_amount with nil to_denom",
+			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?from_denom=stake", baseURL),
 			true,
 			&fswaptypes.QueryTotalSwappableToCoinAmountResponse{},
 		},
 		{
-			"test query total_swappable_to_coin_amount with nil fromDenom",
-			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?toDenom=fake", baseURL),
+			"test query total_swappable_to_coin_amount with nil from_denom",
+			fmt.Sprintf("%s/lbm/fswap/v1/total_swappable_to_coin_amount?to_denom=dummy", baseURL),
 			true,
 			&fswaptypes.QueryTotalSwappableToCoinAmountResponse{},
 		},
