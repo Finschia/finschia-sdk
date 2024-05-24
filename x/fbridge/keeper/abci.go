@@ -34,12 +34,8 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		}
 
 		if types.CheckTrustLevelThreshold(k.GetRoleMetadata(ctx).Guardian, voteYes, guardianTrustLevel) || proposal.Proposer == k.GetAuthority() {
-			target := sdk.MustAccAddressFromBech32(proposal.Target)
-			if proposal.Role != k.GetRole(ctx, target) {
-				err := k.updateRole(ctx, proposal.Role, target)
-				if err != nil {
-					panic(err)
-				}
+			if err := k.updateRole(ctx, proposal.Role, sdk.MustAccAddressFromBech32(proposal.Target)); err != nil {
+				panic(err)
 			}
 
 			if err := k.deleteRoleProposal(ctx, proposal.Id); err != nil {
