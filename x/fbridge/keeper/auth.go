@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"encoding/binary"
-	"fmt"
 	"time"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -102,7 +101,7 @@ func (k Keeper) updateRole(ctx sdk.Context, role types.Role, addr sdk.AccAddress
 	case types.RoleGuardian:
 		roleMeta.Guardian++
 		if err := k.setBridgeSwitch(ctx, addr, types.StatusActive); err != nil {
-			return err
+			panic(err)
 		}
 	case types.RoleOperator:
 		roleMeta.Operator++
@@ -175,12 +174,14 @@ func (k Keeper) GetRoleProposal(ctx sdk.Context, id uint64) (proposal types.Role
 	return proposal, true
 }
 
-func (k Keeper) deleteRoleProposal(ctx sdk.Context, id uint64) {
+func (k Keeper) deleteRoleProposal(ctx sdk.Context, id uint64) error {
 	store := ctx.KVStore(k.storeKey)
 	if _, found := k.GetRoleProposal(ctx, id); !found {
-		panic(fmt.Sprintf("role proposal #%d not found", id))
+		return sdkerrors.ErrNotFound.Wrapf("role proposal #%d not found", id)
 	}
+
 	store.Delete(types.ProposalKey(id))
+	return nil
 }
 
 // IterateProposals iterates over the all the role proposals and performs a callback function
