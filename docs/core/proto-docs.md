@@ -14366,8 +14366,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `fromDenom` | [string](#string) |  |  |
-| `toDenom` | [string](#string) |  |  |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
 
 
 
@@ -14397,8 +14397,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `fromDenom` | [string](#string) |  |  |
-| `toDenom` | [string](#string) |  |  |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
 
 
 
@@ -14460,8 +14460,8 @@ GenesisState defines the fswap module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `fromDenom` | [string](#string) |  |  |
-| `toDenom` | [string](#string) |  |  |
+| `from_denom` | [string](#string) |  |  |
+| `to_denom` | [string](#string) |  |  |
 
 
 
