@@ -86,4 +86,7 @@ func TestBridgeHaltAndResume(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, types.StatusActive, k.GetBridgeStatus(ctx), "bridge status must be active (2/3)")
 	require.Equal(t, types.BridgeStatusMetadata{Active: 2, Inactive: 1}, k.GetBridgeStatusMetadata(ctx))
+
+	err = k.updateBridgeSwitch(ctx, addrs[0], 3)
+	require.Error(t, err, "invalid bridge status must be rejected")
 }
