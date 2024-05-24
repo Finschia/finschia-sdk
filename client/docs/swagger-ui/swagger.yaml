@@ -35356,11 +35356,11 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: fromDenom
+        - name: from_denom
           in: query
           required: false
           type: string
-        - name: toDenom
+        - name: to_denom
           in: query
           required: false
           type: string
@@ -35433,11 +35433,11 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: fromDenom
+        - name: from_denom
           in: query
           required: false
           type: string
-        - name: toDenom
+        - name: to_denom
           in: query
           required: false
           type: string
@@ -35626,11 +35626,11 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: fromDenom
+        - name: from_denom
           in: query
           required: false
           type: string
-        - name: toDenom
+        - name: to_denom
           in: query
           required: false
           type: string
@@ -54267,6 +54267,49 @@ definitions:
 
           and can't be handled, they will be ignored
     description: TxBody is the body of a transaction that all signers sign over.
+<<<<<<< HEAD
+=======
+  tendermint.abci.Event:
+    type: object
+    properties:
+      type:
+        type: string
+      attributes:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+              format: byte
+            value:
+              type: string
+              format: byte
+            index:
+              type: boolean
+              format: boolean
+          description: 'EventAttribute is a single key-value pair, associated with an event.'
+    description: >-
+      Event allows application developers to attach additional information to
+
+      ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+      ResponseDeliverTx.
+
+      Later, transactions may be queried using these events.
+  tendermint.abci.EventAttribute:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
+      value:
+        type: string
+        format: byte
+      index:
+        type: boolean
+        format: boolean
+    description: 'EventAttribute is a single key-value pair, associated with an event.'
+>>>>>>> 59f7256ca (chore: refactor to use snake_case in proto (#1396))
   cosmos.upgrade.v1beta1.ModuleVersion:
     type: object
     properties:
