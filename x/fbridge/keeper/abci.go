@@ -13,7 +13,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	proposals := k.GetRoleProposals(ctx)
 	for _, proposal := range proposals {
 		if ctx.BlockTime().After(proposal.ExpiredAt) {
-			k.deleteRoleProposal(ctx, proposal.Id)
+			if err := k.deleteRoleProposal(ctx, proposal.Id); err != nil {
+				panic(err)
+			}
 		}
 	}
 }
@@ -36,7 +38,9 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				panic(err)
 			}
 
-			k.deleteRoleProposal(ctx, proposal.Id)
+			if err := k.deleteRoleProposal(ctx, proposal.Id); err != nil {
+				panic(err)
+			}
 		}
 	}
 }

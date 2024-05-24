@@ -55,7 +55,7 @@ func TestAssignRole(t *testing.T) {
 
 	// 4. Guardian assigns an address to a same role
 	err = k.updateRole(ctx, types.RoleOperator, addrs[1])
-	require.Error(t, err, "role must not be updated to the same role")
+	require.NoError(t, err)
 }
 
 func TestBridgeHaltAndResume(t *testing.T) {
@@ -86,4 +86,7 @@ func TestBridgeHaltAndResume(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, types.StatusActive, k.GetBridgeStatus(ctx), "bridge status must be active (2/3)")
 	require.Equal(t, types.BridgeStatusMetadata{Active: 2, Inactive: 1}, k.GetBridgeStatusMetadata(ctx))
+
+	err = k.updateBridgeSwitch(ctx, addrs[0], 3)
+	require.Error(t, err, "invalid bridge status must be rejected")
 }

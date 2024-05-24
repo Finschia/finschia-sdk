@@ -23,11 +23,11 @@ func (k Keeper) handleBridgeTransfer(ctx sdk.Context, sender sdk.AccAddress, amo
 	}
 
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, token); err != nil {
-		panic(err)
+		return 0, err
 	}
 
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, token); err != nil {
-		panic(fmt.Errorf("cannot burn coins after a successful send to a module account: %v", err))
+		panic(fmt.Errorf("cannot burn coins after a successful send to a module account: %s", err))
 	}
 
 	seq := k.GetNextSequence(ctx)
