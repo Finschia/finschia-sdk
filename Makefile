@@ -394,8 +394,9 @@ easyjson-gen:
 
 containerProtoVer=v0.2
 containerProtoImage=tendermintdev/sdk-proto-gen:$(containerProtoVer)
-containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)
-containerProtoGenSwagger=cosmos-sdk-proto-gen-swagger-$(containerProtoVer)
+containerSuffix=$(shell echo $(CURDIR) | sed 's/\//./g')
+containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)-$(containerSuffix)
+containerProtoGenSwagger=cosmos-sdk-proto-gen-swagger-$(containerProtoVer)-$(containerSuffix)
 containerProtoFmt=cosmos-sdk-proto-fmt-$(containerProtoVer)
 
 proto-all: proto-format proto-lint proto-gen
