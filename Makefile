@@ -406,36 +406,37 @@ easyjson-gen:
 
 containerProtoVer=v0.2
 containerProtoImage=tendermintdev/sdk-proto-gen:$(containerProtoVer)
-containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)
-containerProtoGenSwagger=cosmos-sdk-proto-gen-swagger-$(containerProtoVer)
+containerSuffix=$(shell echo $(CURDIR) | sed 's/[^[:alnum:]_-]/./g')
+containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)-$(containerSuffix)
+containerProtoGenSwagger=cosmos-sdk-proto-gen-swagger-$(containerProtoVer)-$(containerSuffix)
 containerProtoFmt=cosmos-sdk-proto-fmt-$(containerProtoVer)
 
 proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v "$(CURDIR)":/workspace --workdir /workspace $(containerProtoImage) \
 		sh ./scripts/protocgen.sh; fi
 	@go mod tidy
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
 	@echo "Generating Protobuf Any"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) sh ./scripts/protocgen-any.sh
+	$(DOCKER) run --rm -v "$(CURDIR)":/workspace --workdir /workspace $(containerProtoImage) sh ./scripts/protocgen-any.sh
 
 proto-swagger-gen:
 	@echo "Generating Protobuf Swagger"
-	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGenSwagger}$$"; then $(DOCKER) start -a $(containerProtoGenSwagger); else $(DOCKER) run --name $(containerProtoGenSwagger) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGenSwagger}$$"; then $(DOCKER) start -a $(containerProtoGenSwagger); else $(DOCKER) run --name $(containerProtoGenSwagger) -v "$(CURDIR)":/workspace --workdir /workspace $(containerProtoImage) \
 		sh ./scripts/protoc-swagger-gen.sh; fi
 
 proto-format:
 	@echo "Formatting Protobuf files"
-	@$(DOCKER) run --rm -v $(CURDIR):/workspace \
+	@$(DOCKER) run --rm -v "$(CURDIR)":/workspace \
     		--workdir /workspace tendermintdev/docker-build-proto \
     		find ./ -not -path "./third_party/*" -name *.proto -exec clang-format -i {} \;
 
 proto-lint:
-	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace cellink/clang-format-lint \
+	@$(DOCKER) run --rm -v "$(CURDIR)":/workspace --workdir /workspace cellink/clang-format-lint \
 		--clang-format-executable /clang-format/clang-format9 -r --extensions proto --exclude ./third_party/* .
 
 proto-check-breaking:

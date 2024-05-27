@@ -96,3 +96,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Document Updates
 * (x/token,collection) [#1201](https://github.com/Finschia/finschia-sdk/pull/1201) Deprecate legacy features on x/token,collection
+* (build) [\#1393](https://github.com/Finschia/finschia-sdk/pull/1393) add current directory as suffix for docker container
