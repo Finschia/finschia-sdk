@@ -24,7 +24,7 @@
 * (x/fswap) [\#1399](https://github.com/Finschia/finschia-sdk/pull/1399) add cli_test for fswap module (backport #1391)
 
 ### Bug Fixes
-* (x/auth) [#1281](https://github.com/Finschia/finschia-sdk/pull/1281) `ModuleAccount.Validate` now reports a nil `.BaseAccount` instead of panicking. (backport #1274)
+* (x/auth) [\#1281](https://github.com/Finschia/finschia-sdk/pull/1281) `ModuleAccount.Validate` now reports a nil `.BaseAccount` instead of panicking. (backport #1274)
 * (x/foundation) [\#1283](https://github.com/Finschia/finschia-sdk/pull/1283) add init logic of foundation module accounts to InitGenesis in order to eliminate potential panic (backport #1277)
 * (x/collection) [\#1282](https://github.com/Finschia/finschia-sdk/pull/1282) eliminates potential risk for Insufficient Sanity Check of tokenID in Genesis (backport #1276)
 * (x/collection) [\#1290](https://github.com/Finschia/finschia-sdk/pull/1290) export x/collection params into genesis (backport #1268)
@@ -33,11 +33,11 @@
 * (client) [\#1307](https://github.com/Finschia/finschia-sdk/pull/1307) fix possible overflow in BuildUnsignedTx (backport #1303)
 * (types) [\#1308](https://github.com/Finschia/finschia-sdk/pull/1308) add missing nil checks (backport #1299)
 * (x/staking) [\#1309](https://github.com/Finschia/finschia-sdk/pull/1309) Use bytes instead of string comparison in delete validator queue (backport cosmos/cosmos-sdk#12303) (backport #1301)
-* (client/keys) [#1315](https://github.com/Finschia/finschia-sdk/pull/1315) ignore error when key not found in `keys delete` (backport #1312)
+* (client/keys) [\#1315](https://github.com/Finschia/finschia-sdk/pull/1315) ignore error when key not found in `keys delete` (backport #1312)
 * (store) [\#1318](https://github.com/Finschia/finschia-sdk/pull/1318) fix app-hash mismatch if upgrade migration commit is interrupted(backport cosmos/cosmos-sdk#13530) (backport #1310)
 * (types) [\#1320](https://github.com/Finschia/finschia-sdk/pull/1320) fix correctly coalesce coins even with repeated denominations(backport cosmos/cosmos-sdk#13265) (backport #1313)
 * (x/crypto) [\#1322](https://github.com/Finschia/finschia-sdk/pull/1322) error if incorrect ledger public key (backport cosmos/cosmos-sdk#14460, cosmos/cosmos-sdk#19691) (backport #1316)
-* (x/auth) [#1324](https://github.com/Finschia/finschia-sdk/pull/1324) prevent signing from wrong key in multisig (backport #1319)
+* (x/auth) [\#1324](https://github.com/Finschia/finschia-sdk/pull/1324) prevent signing from wrong key in multisig (backport #1319)
 * (x/mint, x/slashing) [\#1325](https://github.com/Finschia/finschia-sdk/pull/1325) add missing nil check for params validation (backport #1323)
 * (x/server) [\#1343](https://github.com/Finschia/finschia-sdk/pull/1343) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537) (backport #1337)
 * (x/fbridge) [\#1362](https://github.com/Finschia/finschia-sdk/pull/1362) Fixes fbridge auth checking bug (backport #1361)
@@ -48,10 +48,10 @@
 * (x/fswap) [\#1398](https://github.com/Finschia/finschia-sdk/pull/1398) fix dummy denom coin data for test in fswap (backport #1392)
 
 ### Build, CI
-* (build) [#1298](https://github.com/Finschia/finschia-sdk/pull/1298) Set Finschia/ostracon version
+* (build) [\#1298](https://github.com/Finschia/finschia-sdk/pull/1298) Set Finschia/ostracon version
 
 ### Document Updates
-* (x/token,collection) [#1202](https://github.com/Finschia/finschia-sdk/pull/1202) Deprecate legacy features on x/token,collection (backport #1201)
+* (x/token,collection) [\#1202](https://github.com/Finschia/finschia-sdk/pull/1202) Deprecate legacy features on x/token,collection (backport #1201)
 * (build) [\#1402](https://github.com/Finschia/finschia-sdk/pull/1402) add current directory as suffix for docker container (backport #1393)
 
 
