@@ -28,12 +28,11 @@ import (
 type CLITestSuite struct {
 	suite.Suite
 
-	kr           keyring.Keyring
-	encCfg       testutilmod.TestEncodingConfig
-	baseCtx      client.Context
-	clientCtx    client.Context
-	addrs        []sdk.AccAddress
-	defaultFlags []string
+	kr        keyring.Keyring
+	encCfg    testutilmod.TestEncodingConfig
+	baseCtx   client.Context
+	clientCtx client.Context
+	addrs     []sdk.AccAddress
 }
 
 func TestCLITestSuite(t *testing.T) {
@@ -79,11 +78,12 @@ func (s *CLITestSuite) SetupSuite() {
 		ar.EXPECT().EnsureExists(gomock.Any(), newAddr).Return(nil).AnyTimes()
 		ar.EXPECT().GetAccountNumberSequence(gomock.Any(), newAddr).Return(uint64(i), uint64(1), nil).AnyTimes()
 	}
+}
 
-	s.defaultFlags = []string{
+func cliArgs(args ...string) []string {
+	return append(args, []string{
 		fmt.Sprintf("--output=json"),
 		fmt.Sprintf("--%s=home", flags.FlagKeyringDir),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0]),
 		fmt.Sprintf("--%s=mynote", flags.FlagNote),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
 		fmt.Sprintf("--%s=1.2", flags.FlagGasAdjustment),
@@ -95,7 +95,8 @@ func (s *CLITestSuite) SetupSuite() {
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=direct", flags.FlagSignMode),
 		fmt.Sprintf("--%s=%d", flags.FlagTimeoutHeight, 0),
-	}
+	}...,
+	)
 }
 
 func (s *CLITestSuite) TestNewTransferTxCmd() {
@@ -111,29 +112,28 @@ func (s *CLITestSuite) TestNewTransferTxCmd() {
 	}{
 		{
 			name: "invalid from address",
-			args: []string{
+			args: cliArgs(
 				s.addrs[0].String(),
 				"10stake",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, "link1..."),
-			},
+			),
 			expectErr: true,
 		},
 		{
 			name: "invalid decimal coin",
-			args: []string{
+			args: cliArgs(
 				s.addrs[1].String(),
 				fmt.Sprintf("10%s", strings.Repeat("a", 300)),
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0]),
-			},
+			),
 			expectErr: true,
 		},
 		{
 			name: "valid request",
-			args: append([]string{
+			args: cliArgs(
 				s.addrs[1].String(),
 				"10stake",
-			},
-				s.defaultFlags...,
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0]),
 			),
 			expectErr:    false,
 			respType:     &sdk.TxResponse{},
@@ -154,6 +154,205 @@ func (s *CLITestSuite) TestNewTransferTxCmd() {
 				s.Require().Equal(tc.expectedCode, tsResp.Code, out.String())
 			}
 		})
+	}
+}
 
+func (s *CLITestSuite) TestNewSuggestRoleTxCmd() {
+	cmd := cli.NewSuggestRoleTxCmd()
+	s.Require().NotNil(cmd)
+
+	tcs := []struct {
+		name         string
+		args         []string
+		expectErr    bool
+		respType     proto.Message
+		expectedCode uint32
+	}{
+		{
+			name: "invalid from address",
+			args: cliArgs(
+				s.addrs[1].String(),
+				"guardian",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, "link1..."),
+			),
+			expectErr: true,
+		},
+		{
+			name: "invalid role",
+			args: cliArgs(
+				s.addrs[1].String(),
+				"random",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr: true,
+		},
+		{
+			name: "valid request",
+			args: cliArgs(
+				s.addrs[1].String(),
+				"guardian",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr:    false,
+			respType:     &sdk.TxResponse{},
+			expectedCode: 0,
+		},
+	}
+
+	for _, tc := range tcs {
+		tc := tc
+		s.Run(tc.name, func() {
+			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
+			if tc.expectErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(err, out.String())
+				s.Require().NoError(s.clientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+				tsResp := tc.respType.(*sdk.TxResponse)
+				s.Require().Equal(tc.expectedCode, tsResp.Code, out.String())
+			}
+		})
+	}
+}
+
+func (s *CLITestSuite) TestNewAddVoteForRoleTxCmd() {
+	cmd := cli.NewAddVoteForRoleTxCmd()
+	s.Require().NotNil(cmd)
+
+	tcs := []struct {
+		name         string
+		args         []string
+		expectErr    bool
+		respType     proto.Message
+		expectedCode uint32
+	}{
+		{
+			name: "invalid from address",
+			args: cliArgs(
+				"1",
+				"yes",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, "link1..."),
+			),
+			expectErr: true,
+		},
+		{
+			name: "invalid proposal ID",
+			args: cliArgs(
+				"0xf",
+				"yes",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr: true,
+		},
+		{
+			name: "invalid vote option",
+			args: cliArgs(
+				"1",
+				"n/a",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr: true,
+		},
+		{
+			name: "valid request - yes",
+			args: cliArgs(
+				"1",
+				"yes",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr:    false,
+			respType:     &sdk.TxResponse{},
+			expectedCode: 0,
+		},
+		{
+			name: "valid request - no",
+			args: cliArgs(
+				"1",
+				"no",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr:    false,
+			respType:     &sdk.TxResponse{},
+			expectedCode: 0,
+		},
+	}
+
+	for _, tc := range tcs {
+		tc := tc
+		s.Run(tc.name, func() {
+			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
+			if tc.expectErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(err, out.String())
+				s.Require().NoError(s.clientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+				tsResp := tc.respType.(*sdk.TxResponse)
+				s.Require().Equal(tc.expectedCode, tsResp.Code, out.String())
+			}
+		})
+	}
+}
+
+func (s *CLITestSuite) TestNewSetBridgeStatusTxCmd() {
+	cmd := cli.NewSetBridgeStatusTxCmd()
+	s.Require().NotNil(cmd)
+	tcs := []struct {
+		name         string
+		args         []string
+		expectErr    bool
+		respType     proto.Message
+		expectedCode uint32
+	}{
+		{
+			name: "invalid from address",
+			args: cliArgs(
+				"halt",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, "link1..."),
+			),
+			expectErr: true,
+		},
+		{
+			name: "invalid brdige status",
+			args: cliArgs(
+				"wrongstatus",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr: true,
+		},
+		{
+			name: "valid request - halt",
+			args: cliArgs(
+				"halt",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr:    false,
+			respType:     &sdk.TxResponse{},
+			expectedCode: 0,
+		},
+		{
+			name: "valid request - resume",
+			args: cliArgs(
+				"resume",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0].String()),
+			),
+			expectErr:    false,
+			respType:     &sdk.TxResponse{},
+			expectedCode: 0,
+		},
+	}
+
+	for _, tc := range tcs {
+		tc := tc
+		s.Run(tc.name, func() {
+			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
+			if tc.expectErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(err, out.String())
+				s.Require().NoError(s.clientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+				tsResp := tc.respType.(*sdk.TxResponse)
+				s.Require().Equal(tc.expectedCode, tsResp.Code, out.String())
+			}
+		})
 	}
 }
