@@ -53,13 +53,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Event Breaking Changes
 
 ### Build, CI
-<<<<<<< HEAD
-=======
-* (ci) [\#1078](https://github.com/Finschia/finschia-sdk/pull/1078) fix tag comments in github actions workflow docker.yml
-* (repo) [\#1157](https://github.com/Finschia/finschia-sdk/pull/1157) setup CODEOWNERS and backport action
-* (ci) [\#1160](https://github.com/Finschia/finschia-sdk/pull/1160) remove autopr ci
-* (repo) [\#1356](https://github.com/Finschia/finschia-sdk/pull/1356) add v0.49.x for backport action
 * (build, ci) [\#1410](https://github.com/Finschia/finschia-sdk/pull/1410) Bump Go from 1.20 to 1.22
->>>>>>> 7ebd36fc4 (chore(deps): Bump Go from 1.20 to 1.22 (#1410))
 
 ### Document Updates
