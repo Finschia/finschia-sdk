@@ -1,4 +1,4 @@
-go 1.20
+go 1.22
 
 module github.com/Finschia/finschia-sdk
 
