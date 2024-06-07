@@ -9,7 +9,6 @@ linters:
     - gofmt
     - goconst
     - goimports
-    - golint
     - gosec
     - gosimple
     - govet
@@ -17,7 +16,6 @@ linters:
     - misspell
     - nakedret
     - prealloc
-    - scopelint
     - staticcheck
     - stylecheck
     - typecheck
@@ -27,7 +25,6 @@ linters:
     - misspell
   disable:
     - gocritic
-    - maligned
     - errcheck
     - interfacer
     - wsl
@@ -63,9 +60,6 @@ issues:
 linters-settings:
   dogsled:
     max-blank-identifiers: 3
-  maligned:
-    # print struct with more effective memory layout or not, false by default
-    suggest-new: true
   nolintlint:
     allow-unused: false
     require-explanation: false

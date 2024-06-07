@@ -53,5 +53,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Event Breaking Changes
 
 ### Build, CI
+* (build, ci) [\#1410](https://github.com/Finschia/finschia-sdk/pull/1410) Bump Go from 1.20 to 1.22
 
 ### Document Updates
