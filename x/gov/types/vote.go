@@ -141,10 +141,16 @@ func (vo *VoteOption) Unmarshal(data []byte) error {
 
 // Format implements the fmt.Formatter interface.
 func (vo VoteOption) Format(s fmt.State, verb rune) {
+	var err error
+
 	switch verb {
 	case 's':
-		s.Write([]byte(vo.String()))
+		_, err = s.Write([]byte(vo.String()))
 	default:
-		s.Write([]byte(fmt.Sprintf("%v", byte(vo))))
+		_, err = s.Write([]byte(fmt.Sprintf("%v", byte(vo))))
+	}
+
+	if err != nil {
+		panic(err)
 	}
 }

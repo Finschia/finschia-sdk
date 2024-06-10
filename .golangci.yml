@@ -1,20 +1,14 @@
 run:
   tests: true
-  timeout: 15m
-  sort-results: true
+  timeout: 5m
   allow-parallel-runners: true
-  exclude-dir: testutil/testdata
-  skip-files:
-    - server/grpc/gogoreflection/fix_registration.go
-    - "fix_registration.go"
-    - ".*\\.pb\\.go$"
-    - ".*\\.pb\\.gw\\.go$"
-    - ".*\\.pulsar\\.go$"
-    - crypto/keys/secp256k1/internal/*
   build-tags:
     - ledger
     - goleveldb
     - test_ledger_mock
+
+output:
+  sort-results: true
 
 linters:
   disable-all: true
@@ -42,6 +36,15 @@ linters:
     - unused
 
 issues:
+  exclude-dirs:
+    - "testdata$"
+  exclude-files:
+    - server/grpc/gogoreflection/fix_registration.go
+    - "fix_registration.go"
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
+    - ".*\\.pulsar\\.go$"
+    - crypto/keys/secp256k1/internal/*
   exclude-rules:
     - text: "Use of weak random number generator"
       linters:
@@ -156,8 +159,6 @@ linters-settings:
     extra-rules: true
   dogsled:
     max-blank-identifiers: 6
-  maligned:
-    suggest-new: true
   nolintlint:
     allow-unused: false
     require-explanation: false
