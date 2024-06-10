@@ -11,7 +11,7 @@ require (
 	github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/cosmos/iavl v0.19.4
+	github.com/cosmos/iavl v0.20.1
 	github.com/cosmos/ledger-cosmos-go v0.13.3
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0
 	github.com/go-kit/kit v0.13.0
@@ -62,6 +62,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/cometbft/cometbft-db v0.7.0 // indirect
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
 	github.com/creachadair/taskgroup v0.6.1 // indirect
 	github.com/danieljoos/wincred v1.0.2 // indirect
@@ -112,6 +113,7 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
+	github.com/tecbot/gorocksdb v0.0.0-20191217155057-f0fad39f321c // indirect
 	github.com/zondax/hid v0.9.2 // indirect
 	github.com/zondax/ledger-go v0.14.3 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
