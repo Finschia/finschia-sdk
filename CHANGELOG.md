@@ -112,6 +112,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#1160](https://github.com/Finschia/finschia-sdk/pull/1160) remove autopr ci
 * (repo) [\#1356](https://github.com/Finschia/finschia-sdk/pull/1356) add v0.49.x for backport action
 * (build, ci) [\#1410](https://github.com/Finschia/finschia-sdk/pull/1410) Bump Go from 1.20 to 1.22
+* (build) [\#1412](https://github.com/Finschia/finschia-sdk/pull/1412) Update outdated dependencies
 
 ### Document Updates
 * (docs) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
