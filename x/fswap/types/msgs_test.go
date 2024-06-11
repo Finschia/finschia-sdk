@@ -176,8 +176,8 @@ func TestMsgSwapValidate(t *testing.T) {
 			msg: &fswaptypes.MsgSwap{
 				FromAddress: address,
 				FromCoinAmount: sdk.Coin{
-					"",
-					sdk.OneInt(),
+					Denom:  "",
+					Amount: sdk.OneInt(),
 				},
 				ToDenom: "kai",
 			},
@@ -188,8 +188,8 @@ func TestMsgSwapValidate(t *testing.T) {
 			msg: &fswaptypes.MsgSwap{
 				FromAddress: address,
 				FromCoinAmount: sdk.Coin{
-					"cony",
-					sdk.ZeroInt(),
+					Denom:  "cony",
+					Amount: sdk.ZeroInt(),
 				},
 				ToDenom: "kai",
 			},
