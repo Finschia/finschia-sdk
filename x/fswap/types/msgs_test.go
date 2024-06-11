@@ -1,13 +1,16 @@
 package types_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 	banktypes "github.com/Finschia/finschia-sdk/x/bank/types"
 	fswaptypes "github.com/Finschia/finschia-sdk/x/fswap/types"
@@ -89,49 +92,328 @@ func TestAminoJSON(t *testing.T) {
 func TestQuerySwapRequestValidate(t *testing.T) {
 	tests := []struct {
 		name             string
-		FromDenom        string
-		ToDenom          string
-		wantErr          bool
+		msg              *fswaptypes.QuerySwapRequest
 		expectedGrpcCode codes.Code
 	}{
 		{
-			name:             "valid",
-			FromDenom:        "cony",
-			ToDenom:          "peb",
-			wantErr:          false,
+			name: "valid",
+			msg: &fswaptypes.QuerySwapRequest{
+				FromDenom: "cony",
+				ToDenom:   "kai",
+			},
 			expectedGrpcCode: codes.OK,
 		},
 		{
-			name:             "invalid: empty fromDenom",
-			FromDenom:        "",
-			ToDenom:          "peb",
-			wantErr:          true,
+			name:             "invalid: nil request",
+			msg:              nil,
 			expectedGrpcCode: codes.InvalidArgument,
 		},
 		{
-			name:             "invalid: empty toDenom",
-			FromDenom:        "cony",
-			ToDenom:          "",
-			wantErr:          true,
+			name: "invalid: empty fromDenom",
+			msg: &fswaptypes.QuerySwapRequest{
+				FromDenom: "",
+				ToDenom:   "kai",
+			},
 			expectedGrpcCode: codes.InvalidArgument,
 		},
 		{
-			name:             "invalid: the same fromDenom and toDenom",
-			FromDenom:        "cony",
-			ToDenom:          "cony",
-			wantErr:          true,
+			name: "invalid: empty toDenom",
+			msg: &fswaptypes.QuerySwapRequest{
+				FromDenom: "cony",
+				ToDenom:   "",
+			},
+			expectedGrpcCode: codes.InvalidArgument,
+		},
+		{
+			name: "invalid: the same fromDenom and toDenom",
+			msg: &fswaptypes.QuerySwapRequest{
+				FromDenom: "cony",
+				ToDenom:   "cony",
+			},
 			expectedGrpcCode: codes.InvalidArgument,
 		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			m := &fswaptypes.QuerySwapRequest{
-				FromDenom: tc.FromDenom,
-				ToDenom:   tc.ToDenom,
-			}
-			err := m.Validate()
+			err := tc.msg.Validate()
 			actualGrpcCode := status.Code(err)
 			require.Equal(t, tc.expectedGrpcCode, actualGrpcCode)
+		})
+	}
+}
+
+func TestMsgSwapValidate(t *testing.T) {
+	pk := secp256k1.GenPrivKey().PubKey()
+	address, err := sdk.Bech32ifyAddressBytes("link", pk.Address())
+	if err != nil {
+		return
+	}
+	tests := []struct {
+		name          string
+		msg           *fswaptypes.MsgSwap
+		expectedError error
+	}{
+		{
+			name: "valid",
+			msg: &fswaptypes.MsgSwap{
+				FromAddress:    address,
+				FromCoinAmount: sdk.NewCoin("fromDenom", sdk.OneInt()),
+				ToDenom:        "kai",
+			},
+			expectedError: nil,
+		},
+		{
+			name: "invalid: address",
+			msg: &fswaptypes.MsgSwap{
+				FromAddress:    "invalid-address",
+				FromCoinAmount: sdk.NewCoin("fromDenom", sdk.OneInt()),
+				ToDenom:        "kai",
+			},
+			expectedError: sdkerrors.ErrInvalidAddress,
+		},
+		{
+			name: "invalid: FromCoinAmount empty denom",
+			msg: &fswaptypes.MsgSwap{
+				FromAddress: address,
+				FromCoinAmount: sdk.Coin{
+					"",
+					sdk.OneInt(),
+				},
+				ToDenom: "kai",
+			},
+			expectedError: sdkerrors.ErrInvalidCoins,
+		},
+		{
+			name: "invalid: FromCoinAmount zero amount",
+			msg: &fswaptypes.MsgSwap{
+				FromAddress: address,
+				FromCoinAmount: sdk.Coin{
+					"cony",
+					sdk.ZeroInt(),
+				},
+				ToDenom: "kai",
+			},
+			expectedError: sdkerrors.ErrInvalidCoins,
+		},
+		{
+			name: "invalid: ToDenom",
+			msg: &fswaptypes.MsgSwap{
+				FromAddress:    address,
+				FromCoinAmount: sdk.NewCoin("fromDenom", sdk.OneInt()),
+				ToDenom:        "",
+			},
+			expectedError: sdkerrors.ErrInvalidRequest,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.msg.ValidateBasic()
+			require.ErrorIs(t, err, tc.expectedError)
+		})
+	}
+}
+
+func TestMsgSwapAllValidate(t *testing.T) {
+	pk := secp256k1.GenPrivKey().PubKey()
+	address, err := sdk.Bech32ifyAddressBytes("link", pk.Address())
+	if err != nil {
+		return
+	}
+	tests := []struct {
+		name          string
+		msg           *fswaptypes.MsgSwapAll
+		expectedError error
+	}{
+		{
+			name: "valid",
+			msg: &fswaptypes.MsgSwapAll{
+				FromAddress: address,
+				FromDenom:   "cony",
+				ToDenom:     "kai",
+			},
+			expectedError: nil,
+		},
+		{
+			name: "invalid: address",
+			msg: &fswaptypes.MsgSwapAll{
+				FromAddress: "invalid-address",
+				FromDenom:   "cony",
+				ToDenom:     "kai",
+			},
+			expectedError: sdkerrors.ErrInvalidAddress,
+		},
+		{
+			name: "invalid: FromDenom",
+			msg: &fswaptypes.MsgSwapAll{
+				FromAddress: address,
+				FromDenom:   "",
+				ToDenom:     "kai",
+			},
+			expectedError: sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "invalid: ToDenom",
+			msg: &fswaptypes.MsgSwapAll{
+				FromAddress: address,
+				FromDenom:   "cony",
+				ToDenom:     "",
+			},
+			expectedError: sdkerrors.ErrInvalidRequest,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.msg.ValidateBasic()
+			require.ErrorIs(t, err, tc.expectedError)
+		})
+	}
+}
+
+func TestMsgSetSwapValidate(t *testing.T) {
+	pk := secp256k1.GenPrivKey().PubKey()
+	address, err := sdk.Bech32ifyAddressBytes("link", pk.Address())
+	if err != nil {
+		return
+	}
+	tests := []struct {
+		name          string
+		msg           *fswaptypes.MsgSetSwap
+		expectedError error
+	}{
+		{
+			name: "valid",
+			msg: &fswaptypes.MsgSetSwap{
+				Authority: address,
+				Swap: fswaptypes.Swap{
+					FromDenom:           "cony",
+					ToDenom:             "kai",
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(123),
+				},
+				ToDenomMetadata: banktypes.Metadata{
+					Description: "desc",
+					DenomUnits: []*banktypes.DenomUnit{
+						{
+							Denom:    "kai",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "kai",
+					Display: "kai",
+					Name:    "kai",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: nil,
+		},
+		{
+			name: "invalid: address",
+			msg: &fswaptypes.MsgSetSwap{
+				Authority: "invalid-address",
+				Swap: fswaptypes.Swap{
+					FromDenom:           "cony",
+					ToDenom:             "kai",
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(123),
+				},
+				ToDenomMetadata: banktypes.Metadata{
+					Description: "desc",
+					DenomUnits: []*banktypes.DenomUnit{
+						{
+							Denom:    "kai",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "kai",
+					Display: "kai",
+					Name:    "kai",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: sdkerrors.ErrInvalidAddress,
+		},
+		{
+			name: "invalid: Swap",
+			msg: &fswaptypes.MsgSetSwap{
+				Authority: address,
+				Swap:      fswaptypes.Swap{},
+				ToDenomMetadata: banktypes.Metadata{
+					Description: "desc",
+					DenomUnits: []*banktypes.DenomUnit{
+						{
+							Denom:    "kai",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "kai",
+					Display: "kai",
+					Name:    "kai",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "invalid: ToDenomMetadata",
+			msg: &fswaptypes.MsgSetSwap{
+				Authority: address,
+				Swap: fswaptypes.Swap{
+					FromDenom:           "cony",
+					ToDenom:             "kai",
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(123),
+				},
+				ToDenomMetadata: banktypes.Metadata{
+					Description: "",
+					DenomUnits: []*banktypes.DenomUnit{
+						{
+							Denom:    "kai",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+				},
+			},
+			expectedError: errors.New("name field cannot be blank"),
+		},
+
+		{
+			name: "invalid: mismatched toDenom",
+			msg: &fswaptypes.MsgSetSwap{
+				Authority: address,
+				Swap: fswaptypes.Swap{
+					FromDenom:           "cony",
+					ToDenom:             "kai",
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(123),
+				},
+				ToDenomMetadata: banktypes.Metadata{
+					Description: "desc",
+					DenomUnits: []*banktypes.DenomUnit{
+						{
+							Denom:    "fkai",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "fkai",
+					Display: "fkai",
+					Name:    "fkai",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: sdkerrors.ErrInvalidRequest,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.msg.ValidateBasic()
+			if tc.expectedError != nil {
+				require.Contains(t, err.Error(), tc.expectedError.Error())
+			}
 		})
 	}
 }
