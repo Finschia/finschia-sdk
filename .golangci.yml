@@ -1,6 +1,6 @@
 run:
   tests: true
-  timeout: 5m
+  timeout: 15m
   allow-parallel-runners: true
   build-tags:
     - ledger
@@ -14,26 +14,34 @@ linters:
   disable-all: true
   enable:
     - errcheck
-    - dogsled
-    - exportloopref
-    - goconst
-    - gocritic
-    - gci
-    - gofumpt
-    - gosec
     - gosimple
     - govet
     - ineffassign
-    - misspell
+    - staticcheck
+    - unused
+    - dogsled
+    - gosec
+    - gci
+    - gofumpt
+    - goconst
+    - gocritic
     - nakedret
     - nolintlint
-    - staticcheck
     - revive
+    - misspell
     - stylecheck
     - typecheck
     - thelper
     - unconvert
-    - unused
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - copyloopvar
+    - errchkjson
+    - errorlint
+    - fatcontext
+    - wastedassign
 
 issues:
   exclude-dirs:
