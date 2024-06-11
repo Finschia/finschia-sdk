@@ -62,8 +62,6 @@ func (suite *HandlerTestSuite) TestMsgCreateVestingAccount() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		suite.Run(tc.name, func() {
 			res, err := suite.handler(ctx, tc.msg)
 			if tc.expectErr {

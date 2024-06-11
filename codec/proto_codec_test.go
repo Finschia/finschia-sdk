@@ -58,8 +58,6 @@ func TestProtoCodecUnmarshalLengthPrefixedChecks(t *testing.T) {
 	}
 
 	for _, falseSize := range falseSizes {
-		falseSize := falseSize
-
 		t.Run(fmt.Sprintf("ByMarshaling falseSize=%d", falseSize), func(t *testing.T) {
 			lpm := &lyingProtoMarshaler{
 				ProtoMarshaler: &testdata.Cat{Lives: 9, Moniker: "glowing"},

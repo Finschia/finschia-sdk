@@ -65,8 +65,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdBalances()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -141,8 +139,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTSupply() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdFTSupply()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -217,8 +213,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTMinted() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdFTMinted()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -293,8 +287,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTBurnt() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdFTBurnt()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -368,8 +360,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdNFTSupply()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -443,8 +433,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdNFTMinted()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -518,8 +506,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdNFTBurnt()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -573,8 +559,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdContract() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdContract()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -643,8 +627,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenType() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdTokenType()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -719,8 +701,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdToken()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -793,8 +773,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdRoot() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdRoot()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -865,8 +843,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParent() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdParent()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -941,8 +917,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdChildren()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -1020,8 +994,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdGranteeGrants()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -1082,8 +1054,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdIsOperatorFor() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdIsOperatorFor()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -1142,8 +1112,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdHoldersByOperator() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdHoldersByOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))

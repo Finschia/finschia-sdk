@@ -56,7 +56,6 @@ func TestMarshalJSON(t *testing.T) {
 		{"empty object", args{data.Keys[3]}, data.JSON[3], false},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := keys.MarshalJSON(tt.args.o)
 			require.Equal(t, tt.wantErr, err != nil)
@@ -86,7 +85,6 @@ func TestUnmarshalJSON(t *testing.T) {
 		{"empty object", args{data.JSON[3], &data.Answers[3]}, false},
 	}
 	for idx, tt := range tests {
-		idx, tt := idx, tt
 		t.Run(tt.name, func(t *testing.T) {
 			err := keys.UnmarshalJSON(tt.args.bz, tt.args.ptr)
 			require.Equal(t, tt.wantErr, err != nil)

@@ -331,7 +331,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryTxCmd()
 			clientCtx := val.ClientCtx
@@ -447,7 +446,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryTxCmd()
 			clientCtx := val.ClientCtx
@@ -526,7 +524,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryTxsByEventsCmd()
 			clientCtx := val.ClientCtx
@@ -1166,7 +1163,6 @@ func (s *IntegrationTestSuite) TestGetAccountCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 
@@ -1205,7 +1201,6 @@ func (s *IntegrationTestSuite) TestGetAccountsCmd() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
 		s.Run(name, func() {
 			cmd := authcli.GetAccountsCmd()
 			clientCtx := val.ClientCtx
@@ -1245,7 +1240,6 @@ func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 
@@ -1335,7 +1329,6 @@ func (s *IntegrationTestSuite) TestQueryParamsCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryParamsCmd()
 			clientCtx := val.ClientCtx
