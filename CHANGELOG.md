@@ -100,7 +100,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
-* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24 
+* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
+* (server): [\#1418](https://github.com/Finschia/finschia-sdk/pull/1418) Remove grpc-web/rosetta and modify grpc-gateway
 
 ### State Machine Breaking
 
