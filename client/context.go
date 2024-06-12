@@ -9,10 +9,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v2"
-
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
