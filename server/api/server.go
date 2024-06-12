@@ -100,18 +100,19 @@ func (s *Server) Start(cfg config.Config) error {
 		return err
 	}
 
-	s.registerGRPCGatewayRoutes()
 	s.listener = listener
-	var h http.Handler = s.Router
 
 	s.mtx.Unlock()
 
-	if cfg.API.EnableUnsafeCORS {
-		allowAllCORS := handlers.CORS(handlers.AllowedHeaders([]string{"Content-Type"}))
-		return tmrpcserver.Serve(s.listener, allowAllCORS(h), s.logger, tmCfg)
-	}
+	// register grpc-gateway routes
+	s.Router.PathPrefix("/").Handler(s.GRPCGatewayRouter)
 
 	s.logger.Info("starting API server...")
+	if cfg.API.EnableUnsafeCORS {
+		allowAllCORS := handlers.CORS(handlers.AllowedHeaders([]string{"Content-Type"}))
+		return tmrpcserver.Serve(s.listener, allowAllCORS(s.Router), s.logger, tmCfg)
+	}
+
 	return tmrpcserver.Serve(s.listener, s.Router, s.logger, tmCfg)
 }
 
@@ -120,10 +121,6 @@ func (s *Server) Close() error {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 	return s.listener.Close()
-}
-
-func (s *Server) registerGRPCGatewayRoutes() {
-	s.Router.PathPrefix("/").Handler(s.GRPCGatewayRouter)
 }
 
 func (s *Server) SetTelemetry(m *telemetry.Metrics) {

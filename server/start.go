@@ -4,7 +4,7 @@ package server
 
 import (
 	"fmt"
-	"net/http"
+	"net"
 	"os"
 	"runtime/pprof"
 	"strings"
@@ -21,6 +21,7 @@ import (
 	"github.com/tendermint/tendermint/proxy"
 	"github.com/tendermint/tendermint/rpc/client/local"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -28,8 +29,6 @@ import (
 	"github.com/Finschia/finschia-sdk/server/api"
 	serverconfig "github.com/Finschia/finschia-sdk/server/config"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
-	"github.com/Finschia/finschia-sdk/server/rosetta"
-	crgserver "github.com/Finschia/finschia-sdk/server/rosetta/lib/server"
 	"github.com/Finschia/finschia-sdk/server/types"
 	"github.com/Finschia/finschia-sdk/store/cache"
 	"github.com/Finschia/finschia-sdk/store/iavl"
@@ -68,11 +67,9 @@ const (
 	FlagStateSyncSnapshotKeepRecent = "state-sync.snapshot-keep-recent"
 
 	// gRPC-related flags
-	flagGRPCOnly       = "grpc-only"
-	flagGRPCEnable     = "grpc.enable"
-	flagGRPCAddress    = "grpc.address"
-	flagGRPCWebEnable  = "grpc-web.enable"
-	flagGRPCWebAddress = "grpc-web.address"
+	flagGRPCOnly    = "grpc-only"
+	flagGRPCEnable  = "grpc.enable"
+	flagGRPCAddress = "grpc.address"
 )
 
 // StartCmd runs the service passed in, either stand-alone or in-process with
@@ -172,9 +169,6 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 	cmd.Flags().Bool(flagGRPCEnable, true, "Define if the gRPC server should be enabled")
 	cmd.Flags().String(flagGRPCAddress, serverconfig.DefaultGRPCAddress, "the gRPC server address to listen on")
 
-	cmd.Flags().Bool(flagGRPCWebEnable, true, "Define if the gRPC-Web server should be enabled. (Note: gRPC must also be enabled.)")
-	cmd.Flags().String(flagGRPCWebAddress, serverconfig.DefaultGRPCWebAddress, "The gRPC-Web server address to listen on")
-
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
 
@@ -271,12 +265,12 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		return err
 	}
 
-	config, err := serverconfig.GetConfig(ctx.Viper)
+	srvcfg, err := serverconfig.GetConfig(ctx.Viper)
 	if err != nil {
 		return err
 	}
 
-	if err := config.ValidateBasic(); err != nil {
+	if err := srvcfg.ValidateBasic(); err != nil {
 		ctx.Logger.Error("WARNING: The minimum-gas-prices config in app.toml is set to the empty string. " +
 			"This defaults to 0 in the current version, but will error in the next version " +
 			"(SDK v0.45). Please explicitly put the desired minimum-gas-prices in your app.toml.")
@@ -298,7 +292,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 	if gRPCOnly {
 		ctx.Logger.Info("starting node in gRPC only mode; Tendermint is disabled")
-		config.GRPC.Enable = true
+		srvcfg.GRPC.Enable = true
 	} else {
 		ctx.Logger.Info("starting node with ABCI Tendermint in-process")
 
@@ -327,7 +321,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local tendermint RPC client.
-	if (config.API.Enable || config.GRPC.Enable) && tmNode != nil {
+	if (srvcfg.API.Enable || srvcfg.GRPC.Enable) && tmNode != nil {
 		clientCtx = clientCtx.WithClient(local.New(tmNode))
 
 		app.RegisterTxService(clientCtx)
@@ -338,13 +332,17 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		}
 	}
 
-	metrics, err := startTelemetry(config)
+	metrics, err := startTelemetry(srvcfg)
 	if err != nil {
 		return err
 	}
 
-	var apiSrv *api.Server
-	if config.API.Enable {
+	var (
+		apiSrv  *api.Server
+		grpcSrv *grpc.Server
+	)
+
+	if srvcfg.API.Enable {
 		genDoc, err := genDocProvider()
 		if err != nil {
 			return err
@@ -352,15 +350,58 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 		clientCtx := clientCtx.WithHomeDir(home).WithChainID(genDoc.ChainID)
 
+		if srvcfg.GRPC.Enable {
+			_, port, err := net.SplitHostPort(srvcfg.GRPC.Address)
+			if err != nil {
+				return err
+			}
+
+			maxSendMsgSize := srvcfg.GRPC.MaxSendMsgSize
+			if maxSendMsgSize == 0 {
+				maxSendMsgSize = serverconfig.DefaultGRPCMaxSendMsgSize
+			}
+
+			maxRecvMsgSize := srvcfg.GRPC.MaxRecvMsgSize
+			if maxRecvMsgSize == 0 {
+				maxRecvMsgSize = serverconfig.DefaultGRPCMaxRecvMsgSize
+			}
+
+			grpcAddress := fmt.Sprintf("127.0.0.1:%s", port)
+
+			// If grpc is enabled, configure grpc client for grpc gateway.
+			grpcClient, err := grpc.NewClient(
+				grpcAddress,
+				grpc.WithTransportCredentials(insecure.NewCredentials()),
+				grpc.WithDefaultCallOptions(
+					grpc.ForceCodec(codec.NewProtoCodec(clientCtx.InterfaceRegistry).GRPCCodec()),
+					grpc.MaxCallRecvMsgSize(maxRecvMsgSize),
+					grpc.MaxCallSendMsgSize(maxSendMsgSize),
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			clientCtx = clientCtx.WithGRPCClient(grpcClient)
+			ctx.Logger.Debug("grpc client assigned to client context", "target", grpcAddress)
+
+			// start grpc server
+			grpcSrv, err = servergrpc.StartGRPCServer(clientCtx, app, srvcfg.GRPC)
+			if err != nil {
+				return err
+			}
+			defer grpcSrv.Stop()
+		}
+
 		apiSrv = api.New(clientCtx, ctx.Logger.With("module", "api-server"))
-		app.RegisterAPIRoutes(apiSrv, config.API)
-		if config.Telemetry.Enabled {
+		app.RegisterAPIRoutes(apiSrv, srvcfg.API)
+		if srvcfg.Telemetry.Enabled {
 			apiSrv.SetTelemetry(metrics)
 		}
 		errCh := make(chan error)
 
 		go func() {
-			if err := apiSrv.Start(config); err != nil {
+			if err := apiSrv.Start(srvcfg); err != nil {
 				errCh <- err
 			}
 		}()
@@ -373,77 +414,15 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		}
 	}
 
-	var (
-		grpcSrv    *grpc.Server
-		grpcWebSrv *http.Server
-	)
-
-	if config.GRPC.Enable {
-		grpcSrv, err = servergrpc.StartGRPCServer(clientCtx, app, config.GRPC)
-		if err != nil {
-			return err
-		}
-
-		if config.GRPCWeb.Enable {
-			grpcWebSrv, err = servergrpc.StartGRPCWeb(grpcSrv, config)
-			if err != nil {
-				ctx.Logger.Error("failed to start grpc-web http server: ", err)
-				return err
-			}
-		}
-	}
-
 	// At this point it is safe to block the process if we're in gRPC only mode as
-	// we do not need to start Rosetta or handle any Tendermint related processes.
+	// we do not need to handle any Tendermint related processes.
 	if gRPCOnly {
 		// wait for signal capture and gracefully return
 		return WaitForQuitSignals()
 	}
 
-	var rosettaSrv crgserver.Server
-	if config.Rosetta.Enable {
-		offlineMode := config.Rosetta.Offline
-
-		// If GRPC is not enabled rosetta cannot work in online mode, so it works in
-		// offline mode.
-		if !config.GRPC.Enable {
-			offlineMode = true
-		}
-
-		conf := &rosetta.Config{
-			Blockchain:        config.Rosetta.Blockchain,
-			Network:           config.Rosetta.Network,
-			TendermintRPC:     ctx.Config.RPC.ListenAddress,
-			GRPCEndpoint:      config.GRPC.Address,
-			Addr:              config.Rosetta.Address,
-			Retries:           config.Rosetta.Retries,
-			Offline:           offlineMode,
-			Codec:             clientCtx.Codec.(*codec.ProtoCodec),
-			InterfaceRegistry: clientCtx.InterfaceRegistry,
-		}
-
-		rosettaSrv, err = rosetta.ServerFromConfig(conf)
-		if err != nil {
-			return err
-		}
-
-		errCh := make(chan error)
-		go func() {
-			if err := rosettaSrv.Start(); err != nil {
-				errCh <- err
-			}
-		}()
-
-		select {
-		case err := <-errCh:
-			return err
-
-		case <-time.After(types.ServerStartTime): // assume server started successfully
-		}
-	}
-
 	defer func() {
-		if tmNode.IsRunning() {
+		if tmNode != nil && tmNode.IsRunning() {
 			_ = tmNode.Stop()
 		}
 
@@ -453,13 +432,6 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 		if apiSrv != nil {
 			_ = apiSrv.Close()
-		}
-
-		if grpcSrv != nil {
-			grpcSrv.Stop()
-			if grpcWebSrv != nil {
-				grpcWebSrv.Close()
-			}
 		}
 
 		ctx.Logger.Info("exiting...")
