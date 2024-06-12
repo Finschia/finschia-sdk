@@ -62,7 +62,10 @@ func NewNonSplitVoteOption(option VoteOption) WeightedVoteOptions {
 }
 
 func (v WeightedVoteOption) String() string {
-	out, _ := json.Marshal(v)
+	out, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
 	return string(out)
 }
 

@@ -206,11 +206,7 @@ func TestInterceptConfigsPreRunHandlerReadsEnvVars(t *testing.T) {
 	basename = strings.ReplaceAll(basename, ".", "_")
 	// This is added by tendermint
 	envVarName := fmt.Sprintf("%s_RPC_LADDR", strings.ToUpper(basename))
-	os.Setenv(envVarName, testAddr)
-	t.Cleanup(func() {
-		os.Unsetenv(envVarName)
-	})
-
+	t.Setenv(envVarName, testAddr)
 	cmd.PreRunE = preRunETestImpl
 
 	serverCtx := &Context{}

@@ -671,7 +671,11 @@ var nilJSON []byte
 func init() {
 	empty := new(big.Int)
 	bz, _ := empty.MarshalText()
-	nilJSON, _ = json.Marshal(string(bz))
+	var err error
+	nilJSON, err = json.Marshal(string(bz))
+	if err != nil {
+		panic(err)
+	}
 }
 
 // MarshalJSON marshals the decimal

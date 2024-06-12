@@ -40,8 +40,9 @@ linters:
     - copyloopvar
     - errchkjson
     - errorlint
-    - fatcontext
+    - tenv
     - wastedassign
+    - fatcontext
 
 issues:
   exclude-dirs:
