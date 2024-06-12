@@ -119,3 +119,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (docs) [\#1083](https://github.com/Finschia/finschia-sdk/pull/1083) Add detailed explanation about default events
 * (x/token,collection) [#1201](https://github.com/Finschia/finschia-sdk/pull/1201) Deprecate legacy features on x/token,collection
 * (build) [\#1393](https://github.com/Finschia/finschia-sdk/pull/1393) add current directory as suffix for docker container
+* (docs) [\#1419](https://github.com/Finschia/finschia-sdk/pull/1419) correct spec docs of fswap module
