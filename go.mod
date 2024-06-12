@@ -6,8 +6,6 @@ require (
 	github.com/99designs/keyring v1.1.6
 	github.com/VictoriaMetrics/fastcache v1.12.2
 	github.com/bgentry/speakeasy v0.1.0
-	github.com/coinbase/rosetta-sdk-go v0.8.5
-	github.com/coinbase/rosetta-sdk-go/types v1.0.0
 	github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
