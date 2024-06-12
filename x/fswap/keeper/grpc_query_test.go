@@ -43,17 +43,17 @@ func (s *FSwapQueryTestSuite) SetupTest() {
 	s.queryClient = types.NewQueryClient(queryHelper)
 	s.keeper = s.app.FswapKeeper
 
-	kaiSwapRateForCony, err := sdk.NewDecFromStr("148079656000000")
+	keiSwapRateForCony, err := sdk.NewDecFromStr("148079656000000")
 	s.Require().NoError(err)
 	swapCap := sdk.NewInt(1000)
 	s.Require().NoError(err)
 	s.fromDenom = "cony"
-	s.toDenom = "kai"
+	s.toDenom = "kei"
 	s.swap = types.Swap{
 		FromDenom:           s.fromDenom,
 		ToDenom:             s.toDenom,
 		AmountCapForToDenom: swapCap,
-		SwapRate:            kaiSwapRateForCony,
+		SwapRate:            keiSwapRateForCony,
 	}
 	s.toDenomMetadata = bank.Metadata{
 		Description: "This is metadata for to-coin",
