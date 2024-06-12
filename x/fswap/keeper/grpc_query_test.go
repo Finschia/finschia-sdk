@@ -297,11 +297,9 @@ func (s *FSwapQueryTestSuite) TestQuerySwapsRequest() {
 			name: "invalid request",
 			request: &types.QuerySwapsRequest{
 				Pagination: &query.PageRequest{
-					Key:        []byte("invalid-key"),
-					Offset:     1,
-					Limit:      0,
-					CountTotal: false,
-					Reverse:    false,
+					Key:    []byte("invalid-key"),
+					Offset: 1,
+					Limit:  0,
 				},
 			},
 			expectedResponse: nil,
