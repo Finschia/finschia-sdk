@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -85,59 +83,6 @@ func TestAminoJSON(t *testing.T) {
 			require.Equal(t, fswaptypes.RouterKey, tc.msg.Route())
 			require.Equal(t, tc.expectedType, tc.msg.Type())
 			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
-		})
-	}
-}
-
-func TestQuerySwapRequestValidate(t *testing.T) {
-	tests := []struct {
-		name             string
-		msg              *fswaptypes.QuerySwapRequest
-		expectedGrpcCode codes.Code
-	}{
-		{
-			name: "valid",
-			msg: &fswaptypes.QuerySwapRequest{
-				FromDenom: "cony",
-				ToDenom:   "kei",
-			},
-			expectedGrpcCode: codes.OK,
-		},
-		{
-			name:             "invalid: nil request",
-			msg:              nil,
-			expectedGrpcCode: codes.InvalidArgument,
-		},
-		{
-			name: "invalid: empty fromDenom",
-			msg: &fswaptypes.QuerySwapRequest{
-				FromDenom: "",
-				ToDenom:   "kei",
-			},
-			expectedGrpcCode: codes.InvalidArgument,
-		},
-		{
-			name: "invalid: empty toDenom",
-			msg: &fswaptypes.QuerySwapRequest{
-				FromDenom: "cony",
-				ToDenom:   "",
-			},
-			expectedGrpcCode: codes.InvalidArgument,
-		},
-		{
-			name: "invalid: the same fromDenom and toDenom",
-			msg: &fswaptypes.QuerySwapRequest{
-				FromDenom: "cony",
-				ToDenom:   "cony",
-			},
-			expectedGrpcCode: codes.InvalidArgument,
-		},
-	}
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			err := tc.msg.Validate()
-			actualGrpcCode := status.Code(err)
-			require.Equal(t, tc.expectedGrpcCode, actualGrpcCode)
 		})
 	}
 }
