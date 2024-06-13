@@ -21,6 +21,7 @@ import (
 	"github.com/tendermint/tendermint/node"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 	dbm "github.com/tendermint/tm-db"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
@@ -159,9 +160,12 @@ type (
 		ValAddress sdk.ValAddress
 		RPCClient  tmclient.Client
 
-		tmNode *node.Node
-		api    *api.Server
-		grpc   *grpc.Server
+		app      servertypes.Application
+		tmNode   *node.Node
+		api      *api.Server
+		grpc     *grpc.Server
+		errGroup *errgroup.Group
+		cancelFn context.CancelFunc
 	}
 )
 

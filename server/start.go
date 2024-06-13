@@ -3,23 +3,28 @@ package server
 // DONTCOVER
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"runtime/pprof"
 	"strings"
-	"time"
 
+	"github.com/hashicorp/go-metrics"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/abci/server"
 	tmcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
-	"github.com/tendermint/tendermint/config"
-	tmos "github.com/tendermint/tendermint/libs/os"
+	tmcfg "github.com/tendermint/tendermint/config"
+	tmlog "github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/node"
 	"github.com/tendermint/tendermint/p2p"
 	pvm "github.com/tendermint/tendermint/privval"
 	"github.com/tendermint/tendermint/proxy"
+	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 	"github.com/tendermint/tendermint/rpc/client/local"
+	tmtypes "github.com/tendermint/tendermint/types"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -34,6 +39,7 @@ import (
 	"github.com/Finschia/finschia-sdk/store/iavl"
 	storetypes "github.com/Finschia/finschia-sdk/store/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
+	"github.com/Finschia/finschia-sdk/version"
 )
 
 // Tendermint full-node start flags
@@ -118,29 +124,49 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 			return err
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			serverCtx := GetServerContextFromCmd(cmd)
+			svrCtx := GetServerContextFromCmd(cmd)
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			withTM, _ := cmd.Flags().GetBool(flagWithTendermint)
-			if !withTM {
-				serverCtx.Logger.Info("starting ABCI without Tendermint")
-				return startStandAlone(serverCtx, appCreator)
-			}
-
-			serverCtx.Logger.Info("starting ABCI with Tendermint")
-
-			// amino is needed here for backwards compatibility of REST routes
-			err = startInProcess(serverCtx, clientCtx, appCreator)
-			errCode, ok := err.(ErrorCode)
-			if !ok {
+			svrCfg, err := getAndValidateConfig(svrCtx)
+			if err != nil {
 				return err
 			}
 
-			serverCtx.Logger.Debug(fmt.Sprintf("received quit signal: %d", errCode.Code))
-			return nil
+			tmetrics, err := startTelemetry(svrCfg)
+			if err != nil {
+				return err
+			}
+
+			emitServerInfoMetrics()
+
+			db, err := openDB(svrCtx.Config.RootDir)
+			if err != nil {
+				return err
+			}
+
+			traceWriter, traceCleanupFn, err := SetupTraceWriter(svrCtx.Logger, svrCtx.Viper.GetString(flagTraceStore))
+			if err != nil {
+				return err
+			}
+			defer traceCleanupFn()
+
+			app := appCreator(svrCtx.Logger, db, traceWriter, svrCtx.Viper)
+
+			withTM, _ := cmd.Flags().GetBool(flagWithTendermint)
+			if !withTM {
+				svrCtx.Logger.Info("starting ABCI without Tendermint")
+
+				return wrapCPUProfile(svrCtx, func() error {
+					return startStandAlone(svrCtx, svrCfg, clientCtx, app, tmetrics)
+				})
+			}
+
+			return wrapCPUProfile(svrCtx, func() error {
+				return startInProcess(svrCtx, svrCfg, clientCtx, app, tmetrics)
+			})
 		},
 	}
 
@@ -181,229 +207,218 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 	return cmd
 }
 
-func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
-	addr := ctx.Viper.GetString(flagAddress)
-	transport := ctx.Viper.GetString(flagTransport)
-	home := ctx.Viper.GetString(flags.FlagHome)
-
-	db, err := openDB(home)
-	if err != nil {
-		return err
-	}
-
-	traceWriterFile := ctx.Viper.GetString(flagTraceStore)
-	traceWriter, err := openTraceWriter(traceWriterFile)
-	if err != nil {
-		return err
-	}
-
-	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
-
-	config, err := serverconfig.GetConfig(ctx.Viper)
-	if err != nil {
-		return err
-	}
-
-	_, err = startTelemetry(config)
-	if err != nil {
-		return err
-	}
-
-	svr, err := server.NewServer(addr, transport, app)
+func startStandAlone(svrCtx *Context, svrCfg serverconfig.Config, clientCtx client.Context, app types.Application, tmetrics *telemetry.Metrics) error {
+	svr, err := server.NewServer(svrCtx.Viper.GetString(flagAddress), svrCtx.Viper.GetString(flagTransport), app)
 	if err != nil {
 		return fmt.Errorf("error creating listener: %v", err)
 	}
 
-	svr.SetLogger(ctx.Logger.With("module", "abci-server"))
+	svr.SetLogger(svrCtx.Logger.With("module", "abci-server"))
 
-	err = svr.Start()
-	if err != nil {
-		tmos.Exit(err.Error())
-	}
-
-	defer func() {
-		if err = svr.Stop(); err != nil {
-			tmos.Exit(err.Error())
-		}
-	}()
-
-	// Wait for SIGINT or SIGTERM signal
-	return WaitForQuitSignals()
-}
-
-func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.AppCreator) error {
-	cfg := ctx.Config
-	home := cfg.RootDir
-	var cpuProfileCleanup func()
-
-	if cpuProfile := ctx.Viper.GetString(flagCPUProfile); cpuProfile != "" {
-		f, err := os.Create(cpuProfile)
-		if err != nil {
-			return err
-		}
-
-		ctx.Logger.Info("starting CPU profiler", "profile", cpuProfile)
-		if err := pprof.StartCPUProfile(f); err != nil {
-			return err
-		}
-
-		cpuProfileCleanup = func() {
-			ctx.Logger.Info("stopping CPU profiler", "profile", cpuProfile)
-			pprof.StopCPUProfile()
-			f.Close()
-		}
-	}
-
-	traceWriterFile := ctx.Viper.GetString(flagTraceStore)
-	db, err := openDB(home)
-	if err != nil {
-		return err
-	}
-
-	traceWriter, err := openTraceWriter(traceWriterFile)
-	if err != nil {
-		return err
-	}
-
-	svrCfg, err := serverconfig.GetConfig(ctx.Viper)
-	if err != nil {
-		return err
-	}
-
-	if err := svrCfg.ValidateBasic(); err != nil {
-		ctx.Logger.Error("WARNING: The minimum-gas-prices config in app.toml is set to the empty string. " +
-			"This defaults to 0 in the current version, but will error in the next version " +
-			"(SDK v0.45). Please explicitly put the desired minimum-gas-prices in your app.toml.")
-	}
-
-	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
-
-	nodeKey, err := p2p.LoadOrGenNodeKey(cfg.NodeKeyFile())
-	if err != nil {
-		return err
-	}
-
-	genDocProvider := node.DefaultGenesisDocProviderFunc(cfg)
-
-	var (
-		tmNode   *node.Node
-		gRPCOnly = ctx.Viper.GetBool(flagGRPCOnly)
-	)
-
-	if gRPCOnly {
-		ctx.Logger.Info("starting node in gRPC only mode; Tendermint is disabled")
-		svrCfg.GRPC.Enable = true
-	} else {
-		ctx.Logger.Info("starting node with ABCI Tendermint in-process")
-
-		pv := genPvFileOnlyWhenKmsAddressEmpty(cfg)
-
-		tmNode, err = node.NewNode(
-			cfg,
-			pv,
-			nodeKey,
-			proxy.NewLocalClientCreator(app),
-			genDocProvider,
-			node.DefaultDBProvider,
-			node.DefaultMetricsProvider(cfg.Instrumentation),
-			ctx.Logger,
-		)
-		if err != nil {
-			return err
-		}
-		ctx.Logger.Debug("initialization: tmNode created")
-		if err := tmNode.Start(); err != nil {
-			return err
-		}
-		ctx.Logger.Debug("initialization: tmNode started")
-	}
+	g, ctx := getCtx(svrCtx, false)
 
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
-	// case, because it spawns a new local tendermint RPC client.
-	if (svrCfg.API.Enable || svrCfg.GRPC.Enable) && tmNode != nil {
-		clientCtx = clientCtx.WithClient(local.New(tmNode))
+	// case, because it spawns a new local CometBFT RPC client.
+	if svrCfg.API.Enable || svrCfg.GRPC.Enable {
+		// create tendermint client
+		// assumes the rpc listen address is where tendermint has its rpc server
+		rpcclient, err := rpchttp.New(svrCtx.Config.RPC.ListenAddress, "/websocket")
+		if err != nil {
+			return err
+		}
+		// re-assign for making the client available below
+		// do not use := to avoid shadowing clientCtx
+		clientCtx = clientCtx.WithClient(rpcclient)
 
+		// use the provided clientCtx to register the services
 		app.RegisterTxService(clientCtx)
 		app.RegisterTendermintService(clientCtx)
-
 		if a, ok := app.(types.ApplicationQueryService); ok {
 			a.RegisterNodeService(clientCtx)
 		}
 	}
 
-	metrics, err := startTelemetry(svrCfg)
+	clientCtx, err = startGrpcServer(ctx, g, svrCfg.GRPC, clientCtx, svrCtx, app)
 	if err != nil {
 		return err
 	}
 
-	grpcSrv, clientCtx, err := startGrpcServer(svrCfg.GRPC, clientCtx, ctx, app)
+	err = startAPIServer(ctx, g, clientCtx, svrCfg, svrCtx, app, svrCtx.Config.RootDir, tmetrics)
 	if err != nil {
 		return err
 	}
 
-	genDoc, err := genDocProvider()
-	if err != nil {
-		return err
-	}
-	clientCtx.WithChainID(genDoc.ChainID)
-
-	apiSrv, err := startAPIServer(svrCfg, clientCtx, ctx, app, cfg.RootDir, metrics)
-	if err != nil {
-		return err
-	}
-
-	// At this point it is safe to block the process if we're in gRPC only mode as
-	// we do not need to handle any Tendermint related processes.
-	if gRPCOnly {
-		// wait for signal capture and gracefully return
-		return WaitForQuitSignals()
-	}
-
-	defer func() {
-		if tmNode != nil && tmNode.IsRunning() {
-			_ = tmNode.Stop()
+	g.Go(func() error {
+		if err := svr.Start(); err != nil {
+			svrCtx.Logger.Error("failed to start out-of-process ABCI server", "err", err)
+			return err
 		}
 
-		if cpuProfileCleanup != nil {
-			cpuProfileCleanup()
-		}
+		// Wait for the calling process to be canceled or close the provided context,
+		// so we can gracefully stop the ABCI server.
+		<-ctx.Done()
+		svrCtx.Logger.Info("stopping the ABCI server...")
+		return svr.Stop()
+	})
 
-		if grpcSrv != nil {
-			grpcSrv.Stop()
-		}
-
-		if apiSrv != nil {
-			_ = apiSrv.Close()
-		}
-
-		ctx.Logger.Info("exiting...")
-	}()
-
-	// wait for signal capture and gracefully return
-	return WaitForQuitSignals()
+	return g.Wait()
 }
 
-func genPvFileOnlyWhenKmsAddressEmpty(cfg *config.Config) *pvm.FilePV {
+func startInProcess(svrCtx *Context, svrCfg serverconfig.Config, clientCtx client.Context, app types.Application,
+	tmetrics *telemetry.Metrics,
+) error {
+	tmCfg := svrCtx.Config
+	gRPCOnly := svrCtx.Viper.GetBool(flagGRPCOnly)
+
+	g, ctx := getCtx(svrCtx, true)
+
+	if gRPCOnly {
+		// TODO: Generalize logic so that gRPC only is really in startStandAlone
+		svrCtx.Logger.Info("starting node in gRPC only mode; Tendermint is disabled")
+		svrCfg.GRPC.Enable = true
+	} else {
+		svrCtx.Logger.Info("starting node with ABCI Tendermint in-process")
+		tmNode, cleanupFn, err := startTmNode(ctx, tmCfg, app, svrCtx)
+		if err != nil {
+			return err
+		}
+		defer cleanupFn()
+
+		// Add the tx service to the gRPC router. We only need to register this
+		// service if API or gRPC is enabled, and avoid doing so in the general
+		// case, because it spawns a new local tendermint RPC client.
+		if svrCfg.API.Enable || svrCfg.GRPC.Enable {
+			// Re-assign for making the client available below do not use := to avoid
+			// shadowing the clientCtx variable.
+			clientCtx = clientCtx.WithClient(local.New(tmNode))
+
+			app.RegisterTxService(clientCtx)
+			app.RegisterTendermintService(clientCtx)
+
+			if a, ok := app.(types.ApplicationQueryService); ok {
+				a.RegisterNodeService(clientCtx)
+			}
+		}
+	}
+
+	clientCtx, err := startGrpcServer(ctx, g, svrCfg.GRPC, clientCtx, svrCtx, app)
+	if err != nil {
+		return err
+	}
+
+	err = startAPIServer(ctx, g, clientCtx, svrCfg, svrCtx, app, svrCtx.Config.RootDir, tmetrics)
+	if err != nil {
+		return err
+	}
+
+	// wait for signal capture and gracefully return
+	// we are guaranteed to be waiting for the "ListenForQuitSignals" goroutine.
+	return g.Wait()
+}
+
+func genPvFileOnlyWhenKmsAddressEmpty(cfg *tmcfg.Config) *pvm.FilePV {
 	if len(strings.TrimSpace(cfg.PrivValidatorListenAddr)) == 0 {
 		return pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
 	}
 	return nil
 }
 
+func getAndValidateConfig(svrCtx *Context) (serverconfig.Config, error) {
+	svrcfg, err := serverconfig.GetConfig(svrCtx.Viper)
+	if err != nil {
+		return svrcfg, err
+	}
+
+	if err := svrcfg.ValidateBasic(); err != nil {
+		return svrcfg, err
+	}
+	return svrcfg, nil
+}
+
+// returns a function which returns the genesis doc from the genesis file.
+func getGenDocProvider(cfg *tmcfg.Config) func() (*tmtypes.GenesisDoc, error) {
+	return node.DefaultGenesisDocProviderFunc(cfg)
+}
+
+// SetupTraceWriter sets up the trace writer and returns a cleanup function.
+func SetupTraceWriter(logger tmlog.Logger, traceWriterFile string) (traceWriter io.WriteCloser, cleanup func(), err error) {
+	// clean up the traceWriter when the server is shutting down
+	cleanup = func() {}
+
+	traceWriter, err = openTraceWriter(traceWriterFile)
+	if err != nil {
+		return traceWriter, cleanup, err
+	}
+
+	// if flagTraceStore is not used then traceWriter is nil
+	if traceWriter != nil {
+		cleanup = func() {
+			if err = traceWriter.Close(); err != nil {
+				logger.Error("failed to close trace writer", "err", err)
+			}
+		}
+	}
+
+	return traceWriter, cleanup, nil
+}
+
+// TODO: Move nodeKey into being created within the function.
+func startTmNode(
+	_ context.Context,
+	cfg *tmcfg.Config,
+	app types.Application,
+	svrCtx *Context,
+) (tmNode *node.Node, cleanupFn func(), err error) {
+	nodeKey, err := p2p.LoadOrGenNodeKey(cfg.NodeKeyFile())
+	if err != nil {
+		return nil, cleanupFn, err
+	}
+
+	tmNode, err = node.NewNode(
+		cfg,
+		genPvFileOnlyWhenKmsAddressEmpty(cfg),
+		nodeKey,
+		proxy.NewLocalClientCreator(app),
+		getGenDocProvider(cfg),
+		node.DefaultDBProvider,
+		node.DefaultMetricsProvider(cfg.Instrumentation),
+		svrCtx.Logger,
+	)
+	if err != nil {
+		return tmNode, cleanupFn, err
+	}
+
+	svrCtx.Logger.Debug("initialization: tmNode created")
+	if err := tmNode.Start(); err != nil {
+		return tmNode, cleanupFn, err
+	}
+	svrCtx.Logger.Debug("initialization: tmNode started")
+
+	cleanupFn = func() {
+		if tmNode != nil && tmNode.IsRunning() {
+			_ = tmNode.Stop()
+		}
+	}
+
+	return tmNode, cleanupFn, nil
+}
+
 func startGrpcServer(
+	ctx context.Context,
+	g *errgroup.Group,
 	config serverconfig.GRPCConfig,
 	clientCtx client.Context,
 	svrCtx *Context,
 	app types.Application,
-) (*grpc.Server, client.Context, error) {
+) (client.Context, error) {
 	if !config.Enable {
 		// return grpcServer as nil if gRPC is disabled
-		return nil, clientCtx, nil
+		return clientCtx, nil
 	}
 	_, _, err := net.SplitHostPort(config.Address)
 	if err != nil {
-		return nil, clientCtx, err
+		return clientCtx, err
 	}
 
 	maxSendMsgSize := config.MaxSendMsgSize
@@ -427,30 +442,37 @@ func startGrpcServer(
 		),
 	)
 	if err != nil {
-		return nil, clientCtx, err
+		return clientCtx, err
 	}
 
 	clientCtx = clientCtx.WithGRPCClient(grpcClient)
 	svrCtx.Logger.Debug("gRPC client assigned to client context", "target", config.Address)
 
-	grpcSrv, err := servergrpc.StartGRPCServer(clientCtx, app, config)
+	grpcSrv, err := servergrpc.NewGRPCServer(clientCtx, app, config)
 	if err != nil {
-		return nil, clientCtx, err
+		return clientCtx, err
 	}
 
-	return grpcSrv, clientCtx, nil
+	// Start the gRPC server in a goroutine. Note, the provided ctx will ensure
+	// that the server is gracefully shut down.
+	g.Go(func() error {
+		return servergrpc.StartGRPCServer(ctx, svrCtx.Logger.With("module", "grpc-server"), config, grpcSrv)
+	})
+	return clientCtx, nil
 }
 
 func startAPIServer(
-	svrCfg serverconfig.Config,
+	ctx context.Context,
+	g *errgroup.Group,
 	clientCtx client.Context,
+	svrCfg serverconfig.Config,
 	svrCtx *Context,
 	app types.Application,
 	home string,
 	metrics *telemetry.Metrics,
-) (*api.Server, error) {
+) error {
 	if !svrCfg.API.Enable {
-		return nil, nil
+		return nil
 	}
 
 	clientCtx = clientCtx.WithHomeDir(home)
@@ -462,21 +484,10 @@ func startAPIServer(
 		apiSrv.SetTelemetry(metrics)
 	}
 
-	errCh := make(chan error)
-	go func() {
-		if err := apiSrv.Start(svrCfg); err != nil {
-			errCh <- err
-		}
-	}()
-
-	select {
-	case err := <-errCh:
-		return nil, err
-
-	case <-time.After(types.ServerStartTime): // assume server started successfully
-	}
-
-	return apiSrv, nil
+	g.Go(func() error {
+		return apiSrv.Start(ctx, svrCfg)
+	})
+	return nil
 }
 
 func startTelemetry(cfg serverconfig.Config) (*telemetry.Metrics, error) {
@@ -484,4 +495,67 @@ func startTelemetry(cfg serverconfig.Config) (*telemetry.Metrics, error) {
 		return nil, nil
 	}
 	return telemetry.New(cfg.Telemetry)
+}
+
+// wrapCPUProfile starts CPU profiling, if enabled, and executes the provided
+// callbackFn in a separate goroutine, then will wait for that callback to
+// return.
+//
+// NOTE: We expect the caller to handle graceful shutdown and signal handling.
+func wrapCPUProfile(svrCtx *Context, callbackFn func() error) error {
+	if cpuProfile := svrCtx.Viper.GetString(flagCPUProfile); cpuProfile != "" {
+		f, err := os.Create(cpuProfile)
+		if err != nil {
+			return err
+		}
+
+		svrCtx.Logger.Info("starting CPU profiler", "profile", cpuProfile)
+
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return err
+		}
+
+		defer func() {
+			svrCtx.Logger.Info("stopping CPU profiler", "profile", cpuProfile)
+			pprof.StopCPUProfile()
+
+			if err := f.Close(); err != nil {
+				svrCtx.Logger.Info("failed to close cpu-profile file", "profile", cpuProfile, "err", err.Error())
+			}
+		}()
+	}
+
+	errCh := make(chan error)
+	go func() {
+		errCh <- callbackFn()
+	}()
+
+	return <-errCh
+}
+
+// emitServerInfoMetrics emits server info related metrics using application telemetry.
+func emitServerInfoMetrics() {
+	var ls []metrics.Label
+
+	versionInfo := version.NewInfo()
+	if len(versionInfo.GoVersion) > 0 {
+		ls = append(ls, telemetry.NewLabel("go", versionInfo.GoVersion))
+	}
+	if len(versionInfo.LbmSdkVersion) > 0 {
+		ls = append(ls, telemetry.NewLabel("version", versionInfo.LbmSdkVersion))
+	}
+
+	if len(ls) == 0 {
+		return
+	}
+
+	telemetry.SetGaugeWithLabels([]string{"server", "info"}, 1, ls)
+}
+
+func getCtx(svrCtx *Context, block bool) (*errgroup.Group, context.Context) {
+	ctx, cancelFn := context.WithCancel(context.Background())
+	g, ctx := errgroup.WithContext(ctx)
+	// listen for quit signals so the calling parent process can gracefully exit
+	ListenForQuitSignals(g, block, cancelFn, svrCtx.Logger)
+	return g, ctx
 }
