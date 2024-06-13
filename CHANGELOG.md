@@ -42,6 +42,19 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Improvements
 * (types) [\#1314](https://github.com/Finschia/finschia-sdk/pull/1314) replace IsEqual with Equal
+<<<<<<< HEAD
+=======
+* (x/fswap) [\#1363](https://github.com/Finschia/finschia-sdk/pull/1363) introduce new event for MakeSwapProposal
+* (x/fbridge) [\#1366](https://github.com/Finschia/finschia-sdk/pull/1366) Set target denom as module parameters
+* (x/fbridge) [\#1369](https://github.com/Finschia/finschia-sdk/pull/1369) Add the event of `SetBridgeStatus`
+* (x/fswap) [\#1372](https://github.com/Finschia/finschia-sdk/pull/1372) support message based proposals
+* (x/fswap) [\#1387](https://github.com/Finschia/finschia-sdk/pull/1387) add new Swap query to get a single swap
+* (x/fswap) [\#1382](https://github.com/Finschia/finschia-sdk/pull/1382) add validation & unit tests in fswap module 
+* (x/fbridge) [\#1395](https://github.com/Finschia/finschia-sdk/pull/1395) Return error instead of panic for behaviors triggered by client
+* (x/fswap) [\#1396](https://github.com/Finschia/finschia-sdk/pull/1396) refactor to use snake_case in proto
+* (x/fswap) [\#1391](https://github.com/Finschia/finschia-sdk/pull/1391) add cli_test for fswap module
+* (x/fswap) [\#1415](https://github.com/Finschia/finschia-sdk/pull/1415) add more testcases for fswap module
+>>>>>>> 10726cfaf (chore: add additional testcases for fswap (#1415))
 
 ### Bug Fixes
 * (x/auth) [#1281](https://github.com/Finschia/finschia-sdk/pull/1281) `ModuleAccount.Validate` now reports a nil `.BaseAccount` instead of panicking. (backport #1274)
