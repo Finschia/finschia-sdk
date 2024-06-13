@@ -3,7 +3,6 @@ package grpc
 import (
 	"context"
 	"fmt"
-	sdk "github.com/Finschia/finschia-sdk/types"
 	"net"
 
 	"github.com/tendermint/tendermint/libs/log"
@@ -15,6 +14,7 @@ import (
 	"github.com/Finschia/finschia-sdk/server/grpc/gogoreflection"
 	reflection "github.com/Finschia/finschia-sdk/server/grpc/reflection/v2"
 	"github.com/Finschia/finschia-sdk/server/types"
+	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // NewGRPCServer returns a correctly configured and initialized gRPC server.
