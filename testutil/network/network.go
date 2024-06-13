@@ -354,7 +354,8 @@ func New(t *testing.T, cfg Config) *Network {
 			WithCodec(cfg.Codec).
 			WithLegacyAmino(cfg.LegacyAmino).
 			WithTxConfig(cfg.TxConfig).
-			WithAccountRetriever(cfg.AccountRetriever)
+			WithAccountRetriever(cfg.AccountRetriever).
+			WithNodeURI(tmCfg.RPC.ListenAddress)
 
 		network.Validators[i] = &Validator{
 			AppConfig:  appCfg,
@@ -379,6 +380,14 @@ func New(t *testing.T, cfg Config) *Network {
 		require.NoError(t, startInProcess(cfg, v))
 	}
 	t.Log("started test network")
+
+	require.NoError(t, network.WaitForNextBlock())
+	height, err := network.LatestHeight()
+	if err != nil {
+		return nil
+	}
+
+	t.Log("started test network at height:", height)
 
 	// Ensure we cleanup incase any test was abruptly halted (e.g. SIGINT) as any
 	// defer in a test would not be called.
