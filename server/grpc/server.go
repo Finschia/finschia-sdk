@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/server/config"
 	"github.com/Finschia/finschia-sdk/server/grpc/gogoreflection"
 	reflection "github.com/Finschia/finschia-sdk/server/grpc/reflection/v2"
@@ -30,6 +31,7 @@ func StartGRPCServer(clientCtx client.Context, app types.Application, cfg config
 	grpcSrv := grpc.NewServer(
 		grpc.MaxSendMsgSize(maxSendMsgSize),
 		grpc.MaxRecvMsgSize(maxRecvMsgSize),
+		grpc.ForceServerCodec(codec.NewProtoCodec(clientCtx.InterfaceRegistry).GRPCCodec()),
 	)
 	app.RegisterGRPCServer(grpcSrv)
 

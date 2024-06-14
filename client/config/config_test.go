@@ -12,6 +12,8 @@ import (
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/config"
 	"github.com/Finschia/finschia-sdk/client/flags"
+	"github.com/Finschia/finschia-sdk/codec"
+	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
 	"github.com/Finschia/finschia-sdk/x/staking/client/cli"
 )
@@ -27,7 +29,8 @@ func initClientContext(t *testing.T, envVar string) (client.Context, func()) {
 	home := t.TempDir()
 	clientCtx := client.Context{}.
 		WithHomeDir(home).
-		WithViper("")
+		WithViper("").
+		WithCodec(codec.NewProtoCodec(codectypes.NewInterfaceRegistry()))
 
 	clientCtx.Viper.BindEnv(nodeEnv)
 	if envVar != "" {
