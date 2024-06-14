@@ -47,11 +47,12 @@ type Config struct {
 
 Typically, a `Swap` is proposed and submitted through `x/foundation` via a `MsgSetSwap`.
 Other modules (`x/gov`, `x/foundation`) will include this message in their proposals. If the proposal passes, the `Swap` can be used on chain.
+
 `ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11).
 
 ```go
 type MsgSetSwap struct {
-	Authority           string
+    Authority           string
     Swap                Swap
     ToDenomMetadata     bank.Metadata
 }
