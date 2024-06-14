@@ -8,6 +8,7 @@ order: 1
 
 
 The `x/fswap` module defines a `Swap` type in which a coin is allowed to be swapped into another coin on the chain.
+You could find detailed information in the [Protobuf reference](../../../proto/lbm/fswap/v1/fswap.proto#L9-L16) 
 
 ```go
 type Swap struct {
@@ -17,6 +18,19 @@ type Swap struct {
   SwapRate              sdk.Dec
 }
 ```
+
+Anyone could use one of the following two transcations to swap `FromDedenom` to `ToDenom`.
+1. `simd tx fswap swap [from] [from_coin_amount] [to_denom]`
+    - this transcation could swap a specified amount of `from_denom` via [`MsgSwap`](../../../proto/lbm/fswap/v1/tx.proto#L17-L24)
+2. `simd tx fswap swap-all [from_address] [from_denom] [to_denom]`
+    - this transcation could swap all of `from_denom` under `from_address` via [`MsgSwapAll`](../../../proto/lbm/fswap/v1/tx.proto#L28-L33)
+
+When the swap is triggered, the following event will occur:
+1. `from_denom` will be sent from `from_address` to `x/fswap` module
+2. `x/fswap` module will burn `from_denom`
+3. `x/fswap` module will mint `to_denom` of equivalent value
+4. these `to_denom` will sent to `from_address`
+5. `EventSwapCoins` will be emitted
 
 ## Config
 
@@ -29,10 +43,11 @@ type Config struct {
 }
 ```
 
-## Proposal
+## MsgSetSwap
 
-Typically, a `Swap` is proposed and submitted through foundation via a `MsgSetSwap`.
-This proposal prescribes to the standard foundation process. If the proposal passes, the `Swap` can be used on chain.
+Typically, a `Swap` is proposed and submitted through `x/foundation` via a `MsgSetSwap`.
+Other modules (`x/gov`, `x/foundation`) will include this message in their proposals. If the proposal passes, the `Swap` can be used on chain.
+`ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11).
 
 ```go
 type MsgSetSwap struct {
