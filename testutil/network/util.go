@@ -13,6 +13,7 @@ import (
 	"github.com/Finschia/ostracon/rpc/client/local"
 	"github.com/Finschia/ostracon/types"
 	osttime "github.com/Finschia/ostracon/types/time"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/Finschia/finschia-sdk/server/api"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"

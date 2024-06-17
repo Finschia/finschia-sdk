@@ -19,13 +19,15 @@ import (
 
 	"github.com/Finschia/ostracon/abci/server"
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
-	"github.com/Finschia/ostracon/config"
-	ostos "github.com/Finschia/ostracon/libs/os"
+	tmcfg "github.com/Finschia/ostracon/config"
+	tmlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/Finschia/ostracon/node"
 	"github.com/Finschia/ostracon/p2p"
 	pvm "github.com/Finschia/ostracon/privval"
 	"github.com/Finschia/ostracon/proxy"
+	rpchttp "github.com/Finschia/ostracon/rpc/client/http"
 	"github.com/Finschia/ostracon/rpc/client/local"
+	tmtypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -155,7 +157,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 			app := appCreator(svrCtx.Logger, db, traceWriter, svrCtx.Viper)
 
-			withTM, _ := cmd.Flags().GetBool(flagWithTendermint)
+			withTM, _ := cmd.Flags().GetBool(flagWithOstracon)
 			if !withTM {
 				svrCtx.Logger.Info("starting ABCI without Tendermint")
 

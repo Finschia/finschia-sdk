@@ -15,9 +15,9 @@ import (
 	"syscall"
 	"time"
 
-	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
-	ostcfg "github.com/Finschia/ostracon/config"
-	ostlog "github.com/Finschia/ostracon/libs/log"
+	tmcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	tmcfg "github.com/Finschia/ostracon/config"
+	tmlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -40,8 +40,8 @@ const ServerContextKey = sdk.ContextKey("server.context")
 // server context
 type Context struct {
 	Viper  *viper.Viper
-	Config *ostcfg.Config
-	Logger ostlog.Logger
+	Config *tmcfg.Config
+	Logger tmlog.Logger
 }
 
 // ErrorCode contains the exit code for server exit.
@@ -56,12 +56,12 @@ func (e ErrorCode) Error() string {
 func NewDefaultContext() *Context {
 	return NewContext(
 		viper.New(),
-		ostcfg.DefaultConfig(),
-		ostlog.ZeroLogWrapper{},
+		tmcfg.DefaultConfig(),
+		tmlog.ZeroLogWrapper{},
 	)
 }
 
-func NewContext(v *viper.Viper, config *ostcfg.Config, logger ostlog.Logger) *Context {
+func NewContext(v *viper.Viper, config *tmcfg.Config, logger tmlog.Logger) *Context {
 	return &Context{v, config, logger}
 }
 
@@ -143,16 +143,16 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command, customAppConfigTemplate s
 	}
 
 	isLogPlain := false
-	if strings.ToLower(serverCtx.Viper.GetString(flags.FlagLogFormat)) == ostcfg.LogFormatPlain {
+	if strings.ToLower(serverCtx.Viper.GetString(flags.FlagLogFormat)) == tmcfg.LogFormatPlain {
 		isLogPlain = true
 	}
 
 	logLevel := serverCtx.Viper.GetString(flags.FlagLogLevel)
 	if logLevel == "" {
-		logLevel = ostcfg.DefaultPackageLogLevels()
+		logLevel = tmcfg.DefaultPackageLogLevels()
 	}
 
-	zerologCfg := ostlog.NewZeroLogConfig(
+	zerologCfg := tmlog.NewZeroLogConfig(
 		isLogPlain,
 		logLevel,
 		serverCtx.Viper.GetString(flags.FlagLogPath),
@@ -161,7 +161,7 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command, customAppConfigTemplate s
 		serverCtx.Viper.GetInt(flags.FlagLogMaxBackups),
 	)
 
-	serverCtx.Logger, err = ostlog.NewZeroLogLogger(zerologCfg, os.Stderr)
+	serverCtx.Logger, err = tmlog.NewZeroLogLogger(zerologCfg, os.Stderr)
 	if err != nil {
 		return fmt.Errorf("failed to initialize logger: %w", err)
 	}
@@ -198,16 +198,16 @@ func SetCmdServerContext(cmd *cobra.Command, serverCtx *Context) error {
 // configuration file. The Tendermint configuration file is parsed given a root
 // Viper object, whereas the application is parsed with the private package-aware
 // viperCfg object.
-func interceptConfigs(rootViper *viper.Viper, customAppTemplate string, customConfig interface{}) (*ostcfg.Config, error) {
+func interceptConfigs(rootViper *viper.Viper, customAppTemplate string, customConfig interface{}) (*tmcfg.Config, error) {
 	rootDir := rootViper.GetString(flags.FlagHome)
 	configPath := filepath.Join(rootDir, "config")
 	tmCfgFile := filepath.Join(configPath, "config.toml")
 
-	conf := ostcfg.DefaultConfig()
+	conf := tmcfg.DefaultConfig()
 
 	switch _, err := os.Stat(tmCfgFile); {
 	case os.IsNotExist(err):
-		ostcfg.EnsureRoot(rootDir)
+		tmcfg.EnsureRoot(rootDir)
 
 		if err = conf.ValidateBasic(); err != nil {
 			return nil, fmt.Errorf("error in config file: %v", err)
@@ -222,7 +222,7 @@ func interceptConfigs(rootViper *viper.Viper, customAppTemplate string, customCo
 		conf.P2P.ConsensusRecvBufSize = 10000
 		conf.P2P.BlockchainRecvBufSize = 10000
 		conf.Consensus.TimeoutCommit = 5 * time.Second
-		ostcfg.WriteConfigFile(tmCfgFile, conf)
+		tmcfg.WriteConfigFile(tmCfgFile, conf)
 
 	case err != nil:
 		return nil, err
@@ -289,8 +289,8 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ShowValidatorCmd(),
 		ShowAddressCmd(),
 		VersionCmd(),
-		ostcmd.ResetAllCmd,
-		ostcmd.ResetStateCmd,
+		tmcmd.ResetAllCmd,
+		tmcmd.ResetStateCmd,
 	)
 
 	startCmd := StartCmd(appCreator, defaultNodeHome)

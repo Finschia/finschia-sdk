@@ -21,6 +21,9 @@ const (
 	// DefaultGRPCAddress defines the default address to bind the gRPC server to.
 	DefaultGRPCAddress = "0.0.0.0:9090"
 
+	// DefaultChanCheckTxSize defines the default size of channel check tx in Baseapp
+	DefaultChanCheckTxSize = 10000
+
 	// DefaultGRPCMaxRecvMsgSize defines the default gRPC max message size in
 	// bytes the server can receive.
 	DefaultGRPCMaxRecvMsgSize = 1024 * 1024 * 10

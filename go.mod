@@ -6,8 +6,8 @@ require (
 	github.com/99designs/keyring v1.1.6
 	github.com/Finschia/ostracon v1.1.4
 	github.com/VictoriaMetrics/fastcache v1.12.2
-	github.com/armon/go-metrics v0.4.1
 	github.com/bgentry/speakeasy v0.1.0
+	github.com/btcsuite/btcd v0.22.1
 	github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/go-bip39 v1.0.0
@@ -22,6 +22,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
+	github.com/hashicorp/go-metrics v0.5.3
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hdevalence/ed25519consensus v0.2.0
 	github.com/jhump/protoreflect v1.15.3
@@ -58,7 +59,6 @@ require (
 	github.com/Finschia/r2ishiguro_vrf v0.1.2 // indirect
 	github.com/Workiva/go-datastructures v1.1.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
