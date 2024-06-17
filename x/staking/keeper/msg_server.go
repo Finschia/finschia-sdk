@@ -5,7 +5,7 @@ import (
 	"time"
 
 	oststrings "github.com/Finschia/ostracon/libs/strings"
-	metrics "github.com/armon/go-metrics"
+	metrics "github.com/hashicorp/go-metrics"
 
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/telemetry"

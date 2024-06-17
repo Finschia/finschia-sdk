@@ -3,7 +3,7 @@ package telemetry
 import (
 	"time"
 
-	metrics "github.com/armon/go-metrics"
+	metrics "github.com/hashicorp/go-metrics"
 )
 
 // Common metric key constants

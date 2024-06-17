@@ -1,9 +1,9 @@
 package network
 
 import (
+	"context"
 	"encoding/json"
 	"path/filepath"
-	"time"
 
 	ostos "github.com/Finschia/ostracon/libs/os"
 	"github.com/Finschia/ostracon/node"
@@ -13,6 +13,7 @@ import (
 	"github.com/Finschia/ostracon/rpc/client/local"
 	"github.com/Finschia/ostracon/types"
 	osttime "github.com/Finschia/ostracon/types/time"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/Finschia/finschia-sdk/server/api"
 	servergrpc "github.com/Finschia/finschia-sdk/server/grpc"
@@ -38,6 +39,7 @@ func startInProcess(cfg Config, val *Validator) error {
 	}
 
 	app := cfg.AppConstructor(*val)
+	val.app = app
 
 	genDocProvider := node.DefaultGenesisDocProviderFunc(tmCfg)
 	pv := pvm.LoadOrGenFilePV(tmCfg.PrivValidatorKeyFile(), tmCfg.PrivValidatorStateFile())
@@ -78,41 +80,35 @@ func startInProcess(cfg Config, val *Validator) error {
 		}
 	}
 
-	if val.APIAddress != "" {
-		apiSrv := api.New(val.ClientCtx, logger.With("module", "api-server"))
-		app.RegisterAPIRoutes(apiSrv, val.AppConfig.API)
+	ctx := context.Background()
+	ctx, val.cancelFn = context.WithCancel(ctx)
+	val.errGroup, ctx = errgroup.WithContext(ctx)
+	grpcCfg := val.AppConfig.GRPC
 
-		errCh := make(chan error)
-
-		go func() {
-			if err := apiSrv.Start(*val.AppConfig); err != nil {
-				errCh <- err
-			}
-		}()
-
-		select {
-		case err := <-errCh:
-			return err
-		case <-time.After(srvtypes.ServerStartTime): // assume server started successfully
-		}
-
-		val.api = apiSrv
-	}
-
-	if val.AppConfig.GRPC.Enable {
-		grpcSrv, err := servergrpc.StartGRPCServer(val.ClientCtx, app, val.AppConfig.GRPC)
+	if grpcCfg.Enable {
+		grpcSrv, err := servergrpc.NewGRPCServer(val.ClientCtx, app, grpcCfg)
 		if err != nil {
 			return err
 		}
 
-		val.grpc = grpcSrv
+		// Start the gRPC server in a goroutine. Note, the provided ctx will ensure
+		// that the server is gracefully shut down.
+		val.errGroup.Go(func() error {
+			return servergrpc.StartGRPCServer(ctx, logger.With("module", "grpc-server"), grpcCfg, grpcSrv)
+		})
 
-		if val.AppConfig.GRPCWeb.Enable {
-			val.grpcWeb, err = servergrpc.StartGRPCWeb(grpcSrv, *val.AppConfig)
-			if err != nil {
-				return err
-			}
-		}
+		val.grpc = grpcSrv
+	}
+
+	if val.APIAddress != "" {
+		apiSrv := api.New(val.ClientCtx, logger.With("module", "api-server"))
+		app.RegisterAPIRoutes(apiSrv, val.AppConfig.API)
+
+		val.errGroup.Go(func() error {
+			return apiSrv.Start(ctx, *val.AppConfig)
+		})
+
+		val.api = apiSrv
 	}
 
 	return nil
