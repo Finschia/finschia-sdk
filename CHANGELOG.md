@@ -48,6 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 
 ### Breaking Changes
+* (server) [\#1423](https://github.com/Finschia/finschia-sdk/pull/1423) Remove grpc replace directive and refactor grpc-web/rosetta/grpc-gw
 
 ### State Machine Breaking
 
