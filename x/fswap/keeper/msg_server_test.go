@@ -1,8 +1,19 @@
 package keeper_test
 
 import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	"github.com/Finschia/finschia-sdk/simapp"
+	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	bank "github.com/Finschia/finschia-sdk/x/bank/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
+	fkeeper "github.com/Finschia/finschia-sdk/x/fswap/keeper"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
 )
 
@@ -130,6 +141,120 @@ func (s *KeeperTestSuite) TestMsgSwapAll() {
 			s.Require().NoError(err)
 			actualAmount := s.keeper.GetBalance(ctx, from, tc.request.GetToDenom()).Amount
 			s.Require().Equal(tc.expectedAmount, actualAmount)
+		})
+	}
+}
+
+func TestMsgSetSwap(t *testing.T) {
+	authority := authtypes.NewModuleAddress(foundation.ModuleName)
+	checkTx := false
+	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+	testdata.RegisterMsgServer(app.MsgServiceRouter(), testdata.MsgServerImpl{})
+	ctx := app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	keeper := app.FswapKeeper
+	msgServer := fkeeper.NewMsgServer(keeper)
+	fromDenomStr := "cony"
+	fromDenom := bank.Metadata{
+		Description: "This is metadata for from-coin",
+		DenomUnits: []*bank.DenomUnit{
+			{Denom: fromDenomStr, Exponent: 0},
+		},
+		Base:    fromDenomStr,
+		Display: fromDenomStr,
+		Name:    "FROM",
+		Symbol:  "FROM",
+	}
+	app.BankKeeper.SetDenomMetaData(ctx, fromDenom)
+
+	testCases := map[string]struct {
+		request       *types.MsgSetSwap
+		expectedError error
+	}{
+		"valid": {
+			request: &types.MsgSetSwap{
+				Authority: authority.String(),
+				Swap: types.Swap{
+					FromDenom:           fromDenomStr,
+					ToDenom:             "kei",
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(1),
+				},
+				ToDenomMetadata: bank.Metadata{
+					Description: "desc",
+					DenomUnits: []*bank.DenomUnit{
+						{
+							Denom:    "kei",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "kei",
+					Display: "kei",
+					Name:    "kei",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: nil,
+		},
+		"invalid: authority": {
+			request: &types.MsgSetSwap{
+				Authority: "invalid-authority",
+				Swap: types.Swap{
+					FromDenom:           fromDenomStr,
+					ToDenom:             "kei",
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(1),
+				},
+				ToDenomMetadata: bank.Metadata{
+					Description: "desc",
+					DenomUnits: []*bank.DenomUnit{
+						{
+							Denom:    "kei",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "kei",
+					Display: "kei",
+					Name:    "kei",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: sdkerrors.ErrUnauthorized,
+		},
+		"invalid: Swap.ToDenom": {
+			request: &types.MsgSetSwap{
+				Authority: authority.String(),
+				Swap: types.Swap{
+					FromDenom:           fromDenomStr,
+					ToDenom:             fromDenomStr,
+					AmountCapForToDenom: sdk.OneInt(),
+					SwapRate:            sdk.NewDec(1),
+				},
+				ToDenomMetadata: bank.Metadata{
+					Description: "desc",
+					DenomUnits: []*bank.DenomUnit{
+						{
+							Denom:    "kei",
+							Exponent: 0,
+							Aliases:  nil,
+						},
+					},
+					Base:    "kei",
+					Display: "kei",
+					Name:    "kei",
+					Symbol:  "KAIA",
+				},
+			},
+			expectedError: sdkerrors.ErrInvalidRequest,
+		},
+	}
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			context, _ := ctx.CacheContext()
+			_, err := msgServer.SetSwap(sdk.WrapSDKContext(context), tc.request)
+			require.ErrorIs(t, err, tc.expectedError)
 		})
 	}
 }

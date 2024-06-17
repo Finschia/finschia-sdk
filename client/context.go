@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	"google.golang.org/grpc"
 	"gopkg.in/yaml.v2"
 
 	"github.com/Finschia/finschia-sdk/codec"
@@ -23,6 +24,7 @@ import (
 type Context struct {
 	FromAddress sdk.AccAddress
 	Client      rpcclient.Client
+	GRPCClient  *grpc.ClientConn
 	ChainID     string
 	// Deprecated: Codec codec will be changed to Codec: codec.Codec
 	JSONCodec         codec.JSONCodec
@@ -142,6 +144,13 @@ func (ctx Context) WithHeight(height int64) Context {
 // instance.
 func (ctx Context) WithClient(client rpcclient.Client) Context {
 	ctx.Client = client
+	return ctx
+}
+
+// WithGRPCClient returns a copy of the context with an updated GRPC client
+// instance.
+func (ctx Context) WithGRPCClient(grpcClient *grpc.ClientConn) Context {
+	ctx.GRPCClient = grpcClient
 	return ctx
 }
 
