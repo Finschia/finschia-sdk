@@ -1268,7 +1268,7 @@ func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
 
 func TestGetBroadcastCommandOfflineFlag(t *testing.T) {
 	clientCtx := client.Context{}.WithOffline(true)
-	clientCtx = clientCtx.WithTxConfig(simapp.MakeTestEncodingConfig().TxConfig) //nolint:staticcheck
+	_ = clientCtx.WithTxConfig(simapp.MakeTestEncodingConfig().TxConfig)
 
 	cmd := authcli.GetBroadcastCommand()
 	_ = testutil.ApplyMockIODiscardOutErr(cmd)

@@ -691,7 +691,7 @@ func newFileBackendKeyringConfig(name, dir string, buf io.Reader) keyring.Config
 
 func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 	return func(prompt string) (string, error) {
-		keyhashStored := false
+		var keyhashStored bool
 		keyhashFilePath := filepath.Join(dir, "keyhash")
 
 		var keyhash []byte

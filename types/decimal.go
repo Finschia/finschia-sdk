@@ -744,7 +744,7 @@ func (d *Dec) MarshalTo(data []byte) (n int, err error) {
 // Unmarshal implements the gogo proto custom type interface.
 func (d *Dec) Unmarshal(data []byte) error {
 	if len(data) == 0 {
-		d = nil
+		d = nil //nolint: wastedassign
 		return nil
 	}
 

@@ -39,7 +39,7 @@ func TestParseQueryResponse(t *testing.T) {
 	require.Equal(t, 10, int(res.GasInfo.GasUsed))
 	require.NotNil(t, res.Result)
 
-	res, err = authclient.ParseQueryResponse([]byte("fuzzy"))
+	_, err = authclient.ParseQueryResponse([]byte("fuzzy"))
 	require.Error(t, err)
 }
 
