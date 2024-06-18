@@ -228,8 +228,6 @@ func (suite *TestSuite) TestGRPCQueryGranterGrants() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
 			tc.preRun()
 			result, err := queryClient.GranterGrants(gocontext.Background(), &tc.request)
@@ -315,8 +313,6 @@ func (suite *TestSuite) TestGRPCQueryGranteeGrants() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
 			tc.preRun()
 			result, err := queryClient.GranteeGrants(gocontext.Background(), &tc.request)

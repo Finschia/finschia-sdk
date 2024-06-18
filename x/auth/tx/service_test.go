@@ -135,7 +135,6 @@ func (s *IntegrationTestSuite) TestSimulateTx_GRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			// Broadcast the tx via gRPC via the validator's clientCtx (which goes
 			// through Tendermint).
@@ -457,7 +456,6 @@ func (s *IntegrationTestSuite) TestBroadcastTx_GRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			// Broadcast the tx via gRPC via the validator's clientCtx (which goes
 			// through Tendermint).

@@ -210,7 +210,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 func startStandAlone(svrCtx *Context, svrCfg serverconfig.Config, clientCtx client.Context, app types.Application, tmetrics *telemetry.Metrics) error {
 	svr, err := server.NewServer(svrCtx.Viper.GetString(flagAddress), svrCtx.Viper.GetString(flagTransport), app)
 	if err != nil {
-		return fmt.Errorf("error creating listener: %v", err)
+		return fmt.Errorf("error creating listener: %w", err)
 	}
 
 	svr.SetLogger(svrCtx.Logger.With("module", "abci-server"))

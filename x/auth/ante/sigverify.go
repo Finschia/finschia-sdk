@@ -308,11 +308,11 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		if !simulate {
 			if !genesis {
 				sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
-				// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
+				// TODO: could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
 				txHash := sha256.Sum256(ctx.TxBytes())
-				stored := false
+				var stored bool
 
-				// TODO(duong2): Does this really improve performance?
+				// TODO: Does this really improve performance?
 				stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
 
 				if stored {

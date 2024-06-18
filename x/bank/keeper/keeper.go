@@ -72,7 +72,7 @@ func (k BaseKeeper) GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.P
 		var amount sdk.Int
 		err := amount.Unmarshal(value)
 		if err != nil {
-			return fmt.Errorf("unable to convert amount string to Int %v", err)
+			return fmt.Errorf("unable to convert amount string to Int: %w", err)
 		}
 
 		// `Add` omits the 0 coins addition to the `supply`.
@@ -231,7 +231,7 @@ func (k BaseKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
 	var amount sdk.Int
 	err := amount.Unmarshal(bz)
 	if err != nil {
-		panic(fmt.Errorf("unable to unmarshal supply value %v", err))
+		panic(fmt.Errorf("unable to unmarshal supply value: %w", err))
 	}
 
 	return sdk.Coin{
@@ -466,7 +466,7 @@ func (k BaseKeeper) BurnCoins(ctx sdk.Context, moduleName string, amounts sdk.Co
 func (k BaseKeeper) setSupply(ctx sdk.Context, coin sdk.Coin) {
 	intBytes, err := coin.Amount.Marshal()
 	if err != nil {
-		panic(fmt.Errorf("unable to marshal amount value %v", err))
+		panic(fmt.Errorf("unable to marshal amount value: %w", err))
 	}
 
 	store := ctx.KVStore(k.storeKey)
@@ -528,7 +528,7 @@ func (k BaseViewKeeper) IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bo
 		var amount sdk.Int
 		err := amount.Unmarshal(iterator.Value())
 		if err != nil {
-			panic(fmt.Errorf("unable to unmarshal supply value %v", err))
+			panic(fmt.Errorf("unable to unmarshal supply value: %w", err))
 		}
 
 		balance := sdk.Coin{

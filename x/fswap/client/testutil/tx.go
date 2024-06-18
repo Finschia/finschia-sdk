@@ -74,8 +74,6 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwap() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdTxMsgSwap()
 			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, append(tc.args, commonArgs...))
@@ -141,8 +139,6 @@ func (s *IntegrationTestSuite) TestCmdTxMsgSwapAll() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdTxMsgSwapAll()
 			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, append(tc.args, commonArgs...))
@@ -279,8 +275,6 @@ func (s *IntegrationTestSuite) TestMsgSetSwap() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdMsgSetSwap()
 			bz, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, append(tc.args, commonArgs...))
