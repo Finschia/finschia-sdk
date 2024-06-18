@@ -39,11 +39,7 @@ func TestInterceptConfigsPreRunHandlerCreatesConfigFilesWhenMissing(t *testing.T
 
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
-<<<<<<< HEAD
 	if err := cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -120,11 +116,7 @@ func TestInterceptConfigsPreRunHandlerReadsConfigToml(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -161,11 +153,7 @@ func TestInterceptConfigsPreRunHandlerReadsAppToml(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -193,11 +181,7 @@ func TestInterceptConfigsPreRunHandlerReadsFlags(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -222,17 +206,17 @@ func TestInterceptConfigsPreRunHandlerReadsEnvVars(t *testing.T) {
 	basename = strings.ReplaceAll(basename, ".", "_")
 	// This is added by ostracon
 	envVarName := fmt.Sprintf("%s_RPC_LADDR", strings.ToUpper(basename))
-	t.Setenv(envVarName, testAddr)
+	os.Setenv(envVarName, testAddr)
+	t.Cleanup(func() {
+		os.Unsetenv(envVarName)
+	})
+
 	cmd.PreRunE = preRunETestImpl
 
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -336,11 +320,7 @@ func TestInterceptConfigsPreRunHandlerPrecedenceFlag(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -356,11 +336,7 @@ func TestInterceptConfigsPreRunHandlerPrecedenceEnvVar(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -376,11 +352,7 @@ func TestInterceptConfigsPreRunHandlerPrecedenceConfigFile(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -396,11 +368,7 @@ func TestInterceptConfigsPreRunHandlerPrecedenceConfigDefault(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-<<<<<<< HEAD
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
-=======
-	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 

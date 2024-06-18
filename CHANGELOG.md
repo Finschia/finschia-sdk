@@ -42,39 +42,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Improvements
 * (x/fswap) [\#1415](https://github.com/Finschia/finschia-sdk/pull/1415) add more testcases for fswap module
- 
+* (style) [\#1426](https://github.com/Finschia/finschia-sdk/pull/1426) Improve code quality with new linters
+
 ### Bug Fixes
-<<<<<<< HEAD
-=======
-* chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
-* (x/auth, x/slashing) [\#1179](https://github.com/Finschia/finschia-sdk/pull/1179) modify missing changes of converting to tendermint
-* (x/auth) [#1274](https://github.com/Finschia/finschia-sdk/pull/1274) `ModuleAccount.Validate` now reports a nil `.BaseAccount` instead of panicking.
-* (x/collection) [\#1276](https://github.com/Finschia/finschia-sdk/pull/1276) eliminates potential risk for Insufficient Sanity Check of tokenID in Genesis 
-* (x/foundation) [\#1277](https://github.com/Finschia/finschia-sdk/pull/1277) add init logic of foundation module accounts to InitGenesis in order to eliminate potential panic
-* (x/collection, x/token) [\#1288](https://github.com/Finschia/finschia-sdk/pull/1288) use accAddress to compare in validatebasic function in collection & token modules
-* (x/collection) [\#1268](https://github.com/Finschia/finschia-sdk/pull/1268) export x/collection params into genesis
-* (x/collection) [\#1294](https://github.com/Finschia/finschia-sdk/pull/1294) reject NFT coins on FT APIs
-* (sec) [\#1302](https://github.com/Finschia/finschia-sdk/pull/1302) remove map iteration non-determinism with keys + sorting
-* (client) [\#1303](https://github.com/Finschia/finschia-sdk/pull/1303) fix possible overflow in BuildUnsignedTx 
-* (types) [\#1299](https://github.com/Finschia/finschia-sdk/pull/1299) add missing nil checks
-* (x/staking) [\#1301](https://github.com/Finschia/finschia-sdk/pull/1301) Use bytes instead of string comparison in delete validator queue (backport cosmos/cosmos-sdk#12303)
-* (x/gov) [\#1304](https://github.com/Finschia/finschia-sdk/pull/1304) fetch a failed proposal tally from proposal.FinalTallyResult in the gprc query
-* (x/staking) [\#1306](https://github.com/Finschia/finschia-sdk/pull/1306) add validation for potential slashing evasion during re-delegation
-* (client/keys) [#1312](https://github.com/Finschia/finschia-sdk/pull/1312) ignore error when key not found in `keys delete`
-* (store) [\#1310](https://github.com/Finschia/finschia-sdk/pull/1310) fix app-hash mismatch if upgrade migration commit is interrupted(backport cosmos/cosmos-sdk#13530)
-* (types) [\#1313](https://github.com/Finschia/finschia-sdk/pull/1313) fix correctly coalesce coins even with repeated denominations(backport cosmos/cosmos-sdk#13265)
-* (x/crypto) [\#1316](https://github.com/Finschia/finschia-sdk/pull/1316) error if incorrect ledger public key (backport cosmos/cosmos-sdk#14460, cosmos/cosmos-sdk#19691) 
-* (x/auth) [#1319](https://github.com/Finschia/finschia-sdk/pull/1319) prevent signing from wrong key in multisig
-* (x/mint, x/slashing) [\#1323](https://github.com/Finschia/finschia-sdk/pull/1323) add missing nil check for params validation
-* (x/server) [\#1337](https://github.com/Finschia/finschia-sdk/pull/1337) fix panic when defining minimum gas config as `100stake;100uatom`. Use a `,` delimiter instead of `;`. Fixes the server config getter to use the correct delimiter (backport cosmos/cosmos-sdk#18537)
-* (x/fbridge) [\#1361](https://github.com/Finschia/finschia-sdk/pull/1361) Fixes fbridge auth checking bug
-* (x/fswap) [\#1365](https://github.com/Finschia/finschia-sdk/pull/1365) fix update swap keys for possibly overlapped keys(`(hello,world) should be different to (hel,loworld)`)
-* (x/fswap, x/fbridge) [\#1378](https://github.com/Finschia/finschia-sdk/pull/1378) Fix bug where amino is not supported in fswap and fbridge
-* (x/fswap) [\#1379](https://github.com/Finschia/finschia-sdk/pull/1379) add missing router registration
-* (x/fswap) [\#1385](https://github.com/Finschia/finschia-sdk/pull/1385) add accidentally deleted event emissions(EventSetSwap, EventAddDenomMetadata)
-* (x/fswap) [\#1392](https://github.com/Finschia/finschia-sdk/pull/1392) fix dummy denom coin data for test in fswap
-* (style) [\#1414](https://github.com/Finschia/finschia-sdk/pull/1414) improve code quality with new linters
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 
 ### Removed
 
@@ -88,4 +58,5 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Build, CI
 * (build, ci) [\#1410](https://github.com/Finschia/finschia-sdk/pull/1410) Bump Go from 1.20 to 1.22
 * (build) [\#1413](https://github.com/Finschia/finschia-sdk/pull/1413) Update outdated dependencies for v0.49.x
+
 ### Document Updates

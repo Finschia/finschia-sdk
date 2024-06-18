@@ -354,11 +354,7 @@ lint: golangci-lint
 	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
 
 golangci-lint:
-<<<<<<< HEAD
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.2
-=======
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59
->>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
 
 lint-fix: golangci-lint
 	golangci-lint run --fix --out-format=tab --issues-exit-code=0
