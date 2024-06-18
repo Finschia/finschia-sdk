@@ -62,7 +62,7 @@ func runShowCmd(cmd *cobra.Command, args []string) (err error) {
 	if len(args) == 1 {
 		info, err = fetchKey(clientCtx.Keyring, args[0])
 		if err != nil {
-			return fmt.Errorf("%s is not a valid name or address: %v", args[0], err)
+			return fmt.Errorf("%s is not a valid name or address: %w", args[0], err)
 		}
 		if info.GetType() == keyring.TypeMulti {
 			info, err = keyring.NewMultiInfo(info.GetName(), info.GetPubKey())
@@ -75,7 +75,7 @@ func runShowCmd(cmd *cobra.Command, args []string) (err error) {
 		for i, keyref := range args {
 			info, err := fetchKey(clientCtx.Keyring, keyref)
 			if err != nil {
-				return fmt.Errorf("%s is not a valid name or address: %v", keyref, err)
+				return fmt.Errorf("%s is not a valid name or address: %w", keyref, err)
 			}
 
 			pks[i] = info.GetPubKey()
