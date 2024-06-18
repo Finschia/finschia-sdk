@@ -146,7 +146,6 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPC() {
 		{"with pagination", &tmservice.GetLatestValidatorSetRequest{Pagination: &qtypes.PageRequest{Offset: 0, Limit: uint64(len(vals))}}, false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			grpcRes, err := s.queryClient.GetLatestValidatorSet(context.Background(), tc.req)
 			if tc.expErr {
@@ -177,7 +176,6 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPCGateway() {
 		{"with pagination", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.offset=0&pagination.limit=2", vals[0].APIAddress), false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			res, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -210,7 +208,6 @@ func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPC() {
 		{"with pagination", &tmservice.GetValidatorSetByHeightRequest{Height: 1, Pagination: &qtypes.PageRequest{Offset: 0, Limit: 1}}, false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			grpcRes, err := s.queryClient.GetValidatorSetByHeight(context.Background(), tc.req)
 			if tc.expErr {
@@ -239,7 +236,6 @@ func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPCGateway() {
 		{"with pagination", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/validatorsets/%d?pagination.offset=0&pagination.limit=2", vals[0].APIAddress, 1), false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			res, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)

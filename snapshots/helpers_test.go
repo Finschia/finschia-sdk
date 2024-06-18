@@ -111,7 +111,7 @@ func (m *mockSnapshotter) Restore(
 	for {
 		item := &snapshottypes.SnapshotItem{}
 		err := protoReader.ReadMsg(item)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		} else if err != nil {
 			return snapshottypes.SnapshotItem{}, sdkerrors.Wrap(err, "invalid protobuf message")

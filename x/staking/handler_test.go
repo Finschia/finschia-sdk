@@ -888,7 +888,7 @@ func TestMultipleRedelegationAtSameTime(t *testing.T) {
 
 	// move forward in time, should complete both redelegations
 	ctx = tstaking.TurnBlockTimeDiff(1 * time.Second)
-	rd, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
+	_, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
 	require.False(t, found)
 }
 
@@ -935,7 +935,7 @@ func TestMultipleRedelegationAtUniqueTimes(t *testing.T) {
 
 	// move forward in time, should complete the second redelegation
 	ctx = tstaking.TurnBlockTimeDiff(5 * time.Second)
-	rd, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
+	_, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
 	require.False(t, found)
 }
 
@@ -975,7 +975,7 @@ func TestMultipleUnbondingDelegationAtSameTime(t *testing.T) {
 
 	// move forwaubd in time, should complete both ubds
 	ctx = tstaking.TurnBlockTimeDiff(1 * time.Second)
-	ubd, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
+	_, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
 	require.False(t, found)
 }
 
@@ -1023,7 +1023,7 @@ func TestMultipleUnbondingDelegationAtUniqueTimes(t *testing.T) {
 
 	// move forwaubd in time, should complete the second redelegation
 	ctx = tstaking.TurnBlockTimeDiff(5 * time.Second)
-	ubd, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
+	_, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
 	require.False(t, found)
 }
 

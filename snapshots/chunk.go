@@ -1,6 +1,7 @@
 package snapshots
 
 import (
+	"errors"
 	"io"
 
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -144,7 +145,7 @@ func (r *ChunkReader) Read(p []byte) (int, error) {
 		}
 	}
 	n, err := r.reader.Read(p)
-	if err == io.EOF {
+	if errors.Is(err, io.EOF) {
 		err = r.reader.Close()
 		r.reader = nil
 		if err != nil {

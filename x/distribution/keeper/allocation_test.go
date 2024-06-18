@@ -142,7 +142,7 @@ func TestAllocateTokensTruncation(t *testing.T) {
 		Address: valConsPk2.Address(),
 		Power:   10,
 	}
-	abciValС := abci.Validator{
+	abciValC := abci.Validator{
 		Address: valConsPk3.Address(),
 		Power:   10,
 	}
@@ -177,7 +177,7 @@ func TestAllocateTokensTruncation(t *testing.T) {
 			SignedLastBlock: true,
 		},
 		{
-			Validator:       abciValС,
+			Validator:       abciValC,
 			SignedLastBlock: true,
 		},
 	}

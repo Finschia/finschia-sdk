@@ -87,8 +87,6 @@ withdraw_addr_enabled: true`,
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryParams()
 			clientCtx := val.ClientCtx
@@ -146,8 +144,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorOutstandingRewards() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidatorOutstandingRewards()
 			clientCtx := val.ClientCtx
@@ -209,8 +205,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorCommission() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidatorCommission()
 			clientCtx := val.ClientCtx
@@ -288,8 +282,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidatorSlashes()
 			clientCtx := val.ClientCtx
@@ -389,8 +381,6 @@ total:
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryDelegatorRewards()
 			clientCtx := val.ClientCtx
@@ -432,8 +422,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryCommunityPool() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryCommunityPool()
 			clientCtx := val.ClientCtx
@@ -493,8 +481,6 @@ func (s *IntegrationTestSuite) TestNewWithdrawRewardsCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 
@@ -545,8 +531,6 @@ func (s *IntegrationTestSuite) TestNewWithdrawAllRewardsCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewWithdrawAllRewardsCmd()
 			clientCtx := val.ClientCtx
@@ -600,8 +584,6 @@ func (s *IntegrationTestSuite) TestNewSetWithdrawAddrCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewSetWithdrawAddrCmd()
 			clientCtx := val.ClientCtx
@@ -655,8 +637,6 @@ func (s *IntegrationTestSuite) TestNewFundCommunityPoolCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewFundCommunityPoolCmd()
 			clientCtx := val.ClientCtx
@@ -728,8 +708,6 @@ func (s *IntegrationTestSuite) TestGetCmdSubmitProposal() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdSubmitProposal()
 			clientCtx := val.ClientCtx

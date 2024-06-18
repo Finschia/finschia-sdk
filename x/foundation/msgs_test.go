@@ -712,8 +712,6 @@ func TestAminoJSON(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
 		})
@@ -777,8 +775,6 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			proposalMsg := &foundation.MsgSubmitProposal{
 				Proposers: []string{proposer.String()},
@@ -823,8 +819,6 @@ func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			policyMsg := &foundation.MsgUpdateDecisionPolicy{
 				Authority: authority.String(),
@@ -866,8 +860,6 @@ func TestMsgGrantAminoJson(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			grantMsg := &foundation.MsgGrant{
 				Authority: operator.String(),

@@ -84,7 +84,7 @@ $ %s debug addr link19wgf6ymq2ur6r59st95e04e49m69z4al4fc982
 					addr, err3 = sdk.ValAddressFromBech32(addrString)
 
 					if err3 != nil {
-						return fmt.Errorf("expected hex or bech32. Got errors: hex: %v, bech32 acc: %v, bech32 val: %v", err, err2, err3)
+						return fmt.Errorf("expected hex or bech32. Got errors: hex: %w, bech32 acc: %w, bech32 val: %w", err, err2, err3)
 					}
 				}
 			}

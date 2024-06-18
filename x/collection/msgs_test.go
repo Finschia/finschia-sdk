@@ -1991,7 +1991,6 @@ func TestAminoJSON(t *testing.T) {
 	}
 
 	for name, tc := range testCase {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			tx.Msgs = []sdk.Msg{tc.msg}
 			require.Equal(t, collection.RouterKey, tc.msg.Route())

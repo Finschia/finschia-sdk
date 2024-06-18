@@ -463,7 +463,7 @@ func (ks keystore) KeyByAddress(address sdk.Address) (Info, error) {
 }
 
 func wrapKeyNotFound(err error, msg string) error {
-	if err == keyring.ErrKeyNotFound {
+	if errors.Is(err, keyring.ErrKeyNotFound) {
 		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, msg)
 	}
 	return err
@@ -691,7 +691,7 @@ func newFileBackendKeyringConfig(name, dir string, buf io.Reader) keyring.Config
 
 func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 	return func(prompt string) (string, error) {
-		keyhashStored := false
+		var keyhashStored bool
 		keyhashFilePath := filepath.Join(dir, "keyhash")
 
 		var keyhash []byte
@@ -702,7 +702,7 @@ func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 		case err == nil:
 			keyhash, err = os.ReadFile(keyhashFilePath)
 			if err != nil {
-				return "", fmt.Errorf("failed to read %s: %v", keyhashFilePath, err)
+				return "", fmt.Errorf("failed to read %s: %w", keyhashFilePath, err)
 			}
 
 			keyhashStored = true
@@ -711,7 +711,7 @@ func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 			keyhashStored = false
 
 		default:
-			return "", fmt.Errorf("failed to open %s: %v", keyhashFilePath, err)
+			return "", fmt.Errorf("failed to open %s: %w", keyhashFilePath, err)
 		}
 
 		failureCounter := 0
@@ -820,13 +820,13 @@ func (ks keystore) writeInfo(info Info) error {
 func (ks keystore) existsInDb(info Info) (bool, error) {
 	if _, err := ks.db.Get(addrHexKeyAsString(info.GetAddress())); err == nil {
 		return true, nil // address lookup succeeds - info exists
-	} else if err != keyring.ErrKeyNotFound {
+	} else if !errors.Is(err, keyring.ErrKeyNotFound) {
 		return false, err // received unexpected error - returns error
 	}
 
 	if _, err := ks.db.Get(infoKey(info.GetName())); err == nil {
 		return true, nil // uid lookup succeeds - info exists
-	} else if err != keyring.ErrKeyNotFound {
+	} else if !errors.Is(err, keyring.ErrKeyNotFound) {
 		return false, err // received unexpected error - returns
 	}
 

@@ -60,7 +60,6 @@ func (s *IntegrationTestSuite) TestQueryGrantGRPC() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, _ := rest.GetRequest(tc.url)
 			require := s.Require()
@@ -145,7 +144,6 @@ func (s *IntegrationTestSuite) TestQueryGrantsGRPC() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			tc.preRun()
 			resp, _ := rest.GetRequest(tc.url)

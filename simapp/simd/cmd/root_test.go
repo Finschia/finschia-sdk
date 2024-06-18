@@ -76,7 +76,6 @@ func TestAppExport(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			exported, err := a.appExport(logger, db, nil, tc.height, false, []string{}, ctx.Viper)
 			if tc.expectErr {

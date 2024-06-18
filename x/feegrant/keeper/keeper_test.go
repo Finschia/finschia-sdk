@@ -120,7 +120,6 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	}
 
 	for name, tc := range cases {
-		tc := tc
 		suite.Run(name, func() {
 			allow, _ := suite.keeper.GetAllowance(suite.sdkCtx, tc.granter, tc.grantee)
 
@@ -196,7 +195,6 @@ func (suite *KeeperTestSuite) TestUseGrantedFee() {
 	}
 
 	for name, tc := range cases {
-		tc := tc
 		suite.Run(name, func() {
 			err := suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], future)
 			suite.Require().NoError(err)

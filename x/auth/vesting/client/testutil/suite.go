@@ -112,8 +112,6 @@ func (s *IntegrationTestSuite) TestNewMsgCreateVestingAccountCmd() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			clientCtx := val.ClientCtx
 

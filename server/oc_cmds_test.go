@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -32,7 +33,11 @@ func TestShowValidator(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
+<<<<<<< HEAD:server/oc_cmds_test.go
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
+=======
+	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
+>>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414)):server/tm_cmds_test.go
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -53,7 +58,11 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
+<<<<<<< HEAD:server/oc_cmds_test.go
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
+=======
+	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
+>>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414)):server/tm_cmds_test.go
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 

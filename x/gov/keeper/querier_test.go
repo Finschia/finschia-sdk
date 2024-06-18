@@ -374,7 +374,6 @@ func TestPaginatedVotesQuery(t *testing.T) {
 			page:        -1,
 		},
 	} {
-		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
 			votes := getQueriedVotes(t, ctx, legacyQuerierCdc, querier, proposal.ProposalId, tc.page, tc.limit)
 			require.Equal(t, len(tc.votes), len(votes))

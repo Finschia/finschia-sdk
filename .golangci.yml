@@ -1,4 +1,5 @@
 run:
+<<<<<<< HEAD
   tests: false
 #   # timeout for analysis, e.g. 30s, 5m, default is 1m
 #   timeout: 5m
@@ -31,6 +32,63 @@ linters:
     - nolintlint
 
 issues:
+=======
+  tests: true
+  timeout: 15m
+  allow-parallel-runners: true
+  build-tags:
+    - ledger
+    - goleveldb
+    - test_ledger_mock
+
+output:
+  sort-results: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - dogsled
+    - gosec
+    - gci
+    - gofumpt
+    - goconst
+    - gocritic
+    - nakedret
+    - nolintlint
+    - revive
+    - misspell
+    - stylecheck
+    - typecheck
+    - thelper
+    - unconvert
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - copyloopvar
+    - errchkjson
+    - errorlint
+    - tenv
+    - wastedassign
+    - fatcontext
+
+issues:
+  exclude-dirs:
+    - "testdata$"
+  exclude-files:
+    - server/grpc/gogoreflection/fix_registration.go
+    - "fix_registration.go"
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
+    - ".*\\.pulsar\\.go$"
+    - crypto/keys/secp256k1/internal/*
+>>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
   exclude-rules:
     - text: "Use of weak random number generator"
       linters:
@@ -59,7 +117,11 @@ issues:
 
 linters-settings:
   dogsled:
+<<<<<<< HEAD
     max-blank-identifiers: 3
+=======
+    max-blank-identifiers: 6
+>>>>>>> d60e44aa6 (style: Improve code quality with new linters (#1414))
   nolintlint:
     allow-unused: false
     require-explanation: false

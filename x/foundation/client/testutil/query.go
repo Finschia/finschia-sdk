@@ -44,8 +44,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdParams()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -86,8 +84,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdTreasury()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -127,8 +123,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdFoundationInfo()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -184,8 +178,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdMember()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -226,8 +218,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdMembers()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -276,8 +266,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdProposal()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -317,8 +305,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdProposals()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -377,8 +363,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdVote()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -427,8 +411,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdVotes()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -477,8 +459,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdTallyResult()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -521,8 +501,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdCensorships() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdCensorships()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -586,8 +564,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdGrants()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))

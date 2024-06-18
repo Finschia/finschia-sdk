@@ -62,8 +62,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdBalance()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -117,8 +115,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdContract()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -192,8 +188,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdGranteeGrants()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -254,8 +248,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdIsOperatorFor() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdIsOperatorFor()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -314,8 +306,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdHoldersByOperator() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewQueryCmdHoldersByOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))

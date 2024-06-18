@@ -51,7 +51,6 @@ func TestLoadSnapshotChunk(t *testing.T) {
 		"Zero chunk":        {2, 1, 0, false},
 	}
 	for name, tc := range testcases {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			resp := app.LoadSnapshotChunk(abci.RequestLoadSnapshotChunk{
 				Height: tc.height,
@@ -96,7 +95,6 @@ func TestOfferSnapshot_Errors(t *testing.T) {
 		}, abci.ResponseOfferSnapshot_REJECT},
 	}
 	for name, tc := range testcases {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			resp := app.OfferSnapshot(abci.RequestOfferSnapshot{Snapshot: tc.snapshot})
 			assert.Equal(t, tc.result, resp.Result)
@@ -1839,7 +1837,6 @@ func TestSetLoader(t *testing.T) {
 	v := []byte("value")
 
 	for name, tc := range cases {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			// prepare a db with some data
 			db := dbm.NewMemDB()
