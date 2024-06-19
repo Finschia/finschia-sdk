@@ -95,7 +95,7 @@ func loadChainID(config *cfg.Config) (string, error) {
 		return "", err
 	}
 	defer func() {
-		var _ = stateDB.Close()
+		_ = stateDB.Close()
 	}()
 	genesisDocProvider := node.DefaultGenesisDocProviderFunc(config)
 	_, genDoc, err := node.LoadStateFromDBOrGenesisDocProvider(stateDB, genesisDocProvider)

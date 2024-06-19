@@ -80,7 +80,6 @@ func TestPaginate(t *testing.T) {
 }
 
 func TestReadPageRequest(t *testing.T) {
-
 	testCases := []struct {
 		name                string
 		pageKey             string
@@ -121,10 +120,15 @@ func TestReadPageRequest(t *testing.T) {
 			flagSet.Bool(flags.FlagCountTotal, false, "count total")
 
 			err := flagSet.Set(flags.FlagPageKey, tc.pageKey)
+			require.NoError(t, err)
 			err = flagSet.Set(flags.FlagOffset, strconv.Itoa(tc.offset))
+			require.NoError(t, err)
 			err = flagSet.Set(flags.FlagLimit, strconv.Itoa(tc.limit))
+			require.NoError(t, err)
 			err = flagSet.Set(flags.FlagPage, strconv.Itoa(tc.page))
+			require.NoError(t, err)
 			err = flagSet.Set(flags.FlagCountTotal, strconv.FormatBool(tc.countTotal))
+			require.NoError(t, err)
 
 			pr, err := client.ReadPageRequest(flagSet)
 			if tc.ok {

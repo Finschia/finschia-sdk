@@ -3,9 +3,8 @@ package signing
 import (
 	"fmt"
 
-	"github.com/Finschia/finschia-sdk/types/tx/signing"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/types/tx/signing"
 )
 
 // SignModeHandlerMap is SignModeHandler that aggregates multiple SignModeHandler's into

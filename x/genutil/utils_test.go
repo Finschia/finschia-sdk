@@ -7,8 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Finschia/ostracon/config"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/ostracon/config"
 )
 
 func TestExportGenesisFileWithTime(t *testing.T) {

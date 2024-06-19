@@ -83,57 +83,62 @@ func Test_runAddCmdBasic(t *testing.T) {
 		args []string
 		err  string
 	}{
-		{[]string{
-			"keyname1",
-			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
-			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
-		},
+		{
+			[]string{
+				"keyname1",
+				fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+				fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+				fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+			},
 			"you cannot specify a new key as one of the names of the keys that make up a multisig",
 		},
-		{[]string{
-			"keyname-multi",
-			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
-			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname11"),
-		},
+		{
+			[]string{
+				"keyname-multi",
+				fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+				fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+				fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname11"),
+			},
 			"part of the multisig target key does not exist",
 		},
-		{[]string{
-			"keyname-multi",
-			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
-			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
-			fmt.Sprintf("--%s=%d", flagMultiSigThreshold, 3),
-		},
+		{
+			[]string{
+				"keyname-multi",
+				fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+				fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+				fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+				fmt.Sprintf("--%s=%d", flagMultiSigThreshold, 3),
+			},
 			"threshold k of n multisignature",
 		},
-		{[]string{
-			"keyname-multi",
-			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
-			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
-			fmt.Sprintf("--%s=%d", flagMultiSigThreshold, -1),
-		},
+		{
+			[]string{
+				"keyname-multi",
+				fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+				fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+				fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+				fmt.Sprintf("--%s=%d", flagMultiSigThreshold, -1),
+			},
 			"threshold must be a positive integer",
 		},
-		{[]string{
-			"keyname-multi",
-			fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
-			fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
-			fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-			fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
-			fmt.Sprintf("--%s=%d", flagMultiSigThreshold, 2),
-		},
+		{
+			[]string{
+				"keyname-multi",
+				fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
+				fmt.Sprintf("--%s=%s", cli.OutputFlag, OutputFormatText),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyAlgorithm, string(hd.Secp256k1Type)),
+				fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
+				fmt.Sprintf("--%s=%s", flagMultisig, "keyname1,keyname2"),
+				fmt.Sprintf("--%s=%d", flagMultiSigThreshold, 2),
+			},
 			"",
 		},
 	}
@@ -148,7 +153,8 @@ func Test_runAddCmdBasic(t *testing.T) {
 
 		cmd.Flags().Visit(func(f *pflag.Flag) {
 			if f.Name == flagMultisig {
-				f.Value.(pflag.SliceValue).Replace([]string{})
+				err = f.Value.(pflag.SliceValue).Replace([]string{})
+				require.NoError(t, err)
 			}
 		})
 	}
@@ -314,7 +320,7 @@ func Test_runAddCmdDryRun(t *testing.T) {
 
 			appCodec := simapp.MakeTestEncodingConfig().Marshaler
 			clientCtx := client.Context{}.
-				WithJSONCodec(appCodec).
+				WithCodec(appCodec).
 				WithKeyringDir(kbHome).
 				WithKeyring(kb)
 			ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)

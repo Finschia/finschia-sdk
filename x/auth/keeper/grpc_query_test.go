@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/auth/types"

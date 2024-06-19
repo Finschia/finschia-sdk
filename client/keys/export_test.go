@@ -9,12 +9,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/client"
+	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/hd"
+	"github.com/Finschia/finschia-sdk/crypto/keyring"
 	"github.com/Finschia/finschia-sdk/testutil"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
-
-	"github.com/Finschia/finschia-sdk/client/flags"
-	"github.com/Finschia/finschia-sdk/crypto/keyring"
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 

@@ -1,8 +1,9 @@
 package types
 
 import (
-	occrypto "github.com/Finschia/ostracon/crypto"
 	proto "github.com/gogo/protobuf/proto"
+
+	occrypto "github.com/Finschia/ostracon/crypto"
 )
 
 // PubKey defines a public key and extends proto.Message.
@@ -11,7 +12,7 @@ type PubKey interface {
 
 	Address() Address
 	Bytes() []byte
-	VerifySignature(msg []byte, sig []byte) bool
+	VerifySignature(msg, sig []byte) bool
 	Equals(PubKey) bool
 	Type() string
 }

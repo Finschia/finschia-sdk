@@ -6,7 +6,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/Finschia/finschia-sdk/testutil/rest"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )

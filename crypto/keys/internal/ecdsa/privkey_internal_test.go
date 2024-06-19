@@ -7,9 +7,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Finschia/ostracon/crypto"
-
 	"github.com/stretchr/testify/suite"
+
+	"github.com/Finschia/ostracon/crypto"
 )
 
 func TestSKSuite(t *testing.T) {
@@ -40,10 +40,11 @@ func (suite *SKSuite) TestMarshal() {
 	const size = 32
 
 	buffer := make([]byte, size)
-	suite.sk.MarshalTo(buffer)
+	_, err := suite.sk.MarshalTo(buffer)
+	require.NoError(err)
 
 	sk := new(PrivKey)
-	err := sk.Unmarshal(buffer, secp256r1, size)
+	err = sk.Unmarshal(buffer, secp256r1, size)
 	require.NoError(err)
 	require.True(sk.Equal(&suite.sk.PrivateKey))
 }
@@ -92,7 +93,7 @@ func (suite *SKSuite) TestSign() {
 
 	// check whether msg can be verified with same key, and high_s
 	// value using "regular" ecdsa signature
-	hash := sha256.Sum256([]byte(msg))
+	hash := sha256.Sum256(msg)
 	require.True(ecdsa.Verify(&suite.pk.PublicKey, hash[:], r, high_s))
 
 	// Mutate the message

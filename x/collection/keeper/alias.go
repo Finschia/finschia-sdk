@@ -153,12 +153,12 @@ func (k Keeper) iterateNFTsImpl(ctx sdk.Context, prefix []byte, fn func(contract
 }
 
 func (k Keeper) iterateContractParents(ctx sdk.Context, contractID string, fn func(tokenID, parentID string) (stop bool)) {
-	k.iterateParentsImpl(ctx, parentKeyPrefixByContractID(contractID), func(_ string, tokenID, parentID string) (stop bool) {
+	k.iterateParentsImpl(ctx, parentKeyPrefixByContractID(contractID), func(_, tokenID, parentID string) (stop bool) {
 		return fn(tokenID, parentID)
 	})
 }
 
-func (k Keeper) iterateParentsImpl(ctx sdk.Context, prefix []byte, fn func(contractID string, tokenID, parentID string) (stop bool)) {
+func (k Keeper) iterateParentsImpl(ctx sdk.Context, prefix []byte, fn func(contractID, tokenID, parentID string) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	iter := sdk.KVStorePrefixIterator(store, prefix)
 
@@ -175,7 +175,7 @@ func (k Keeper) iterateParentsImpl(ctx sdk.Context, prefix []byte, fn func(contr
 	}
 }
 
-func (k Keeper) iterateChildrenImpl(ctx sdk.Context, prefix []byte, fn func(contractID string, tokenID, childID string) (stop bool)) {
+func (k Keeper) iterateChildrenImpl(ctx sdk.Context, prefix []byte, fn func(contractID, tokenID, childID string) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	iter := sdk.KVStorePrefixIterator(store, prefix)
 
@@ -188,7 +188,7 @@ func (k Keeper) iterateChildrenImpl(ctx sdk.Context, prefix []byte, fn func(cont
 	}
 }
 
-func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(contractID string, classID string, amount sdk.Int) (stop bool)) {
+func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(contractID, classID string, amount sdk.Int) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
@@ -211,13 +211,13 @@ func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(co
 }
 
 func (k Keeper) iterateContractSupplies(ctx sdk.Context, contractID string, fn func(classID string, amount sdk.Int) (stop bool)) {
-	k.iterateStatisticsImpl(ctx, statisticKeyPrefixByContractID(supplyKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
+	k.iterateStatisticsImpl(ctx, statisticKeyPrefixByContractID(supplyKeyPrefix, contractID), func(_, classID string, amount sdk.Int) (stop bool) {
 		return fn(classID, amount)
 	})
 }
 
 func (k Keeper) iterateContractBurnts(ctx sdk.Context, contractID string, fn func(classID string, amount sdk.Int) (stop bool)) {
-	k.iterateStatisticsImpl(ctx, statisticKeyPrefixByContractID(burntKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
+	k.iterateStatisticsImpl(ctx, statisticKeyPrefixByContractID(burntKeyPrefix, contractID), func(_, classID string, amount sdk.Int) (stop bool) {
 		return fn(classID, amount)
 	})
 }

@@ -3,10 +3,9 @@ package keeper
 import (
 	"context"
 
+	"github.com/gogo/protobuf/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/gogo/protobuf/proto"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/store/prefix"
@@ -28,7 +27,7 @@ func NewQueryServer(keeper Keeper) collection.QueryServer {
 	}
 }
 
-func (s queryServer) addressFromBech32GRPC(bech32 string, context string) (sdk.AccAddress, error) {
+func (s queryServer) addressFromBech32GRPC(bech32, context string) (sdk.AccAddress, error) {
 	addr, err := sdk.AccAddressFromBech32(bech32)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress.Wrap(bech32), context).Error())
@@ -37,7 +36,7 @@ func (s queryServer) addressFromBech32GRPC(bech32 string, context string) (sdk.A
 	return addr, nil
 }
 
-func (s queryServer) assertTokenIsFungible(ctx sdk.Context, contractID string, classID string) error {
+func (s queryServer) assertTokenIsFungible(ctx sdk.Context, contractID, classID string) error {
 	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
 		return err
@@ -50,7 +49,7 @@ func (s queryServer) assertTokenIsFungible(ctx sdk.Context, contractID string, c
 	return nil
 }
 
-func (s queryServer) assertTokenTypeIsNonFungible(ctx sdk.Context, contractID string, classID string) error {
+func (s queryServer) assertTokenTypeIsNonFungible(ctx sdk.Context, contractID, classID string) error {
 	class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
 		return err
@@ -113,7 +112,7 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 	store := ctx.KVStore(s.keeper.storeKey)
 	balanceStore := prefix.NewStore(store, balanceKeyPrefixByAddress(req.ContractId, addr))
 	var balances []collection.Coin
-	pageRes, err := query.Paginate(balanceStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(balanceStore, req.Pagination, func(key, value []byte) error {
 		tokenID := string(key)
 
 		var balance sdk.Int
@@ -362,7 +361,7 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 	return &collection.QueryTokenTypeResponse{TokenType: tokenType}, nil
 }
 
-func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string) (collection.Token, error) {
+func (s queryServer) getToken(ctx sdk.Context, contractID, tokenID string) (collection.Token, error) {
 	switch {
 	case collection.ValidateNFTID(tokenID) == nil:
 		token, err := s.keeper.GetNFT(ctx, contractID, tokenID)
@@ -519,7 +518,7 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 	store := ctx.KVStore(s.keeper.storeKey)
 	childStore := prefix.NewStore(store, childKeyPrefixByTokenID(req.ContractId, req.TokenId))
 	var children []collection.NFT
-	pageRes, err := query.Paginate(childStore, req.Pagination, func(key []byte, _ []byte) error {
+	pageRes, err := query.Paginate(childStore, req.Pagination, func(key, _ []byte) error {
 		childID := string(key)
 		child, err := s.keeper.GetNFT(ctx, req.ContractId, childID)
 		if err != nil {
@@ -554,7 +553,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 	store := ctx.KVStore(s.keeper.storeKey)
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, granteeAddr))
 	var grants []collection.Grant
-	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, _ []byte) error {
+	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key, _ []byte) error {
 		permission := collection.Permission(key[0])
 		grants = append(grants, collection.Grant{
 			Grantee:    req.Grantee,
@@ -612,7 +611,7 @@ func (s queryServer) HoldersByOperator(c context.Context, req *collection.QueryH
 	store := ctx.KVStore(s.keeper.storeKey)
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
 	var holders []string
-	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key, value []byte) error {
 		holder := sdk.AccAddress(key)
 		holders = append(holders, holder.String())
 		return nil

@@ -7,10 +7,10 @@ import (
 	"math/rand"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	sdkclient "github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

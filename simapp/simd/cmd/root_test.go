@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/ostracon/libs/log"
 	octypes "github.com/Finschia/ostracon/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server"
@@ -87,5 +87,4 @@ func TestAppExport(t *testing.T) {
 			require.NotNil(t, exported)
 		})
 	}
-
 }

@@ -3,10 +3,9 @@ package internal
 import (
 	"context"
 
+	"github.com/gogo/protobuf/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/gogo/protobuf/proto"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/store/prefix"
@@ -87,7 +86,7 @@ func (s queryServer) Members(c context.Context, req *foundation.QueryMembersRequ
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
 	memberStore := prefix.NewStore(store, memberKeyPrefix)
-	pageRes, err := query.Paginate(memberStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(memberStore, req.Pagination, func(key, value []byte) error {
 		var member foundation.Member
 		s.keeper.cdc.MustUnmarshal(value, &member)
 		members = append(members, member)
@@ -123,7 +122,7 @@ func (s queryServer) Proposals(c context.Context, req *foundation.QueryProposals
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
 	proposalStore := prefix.NewStore(store, proposalKeyPrefix)
-	pageRes, err := query.Paginate(proposalStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(proposalStore, req.Pagination, func(key, value []byte) error {
 		var proposal foundation.Proposal
 		s.keeper.cdc.MustUnmarshal(value, &proposal)
 		proposals = append(proposals, proposal)
@@ -163,7 +162,7 @@ func (s queryServer) Votes(c context.Context, req *foundation.QueryVotesRequest)
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
 	voteStore := prefix.NewStore(store, append(voteKeyPrefix, Uint64ToBytes(req.ProposalId)...))
-	pageRes, err := query.Paginate(voteStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(voteStore, req.Pagination, func(key, value []byte) error {
 		var vote foundation.Vote
 		s.keeper.cdc.MustUnmarshal(value, &vote)
 		votes = append(votes, vote)
@@ -204,7 +203,7 @@ func (s queryServer) Censorships(c context.Context, req *foundation.QueryCensors
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
 	censorshipStore := prefix.NewStore(store, censorshipKeyPrefix)
-	pageRes, err := query.Paginate(censorshipStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(censorshipStore, req.Pagination, func(key, value []byte) error {
 		var censorship foundation.Censorship
 		s.keeper.cdc.MustUnmarshal(value, &censorship)
 		censorships = append(censorships, censorship)
@@ -235,7 +234,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		grantStore := prefix.NewStore(store, keyPrefix)
 
 		var authorizations []*codectypes.Any
-		_, err = query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
+		_, err = query.Paginate(grantStore, req.Pagination, func(key, value []byte) error {
 			var authorization foundation.Authorization
 			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
 				panic(err)
@@ -265,7 +264,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	grantStore := prefix.NewStore(store, keyPrefix)
 
 	var authorizations []*codectypes.Any
-	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key, value []byte) error {
 		var authorization foundation.Authorization
 		if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
 			panic(err)

@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"math"
 
+	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/store/types"
 )
@@ -53,7 +52,7 @@ func ParsePagination(pageReq *PageRequest) (page, limit int, err error) {
 func Paginate(
 	prefixStore types.KVStore,
 	pageRequest *PageRequest,
-	onResult func(key []byte, value []byte) error,
+	onResult func(key, value []byte) error,
 ) (*PageResponse, error) {
 	// if the PageRequest is nil, use default PageRequest
 	if pageRequest == nil {

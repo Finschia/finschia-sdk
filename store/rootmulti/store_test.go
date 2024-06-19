@@ -2,18 +2,15 @@ package rootmulti
 
 import (
 	"bytes"
-	"encoding/binary"
 	"fmt"
-	"math/rand"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/ostracon/libs/log"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codecTypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -484,7 +481,7 @@ func TestMultiStoreQuery(t *testing.T) {
 	require.Equal(t, 3, len(qres.ProofOps.Ops)) // 3 mounted stores
 
 	// Test proofs second latest height
-	query.Height = query.Height - 1
+	query.Height--
 	qres = multi.Query(query)
 	require.EqualValues(t, 0, qres.Code)
 	require.NotNil(t, qres.ProofOps)
@@ -577,32 +574,14 @@ func TestMultiStore_PruningRestart(t *testing.T) {
 	}
 }
 
-func assertStoresEqual(t *testing.T, expect, actual types.CommitKVStore, msgAndArgs ...interface{}) {
-	assert.Equal(t, expect.LastCommitID(), actual.LastCommitID())
-	expectIter := expect.Iterator(nil, nil)
-	expectMap := map[string][]byte{}
-	for ; expectIter.Valid(); expectIter.Next() {
-		expectMap[string(expectIter.Key())] = expectIter.Value()
-	}
-	require.NoError(t, expectIter.Error())
-
-	actualIter := expect.Iterator(nil, nil)
-	actualMap := map[string][]byte{}
-	for ; actualIter.Valid(); actualIter.Next() {
-		actualMap[string(actualIter.Key())] = actualIter.Value()
-	}
-	require.NoError(t, actualIter.Error())
-
-	assert.Equal(t, expectMap, actualMap, msgAndArgs...)
-}
-
 func TestSetInitialVersion(t *testing.T) {
 	db := dbm.NewMemDB()
 	multi := newMultiStoreWithMounts(db, types.PruneNothing)
 
 	require.NoError(t, multi.LoadLatestVersion())
 
-	multi.SetInitialVersion(5)
+	err := multi.SetInitialVersion(5)
+	require.NoError(t, err)
 	require.Equal(t, int64(5), multi.initialVersion)
 
 	multi.Commit()
@@ -648,7 +627,8 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 	buf := new(bytes.Buffer)
 	var db dbm.DB = dbm.NewMemDB()
 	ms := newMultiStoreWithMounts(db, types.PruneNothing)
-	ms.LoadLatestVersion()
+	err := ms.LoadLatestVersion()
+	require.NoError(t, err)
 	mockListeners := []types.WriteListener{types.NewStoreKVPairWriteListener(buf, testMarshaller)}
 	ms.AddListeners(testStoreKey1, mockListeners)
 	ms.AddListeners(testStoreKey2, mockListeners)
@@ -690,6 +670,7 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 		StoreKey: testStoreKey2.Name(),
 		Delete:   false,
 	})
+	require.NoError(t, err)
 	kvPairSet2Bytes := buf.Bytes()
 	buf.Reset()
 	require.Equal(t, expectedOutputKVPairSet2, kvPairSet2Bytes)
@@ -701,6 +682,7 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 		StoreKey: testStoreKey2.Name(),
 		Delete:   true,
 	})
+	require.NoError(t, err)
 	kvPairDelete2Bytes := buf.Bytes()
 	buf.Reset()
 	require.Equal(t, expectedOutputKVPairDelete2, kvPairDelete2Bytes)
@@ -803,48 +785,6 @@ func newMultiStoreWithMounts(db dbm.DB, pruningOpts types.PruningOptions) *Store
 	return store
 }
 
-func newMultiStoreWithMixedMounts(db dbm.DB) *Store {
-	store := NewStore(db, log.NewNopLogger())
-	store.MountStoreWithDB(types.NewKVStoreKey("iavl1"), types.StoreTypeIAVL, nil)
-	store.MountStoreWithDB(types.NewKVStoreKey("iavl2"), types.StoreTypeIAVL, nil)
-	store.MountStoreWithDB(types.NewKVStoreKey("iavl3"), types.StoreTypeIAVL, nil)
-	store.LoadLatestVersion()
-
-	return store
-}
-
-func newMultiStoreWithGeneratedData(db dbm.DB, stores uint8, storeKeys uint64) *Store {
-	multiStore := NewStore(db, log.NewNopLogger())
-	r := rand.New(rand.NewSource(49872768940)) // Fixed seed for deterministic tests
-
-	keys := []*types.KVStoreKey{}
-	for i := uint8(0); i < stores; i++ {
-		key := types.NewKVStoreKey(fmt.Sprintf("store%v", i))
-		multiStore.MountStoreWithDB(key, types.StoreTypeIAVL, nil)
-		keys = append(keys, key)
-	}
-	multiStore.LoadLatestVersion()
-
-	for _, key := range keys {
-		store := multiStore.stores[key].(*iavl.Store)
-		for i := uint64(0); i < storeKeys; i++ {
-			k := make([]byte, 8)
-			v := make([]byte, 1024)
-			binary.BigEndian.PutUint64(k, i)
-			_, err := r.Read(v)
-			if err != nil {
-				panic(err)
-			}
-			store.Set(k, v)
-		}
-	}
-
-	multiStore.Commit()
-	multiStore.LoadLatestVersion()
-
-	return multiStore
-}
-
 func newMultiStoreWithModifiedMounts(db dbm.DB, pruningOpts types.PruningOptions) (*Store, *types.StoreUpgrades) {
 	store := NewStore(db, log.NewNopLogger())
 	store.pruningOpts = pruningOpts
@@ -867,26 +807,27 @@ func newMultiStoreWithModifiedMounts(db dbm.DB, pruningOpts types.PruningOptions
 }
 
 func checkStore(t *testing.T, store *Store, expect, got types.CommitID) {
+	t.Helper()
 	require.Equal(t, expect, got)
 	require.Equal(t, expect, store.LastCommitID())
 }
 
-func checkContains(t testing.TB, info []types.StoreInfo, wanted []string) {
-	t.Helper()
+func checkContains(tb testing.TB, info []types.StoreInfo, wanted []string) {
+	tb.Helper()
 
 	for _, want := range wanted {
-		checkHas(t, info, want)
+		checkHas(tb, info, want)
 	}
 }
 
-func checkHas(t testing.TB, info []types.StoreInfo, want string) {
-	t.Helper()
+func checkHas(tb testing.TB, info []types.StoreInfo, want string) {
+	tb.Helper()
 	for _, i := range info {
 		if i.Name == want {
 			return
 		}
 	}
-	t.Fatalf("storeInfo doesn't contain %s", want)
+	tb.Fatalf("storeInfo doesn't contain %s", want)
 }
 
 func getExpectedCommitID(store *Store, ver int64) types.CommitID {

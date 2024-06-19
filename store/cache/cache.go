@@ -51,7 +51,8 @@ type (
 )
 
 func NewCommitKVStoreCache(store types.CommitKVStore, prefix []byte, cache *fastcache.Cache,
-	metrics *Metrics) *CommitKVStoreCache {
+	metrics *Metrics,
+) *CommitKVStoreCache {
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
 		prefix:        prefix,

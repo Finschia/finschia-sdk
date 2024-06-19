@@ -140,7 +140,8 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil)
-	app.init()
+	err := app.init()
+	require.NoError(t, err)
 
 	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 	app.Commit()
@@ -190,7 +191,8 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 			},
 		},
 	})
-	app.init()
+	err := app.init()
+	require.NoError(t, err)
 
 	// set block params
 	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
@@ -218,7 +220,10 @@ func (ps *paramStore) Set(_ sdk.Context, key []byte, value interface{}) {
 		panic(err)
 	}
 
-	ps.db.Set(key, bz)
+	err = ps.db.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (ps *paramStore) Has(_ sdk.Context, key []byte) bool {

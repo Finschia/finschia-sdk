@@ -7,10 +7,10 @@ import (
 
 	"github.com/cosmos/iavl"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/ostracon/libs/log"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/store/cachekv"
 	"github.com/Finschia/finschia-sdk/store/types"
@@ -34,17 +34,24 @@ func randBytes(numBytes int) []byte {
 
 // make a tree with data from above and save it
 func newAlohaTree(t *testing.T, db dbm.DB) (*iavl.MutableTree, types.CommitID) {
+	t.Helper()
 	tree, err := iavl.NewMutableTree(db, cacheSize, false)
 	require.NoError(t, err)
 
 	for k, v := range treeData {
-		tree.Set([]byte(k), []byte(v))
+		_, err := tree.Set([]byte(k), []byte(v))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	for i := 0; i < nMoreData; i++ {
 		key := randBytes(12)
 		value := randBytes(50)
-		tree.Set(key, value)
+		_, err := tree.Set(key, value)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	hash, ver, err := tree.SaveVersion()
@@ -117,13 +124,14 @@ func TestLoadStore(t *testing.T) {
 
 func TestGetImmutable(t *testing.T) {
 	db := dbm.NewMemDB()
-	tree, cID := newAlohaTree(t, db)
+	tree, _ := newAlohaTree(t, db)
 	store := UnsafeNewStore(tree)
 
 	updated, err := tree.Set([]byte("hello"), []byte("adios"))
+	require.NoError(t, err)
 	require.True(t, updated)
 	hash, ver, err := tree.SaveVersion()
-	cID = types.CommitID{Version: ver, Hash: hash}
+	cID := types.CommitID{Version: ver, Hash: hash}
 	require.Nil(t, err)
 
 	_, err = store.GetImmutable(cID.Version + 1)
@@ -292,7 +300,8 @@ func TestIAVLReverseIterator(t *testing.T) {
 	iavlStore.Set([]byte{0x00, 0x02}, []byte("0 2"))
 	iavlStore.Set([]byte{0x01}, []byte("1"))
 
-	testReverseIterator := func(t *testing.T, start []byte, end []byte, expected []string) {
+	testReverseIterator := func(t *testing.T, start, end []byte, expected []string) {
+		t.Helper()
 		iter := iavlStore.ReverseIterator(start, end)
 		var i int
 		for i = 0; iter.Valid(); iter.Next() {
@@ -476,7 +485,6 @@ func TestIAVLGetAllVersions(t *testing.T) {
 			require.True(t, iavlStore.VersionExists(int64(ver)),
 				"Missing version %d with latest version %d. Should be storing all versions",
 				ver, i)
-
 		}
 
 		nextVersion(iavlStore)
@@ -595,7 +603,8 @@ func BenchmarkIAVLIteratorNext(b *testing.B) {
 	for i := 0; i < treeSize; i++ {
 		key := randBytes(4)
 		value := randBytes(50)
-		tree.Set(key, value)
+		_, err := tree.Set(key, value)
+		require.NoError(b, err)
 	}
 
 	iavlStore := UnsafeNewStore(tree)

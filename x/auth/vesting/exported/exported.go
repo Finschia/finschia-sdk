@@ -3,9 +3,8 @@ package exported
 import (
 	"time"
 
-	"github.com/Finschia/finschia-sdk/x/auth/types"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
+	"github.com/Finschia/finschia-sdk/x/auth/types"
 )
 
 // VestingAccount defines an account type that vests coins via a vesting schedule.

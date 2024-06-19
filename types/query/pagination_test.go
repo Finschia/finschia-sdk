@@ -155,7 +155,7 @@ func (s *paginationTestSuite) TestPagination() {
 	s.T().Log("verify paginate with offset and key - error")
 	pageReq = &query.PageRequest{Key: res.Pagination.NextKey, Offset: 100, Limit: defaultLimit, CountTotal: false}
 	request = types.NewQueryAllBalancesRequest(addr1, pageReq)
-	res, err = queryClient.AllBalances(gocontext.Background(), request)
+	_, err = queryClient.AllBalances(gocontext.Background(), request)
 	s.Require().Error(err)
 	s.Require().Equal("rpc error: code = InvalidArgument desc = paginate: invalid request, either offset or key is expected, got both", err.Error())
 
@@ -279,7 +279,7 @@ func (s *paginationTestSuite) TestReversePagination() {
 	s.T().Log("verify paginate with offset and key - error")
 	pageReq = &query.PageRequest{Key: res1.Pagination.NextKey, Offset: 100, Limit: defaultLimit, CountTotal: false}
 	request = types.NewQueryAllBalancesRequest(addr1, pageReq)
-	res, err = queryClient.AllBalances(gocontext.Background(), request)
+	_, err = queryClient.AllBalances(gocontext.Background(), request)
 	s.Require().Error(err)
 	s.Require().Equal("rpc error: code = InvalidArgument desc = paginate: invalid request, either offset or key is expected, got both", err.Error())
 
@@ -317,7 +317,7 @@ func ExamplePaginate() {
 	authStore := ctx.KVStore(app.GetKey(types.StoreKey))
 	balancesStore := prefix.NewStore(authStore, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
-	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key, value []byte) error {
 		var tempRes sdk.Coin
 		err := app.AppCodec().Unmarshal(value, &tempRes)
 		if err != nil {
@@ -342,7 +342,10 @@ func setupTest() (*simapp.SimApp, sdk.Context, codec.Codec) {
 	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 
-	ms.LoadLatestVersion()
+	err := ms.LoadLatestVersion()
+	if err != nil {
+		panic(err)
+	}
 
 	return app, ctx, appCodec
 }

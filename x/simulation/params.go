@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/Finschia/ostracon/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	"github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/types/simulation"

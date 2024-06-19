@@ -5,15 +5,16 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/Finschia/ostracon/crypto"
-	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/ostracon/crypto"
+	osted25519 "github.com/Finschia/ostracon/crypto/ed25519"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
-	ed25519 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
+	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 )
@@ -31,7 +32,7 @@ func TestSignAndValidateEd25519(t *testing.T) {
 
 	// ----
 	// Test cross packages verification
-	stdPrivKey := stded25519.PrivateKey(privKey.Key)
+	stdPrivKey := privKey.Key
 	stdPubKey := stdPrivKey.Public().(stded25519.PublicKey)
 
 	assert.Equal(t, stdPubKey, pubKey.(*ed25519.PubKey).Key)

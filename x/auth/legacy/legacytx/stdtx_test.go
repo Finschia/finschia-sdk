@@ -13,7 +13,6 @@ import (
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/Finschia/finschia-sdk/crypto/keys/multisig"
-	"github.com/Finschia/finschia-sdk/crypto/types"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
@@ -31,15 +30,15 @@ func init() {
 	RegisterLegacyAminoCodec(amino)
 }
 
-// Deprecated, use fee amount and gas limit separately on TxBuilder.
+// Deprecated: use fee amount and gas limit separately on TxBuilder.
 func NewTestStdFee() StdFee {
 	return NewStdFee(100000,
 		sdk.NewCoins(sdk.NewInt64Coin("atom", 150)),
 	)
 }
 
-// Deprecated, use TxBuilder.
-func NewTestTx(ctx sdk.Context, msgs []sdk.Msg, privs []cryptotypes.PrivKey, accNums []uint64, seqs []uint64, timeout uint64, fee StdFee) sdk.Tx {
+// Deprecated: use TxBuilder.
+func NewTestTx(ctx sdk.Context, msgs []sdk.Msg, privs []cryptotypes.PrivKey, accNums, seqs []uint64, timeout uint64, fee StdFee) sdk.Tx {
 	sigs := make([]StdSignature, len(privs))
 	for i, priv := range privs {
 		signBytes := StdSignBytes(ctx.ChainID(), accNums[i], seqs[i], timeout, fee, msgs, "")
@@ -207,7 +206,7 @@ func TestSignatureV2Conversions(t *testing.T) {
 		pubKey, pubKey2,
 	})
 	dummy2 := []byte("dummySig2")
-	bitArray := types.NewCompactBitArray(2)
+	bitArray := cryptotypes.NewCompactBitArray(2)
 	bitArray.SetIndex(0, true)
 	bitArray.SetIndex(1, true)
 	msigData := &signing.MultiSignatureData{

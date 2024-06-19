@@ -41,6 +41,7 @@ var (
 )
 
 func buildTestTx(t *testing.T, builder client.TxBuilder) {
+	t.Helper()
 	builder.SetMemo(memo)
 	builder.SetGasLimit(gas)
 	builder.SetFeeAmount(fee)

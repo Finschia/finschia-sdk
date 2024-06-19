@@ -7,7 +7,7 @@ import (
 	"github.com/Finschia/finschia-sdk/simapp"
 )
 
-func (s IntegrationTestSuite) TestGetProtoBlock() {
+func (s *IntegrationTestSuite) TestGetProtoBlock() {
 	val := s.network.Validators[0]
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -23,7 +23,7 @@ func (s IntegrationTestSuite) TestGetProtoBlock() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestGetBlocksByHash() {
+func (s *IntegrationTestSuite) TestGetBlocksByHash() {
 	val := s.network.Validators[0]
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -38,7 +38,7 @@ func (s IntegrationTestSuite) TestGetBlocksByHash() {
 	s.Require().Equal(blockResult2.Block.Height, blockResult.Block.Height)
 }
 
-func (s IntegrationTestSuite) TestGetBlockResultsByHeight() {
+func (s *IntegrationTestSuite) TestGetBlockResultsByHeight() {
 	val := s.network.Validators[0]
 
 	height := int64(1)

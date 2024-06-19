@@ -3,9 +3,10 @@ package cmd
 import (
 	"context"
 
+	"github.com/spf13/cobra"
+
 	ostcfg "github.com/Finschia/ostracon/config"
 	ostcli "github.com/Finschia/ostracon/libs/cli"
-	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

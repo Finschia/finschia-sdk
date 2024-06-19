@@ -5,7 +5,6 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -154,12 +153,8 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 }
 
 func (s *IntegrationTestSuite) pickEvent(events []abci.Event, event proto.Message, fn func(event proto.Message)) {
-	getType := func(msg proto.Message) string {
-		return proto.MessageName(msg)
-	}
-
 	for _, e := range events {
-		if e.Type == getType(event) {
+		if e.Type == proto.MessageName(event) {
 			msg, err := sdk.ParseTypedEvent(e)
 			s.Require().NoError(err)
 

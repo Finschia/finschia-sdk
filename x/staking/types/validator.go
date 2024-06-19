@@ -9,7 +9,6 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
-
 	"gopkg.in/yaml.v2"
 
 	"github.com/Finschia/finschia-sdk/codec"

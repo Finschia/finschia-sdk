@@ -888,7 +888,7 @@ func TestMsgRevokePermission(t *testing.T) {
 
 func TestAminoJSON(t *testing.T) {
 	tx := legacytx.StdTx{}
-	var contractId = "deadbeef"
+	contractId := "deadbeef"
 
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {

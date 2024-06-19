@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	octypes "github.com/Finschia/ostracon/types"
 	"github.com/spf13/cobra"
+
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

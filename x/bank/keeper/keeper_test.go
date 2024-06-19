@@ -192,15 +192,15 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	authKeeper.SetAccount(ctx, baseAcc)
 
 	suite.Require().Panics(func() {
-		_ = keeper.SendCoinsFromModuleToModule(ctx, "", holderAcc.GetName(), initCoins) // nolint:errcheck
+		_ = keeper.SendCoinsFromModuleToModule(ctx, "", holderAcc.GetName(), initCoins)
 	})
 
 	suite.Require().Panics(func() {
-		_ = keeper.SendCoinsFromModuleToModule(ctx, authtypes.Burner, "", initCoins) // nolint:errcheck
+		_ = keeper.SendCoinsFromModuleToModule(ctx, authtypes.Burner, "", initCoins)
 	})
 
 	suite.Require().Panics(func() {
-		_ = keeper.SendCoinsFromModuleToAccount(ctx, "", baseAcc.GetAddress(), initCoins) // nolint:errcheck
+		_ = keeper.SendCoinsFromModuleToAccount(ctx, "", baseAcc.GetAddress(), initCoins)
 	})
 
 	suite.Require().Error(
@@ -288,6 +288,7 @@ func (suite *IntegrationTestSuite) TestSupply_BurnCoins() {
 		Require().
 		NoError(keeper.MintCoins(ctx, authtypes.Minter, initCoins))
 	supplyAfterInflation, _, err := keeper.GetPaginatedTotalSupply(ctx, &query.PageRequest{})
+	suite.Require().NoError(err)
 
 	suite.Require().Panics(func() { keeper.BurnCoins(ctx, "", initCoins) }, "no module account")                    // nolint:errcheck
 	suite.Require().Panics(func() { keeper.BurnCoins(ctx, authtypes.Minter, initCoins) }, "invalid permission")     // nolint:errcheck
@@ -313,8 +314,8 @@ func (suite *IntegrationTestSuite) TestSupply_BurnCoins() {
 	authKeeper.SetModuleAccount(ctx, multiPermAcc)
 
 	err = keeper.BurnCoins(ctx, multiPermAcc.GetName(), initCoins)
-	supplyAfterBurn, _, err = keeper.GetPaginatedTotalSupply(ctx, &query.PageRequest{})
 	suite.Require().NoError(err)
+	supplyAfterBurn, _, err = keeper.GetPaginatedTotalSupply(ctx, &query.PageRequest{})
 	suite.Require().NoError(err)
 	suite.Require().Equal(sdk.NewCoins().String(), getCoinsByName(ctx, keeper, authKeeper, multiPermAcc.GetName()).String())
 	suite.Require().Equal(supplyAfterInflation.Sub(initCoins), supplyAfterBurn)
@@ -1127,9 +1128,9 @@ func (suite *IntegrationTestSuite) getTestMetadata() []types.Metadata {
 			Symbol:      "ATOM",
 			Description: "The native staking token of the Cosmos Hub.",
 			DenomUnits: []*types.DenomUnit{
-				{"uatom", uint32(0), []string{"microatom"}},
-				{"matom", uint32(3), []string{"milliatom"}},
-				{"atom", uint32(6), nil},
+				{Denom: "uatom", Exponent: uint32(0), Aliases: []string{"microatom"}},
+				{Denom: "matom", Exponent: uint32(3), Aliases: []string{"milliatom"}},
+				{Denom: "atom", Exponent: uint32(6), Aliases: nil},
 			},
 			Base:    "uatom",
 			Display: "atom",
@@ -1139,9 +1140,9 @@ func (suite *IntegrationTestSuite) getTestMetadata() []types.Metadata {
 			Symbol:      "TOKEN",
 			Description: "The native staking token of the Token Hub.",
 			DenomUnits: []*types.DenomUnit{
-				{"1token", uint32(5), []string{"decitoken"}},
-				{"2token", uint32(4), []string{"centitoken"}},
-				{"3token", uint32(7), []string{"dekatoken"}},
+				{Denom: "1token", Exponent: uint32(5), Aliases: []string{"decitoken"}},
+				{Denom: "2token", Exponent: uint32(4), Aliases: []string{"centitoken"}},
+				{Denom: "3token", Exponent: uint32(7), Aliases: []string{"dekatoken"}},
 			},
 			Base:    "utoken",
 			Display: "token",

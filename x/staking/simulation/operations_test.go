@@ -80,7 +80,8 @@ func TestSimulateMsgCreateValidator(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgCreateValidator
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "0.080000000000000000", msg.Commission.MaxChangeRate.String())
@@ -117,7 +118,8 @@ func TestSimulateMsgEditValidator(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgEditValidator
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "0.280623462081924936", msg.CommissionRate.String())
@@ -155,7 +157,8 @@ func TestSimulateMsgDelegate(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgDelegate
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", msg.DelegatorAddress)
@@ -200,7 +203,8 @@ func TestSimulateMsgUndelegate(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgUndelegate
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7fmx8x8", msg.DelegatorAddress)
@@ -250,7 +254,8 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgBeginRedelegate
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link12gwd9jchc69wck8dhstxgwz3z8qs8yv6t0s9q5", msg.DelegatorAddress)
@@ -275,6 +280,7 @@ func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
 }
 
 func getTestingAccounts(t *testing.T, r *rand.Rand, app *simapp.SimApp, ctx sdk.Context, n int) []simtypes.Account {
+	t.Helper()
 	accounts := simtypes.RandomAccounts(r, n)
 
 	initAmt := app.StakingKeeper.TokensFromConsensusPower(ctx, 200)
@@ -291,16 +297,19 @@ func getTestingAccounts(t *testing.T, r *rand.Rand, app *simapp.SimApp, ctx sdk.
 }
 
 func getTestingValidator0(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accounts []simtypes.Account) types.Validator {
+	t.Helper()
 	commission0 := types.NewCommission(sdk.ZeroDec(), sdk.OneDec(), sdk.OneDec())
 	return getTestingValidator(t, app, ctx, accounts, commission0, 0)
 }
 
 func getTestingValidator1(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accounts []simtypes.Account) types.Validator {
+	t.Helper()
 	commission1 := types.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 	return getTestingValidator(t, app, ctx, accounts, commission1, 1)
 }
 
 func getTestingValidator(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accounts []simtypes.Account, commission types.Commission, n int) types.Validator {
+	t.Helper()
 	account := accounts[n]
 	valPubKey := account.PubKey
 	valAddr := sdk.ValAddress(account.PubKey.Address().Bytes())

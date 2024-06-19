@@ -50,7 +50,7 @@ func (suite *SubspaceTestSuite) TestKeyTable() {
 	})
 	suite.Require().NotPanics(func() {
 		ss := types.NewSubspace(suite.cdc, suite.amino, key, tkey, "testsubspace2")
-		ss = ss.WithKeyTable(paramKeyTable())
+		_ = ss.WithKeyTable(paramKeyTable())
 	})
 }
 

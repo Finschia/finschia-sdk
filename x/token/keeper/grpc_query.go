@@ -27,7 +27,7 @@ func NewQueryServer(keeper Keeper) token.QueryServer {
 
 var _ token.QueryServer = queryServer{}
 
-func (s queryServer) addressFromBech32GRPC(address string, context string) (sdk.AccAddress, error) {
+func (s queryServer) addressFromBech32GRPC(address, context string) (sdk.AccAddress, error) {
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress.Wrap(address), context).Error())
@@ -140,7 +140,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	store := ctx.KVStore(s.keeper.storeKey)
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, grantee))
 	var grants []token.Grant
-	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, _ []byte) error {
+	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key, _ []byte) error {
 		permission := token.Permission(key[0])
 		grants = append(grants, token.Grant{
 			Grantee:    req.Grantee,
@@ -196,7 +196,7 @@ func (s queryServer) HoldersByOperator(c context.Context, req *token.QueryHolder
 	store := ctx.KVStore(s.keeper.storeKey)
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, operator))
 	var holders []string
-	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key, value []byte) error {
 		holder := sdk.AccAddress(key)
 		holders = append(holders, holder.String())
 		return nil

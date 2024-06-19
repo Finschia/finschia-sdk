@@ -137,9 +137,10 @@ func TestBatchScanner_Scan(t *testing.T) {
 	}
 }
 
-func compareEncoders(t *testing.T, expected sdk.TxEncoder, actual sdk.TxEncoder) {
+func compareEncoders(t *testing.T, expected, actual sdk.TxEncoder) {
+	t.Helper()
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
-	tx := legacytx.NewStdTx(msgs, legacytx.StdFee{}, []legacytx.StdSignature{}, "")
+	tx := legacytx.NewStdTx(msgs, legacytx.StdFee{}, []legacytx.StdSignature{}, "") //nolint:staticcheck // this will be removed when proto is ready
 
 	defaultEncoderBytes, err := expected(tx)
 	require.NoError(t, err)

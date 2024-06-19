@@ -16,10 +16,9 @@ import (
 	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 )
 
-// nolint: gosec
 // Simulation operation weights constants
 const (
-	OpWeightMsgUnjail = "op_weight_msg_unjail" //nolint:gosec
+	OpWeightMsgUnjail = "op_weight_msg_unjail"
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights

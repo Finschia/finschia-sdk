@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
+
+	"github.com/Finschia/ostracon/libs/cli"
 )
 
 const flagLong = "long"

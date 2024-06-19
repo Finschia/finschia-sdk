@@ -5,10 +5,8 @@ import (
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/client"
-
-	"github.com/Finschia/finschia-sdk/simapp/params"
-
 	"github.com/Finschia/finschia-sdk/codec"
+	"github.com/Finschia/finschia-sdk/simapp/params"
 	bankkeeper "github.com/Finschia/finschia-sdk/x/bank/keeper"
 	stakingkeeper "github.com/Finschia/finschia-sdk/x/staking/keeper"
 )
@@ -18,8 +16,9 @@ type TestSupport struct {
 	app *SimApp
 }
 
-func NewTestSupport(t testing.TB, app *SimApp) *TestSupport {
-	return &TestSupport{t: t, app: app}
+func NewTestSupport(tb testing.TB, app *SimApp) *TestSupport {
+	tb.Helper()
+	return &TestSupport{t: tb, app: app}
 }
 
 func (s TestSupport) AppCodec() codec.Codec {

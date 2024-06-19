@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
-
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
@@ -89,7 +88,7 @@ func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress, tok
 
 // ----------------------------------------------------------------------------
 // owner
-func ownerKey(contractID string, tokenID string) []byte {
+func ownerKey(contractID, tokenID string) []byte {
 	prefix := ownerKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(tokenID))
 
@@ -116,7 +115,7 @@ func ownerKeyPrefixByContractID(contractID string) []byte {
 
 // ----------------------------------------------------------------------------
 // nft
-func nftKey(contractID string, tokenID string) []byte {
+func nftKey(contractID, tokenID string) []byte {
 	prefix := nftKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(tokenID))
 
@@ -141,7 +140,7 @@ func nftKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func splitNFTKey(key []byte) (contractID string, tokenID string) {
+func splitNFTKey(key []byte) (contractID, tokenID string) {
 	begin := len(nftKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	contractID = string(key[begin:end])
@@ -154,7 +153,7 @@ func splitNFTKey(key []byte) (contractID string, tokenID string) {
 
 // ----------------------------------------------------------------------------
 // parent
-func parentKey(contractID string, tokenID string) []byte {
+func parentKey(contractID, tokenID string) []byte {
 	prefix := parentKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(tokenID))
 
@@ -179,7 +178,7 @@ func parentKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func splitParentKey(key []byte) (contractID string, tokenID string) {
+func splitParentKey(key []byte) (contractID, tokenID string) {
 	begin := len(parentKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	contractID = string(key[begin:end])
@@ -192,7 +191,7 @@ func splitParentKey(key []byte) (contractID string, tokenID string) {
 
 // ----------------------------------------------------------------------------
 // child
-func childKey(contractID string, tokenID, childID string) []byte {
+func childKey(contractID, tokenID, childID string) []byte {
 	prefix := childKeyPrefixByTokenID(contractID, tokenID)
 	key := make([]byte, len(prefix)+len(childID))
 
@@ -202,7 +201,7 @@ func childKey(contractID string, tokenID, childID string) []byte {
 	return key
 }
 
-func childKeyPrefixByTokenID(contractID string, tokenID string) []byte {
+func childKeyPrefixByTokenID(contractID, tokenID string) []byte {
 	prefix := childKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+1+len(tokenID))
 
@@ -233,7 +232,7 @@ func childKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
+func splitChildKey(key []byte) (contractID, tokenID, childID string) {
 	begin := len(childKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	contractID = string(key[begin:end])
@@ -258,7 +257,7 @@ func contractKey(contractID string) []byte {
 	return key
 }
 
-func classKey(contractID string, classID string) []byte {
+func classKey(contractID, classID string) []byte {
 	prefix := classKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(classID))
 
@@ -283,7 +282,7 @@ func classKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func nextTokenIDKey(contractID string, classID string) []byte {
+func nextTokenIDKey(contractID, classID string) []byte {
 	prefix := nextTokenIDKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(classID))
 
@@ -308,7 +307,7 @@ func nextTokenIDKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func splitNextTokenIDKey(key []byte) (contractID string, classID string) {
+func splitNextTokenIDKey(key []byte) (contractID, classID string) {
 	begin := len(nextTokenIDKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	contractID = string(key[begin:end])
@@ -444,7 +443,7 @@ func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permi
 
 // ----------------------------------------------------------------------------
 // statistics
-func statisticKey(keyPrefix []byte, contractID string, classID string) []byte {
+func statisticKey(keyPrefix []byte, contractID, classID string) []byte {
 	prefix := statisticKeyPrefixByContractID(keyPrefix, contractID)
 	key := make([]byte, len(prefix)+len(classID))
 
@@ -469,7 +468,7 @@ func statisticKeyPrefixByContractID(keyPrefix []byte, contractID string) []byte 
 	return key
 }
 
-func splitStatisticKey(keyPrefix, key []byte) (contractID string, classID string) {
+func splitStatisticKey(keyPrefix, key []byte) (contractID, classID string) {
 	begin := len(keyPrefix) + 1
 	end := begin + int(key[begin-1])
 	contractID = string(key[begin:end])
@@ -482,7 +481,7 @@ func splitStatisticKey(keyPrefix, key []byte) (contractID string, classID string
 
 // ----------------------------------------------------------------------------
 // legacy keys
-func legacyTokenKey(contractID string, tokenID string) []byte {
+func legacyTokenKey(contractID, tokenID string) []byte {
 	prefix := legacyTokenKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(tokenID))
 
@@ -507,7 +506,7 @@ func legacyTokenKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func legacyTokenTypeKey(contractID string, tokenType string) []byte {
+func legacyTokenTypeKey(contractID, tokenType string) []byte {
 	prefix := legacyTokenTypeKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(tokenType))
 

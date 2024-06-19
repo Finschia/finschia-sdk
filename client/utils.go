@@ -1,8 +1,9 @@
 package client
 
 import (
-	rpchttp "github.com/Finschia/ostracon/rpc/client/http"
 	"github.com/spf13/pflag"
+
+	rpchttp "github.com/Finschia/ostracon/rpc/client/http"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
@@ -57,7 +58,7 @@ func ReadPageRequest(flagSet *pflag.FlagSet) (*query.PageRequest, error) {
 	return NewPageRequest(pageKey, offset, limit, page, countTotal, reverse)
 }
 
-func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool, reverse bool) (*query.PageRequest, error) {
+func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal, reverse bool) (*query.PageRequest, error) {
 	if page > 1 && offset > 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "page and offset cannot be used together")
 	}

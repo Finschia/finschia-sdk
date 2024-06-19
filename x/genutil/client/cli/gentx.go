@@ -9,10 +9,11 @@ import (
 	"os"
 	"path/filepath"
 
-	ostos "github.com/Finschia/ostracon/libs/os"
-	octypes "github.com/Finschia/ostracon/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+
+	ostos "github.com/Finschia/ostracon/libs/os"
+	octypes "github.com/Finschia/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -214,7 +215,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 func makeOutputFilepath(rootDir, nodeID string) (string, error) {
 	writePath := filepath.Join(rootDir, "config", "gentx")
-	if err := ostos.EnsureDir(writePath, 0700); err != nil {
+	if err := ostos.EnsureDir(writePath, 0o700); err != nil {
 		return "", err
 	}
 
