@@ -44,7 +44,6 @@ func TestPlanString(t *testing.T) {
 	}
 
 	for name, tc := range cases {
-		tc := tc // copy to local variable for scopelint
 		t.Run(name, func(t *testing.T) {
 			s := tc.p.String()
 			require.Equal(t, tc.expect, s)
@@ -90,7 +89,6 @@ func TestPlanValid(t *testing.T) {
 	}
 
 	for name, tc := range cases {
-		tc := tc // copy to local variable for scopelint
 		t.Run(name, func(t *testing.T) {
 			err := tc.p.ValidateBasic()
 			if tc.valid {
@@ -139,7 +137,6 @@ func TestShouldExecute(t *testing.T) {
 	}
 
 	for name, tc := range cases {
-		tc := tc // copy to local variable for scopelint
 		t.Run(name, func(t *testing.T) {
 			ctx := sdk.NewContext(nil, tmproto.Header{Height: tc.ctxHeight, Time: tc.ctxTime}, false, log.NewNopLogger())
 			should := tc.p.ShouldExecute(ctx)

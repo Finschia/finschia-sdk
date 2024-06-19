@@ -29,7 +29,7 @@ func TestShowValidator(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-	if err := testCommon.cmd.ExecuteContext(ctx); err != errCancelledInPreRun {
+	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 
@@ -95,7 +95,7 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	serverCtx := &Context{}
 	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
-	if err := testCommon.cmd.ExecuteContext(ctx); err != errCancelledInPreRun {
+	if err := testCommon.cmd.ExecuteContext(ctx); !errors.Is(err, errCancelledInPreRun) {
 		t.Fatalf("function failed with [%T] %v", err, err)
 	}
 

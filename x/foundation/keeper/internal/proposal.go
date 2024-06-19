@@ -180,8 +180,6 @@ func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
 	})
 
 	for _, proposal := range proposals {
-		proposal := proposal
-
 		if proposal.Status == foundation.PROPOSAL_STATUS_ABORTED || proposal.Status == foundation.PROPOSAL_STATUS_WITHDRAWN {
 			k.pruneProposal(ctx, proposal)
 			continue

@@ -55,8 +55,6 @@ func (s *IntegrationTestSuite) TestCmdQuerySwapped() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdQuerySwapped()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -117,8 +115,6 @@ func (s *IntegrationTestSuite) TestCmdQueryTotalSwappableAmount() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdQueryTotalSwappableAmount()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -179,8 +175,6 @@ func (s *IntegrationTestSuite) TestCmdQuerySwap() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdQuerySwap()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -227,8 +221,6 @@ func (s *IntegrationTestSuite) TestCmdQuerySwaps() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.CmdQuerySwaps()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)

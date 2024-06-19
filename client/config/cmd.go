@@ -30,7 +30,7 @@ func runConfigCmd(cmd *cobra.Command, args []string) error {
 
 	conf, err := getClientConfig(configPath, clientCtx.Viper)
 	if err != nil {
-		return fmt.Errorf("couldn't get client config: %v", err)
+		return fmt.Errorf("couldn't get client config: %w", err)
 	}
 
 	switch len(args) {
@@ -59,7 +59,7 @@ func runConfigCmd(cmd *cobra.Command, args []string) error {
 			cmd.Println(conf.BroadcastMode)
 		default:
 			err := errUnknownConfigKey(key)
-			return fmt.Errorf("couldn't get the value for the key: %v, error:  %v", key, err)
+			return fmt.Errorf("couldn't get the value for the key: %v, error:  %w", key, err)
 		}
 
 	case 2:
@@ -83,7 +83,7 @@ func runConfigCmd(cmd *cobra.Command, args []string) error {
 
 		confFile := filepath.Join(configPath, "client.toml")
 		if err := writeConfigToFile(confFile, conf); err != nil {
-			return fmt.Errorf("could not write client config to the file: %v", err)
+			return fmt.Errorf("could not write client config to the file: %w", err)
 		}
 
 	default:

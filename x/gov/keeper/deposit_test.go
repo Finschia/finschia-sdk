@@ -96,7 +96,7 @@ func TestDeposits(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, fourStake, deposit.Amount)
 	app.GovKeeper.RefundDeposits(ctx, proposalID)
-	deposit, found = app.GovKeeper.GetDeposit(ctx, proposalID, TestAddrs[1])
+	_, found = app.GovKeeper.GetDeposit(ctx, proposalID, TestAddrs[1])
 	require.False(t, found)
 	require.Equal(t, addr0Initial, app.BankKeeper.GetAllBalances(ctx, TestAddrs[0]))
 	require.Equal(t, addr1Initial, app.BankKeeper.GetAllBalances(ctx, TestAddrs[1]))

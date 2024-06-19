@@ -43,7 +43,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryValidatorsHandler() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -91,7 +90,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryValidator() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -156,7 +154,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryValidatorDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
@@ -200,7 +197,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryValidatorUnbondingDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -279,7 +275,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryDelegation() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -333,7 +328,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryUnbondingDelegation() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -418,7 +412,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryDelegatorDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
@@ -466,7 +459,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryDelegatorUnbondingDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -528,7 +520,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryRedelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -577,7 +568,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryDelegatorValidators() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -634,7 +624,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryDelegatorValidator() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -680,7 +669,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryHistoricalInfo() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -720,7 +708,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryParams() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		resp, err := rest.GetRequest(tc.url)
 		s.Run(tc.name, func() {
 			s.Require().NoError(err)
@@ -758,7 +745,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryPool() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 		s.Run(tc.name, func() {
 			s.Require().NoError(err)

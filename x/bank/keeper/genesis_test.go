@@ -99,7 +99,6 @@ func (suite *IntegrationTestSuite) TestTotalSupply() {
 	}
 
 	for _, tc := range testcases {
-		tc := tc
 		suite.Run(tc.name, func() {
 			if tc.expPanic {
 				suite.PanicsWithError(tc.expPanicMsg, func() { suite.app.BankKeeper.InitGenesis(suite.ctx, tc.genesis) })

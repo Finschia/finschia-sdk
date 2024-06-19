@@ -35,7 +35,6 @@ func TestNewSigningAlgoByString(t *testing.T) {
 
 	list := SigningAlgoList{hd.Secp256k1}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			algorithm, err := NewSigningAlgoFromString(tt.algoStr, list)
 			if tt.isSupported {

@@ -83,8 +83,6 @@ func (s *IntegrationTestSuite) TestNewMsgVerifyInvariantTxCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewMsgVerifyInvariantTxCmd()
 			clientCtx := val.ClientCtx

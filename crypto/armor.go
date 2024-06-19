@@ -86,7 +86,7 @@ func UnarmorInfoBytes(armorStr string) ([]byte, error) {
 func UnarmorPubKeyBytes(armorStr string) (bz []byte, algo string, err error) {
 	bz, header, err := unarmorBytes(armorStr, blockTypePubKey)
 	if err != nil {
-		return nil, "", fmt.Errorf("couldn't unarmor bytes: %v", err)
+		return nil, "", fmt.Errorf("couldn't unarmor bytes: %w", err)
 	}
 
 	switch header[headerVersion] {
