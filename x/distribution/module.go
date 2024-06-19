@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"math/rand"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	sdkclient "github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"

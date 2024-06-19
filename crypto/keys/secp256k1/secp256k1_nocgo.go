@@ -6,9 +6,8 @@ package secp256k1
 import (
 	"math/big"
 
-	secp256k1 "github.com/btcsuite/btcd/btcec"
-
 	"github.com/Finschia/ostracon/crypto"
+	secp256k1 "github.com/btcsuite/btcd/btcec"
 )
 
 // used to reject malleable signatures

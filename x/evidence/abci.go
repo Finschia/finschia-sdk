@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"

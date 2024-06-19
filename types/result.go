@@ -6,10 +6,9 @@ import (
 	"math"
 	"strings"
 
+	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

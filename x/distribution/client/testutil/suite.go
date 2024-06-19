@@ -5,10 +5,9 @@ import (
 	"strings"
 	"time"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/testutil"

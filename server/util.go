@@ -15,18 +15,17 @@ import (
 	"syscall"
 	"time"
 
+	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
 	tmcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
+	ostcfg "github.com/Finschia/ostracon/config"
 	tmcfg "github.com/Finschia/ostracon/config"
+	ostlog "github.com/Finschia/ostracon/libs/log"
 	tmlog "github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
 	"golang.org/x/sync/errgroup"
-
-	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
-	ostcfg "github.com/Finschia/ostracon/config"
-	ostlog "github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/config"

@@ -5,11 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server"

@@ -3,11 +3,10 @@ package rpc
 import (
 	"context"
 
-	"github.com/spf13/cobra"
-
 	"github.com/Finschia/ostracon/libs/bytes"
 	"github.com/Finschia/ostracon/p2p"
 	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

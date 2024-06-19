@@ -6,12 +6,11 @@ import (
 	"strings"
 	"testing"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/rpc/client/http"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 	"github.com/tendermint/tendermint/proto/tendermint/crypto"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
-	"github.com/Finschia/ostracon/rpc/client/http"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/hd"

@@ -7,15 +7,14 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/go-bip39"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-
 	cfg "github.com/Finschia/ostracon/config"
 	"github.com/Finschia/ostracon/libs/cli"
 	ostos "github.com/Finschia/ostracon/libs/os"
 	ostrand "github.com/Finschia/ostracon/libs/rand"
 	"github.com/Finschia/ostracon/types"
+	"github.com/cosmos/go-bip39"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

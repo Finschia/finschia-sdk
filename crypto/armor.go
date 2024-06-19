@@ -4,11 +4,10 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/tendermint/crypto/bcrypt"
-
 	"github.com/Finschia/ostracon/crypto"
 	"github.com/Finschia/ostracon/crypto/armor"
 	"github.com/Finschia/ostracon/crypto/xsalsa20symmetric"
+	"github.com/tendermint/crypto/bcrypt"
 
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

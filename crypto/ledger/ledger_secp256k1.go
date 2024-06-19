@@ -6,7 +6,6 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/pkg/errors"
-
 	tmbtcec "github.com/tendermint/btcd/btcec"
 
 	"github.com/Finschia/finschia-sdk/crypto/hd"

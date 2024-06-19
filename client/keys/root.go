@@ -1,9 +1,8 @@
 package keys
 
 import (
-	"github.com/spf13/cobra"
-
 	"github.com/Finschia/ostracon/libs/cli"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 )

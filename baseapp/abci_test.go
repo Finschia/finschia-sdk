@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 )

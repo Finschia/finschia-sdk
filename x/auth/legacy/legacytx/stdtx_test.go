@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"

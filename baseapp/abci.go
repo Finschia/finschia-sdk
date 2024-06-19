@@ -12,11 +12,10 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"google.golang.org/grpc/codes"
-	grpcstatus "google.golang.org/grpc/status"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	"google.golang.org/grpc/codes"
+	grpcstatus "google.golang.org/grpc/status"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"

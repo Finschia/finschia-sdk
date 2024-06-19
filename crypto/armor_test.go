@@ -7,12 +7,11 @@ import (
 	"io"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"github.com/tendermint/crypto/bcrypt"
-
 	ostcrypto "github.com/Finschia/ostracon/crypto"
 	"github.com/Finschia/ostracon/crypto/armor"
 	"github.com/Finschia/ostracon/crypto/xsalsa20symmetric"
+	"github.com/stretchr/testify/require"
+	"github.com/tendermint/crypto/bcrypt"
 
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	"github.com/Finschia/finschia-sdk/crypto"

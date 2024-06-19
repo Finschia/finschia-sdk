@@ -5,10 +5,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/baseapp"
 	"github.com/Finschia/finschia-sdk/codec/types"

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	ostjson "github.com/Finschia/ostracon/libs/json"
 	octypes "github.com/Finschia/ostracon/types"
+	"github.com/spf13/cobra"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server/types"

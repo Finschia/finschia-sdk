@@ -1,9 +1,8 @@
 package simapp
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/server/types"

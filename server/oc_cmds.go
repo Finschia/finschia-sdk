@@ -5,9 +5,6 @@ package server
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-	yaml "gopkg.in/yaml.v2"
-
 	cfg "github.com/Finschia/ostracon/config"
 	osjson "github.com/Finschia/ostracon/libs/json"
 	ostos "github.com/Finschia/ostracon/libs/os"
@@ -16,6 +13,8 @@ import (
 	pvm "github.com/Finschia/ostracon/privval"
 	"github.com/Finschia/ostracon/types"
 	ostversion "github.com/Finschia/ostracon/version"
+	"github.com/spf13/cobra"
+	yaml "gopkg.in/yaml.v2"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 )

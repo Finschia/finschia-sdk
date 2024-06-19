@@ -13,10 +13,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
-	"google.golang.org/grpc"
-
 	ostcfg "github.com/Finschia/ostracon/config"
 	"github.com/Finschia/ostracon/libs/log"
 	ostrand "github.com/Finschia/ostracon/libs/rand"

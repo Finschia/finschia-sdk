@@ -3,10 +3,9 @@ package maps
 import (
 	"encoding/binary"
 
-	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
-
 	"github.com/Finschia/ostracon/crypto/merkle"
 	"github.com/Finschia/ostracon/crypto/tmhash"
+	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 	"github.com/Finschia/finschia-sdk/types/kv"
 )

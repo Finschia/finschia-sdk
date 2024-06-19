@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/Finschia/ostracon/libs/log"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/simapp/helpers"

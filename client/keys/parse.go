@@ -7,10 +7,9 @@ import (
 	"io"
 	"strings"
 
+	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
-
-	"github.com/Finschia/ostracon/libs/cli"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/types/bech32"

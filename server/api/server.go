@@ -9,13 +9,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Finschia/ostracon/libs/log"
+	tmrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
 	"github.com/gogo/gateway"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	"github.com/Finschia/ostracon/libs/log"
-	tmrpcserver "github.com/Finschia/ostracon/rpc/jsonrpc/server"
 
 	"github.com/Finschia/finschia-sdk/client"
 	// unnamed import of statik for swagger UI support

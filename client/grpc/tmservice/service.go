@@ -3,13 +3,12 @@ package tmservice
 import (
 	"context"
 
+	octypes "github.com/Finschia/ostracon/proto/ostracon/types"
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	tmtypes "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	octypes "github.com/Finschia/ostracon/proto/ostracon/types"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/rpc"

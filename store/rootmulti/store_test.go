@@ -6,11 +6,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codecTypes "github.com/Finschia/finschia-sdk/codec/types"

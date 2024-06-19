@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/hdevalence/ed25519consensus"
-
 	"github.com/Finschia/ostracon/crypto"
 	"github.com/Finschia/ostracon/crypto/tmhash"
+	"github.com/hdevalence/ed25519consensus"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

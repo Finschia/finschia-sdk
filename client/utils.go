@@ -1,9 +1,8 @@
 package client
 
 import (
-	"github.com/spf13/pflag"
-
 	rpchttp "github.com/Finschia/ostracon/rpc/client/http"
+	"github.com/spf13/pflag"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"

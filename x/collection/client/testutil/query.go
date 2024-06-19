@@ -3,9 +3,8 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
-
 	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/gogo/protobuf/proto"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"

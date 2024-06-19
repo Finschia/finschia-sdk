@@ -16,8 +16,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
 
-	occrypto "github.com/Finschia/ostracon/crypto"
-
 	"github.com/Finschia/finschia-sdk/client/input"
 	"github.com/Finschia/finschia-sdk/codec/legacy"
 	"github.com/Finschia/finschia-sdk/crypto"

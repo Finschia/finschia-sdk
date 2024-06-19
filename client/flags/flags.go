@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/spf13/cobra"
-
 	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/crypto/keyring"
 )

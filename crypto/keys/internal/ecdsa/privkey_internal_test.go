@@ -7,9 +7,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-
 	"github.com/Finschia/ostracon/crypto"
+	"github.com/stretchr/testify/suite"
 )
 
 func TestSKSuite(t *testing.T) {

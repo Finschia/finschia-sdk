@@ -3,9 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	gogotypes "github.com/gogo/protobuf/types"
-
 	"github.com/Finschia/ostracon/libs/log"
+	gogotypes "github.com/gogo/protobuf/types"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

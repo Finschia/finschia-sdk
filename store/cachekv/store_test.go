@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	ostrand "github.com/Finschia/ostracon/libs/rand"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
-
-	ostrand "github.com/Finschia/ostracon/libs/rand"
 
 	"github.com/Finschia/finschia-sdk/store/cachekv"
 	"github.com/Finschia/finschia-sdk/store/dbadapter"

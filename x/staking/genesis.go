@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	octypes "github.com/Finschia/ostracon/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
 	sdk "github.com/Finschia/finschia-sdk/types"

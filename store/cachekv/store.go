@@ -7,9 +7,8 @@ import (
 	"sync"
 	"time"
 
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/Finschia/ostracon/libs/math"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/internal/conv"
 	"github.com/Finschia/finschia-sdk/store/listenkv"

@@ -8,10 +8,9 @@ import (
 	"io"
 	"math/big"
 
+	"github.com/Finschia/ostracon/crypto"
 	secp256k1 "github.com/btcsuite/btcd/btcec"
 	"golang.org/x/crypto/ripemd160" //nolint: staticcheck // necessary for Bitcoin address format
-
-	"github.com/Finschia/ostracon/crypto"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"

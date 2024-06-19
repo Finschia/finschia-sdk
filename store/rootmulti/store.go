@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/Finschia/ostracon/libs/log"
 	iavltree "github.com/cosmos/iavl"
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
@@ -16,8 +17,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/store/cachemulti"

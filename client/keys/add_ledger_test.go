@@ -10,9 +10,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/Finschia/ostracon/libs/cli"
+	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

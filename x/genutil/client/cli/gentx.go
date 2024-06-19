@@ -9,11 +9,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-
 	ostos "github.com/Finschia/ostracon/libs/os"
 	octypes "github.com/Finschia/ostracon/types"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

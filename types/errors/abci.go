@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 const (

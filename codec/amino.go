@@ -7,9 +7,8 @@ import (
 	"fmt"
 	"io"
 
-	amino "github.com/tendermint/go-amino"
-
 	octypes "github.com/Finschia/ostracon/types"
+	amino "github.com/tendermint/go-amino"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 )

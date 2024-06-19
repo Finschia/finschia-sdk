@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/spf13/cobra"
-
 	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

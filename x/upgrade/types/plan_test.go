@@ -4,11 +4,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	sdk "github.com/Finschia/finschia-sdk/types"

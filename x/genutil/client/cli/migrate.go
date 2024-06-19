@@ -6,10 +6,9 @@ import (
 	"sort"
 	"time"
 
+	ocjson "github.com/Finschia/ostracon/libs/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	ocjson "github.com/Finschia/ostracon/libs/json"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

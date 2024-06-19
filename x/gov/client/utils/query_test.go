@@ -5,11 +5,10 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/Finschia/ostracon/rpc/client/mock"
 	ctypes "github.com/Finschia/ostracon/rpc/core/types"
 	octypes "github.com/Finschia/ostracon/types"
+	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/simapp"

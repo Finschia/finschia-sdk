@@ -7,8 +7,6 @@ import (
 	oststrings "github.com/Finschia/ostracon/libs/strings"
 	metrics "github.com/hashicorp/go-metrics"
 
-	oststrings "github.com/Finschia/ostracon/libs/strings"
-
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"

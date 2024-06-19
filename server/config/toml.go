@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/spf13/viper"
-
 	ostos "github.com/Finschia/ostracon/libs/os"
+	"github.com/spf13/viper"
 )
 
 const DefaultConfigTemplate = `# This is a TOML config file.

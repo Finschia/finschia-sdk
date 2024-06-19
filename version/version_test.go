@@ -6,10 +6,9 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/cli"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/testutil"
 	"github.com/Finschia/finschia-sdk/version"
