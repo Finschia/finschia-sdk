@@ -45,10 +45,11 @@ type Config struct {
 
 ## MsgSetSwap
 
-Typically, a `Swap` is proposed and submitted through `x/foundation` via a `MsgSetSwap`.
-Other modules (`x/gov`, `x/foundation`) will include this message in their proposals. If the proposal passes, the `Swap` can be used on chain.
+`MsgSetSwap` is not a proposal; it is a regular message. Other modules can include `MsgSetSwap` in their proposals to set `Swap`. If the proposal passes, the `Swap` can be used on chain.
 
-`ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11).
+`Swap` is [`Swap`](../types/fswap.pb.go#L28-L33) in `x/fswap` module, and it MUST meet these [limitations](../types/fswap.go#L8). `ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11).
+
+The following example illustrates the use of `MsgSetSwap` within the `x/foundation` module. `Authority` is a spec in the `x/foundation` module, and you can get more information [here](../../foundation/README.md#L54).
 
 ```go
 type MsgSetSwap struct {
