@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -54,7 +55,7 @@ func (app *BaseApp) InitChain(req abci.RequestInitChain) abci.ResponseInitChain 
 	}
 
 	if app.initChainer == nil {
-		return res
+		return abci.ResponseInitChain{}
 	}
 
 	// add block gas meter for any genesis transactions (allow infinite gas)
