@@ -111,6 +111,17 @@ func (s *CLITestSuite) TestNewTransferTxCmd() {
 		expectedCode uint32
 	}{
 		{
+			name: "valid request",
+			args: cliArgs(
+				s.addrs[1].String(),
+				"10stake",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0]),
+			),
+			expectErr:    false,
+			respType:     &sdk.TxResponse{},
+			expectedCode: 0,
+		},
+		{
 			name: "invalid from address",
 			args: cliArgs(
 				s.addrs[0].String(),
@@ -129,15 +140,13 @@ func (s *CLITestSuite) TestNewTransferTxCmd() {
 			expectErr: true,
 		},
 		{
-			name: "valid request",
+			name: "more than one coin",
 			args: cliArgs(
 				s.addrs[1].String(),
-				"10stake",
+				"10stake,20cony",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addrs[0]),
 			),
-			expectErr:    false,
-			respType:     &sdk.TxResponse{},
-			expectedCode: 0,
+			expectErr: true,
 		},
 	}
 
