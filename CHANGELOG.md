@@ -36,28 +36,23 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
-## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.49.0...HEAD)
+## [Unreleased](https://github.com/Finschia/finschia-sdk/compare/v0.49.1...HEAD)
 
 ### Features
 
 ### Improvements
-* (x/fswap) [\#1415](https://github.com/Finschia/finschia-sdk/pull/1415) add more testcases for fswap module
-* (style) [\#1427](https://github.com/Finschia/finschia-sdk/pull/1427) Lint all files based on latest setting
 
 ### Bug Fixes
 
 ### Removed
 
 ### Breaking Changes
-* (server) [\#1423](https://github.com/Finschia/finschia-sdk/pull/1423) Remove grpc replace directive and refactor grpc-web/rosetta/grpc-gw
 
 ### State Machine Breaking
 
 ### Event Breaking Changes
 
 ### Build, CI
-* (build, ci) [\#1410](https://github.com/Finschia/finschia-sdk/pull/1410) Bump Go from 1.20 to 1.22
-* (build) [\#1413](https://github.com/Finschia/finschia-sdk/pull/1413) Update outdated dependencies for v0.49.x
 
 ### Document Updates
 * (docs) [\#1429](https://github.com/Finschia/finschia-sdk/pull/1429) correct spec docs of fswap module
