@@ -311,7 +311,6 @@ func (s *IntegrationTestSuite) TestCLITxGrantAuthorization() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 			out, err := ExecGrant(
@@ -464,7 +463,6 @@ func (s *IntegrationTestSuite) TestCmdRevokeAuthorizations() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdRevokeAuthorization()
 			clientCtx := val.ClientCtx
@@ -606,7 +604,6 @@ func (s *IntegrationTestSuite) TestNewExecGenericAuthorized() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx
@@ -691,7 +688,6 @@ func (s *IntegrationTestSuite) TestNewExecGrantAuthorized() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx
@@ -787,7 +783,6 @@ func (s *IntegrationTestSuite) TestExecDelegateAuthorization() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx
@@ -864,7 +859,6 @@ func (s *IntegrationTestSuite) TestExecDelegateAuthorization() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx
@@ -1008,7 +1002,6 @@ func (s *IntegrationTestSuite) TestExecUndelegateAuthorization() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx
@@ -1087,7 +1080,6 @@ func (s *IntegrationTestSuite) TestExecUndelegateAuthorization() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx

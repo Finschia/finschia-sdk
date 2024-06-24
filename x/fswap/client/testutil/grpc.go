@@ -52,7 +52,6 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwap() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -91,7 +90,6 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwaps() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -148,7 +146,6 @@ func (s *IntegrationTestSuite) TestGRPCQuerySwapped() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
@@ -206,7 +203,6 @@ func (s *IntegrationTestSuite) TestGRPCQueryTotalSwappableAmount() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",

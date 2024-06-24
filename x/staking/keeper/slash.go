@@ -310,7 +310,7 @@ func (k Keeper) SlashRedelegation(ctx sdk.Context, srcValidator types.Validator,
 
 		tokensToBurn, err := k.Unbond(ctx, delegatorAddress, valDstAddr, sharesToUnbond)
 		if err != nil {
-			panic(fmt.Errorf("error unbonding delegator: %v", err))
+			panic(fmt.Errorf("error unbonding delegator: %w", err))
 		}
 
 		dstValidator, found := k.GetValidator(ctx, valDstAddr)

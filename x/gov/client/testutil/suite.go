@@ -108,8 +108,6 @@ voting_params:
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryParams()
 			clientCtx := val.ClientCtx
@@ -156,8 +154,6 @@ func (s *IntegrationTestSuite) TestCmdParam() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryParam()
 			clientCtx := val.ClientCtx
@@ -198,8 +194,6 @@ func (s *IntegrationTestSuite) TestCmdProposer() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryProposer()
 			clientCtx := val.ClientCtx
@@ -253,8 +247,6 @@ func (s *IntegrationTestSuite) TestCmdTally() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryTally()
 			clientCtx := val.ClientCtx
@@ -344,8 +336,6 @@ func (s *IntegrationTestSuite) TestNewCmdSubmitProposal() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdSubmitProposal()
 			clientCtx := val.ClientCtx
@@ -392,8 +382,6 @@ func (s *IntegrationTestSuite) TestCmdGetProposal() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryProposal()
 			clientCtx := val.ClientCtx
@@ -445,8 +433,6 @@ func (s *IntegrationTestSuite) TestCmdGetProposals() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryProposals()
 			clientCtx := val.ClientCtx
@@ -491,7 +477,6 @@ func (s *IntegrationTestSuite) TestCmdQueryDeposits() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryDeposits()
 			clientCtx := val.ClientCtx
@@ -547,7 +532,6 @@ func (s *IntegrationTestSuite) TestCmdQueryDeposit() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryDeposit()
 			clientCtx := val.ClientCtx
@@ -625,7 +609,6 @@ func (s *IntegrationTestSuite) TestNewCmdDeposit() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		var resp sdk.TxResponse
 
 		s.Run(tc.name, func() {
@@ -676,7 +659,6 @@ func (s *IntegrationTestSuite) TestCmdQueryVotes() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryVotes()
 			clientCtx := val.ClientCtx
@@ -751,7 +733,6 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryVote()
 			clientCtx := val.ClientCtx
@@ -816,7 +797,6 @@ func (s *IntegrationTestSuite) TestNewCmdVote() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdVote()
 			clientCtx := val.ClientCtx
@@ -900,7 +880,6 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdWeightedVote()
 			clientCtx := val.ClientCtx

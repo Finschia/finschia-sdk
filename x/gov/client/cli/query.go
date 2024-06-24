@@ -214,7 +214,7 @@ $ %s query gov vote 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
-				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
+				return fmt.Errorf("failed to fetch proposal-id %d: %w", proposalID, err)
 			}
 
 			voterAddr, err := sdk.AccAddressFromBech32(args[1])
@@ -288,7 +288,7 @@ $ %[1]s query gov votes 1 --page=2 --limit=100
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
-				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
+				return fmt.Errorf("failed to fetch proposal-id %d: %w", proposalID, err)
 			}
 
 			propStatus := proposalRes.GetProposal().Status
@@ -369,7 +369,7 @@ $ %s query gov deposit 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
-				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
+				return fmt.Errorf("failed to fetch proposal-id %d: %w", proposalID, err)
 			}
 
 			depositorAddr, err := sdk.AccAddressFromBech32(args[1])
@@ -442,7 +442,7 @@ $ %s query gov deposits 1
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
-				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
+				return fmt.Errorf("failed to fetch proposal-id %d: %w", proposalID, err)
 			}
 
 			propStatus := proposalRes.GetProposal().Status
@@ -520,7 +520,7 @@ $ %s query gov tally 1
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
-				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
+				return fmt.Errorf("failed to fetch proposal-id %d: %w", proposalID, err)
 			}
 
 			// Query store

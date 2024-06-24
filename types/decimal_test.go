@@ -236,7 +236,6 @@ func (s *decimalTestSuite) TestArithmetic() {
 	}
 
 	for tcIndex, tc := range tests {
-		tc := tc
 		resAdd := tc.d1.Add(tc.d2)
 		resSub := tc.d1.Sub(tc.d2)
 		resMul := tc.d1.Mul(tc.d2)

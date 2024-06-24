@@ -671,7 +671,11 @@ var nilJSON []byte
 func init() {
 	empty := new(big.Int)
 	bz, _ := empty.MarshalText()
-	nilJSON, _ = json.Marshal(string(bz))
+	var err error
+	nilJSON, err = json.Marshal(string(bz))
+	if err != nil {
+		panic(err)
+	}
 }
 
 // MarshalJSON marshals the decimal
@@ -740,7 +744,7 @@ func (d *Dec) MarshalTo(data []byte) (n int, err error) {
 // Unmarshal implements the gogo proto custom type interface.
 func (d *Dec) Unmarshal(data []byte) error {
 	if len(data) == 0 {
-		d = nil
+		d = nil //nolint: wastedassign
 		return nil
 	}
 

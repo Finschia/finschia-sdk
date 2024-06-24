@@ -112,7 +112,6 @@ func TestValidateGenesis(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		genState := DefaultGenesis()
 		tc.malleate(genState)
 		err := genState.Validate()

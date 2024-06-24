@@ -73,8 +73,6 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryGrants()
 			clientCtx := val.ClientCtx
@@ -165,8 +163,6 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryGrants()
 			clientCtx := val.ClientCtx

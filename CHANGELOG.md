@@ -67,6 +67,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fbridge) [\#1395](https://github.com/Finschia/finschia-sdk/pull/1395) Return error instead of panic for behaviors triggered by client
 * (x/fswap) [\#1396](https://github.com/Finschia/finschia-sdk/pull/1396) refactor to use snake_case in proto
 * (x/fswap) [\#1391](https://github.com/Finschia/finschia-sdk/pull/1391) add cli_test for fswap module
+* (x/fswap) [\#1415](https://github.com/Finschia/finschia-sdk/pull/1415) add more testcases for fswap module
 
 ### Bug Fixes
 * chore(deps) [\#1141](https://github.com/Finschia/finschia-sdk/pull/1141) Bump github.com/cosmos/ledger-cosmos-go from 0.12.2 to 0.13.2 to fix ledger signing issue
@@ -96,11 +97,13 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fswap) [\#1379](https://github.com/Finschia/finschia-sdk/pull/1379) add missing router registration
 * (x/fswap) [\#1385](https://github.com/Finschia/finschia-sdk/pull/1385) add accidentally deleted event emissions(EventSetSwap, EventAddDenomMetadata)
 * (x/fswap) [\#1392](https://github.com/Finschia/finschia-sdk/pull/1392) fix dummy denom coin data for test in fswap
+* (style) [\#1414](https://github.com/Finschia/finschia-sdk/pull/1414) improve code quality with new linters
 
 ### Removed
 
 ### Breaking Changes
-* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24 
+* (consensus) [\#1178](https://github.com/Finschia/finschia-sdk/pull/1178) change the consensus from Ostracon to Tendermint v0.34.24
+* (server) [\#1418](https://github.com/Finschia/finschia-sdk/pull/1418) Remove grpc-web/rosetta and modify grpc-gateway
 
 ### State Machine Breaking
 

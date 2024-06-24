@@ -190,7 +190,7 @@ jobs:
             sed -i.bak "/$(echo $filename | sed 's/\//\\\//g')/d" coverage.txt
           done
         if: env.GIT_DIFF
-      - uses: codecov/codecov-action@v4.4.1
+      - uses: codecov/codecov-action@v4.5.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.txt
@@ -231,24 +231,6 @@ jobs:
         with:
           name: "${{ github.sha }}-${{ matrix.part }}-race-output"
           path: ./${{ matrix.part }}-race-output.txt
-
-# TODO finschia: enable this test
-#  test-rosetta:
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 10
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: technote-space/get-diff-action@v4
-#        id: git_diff
-#        with:
-#          PATTERNS: |
-#            **/**.go
-#            go.mod
-#            go.sum
-#      - name: test rosetta
-#        run: |
-#          make test-rosetta
-#          if: env.GIT_DIFF
 
 # TODO ebony: enable this test
 #  liveness-test:

@@ -38,7 +38,6 @@ func (s *IntegrationTestSuite) TestGetProposalGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -92,7 +91,6 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
@@ -159,7 +157,6 @@ func (s *IntegrationTestSuite) TestGetProposalVoteGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -203,7 +200,6 @@ func (s *IntegrationTestSuite) TestGetProposalVotesGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -252,7 +248,6 @@ func (s *IntegrationTestSuite) TestGetProposalDepositGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -291,7 +286,6 @@ func (s *IntegrationTestSuite) TestGetProposalDepositsGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -336,7 +330,6 @@ func (s *IntegrationTestSuite) TestGetTallyGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -399,7 +392,6 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
