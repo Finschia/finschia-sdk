@@ -311,7 +311,7 @@ func (k Keeper) GetBridgeSwitch(ctx sdk.Context, guardian sdk.AccAddress) (types
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.BridgeSwitchKey(guardian))
 	if bz == nil {
-		panic("bridge switch must be set at genesis")
+		panic("bridge switch should have been set when granting the guardian role")
 	}
 
 	return types.BridgeSwitch{Guardian: guardian.String(), Status: types.BridgeStatus(binary.BigEndian.Uint32(bz))}, nil

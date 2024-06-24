@@ -16,6 +16,8 @@ func TestAssignRole(t *testing.T) {
 	err := k.InitGenesis(ctx, types.DefaultGenesisState())
 	require.NoError(t, err)
 
+	const wrongProposalID = 10
+
 	// 1. Bridge authority assigns an address to a guardian role
 	p, err := k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleGuardian)
 	require.Error(t, err, "role proposal must not be passed without authority")
@@ -34,11 +36,21 @@ func TestAssignRole(t *testing.T) {
 	p, err = k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleGuardian)
 	require.NoError(t, err, "role proposal must be passed with guardian role")
 	require.EqualValues(t, 2, p.Id)
+
+	err = k.addVote(ctx, p.Id, addrs[2], types.OptionYes)
+	require.Error(t, err, "only guardian can execute this action")
+	err = k.addVote(ctx, wrongProposalID, addrs[0], types.OptionYes)
+	require.Error(t, err, "this proposal must not be found")
+	err = k.addVote(ctx, p.Id, addrs[0], types.OptionEmpty)
+	require.Error(t, err, "invalid vote option must be rejected")
 	err = k.addVote(ctx, p.Id, addrs[0], types.OptionYes)
 	require.NoError(t, err)
-	opt, err := k.GetVote(ctx, p.Id, addrs[0])
+	opt, err := k.GetVote(ctx, wrongProposalID, addrs[0])
+	require.Error(t, err, "this proposal must not be found")
+	opt, err = k.GetVote(ctx, p.Id, addrs[0])
 	require.NoError(t, err)
 	require.Equal(t, types.OptionYes, opt)
+
 	err = k.updateRole(ctx, types.RoleGuardian, addrs[1])
 	require.NoError(t, err)
 	require.Equal(t, types.RoleMetadata{Guardian: 2, Operator: 0, Judge: 0}, k.GetRoleMetadata(ctx))
@@ -47,6 +59,8 @@ func TestAssignRole(t *testing.T) {
 	for _, sw := range sws {
 		require.Equal(t, types.StatusActive, sw.Status)
 	}
+	_, err = k.GetBridgeSwitch(ctx, addrs[2])
+	require.Error(t, err, "this address is not a guardian")
 
 	// 3. Guardian assigns an address to an operator role
 	err = k.updateRole(ctx, types.RoleOperator, addrs[1])
@@ -54,7 +68,15 @@ func TestAssignRole(t *testing.T) {
 	require.Equal(t, types.RoleMetadata{Guardian: 1, Operator: 1, Judge: 0}, k.GetRoleMetadata(ctx))
 
 	// 4. Guardian assigns an address to a same role
+	p, err = k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleOperator)
+	require.Error(t, err, "the role proposal cannot be submitted if target's role is equal to the role in proposal")
 	err = k.updateRole(ctx, types.RoleOperator, addrs[1])
+	require.NoError(t, err)
+
+	// 5.Disassociate an address from a role
+	err = k.updateRole(ctx, types.RoleJudge, addrs[1])
+	require.NoError(t, err)
+	err = k.updateRole(ctx, types.RoleEmpty, addrs[1])
 	require.NoError(t, err)
 }
 
