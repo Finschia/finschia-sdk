@@ -99,6 +99,20 @@ func cliArgs(args ...string) []string {
 	)
 }
 
+func (s *CLITestSuite) TestNewTxCmd() {
+	cmdQuery := []string{
+		"add-vote-for-role",
+		"set-bridge-status",
+		"suggest-role",
+		"transfer",
+	}
+
+	cmd := cli.NewTxCmd()
+	for i, c := range cmd.Commands() {
+		s.Require().Equal(cmdQuery[i], c.Name())
+	}
+}
+
 func (s *CLITestSuite) TestNewTransferTxCmd() {
 	cmd := cli.NewTransferTxCmd()
 	s.Require().NotNil(cmd)

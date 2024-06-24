@@ -17,6 +17,26 @@ import (
 
 const FlagOutput = "output"
 
+func (s *CLITestSuite) TestNewQueryCmd() {
+	cmdQuery := []string{
+		"member",
+		"members",
+		"params",
+		"proposal",
+		"proposals",
+		"sending-next-seq",
+		"seq-to-blocknums",
+		"status",
+		"vote",
+		"votes",
+	}
+
+	cmd := cli.NewQueryCmd()
+	for i, c := range cmd.Commands() {
+		s.Require().Equal(cmdQuery[i], c.Name())
+	}
+}
+
 func (s *CLITestSuite) TestQueryParams() {
 	cmd := cli.NewQueryParamsCmd()
 	s.Require().NotNil(cmd)
