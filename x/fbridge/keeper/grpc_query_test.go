@@ -26,6 +26,7 @@ type IntegrationTestSuite struct {
 	queryClient types.QueryClient
 	msgServer   types.MsgServer
 	guardians   []sdk.AccAddress
+	operator    sdk.AccAddress
 	ethAddr     string
 }
 
@@ -43,8 +44,8 @@ func (s *IntegrationTestSuite) SetupTest() {
 		_, err := s.app.FbridgeKeeper.RegisterRoleProposal(s.ctx, types.DefaultAuthority(), guardian, types.RoleGuardian)
 		s.Require().NoError(err)
 	}
-	operator := simapp.AddTestAddrs(s.app, s.ctx, 1, sdk.NewInt(1000000000))[0]
-	_, err := s.app.FbridgeKeeper.RegisterRoleProposal(s.ctx, types.DefaultAuthority(), operator, types.RoleOperator)
+	s.operator = simapp.AddTestAddrs(s.app, s.ctx, 1, sdk.NewInt(1000000000))[0]
+	_, err := s.app.FbridgeKeeper.RegisterRoleProposal(s.ctx, types.DefaultAuthority(), s.operator, types.RoleOperator)
 	s.Require().NoError(err)
 	s.app.FbridgeKeeper.EndBlocker(s.ctx)
 
