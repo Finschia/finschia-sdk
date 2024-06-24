@@ -34,7 +34,7 @@ When the swap is triggered, the following event will occur:
 
 ## Config
 
-The `x/fswap` module defines a `Config` type for managing the maximum number of Swaps allowed on chain  through `MaxSwaps`. Additionally, `UpdateAllowed` specifies whether `Swap` can be modified.
+The `x/fswap` module defines a `Config` type for managing the maximum number of Swaps allowed on chain through `MaxSwaps`. Additionally, `UpdateAllowed` specifies whether `Swap` can be modified.
 
 ```go
 type Config struct {
@@ -47,7 +47,10 @@ type Config struct {
 
 `MsgSetSwap` is not a proposal; it is a regular message. Other modules can include `MsgSetSwap` in their proposals to set `Swap`. If the proposal passes, the `Swap` can be used on chain.
 
-`ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11). In addition, `Base` in `ToDenomMetadata` should be consistent with `ToDenom` in `Swap`.
+`ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11). 
+In addition, `ToDenomMetadata` should also meet the following two additional constraints by x/swap.
+1. `Base` should be consistent with `ToDenom` in `Swap` ([valiation](../types/msgs.go#L121-L123))
+2. It cannot override existing denom metadata ([valiation](../keeper/keeper.go#L169))
 
 The following example illustrates the use of `MsgSetSwap` within the `x/foundation` module. `Authority` is a spec in the `x/foundation` module, and you can get more information [here](../../foundation/README.md#L54).
 
