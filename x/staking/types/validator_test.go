@@ -260,9 +260,7 @@ func TestValidatorsSortDeterminism(t *testing.T) {
 	// Randomly shuffle validators, sort, and check it is equal to original sort
 	for i := 0; i < 10; i++ {
 		rand.Shuffle(10, func(i, j int) {
-			it := vals[i]
-			vals[i] = vals[j]
-			vals[j] = it
+			vals[i], vals[j] = vals[j], vals[i]
 		})
 
 		types.Validators(vals).Sort()
@@ -345,6 +343,7 @@ func mkValidator(tokens int64, shares sdk.Dec) types.Validator {
 
 // Creates a new validators and asserts the error check.
 func newValidator(t *testing.T, operator sdk.ValAddress, pubKey cryptotypes.PubKey) types.Validator {
+	t.Helper()
 	v, err := types.NewValidator(operator, pubKey, types.Description{})
 	require.NoError(t, err)
 	return v

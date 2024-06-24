@@ -1,17 +1,16 @@
 package testutil
 
 import (
+	"github.com/Finschia/ostracon/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/store"
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 
 // DefaultContext creates a sdk.Context with a fresh dbm that can be used in tests.
-func DefaultContext(key sdk.StoreKey, tkey sdk.StoreKey) sdk.Context {
+func DefaultContext(key, tkey sdk.StoreKey) sdk.Context {
 	db := dbm.NewMemDB()
 	cms := store.NewCommitMultiStore(db)
 	cms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)

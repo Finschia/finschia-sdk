@@ -16,12 +16,11 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
-
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptocodec "github.com/Finschia/finschia-sdk/crypto/codec"
+	ed255192 "github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
 	"github.com/Finschia/finschia-sdk/server"
 	"github.com/Finschia/finschia-sdk/server/mock"
 	"github.com/Finschia/finschia-sdk/testutil"
@@ -54,7 +53,6 @@ func TestInitCmd(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			home := t.TempDir()
 			logger := log.NewNopLogger()
@@ -153,7 +151,8 @@ func TestEmptyState(t *testing.T) {
 	outC := make(chan string)
 	go func() {
 		var buf bytes.Buffer
-		io.Copy(&buf, r)
+		_, err := io.Copy(&buf, r)
+		require.NoError(t, err)
 		outC <- buf.String()
 	}()
 
@@ -200,6 +199,7 @@ func TestStartStandAlone(t *testing.T) {
 func TestInitNodeValidatorFiles(t *testing.T) {
 	home := t.TempDir()
 	cfg, err := genutiltest.CreateDefaultTendermintConfig(home)
+	require.NoError(t, err)
 	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
 
 	require.Nil(t, err)

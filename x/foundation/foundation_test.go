@@ -4,11 +4,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/foundation"
-	"github.com/stretchr/testify/require"
 )
 
 func TestTallyResult(t *testing.T) {
@@ -21,15 +22,15 @@ func TestTallyResult(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, sdk.OneDec(), result.YesCount)
 
-	result.Add(foundation.VOTE_OPTION_ABSTAIN)
+	err = result.Add(foundation.VOTE_OPTION_ABSTAIN)
 	require.NoError(t, err)
 	require.Equal(t, sdk.OneDec(), result.AbstainCount)
 
-	result.Add(foundation.VOTE_OPTION_NO)
+	err = result.Add(foundation.VOTE_OPTION_NO)
 	require.NoError(t, err)
 	require.Equal(t, sdk.OneDec(), result.NoCount)
 
-	result.Add(foundation.VOTE_OPTION_NO_WITH_VETO)
+	err = result.Add(foundation.VOTE_OPTION_NO_WITH_VETO)
 	require.NoError(t, err)
 	require.Equal(t, sdk.OneDec(), result.NoWithVetoCount)
 

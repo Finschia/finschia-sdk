@@ -164,7 +164,7 @@ func (s *Store) Load(height uint64, format uint32) (*types.Snapshot, <-chan io.R
 
 // LoadChunk loads a chunk from disk, or returns nil if it does not exist. The caller must call
 // Close() on it when done.
-func (s *Store) LoadChunk(height uint64, format uint32, chunk uint32) (io.ReadCloser, error) {
+func (s *Store) LoadChunk(height uint64, format, chunk uint32) (io.ReadCloser, error) {
 	path := s.pathChunk(height, format, chunk)
 	file, err := os.Open(path)
 	if os.IsNotExist(err) {
@@ -174,7 +174,7 @@ func (s *Store) LoadChunk(height uint64, format uint32, chunk uint32) (io.ReadCl
 }
 
 // loadChunkFile loads a chunk from disk, and errors if it does not exist.
-func (s *Store) loadChunkFile(height uint64, format uint32, chunk uint32) (io.ReadCloser, error) {
+func (s *Store) loadChunkFile(height uint64, format, chunk uint32) (io.ReadCloser, error) {
 	path := s.pathChunk(height, format, chunk)
 	return os.Open(path)
 }
@@ -259,7 +259,7 @@ func (s *Store) Save(
 	snapshotHasher := sha256.New()
 	chunkHasher := sha256.New()
 	for chunkBody := range chunks {
-		defer chunkBody.Close() //nolint: staticcheck
+		defer chunkBody.Close()
 		dir := s.pathSnapshot(height, format)
 		err = os.MkdirAll(dir, 0o755)
 		if err != nil {
@@ -270,7 +270,7 @@ func (s *Store) Save(
 		if err != nil {
 			return nil, sdkerrors.Wrapf(err, "failed to create snapshot chunk file %q", path)
 		}
-		defer file.Close() //nolint: staticcheck
+		defer file.Close()
 
 		chunkHasher.Reset()
 		_, err = io.Copy(io.MultiWriter(file, chunkHasher, snapshotHasher), chunkBody)
@@ -314,7 +314,7 @@ func (s *Store) pathSnapshot(height uint64, format uint32) string {
 }
 
 // pathChunk generates a snapshot chunk path.
-func (s *Store) pathChunk(height uint64, format uint32, chunk uint32) string {
+func (s *Store) pathChunk(height uint64, format, chunk uint32) string {
 	return filepath.Join(s.pathSnapshot(height, format), strconv.FormatUint(uint64(chunk), 10))
 }
 

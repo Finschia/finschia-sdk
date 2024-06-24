@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-
 	"github.com/Finschia/ostracon/libs/bytes"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/Finschia/finschia-sdk/client/grpc/ocservice"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -50,7 +49,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s IntegrationTestSuite) TestQueryNodeInfo() {
+func (s *IntegrationTestSuite) TestQueryNodeInfo() {
 	val := s.network.Validators[0]
 
 	res, err := s.queryClient.GetNodeInfo(context.Background(), &ocservice.GetNodeInfoRequest{})
@@ -64,7 +63,7 @@ func (s IntegrationTestSuite) TestQueryNodeInfo() {
 	s.Require().Equal(getInfoRes.ApplicationVersion.AppName, version.NewInfo().AppName)
 }
 
-func (s IntegrationTestSuite) TestQuerySyncing() {
+func (s *IntegrationTestSuite) TestQuerySyncing() {
 	val := s.network.Validators[0]
 
 	_, err := s.queryClient.GetSyncing(context.Background(), &ocservice.GetSyncingRequest{})
@@ -76,7 +75,7 @@ func (s IntegrationTestSuite) TestQuerySyncing() {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &syncingRes))
 }
 
-func (s IntegrationTestSuite) TestQueryLatestBlock() {
+func (s *IntegrationTestSuite) TestQueryLatestBlock() {
 	val := s.network.Validators[0]
 	_, err := s.queryClient.GetLatestBlock(context.Background(), &ocservice.GetLatestBlockRequest{})
 	s.Require().NoError(err)
@@ -87,7 +86,7 @@ func (s IntegrationTestSuite) TestQueryLatestBlock() {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
 }
 
-func (s IntegrationTestSuite) TestQueryBlockByHash() {
+func (s *IntegrationTestSuite) TestQueryBlockByHash() {
 	val := s.network.Validators[0]
 	node, _ := val.ClientCtx.GetNode()
 	blk, _ := node.Block(context.Background(), nil)
@@ -124,7 +123,7 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 	s.Require().Equal(val.ClientCtx.ChainID, block.Header.ChainID)
 }
 
-func (s IntegrationTestSuite) TestGetLatestBlock() {
+func (s *IntegrationTestSuite) TestGetLatestBlock() {
 	val := s.network.Validators[0]
 	latestHeight, err := s.network.LatestHeight()
 	s.Require().NoError(err)
@@ -141,7 +140,7 @@ func (s IntegrationTestSuite) TestGetLatestBlock() {
 	s.Require().Equal(blockRes.Block.Header.Height, blockInfoRes.Block.Header.Height)
 }
 
-func (s IntegrationTestSuite) TestQueryBlockByHeight() {
+func (s *IntegrationTestSuite) TestQueryBlockByHeight() {
 	val := s.network.Validators[0]
 	_, err := s.queryClient.GetBlockByHeight(context.Background(), &ocservice.GetBlockByHeightRequest{})
 	s.Require().Error(err)
@@ -158,7 +157,7 @@ func (s IntegrationTestSuite) TestQueryBlockByHeight() {
 	s.Require().Equal(int64(1), block.Header.Height)
 }
 
-func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
+func (s *IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	val := s.network.Validators[0]
 	_, err := s.queryClient.GetBlockResultsByHeight(context.Background(), &ocservice.GetBlockResultsByHeightRequest{Height: 1})
 	s.Require().NoError(err)
@@ -166,7 +165,7 @@ func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blockresults/%d", val.APIAddress, 1))
 	s.Require().NoError(err)
 	var blockResultsRes ocservice.GetBlockResultsByHeightResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(restRes, &blockResultsRes))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockResultsRes))
 
 	txResult := blockResultsRes.GetTxsResults()
 	s.Require().Equal(0, len(txResult))
@@ -178,7 +177,7 @@ func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	s.Require().Equal(0, len(endBlock.Events))
 }
 
-func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {
+func (s *IntegrationTestSuite) TestQueryLatestValidatorSet() {
 	val := s.network.Validators[0]
 
 	// nil pagination
@@ -213,7 +212,7 @@ func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {
 	s.Require().Equal(validatorSetRes.Validators[0].PubKey, anyPub)
 }
 
-func (s IntegrationTestSuite) TestLatestValidatorSet_GRPC() {
+func (s *IntegrationTestSuite) TestLatestValidatorSet_GRPC() {
 	vals := s.network.Validators
 	testCases := []struct {
 		name      string
@@ -226,7 +225,6 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPC() {
 		{"with pagination", &ocservice.GetLatestValidatorSetRequest{Pagination: &qtypes.PageRequest{Offset: 0, Limit: uint64(len(vals))}}, false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			grpcRes, err := s.queryClient.GetLatestValidatorSet(context.Background(), tc.req)
 			if tc.expErr {
@@ -244,7 +242,7 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestLatestValidatorSet_GRPCGateway() {
+func (s *IntegrationTestSuite) TestLatestValidatorSet_GRPCGateway() {
 	vals := s.network.Validators
 	testCases := []struct {
 		name      string
@@ -257,7 +255,6 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPCGateway() {
 		{"with pagination", fmt.Sprintf("%s/lbm/base/ostracon/v1/validatorsets/latest?pagination.offset=0&pagination.limit=2", vals[0].APIAddress), false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			res, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
@@ -276,7 +273,7 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPCGateway() {
 	}
 }
 
-func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPC() {
+func (s *IntegrationTestSuite) TestValidatorSetByHeight_GRPC() {
 	vals := s.network.Validators
 	testCases := []struct {
 		name      string
@@ -290,7 +287,6 @@ func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPC() {
 		{"with pagination", &ocservice.GetValidatorSetByHeightRequest{Height: 1, Pagination: &qtypes.PageRequest{Offset: 0, Limit: 1}}, false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			grpcRes, err := s.queryClient.GetValidatorSetByHeight(context.Background(), tc.req)
 			if tc.expErr {
@@ -305,7 +301,7 @@ func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPC() {
 	}
 }
 
-func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPCGateway() {
+func (s *IntegrationTestSuite) TestValidatorSetByHeight_GRPCGateway() {
 	vals := s.network.Validators
 	testCases := []struct {
 		name      string
@@ -319,7 +315,6 @@ func (s IntegrationTestSuite) TestValidatorSetByHeight_GRPCGateway() {
 		{"with pagination", fmt.Sprintf("%s/lbm/base/ostracon/v1/validatorsets/%d?pagination.offset=0&pagination.limit=2", vals[0].APIAddress, 1), false, ""},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			res, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)

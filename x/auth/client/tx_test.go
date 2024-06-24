@@ -39,7 +39,7 @@ func TestParseQueryResponse(t *testing.T) {
 	require.Equal(t, 10, int(res.GasInfo.GasUsed))
 	require.NotNil(t, res.Result)
 
-	res, err = authclient.ParseQueryResponse([]byte("fuzzy"))
+	_, err = authclient.ParseQueryResponse([]byte("fuzzy"))
 	require.Error(t, err)
 }
 
@@ -123,7 +123,6 @@ func TestBatchScanner_Scan(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			scanner, i := authclient.NewBatchScanner(clientCtx.TxConfig, strings.NewReader(tt.batch)), 0
 			for scanner.Scan() {
@@ -137,9 +136,10 @@ func TestBatchScanner_Scan(t *testing.T) {
 	}
 }
 
-func compareEncoders(t *testing.T, expected sdk.TxEncoder, actual sdk.TxEncoder) {
+func compareEncoders(t *testing.T, expected, actual sdk.TxEncoder) {
+	t.Helper()
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
-	tx := legacytx.NewStdTx(msgs, legacytx.StdFee{}, []legacytx.StdSignature{}, "")
+	tx := legacytx.NewStdTx(msgs, legacytx.StdFee{}, []legacytx.StdSignature{}, "") //nolint:staticcheck // this will be removed when proto is ready
 
 	defaultEncoderBytes, err := expected(tx)
 	require.NoError(t, err)

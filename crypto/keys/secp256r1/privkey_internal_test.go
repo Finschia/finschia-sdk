@@ -3,13 +3,13 @@ package secp256r1
 import (
 	"testing"
 
+	"github.com/Finschia/ostracon/crypto"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/types"
 	cryptotypes "github.com/Finschia/finschia-sdk/crypto/types"
-	"github.com/Finschia/ostracon/crypto"
 )
 
 var _ cryptotypes.PrivKey = &PrivKey{}
@@ -51,7 +51,7 @@ func (suite *SKSuite) TestBytes() {
 func (suite *SKSuite) TestMarshalProto() {
 	require := suite.Require()
 
-	/**** test structure marshalling ****/
+	/**** test structure marshaling ****/
 
 	var sk PrivKey
 	bz, err := proto.Marshal(suite.sk)
@@ -59,7 +59,7 @@ func (suite *SKSuite) TestMarshalProto() {
 	require.NoError(proto.Unmarshal(bz, &sk))
 	require.True(sk.Equals(suite.sk))
 
-	/**** test structure marshalling with codec ****/
+	/**** test structure marshaling with codec ****/
 
 	sk = PrivKey{}
 	registry := types.NewInterfaceRegistry()

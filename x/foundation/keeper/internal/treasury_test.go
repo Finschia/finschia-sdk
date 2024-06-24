@@ -14,7 +14,8 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 	// and get it back later if the test case requires
 	collector := authtypes.NewModuleAddress(authtypes.FeeCollectorName)
 	fees := s.bankKeeper.GetAllBalances(ctx, collector)
-	s.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, s.stranger, fees)
+	err := s.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, s.stranger, fees)
+	s.Require().NoError(err)
 
 	for name, tc := range map[string]struct {
 		fee      sdk.Int
@@ -45,7 +46,8 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 			ctx, _ := ctx.CacheContext()
 
 			// set fee
-			s.bankKeeper.SendCoinsFromAccountToModule(ctx, s.stranger, authtypes.FeeCollectorName, sdk.NewCoins(sdk.NewCoin(fees[0].Denom, tc.fee)))
+			err := s.bankKeeper.SendCoinsFromAccountToModule(ctx, s.stranger, authtypes.FeeCollectorName, sdk.NewCoins(sdk.NewCoin(fees[0].Denom, tc.fee)))
+			s.Require().NoError(err)
 
 			// set tax ratio
 			s.impl.SetParams(ctx, foundation.Params{
@@ -60,7 +62,7 @@ func (s *KeeperTestSuite) TestCollectFoundationTax() {
 			// ensure the behavior does not change
 			s.Require().Equal(tc.tax, tax)
 
-			err := s.impl.CollectFoundationTax(ctx)
+			err = s.impl.CollectFoundationTax(ctx)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

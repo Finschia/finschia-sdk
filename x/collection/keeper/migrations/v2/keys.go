@@ -80,7 +80,7 @@ func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress, tok
 	return
 }
 
-func StatisticKey(keyPrefix []byte, contractID string, classID string) []byte {
+func StatisticKey(keyPrefix []byte, contractID, classID string) []byte {
 	prefix := statisticKeyPrefixByContractID(keyPrefix, contractID)
 	key := make([]byte, len(prefix)+len(classID))
 

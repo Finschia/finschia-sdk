@@ -3,12 +3,11 @@ package testutil
 import (
 	"fmt"
 
+	"github.com/gogo/protobuf/proto"
+
 	"github.com/Finschia/finschia-sdk/testutil"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	grpctypes "github.com/Finschia/finschia-sdk/types/grpc"
-
-	"github.com/gogo/protobuf/proto"
-
 	minttypes "github.com/Finschia/finschia-sdk/x/mint/types"
 )
 
@@ -54,7 +53,6 @@ func (s *IntegrationTestSuite) TestQueryGRPC() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 		s.Run(tc.name, func() {
 			s.Require().NoError(err)

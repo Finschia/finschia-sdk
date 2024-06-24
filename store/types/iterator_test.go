@@ -3,16 +3,16 @@ package types_test
 import (
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/store/iavl"
 	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func newMemTestKVStore(t *testing.T) types.KVStore {
+	t.Helper()
 	db := dbm.NewMemDB()
 	store, err := iavl.LoadStore(db, log.NewNopLogger(), types.NewKVStoreKey("test"), types.CommitID{}, false, iavl.DefaultIAVLCacheSize, false)
 	require.NoError(t, err)
@@ -83,7 +83,6 @@ func TestPaginatedIterator(t *testing.T) {
 			reverse: true,
 		},
 	} {
-		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
 			var iter types.Iterator
 			if tc.reverse {

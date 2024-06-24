@@ -3,16 +3,14 @@ package bank_test
 import (
 	"testing"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	ocabci "github.com/Finschia/ostracon/abci/types"
-
 	"github.com/Finschia/finschia-sdk/simapp"
 	simappparams "github.com/Finschia/finschia-sdk/simapp/params"
 	sdk "github.com/Finschia/finschia-sdk/types"
-	"github.com/Finschia/finschia-sdk/x/auth/types"
 	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
 	stakingtypes "github.com/Finschia/finschia-sdk/x/staking/types"
 )
@@ -27,7 +25,7 @@ func BenchmarkOneBankSendTxPerBlock(b *testing.B) {
 	}
 
 	// construct genesis state
-	genAccs := []types.GenesisAccount{&acc}
+	genAccs := []authtypes.GenesisAccount{&acc}
 	benchmarkApp := simapp.SetupWithGenesisAccounts(genAccs)
 	ctx := benchmarkApp.BaseApp.NewContext(false, tmproto.Header{})
 

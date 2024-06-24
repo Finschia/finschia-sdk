@@ -60,7 +60,6 @@ func (s *IntegrationTestSuite) TestQueryGrantGRPC() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			resp, _ := rest.GetRequest(tc.url)
 			require := s.Require()
@@ -71,7 +70,8 @@ func (s *IntegrationTestSuite) TestQueryGrantGRPC() {
 				err := val.ClientCtx.Codec.UnmarshalJSON(resp, &g)
 				require.NoError(err)
 				require.Len(g.Grants, 1)
-				g.Grants[0].UnpackInterfaces(val.ClientCtx.InterfaceRegistry)
+				err = g.Grants[0].UnpackInterfaces(val.ClientCtx.InterfaceRegistry)
+				s.Require().NoError(err)
 				auth := g.Grants[0].GetAuthorization()
 				require.Equal(auth.MsgTypeURL(), banktypes.SendAuthorization{}.MsgTypeURL())
 			}
@@ -145,7 +145,6 @@ func (s *IntegrationTestSuite) TestQueryGrantsGRPC() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			tc.preRun()
 			resp, _ := rest.GetRequest(tc.url)
@@ -157,7 +156,6 @@ func (s *IntegrationTestSuite) TestQueryGrantsGRPC() {
 				s.Require().NoError(err)
 				tc.postRun(&authorizations)
 			}
-
 		})
 	}
 }

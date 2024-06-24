@@ -24,7 +24,7 @@ func (s *decimalInternalTestSuite) TestPrecisionMultiplier() {
 }
 
 func (s *decimalInternalTestSuite) TestZeroDeserializationJSON() {
-	var cdc = codec.NewLegacyAmino()
+	cdc := codec.NewLegacyAmino()
 	d := Dec{new(big.Int)}
 	err := cdc.UnmarshalJSON([]byte(`"0"`), &d)
 	s.Require().Nil(err)
@@ -33,7 +33,7 @@ func (s *decimalInternalTestSuite) TestZeroDeserializationJSON() {
 }
 
 func (s *decimalInternalTestSuite) TestSerializationGocodecJSON() {
-	var cdc = codec.NewLegacyAmino()
+	cdc := codec.NewLegacyAmino()
 	d := MustNewDecFromStr("0.333")
 
 	bz, err := cdc.MarshalJSON(d)
@@ -67,7 +67,6 @@ func (s *decimalInternalTestSuite) TestDecMarshalJSON() {
 		{"12340Int", NewDec(12340), "\"12340.000000000000000000\"", false},
 	}
 	for _, tt := range tests {
-		tt := tt
 		s.T().Run(tt.name, func(t *testing.T) {
 			got, err := tt.d.MarshalJSON()
 			if (err != nil) != tt.wantErr {
@@ -75,7 +74,7 @@ func (s *decimalInternalTestSuite) TestDecMarshalJSON() {
 				return
 			}
 			if !tt.wantErr {
-				s.Require().Equal(tt.want, string(got), "incorrect marshalled value")
+				s.Require().Equal(tt.want, string(got), "incorrect marshaled value")
 				unmarshalledDec := NewDec(0)
 				err := unmarshalledDec.UnmarshalJSON(got)
 				s.Require().NoError(err)

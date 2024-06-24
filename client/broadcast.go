@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/Finschia/ostracon/mempool"
 	octypes "github.com/Finschia/ostracon/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	sdk "github.com/Finschia/finschia-sdk/types"

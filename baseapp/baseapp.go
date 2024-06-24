@@ -8,14 +8,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gogo/protobuf/proto"
-
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/Finschia/ostracon/crypto/tmhash"
 	"github.com/Finschia/ostracon/libs/log"
+	"github.com/gogo/protobuf/proto"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 	"golang.org/x/exp/maps"
 
@@ -672,7 +670,6 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	anteCtx, msCache := app.cacheTxContext(ctx, txBytes)
 	anteCtx = anteCtx.WithEventManager(sdk.NewEventManager())
 	newCtx, err := app.anteHandler(anteCtx, tx, simulate)
-
 	if err != nil {
 		return newCtx, err
 	}

@@ -5,12 +5,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/Finschia/ostracon/libs/log"
 	octypes "github.com/Finschia/ostracon/types"
+	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/server"
@@ -76,7 +75,6 @@ func TestAppExport(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			exported, err := a.appExport(logger, db, nil, tc.height, false, []string{}, ctx.Viper)
 			if tc.expectErr {
@@ -87,5 +85,4 @@ func TestAppExport(t *testing.T) {
 			require.NotNil(t, exported)
 		})
 	}
-
 }

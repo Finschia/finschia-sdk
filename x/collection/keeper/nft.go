@@ -7,7 +7,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/collection"
 )
 
-func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenID string) error {
+func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID, tokenID string) error {
 	if err2 := collection.ValidateLegacyNFTID(tokenID); err2 == nil /* "==" is intentional */ {
 		return collection.ErrTokenNotExist.Wrap(tokenID)
 	}
@@ -23,7 +23,7 @@ func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenI
 	return collection.ErrTokenNotNFT.Wrap(tokenID)
 }
 
-func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error {
+func (k Keeper) hasNFT(ctx sdk.Context, contractID, tokenID string) error {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	if !store.Has(key) {
@@ -32,7 +32,7 @@ func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error
 	return nil
 }
 
-func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*collection.NFT, error) {
+func (k Keeper) GetNFT(ctx sdk.Context, contractID, tokenID string) (*collection.NFT, error) {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	bz := store.Get(key)
@@ -57,13 +57,13 @@ func (k Keeper) setNFT(ctx sdk.Context, contractID string, token collection.NFT)
 	store.Set(key, bz)
 }
 
-func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
+func (k Keeper) deleteNFT(ctx sdk.Context, contractID, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	store.Delete(key)
 }
 
-func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []string {
+func (k Keeper) pruneNFT(ctx sdk.Context, contractID, tokenID string) []string {
 	burnt := []string{}
 	for _, child := range k.GetChildren(ctx, contractID, tokenID) {
 		k.deleteChild(ctx, contractID, tokenID, child)
@@ -172,7 +172,7 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	return nil
 }
 
-func (k Keeper) iterateAncestors(ctx sdk.Context, contractID string, tokenID string, fn func(tokenID string) error) error {
+func (k Keeper) iterateAncestors(ctx sdk.Context, contractID, tokenID string, fn func(tokenID string) error) error {
 	var err error
 	for id := &tokenID; err == nil; id, err = k.GetParent(ctx, contractID, *id) {
 		if fnErr := fn(*id); fnErr != nil {
@@ -183,12 +183,12 @@ func (k Keeper) iterateAncestors(ctx sdk.Context, contractID string, tokenID str
 	return nil
 }
 
-func (k Keeper) GetRootOwner(ctx sdk.Context, contractID string, tokenID string) sdk.AccAddress {
+func (k Keeper) GetRootOwner(ctx sdk.Context, contractID, tokenID string) sdk.AccAddress {
 	rootID := k.GetRoot(ctx, contractID, tokenID)
 	return k.getOwner(ctx, contractID, rootID)
 }
 
-func (k Keeper) getOwner(ctx sdk.Context, contractID string, tokenID string) sdk.AccAddress {
+func (k Keeper) getOwner(ctx sdk.Context, contractID, tokenID string) sdk.AccAddress {
 	store := ctx.KVStore(k.storeKey)
 	key := ownerKey(contractID, tokenID)
 	bz := store.Get(key)
@@ -203,7 +203,7 @@ func (k Keeper) getOwner(ctx sdk.Context, contractID string, tokenID string) sdk
 	return owner
 }
 
-func (k Keeper) setOwner(ctx sdk.Context, contractID string, tokenID string, owner sdk.AccAddress) {
+func (k Keeper) setOwner(ctx sdk.Context, contractID, tokenID string, owner sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	key := ownerKey(contractID, tokenID)
 
@@ -214,13 +214,13 @@ func (k Keeper) setOwner(ctx sdk.Context, contractID string, tokenID string, own
 	store.Set(key, bz)
 }
 
-func (k Keeper) deleteOwner(ctx sdk.Context, contractID string, tokenID string) {
+func (k Keeper) deleteOwner(ctx sdk.Context, contractID, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := ownerKey(contractID, tokenID)
 	store.Delete(key)
 }
 
-func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*string, error) {
+func (k Keeper) GetParent(ctx sdk.Context, contractID, tokenID string) (*string, error) {
 	store := ctx.KVStore(k.storeKey)
 	key := parentKey(contractID, tokenID)
 	bz := store.Get(key)
@@ -233,7 +233,7 @@ func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*
 	return &parent.Value, nil
 }
 
-func (k Keeper) setParent(ctx sdk.Context, contractID string, tokenID, parentID string) {
+func (k Keeper) setParent(ctx sdk.Context, contractID, tokenID, parentID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := parentKey(contractID, tokenID)
 
@@ -242,13 +242,13 @@ func (k Keeper) setParent(ctx sdk.Context, contractID string, tokenID, parentID 
 	store.Set(key, bz)
 }
 
-func (k Keeper) deleteParent(ctx sdk.Context, contractID string, tokenID string) {
+func (k Keeper) deleteParent(ctx sdk.Context, contractID, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := parentKey(contractID, tokenID)
 	store.Delete(key)
 }
 
-func (k Keeper) GetChildren(ctx sdk.Context, contractID string, tokenID string) []string {
+func (k Keeper) GetChildren(ctx sdk.Context, contractID, tokenID string) []string {
 	var children []string
 	k.iterateChildren(ctx, contractID, tokenID, func(childID string) (stop bool) {
 		children = append(children, childID)
@@ -257,17 +257,17 @@ func (k Keeper) GetChildren(ctx sdk.Context, contractID string, tokenID string) 
 	return children
 }
 
-func (k Keeper) iterateChildren(ctx sdk.Context, contractID string, tokenID string, fn func(childID string) (stop bool)) {
-	k.iterateChildrenImpl(ctx, childKeyPrefixByTokenID(contractID, tokenID), func(_ string, _ string, childID string) (stop bool) {
+func (k Keeper) iterateChildren(ctx sdk.Context, contractID, tokenID string, fn func(childID string) (stop bool)) {
+	k.iterateChildrenImpl(ctx, childKeyPrefixByTokenID(contractID, tokenID), func(_, _, childID string) (stop bool) {
 		return fn(childID)
 	})
 }
 
-func (k Keeper) iterateDescendants(ctx sdk.Context, contractID string, tokenID string, fn func(descendantID string, depth int) (stop bool)) {
+func (k Keeper) iterateDescendants(ctx sdk.Context, contractID, tokenID string, fn func(descendantID string, depth int) (stop bool)) {
 	k.iterateDescendantsImpl(ctx, contractID, tokenID, 1, fn)
 }
 
-func (k Keeper) iterateDescendantsImpl(ctx sdk.Context, contractID string, tokenID string, depth int, fn func(descendantID string, depth int) (stop bool)) {
+func (k Keeper) iterateDescendantsImpl(ctx sdk.Context, contractID, tokenID string, depth int, fn func(descendantID string, depth int) (stop bool)) {
 	k.iterateChildren(ctx, contractID, tokenID, func(childID string) (stop bool) {
 		if stop := fn(childID, depth); stop {
 			return true
@@ -278,51 +278,54 @@ func (k Keeper) iterateDescendantsImpl(ctx sdk.Context, contractID string, token
 	})
 }
 
-func (k Keeper) setChild(ctx sdk.Context, contractID string, tokenID, childID string) {
+func (k Keeper) setChild(ctx sdk.Context, contractID, tokenID, childID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := childKey(contractID, tokenID, childID)
 	store.Set(key, []byte{})
 }
 
-func (k Keeper) deleteChild(ctx sdk.Context, contractID string, tokenID, childID string) {
+func (k Keeper) deleteChild(ctx sdk.Context, contractID, tokenID, childID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := childKey(contractID, tokenID, childID)
 	store.Delete(key)
 }
 
-func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) string {
+func (k Keeper) GetRoot(ctx sdk.Context, contractID, tokenID string) string {
 	id := tokenID
-	k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
+	err := k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
 		id = tokenID
 		return nil
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	return id
 }
 
 // Deprecated
-func (k Keeper) setLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
+func (k Keeper) setLegacyToken(ctx sdk.Context, contractID, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
 	store.Set(key, []byte{})
 }
 
 // Deprecated
-func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
+func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
 	store.Delete(key)
 }
 
 // Deprecated
-func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType string) {
+func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID, tokenType string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenTypeKey(contractID, tokenType)
 	store.Set(key, []byte{})
 }
 
 // Deprecated
-func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenID string) error {
+func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID, tokenID string) error {
 	widths := map[int]int{0: 1}
 	k.iterateDescendants(ctx, contractID, tokenID, func(descendantID string, depth int) (stop bool) {
 		widths[depth]++

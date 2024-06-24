@@ -6,13 +6,11 @@ package ledger
 import (
 	"fmt"
 
-	"github.com/btcsuite/btcd/btcec"
-	"github.com/pkg/errors"
-
-	"github.com/cosmos/go-bip39"
-	secp256k1 "github.com/tendermint/btcd/btcec"
-
 	"github.com/Finschia/ostracon/crypto"
+	"github.com/btcsuite/btcd/btcec"
+	"github.com/cosmos/go-bip39"
+	"github.com/pkg/errors"
+	secp256k1 "github.com/tendermint/btcd/btcec"
 
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	csecp256k1 "github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
@@ -58,7 +56,7 @@ func (mock LedgerSECP256K1Mock) GetPublicKeySECP256K1(derivationPath []uint32) (
 		return nil, err
 	}
 
-	_, pubkeyObject := secp256k1.PrivKeyFromBytes(secp256k1.S256(), derivedPriv[:])
+	_, pubkeyObject := secp256k1.PrivKeyFromBytes(secp256k1.S256(), derivedPriv)
 
 	return pubkeyObject.SerializeUncompressed(), nil
 }
@@ -72,9 +70,9 @@ func (mock LedgerSECP256K1Mock) GetAddressPubKeySECP256K1(derivationPath []uint3
 	}
 
 	// re-serialize in the 33-byte compressed format
-	cmp, err := btcec.ParsePubKey(pk[:], btcec.S256())
+	cmp, err := btcec.ParsePubKey(pk, btcec.S256())
 	if err != nil {
-		return nil, "", fmt.Errorf("error parsing public key: %v", err)
+		return nil, "", fmt.Errorf("error parsing public key: %w", err)
 	}
 
 	compressedPublicKey := make([]byte, csecp256k1.PubKeySize)
@@ -99,7 +97,7 @@ func (mock LedgerSECP256K1Mock) SignSECP256K1(derivationPath []uint32, message [
 		return nil, err
 	}
 
-	priv, _ := secp256k1.PrivKeyFromBytes(secp256k1.S256(), derivedPriv[:])
+	priv, _ := secp256k1.PrivKeyFromBytes(secp256k1.S256(), derivedPriv)
 
 	sig, err := priv.Sign(crypto.Sha256(message))
 	if err != nil {

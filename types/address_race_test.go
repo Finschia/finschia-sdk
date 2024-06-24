@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Finschia/finschia-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/finschia-sdk/types"
 )
 
 // generates AccAddress with `prefix` and calls String method

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
-	"github.com/golang/protobuf/proto" //nolint: staticcheck
+	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	tmtypes "github.com/tendermint/tendermint/proto/tendermint/types"
 	"google.golang.org/grpc/codes"

@@ -6,9 +6,8 @@ import (
 	"math"
 	"strings"
 
-	"github.com/gogo/protobuf/proto"
-
 	ctypes "github.com/Finschia/ostracon/rpc/core/types"
+	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/Finschia/finschia-sdk/codec"

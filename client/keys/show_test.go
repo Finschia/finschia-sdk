@@ -64,8 +64,10 @@ func Test_runShowCmd(t *testing.T) {
 	fakeKeyName2 := "runShowCmd_Key2"
 
 	t.Cleanup(func() {
-		kb.Delete("runShowCmd_Key1")
-		kb.Delete("runShowCmd_Key2")
+		err := kb.Delete("runShowCmd_Key1")
+		require.NoError(t, err)
+		err = kb.Delete("runShowCmd_Key2")
+		require.NoError(t, err)
 	})
 
 	path := hd.NewFundraiserParams(1, sdk.CoinType, 0).String()
@@ -176,7 +178,6 @@ func Test_validateMultisigThreshold(t *testing.T) {
 		{"1-2", args{2, 1}, true},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			if err := validateMultisigThreshold(tt.args.k, tt.args.nKeys); (err != nil) != tt.wantErr {
 				t.Errorf("validateMultisigThreshold() error = %v, wantErr %v", err, tt.wantErr)
@@ -202,7 +203,6 @@ func Test_getBechKeyOut(t *testing.T) {
 		{"cons", args{sdk.PrefixConsensus}, keyring.MkConsKeyOutput, false},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := getBechKeyOut(tt.args.bechPrefix)
 			if tt.wantErr {

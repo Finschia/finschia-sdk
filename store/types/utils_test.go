@@ -4,16 +4,16 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/store/rootmulti"
 	"github.com/Finschia/finschia-sdk/store/types"
 )
 
 func initTestStores(t *testing.T) (types.KVStore, types.KVStore) {
+	t.Helper()
 	db := dbm.NewMemDB()
 	ms := rootmulti.NewStore(db, log.NewNopLogger())
 

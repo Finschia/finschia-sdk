@@ -13,10 +13,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/simulation"
 )
 
-// nolint:gosec
 // Simulation operation weights constants
-//
-//nolint:gosec
 const (
 	OpWeightMsgGrantAllowance  = "op_weight_msg_grant_fee_allowance"
 	OpWeightMsgRevokeAllowance = "op_weight_msg_grant_revoke_allowance"
@@ -118,7 +115,7 @@ func SimulateMsgRevokeAllowance(ak feegrant.AccountKeeper, bk feegrant.BankKeepe
 		hasGrant := false
 		var granterAddr sdk.AccAddress
 		var granteeAddr sdk.AccAddress
-		k.IterateAllFeeAllowances(ctx, func(grant feegrant.Grant) bool {
+		err := k.IterateAllFeeAllowances(ctx, func(grant feegrant.Grant) bool {
 			granter := sdk.MustAccAddressFromBech32(grant.Granter)
 			grantee := sdk.MustAccAddressFromBech32(grant.Grantee)
 			granterAddr = granter
@@ -126,6 +123,9 @@ func SimulateMsgRevokeAllowance(ak feegrant.AccountKeeper, bk feegrant.BankKeepe
 			hasGrant = true
 			return true
 		})
+		if err != nil {
+			panic(err)
+		}
 
 		if !hasGrant {
 			return simtypes.NoOpMsg(feegrant.ModuleName, TypeMsgRevokeAllowance, "no grants"), nil, nil

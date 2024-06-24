@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/client"
@@ -39,11 +38,6 @@ func Test_runListCmd(t *testing.T) {
 		kb.Delete("something") // nolint:errcheck
 	})
 
-	type args struct {
-		cmd  *cobra.Command
-		args []string
-	}
-
 	testData := []struct {
 		name    string
 		kbDir   string
@@ -53,7 +47,6 @@ func Test_runListCmd(t *testing.T) {
 		{"keybase: w/key", kbHome2, false},
 	}
 	for _, tt := range testData {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			cmd.SetArgs([]string{
 				fmt.Sprintf("--%s=%s", flags.FlagHome, tt.kbDir),

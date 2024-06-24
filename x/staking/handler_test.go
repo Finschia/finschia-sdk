@@ -26,6 +26,7 @@ import (
 )
 
 func bootstrapHandlerGenesisTest(t *testing.T, power int64, numAddrs int, accAmount sdk.Int) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress) {
+	t.Helper()
 	_, app, ctx := getBaseSimappWithCustomKeeper()
 
 	addrDels, addrVals := generateAddresses(app, ctx, numAddrs, accAmount)
@@ -79,7 +80,8 @@ func TestValidatorByPowerIndex(t *testing.T) {
 	consAddr0 := sdk.ConsAddress(PKs[0].Address())
 	app.StakingKeeper.Slash(ctx, consAddr0, 0, initPower, sdk.NewDecWithPrec(5, 1))
 	app.StakingKeeper.Jail(ctx, consAddr0)
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 
 	validator, found = app.StakingKeeper.GetValidator(ctx, validatorAddr)
 	require.True(t, found)
@@ -127,7 +129,8 @@ func TestDuplicatesMsgCreateValidator(t *testing.T) {
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
 	valTokens := tstaking.CreateValidatorWithValPower(addr1, pk1, 10, true)
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err := app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 
 	validator := tstaking.CheckValidator(addr1, types.Bonded, false)
 	assert.Equal(t, addr1.String(), validator.OperatorAddress)
@@ -304,7 +307,8 @@ func TestIncrementsMsgDelegate(t *testing.T) {
 	bondAmount := tstaking.CreateValidatorWithValPower(validatorAddr, PKs[0], 10, true)
 
 	// apply TM updates
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err := app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 
 	validator := tstaking.CheckValidator(validatorAddr, types.Bonded, false)
 	require.Equal(t, bondAmount, validator.DelegatorShares.RoundInt())
@@ -434,7 +438,8 @@ func TestIncrementsMsgUnbond(t *testing.T) {
 	require.True(sdk.IntEq(t, amt1.Sub(initBond), amt2))
 
 	// apply TM updates
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err := app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 
 	validator, found := app.StakingKeeper.GetValidator(ctx, validatorAddr)
 	require.True(t, found)
@@ -752,7 +757,7 @@ func TestUnbondingFromUnbondingValidator(t *testing.T) {
 	ctx = ctx.WithBlockTime(resData.CompletionTime.Add(time.Second * -1))
 
 	// unbond the delegator from the validator
-	res = tstaking.Undelegate(delegatorAddr, validatorAddr, unbondAmt, true)
+	_ = tstaking.Undelegate(delegatorAddr, validatorAddr, unbondAmt, true)
 
 	ctx = tstaking.TurnBlockTimeDiff(app.StakingKeeper.UnbondingTime(ctx))
 	tstaking.Ctx = ctx
@@ -888,7 +893,7 @@ func TestMultipleRedelegationAtSameTime(t *testing.T) {
 
 	// move forward in time, should complete both redelegations
 	ctx = tstaking.TurnBlockTimeDiff(1 * time.Second)
-	rd, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
+	_, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
 	require.False(t, found)
 }
 
@@ -935,7 +940,7 @@ func TestMultipleRedelegationAtUniqueTimes(t *testing.T) {
 
 	// move forward in time, should complete the second redelegation
 	ctx = tstaking.TurnBlockTimeDiff(5 * time.Second)
-	rd, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
+	_, found = app.StakingKeeper.GetRedelegation(ctx, selfDelAddr, valAddr, valAddr2)
 	require.False(t, found)
 }
 
@@ -975,7 +980,7 @@ func TestMultipleUnbondingDelegationAtSameTime(t *testing.T) {
 
 	// move forwaubd in time, should complete both ubds
 	ctx = tstaking.TurnBlockTimeDiff(1 * time.Second)
-	ubd, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
+	_, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
 	require.False(t, found)
 }
 
@@ -1023,7 +1028,7 @@ func TestMultipleUnbondingDelegationAtUniqueTimes(t *testing.T) {
 
 	// move forwaubd in time, should complete the second redelegation
 	ctx = tstaking.TurnBlockTimeDiff(5 * time.Second)
-	ubd, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
+	_, found = app.StakingKeeper.GetUnbondingDelegation(ctx, selfDelAddr, valAddr)
 	require.False(t, found)
 }
 
@@ -1043,21 +1048,25 @@ func TestUnbondingWhenExcessValidators(t *testing.T) {
 	// add three validators
 	tstaking.CreateValidatorWithValPower(val1, PKs[0], 50, true)
 	// apply TM updates
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err := app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 	require.Equal(t, 1, len(app.StakingKeeper.GetLastValidators(ctx)))
 
 	valTokens2 := tstaking.CreateValidatorWithValPower(val2, PKs[1], 30, true)
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 	require.Equal(t, 2, len(app.StakingKeeper.GetLastValidators(ctx)))
 
 	tstaking.CreateValidatorWithValPower(val3, PKs[2], 10, true)
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 	require.Equal(t, 2, len(app.StakingKeeper.GetLastValidators(ctx)))
 
 	// unbond the validator-2
 	tstaking.Undelegate(sdk.AccAddress(val2), val2, valTokens2, true)
 	// apply TM updates
-	app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
 
 	// because there are extra validators waiting to get in, the queued
 	// validator (aka. validator-1) should make it into the bonded group, thus

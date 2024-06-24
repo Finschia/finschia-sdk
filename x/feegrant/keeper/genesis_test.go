@@ -100,7 +100,6 @@ func (suite *GenesisTestSuite) TestInitGenesis() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		suite.Run(tc.name, func() {
 			err := suite.keeper.InitGenesis(suite.ctx, &feegrant.GenesisState{Allowances: tc.feeAllowances})
 			suite.Require().Error(err)

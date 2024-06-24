@@ -12,7 +12,7 @@ import (
 	"github.com/Finschia/finschia-sdk/x/bank/types"
 )
 
-func cloneAppend(bz []byte, tail []byte) (res []byte) {
+func cloneAppend(bz, tail []byte) (res []byte) {
 	res = make([]byte, len(bz)+len(tail))
 	copy(res, bz)
 	copy(res[len(bz):], tail)
@@ -39,7 +39,6 @@ func TestAddressFromBalancesStore(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			addr, err := types.AddressFromBalancesStore(tc.key)

@@ -2,7 +2,6 @@ package internal
 
 import (
 	sdk "github.com/Finschia/finschia-sdk/types"
-
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
 

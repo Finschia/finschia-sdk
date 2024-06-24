@@ -6,12 +6,11 @@ import (
 	"strings"
 	"testing"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/Finschia/ostracon/rpc/client/http"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 	"github.com/tendermint/tendermint/proto/tendermint/crypto"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
-	"github.com/Finschia/ostracon/rpc/client/http"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	"github.com/Finschia/finschia-sdk/crypto/hd"
@@ -190,8 +189,6 @@ func (s *IntegrationTestSuite) TestNewCreateValidatorCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewCreateValidatorCmd()
 			clientCtx := val.ClientCtx
@@ -245,7 +242,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidator() {
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidator()
 			clientCtx := val.ClientCtx
@@ -286,8 +282,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidators() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidators()
 			clientCtx := val.ClientCtx
@@ -352,7 +346,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegation() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryDelegation()
 			clientCtx := val.ClientCtx
@@ -408,7 +401,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryDelegations()
 			clientCtx := val.ClientCtx
@@ -464,7 +456,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryDelegations()
 			clientCtx := val.ClientCtx
@@ -508,7 +499,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryUnbondingDelegations()
 			clientCtx := val.ClientCtx
@@ -567,7 +557,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegation() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryUnbondingDelegation()
 			clientCtx := val.ClientCtx
@@ -616,7 +605,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorUnbondingDelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidatorUnbondingDelegations()
 			clientCtx := val.ClientCtx
@@ -665,7 +653,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryRedelegations()
 			clientCtx := val.ClientCtx
@@ -741,7 +728,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegation() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryRedelegation()
 			clientCtx := val.ClientCtx
@@ -793,7 +779,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorRedelegations() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryValidatorRedelegations()
 			clientCtx := val.ClientCtx
@@ -844,7 +829,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryHistoricalInfo() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryHistoricalInfo()
 			clientCtx := val.ClientCtx
@@ -886,7 +870,6 @@ unbonding_time: 1814400s`,
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryParams()
 			clientCtx := val.ClientCtx
@@ -923,7 +906,6 @@ not_bonded_tokens: "0"`, cli.DefaultTokens.Mul(sdk.NewInt(2)).String()),
 		},
 	}
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryPool()
 			clientCtx := val.ClientCtx
@@ -1030,8 +1012,6 @@ func (s *IntegrationTestSuite) TestNewEditValidatorCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewEditValidatorCmd()
 			clientCtx := val.ClientCtx
@@ -1112,8 +1092,6 @@ func (s *IntegrationTestSuite) TestNewDelegateCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewDelegateCmd()
 			clientCtx := val.ClientCtx
@@ -1198,8 +1176,6 @@ func (s *IntegrationTestSuite) TestNewRedelegateCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewRedelegateCmd()
 			clientCtx := val.ClientCtx
@@ -1265,8 +1241,6 @@ func (s *IntegrationTestSuite) TestNewUnbondCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewUnbondCmd()
 			clientCtx := val.ClientCtx
@@ -1351,7 +1325,8 @@ func (s *IntegrationTestSuite) TestBlockResults() {
 			break
 		}
 
-		s.network.WaitForNextBlock()
+		err = s.network.WaitForNextBlock()
+		require.NoError(err)
 	}
 }
 

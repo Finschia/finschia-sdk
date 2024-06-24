@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/spf13/cobra"
-
 	ostcli "github.com/Finschia/ostracon/libs/cli"
+	"github.com/spf13/cobra"
 
 	"github.com/Finschia/finschia-sdk/crypto/keyring"
 )
@@ -95,7 +94,7 @@ func AddQueryFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().Int64(FlagHeight, 0, "Use a specific height to query state at (this can error if the node is pruning state)")
 	cmd.Flags().StringP(ostcli.OutputFlag, "o", "text", "Output format (text|json)")
 
-	cmd.MarkFlagRequired(FlagChainID)
+	_ = cmd.MarkFlagRequired(FlagChainID)
 }
 
 // AddTxFlagsToCmd adds common flags to a module tx command.
@@ -124,7 +123,7 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	// --gas can accept integers and "auto"
 	cmd.Flags().String(FlagGas, "", fmt.Sprintf("gas limit to set per-transaction; set to %q to calculate sufficient gas automatically (default %d)", GasFlagAuto, DefaultGasLimit))
 
-	cmd.MarkFlagRequired(FlagChainID)
+	_ = cmd.MarkFlagRequired(FlagChainID)
 }
 
 // AddPaginationFlagsToCmd adds common pagination flags to cmd

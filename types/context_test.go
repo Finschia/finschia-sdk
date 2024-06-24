@@ -68,12 +68,6 @@ func (s *contextTestSuite) TestLogContext() {
 	ctx.Logger().Error("error")
 }
 
-type dummy int64 //nolint:unused
-
-func (d dummy) Clone() interface{} {
-	return d
-}
-
 // Testing saving/loading sdk type values to/from the context
 func (s *contextTestSuite) TestContextWithCustom() {
 	var ctx types.Context
@@ -197,7 +191,6 @@ func (s *contextTestSuite) TestContextHeaderClone() {
 	}
 
 	for name, tc := range cases {
-		tc := tc
 		s.T().Run(name, func(t *testing.T) {
 			ctx := types.NewContext(nil, tc.h, false, nil)
 			s.Require().Equal(tc.h.Height, ctx.BlockHeight())

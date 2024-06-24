@@ -6,10 +6,9 @@ import (
 	"testing"
 	"time"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -169,8 +168,6 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryFeeGrant()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -235,8 +232,6 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGrantee() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryFeeGrantsByGrantee()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -291,8 +286,6 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryFeeGrantsByGranter()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -584,8 +577,6 @@ func (s *IntegrationTestSuite) TestNewCmdFeeGrant() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdFeeGrant()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -691,8 +682,6 @@ func (s *IntegrationTestSuite) TestNewCmdRevokeFeegrant() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdRevokeFeegrant()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -830,8 +819,6 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewCmdFeeGrant()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
@@ -925,8 +912,6 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 	}
 
 	for _, tc := range cases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			out, err := tc.malleate()
 			s.Require().NoError(err)

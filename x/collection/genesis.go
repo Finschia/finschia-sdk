@@ -2,7 +2,6 @@ package collection
 
 import (
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
-
 	sdk "github.com/Finschia/finschia-sdk/types"
 	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 )

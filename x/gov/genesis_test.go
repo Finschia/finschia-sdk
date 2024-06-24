@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/simapp"
@@ -106,7 +105,7 @@ func TestImportExportQueues(t *testing.T) {
 	// Run the endblocker. Check to make sure that proposal1 is removed from state, and proposal2 is finished VotingPeriod.
 	gov.EndBlocker(ctx2, app2.GovKeeper)
 
-	proposal1, ok = app2.GovKeeper.GetProposal(ctx2, proposalID1)
+	_, ok = app2.GovKeeper.GetProposal(ctx2, proposalID1)
 	require.False(t, ok)
 
 	proposal2, ok = app2.GovKeeper.GetProposal(ctx2, proposalID2)

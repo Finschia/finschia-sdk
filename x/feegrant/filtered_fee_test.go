@@ -190,8 +190,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 }
 
 // invalidInterfaceAllowance does not implement proto.Message
-type invalidInterfaceAllowance struct {
-}
+type invalidInterfaceAllowance struct{}
 
 // compilation time interface implementation check
 var _ feegrant.FeeAllowanceI = (*invalidInterfaceAllowance)(nil)
@@ -210,8 +209,10 @@ type invalidProtoAllowance struct {
 }
 
 // compilation time interface implementation check
-var _ feegrant.FeeAllowanceI = (*invalidProtoAllowance)(nil)
-var _ proto.Message = (*invalidProtoAllowance)(nil)
+var (
+	_ feegrant.FeeAllowanceI = (*invalidProtoAllowance)(nil)
+	_ proto.Message          = (*invalidProtoAllowance)(nil)
+)
 
 func (i invalidProtoAllowance) Reset() {
 }

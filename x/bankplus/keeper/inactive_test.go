@@ -1,14 +1,13 @@
 package keeper
 
 import (
-	"math/rand"
+	"crypto/rand"
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -22,7 +21,10 @@ import (
 
 func genAddress() sdk.AccAddress {
 	b := make([]byte, 20)
-	rand.Read(b)
+	_, err := rand.Read(b)
+	if err != nil {
+		panic(err)
+	}
 	return b
 }
 
@@ -41,6 +43,7 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 }
 
 func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
+	t.Helper()
 	db := dbm.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db)
 	stateStore.MountStoreWithDB(storeKey, sdk.StoreTypeIAVL, db)

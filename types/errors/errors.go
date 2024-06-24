@@ -15,7 +15,7 @@ const UndefinedCodespace = "undefined"
 
 var (
 	// errInternal should never be exposed, but we reserve this code for non-specified errors
-	errInternal = Register(UndefinedCodespace, 1, "internal") //nolint:deadcode,unused,varcheck
+	errInternal = Register(UndefinedCodespace, 1, "internal") //nolint:deadcode,varcheck
 
 	// ErrTxDecode is returned if we cannot parse a transaction
 	ErrTxDecode = Register(RootCodespace, 2, "tx parse error")
@@ -61,7 +61,7 @@ var (
 	// ErrNoSignatures to doc
 	ErrNoSignatures = Register(RootCodespace, 15, "no signatures supplied")
 
-	// ErrJSONMarshal defines an ABCI typed JSON marshalling error
+	// ErrJSONMarshal defines an ABCI typed JSON marshaling error
 	ErrJSONMarshal = Register(RootCodespace, 16, "failed to marshal JSON bytes")
 
 	// ErrJSONUnmarshal defines an ABCI typed JSON unmarshalling error

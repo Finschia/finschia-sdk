@@ -120,7 +120,6 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	}
 
 	for name, tc := range cases {
-		tc := tc
 		suite.Run(name, func() {
 			allow, _ := suite.keeper.GetAllowance(suite.sdkCtx, tc.granter, tc.grantee)
 
@@ -196,7 +195,6 @@ func (suite *KeeperTestSuite) TestUseGrantedFee() {
 	}
 
 	for name, tc := range cases {
-		tc := tc
 		suite.Run(name, func() {
 			err := suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], future)
 			suite.Require().NoError(err)
@@ -247,12 +245,15 @@ func (suite *KeeperTestSuite) TestIterateGrants() {
 		Expiration: &exp,
 	}
 
-	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], allowance)
-	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
+	err := suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], allowance)
+	suite.Require().NoError(err)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
+	suite.Require().NoError(err)
 
-	suite.keeper.IterateAllFeeAllowances(suite.sdkCtx, func(grant feegrant.Grant) bool {
+	err = suite.keeper.IterateAllFeeAllowances(suite.sdkCtx, func(grant feegrant.Grant) bool {
 		suite.Require().Equal(suite.addrs[1].String(), grant.Grantee)
 		suite.Require().Contains([]string{suite.addrs[0].String(), suite.addrs[2].String()}, grant.Granter)
 		return true
 	})
+	suite.Require().NoError(err)
 }

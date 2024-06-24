@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/cosmos/go-bip39"
+	"github.com/stretchr/testify/require"
+
 	"github.com/Finschia/finschia-sdk/crypto/hd"
 	"github.com/Finschia/finschia-sdk/types"
-
-	bip39 "github.com/cosmos/go-bip39"
-	"github.com/stretchr/testify/require"
 )
 
 var defaultBIP39Passphrase = ""
@@ -107,9 +107,7 @@ func TestCreateHDPath(t *testing.T) {
 		{"m/44'/114'/1'/1/0", args{114, 1, 1}, hd.BIP44Params{Purpose: 44, CoinType: 114, Account: 1, AddressIndex: 1}},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			tt := tt
 			require.Equal(t, tt.want, *hd.CreateHDPath(tt.args.coinType, tt.args.account, tt.args.index))
 		})
 	}
@@ -170,7 +168,6 @@ func TestDeriveHDPathRange(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.path, func(t *testing.T) {
 			master, ch := hd.ComputeMastersFromSeed(seed)
 			_, err := hd.DerivePrivateKeyForPath(master, ch, tt.path)
@@ -185,7 +182,7 @@ func TestDeriveHDPathRange(t *testing.T) {
 	}
 }
 
-func ExampleStringifyPathParams() {
+func StringifyPathParamsExample() {
 	path := hd.NewParams(44, 0, 0, false, 0)
 	fmt.Println(path.String())
 	path = hd.NewParams(44, 33, 7, true, 9)
@@ -195,7 +192,7 @@ func ExampleStringifyPathParams() {
 	// m/44'/33'/7'/1/9
 }
 
-func ExampleSomeBIP32TestVecs() {
+func SomeBIP32TestVecsExample() {
 	seed := mnemonicToSeed("barrel original fuel morning among eternal " +
 		"filter ball stove pluck matrix mechanic")
 	master, ch := hd.ComputeMastersFromSeed(seed)
@@ -206,34 +203,34 @@ func ExampleSomeBIP32TestVecs() {
 	if err != nil {
 		fmt.Println("INVALID")
 	} else {
-		fmt.Println(hex.EncodeToString(priv[:]))
+		fmt.Println(hex.EncodeToString(priv))
 	}
 	// bitcoin
 	priv, err = hd.DerivePrivateKeyForPath(master, ch, "44'/0'/0'/0/0")
 	if err != nil {
 		fmt.Println("INVALID")
 	} else {
-		fmt.Println(hex.EncodeToString(priv[:]))
+		fmt.Println(hex.EncodeToString(priv))
 	}
 	// ether
 	priv, err = hd.DerivePrivateKeyForPath(master, ch, "44'/60'/0'/0/0")
 	if err != nil {
 		fmt.Println("INVALID")
 	} else {
-		fmt.Println(hex.EncodeToString(priv[:]))
+		fmt.Println(hex.EncodeToString(priv))
 	}
 	// INVALID
 	priv, err = hd.DerivePrivateKeyForPath(master, ch, "X/0'/0'/0/0")
 	if err != nil {
 		fmt.Println("INVALID")
 	} else {
-		fmt.Println(hex.EncodeToString(priv[:]))
+		fmt.Println(hex.EncodeToString(priv))
 	}
 	priv, err = hd.DerivePrivateKeyForPath(master, ch, "-44/0'/0'/0/0")
 	if err != nil {
 		fmt.Println("INVALID")
 	} else {
-		fmt.Println(hex.EncodeToString(priv[:]))
+		fmt.Println(hex.EncodeToString(priv))
 	}
 
 	fmt.Println()
@@ -245,13 +242,13 @@ func ExampleSomeBIP32TestVecs() {
 			"gorilla ranch hour rival razor call lunar mention taste vacant woman sister")
 	master, ch = hd.ComputeMastersFromSeed(seed)
 	priv, _ = hd.DerivePrivateKeyForPath(master, ch, "44'/1'/1'/0/4")
-	fmt.Println(hex.EncodeToString(priv[:]))
+	fmt.Println(hex.EncodeToString(priv))
 
 	seed = mnemonicToSeed("idea naive region square margin day captain habit " +
 		"gun second farm pact pulse someone armed")
 	master, ch = hd.ComputeMastersFromSeed(seed)
 	priv, _ = hd.DerivePrivateKeyForPath(master, ch, "44'/0'/0'/0/420")
-	fmt.Println(hex.EncodeToString(priv[:]))
+	fmt.Println(hex.EncodeToString(priv))
 
 	fmt.Println()
 	fmt.Println("BIP 32 example")
@@ -261,7 +258,7 @@ func ExampleSomeBIP32TestVecs() {
 	seed = mnemonicToSeed("monitor flock loyal sick object grunt duty ride develop assault harsh history")
 	master, ch = hd.ComputeMastersFromSeed(seed)
 	priv, _ = hd.DerivePrivateKeyForPath(master, ch, "0/7")
-	fmt.Println(hex.EncodeToString(priv[:]))
+	fmt.Println(hex.EncodeToString(priv))
 
 	// Output: keys from fundraiser test-vector (link, bitcoin, ether)
 	//
@@ -297,9 +294,8 @@ func TestDerivePrivateKeyForPathDoNotCrash(t *testing.T) {
 	}
 
 	for _, path := range paths {
-		path := path
 		t.Run(path, func(t *testing.T) {
-			hd.DerivePrivateKeyForPath([32]byte{}, [32]byte{}, path)
+			_, _ = hd.DerivePrivateKeyForPath([32]byte{}, [32]byte{}, path)
 		})
 	}
 }

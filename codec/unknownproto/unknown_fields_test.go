@@ -4,9 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/require"
 
 	"github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
@@ -224,7 +223,6 @@ func TestRejectUnknownFieldsRepeated(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			protoBlob, err := proto.Marshal(tt.in)
 			if err != nil {
@@ -281,7 +279,6 @@ func TestRejectUnknownFields_allowUnknownNonCriticals(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			blob, err := proto.Marshal(tt.in)
 			if err != nil {
@@ -484,7 +481,6 @@ func TestRejectUnknownFieldsNested(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			protoBlob, err := proto.Marshal(tt.in)
 			if err != nil {
@@ -635,7 +631,6 @@ func TestRejectUnknownFieldsFlat(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			blob, err := proto.Marshal(tt.in)
 			if err != nil {
@@ -656,11 +651,11 @@ func TestRejectUnknownFieldsFlat(t *testing.T) {
 func TestPackedEncoding(t *testing.T) {
 	data := testdata.TestRepeatedUints{Nums: []uint64{12, 13}}
 
-	marshalled, err := data.Marshal()
+	marshaled, err := data.Marshal()
 	require.NoError(t, err)
 
 	unmarshalled := &testdata.TestRepeatedUints{}
-	_, err = RejectUnknownFields(marshalled, unmarshalled, false, DefaultAnyResolver{})
+	_, err = RejectUnknownFields(marshaled, unmarshalled, false, DefaultAnyResolver{})
 	require.NoError(t, err)
 }
 

@@ -32,7 +32,7 @@ func (s *Store) Get(key []byte) []byte {
 
 // Set implements the KVStore interface. It traces a write operation and
 // delegates the Set call to the parent KVStore.
-func (s *Store) Set(key []byte, value []byte) {
+func (s *Store) Set(key, value []byte) {
 	types.AssertValidKey(key)
 	s.parent.Set(key, value)
 	s.onWrite(false, key, value)
@@ -87,7 +87,7 @@ func newTraceIterator(parent types.Iterator, listeners []types.WriteListener) ty
 }
 
 // Domain implements the Iterator interface.
-func (li *listenIterator) Domain() (start []byte, end []byte) {
+func (li *listenIterator) Domain() (start, end []byte) {
 	return li.parent.Domain()
 }
 
@@ -150,6 +150,9 @@ func (s *Store) CacheWrapWithListeners(_ types.StoreKey, _ []types.WriteListener
 // onWrite writes a KVStore operation to all of the WriteListeners
 func (s *Store) onWrite(delete bool, key, value []byte) {
 	for _, l := range s.listeners {
-		l.OnWrite(s.parentStoreKey, key, value, delete)
+		err := l.OnWrite(s.parentStoreKey, key, value, delete)
+		if err != nil {
+			panic(err)
+		}
 	}
 }

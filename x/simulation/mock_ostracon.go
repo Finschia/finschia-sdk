@@ -7,12 +7,11 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	ocabci "github.com/Finschia/ostracon/abci/types"
 	cryptoenc "github.com/Finschia/ostracon/crypto/encoding"
 	ostbytes "github.com/Finschia/ostracon/libs/bytes"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 type mockValidator struct {
@@ -88,6 +87,7 @@ func updateValidators(
 	updates []abci.ValidatorUpdate,
 	event func(route, op, evResult string),
 ) map[string]mockValidator {
+	tb.Helper()
 	for _, update := range updates {
 		str := fmt.Sprintf("%X", update.PubKey.GetEd25519())
 

@@ -22,7 +22,7 @@ func (u Uint) BigInt() *big.Int {
 func NewUintFromBigInt(i *big.Int) Uint {
 	u, err := checkNewUint(i)
 	if err != nil {
-		panic(fmt.Errorf("overflow: %s", err))
+		panic(fmt.Errorf("overflow: %w", err))
 	}
 	return u
 }
@@ -178,7 +178,7 @@ func (u *Uint) MarshalTo(data []byte) (n int, err error) {
 // Unmarshal implements the gogo proto custom type interface.
 func (u *Uint) Unmarshal(data []byte) error {
 	if len(data) == 0 {
-		u = nil
+		u = nil //nolint: wastedassign
 		return nil
 	}
 
@@ -237,7 +237,7 @@ func checkNewUint(i *big.Int) (Uint, error) {
 
 // RelativePow raises x to the power of n, where x (and the result, z) are scaled by factor b
 // for example, RelativePow(210, 2, 100) = 441 (2.1^2 = 4.41)
-func RelativePow(x Uint, n Uint, b Uint) (z Uint) {
+func RelativePow(x, n, b Uint) (z Uint) {
 	if x.IsZero() {
 		if n.IsZero() {
 			z = b // 0^0 = 1

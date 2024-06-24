@@ -10,10 +10,9 @@ import (
 	"strings"
 	"testing"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -332,7 +331,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryTxCmd()
 			clientCtx := val.ClientCtx
@@ -448,7 +446,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryTxCmd()
 			clientCtx := val.ClientCtx
@@ -527,7 +524,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryTxsByEventsCmd()
 			clientCtx := val.ClientCtx
@@ -1167,7 +1163,6 @@ func (s *IntegrationTestSuite) TestGetAccountCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 
@@ -1206,7 +1201,6 @@ func (s *IntegrationTestSuite) TestGetAccountsCmd() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
 		s.Run(name, func() {
 			cmd := authcli.GetAccountsCmd()
 			clientCtx := val.ClientCtx
@@ -1246,7 +1240,6 @@ func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 
@@ -1275,7 +1268,7 @@ func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
 
 func TestGetBroadcastCommandOfflineFlag(t *testing.T) {
 	clientCtx := client.Context{}.WithOffline(true)
-	clientCtx = clientCtx.WithTxConfig(simapp.MakeTestEncodingConfig().TxConfig) //nolint:staticcheck
+	_ = clientCtx.WithTxConfig(simapp.MakeTestEncodingConfig().TxConfig)
 
 	cmd := authcli.GetBroadcastCommand()
 	_ = testutil.ApplyMockIODiscardOutErr(cmd)
@@ -1336,7 +1329,6 @@ func (s *IntegrationTestSuite) TestQueryParamsCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		s.Run(tc.name, func() {
 			cmd := authcli.QueryParamsCmd()
 			clientCtx := val.ClientCtx
@@ -1429,10 +1421,11 @@ func (s *IntegrationTestSuite) TestSignWithMultiSignersAminoJSON() {
 	// because DIRECT doesn't support multi signers via the CLI.
 	// Since we use amino, we don't need to pre-populate signer_infos.
 	txBuilder := val0.ClientCtx.TxConfig.NewTxBuilder()
-	txBuilder.SetMsgs(
+	err := txBuilder.SetMsgs(
 		banktypes.NewMsgSend(val0.Address, addr1, sdk.NewCoins(val0Coin)),
 		banktypes.NewMsgSend(val1.Address, addr1, sdk.NewCoins(val1Coin)),
 	)
+	require.NoError(err)
 	txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))))
 	txBuilder.SetGasLimit(testdata.NewTestGasLimit()) // min required is 101892
 	require.Equal([]sdk.AccAddress{val0.Address, val1.Address}, txBuilder.GetTx().GetSigners())

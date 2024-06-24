@@ -134,7 +134,8 @@ func TestAuthzAuthorizations(t *testing.T) {
 			&stakingtypes.StakeAuthorization{
 				Validators: &stakingtypes.StakeAuthorization_DenyList{
 					DenyList: &stakingtypes.StakeAuthorization_Validators{Address: []string{val1.String()}},
-				}, MaxTokens: nil, AuthorizationType: stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE},
+				}, MaxTokens: nil, AuthorizationType: stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE,
+			},
 		},
 		{
 			"undelegate: expect 0 remaining coins",
@@ -266,7 +267,6 @@ func TestAuthzAuthorizations(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.msg, func(t *testing.T) {
 			delAuth, err := stakingtypes.NewStakeAuthorization(tc.allowed, tc.denied, tc.msgType, tc.limit)
 			require.NoError(t, err)

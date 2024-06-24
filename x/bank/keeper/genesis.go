@@ -42,7 +42,7 @@ func (k BaseKeeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) {
 func (k BaseKeeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	totalSupply, _, err := k.GetPaginatedTotalSupply(ctx, &query.PageRequest{Limit: query.MaxLimit})
 	if err != nil {
-		panic(fmt.Errorf("unable to fetch total supply %v", err))
+		panic(fmt.Errorf("unable to fetch total supply: %w", err))
 	}
 
 	return types.NewGenesisState(

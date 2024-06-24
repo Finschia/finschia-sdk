@@ -7,9 +7,8 @@ import (
 	"sync"
 	"time"
 
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/Finschia/ostracon/libs/math"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/internal/conv"
 	"github.com/Finschia/finschia-sdk/store/listenkv"
@@ -74,7 +73,7 @@ func (store *Store) Get(key []byte) (value []byte) {
 }
 
 // Set implements types.KVStore.
-func (store *Store) Set(key []byte, value []byte) {
+func (store *Store) Set(key, value []byte) {
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
 
@@ -368,7 +367,10 @@ func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair, sortState sort
 			// deleted element, tracked by store.deleted
 			// setting arbitrary value
 			// TODO: Don't ignore this error.
-			store.sortedCache.Set(item.Key, []byte{})
+			err := store.sortedCache.Set(item.Key, []byte{})
+			if err != nil {
+				panic(err)
+			}
 			continue
 		}
 		err := store.sortedCache.Set(item.Key, item.Value)
@@ -395,7 +397,7 @@ func (store *Store) deleteKeysFromUnsortedCache(unsorted []*kv.Pair) {
 // etc
 
 // Only entrypoint to mutate store.cache.
-func (store *Store) setCacheValue(key, value []byte, deleted bool, dirty bool) {
+func (store *Store) setCacheValue(key, value []byte, deleted, dirty bool) {
 	types.AssertValidKey(key)
 
 	keyStr := conv.UnsafeBytesToStr(key)

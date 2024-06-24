@@ -18,12 +18,11 @@ import (
 
 var initialProposalID = uint64(100000000000000)
 
-// nolint:gosec
 // Simulation operation weights constants
 const (
-	OpWeightMsgDeposit      = "op_weight_msg_deposit"       //nolint:gosec
-	OpWeightMsgVote         = "op_weight_msg_vote"          //nolint:gosec
-	OpWeightMsgVoteWeighted = "op_weight_msg_weighted_vote" //nolint:gosec
+	OpWeightMsgDeposit      = "op_weight_msg_deposit"
+	OpWeightMsgVote         = "op_weight_msg_vote"
+	OpWeightMsgVoteWeighted = "op_weight_msg_weighted_vote"
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights
@@ -59,7 +58,6 @@ func WeightedOperations(
 	var wProposalOps simulation.WeightedOperations
 
 	for _, wContent := range wContents {
-		wContent := wContent // pin variable
 		var weight int
 		appParams.GetOrGenerate(cdc, wContent.AppParamsKey(), &weight, nil,
 			func(_ *rand.Rand) { weight = wContent.DefaultWeight() })

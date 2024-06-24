@@ -3,10 +3,9 @@ package testutil
 import (
 	"fmt"
 
+	ostcli "github.com/Finschia/ostracon/libs/cli"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
-
-	ostcli "github.com/Finschia/ostracon/libs/cli"
 
 	"github.com/Finschia/finschia-sdk/client/flags"
 	clitestutil "github.com/Finschia/finschia-sdk/testutil/cli"
@@ -146,8 +145,6 @@ func (s *IntegrationTestSuite) TestGetBalancesCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetBalancesCmd()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
@@ -226,8 +223,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryTotalSupply()
 			clientCtx := val.ClientCtx
@@ -368,8 +363,6 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDenomsMetadata() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdDenomsMetadata()
 			clientCtx := val.ClientCtx
@@ -476,8 +469,6 @@ func (s *IntegrationTestSuite) TestNewSendTxCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			clientCtx := val.ClientCtx
 

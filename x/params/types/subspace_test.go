@@ -5,11 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/simapp"
@@ -50,7 +49,7 @@ func (suite *SubspaceTestSuite) TestKeyTable() {
 	})
 	suite.Require().NotPanics(func() {
 		ss := types.NewSubspace(suite.cdc, suite.amino, key, tkey, "testsubspace2")
-		ss = ss.WithKeyTable(paramKeyTable())
+		_ = ss.WithKeyTable(paramKeyTable())
 	})
 }
 
@@ -185,7 +184,6 @@ func (suite *SubspaceTestSuite) TestSetParamSet() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		suite.Run(tc.name, func() {
 			suite.Require().Panics(func() {
 				suite.ss.SetParamSet(suite.ctx, tc.ps)

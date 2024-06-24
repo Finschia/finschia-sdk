@@ -2,7 +2,6 @@ package foundation_test
 
 import (
 	"fmt"
-	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"testing"
 	"time"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
 	sdk "github.com/Finschia/finschia-sdk/types"
+	sdkerrors "github.com/Finschia/finschia-sdk/types/errors"
 	"github.com/Finschia/finschia-sdk/x/auth/legacy/legacytx"
 	"github.com/Finschia/finschia-sdk/x/foundation"
 )
@@ -597,7 +597,8 @@ func TestMsgGrant(t *testing.T) {
 				Grantee:   tc.grantee.String(),
 			}
 			if tc.authorization != nil {
-				msg.SetAuthorization(tc.authorization)
+				err := msg.SetAuthorization(tc.authorization)
+				require.NoError(t, err)
 			}
 
 			err := msg.ValidateBasic()
@@ -712,8 +713,6 @@ func TestAminoJSON(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
 		})
@@ -726,7 +725,7 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	var proposer = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	proposer := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	testCases := map[string]struct {
 		msg      sdk.Msg
@@ -777,8 +776,6 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			proposalMsg := &foundation.MsgSubmitProposal{
 				Proposers: []string{proposer.String()},
@@ -823,8 +820,6 @@ func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			policyMsg := &foundation.MsgUpdateDecisionPolicy{
 				Authority: authority.String(),
@@ -866,8 +861,6 @@ func TestMsgGrantAminoJson(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			grantMsg := &foundation.MsgGrant{
 				Authority: operator.String(),

@@ -404,7 +404,6 @@ func TestRoundTripMarshalToInt(t *testing.T) {
 	}
 
 	for _, value := range values {
-		value := value
 		t.Run(fmt.Sprintf("%d", value), func(t *testing.T) {
 			t.Parallel()
 

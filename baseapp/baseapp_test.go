@@ -5,15 +5,14 @@ import (
 	"os"
 	"testing"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/codec/legacy"
@@ -63,6 +62,7 @@ func aminoTxEncoder() sdk.TxEncoder {
 
 // simple one store baseapp
 func setupBaseApp(t *testing.T, options ...func(*BaseApp)) *BaseApp {
+	t.Helper()
 	app := newBaseApp(t.Name(), options...)
 	require.Equal(t, t.Name(), app.Name())
 
@@ -132,6 +132,7 @@ func TestLoadVersionPruning(t *testing.T) {
 }
 
 func testLoadVersionHelper(t *testing.T, app *BaseApp, expectedHeight int64, expectedID sdk.CommitID) {
+	t.Helper()
 	lastHeight := app.LastBlockHeight()
 	lastID := app.LastCommitID()
 	require.Equal(t, expectedHeight, lastHeight)
@@ -163,13 +164,6 @@ func TestGetMaximumBlockGas(t *testing.T) {
 }
 
 func TestListSnapshots(t *testing.T) {
-	type setupConfig struct {
-		blocks            uint64
-		blockTxs          int
-		snapshotInterval  uint64
-		snapshotKeepEvery uint32
-	}
-
 	app, _ := setupBaseAppWithSnapshots(t, 2, 5)
 
 	expected := abci.ResponseListSnapshots{Snapshots: []*abci.Snapshot{
@@ -222,7 +216,7 @@ func TestSetChanCheckTxSize(t *testing.T) {
 	logger := defaultLogger()
 	db := dbm.NewMemDB()
 
-	var size = uint(100)
+	size := uint(100)
 
 	app := NewBaseApp(t.Name(), logger, db, nil, SetChanCheckTxSize(size))
 	require.Equal(t, int(size), cap(app.chCheckTx))

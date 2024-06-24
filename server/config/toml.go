@@ -236,5 +236,5 @@ func WriteConfigFile(configFilePath string, config interface{}) {
 		panic(err)
 	}
 
-	ostos.MustWriteFile(configFilePath, buffer.Bytes(), 0644)
+	ostos.MustWriteFile(configFilePath, buffer.Bytes(), 0o644)
 }

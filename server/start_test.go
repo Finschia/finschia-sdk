@@ -1,10 +1,11 @@
 package server
 
 import (
-	"github.com/Finschia/ostracon/config"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/Finschia/ostracon/config"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenPvFileOnlyWhenKmsAddressEmptyGenerateFiles(t *testing.T) {

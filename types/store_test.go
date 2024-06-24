@@ -3,10 +3,9 @@ package types_test
 import (
 	"testing"
 
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/store/rootmulti"
 	"github.com/Finschia/finschia-sdk/store/types"
@@ -64,8 +63,6 @@ func (s *storeTestSuite) TestNewTransientStoreKeys() {
 func (s *storeTestSuite) TestNewInfiniteGasMeter() {
 	gm := sdk.NewInfiniteGasMeter()
 	s.Require().NotNil(gm)
-	_, ok := gm.(types.GasMeter)
-	s.Require().True(ok)
 }
 
 func (s *storeTestSuite) TestStoreTypes() {

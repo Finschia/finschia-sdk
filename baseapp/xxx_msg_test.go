@@ -3,8 +3,9 @@ package baseapp
 import (
 	reflect "reflect"
 
-	types "github.com/Finschia/finschia-sdk/types"
 	gomock "github.com/golang/mock/gomock"
+
+	types "github.com/Finschia/finschia-sdk/types"
 )
 
 // MockXXXMessage is a mock of XXXMessage interface.

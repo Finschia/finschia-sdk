@@ -35,7 +35,7 @@ func TestDecodeStore(t *testing.T) {
 
 	kvPairs := kv.Pairs{
 		Pairs: []kv.Pair{
-			{Key: []byte(feegrant.FeeAllowanceKeyPrefix), Value: grantBz},
+			{Key: feegrant.FeeAllowanceKeyPrefix, Value: grantBz},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
 		},
 	}
@@ -49,7 +49,6 @@ func TestDecodeStore(t *testing.T) {
 	}
 
 	for i, tt := range tests {
-		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:

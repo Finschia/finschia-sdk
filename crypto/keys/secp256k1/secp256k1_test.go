@@ -7,13 +7,12 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/Finschia/ostracon/crypto"
+	ostsecp256k1 "github.com/Finschia/ostracon/crypto/secp256k1"
 	btcSecp256k1 "github.com/btcsuite/btcd/btcec"
 	"github.com/cosmos/btcutil/base58"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/Finschia/ostracon/crypto"
-	ostsecp256k1 "github.com/Finschia/ostracon/crypto/secp256k1"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	"github.com/Finschia/finschia-sdk/crypto/keys/ed25519"
@@ -127,12 +126,11 @@ func TestGenPrivKeyFromSecret(t *testing.T) {
 		{"another seed used in cosmos tests #3", []byte("")},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			gotPrivKey := secp256k1.GenPrivKeyFromSecret(tt.secret)
 			require.NotNil(t, gotPrivKey)
 			// interpret as a big.Int and make sure it is a valid field element:
-			fe := new(big.Int).SetBytes(gotPrivKey.Key[:])
+			fe := new(big.Int).SetBytes(gotPrivKey.Key)
 			require.True(t, fe.Cmp(N) < 0)
 			require.True(t, fe.Sign() > 0)
 		})

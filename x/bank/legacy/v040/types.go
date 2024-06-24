@@ -1,7 +1,7 @@
 package v040
 
 import (
-	"github.com/golang/protobuf/proto" //nolint:staticcheck
+	"github.com/golang/protobuf/proto"
 
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
 	"github.com/Finschia/finschia-sdk/x/bank/types"
@@ -26,6 +26,6 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"cosmos.bank.v1beta1.SupplyI",
 		(*SupplyI)(nil),
-		&types.Supply{}, //nolint:staticcheck
+		&types.Supply{},
 	)
 }

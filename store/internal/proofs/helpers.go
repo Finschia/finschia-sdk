@@ -3,9 +3,8 @@ package proofs
 import (
 	"sort"
 
-	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
-
 	"github.com/Finschia/ostracon/libs/rand"
+	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 	sdkmaps "github.com/Finschia/finschia-sdk/store/internal/maps"
 )

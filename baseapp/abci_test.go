@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
@@ -112,8 +111,6 @@ func TestGetBlockRentionHeight(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		tc.bapp.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 		tc.bapp.InitChain(abci.RequestInitChain{
 			ConsensusParams: &abci.ConsensusParams{
@@ -140,7 +137,8 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil)
-	app.init()
+	err := app.init()
+	require.NoError(t, err)
 
 	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
 	app.Commit()
@@ -190,7 +188,8 @@ func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
 			},
 		},
 	})
-	app.init()
+	err := app.init()
+	require.NoError(t, err)
 
 	// set block params
 	app.BeginBlock(ocabci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
@@ -218,7 +217,10 @@ func (ps *paramStore) Set(_ sdk.Context, key []byte, value interface{}) {
 		panic(err)
 	}
 
-	ps.db.Set(key, bz)
+	err = ps.db.Set(key, bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (ps *paramStore) Has(_ sdk.Context, key []byte) bool {

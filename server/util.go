@@ -67,7 +67,9 @@ func NewContext(v *viper.Viper, config *tmcfg.Config, logger tmlog.Logger) *Cont
 
 func bindFlags(basename string, cmd *cobra.Command, v *viper.Viper) (err error) {
 	defer func() {
-		recover()
+		if r := recover(); r != nil {
+			err = fmt.Errorf("bindFlags failed: %v", r)
+		}
 	}()
 
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
@@ -93,7 +95,7 @@ func bindFlags(basename string, cmd *cobra.Command, v *viper.Viper) (err error) 
 		}
 	})
 
-	return
+	return err
 }
 
 // InterceptConfigsPreRunHandler performs a pre-run function for the root daemon
@@ -210,7 +212,7 @@ func interceptConfigs(rootViper *viper.Viper, customAppTemplate string, customCo
 		tmcfg.EnsureRoot(rootDir)
 
 		if err = conf.ValidateBasic(); err != nil {
-			return nil, fmt.Errorf("error in config file: %v", err)
+			return nil, fmt.Errorf("error in config file: %w", err)
 		}
 
 		conf.RPC.PprofListenAddress = "localhost:6060"

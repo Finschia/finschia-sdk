@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/Finschia/ostracon/libs/log"
 	iavltree "github.com/cosmos/iavl"
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
@@ -16,8 +17,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/proto/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/Finschia/ostracon/libs/log"
 
 	snapshottypes "github.com/Finschia/finschia-sdk/snapshots/types"
 	"github.com/Finschia/finschia-sdk/store/cachemulti"
@@ -311,7 +310,7 @@ func deleteKVStore(kv types.KVStore) {
 }
 
 // we simulate move by a copy and delete
-func moveKVStoreData(oldDB types.KVStore, newDB types.KVStore) {
+func moveKVStoreData(oldDB, newDB types.KVStore) {
 	// we read from one and write to another
 	itr := oldDB.Iterator(nil, nil)
 	for itr.Valid() {
@@ -470,7 +469,7 @@ func (rs *Store) PruneStores(clearStorePruningHeihgts bool, pruningHeights []int
 			store = rs.GetCommitKVStore(key)
 
 			if err := store.(*iavl.Store).DeleteVersions(pruningHeights...); err != nil {
-				if errCause := errors.Cause(err); errCause != nil && errCause != iavltree.ErrVersionDoesNotExist {
+				if errCause := errors.Cause(err); errCause != nil && !errors.Is(errCause, iavltree.ErrVersionDoesNotExist) {
 					panic(err)
 				}
 			}
@@ -670,7 +669,7 @@ func (rs *Store) SetInitialVersion(version int64) error {
 // parsePath expects a format like /<storeName>[/<subpath>]
 // Must start with /, subpath may be empty
 // Returns error if it doesn't start with /
-func parsePath(path string) (storeName string, subpath string, err error) {
+func parsePath(path string) (storeName, subpath string, err error) {
 	if !strings.HasPrefix(path, "/") {
 		return storeName, subpath, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "invalid path: %s", path)
 	}
@@ -745,7 +744,7 @@ func (rs *Store) Snapshot(height uint64, protoWriter protoio.Writer) error {
 
 		for {
 			node, err := exporter.Next()
-			if err == iavltree.ExportDone {
+			if errors.Is(err, iavltree.ExportDone) {
 				break
 			} else if err != nil {
 				return err
@@ -784,7 +783,7 @@ loop:
 	for {
 		snapshotItem = snapshottypes.SnapshotItem{}
 		err := protoReader.ReadMsg(&snapshotItem)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		} else if err != nil {
 			return snapshottypes.SnapshotItem{}, sdkerrors.Wrap(err, "invalid protobuf message")
@@ -1055,7 +1054,10 @@ func setCommitInfo(batch dbm.Batch, version int64, cInfo *types.CommitInfo) {
 	}
 
 	cInfoKey := fmt.Sprintf(commitInfoKeyFmt, version)
-	batch.Set([]byte(cInfoKey), bz)
+	err = batch.Set([]byte(cInfoKey), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func setLatestVersion(batch dbm.Batch, version int64) {
@@ -1064,7 +1066,10 @@ func setLatestVersion(batch dbm.Batch, version int64) {
 		panic(err)
 	}
 
-	batch.Set([]byte(latestVersionKey), bz)
+	err = batch.Set([]byte(latestVersionKey), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func setPruningHeights(batch dbm.Batch, pruneHeights []int64) {
@@ -1075,7 +1080,10 @@ func setPruningHeights(batch dbm.Batch, pruneHeights []int64) {
 		bz = append(bz, buf...)
 	}
 
-	batch.Set([]byte(pruneHeightsKey), bz)
+	err := batch.Set([]byte(pruneHeightsKey), bz)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getPruningHeights(db dbm.DB) ([]int64, error) {

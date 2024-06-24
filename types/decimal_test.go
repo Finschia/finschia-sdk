@@ -236,7 +236,6 @@ func (s *decimalTestSuite) TestArithmetic() {
 	}
 
 	for tcIndex, tc := range tests {
-		tc := tc
 		resAdd := tc.d1.Add(tc.d2)
 		resSub := tc.d1.Sub(tc.d2)
 		resMul := tc.d1.Mul(tc.d2)
@@ -606,10 +605,8 @@ func BenchmarkMarshalTo(b *testing.B) {
 		for _, bi := range bis {
 			if n, err := bi.in.MarshalTo(data); err != nil {
 				b.Fatal(err)
-			} else {
-				if !bytes.Equal(data[:n], bi.want) {
-					b.Fatalf("Mismatch\nGot:  % x\nWant: % x\n", data[:n], bi.want)
-				}
+			} else if !bytes.Equal(data[:n], bi.want) {
+				b.Fatalf("Mismatch\nGot:  % x\nWant: % x\n", data[:n], bi.want)
 			}
 		}
 	}

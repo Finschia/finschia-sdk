@@ -4,17 +4,14 @@ import (
 	"testing"
 
 	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
+	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/crypto/keys/secp256k1"
 	"github.com/Finschia/finschia-sdk/simapp/params"
 	"github.com/Finschia/finschia-sdk/testutil"
 	"github.com/Finschia/finschia-sdk/testutil/testdata"
-
-	"github.com/stretchr/testify/require"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/Finschia/finschia-sdk/client"
 	sdk "github.com/Finschia/finschia-sdk/types"
 )
 

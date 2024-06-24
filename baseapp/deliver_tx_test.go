@@ -11,15 +11,14 @@ import (
 	"testing"
 	"time"
 
+	ocabci "github.com/Finschia/ostracon/abci/types"
+	"github.com/Finschia/ostracon/libs/log"
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
-
-	ocabci "github.com/Finschia/ostracon/abci/types"
-	"github.com/Finschia/ostracon/libs/log"
 
 	"github.com/Finschia/finschia-sdk/codec"
 	codectypes "github.com/Finschia/finschia-sdk/codec/types"
@@ -51,7 +50,6 @@ func TestLoadSnapshotChunk(t *testing.T) {
 		"Zero chunk":        {2, 1, 0, false},
 	}
 	for name, tc := range testcases {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			resp := app.LoadSnapshotChunk(abci.RequestLoadSnapshotChunk{
 				Height: tc.height,
@@ -96,7 +94,6 @@ func TestOfferSnapshot_Errors(t *testing.T) {
 		}, abci.ResponseOfferSnapshot_REJECT},
 	}
 	for name, tc := range testcases {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			resp := app.OfferSnapshot(abci.RequestOfferSnapshot{Snapshot: tc.snapshot})
 			assert.Equal(t, tc.result, resp.Result)
@@ -869,7 +866,7 @@ func TestCustomRunTxPanicHandler(t *testing.T) {
 	{
 		tx := newTxCounter(0, 0)
 
-		require.PanicsWithValue(t, customPanicMsg, func() { app.Deliver(aminoTxEncoder(), tx) })
+		require.PanicsWithValue(t, customPanicMsg, func() { app.Deliver(aminoTxEncoder(), tx) }) //nolint:errcheck
 	}
 }
 
@@ -1284,6 +1281,7 @@ func testTxDecoder(cdc *codec.LegacyAmino) sdk.TxDecoder {
 }
 
 func anteHandlerTxTest(t *testing.T, capKey sdk.StoreKey, storeKey []byte) sdk.AnteHandler {
+	t.Helper()
 	return func(ctx sdk.Context, tx sdk.Tx, simulate bool) (sdk.Context, error) {
 		store := ctx.KVStore(capKey)
 		txTest := tx.(txTest)
@@ -1307,6 +1305,7 @@ func anteHandlerTxTest(t *testing.T, capKey sdk.StoreKey, storeKey []byte) sdk.A
 
 // TODO(dudong2): remove this func after reverting CheckTx logic
 func anteHandlerTxTest2(t *testing.T, capKey sdk.StoreKey, storeKey []byte) sdk.AnteHandler {
+	t.Helper()
 	return func(ctx sdk.Context, tx sdk.Tx, simulate bool) (sdk.Context, error) {
 		store := ctx.KVStore(capKey)
 		txTest := tx.(*txTest)
@@ -1338,6 +1337,7 @@ func counterEvent(evType string, msgCount int64) sdk.Events {
 }
 
 func handlerMsgCounter(t *testing.T, capKey sdk.StoreKey, deliverKey []byte) sdk.Handler {
+	t.Helper()
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		store := ctx.KVStore(capKey)
@@ -1389,6 +1389,7 @@ func setIntOnStore(store sdk.KVStore, key []byte, i int64) {
 // check counter matches what's in store.
 // increment and store
 func incrementingCounter(t *testing.T, store sdk.KVStore, counterKey []byte, counter int64) (*sdk.Result, error) {
+	t.Helper()
 	storedCounter := getIntFromStore(store, counterKey)
 	require.Equal(t, storedCounter, counter)
 	setIntOnStore(store, counterKey, counter+1)
@@ -1649,6 +1650,7 @@ func TestLoadVersionInvalid(t *testing.T) {
 
 // simple one store baseapp with data and snapshots. Each tx is 1 MB in size (uncompressed).
 func setupBaseAppWithSnapshots(t *testing.T, blocks uint, blockTxs int, options ...func(*BaseApp)) (*BaseApp, func()) {
+	t.Helper()
 	codec := codec.NewLegacyAmino()
 	registerTestCodec(codec)
 	routerOpt := func(bapp *BaseApp) {
@@ -1785,6 +1787,7 @@ func useDefaultLoader(app *BaseApp) {
 }
 
 func initStore(t *testing.T, db dbm.DB, storeKey string, k, v []byte) {
+	t.Helper()
 	rs := rootmulti.NewStore(db, log.NewNopLogger())
 	rs.SetPruning(store.PruneNothing)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -1802,6 +1805,7 @@ func initStore(t *testing.T, db dbm.DB, storeKey string, k, v []byte) {
 }
 
 func checkStore(t *testing.T, db dbm.DB, ver int64, storeKey string, k, v []byte) {
+	t.Helper()
 	rs := rootmulti.NewStore(db, log.NewNopLogger())
 	rs.SetPruning(store.PruneDefault)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -1839,7 +1843,6 @@ func TestSetLoader(t *testing.T) {
 	v := []byte("value")
 
 	for name, tc := range cases {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			// prepare a db with some data
 			db := dbm.NewMemDB()

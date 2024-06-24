@@ -11,12 +11,6 @@ import (
 	"runtime/pprof"
 	"strings"
 
-	"github.com/hashicorp/go-metrics"
-	"github.com/spf13/cobra"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-
 	"github.com/Finschia/ostracon/abci/server"
 	ostcmd "github.com/Finschia/ostracon/cmd/ostracon/commands"
 	tmcfg "github.com/Finschia/ostracon/config"
@@ -28,6 +22,11 @@ import (
 	rpchttp "github.com/Finschia/ostracon/rpc/client/http"
 	"github.com/Finschia/ostracon/rpc/client/local"
 	tmtypes "github.com/Finschia/ostracon/types"
+	"github.com/hashicorp/go-metrics"
+	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"
@@ -214,7 +213,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 func startStandAlone(svrCtx *Context, svrCfg serverconfig.Config, clientCtx client.Context, app types.Application, tmetrics *telemetry.Metrics) error {
 	svr, err := server.NewServer(svrCtx.Viper.GetString(flagAddress), svrCtx.Viper.GetString(flagTransport), app)
 	if err != nil {
-		return fmt.Errorf("error creating listener: %v", err)
+		return fmt.Errorf("error creating listener: %w", err)
 	}
 
 	svr.SetLogger(svrCtx.Logger.With("module", "abci-server"))

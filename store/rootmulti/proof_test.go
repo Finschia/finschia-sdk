@@ -3,11 +3,10 @@ package rootmulti
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/Finschia/ostracon/libs/log"
+	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/Finschia/finschia-sdk/store/iavl"
 	"github.com/Finschia/finschia-sdk/store/types"

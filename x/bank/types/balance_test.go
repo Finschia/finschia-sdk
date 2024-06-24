@@ -102,7 +102,6 @@ func TestBalanceValidate(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			err := tc.balance.Validate()
 
@@ -126,7 +125,6 @@ func TestBalance_GetAddress(t *testing.T) {
 		{"valid address", "link1vy0ga0klndqy92ceqehfkvgmn4t94ete4mhemy", false},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			b := bank.Balance{Address: tt.Address}
 			if tt.wantPanic {
@@ -191,6 +189,7 @@ func BenchmarkSanitizeBalances1000(b *testing.B) {
 }
 
 func benchmarkSanitizeBalances(b *testing.B, nAddresses int) {
+	b.Helper()
 	b.ReportAllocs()
 	tokens := sdk.TokensFromConsensusPower(81, sdk.DefaultPowerReduction)
 	coin := sdk.NewCoin("benchcoin", tokens)
