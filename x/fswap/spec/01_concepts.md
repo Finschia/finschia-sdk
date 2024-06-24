@@ -45,7 +45,7 @@ type Config struct {
 
 ## MsgSetSwap
 
-`MsgSetSwap` is not a proposal; it is a regular message. Other modules can include `MsgSetSwap` in their proposals to set `Swap`. If the proposal passes, the `Swap` can be used on chain.
+`MsgSetSwap` is a regular message. Other modules can include `MsgSetSwap` in their proposals to set `Swap`. If the proposal passes, the `Swap` can be used on chain.
 
 `ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11). 
 In addition, `ToDenomMetadata` should also meet the following two additional constraints by x/swap.
