@@ -60,3 +60,11 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (build) [\#1413](https://github.com/Finschia/finschia-sdk/pull/1413) Update outdated dependencies for v0.49.x
 
 ### Document Updates
+<<<<<<< HEAD
+=======
+* (docs) [\#1059](https://github.com/Finschia/finschia-sdk/pull/1059) create ERRORS.md for x/module
+* (docs) [\#1083](https://github.com/Finschia/finschia-sdk/pull/1083) Add detailed explanation about default events
+* (x/token,collection) [#1201](https://github.com/Finschia/finschia-sdk/pull/1201) Deprecate legacy features on x/token,collection
+* (build) [\#1393](https://github.com/Finschia/finschia-sdk/pull/1393) add current directory as suffix for docker container
+* (docs) [\#1419](https://github.com/Finschia/finschia-sdk/pull/1419) correct spec docs of fswap module
+>>>>>>> 7bd6c8244 (docs: correct spec docs of fswap module (#1419))
