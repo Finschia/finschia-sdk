@@ -28,7 +28,7 @@ Anyone could use one of the following two transcations to swap `FromDedenom` to 
 When the swap is triggered, the following event will occur:
 1. `from_denom` will be sent from `from_address` to `x/fswap` module
 2. `x/fswap` module will burn `from_denom`
-3. `x/fswap` module will mint `to_denom` of equivalent value
+3. `x/fswap` module will mint `to_denom` as amount as `from_denom * swapRate`
 4. these `to_denom` will sent to `from_address`
 5. `EventSwapCoins` will be emitted
 
@@ -47,7 +47,7 @@ type Config struct {
 
 `MsgSetSwap` is not a proposal; it is a regular message. Other modules can include `MsgSetSwap` in their proposals to set `Swap`. If the proposal passes, the `Swap` can be used on chain.
 
-`Swap` is [`Swap`](../types/fswap.pb.go#L28-L33) in `x/fswap` module, and it MUST meet these [limitations](../types/fswap.go#L8). `ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11).
+`ToDenomMetadata` is [`Metadata`](../../bank/types/bank.pb.go#L325) in `x/bank` module, and it MUST meet these [limitations](../../bank/types/metadata.go#L11). In addition, `Base` in `ToDenomMetadata` should be consistent with `ToDenom` in `Swap`.
 
 The following example illustrates the use of `MsgSetSwap` within the `x/foundation` module. `Authority` is a spec in the `x/foundation` module, and you can get more information [here](../../foundation/README.md#L54).
 
