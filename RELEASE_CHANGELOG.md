@@ -13,6 +13,9 @@
 * (build, ci) [\#1411](https://github.com/Finschia/finschia-sdk/pull/1411) Bump Go from 1.20 to 1.22 (backport #1410)
 * (build) [\#1413](https://github.com/Finschia/finschia-sdk/pull/1413) Update outdated dependencies for v0.49.x
 
+### Document Updates
+* (docs) [\#1429](https://github.com/Finschia/finschia-sdk/pull/1429) correct spec docs of fswap module (backport #1419)
+
 
 ## [v0.49.0](https://github.com/Finschia/finschia-sdk/releases/tag/v0.49.0) - 2024-05-27
 
