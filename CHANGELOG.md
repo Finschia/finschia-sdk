@@ -60,3 +60,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (build) [\#1413](https://github.com/Finschia/finschia-sdk/pull/1413) Update outdated dependencies for v0.49.x
 
 ### Document Updates
+* (docs) [\#1429](https://github.com/Finschia/finschia-sdk/pull/1429) correct spec docs of fswap module
