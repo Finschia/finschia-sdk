@@ -69,7 +69,6 @@ func TestValidateParams(t *testing.T) {
 				require.NoError(t, p.ValidateParams())
 			}
 		})
-
 	}
 }
 

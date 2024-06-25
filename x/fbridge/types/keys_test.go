@@ -1,11 +1,11 @@
 package types_test
 
 import (
-	sdk "github.com/Finschia/finschia-sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 

@@ -133,7 +133,7 @@ func (s *CLITestSuite) TestQuerySeqToBlocknumsCmd() {
 				return s.baseCtx.WithClient(c)
 			},
 			[]string{
-				fmt.Sprintf("--sequences=1"),
+				fmt.Sprintf("--%s=1", cli.FlagSequences),
 				fmt.Sprintf("--%s=json", FlagOutput),
 			},
 			&types.QuerySeqToBlocknumsResponse{},
@@ -148,7 +148,7 @@ func (s *CLITestSuite) TestQuerySeqToBlocknumsCmd() {
 				})
 				return s.baseCtx.WithClient(c)
 			},
-			[]string{fmt.Sprintf("--sequences=1.3"), fmt.Sprintf("--%s=json", FlagOutput)},
+			[]string{fmt.Sprintf("--%s=1.3", cli.FlagSequences), fmt.Sprintf("--%s=json", FlagOutput)},
 			&types.QuerySeqToBlocknumsResponse{},
 			true,
 		},

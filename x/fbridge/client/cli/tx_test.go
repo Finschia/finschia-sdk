@@ -9,7 +9,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	rpcclientmock "github.com/tendermint/tendermint/rpc/client/mock"
 
@@ -82,7 +81,7 @@ func (s *CLITestSuite) SetupSuite() {
 
 func cliArgs(args ...string) []string {
 	return append(args, []string{
-		fmt.Sprintf("--output=json"),
+		fmt.Sprintf("--%s=json", FlagOutput),
 		fmt.Sprintf("--%s=home", flags.FlagKeyringDir),
 		fmt.Sprintf("--%s=mynote", flags.FlagNote),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
@@ -165,7 +164,6 @@ func (s *CLITestSuite) TestNewTransferTxCmd() {
 	}
 
 	for _, tc := range tcs {
-		tc := tc
 		s.Run(tc.name, func() {
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
 			if tc.expectErr {
@@ -223,7 +221,6 @@ func (s *CLITestSuite) TestNewSuggestRoleTxCmd() {
 	}
 
 	for _, tc := range tcs {
-		tc := tc
 		s.Run(tc.name, func() {
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
 			if tc.expectErr {
@@ -301,7 +298,6 @@ func (s *CLITestSuite) TestNewAddVoteForRoleTxCmd() {
 	}
 
 	for _, tc := range tcs {
-		tc := tc
 		s.Run(tc.name, func() {
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
 			if tc.expectErr {
@@ -365,7 +361,6 @@ func (s *CLITestSuite) TestNewSetBridgeStatusTxCmd() {
 	}
 
 	for _, tc := range tcs {
-		tc := tc
 		s.Run(tc.name, func() {
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
 			if tc.expectErr {

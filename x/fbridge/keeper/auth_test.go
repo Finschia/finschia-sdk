@@ -45,9 +45,9 @@ func TestAssignRole(t *testing.T) {
 	require.Error(t, err, "invalid vote option must be rejected")
 	err = k.addVote(ctx, p.Id, addrs[0], types.OptionYes)
 	require.NoError(t, err)
-	opt, err := k.GetVote(ctx, wrongProposalID, addrs[0])
+	_, err = k.GetVote(ctx, wrongProposalID, addrs[0])
 	require.Error(t, err, "this proposal must not be found")
-	opt, err = k.GetVote(ctx, p.Id, addrs[0])
+	opt, err := k.GetVote(ctx, p.Id, addrs[0])
 	require.NoError(t, err)
 	require.Equal(t, types.OptionYes, opt)
 
@@ -68,7 +68,7 @@ func TestAssignRole(t *testing.T) {
 	require.Equal(t, types.RoleMetadata{Guardian: 1, Operator: 1, Judge: 0}, k.GetRoleMetadata(ctx))
 
 	// 4. Guardian assigns an address to a same role
-	p, err = k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleOperator)
+	_, err = k.RegisterRoleProposal(ctx, addrs[0], addrs[1], types.RoleOperator)
 	require.Error(t, err, "the role proposal cannot be submitted if target's role is equal to the role in proposal")
 	err = k.updateRole(ctx, types.RoleOperator, addrs[1])
 	require.NoError(t, err)

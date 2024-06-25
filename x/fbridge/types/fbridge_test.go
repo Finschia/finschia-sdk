@@ -1,9 +1,11 @@
 package types_test
 
 import (
-	"github.com/Finschia/finschia-sdk/x/fbridge/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	"github.com/Finschia/finschia-sdk/x/fbridge/types"
 )
 
 func TestIsValidRole(t *testing.T) {
