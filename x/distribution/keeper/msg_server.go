@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/armon/go-metrics"
+	"github.com/hashicorp/go-metrics"
 
 	"github.com/Finschia/finschia-sdk/telemetry"
 	sdk "github.com/Finschia/finschia-sdk/types"

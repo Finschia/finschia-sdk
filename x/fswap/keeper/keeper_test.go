@@ -242,6 +242,22 @@ func (s *KeeperTestSuite) TestSwap() {
 			true,
 			sdkerrors.ErrInsufficientFunds,
 		},
+		"invalid: unregistered swap": {
+			s.accWithToCoin,
+			sdk.NewCoin(s.swap.GetFromDenom(), sdk.NewInt(100)),
+			"nono",
+			sdk.ZeroInt(),
+			true,
+			sdkerrors.ErrNotFound,
+		},
+		"invalid: amount exceed": {
+			s.accWithToCoin,
+			sdk.NewCoin(s.swap.GetFromDenom(), s.swap.AmountCapForToDenom.Add(sdk.OneInt())),
+			s.swap.GetToDenom(),
+			sdk.ZeroInt(),
+			true,
+			types.ErrExceedSwappableToCoinAmount,
+		},
 	}
 	for name, tc := range testCases {
 		s.Run(name, func() {

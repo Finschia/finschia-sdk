@@ -407,8 +407,6 @@ func TestValidateGenesis(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		t.Run(name, func(t *testing.T) {
 			var unmarshalled foundation.GenesisState
 			err := cdc.UnmarshalJSON(tc.raw, &unmarshalled)

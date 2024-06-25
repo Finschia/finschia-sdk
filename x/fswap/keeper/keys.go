@@ -6,7 +6,7 @@ var (
 	swappedKeyPrefix = []byte{0x03}
 )
 
-// swapKey key(prefix + fromDenom + toDenom)
+// swapKey key(prefix + (lengthPrefixed+)fromDenom + (lengthPrefixed+)toDenom)
 func swapKey(fromDenom, toDenom string) []byte {
 	denoms := combineDenoms(fromDenom, toDenom)
 	return append(swapPrefix, denoms...)

@@ -44,8 +44,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdFundTreasury()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -92,8 +90,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdWithdrawFromTreasury()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -138,8 +134,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdUpdateMembers()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -198,8 +192,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdUpdateDecisionPolicy()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -249,8 +241,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdSubmitProposal()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -299,8 +289,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdWithdrawProposal()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -353,8 +341,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdVote()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -402,8 +388,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdExec()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -466,8 +450,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateCensorship() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdUpdateCensorship()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -512,8 +494,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdLeaveFoundation()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -565,8 +545,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdGrant()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
@@ -612,8 +590,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.NewTxCmdRevoke()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))

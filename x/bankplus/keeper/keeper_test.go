@@ -294,7 +294,6 @@ func (suite *IntegrationTestSuite) TestInputOutputCoins() {
 	}
 
 	for name, tc := range tcs {
-		tc := tc
 		suite.T().Run(name, func(t *testing.T) {
 			if tc.err != nil {
 				suite.EqualError(targetKeeper(tc.deactMultiSend).InputOutputCoins(ctx, input, output), tc.err.Error())

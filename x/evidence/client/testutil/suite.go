@@ -56,8 +56,6 @@ func (s *IntegrationTestSuite) TestGetQueryCmd() {
 	}
 
 	for name, tc := range testCases {
-		tc := tc
-
 		s.Run(name, func() {
 			cmd := cli.GetQueryCmd()
 			clientCtx := val.ClientCtx

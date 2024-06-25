@@ -174,8 +174,6 @@ func (suite *UpgradeTestSuite) TestModuleVersions() {
 	mv := suite.app.UpgradeKeeper.GetModuleVersions(suite.ctx)
 
 	for _, tc := range testCases {
-		tc := tc
-
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
 			suite.SetupTest() // reset
 

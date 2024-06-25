@@ -71,23 +71,22 @@ func TestCalculateGas(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		stc := tc
 		txCfg := NewTestTxConfig()
 
 		txf := tx.Factory{}.
 			WithChainID("test-chain").
 			WithTxConfig(txCfg).WithSignMode(txCfg.SignModeHandler().DefaultMode())
 
-		t.Run(stc.name, func(t *testing.T) {
+		t.Run(tc.name, func(t *testing.T) {
 			mockClientCtx := mockContext{
 				gasUsed: tc.args.mockGasUsed,
 				wantErr: tc.args.mockWantErr,
 			}
-			simRes, gotAdjusted, err := tx.CalculateGas(mockClientCtx, txf.WithGasAdjustment(stc.args.adjustment))
-			if stc.expPass {
+			simRes, gotAdjusted, err := tx.CalculateGas(mockClientCtx, txf.WithGasAdjustment(tc.args.adjustment))
+			if tc.expPass {
 				require.NoError(t, err)
-				require.Equal(t, simRes.GasInfo.GasUsed, stc.wantEstimate)
-				require.Equal(t, gotAdjusted, stc.wantAdjusted)
+				require.Equal(t, simRes.GasInfo.GasUsed, tc.wantEstimate)
+				require.Equal(t, gotAdjusted, tc.wantAdjusted)
 				require.NotNil(t, simRes.Result)
 			} else {
 				require.Error(t, err)

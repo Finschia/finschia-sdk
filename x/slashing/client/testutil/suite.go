@@ -85,8 +85,6 @@ tombstoned: false`, sdk.ConsAddress(val.PubKey.Address())),
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQuerySigningInfo()
 			clientCtx := val.ClientCtx
@@ -127,8 +125,6 @@ slash_fraction_downtime: "0.010000000000000000"`,
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.GetCmdQueryParams()
 			clientCtx := val.ClientCtx
@@ -162,8 +158,6 @@ func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewUnjailTxCmd()
 			clientCtx := val.ClientCtx

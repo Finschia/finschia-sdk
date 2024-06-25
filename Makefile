@@ -342,7 +342,7 @@ lint: golangci-lint
 	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
 
 golangci-lint:
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.2
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59
 
 lint-fix: golangci-lint
 	golangci-lint run --fix --out-format=tab --issues-exit-code=0
@@ -516,19 +516,6 @@ localnet-debug: localnet-stop localnet-build-dlv localnet-build-nodes
 
 .PHONY: localnet-start localnet-stop localnet-debug localnet-build-env \
 localnet-build-dlv localnet-build-nodes
-
-###############################################################################
-###                                rosetta                                  ###
-###############################################################################
-
-rosetta-data:
-	-docker container rm data_dir_build
-	docker build -t rosetta-ci:latest -f contrib/rosetta/node/Dockerfile .
-	docker run --name data_dir_build -t rosetta-ci:latest sh /rosetta/data.sh
-	docker cp data_dir_build:/tmp/data.tar.gz "$(CURDIR)/contrib/rosetta/node/data.tar.gz"
-	docker container rm data_dir_build
-
-.PHONY: rosetta-data
 
 ###############################################################################
 ###                                  tools                                  ###

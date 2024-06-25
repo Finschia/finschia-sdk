@@ -6,7 +6,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/Finschia/finschia-sdk/types"
+	authtypes "github.com/Finschia/finschia-sdk/x/auth/types"
+	"github.com/Finschia/finschia-sdk/x/foundation"
 	"github.com/Finschia/finschia-sdk/x/fswap/types"
+	govtypes "github.com/Finschia/finschia-sdk/x/gov/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {
@@ -173,4 +176,23 @@ func TestGenesisStateValidate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestDefaultAuthority(t *testing.T) {
+	expectedDefaultAuthority := authtypes.NewModuleAddress(foundation.ModuleName)
+
+	defaultAuthority := types.DefaultAuthority()
+
+	require.Equal(t, expectedDefaultAuthority, defaultAuthority)
+}
+
+func TestAuthorityCandidates(t *testing.T) {
+	defaultAuthorityCandidates := []sdk.AccAddress{
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+		authtypes.NewModuleAddress(foundation.ModuleName),
+	}
+
+	authorityCandidates := types.AuthorityCandidates()
+
+	require.Equal(t, defaultAuthorityCandidates, authorityCandidates)
 }
