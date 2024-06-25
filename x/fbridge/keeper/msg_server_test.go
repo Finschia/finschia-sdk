@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"context"
 	"fmt"
 	sdk "github.com/Finschia/finschia-sdk/types"
 	"github.com/Finschia/finschia-sdk/x/fbridge/types"
@@ -332,23 +333,24 @@ func (s *IntegrationTestSuite) TestSetBridgeStatus() {
 	var msg types.MsgSetBridgeStatus
 	tcs := map[string]struct {
 		malleate func()
+		postExec func(ctx context.Context)
 		expErr   bool
 	}{
-		"1. valid request - inactive": {
+		"valid request": {
 			malleate: func() {
 				msg = types.MsgSetBridgeStatus{
 					Guardian: s.guardians[0].String(),
 					Status:   types.StatusInactive,
 				}
 			},
-			expErr: false,
-		},
-		"2. valid request - active": {
-			malleate: func() {
+			postExec: func(ctx context.Context) {
 				msg = types.MsgSetBridgeStatus{
 					Guardian: s.guardians[0].String(),
 					Status:   types.StatusActive,
 				}
+
+				_, err := s.msgServer.SetBridgeStatus(ctx, &msg)
+				s.Require().NoError(err)
 			},
 			expErr: false,
 		},

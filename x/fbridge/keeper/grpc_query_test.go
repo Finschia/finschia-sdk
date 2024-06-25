@@ -302,7 +302,7 @@ func (s *IntegrationTestSuite) TestProposals() {
 
 func (s *IntegrationTestSuite) TestVotes() {
 	goctx := sdk.WrapSDKContext(s.ctx)
-	var expProposalID uint64 = 5
+	const expProposalID uint64 = 5
 	_, err := s.msgServer.SuggestRole(goctx, &types.MsgSuggestRole{
 		From:   s.guardians[0].String(),
 		Target: s.guardians[1].String(),
