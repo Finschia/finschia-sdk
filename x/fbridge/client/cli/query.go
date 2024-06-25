@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	flagSequences = "sequences"
+	FlagSequences = "sequences"
 )
 
 // NewQueryCmd returns the query commands for fbridge module
@@ -100,7 +100,7 @@ func NewQuerySeqToBlocknumsCmd() *cobra.Command {
 			}
 			qc := types.NewQueryClient(clientCtx)
 
-			seqSlice, err := cmd.Flags().GetInt64Slice(flagSequences)
+			seqSlice, err := cmd.Flags().GetInt64Slice(FlagSequences)
 			if err != nil {
 				return err
 			}
@@ -119,7 +119,7 @@ func NewQuerySeqToBlocknumsCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().Int64Slice(flagSequences, []int64{}, "comma separated list of bridge sequnece numbers")
+	cmd.Flags().Int64Slice(FlagSequences, []int64{}, "comma separated list of bridge sequnece numbers")
 	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
