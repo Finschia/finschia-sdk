@@ -1,3 +1,6 @@
+project_name: fnsa-simd
+version: 2
+
 before:
   hooks:
     - go mod tidy
