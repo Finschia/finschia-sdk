@@ -10,6 +10,8 @@ github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Finschia/ostracon v1.1.4 h1:untqhChZjktLoMo/b94q6bmeedDfvCV+d+t7yO0I1N8=
 github.com/Finschia/ostracon v1.1.4/go.mod h1:kuW9en37Z9+6dGzdoA8+xdCil42wZGZNtrcJe9ugRx8=
+github.com/Finschia/ostracon v1.1.5 h1:8nWHh+6v/0+KSx536Aix+P5cn5iqvoAuVvVYn9g1q7c=
+github.com/Finschia/ostracon v1.1.5/go.mod h1:kuW9en37Z9+6dGzdoA8+xdCil42wZGZNtrcJe9ugRx8=
 github.com/Finschia/r2ishiguro_vrf v0.1.2 h1:lDBz6NQMx1pw5I3End6xFmXpM//7KcmTr3Ka983e7v8=
 github.com/Finschia/r2ishiguro_vrf v0.1.2/go.mod h1:OHRtvzcJnfIrcJ0bvPNktJozRFAyZFuv56E9R3/qB+Y=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=

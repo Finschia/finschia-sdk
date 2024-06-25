@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
+	rpcclientmock "github.com/Finschia/ostracon/rpc/client/mock"
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 	abci "github.com/tendermint/tendermint/abci/types"
-	rpcclientmock "github.com/tendermint/tendermint/rpc/client/mock"
 
 	"github.com/Finschia/finschia-sdk/client"
 	"github.com/Finschia/finschia-sdk/client/flags"

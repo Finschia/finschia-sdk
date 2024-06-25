@@ -3,8 +3,8 @@ package client
 import (
 	"context"
 
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	coretypes "github.com/tendermint/tendermint/rpc/core/types"
+	rpcclient "github.com/Finschia/ostracon/rpc/client"
+	coretypes "github.com/Finschia/ostracon/rpc/core/types"
 )
 
 // TendermintRPC defines the interface of a Tendermint RPC client needed for
