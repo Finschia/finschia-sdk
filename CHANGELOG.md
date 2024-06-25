@@ -67,6 +67,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/fbridge) [\#1395](https://github.com/Finschia/finschia-sdk/pull/1395) Return error instead of panic for behaviors triggered by client
 * (x/fswap) [\#1396](https://github.com/Finschia/finschia-sdk/pull/1396) refactor to use snake_case in proto
 * (x/fswap) [\#1391](https://github.com/Finschia/finschia-sdk/pull/1391) add cli_test for fswap module
+* (x/fbridge) [\#1405](https://github.com/Finschia/finschia-sdk/pull/1405) Add CLI, gRPC, MsgServer tests
 * (x/fswap) [\#1415](https://github.com/Finschia/finschia-sdk/pull/1415) add more testcases for fswap module
 
 ### Bug Fixes

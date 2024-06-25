@@ -175,10 +175,14 @@ func NewSetBridgeStatusTxCmd() *cobra.Command {
 				"halt":   types.StatusInactive,
 				"resume": types.StatusActive,
 			}
+			bs, found := conv[args[0]]
+			if !found {
+				return sdkerrors.ErrInvalidRequest.Wrapf("invalid bridge status: %s", args[0])
+			}
 
 			msg := types.MsgSetBridgeStatus{
 				Guardian: from,
-				Status:   conv[args[0]],
+				Status:   bs,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
