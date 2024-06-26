@@ -1,4 +1,4 @@
-project_name: fnsa-simd
+project_name: finschia-sdk
 version: 2
 
 before:
@@ -98,7 +98,8 @@ checksum:
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
 changelog:
-  use: git
+  use: github
+  format: "{{.Message}}"
   sort: asc
   groups:
     - title: "Breaking Changes"
@@ -129,7 +130,10 @@ release:
   prerelease: auto
   mode: replace
   draft: false
-
+  header: |
+    # Release {{ .Version }} ({{ .Date }})
+  footer: |
+    **Full Changelog**: https://github.com/Finschia/finschia-sdk/compare/{{ .PreviousTag }}...{{ .CurrentTag }}
 
 # modelines, feel free to remove those if you don't want/use them:
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
