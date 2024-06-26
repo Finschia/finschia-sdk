@@ -532,7 +532,7 @@ error-doc-gen:
 ###############################################################################
 
 GORELEASER_IMAGE := goreleaser/goreleaser-cross:v$(GO_VERSION)
-PACKAGE_NAME := github.com/Finschia/finschia-sdk
+PACKAGE_NAME := $(shell grep "^module" go.mod | cut -d' ' -f2)
 
 ifdef GITHUB_TOKEN
 release:
