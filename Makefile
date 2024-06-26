@@ -542,14 +542,13 @@ release:
 		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
 		--platform linux/amd64 \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
-		-e OST_VERSION=$(OST_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/$(PACKAGE_NAME) \
 		-w /go/src/$(PACKAGE_NAME) \
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean \
-		--skip=announce \
+		--skip=announce
 else
 release:
 	@echo "Error: GITHUB_TOKEN is not defined. Please define it before running 'make release'."
@@ -566,7 +565,7 @@ release-dry-run:
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean \
-		--skip=validate --skip=publish --skip=announce \
+		--skip=publish --skip=announce --skip=validate \
 		--verbose
 
 release-snapshot:
@@ -580,7 +579,6 @@ release-snapshot:
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean \
-		--snapshot \
-		--skip=publish --skip=announce
+		--snapshot
 
 .PHONY: release release-dry-run release-snapshot

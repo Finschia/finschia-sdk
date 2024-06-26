@@ -106,22 +106,23 @@ changelog:
       regexp: '^.*?BREAKING CHANGE(\([[:word:]]+\))??!?:.+$'
       order: 0
     - title: Features
-      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?feat(\([^)]*\))?!?:.+$'
       order: 1
     - title: 'Bug Fixes'
-      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?fix(\([^)]*\))?!?:.+$'
       order: 2
     - title: 'Build, CI'
-      regexp: '^.*?(ci|build)(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?(ci|build)(\([^)]*\))?!?:.+$'
       order: 3
-    - title: 'Document Updates'
-      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
-      order: 4
     - title: Improvements
-      regexp: '^.*?(test|refactor|perf)(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?(test|refactor|perf)(\([^)]*\))?!?:.+$'
+      order: 4
+    - title: 'Document Updates'
+      regexp: '^.*?docs(\([^)]*\))?!?:.+$'
       order: 5
     - title: Others
-      order: 999
+      regexp: '^.*?(chore|style|revert)(\([^)]*\))?!?:.+$'
+      order: 6
 
 release:
   github:
