@@ -4,7 +4,7 @@ module github.com/Finschia/finschia-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
-	github.com/Finschia/ostracon v1.1.4
+	github.com/Finschia/ostracon v1.1.5
 	github.com/VictoriaMetrics/fastcache v1.12.2
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.1

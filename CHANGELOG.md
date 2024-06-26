@@ -41,6 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 
 ### Improvements
+* (x/fbridge) [\#1430](https://github.com/Finschia/finschia-sdk/pull/1430) Add CLI, gRPC, MsgServer tests
 
 ### Bug Fixes
 
