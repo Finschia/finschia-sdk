@@ -12,12 +12,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: git fetch --force --tags
-      - name: Build & Publish release
+      - name: Build & publish release
         run: |
           make release
         env:
+<<<<<<< HEAD
           GORELEASER_MOUNT_CONFIG: true
           GORELEASER_IMAGE: goreleaser/goreleaser-cross:v1.21-v1.20.0
           GORELEASER_RELEASE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+=======
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+>>>>>>> 8e266d837 (bug: Fix goreleaser config (#1431))
