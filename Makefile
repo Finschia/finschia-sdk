@@ -15,6 +15,7 @@ DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
 CGO_ENABLED ?= 1
 ARCH ?= x86_64
+GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
 
 export GO111MODULE = on
 
@@ -92,6 +93,7 @@ ldflags = -X github.com/Finschia/finschia-sdk/version.Name=sim \
 		  -X github.com/Finschia/finschia-sdk/types.DBBackend=$(DB_BACKEND) \
 		  -X "github.com/Finschia/finschia-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 		  -X github.com/Finschia/ostracon/version.OCCoreSemVer=$(OCVERSION)
+
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
@@ -538,11 +540,13 @@ error-doc-gen:
 .PHONY: error-doc-gen
 
 ###############################################################################
-###                                release                                  ###
+###                                Release                                  ###
 ###############################################################################
 
-GORELEASER_CONFIG ?= .goreleaser.yml
+GORELEASER_IMAGE := goreleaser/goreleaser-cross:v$(GO_VERSION)
+PACKAGE_NAME := $(shell grep "^module" go.mod | cut -d' ' -f2)
 
+<<<<<<< HEAD
 GORELEASER_BUILD_LDF = $(ldflags)
 GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
@@ -555,25 +559,52 @@ GO_MOD_NAME              := github.com/Finschia/finschia-sdk
 ifeq ($(GORELEASER_RELEASE),true)
 	GORELEASER_SKIP_VALIDATE := false
 	GORELEASER_SKIP_PUBLISH  := release --skip-publish=false
+=======
+ifdef GITHUB_TOKEN
+release:
+	docker run --rm \
+		-e BUILD_TAGS="$(build_tags)" \
+		-e BUILD_VARS='$(ldflags)' \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
+		--platform linux/amd64 \
+		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-w /go/src/$(PACKAGE_NAME) \
+		$(GORELEASER_IMAGE) \
+		release \
+		--clean \
+		--skip=announce
+>>>>>>> 8e266d837 (bug: Fix goreleaser config (#1431))
 else
-	GORELEASER_SKIP_PUBLISH  := --skip-publish=true
-	GORELEASER_SKIP_VALIDATE ?= false
-	GITHUB_TOKEN=
+release:
+	@echo "Error: GITHUB_TOKEN is not defined. Please define it before running 'make release'."
 endif
 
-ifeq ($(GORELEASER_MOUNT_CONFIG),true)
-	GORELEASER_IMAGE := -v $(HOME)/.docker/config.json:/root/.docker/config.json $(GORELEASER_IMAGE)
-endif
+release-dry-run:
+	docker run --rm \
+		-e BUILD_TAGS="$(build_tags)" \
+		-e BUILD_VARS='$(ldflags)' \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-w /go/src/$(PACKAGE_NAME) \
+		$(GORELEASER_IMAGE) \
+		release \
+		--clean \
+		--skip=publish --skip=announce --skip=validate \
+		--verbose
 
 release-snapshot:
 	docker run --rm \
 		-e BUILD_TAGS="$(build_tags)" \
-		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
+		-e BUILD_VARS='$(ldflags)' \
 		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
-		-w /go/src/$(GO_MOD_NAME) \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-w /go/src/$(PACKAGE_NAME) \
 		$(GORELEASER_IMAGE) \
+<<<<<<< HEAD
 		build --snapshot \
 		-f "$(GORELEASER_CONFIG)" \
 		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
@@ -597,3 +628,10 @@ release:
 		--clean
 
 .PHONY: release-snapshot release
+=======
+		release \
+		--clean \
+		--snapshot
+
+.PHONY: release release-dry-run release-snapshot
+>>>>>>> 8e266d837 (bug: Fix goreleaser config (#1431))

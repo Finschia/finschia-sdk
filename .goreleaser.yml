@@ -1,3 +1,6 @@
+project_name: finschia-sdk
+version: 2
+
 before:
   hooks:
     - go mod tidy
@@ -95,29 +98,31 @@ checksum:
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
 changelog:
-  use: git
+  use: github
+  format: "{{.Message}}"
   sort: asc
   groups:
     - title: "Breaking Changes"
       regexp: '^.*?BREAKING CHANGE(\([[:word:]]+\))??!?:.+$'
       order: 0
     - title: Features
-      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?feat(\([^)]*\))?!?:.+$'
       order: 1
     - title: 'Bug Fixes'
-      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?fix(\([^)]*\))?!?:.+$'
       order: 2
     - title: 'Build, CI'
-      regexp: '^.*?(ci|build)(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?(ci|build)(\([^)]*\))?!?:.+$'
       order: 3
-    - title: 'Document Updates'
-      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
-      order: 4
     - title: Improvements
-      regexp: '^.*?(test|refactor|perf)(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?(test|refactor|perf)(\([^)]*\))?!?:.+$'
+      order: 4
+    - title: 'Document Updates'
+      regexp: '^.*?docs(\([^)]*\))?!?:.+$'
       order: 5
     - title: Others
-      order: 999
+      regexp: '^.*?(chore|style|revert)(\([^)]*\))?!?:.+$'
+      order: 6
 
 release:
   github:
@@ -126,7 +131,10 @@ release:
   prerelease: auto
   mode: replace
   draft: false
-
+  header: |
+    # Release {{ .Version }} ({{ .Date }})
+  footer: |
+    **Full Changelog**: https://github.com/Finschia/finschia-sdk/compare/{{ .PreviousTag }}...{{ .CurrentTag }}
 
 # modelines, feel free to remove those if you don't want/use them:
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
