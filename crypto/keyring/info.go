@@ -57,27 +57,27 @@ func (i localInfo) GetType() KeyType {
 	return TypeLocal
 }
 
-// GetType implements Info interface
+// GetName implements Info interface
 func (i localInfo) GetName() string {
 	return i.Name
 }
 
-// GetType implements Info interface
+// GetPubKey implements Info interface
 func (i localInfo) GetPubKey() cryptotypes.PubKey {
 	return i.PubKey
 }
 
-// GetType implements Info interface
+// GetAddress implements Info interface
 func (i localInfo) GetAddress() types.AccAddress {
 	return i.PubKey.Address().Bytes()
 }
 
-// GetType implements Info interface
+// GetAlgo implements Info interface
 func (i localInfo) GetAlgo() hd.PubKeyType {
 	return i.Algo
 }
 
-// GetType implements Info interface
+// GetPath implements Info interface
 func (i localInfo) GetPath() (*hd.BIP44Params, error) {
 	return nil, fmt.Errorf("BIP44 Paths are not available for this type")
 }
